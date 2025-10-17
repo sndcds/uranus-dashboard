@@ -1,7 +1,6 @@
 <template>
-  <DashboardLayout />
+  <router-view />
 </template>
 
 <script setup lang="ts">
-  import DashboardLayout from '@/components/DashboardLayout.vue'
 </script>

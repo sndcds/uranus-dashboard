@@ -34,7 +34,7 @@
           });
 
           if (res.message === 'login successful') {
-            this.$router.push('/dashboard');
+            this.$router.push('/');
           } else {
             this.error = 'Invalid credentials';
           }
