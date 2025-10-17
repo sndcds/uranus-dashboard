@@ -25,6 +25,8 @@ const error = ref<string | null>(null);
 const router = useRouter();
 
 async function login() {
+  console.log("login()");
+
   try {
     const res = await apiFetch<LoginResponse>('/api/admin/login', {
       method: 'POST',
@@ -34,7 +36,7 @@ async function login() {
       }),
     });
 
-    console.log(res);
+    console.log(res.message);
 
     if (res.message === 'login successful' && res.access_token) {
       accessToken.value = res.access_token; // save token in memory

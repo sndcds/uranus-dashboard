@@ -31,21 +31,21 @@ export async function apiFetch<T = unknown>(
 ): Promise<T> {
     const url = `${import.meta.env.VITE_API_URL}${path}`;
 
-    const headers = new Headers(options.headers);
-    console.log(`${import.meta.env.VITE_API_URL}`);
-    console.log(accessToken.value);
+    console.log("apiFetch(): " +  url);
 
+    const headers = new Headers(options.headers || {});
     headers.set('Content-Type', 'application/json');
     if (accessToken.value) {
         headers.set('Authorization', `Bearer ${accessToken.value}`);
     }
 
-    console.log(headers);
+    const fetchOptions: RequestInit = {
+        ...options,
+        headers,
+    };
+
     const doFetch = async (): Promise<T> => {
-        const res = await fetch(url, {
-            ...options,
-            headers
-        });
+        const res = await fetch(url, fetchOptions);
 
 
         const contentType = res.headers.get('content-type') ?? '';
