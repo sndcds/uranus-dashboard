@@ -1,4 +1,11 @@
+import { accessToken } from './store/token'
+
 let refreshPromise: Promise<boolean> | null = null;
+
+export interface LoginResponse {
+    message: string;
+    access_token?: string;
+}
 
 /**
  * Custom Error type that includes HTTP status and response data
@@ -19,18 +26,27 @@ class ApiError extends Error {
  * and retries the original request. Safe for parallel requests.
  */
 export async function apiFetch<T = unknown>(
-    url: string,
+    path: string,
     options: RequestInit = {}
 ): Promise<T> {
+    const url = `${import.meta.env.VITE_API_URL}${path}`;
+
+    const headers = new Headers(options.headers);
+    console.log(`${import.meta.env.VITE_API_URL}`);
+    console.log(accessToken.value);
+
+    headers.set('Content-Type', 'application/json');
+    if (accessToken.value) {
+        headers.set('Authorization', `Bearer ${accessToken.value}`);
+    }
+
+    console.log(headers);
     const doFetch = async (): Promise<T> => {
         const res = await fetch(url, {
             ...options,
-            credentials: 'include', // send HttpOnly cookies automatically
-            headers: {
-                'Content-Type': 'application/json',
-                ...(options.headers || {}),
-            },
+            headers
         });
+
 
         const contentType = res.headers.get('content-type') ?? '';
         let data: unknown = null;
@@ -73,7 +89,7 @@ export async function apiFetch<T = unknown>(
 
             if (!refreshPromise) {
                 refreshPromise = (async () => {
-                    const res = await fetch('http://localhost:9090/api/admin/refresh', {
+                    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/refresh`, {
                         method: 'POST',
                         credentials: 'include',
                     });

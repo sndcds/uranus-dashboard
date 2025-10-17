@@ -37,7 +37,7 @@ const error = ref<string | null>(null)
 onMounted(async () => {
   try {
     const data = await apiFetch<{ events: EventItem[] }>(
-        'http://localhost:9090/api/user?mode=venues'
+        '/api/user?mode=venues'
     )
     events.value = data.events || []
   } catch (err: unknown) {

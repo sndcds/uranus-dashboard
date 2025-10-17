@@ -11,37 +11,39 @@
 </template>
 
 
-<script lang="ts">
-  import { apiFetch } from '../api.ts';
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { apiFetch } from '../api.ts';
+import type { LoginResponse } from '../api.ts';
+import { accessToken } from '../store/token';
 
-  export default {
-    data() {
-      return {
-        email: '',
-        password: '',
-        error: null,
-      };
-    },
-    methods: {
-      async login() {
-        try {
-          const res = await apiFetch('http://localhost:9090/api/admin/login', {
-            method: 'POST',
-            body: JSON.stringify({
-              email: this.email,
-              password: this.password,
-            }),
-          });
+const email = ref('');
+const password = ref('');
+const error = ref<string | null>(null);
 
-          if (res.message === 'login successful') {
-            this.$router.push('/');
-          } else {
-            this.error = 'Invalid credentials';
-          }
-        } catch (err) {
-          this.error = err.data?.error || 'Login failed';
-        }
-      },
-    },
-  };
+const router = useRouter();
+
+async function login() {
+  try {
+    const res = await apiFetch<LoginResponse>('/api/admin/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value,
+      }),
+    });
+
+    console.log(res);
+
+    if (res.message === 'login successful' && res.access_token) {
+      accessToken.value = res.access_token; // save token in memory
+      router.push('/');
+    } else {
+      error.value = 'Invalid credentials';
+    }
+  } catch (err: any) {
+    error.value = err?.data?.error || 'Login failed';
+  }
+}
 </script>
