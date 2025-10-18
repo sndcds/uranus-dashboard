@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DashboardLayout from '@/components/DashboardLayout.vue'
-import AuthLayout from '@/components/AuthLayout.vue'
+import DashboardLayoutComponent from '@/components/DashboardLayoutComponent.vue'
+import AuthLayoutComponent from '@/components/AuthLayoutComponent.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
-import VenuesView from '@/views/VenuesView.vue'
+import OrganizerView from '@/views/OrganizerView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 
 const routes = [
     {
         path: '/',
-        component: DashboardLayout,
+        component: DashboardLayoutComponent,
         children: [
             {
                 path: '',
@@ -19,7 +19,7 @@ const routes = [
             {
                 path: '/venues',
                 name: 'venues',
-                component: VenuesView
+                component: OrganizerView
             },
             {
                 path: '/settings',
@@ -30,7 +30,7 @@ const routes = [
     },
     {
         path: '/login',
-        component: AuthLayout,
+        component: AuthLayoutComponent,
         children: [
             {
                 path: '',

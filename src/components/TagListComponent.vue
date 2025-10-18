@@ -1,6 +1,6 @@
 <template>
   <div class="tag-list">
-    <ComboTag
+    <ComboTagComponent
         v-for="(tag, index) in tags"
         :key="index"
         :label="tag.label"
@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import ComboTag from './ComboTag.vue'
+  import ComboTagComponent from './ComboTagComponent.vue'
 
   interface Tag {
     label: string

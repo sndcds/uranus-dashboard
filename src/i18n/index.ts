@@ -9,6 +9,7 @@ const messages = {
         welcome: 'Willkommen',
         goodbye: 'Auf Wiedersehen',
         dashboard: 'Übersicht',
+        organizers: 'Organisationen',
         venues: 'Spielstätten',
     },
     en: {
@@ -17,6 +18,7 @@ const messages = {
         welcome: 'Welcome',
         goodbye: 'Goodbye',
         dashboard: 'Dashboard',
+        organizers: 'Organizers',
         venues: 'Venues',
     },
     da: {
@@ -24,6 +26,7 @@ const messages = {
         settings: 'Indstillinger',
         welcome: 'velkommen',
         goodbye: 'farvel',
+        organizers: 'Organisationer',
         venues: 'Spillesteder',
     },
 }

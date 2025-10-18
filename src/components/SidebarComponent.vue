@@ -1,6 +1,6 @@
 <template>
   <aside class="sidebar">
-    <SidebarOption
+    <SidebarOptionComponent
         v-for="option in options"
         :key="option.id"
         :option="option"
@@ -13,11 +13,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import SidebarOption from './SidebarOption.vue'
-import type { SidebarOption as Option } from '@/types/types'
+import SidebarOptionComponent from './SidebarOptionComponent.vue'
+import type { SidebarOption } from '@/types/types'
 
 const props = defineProps<{
-  options: Option[]
+  options: SidebarOption[]
 }>()
 
 const route = useRoute()

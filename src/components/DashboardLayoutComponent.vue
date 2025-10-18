@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-layout">
-    <Sidebar :options="sidebarOptions" @change="onSidebarChange" />
+    <SidebarComponent :options="sidebarOptions" @change="onSidebarChange" />
     <main class="main-content">
       <router-view />
     </main>
@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import Sidebar from './Sidebar.vue'
+import SidebarComponent from './SidebarComponent.vue'
 import type { SidebarOption } from '@/types/types'
 import {useTokenStore} from "@/store/token";
 
@@ -19,8 +19,8 @@ const { t } = useI18n()
 const tokenStore = useTokenStore();
 
 const sidebarOptions: SidebarOption[] = [
-  { id: 'dashboard', label: 'dashboard', icon: '', route: '/' },
-  { id: 'venues', label: t('venues'), icon: '', route: '/venues' },
+  { id: 'dashboard', label: t('dashboard'), icon: '', route: '/' },
+  { id: 'organizers', label: t('organizers'), icon: '', route: '/venues' },
   { id: 'settings', label: t('settings'), icon: '', route: '/settings' },
   { id: 'logout', label: t('logout'), icon: '', route: '' },
 ]

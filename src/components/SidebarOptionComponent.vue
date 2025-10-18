@@ -5,20 +5,19 @@
       @click="handleClick"
   >
     <span v-if="option.icon" class="icon">{{ option.icon }}</span>
-    <span class="label">{{ t(option.label) }}</span>
+    <span class="label">{{ option.label }}</span>
   </div>
 </template>
 
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
-import type { SidebarOption as Option } from '@/types/types'
+import type { SidebarOption } from '@/types/types'
 import {useI18n} from "vue-i18n";
 
 const { t } = useI18n()
 
 const props = defineProps<{
-  option: Option
+  option: SidebarOption
   active?: boolean
 }>()
 
@@ -37,7 +36,7 @@ function handleClick() {
     display: flex;
     align-items: center;
     gap: 8px;
-    border-radius: 4px;
+    border-radius: 0px;
     transition: background-color 0.2s;
   }
 

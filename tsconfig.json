@@ -8,9 +8,16 @@
     "node_modules"
   ],
   "compilerOptions": {
-    "baseUrl": ".",
+    "target": "ESNext",              // Modern JS output
+    "module": "ESNext",              // Needed for import.meta
+    "moduleResolution": "Node",      // Node-style module resolution
+    "strict": true,                  // Enable strict type checking
+    "baseUrl": ".",                  // Allow absolute imports
     "paths": {
-      "@/*": ["src/*"]
-    }
-  }
+      "@/*": ["src/*"]               // '@' resolves to 'src/'
+    },
+    "types": ["vite/client", "node"],// Vite + Node types
+    "esModuleInterop": true,         // For default imports
+    "skipLibCheck": true             // Avoid type errors in node_modules
+  },
 }
