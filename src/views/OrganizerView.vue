@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
     <h1>{{ t('organizers') }}</h1>
-
+    <router-link to="/organizer/create">{{ t('create_organizer') }}</router-link>
     <p v-if="error" class="error">{{ error }}</p>
 
     <div v-for="organizer in organizers" :key="organizer.organizer_id" class="organizer-block">

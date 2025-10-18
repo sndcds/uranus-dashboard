@@ -5,6 +5,7 @@ import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import OrganizerView from '@/views/OrganizerView.vue'
 import SettingsView from '@/views/SettingsView.vue'
+import FormOrganizerView from '@/views/FormOrganizerView.vue'
 
 const routes = [
     {
@@ -26,6 +27,11 @@ const routes = [
                 name: 'settings',
                 component: SettingsView
             },
+            {
+                path: '/organizer/create',
+                name: 'create-organizer',
+                component: FormOrganizerView
+            }
         ],
     },
     {
