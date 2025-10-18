@@ -30,8 +30,7 @@ export async function apiFetch<T = unknown>(
     options: RequestInit = {}
 ): Promise<T> {
     const url = `${import.meta.env.VITE_API_URL}${path}`;
-
-    console.log("apiFetch(): " +  url);
+    console.log("apiFetch(): " + url);
 
     const headers = new Headers(options.headers || {});
     headers.set('Content-Type', 'application/json');
@@ -46,7 +45,6 @@ export async function apiFetch<T = unknown>(
 
     const doFetch = async (): Promise<T> => {
         const res = await fetch(url, fetchOptions);
-
 
         const contentType = res.headers.get('content-type') ?? '';
         let data: unknown = null;
@@ -91,7 +89,9 @@ export async function apiFetch<T = unknown>(
                 refreshPromise = (async () => {
                     const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/refresh`, {
                         method: 'POST',
-                        credentials: 'include',
+                        headers: {
+                            'Authorization': `Bearer ${refreshToken.value}`,
+                        },
                     });
 
                     if (!res.ok) {
@@ -99,8 +99,9 @@ export async function apiFetch<T = unknown>(
                         throw new Error('Refresh failed');
                     }
 
-                    // Wait briefly for cookies to update
-                    await new Promise((resolve) => setTimeout(resolve, 100));
+                    const data = await res.json();
+                    accessToken.value = data.access_token;
+
                     return true;
                 })();
             }
@@ -111,7 +112,7 @@ export async function apiFetch<T = unknown>(
                 refreshPromise = null;
             }
 
-            // Retry the original request
+            // Retry the original request with the new access token
             return await doFetch();
         }
 
