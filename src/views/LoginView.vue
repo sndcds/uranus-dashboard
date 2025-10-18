@@ -16,13 +16,14 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { apiFetch } from '../api.ts';
 import type { LoginResponse } from '../api.ts';
-import { accessToken } from '../store/token';
+import { useTokenStore } from '../store/token';
 
 const email = ref('');
 const password = ref('');
 const error = ref<string | null>(null);
 
 const router = useRouter();
+const tokenStore = useTokenStore();
 
 async function login() {
   console.log("login()");
@@ -38,8 +39,12 @@ async function login() {
 
     console.log(res.message);
 
-    if (res.message === 'login successful' && res.access_token) {
-      accessToken.value = res.access_token; // save token in memory
+    if (
+      res.message === 'login successful' &&
+      res.access_token &&
+      res.refresh_token
+    ) {
+      tokenStore.setTokens(res.access_token, res.refresh_token);
       router.push('/');
     } else {
       error.value = 'Invalid credentials';
