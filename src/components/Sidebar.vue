@@ -5,7 +5,7 @@
         :key="option.id"
         :option="option"
         :active="option.route === activeRoute"
-        @select="navigate(option.route)"
+        @change="$emit('change', $event)"
     />
   </aside>
 </template>
@@ -14,13 +14,12 @@
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import SidebarOption from './SidebarOption.vue'
-import type { SidebarOption as Option } from '@/types'
+import type { SidebarOption as Option } from '@/types/types'
 
 const props = defineProps<{
   options: Option[]
 }>()
 
-const router = useRouter()
 const route = useRoute()
 
 // track the currently active route
@@ -30,9 +29,4 @@ watch(route, (newRoute) => {
   activeRoute.value = newRoute.path
 })
 
-function navigate(path?: string) {
-  if (path) {
-    router.push(path)
-  }
-}
 </script>

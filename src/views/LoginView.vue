@@ -14,8 +14,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { apiFetch } from '../api.ts';
-import type { LoginResponse } from '../api.ts';
+import { apiFetch } from '../api';
+import type { LoginResponse } from '../api';
 import { useTokenStore } from '../store/token';
 
 const email = ref('');

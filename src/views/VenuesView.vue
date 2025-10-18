@@ -1,9 +1,8 @@
 <template>
   <div class="dashboard-container">
-    <h1>{{ $t('welcome') }}</h1>
+    <h1>{{ t('venues') }}</h1>
 
     <p v-if="error" class="error">{{ error }}</p>
-    <p v-else-if="!events.length">No events found</p>
 
     <div class="cards">
       <div class="card" v-for="event in events" :key="event.id">
@@ -21,6 +20,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { apiFetch } from '../api'
+import {useI18n} from "vue-i18n";
+
+const { t } = useI18n()
 
 interface EventItem {
   id: number

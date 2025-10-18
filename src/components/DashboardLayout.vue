@@ -11,20 +11,34 @@
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import Sidebar from './Sidebar.vue'
-import type { SidebarOption } from '@/types'
+import type { SidebarOption } from '@/types/types'
+import {useTokenStore} from "@/store/token";
 
 const router = useRouter()
 const { t } = useI18n()
+const tokenStore = useTokenStore();
 
 const sidebarOptions: SidebarOption[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: '', route: '/' },
+  { id: 'dashboard', label: 'dashboard', icon: '', route: '/' },
   { id: 'venues', label: t('venues'), icon: '', route: '/venues' },
   { id: 'settings', label: t('settings'), icon: '', route: '/settings' },
+  { id: 'logout', label: t('logout'), icon: '', route: '' },
 ]
 
 function onSidebarChange(id: string) {
   const option = sidebarOptions.find(o => o.id === id)
-  if (option?.route) router.push(option.route)
+  if (option) {
+    if (option.id === 'logout') {
+      logout()
+      return
+    }
+    if (option?.route) router.push(option.route)
+  }
+}
+
+function logout() {
+  tokenStore.clearTokens()
+  router.push('/login')
 }
 </script>
 

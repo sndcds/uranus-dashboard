@@ -2,25 +2,31 @@
   <div
       class="sidebar-option"
       :class="{ active: active }"
-      @click="$emit('select', option.id)"
+      @click="handleClick"
   >
     <span v-if="option.icon" class="icon">{{ option.icon }}</span>
-    <span class="label">{{ option.label }}</span>
+    <span class="label">{{ t(option.label) }}</span>
   </div>
 </template>
 
 
 <script setup lang="ts">
-  import type { SidebarOption as Option } from '@/types'
+import { defineProps, defineEmits } from 'vue'
+import type { SidebarOption as Option } from '@/types/types'
+import {useI18n} from "vue-i18n";
 
-  const props = defineProps<{
-    option: Option
-    active?: boolean
-  }>()
+const { t } = useI18n()
 
-  const emit = defineEmits<{
-    (e: 'select', id: string): void
-  }>()
+const props = defineProps<{
+  option: Option
+  active?: boolean
+}>()
+
+const emit = defineEmits<{ (e: 'change', id: string): void }>()
+
+function handleClick() {
+  emit('change', props.option.id)
+}
 </script>
 
 
