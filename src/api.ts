@@ -1,10 +1,11 @@
-import { accessToken } from './store/token'
+import { useTokenStore } from './store/token'
 
 let refreshPromise: Promise<boolean> | null = null;
 
 export interface LoginResponse {
     message: string;
     access_token?: string;
+    refresh_token?: string;
 }
 
 /**
@@ -30,21 +31,28 @@ export async function apiFetch<T = unknown>(
     options: RequestInit = {}
 ): Promise<T> {
     const url = `${import.meta.env.VITE_API_URL}${path}`;
-    console.log("apiFetch(): " + url);
-
-    const headers = new Headers(options.headers || {});
-    headers.set('Content-Type', 'application/json');
-    if (accessToken.value) {
-        headers.set('Authorization', `Bearer ${accessToken.value}`);
-    }
-
-    const fetchOptions: RequestInit = {
-        ...options,
-        headers,
-    };
+    const tokenStore = useTokenStore();
 
     const doFetch = async (): Promise<T> => {
-        const res = await fetch(url, fetchOptions);
+        const headers = new Headers(options.headers ?? undefined);
+
+        if (!headers.has('Content-Type')) {
+            headers.set('Content-Type', 'application/json');
+        }
+
+        if (tokenStore.accessToken) {
+            headers.set('Authorization', `Bearer ${tokenStore.accessToken}`);
+        } else {
+            headers.delete('Authorization');
+        }
+
+        const res = await fetch(
+            url,
+            {
+                ...options,
+                headers,
+            }
+        );
 
         const contentType = res.headers.get('content-type') ?? '';
         let data: unknown = null;
@@ -87,20 +95,38 @@ export async function apiFetch<T = unknown>(
 
             if (!refreshPromise) {
                 refreshPromise = (async () => {
+                    if (!tokenStore.refreshToken) {
+                        tokenStore.clearTokens();
+                        window.location.href = '/login';
+                        throw new Error('Missing refresh token');
+                    }
+
                     const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/refresh`, {
                         method: 'POST',
                         headers: {
-                            'Authorization': `Bearer ${refreshToken.value}`,
+                            'Authorization': `Bearer ${tokenStore.refreshToken}`,
                         },
                     });
 
                     if (!res.ok) {
+                        tokenStore.clearTokens();
                         window.location.href = '/login';
                         throw new Error('Refresh failed');
                     }
 
-                    const data = await res.json();
-                    accessToken.value = data.access_token;
+                    const data = (await res.json()) as LoginResponse;
+
+                    if (!data.access_token) {
+                        tokenStore.clearTokens();
+                        window.location.href = '/login';
+                        throw new Error('Refresh response missing access token');
+                    }
+
+                    tokenStore.setAccessToken(data.access_token);
+
+                    if (data.refresh_token) {
+                        tokenStore.setRefreshToken(data.refresh_token);
+                    }
 
                     return true;
                 })();
