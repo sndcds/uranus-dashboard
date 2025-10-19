@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard-container">
     <h1 v-if="organizer">{{ organizer.organizer_name }}</h1>
+    <router-link :to="`/organizer/${organizerId}/venue/create`">Create New Venue</router-link>
 
     <p v-if="error" class="error">{{ error }}</p>
 
@@ -8,11 +9,7 @@
       <p>{{ t('total_events') }}: {{ organizer.total_upcoming_events }}</p>
 
       <div class="cards">
-        <VenueCardComponent
-            v-for="venue in organizer.venues"
-            :key="venue.venue_id"
-            :venue="venue"
-        />
+        <VenueCardComponent v-for="venue in organizer.venues" :key="venue.venue_id" :venue="venue" />
       </div>
     </div>
 
@@ -29,6 +26,8 @@ import { apiFetch } from '@/api'
 import VenueCardComponent from '@/components/VenueCardComponent.vue'
 
 const { t } = useI18n()
+const route = useRoute()
+const organizerId = Number(route.params.id)
 
 interface Space {
   space_id: number
@@ -64,8 +63,6 @@ interface Organizer {
 
 const organizer = ref<Organizer | null>(null)
 const error = ref<string | null>(null)
-const route = useRoute()
-const organizerId = Number(route.params.id)
 
 onMounted(async () => {
   try {

@@ -21,11 +21,21 @@
 
     <div v-if="venue.spaces.length">
       <h4>Spaces</h4>
-      <ul>
-        <li v-for="space in venue.spaces" :key="space.space_id">
-          {{ space.space_name }} ({{ space.upcoming_event_count }} events)
+      <ul class="venue-space-list">
+        <li v-for="space in venue.spaces" :key="space.space_id" class="venue-space">
+          <div>{{ space.space_name }} ({{ space.upcoming_event_count }} events) </div>
+          <div class="venue-space-action">
+            <router-link :to="`/venues/${venue.venue_id}/spaces/${space.space_id}/events/new`"
+              v-if="venue.can_add_event">Add Event</router-link>
+            <router-link :to="`/venues/${venue.venue_id}/spaces/${space.space_id}/edit`"
+              v-if="venue.can_edit_space">Edit</router-link>
+            <router-link :to="`/venues/${venue.venue_id}/spaces/${space.space_id}/delete`"
+              v-if="venue.can_delete_space">Delete</router-link>
+          </div>
         </li>
       </ul>
+
+      <router-link :to="`/venues/${venue.venue_id}/spaces/new`" v-if="venue.can_add_space" class="new-venue-space">Add New Space</router-link>
     </div>
   </div>
 </template>
@@ -60,7 +70,50 @@ defineProps<{
 </script>
 
 <style scoped lang="scss">
+.new-venue-space {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 6px 12px;
+  background-color: seagreen;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: mediumseagreen;
+  }
+}
+ul.venue-space-list {
+  margin: 0;
+  padding: 0;
+
+  li {
+    margin-bottom: 18px;
+  }
+}
+
+.venue-space {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 6px;
+
+  .venue-space-action>a {
+    background-color: cornflowerblue;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-left: 8px;
+
+    &:hover {
+      background-color: royalblue;
+    }
+  }
+}
+
 .venue-card {
+  width: 33.33%;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 12px;
@@ -74,7 +127,7 @@ defineProps<{
     margin: 12px 0 4px;
   }
 
-  ul {
+  .permissions>ul {
     margin: 0;
     padding-left: 20px;
     list-style: disc;

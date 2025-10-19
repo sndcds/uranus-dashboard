@@ -8,6 +8,7 @@ import SettingsView from '@/views/SettingsView.vue'
 import FormOrganizerView from '@/views/FormOrganizerView.vue'
 import OrganizerVenueView from '@/views/OrganizerVenueView.vue'
 import SignupView from '@/views/SignupView.vue'
+import FormVenueView from '@/views/FormVenueView.vue'
 
 const routes = [
     {
@@ -38,6 +39,11 @@ const routes = [
                 path: '/organizer/:id',
                 name: 'organizer',
                 component: OrganizerVenueView
+            },
+            {
+                path: '/organizer/:id/venue/create',
+                name: 'create-venue',
+                component: FormVenueView
             }
         ],
     },
