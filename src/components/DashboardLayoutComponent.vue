@@ -8,6 +8,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import SidebarComponent from './SidebarComponent.vue'
@@ -16,17 +17,17 @@ import {useTokenStore} from "@/store/token";
 
 const router = useRouter()
 const { t } = useI18n()
-const tokenStore = useTokenStore();
+const tokenStore = useTokenStore()
 
-const sidebarOptions: SidebarOption[] = [
+const sidebarOptions = computed<SidebarOption[]>(() => [
   { id: 'dashboard', label: t('dashboard'), icon: '', route: '/' },
   { id: 'organizers', label: t('organizers'), icon: '', route: '/organizers' },
   { id: 'settings', label: t('settings'), icon: '', route: '/settings' },
   { id: 'logout', label: t('logout'), icon: '', route: '' },
-]
+])
 
 function onSidebarChange(id: string) {
-  const option = sidebarOptions.find(o => o.id === id)
+  const option = sidebarOptions.value.find(o => o.id === id)
   if (option) {
     if (option.id === 'logout') {
       logout()

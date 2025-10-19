@@ -1,11 +1,13 @@
 // src/i18n/index.js
 import { createI18n } from 'vue-i18n'
+import { watch } from 'vue'
 
 // Define messages for different locales
 const messages = {
     de: {
         logout: 'Abmelden',
         settings: 'Einstellungen',
+        selectLanguage: 'Sprache wählen',
         welcome: 'Willkommen',
         goodbye: 'Auf Wiedersehen',
         dashboard: 'Übersicht',
@@ -58,10 +60,12 @@ const messages = {
         space_type: 'Bereichstyp',
         save_space: 'Bereich speichern',
         saving: 'Speichern…',
+        settings_subtitle: 'Passe Sprache und Ansicht deiner Plattform an.',
     },
     en: {
         logout: 'Logout',
         settings: 'Settings',
+        selectLanguage: 'Select language',
         welcome: 'Welcome',
         goodbye: 'Goodbye',
         dashboard: 'Dashboard',
@@ -114,10 +118,12 @@ const messages = {
         space_type: 'Space type',
         save_space: 'Save space',
         saving: 'Saving…',
+        settings_subtitle: 'Tune the language and look of your workspace.',
     },
     da: {
         logout: 'Afmeld',
         settings: 'Indstillinger',
+        selectLanguage: 'Vælg sprog',
         welcome: 'velkommen',
         goodbye: 'farvel',
         organizers: 'Organisationer',
@@ -170,15 +176,31 @@ const messages = {
         space_type: 'Områdetype',
         save_space: 'Gem område',
         saving: 'Gemmer…',
+        settings_subtitle: 'Tilpas sprog og udseende for din platform.',
     },
 }
+
+const storedLocale = typeof window !== 'undefined' ? window.localStorage.getItem('app-locale') : null
+const initialLocale = storedLocale && storedLocale in messages ? storedLocale : 'de'
 
 // Create the i18n instance
 const i18n = createI18n({
     legacy: false, // use Composition API
-    locale: 'de',  // default locale
+    locale: initialLocale,  // default locale
     fallbackLocale: 'en',
     messages,
 })
+
+if (typeof window !== 'undefined') {
+    watch(
+        () => i18n.global.locale.value,
+        (newLocale) => {
+            if (newLocale) {
+                window.localStorage.setItem('app-locale', newLocale)
+            }
+        },
+        { immediate: true }
+    )
+}
 
 export default i18n
