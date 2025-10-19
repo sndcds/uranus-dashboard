@@ -9,7 +9,7 @@
       <p>{{ t('total_events') }}: {{ organizer.total_upcoming_events }}</p>
 
       <div class="cards">
-        <VenueCardComponent v-for="venue in organizer.venues" :key="venue.venue_id" :venue="venue" />
+        <VenueCardComponent v-for="venue in organizer.venues" :key="venue.venue_id" :venue="venue" :organizerId="organizerId" />
       </div>
     </div>
 

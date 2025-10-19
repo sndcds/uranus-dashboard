@@ -34,13 +34,22 @@
           </div>
         </li>
       </ul>
-
-      <router-link :to="`/venues/${venue.venue_id}/spaces/new`" v-if="venue.can_add_space" class="new-venue-space">Add New Space</router-link>
     </div>
+    <router-link :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`" v-if="venue.can_add_space" class="new-venue-space">Add New
+      Space</router-link>
+
   </div>
 </template>
 
 <script setup lang="ts">
+
+import { defineProps } from 'vue'
+
+defineProps<{
+  venue: Venue
+  organizerId: number
+}>()
+
 interface Space {
   space_id: number
   space_name: string
@@ -63,10 +72,6 @@ interface Venue {
   can_delete_event?: boolean
   can_release_event?: boolean
 }
-
-defineProps<{
-  venue: Venue
-}>()
 </script>
 
 <style scoped lang="scss">
@@ -83,6 +88,7 @@ defineProps<{
     background-color: mediumseagreen;
   }
 }
+
 ul.venue-space-list {
   margin: 0;
   padding: 0;
