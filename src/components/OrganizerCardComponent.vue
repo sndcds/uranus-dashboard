@@ -1,21 +1,20 @@
 <template>
   <div class="organizer-card">
-    <h2>{{ venue.venue_name }}</h2>
-    <p><strong>ID:</strong> {{ venue.venue_id }}</p>
-    <p>
-      <strong>Permissions:</strong>
-      {{ venue.can_edit ? 'Edit' : '-' }},
-      {{ venue.can_delete_venue ? 'Delete' : '-' }}
-    </p>
-    <p><strong>Upcoming Events:</strong> {{ venue.upcoming_event_count }}</p>
+    <h2>{{ organizer.organizer_name }}</h2>
+    <p><strong>Total Upcoming Events:</strong> {{ organizer.total_upcoming_events }}</p>
 
-    <div v-if="venue.spaces.length" class="spaces">
-      <h3>Spaces</h3>
+    <div v-if="organizer.venues.length" class="venues">
+      <h3>Venues</h3>
       <ul>
-        <li v-for="space in venue.spaces" :key="space.space_id">
-          {{ space.space_name }} (Upcoming Events: {{ space.upcoming_event_count }})
+        <li v-for="venue in organizer.venues" :key="venue.venue_id">
+          <strong>{{ venue.venue_name }}</strong>
+          <span> — {{ venue.spaces.length }} spaces</span>,
+          <span> {{ venue.upcoming_event_count }} events</span>
         </li>
       </ul>
+    </div>
+    <div v-else>
+      <em>No venues found</em>
     </div>
   </div>
 </template>
@@ -30,23 +29,18 @@ interface Space {
 interface Venue {
   venue_id: number
   venue_name: string
-  can_edit: boolean
-  can_edit_venue: boolean
-  can_delete_venue: boolean
-  can_add_space: boolean
-  can_edit_space: boolean
-  can_delete_space: boolean
-  can_add_event: boolean
-  can_edit_event: boolean
-  can_delete_event: boolean
-  can_release_event: boolean
   upcoming_event_count: number
   spaces: Space[]
 }
 
-defineProps<{
-  venue: Venue
-}>()
+interface Organizer {
+  organizer_id: number
+  organizer_name: string
+  total_upcoming_events: number
+  venues: Venue[]
+}
+
+defineProps<{ organizer: Organizer }>()
 </script>
 
 <style scoped lang="scss">
@@ -54,8 +48,8 @@ defineProps<{
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 16px;
-  transition: border 0.2s, box-shadow 0.2s;
   background-color: #fafafa;
+  transition: border-color 0.2s, box-shadow 0.2s;
 
   &:hover {
     border-color: #aaa;
@@ -63,26 +57,23 @@ defineProps<{
   }
 
   h2 {
-    margin: 0 0 8px 0;
-    font-size: 1.2rem;
+    margin: 0 0 8px;
+    font-size: 1.3rem;
   }
 
-  .spaces {
-    margin-top: 12px;
+  h3 {
+    margin: 12px 0 4px;
+    font-size: 1.1rem;
+  }
 
-    h3 {
-      margin: 0 0 4px 0;
-      font-size: 1rem;
-    }
+  ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
 
-    ul {
-      padding-left: 20px;
-      margin: 0;
-
-      li {
-        font-size: 0.95rem;
-        margin-bottom: 2px;
-      }
+    li {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
     }
   }
 }

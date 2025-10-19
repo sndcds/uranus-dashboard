@@ -2,17 +2,15 @@
   <div class="dashboard-container">
     <h1>{{ t('organizers') }}</h1>
     <router-link to="/organizer/create">{{ t('create_organizer') }}</router-link>
+
     <p v-if="error" class="error">{{ error }}</p>
 
-    <div v-for="organizer in organizers" :key="organizer.organizer_id" class="organizer-block">
-      <h2>{{ organizer.organizer_name }}</h2>
-      <div class="cards">
-        <OrganizerCardComponent
-            v-for="venue in organizer.venues"
-            :key="venue.venue_id"
-            :venue="venue"
-        />
-      </div>
+    <div class="cards">
+      <OrganizerCardComponent
+          v-for="organizer in organizers"
+          :key="organizer.organizer_id"
+          :organizer="organizer"
+      />
     </div>
 
     <pre>{{ organizers }}</pre>
@@ -36,16 +34,6 @@ interface Space {
 interface Venue {
   venue_id: number
   venue_name: string
-  can_edit: boolean
-  can_edit_venue: boolean
-  can_delete_venue: boolean
-  can_add_space: boolean
-  can_edit_space: boolean
-  can_delete_space: boolean
-  can_add_event: boolean
-  can_edit_event: boolean
-  can_delete_event: boolean
-  can_release_event: boolean
   upcoming_event_count: number
   spaces: Space[]
 }
@@ -53,8 +41,6 @@ interface Venue {
 interface Organizer {
   organizer_id: number
   organizer_name: string
-  can_edit_organizer: boolean
-  can_delete_organizer: boolean
   total_upcoming_events: number
   venues: Venue[]
 }
@@ -92,10 +78,6 @@ onMounted(async () => {
 .cards {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
-
-.organizer-block {
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 </style>

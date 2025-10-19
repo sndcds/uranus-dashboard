@@ -3,7 +3,7 @@ import DashboardLayoutComponent from '@/components/DashboardLayoutComponent.vue'
 import AuthLayoutComponent from '@/components/AuthLayoutComponent.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
-import OrganizerView from '@/views/OrganizerView.vue'
+import OrganizerDashboardView from '@/views/OrganizerDashboardView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import FormOrganizerView from '@/views/FormOrganizerView.vue'
 
@@ -20,7 +20,7 @@ const routes = [
             {
                 path: '/venues',
                 name: 'venues',
-                component: OrganizerView
+                component: OrganizerDashboardView
             },
             {
                 path: '/settings',
