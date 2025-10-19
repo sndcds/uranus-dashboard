@@ -119,7 +119,6 @@ ul.venue-space-list {
 }
 
 .venue-card {
-  width: 33.33%;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 12px;

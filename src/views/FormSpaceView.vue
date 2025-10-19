@@ -14,11 +14,13 @@
                     </div>
                     <div class="form-group">
                         <label for="total_capacity">{{ t('space_total_capacity') }}</label>
-                        <input v-model.number="space.total_capacity" id="total_capacity" type="number" min="0" required />
+                        <input v-model.number="space.total_capacity" id="total_capacity" type="number" min="0"
+                            required />
                     </div>
                     <div class="form-group">
                         <label for="seating_capacity">{{ t('space_seating_capacity') }}</label>
-                        <input v-model.number="space.seating_capacity" id="seating_capacity" type="number" min="0" required />
+                        <input v-model.number="space.seating_capacity" id="seating_capacity" type="number" min="0"
+                            required />
                     </div>
                     <div class="form-group">
                         <label for="building_level">{{ t('space_building_level') }}</label>
@@ -26,7 +28,14 @@
                     </div>
                     <div class="form-group">
                         <label for="space_type_id">{{ t('space_type') }}</label>
-                        <input v-model.number="space.space_type_id" id="space_type_id" type="number" min="0" required />
+                        <select v-model.number="space.space_type_id" id="space_type_id" required>
+                            <option :value="null" disabled>
+                                {{ t('select_space_type') }}
+                            </option>
+                            <option v-for="type in spaceTypes" :key="type.id" :value="type.id">
+                                {{ type.name }}
+                            </option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="website_url">{{ t('website') }}</label>
@@ -50,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { onMounted, computed, reactive, ref } from 'vue'
 import { apiFetch } from '../api'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -65,22 +74,63 @@ const space = reactive({
     total_capacity: 0,
     seating_capacity: 0,
     building_level: 0,
-    space_type_id: 0,
+    space_type_id: null as number | null,
     website_url: ''
 })
+
+const spaceTypes = ref<Array<{ id: number; name: string }>>([])
 
 const isSubmitting = ref(false)
 const errorMessage = ref<string | null>(null)
 const title = computed(() => (te('space_details_title') ? t('space_details_title') : 'Space Details'))
 const subtitle = computed(() => (te('space_details_subtitle') ? t('space_details_subtitle') : 'Add or update key information for your venue space.'))
 
+
+onMounted(() => {
+    fetchSpaceTypes()
+})
+
+async function fetchSpaceTypes() {
+    try {
+        const { data, status } = await apiFetch<Array<{ id: number; name: string }> | { space_types?: Array<{ id: number; name: string }> }>('/api/space/types', {
+            method: 'GET',
+        })
+
+        if (status >= 200 && status < 300) {
+            let types: Array<{ id: number; name: string }> | undefined
+
+            if (Array.isArray(data)) {
+                types = data
+            } else if (data && typeof data === 'object' && 'space_types' in data && Array.isArray(data.space_types)) {
+                types = data.space_types
+            }
+
+            if (types) {
+                spaceTypes.value = types
+                return
+            }
+        }
+
+        console.error(`Failed to fetch space types (status ${status}).`)
+    } catch (error) {
+        console.error('Error fetching space types:', error)
+    }
+}
+
 async function submitForm() {
-    const payload: Space = {
+    const spaceTypeId = space.space_type_id
+
+    if (spaceTypeId === null) {
+        errorMessage.value = t('select_space_type_error')
+        return
+    }
+
+    const payload: SpacePayload = {
         name: space.name,
         total_capacity: space.total_capacity,
         seating_capacity: space.seating_capacity,
         building_level: space.building_level,
-        space_type_id: space.space_type_id,
+        space_type_id: spaceTypeId,
         website_url: space.website_url,
         venue_id: venueId
     }
@@ -121,10 +171,12 @@ interface Space {
     total_capacity: number
     seating_capacity: number
     building_level: number
-    space_type_id: number
+    space_type_id: number | null
     website_url: string
     venue_id: number
 }
+
+type SpacePayload = Omit<Space, 'space_type_id'> & { space_type_id: number }
 </script>
 
 <style scoped lang="scss">
@@ -209,6 +261,28 @@ interface Space {
             border-color: rgba(91, 103, 255, 0.65);
             box-shadow: 0 0 0 4px rgba(91, 103, 255, 0.15);
             background-color: #fff;
+        }
+    }
+
+    select {
+        padding: 0.75rem 1.1rem;
+        border: 1px solid rgba(17, 24, 39, 0.1);
+        border-radius: 12px;
+        background:
+            linear-gradient(180deg, rgba(243, 244, 246, 0.9), rgba(229, 231, 235, 0.65)),
+            url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%2363748B'/%3E%3C/svg%3E") no-repeat right 0.85rem center/0.9rem;
+        color: #111827;
+        font-size: 1rem;
+        appearance: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+
+        &:focus {
+            outline: none;
+            border-color: rgba(91, 103, 255, 0.65);
+            box-shadow: 0 0 0 4px rgba(91, 103, 255, 0.15);
+            background:
+                linear-gradient(180deg, #ffffff, rgba(229, 231, 235, 0.65)),
+                url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%234856FF'/%3E%3C/svg%3E") no-repeat right 0.85rem center/0.9rem;
         }
     }
 }
