@@ -20,7 +20,7 @@ const tokenStore = useTokenStore();
 
 const sidebarOptions: SidebarOption[] = [
   { id: 'dashboard', label: t('dashboard'), icon: '', route: '/' },
-  { id: 'organizers', label: t('organizers'), icon: '', route: '/venues' },
+  { id: 'organizers', label: t('organizers'), icon: '', route: '/organizers' },
   { id: 'settings', label: t('settings'), icon: '', route: '/settings' },
   { id: 'logout', label: t('logout'), icon: '', route: '' },
 ]

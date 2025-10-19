@@ -16,6 +16,7 @@
     <div v-else>
       <em>No venues found</em>
     </div>
+    <router-link :to="`/organizer/${organizer.organizer_id}`" class="organizer-detail">View Details</router-link>
   </div>
 </template>
 
@@ -44,6 +45,18 @@ defineProps<{ organizer: Organizer }>()
 </script>
 
 <style scoped lang="scss">
+.organizer-detail {
+  display: inline-block;
+  margin-top: 12px;
+  color: #fff;
+  text-decoration: none;
+  background-color: #666;
+  padding: 6px 12px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
 .organizer-card {
   border: 1px solid #ddd;
   border-radius: 8px;

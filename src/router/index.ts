@@ -6,6 +6,8 @@ import LoginView from '@/views/LoginView.vue'
 import OrganizerDashboardView from '@/views/OrganizerDashboardView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import FormOrganizerView from '@/views/FormOrganizerView.vue'
+import OrganizerView from '@/views/OrganizerView.vue'
+import SignupView from '@/views/SignupView.vue'
 
 const routes = [
     {
@@ -18,8 +20,8 @@ const routes = [
                 component: DashboardView
             },
             {
-                path: '/venues',
-                name: 'venues',
+                path: '/organizers',
+                name: 'organizers',
                 component: OrganizerDashboardView
             },
             {
@@ -31,6 +33,11 @@ const routes = [
                 path: '/organizer/create',
                 name: 'create-organizer',
                 component: FormOrganizerView
+            },
+            {
+                path: '/organizer/:id',
+                name: 'organizer',
+                component: OrganizerView
             }
         ],
     },
@@ -43,6 +50,11 @@ const routes = [
                 name: 'login',
                 component: LoginView
             },
+            {
+                path: '/signup',
+                name: 'signup',
+                component: SignupView
+            }
         ],
     },
 ]
