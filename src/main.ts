@@ -4,10 +4,7 @@ import PrimeVue from 'primevue/config';
 import { createPinia } from 'pinia'
 import i18n from './i18n' // import the i18n instance
 
-import Button from "primevue/button"
-import DatePicker from 'primevue/datepicker';
-import ColorPicker from 'primevue/colorpicker';
-import Editor from 'primevue/editor';
+
 import router from './router'
 
 const app = createApp(App);

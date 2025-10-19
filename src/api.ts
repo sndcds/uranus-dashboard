@@ -11,7 +11,6 @@ export interface LoginResponse {
 export interface ApiResponse<T> {
     data: T;
     status: number;
-    headers: Headers;
 }
 
 /**
@@ -89,7 +88,6 @@ export async function apiFetch<T = unknown>(
         return {
             data: data as T,
             status: res.status,
-            headers: new Headers(res.headers),
         };
     };
 

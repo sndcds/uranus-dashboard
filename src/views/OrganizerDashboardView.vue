@@ -48,7 +48,7 @@ const error = ref<string | null>(null)
 
 onMounted(async () => {
   try {
-    const { data } = await apiFetch<Organizer[]>('/api/user?mode=organizer-dashboard&start=2000-01-01')
+    const { data } = await apiFetch<Organizer[]>('/api/admin/organizer/dashboard?start=2000-01-01') // Todo: start should be Now
     organizers.value = data || []
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {

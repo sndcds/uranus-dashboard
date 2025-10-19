@@ -6,7 +6,7 @@ import LoginView from '@/views/LoginView.vue'
 import OrganizerDashboardView from '@/views/OrganizerDashboardView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import FormOrganizerView from '@/views/FormOrganizerView.vue'
-import OrganizerView from '@/views/OrganizerView.vue'
+import OrganizerVenueView from '@/views/OrganizerVenueView.vue'
 import SignupView from '@/views/SignupView.vue'
 
 const routes = [
@@ -37,7 +37,7 @@ const routes = [
             {
                 path: '/organizer/:id',
                 name: 'organizer',
-                component: OrganizerView
+                component: OrganizerVenueView
             }
         ],
     },
