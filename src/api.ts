@@ -8,6 +8,12 @@ export interface LoginResponse {
     refresh_token?: string;
 }
 
+export interface ApiResponse<T> {
+    data: T;
+    status: number;
+    headers: Headers;
+}
+
 /**
  * Custom Error type that includes HTTP status and response data
  */
@@ -29,11 +35,11 @@ class ApiError extends Error {
 export async function apiFetch<T = unknown>(
     path: string,
     options: RequestInit = {}
-): Promise<T> {
+): Promise<ApiResponse<T>> {
     const url = `${import.meta.env.VITE_API_URL}${path}`;
     const tokenStore = useTokenStore();
 
-    const doFetch = async (): Promise<T> => {
+    const doFetch = async (): Promise<ApiResponse<T>> => {
         const headers = new Headers(options.headers ?? undefined);
 
         if (!headers.has('Content-Type')) {
@@ -80,7 +86,11 @@ export async function apiFetch<T = unknown>(
             throw new ApiError(message, res.status, data);
         }
 
-        return data as T;
+        return {
+            data: data as T,
+            status: res.status,
+            headers: new Headers(res.headers),
+        };
     };
 
     try {

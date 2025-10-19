@@ -121,11 +121,15 @@ const submitForm = async () => {
             payload.longitude = location.value.lng
         }
 
-        await apiFetch('/api/admin/organizer/create', {
+        const { status } = await apiFetch('/api/admin/organizer/create', {
             method: 'POST',
             body: JSON.stringify(payload),
         })
-        success.value = t('organizer_created')
+        if (status >= 200 && status < 300) {
+            success.value = t('organizer_created')
+        } else {
+            throw new Error('Unexpected status code')
+        }
     } catch (err: unknown) {
         success.value = null
         if (typeof err === 'object' && err && 'data' in err) {

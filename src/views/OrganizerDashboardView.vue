@@ -1,16 +1,14 @@
 <template>
   <div class="dashboard-container">
     <h1>{{ t('organizers') }}</h1>
+    <p v-if="!organizers.length">{{ t('no_organizers_help') }}</p>
+
     <router-link to="/organizer/create">{{ t('create_organizer') }}</router-link>
 
     <p v-if="error" class="error">{{ error }}</p>
 
     <div class="cards">
-      <OrganizerCardComponent
-          v-for="organizer in organizers"
-          :key="organizer.organizer_id"
-          :organizer="organizer"
-      />
+      <OrganizerCardComponent v-for="organizer in organizers" :key="organizer.organizer_id" :organizer="organizer" />
     </div>
 
     <pre>{{ organizers }}</pre>
@@ -50,7 +48,7 @@ const error = ref<string | null>(null)
 
 onMounted(async () => {
   try {
-    const data = await apiFetch<Organizer[]>('/api/user?mode=organizer-dashboard&start=2000-01-01')
+    const { data } = await apiFetch<Organizer[]>('/api/user?mode=organizer-dashboard&start=2000-01-01')
     organizers.value = data || []
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {

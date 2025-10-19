@@ -18,6 +18,7 @@ const messages = {
         organizer_created: 'Organisation erfolgreich erstellt',
         unknown_error: 'Unbekannter Fehler',
         organizer_name: 'Organisationsname',
+        no_organizers_help: 'Klicke auf "Organisation erstellen", um loszulegen.',
         street: 'Straße',
         house_number: 'Hausnummer',
         postal_code: 'Postleitzahl',
@@ -27,7 +28,7 @@ const messages = {
         password: 'Passwort',
         website: 'Website',
         repeat_email: 'E-Mail wiederholen',
-        email_placeholder: 'name@beispiel.de',
+        email_placeholder: 'name\u0040beispiel.de',
         repeat_email_placeholder: 'Bestätige deine E-Mail-Adresse',
         password_placeholder: 'Mindestens 8 Zeichen',
         signup_subtitle: 'Lege jetzt dein Konto an und verwalte deine Veranstaltungen zentral.',
@@ -60,6 +61,7 @@ const messages = {
         organizer_created: 'Organizer created successfully',
         unknown_error: 'Unknown error',
         organizer_name: 'Organization Name',
+        no_organizers_help: 'Click on "Create Organizer" to get started.',
         street: 'Street',
         house_number: 'House Number',
         postal_code: 'Postal Code',
@@ -69,7 +71,7 @@ const messages = {
         password: 'Password',
         website: 'Website',
         repeat_email: 'Repeat email',
-        email_placeholder: 'name@example.com',
+        email_placeholder: 'name\u0040example.com',
         repeat_email_placeholder: 'Confirm your email address',
         password_placeholder: 'At least 8 characters',
         signup_subtitle: 'Create your account and start organizing events effortlessly.',
@@ -102,6 +104,7 @@ const messages = {
         organizer_created: 'Organisation oprettet',
         unknown_error: 'Ukendt fejl',
         organizer_name: 'Organisationsnavn',
+        no_organizers_help: 'Klik på "Opret organisation" for at komme i gang.',
         street: 'Gade',
         house_number: 'Husnummer',
         postal_code: 'Postnummer',
@@ -111,7 +114,7 @@ const messages = {
         password: 'Adgangskode',
         website: 'Websted',
         repeat_email: 'Gentag e-mail',
-        email_placeholder: 'navn@eksempel.dk',
+        email_placeholder: 'navn\u0040eksempel.dk',
         repeat_email_placeholder: 'Bekræft din e-mailadresse',
         password_placeholder: 'Mindst 8 tegn',
         signup_subtitle: 'Opret din konto og kom i gang med at arrangere events.',
@@ -136,7 +139,7 @@ const i18n = createI18n({
     legacy: false, // use Composition API
     locale: 'de',  // default locale
     fallbackLocale: 'en',
-    messages
+    messages,
 })
 
 export default i18n

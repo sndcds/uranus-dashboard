@@ -71,7 +71,7 @@ const login = async () => {
     isSubmitting.value = true
 
     try {
-        const res = await apiFetch<LoginResponse>('/api/admin/login', {
+        const { data, status } = await apiFetch<LoginResponse>('/api/admin/login', {
             method: 'POST',
             body: JSON.stringify({
                 email: email.value.trim(),
@@ -79,8 +79,8 @@ const login = async () => {
             }),
         })
 
-        if (res.message === 'login successful' && res.access_token && res.refresh_token) {
-            tokenStore.setTokens(res.access_token, res.refresh_token)
+        if (status === 200 && data.message === 'login successful' && data.access_token && data.refresh_token) {
+            tokenStore.setTokens(data.access_token, data.refresh_token)
             router.push('/')
         } else {
             error.value = te('invalid_credentials') ? t('invalid_credentials') : 'Invalid credentials'

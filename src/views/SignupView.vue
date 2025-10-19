@@ -93,20 +93,21 @@ const signup = async () => {
     isSubmitting.value = true
 
     try {
-        const res = (await apiFetch('/api/admin/signup', {
+        const { data, status } = await apiFetch<SignupResponse | null>('/api/admin/signup', {
             method: 'POST',
             body: JSON.stringify({
                 email: email.value.trim(),
                 password: password.value,
             }),
-        })) as SignupResponse
+        })
 
-        if (res.message === 'signup successful') {
-            resetForm()
-            router.push('/login')
-        } else {
+        if (status !== 201) {
             error.value = te('signup_failed') ? t('signup_failed') : 'Signup failed'
+            return
         }
+
+        resetForm()
+        router.push('/login')
     } catch (err: unknown) {
         if (typeof err === 'object' && err && 'data' in err) {
             const e = err as { data?: { error?: string } }
