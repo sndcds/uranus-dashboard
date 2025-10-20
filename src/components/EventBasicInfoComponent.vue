@@ -11,25 +11,15 @@
                     {{ t('event_title_label') }}
                     <span class="required">*</span>
                 </label>
-                <input
-                    id="event-title"
-                    v-model="basicInfo.title"
-                    type="text"
-                    :placeholder="t('event_title_placeholder')"
-                    autocomplete="off"
-                />
+                <input id="event-title" v-model="basicInfo.title" type="text"
+                    :placeholder="t('event_title_placeholder')" autocomplete="off" />
                 <p v-if="errors.title" class="field-error">{{ errors.title }}</p>
             </div>
 
             <div class="form-field">
                 <label for="event-subtitle">{{ t('event_subtitle_label') }}</label>
-                <input
-                    id="event-subtitle"
-                    v-model="basicInfo.subtitle"
-                    type="text"
-                    :placeholder="t('event_subtitle_placeholder')"
-                    autocomplete="off"
-                />
+                <input id="event-subtitle" v-model="basicInfo.subtitle" type="text"
+                    :placeholder="t('event_subtitle_placeholder')" autocomplete="off" />
             </div>
 
             <div class="event-section__grid">
@@ -67,20 +57,16 @@
                         </option>
                     </select>
                 </div>
-
-                <div class="form-field">
-                    <label for="event-type">
-                        {{ t('event_type_label') }}<span class="required">*</span>
-                    </label>
-                    <select id="event-type" v-model="basicInfo.eventTypeId">
-                        <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                        <option v-for="type in eventTypes" :key="type.id" :value="type.id">
-                            {{ type.name }}
-                        </option>
-                    </select>
-                    <p v-if="errors.eventTypeId" class="field-error">{{ errors.eventTypeId }}</p>
-                </div>
-
+            </div>
+            <div class="form-field">
+                <label for="event-type">
+                    {{ t('event_type_label') }}<span class="required">*</span>
+                </label>
+                <TagListComponent :options="eventTypes" :model-value="basicInfo.eventTypeIds"
+                    :placeholder="t('event_type_placeholder')" @update:modelValue="updateEventTypes" />
+                <p v-if="errors.eventTypeIds" class="field-error">{{ errors.eventTypeIds }}</p>
+            </div>
+            <div>
                 <div class="form-field">
                     <label for="genre">{{ t('event_genre_label') }}</label>
                     <select id="genre" v-model="basicInfo.genreId">
@@ -99,6 +85,7 @@
 import { reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+import TagListComponent from '@/components/TagListComponent.vue'
 
 const props = defineProps<{
     organizerId: number | null
@@ -122,7 +109,7 @@ interface BasicInfoModel {
     organizerId: number | null
     venueId: number | null
     spaceId: number | null
-    eventTypeId: number | null
+    eventTypeIds: number[]
     genreId: number | null
 }
 
@@ -132,7 +119,7 @@ const emptyBasicInfo = (): BasicInfoModel => ({
     organizerId: null,
     venueId: null,
     spaceId: null,
-    eventTypeId: null,
+    eventTypeIds: [],
     genreId: null,
 })
 
@@ -143,14 +130,14 @@ const organizers = ref<SelectOption[]>([])
 const spaces = ref<SelectOption[]>([])
 const eventTypes = ref<SelectOption[]>([])
 const genres = ref<SelectOption[]>([])
-const errors = reactive<Record<keyof BasicInfoModel | 'title', string | null>>({
-    title: null,
-    subtitle: null,
-    organizerId: null,
-    venueId: null,
-    spaceId: null,
-    eventTypeId: null,
-    genreId: null,
+const errors = reactive({
+    title: null as string | null,
+    subtitle: null as string | null,
+    organizerId: null as string | null,
+    venueId: null as string | null,
+    spaceId: null as string | null,
+    eventTypeIds: null as string | null,
+    genreId: null as string | null,
 })
 
 watch(
@@ -174,12 +161,15 @@ watch(
     async (id) => {
         await fetchOrganizers(id ?? null)
         await fetchVenues(id ?? null)
-        await fetchSpaces(id ?? null)
-        await fetchEventTypes(id ?? null)
+        await fetchEventTypes()
         await fetchGenres(id ?? null)
     },
     { immediate: true }
 )
+
+const updateEventTypes = (value: number[]) => {
+    basicInfo.eventTypeIds = Array.isArray(value) ? [...value] : []
+}
 
 async function fetchOrganizers(contextId: number | null) {
     if (!contextId) {
@@ -205,6 +195,13 @@ async function fetchOrganizers(contextId: number | null) {
     }
 }
 
+watch(
+    () => basicInfo.venueId,
+    async (venueId) => {
+        await fetchSpaces(venueId)
+    }
+)
+
 async function fetchVenues(contextId: number | null) {
     try {
         const { data } = await apiFetch<SelectOption[]>(`/api/choosable-venues/organizer/${contextId}`)
@@ -217,21 +214,42 @@ async function fetchVenues(contextId: number | null) {
 
 async function fetchSpaces(contextId: number | null) {
     try {
-        const { data } = await apiFetch<SelectOption[]>(`/api/choosable-spaces/organizer/${contextId}`)
+        const { data } = await apiFetch<SelectOption[]>(`/api/choosable-spaces/venue/${contextId}`)
         spaces.value = Array.isArray(data) ? data : []
+
+        if (!spaces.value.find((space) => space.id === basicInfo.spaceId)) {
+            basicInfo.spaceId = null
+        }
     } catch (error) {
         console.error('Failed to load spaces', error)
         spaces.value = []
+        basicInfo.spaceId = null
     }
 }
 
-async function fetchEventTypes(contextId: number | null) {
+async function fetchEventTypes() {
     try {
-        const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-types/organizer/${contextId}`)
-        eventTypes.value = Array.isArray(data) ? data : []
+        const { data } = await apiFetch<Array<{ type_id: number; name: string }>>(
+            '/api/choosable-event-types'
+        )
+
+        const mapped = Array.isArray(data)
+            ? data.map((item) => ({ id: item.type_id, name: item.name }))
+            : []
+
+        const seen = new Set<number>()
+        eventTypes.value = mapped.filter((option) => {
+            if (seen.has(option.id)) return false
+            seen.add(option.id)
+            return true
+        })
+
+        const validIds = new Set(eventTypes.value.map((option) => option.id))
+        basicInfo.eventTypeIds = basicInfo.eventTypeIds.filter((id) => validIds.has(id))
     } catch (error) {
         console.error('Failed to load event types', error)
         eventTypes.value = []
+        basicInfo.eventTypeIds = []
     }
 }
 
@@ -248,7 +266,7 @@ async function fetchGenres(contextId: number | null) {
 const validate = () => {
     errors.title = basicInfo.title.trim() ? null : t('event_error_required')
     errors.organizerId = basicInfo.organizerId ? null : t('event_error_required')
-    errors.eventTypeId = basicInfo.eventTypeId ? null : t('event_error_required_optional')
+    errors.eventTypeIds = basicInfo.eventTypeIds.length ? null : t('event_error_required_optional')
     errors.venueId = basicInfo.venueId ? null : t('event_error_required_optional')
 
     return Object.values(errors).every((msg) => !msg)
@@ -259,7 +277,7 @@ watch(
     () => {
         if (errors.title && basicInfo.title.trim()) errors.title = null
         if (errors.organizerId && basicInfo.organizerId) errors.organizerId = null
-        if (errors.eventTypeId && basicInfo.eventTypeId) errors.eventTypeId = null
+        if (errors.eventTypeIds && basicInfo.eventTypeIds.length) errors.eventTypeIds = null
         if (errors.venueId && basicInfo.venueId) errors.venueId = null
     },
     { deep: true }
@@ -353,15 +371,13 @@ defineExpose({ validate })
         padding-right: 2.4rem;
         background:
             linear-gradient(180deg, rgba(243, 244, 246, 0.9), rgba(229, 231, 235, 0.65)),
-            url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%2363748B'/%3E%3C/svg%3E")
-                no-repeat right 0.85rem center/0.9rem;
+            url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%2363748B'/%3E%3C/svg%3E") no-repeat right 0.85rem center/0.9rem;
         appearance: none;
 
         &:focus {
             background:
                 linear-gradient(180deg, #ffffff, rgba(229, 231, 235, 0.65)),
-                url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%234856FF'/%3E%3C/svg%3E")
-                    no-repeat right 0.85rem center/0.9rem;
+                url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%234856FF'/%3E%3C/svg%3E") no-repeat right 0.85rem center/0.9rem;
         }
     }
 }

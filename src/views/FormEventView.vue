@@ -66,7 +66,7 @@ interface BasicInfoModel {
     organizerId: number | null
     venueId: number | null
     spaceId: number | null
-    eventTypeId: number | null
+    eventTypeIds: number[]
     genreId: number | null
 }
 
@@ -96,7 +96,7 @@ const basicInfo = reactive<BasicInfoModel>({
     organizerId: null,
     venueId: null,
     spaceId: null,
-    eventTypeId: null,
+    eventTypeIds: [],
     genreId: null,
 })
 
@@ -139,6 +139,7 @@ const canSubmit = computed(() => {
     return (
         !!basicInfo.title &&
         basicInfo.organizerId !== null &&
+        basicInfo.eventTypeIds.length > 0 &&
         eventDates.value.length > 0 &&
         eventDates.value.every((date) => date.startDate && date.startTime && date.endTime)
     )
@@ -149,7 +150,7 @@ const resetForm = () => {
     basicInfo.subtitle = ''
     basicInfo.venueId = null
     basicInfo.spaceId = null
-    basicInfo.eventTypeId = null
+    basicInfo.eventTypeIds = []
     basicInfo.genreId = null
 
     eventDates.value = []
@@ -188,7 +189,7 @@ const submitEvent = async () => {
         organizer_id: basicInfo.organizerId,
         venue_id: basicInfo.venueId,
         default_space_id: basicInfo.spaceId,
-        event_type_id: basicInfo.eventTypeId,
+        event_type_ids: basicInfo.eventTypeIds,
         genre_id: basicInfo.genreId,
         details: {
             description: eventDetails.description,
