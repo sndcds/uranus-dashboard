@@ -11,7 +11,7 @@
       <OrganizerCardComponent v-for="organizer in organizers" :key="organizer.organizer_id" :organizer="organizer" />
     </div>
 
-    <pre>{{ organizers }}</pre>
+    <!--pre>{{ organizers }}</pre-->
   </div>
 </template>
 
@@ -75,7 +75,7 @@ onMounted(async () => {
 
 .cards {
   display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
 }
 </style>

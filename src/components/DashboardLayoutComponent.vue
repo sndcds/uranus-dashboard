@@ -13,15 +13,19 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import SidebarComponent from './SidebarComponent.vue'
 import type { SidebarOption } from '@/types/types'
-import {useTokenStore} from "@/store/token";
+import { useTokenStore } from "@/store/token";
+import { useAppStore } from "@/store/appStore";
 
 const router = useRouter()
 const { t } = useI18n()
 const tokenStore = useTokenStore()
+const appStore = useAppStore()
 
 const sidebarOptions = computed<SidebarOption[]>(() => [
   { id: 'dashboard', label: t('dashboard'), icon: '', route: '/' },
   { id: 'organizers', label: t('organizers'), icon: '', route: '/organizers' },
+  { id: 'venues', label: t('venues'), icon: '', route: `/organizer/venues/${appStore.organizerId ?? ''}` },
+  { id: 'events', label: t('events'), icon: '', route: '/events' },
   { id: 'settings', label: t('settings'), icon: '', route: '/settings' },
   { id: 'logout', label: t('logout'), icon: '', route: '' },
 ])
@@ -59,6 +63,7 @@ function logout() {
 .main-content {
   flex: 1;
   padding: 24px;
-  /* scroll happens naturally in browser, no overflow */
+  background-color: #f4f1ec;
 }
+
 </style>

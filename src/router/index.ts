@@ -37,11 +37,6 @@ const routes = [
                 component: FormOrganizerView
             },
             {
-                path: '/organizer/:id',
-                name: 'organizer',
-                component: OrganizerVenueView
-            },
-            {
                 path: '/organizer/:id/venue/create',
                 name: 'create-venue',
                 component: FormVenueView
@@ -50,7 +45,12 @@ const routes = [
                 path: '/organizer/:id/venue/:venueId/space/create',
                 name: 'create-space',
                 component: FormSpaceView
-            }
+            },
+            {
+                path: '/organizer/venues/:id',
+                name: 'venues',
+                component: OrganizerVenueView
+            },
         ],
     },
     {

@@ -5,7 +5,7 @@
             <p>{{ venueDescription }}</p>
         </section>
 
-        <section class="venue-card">
+        <section class="card">
             <div class="venue-layout">
                 <form class="venue-form" @submit.prevent="submitForm">
                     <div class="form-grid">

@@ -11,6 +11,5 @@ const { t } = useI18n()
 
 <style scoped>
 .dashboard-container {
-  /* Grow naturally, no fixed height, no scroll */
 }
 </style>

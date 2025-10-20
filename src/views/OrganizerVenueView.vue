@@ -13,8 +13,7 @@
       </div>
     </div>
 
-    <!-- Debug JSON -->
-    <pre>{{ organizer }}</pre>
+    <!--pre>{{ organizer }}</pre-->
   </div>
 </template>
 
@@ -104,6 +103,6 @@ onMounted(async () => {
 .cards {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
 }
 </style>

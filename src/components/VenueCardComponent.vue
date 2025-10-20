@@ -1,9 +1,9 @@
 <template>
-  <div class="venue-card">
-    <h3>{{ venue.venue_name }}</h3>
+  <div class="card">
+    <h2>{{ venue.venue_name }}</h2>
     <p>Upcoming Events: {{ venue.upcoming_event_count }}</p>
 
-    <div class="permissions">
+    <!--div class="permissions">
       <h4>Permissions</h4>
       <ul>
         <li>Edit Venue: {{ venue.can_edit_venue ? 'Yes' : 'No' }}</li>
@@ -17,11 +17,46 @@
         <li>Release Event: {{ venue.can_release_event ? 'Yes' : 'No' }}</li>
         <li>Can Edit Overall: {{ venue.can_edit ? 'Yes' : 'No' }}</li>
       </ul>
-    </div>
+    </div-->
 
     <div v-if="venue.spaces.length">
       <h4>Spaces</h4>
-      <ul class="venue-space-list">
+
+      <table class="simple-table">
+        <thead>
+        <tr>
+          <th>Space</th>
+          <th style="text-align: right;">Events</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="space in venue.spaces" :key="space.space_id">
+          <td><strong>{{ space.space_name }}</strong></td>
+          <td style="text-align: right;">{{ space.upcoming_event_count }}</td>
+          <td style="text-align: right;">
+            <router-link :to="`/venues/${venue.venue_id}/spaces/${space.space_id}/events/new`"
+                         v-if="venue.can_add_event"
+                         class="table-func-button">
+              {{ t('add_new_event') }}
+            </router-link>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <router-link :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
+                         v-if="venue.can_add_space" class="table-func-button">
+              {{ t('add_new_space') }}
+            </router-link>
+          </td>
+          <td></td>
+          <td style="text-align: right;">
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!--ul class="venue-space-list">
         <li v-for="space in venue.spaces" :key="space.space_id" class="venue-space">
           <div>{{ space.space_name }} ({{ space.upcoming_event_count }} events) </div>
           <div class="venue-space-action">
@@ -33,17 +68,15 @@
               v-if="venue.can_delete_space">Delete</router-link>
           </div>
         </li>
-      </ul>
+      </ul-->
     </div>
-    <router-link :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`" v-if="venue.can_add_space" class="new-venue-space">Add New
-      Space</router-link>
-
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n"
 
-import { defineProps } from 'vue'
+const { t } = useI18n()
 
 defineProps<{
   venue: Venue
@@ -118,28 +151,6 @@ ul.venue-space-list {
   }
 }
 
-.venue-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 12px;
-  background-color: #fafafa;
-
-  h3 {
-    margin: 0 0 8px 0;
-  }
-
-  h4 {
-    margin: 12px 0 4px;
-  }
-
-  .permissions>ul {
-    margin: 0;
-    padding-left: 20px;
-    list-style: disc;
-  }
-
-  .permissions {
-    margin-bottom: 8px;
-  }
+.card {
 }
 </style>
