@@ -3,6 +3,7 @@
         <section class="events-hero">
             <h1>{{ t('events_title') }}</h1>
             <p>{{ t('events_subtitle') }}</p>
+            <router-link :to="`/organizer/${organizerId}/event/create`" class="btn btn--primary">{{ t('add_new_event') }}</router-link>
         </section>
 
         <section class="events-card">
@@ -29,8 +30,8 @@
                         </thead>
                         <tbody>
                             <tr v-for="event in events" :key="event.event_id">
-                                <td>{{ formatDate(event.start_date) }} {{ event.start_time }} Uhr</td>
-                                <td>{{ event.space_name }}</td>
+                                <td>{{ formatDateTime(event.start_date, event.start_time) }}</td>
+                                <td>{{ event.space_name || '—' }}</td>
                                 <td>{{ event.event_title }}</td>
                                 <td>{{ event.event_organizer_name }}</td>
                                 <td>
@@ -82,6 +83,14 @@ const formatDate = (value: string) => {
         return value
     }
     return dateFormatter.value.format(date)
+}
+
+const formatDateTime = (dateValue: string, timeValue?: string) => {
+    const formattedDate = formatDate(dateValue)
+    if (timeValue) {
+        return `${formattedDate} · ${timeValue}`
+    }
+    return formattedDate
 }
 
 onMounted(async () => {
@@ -151,7 +160,7 @@ onMounted(async () => {
 }
 
 .events-card {
-    width: min(960px, 100%);
+    width: min(1280px, 100%);
     background: #ffffff;
     border-radius: 24px;
     padding: clamp(1.75rem, 4vw, 2.5rem);
@@ -231,6 +240,7 @@ tbody tr:hover {
 }
 
 @media (max-width: 640px) {
+
     th,
     td {
         padding: 0.75rem 0.8rem;

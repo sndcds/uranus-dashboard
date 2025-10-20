@@ -11,6 +11,7 @@ import SignupView from '@/views/SignupView.vue'
 import FormVenueView from '@/views/FormVenueView.vue'
 import FormSpaceView from '@/views/FormSpaceView.vue'
 import EventDashboardView from '@/views/EventDashboardView.vue'
+import FormEventView from '@/views/FormEventView.vue'
 
 const routes = [
     {
@@ -56,6 +57,11 @@ const routes = [
                 path: '/organizer/:id/events',
                 name: 'organizer-events',
                 component: EventDashboardView
+            },
+            {
+                path: '/organizer/:id/event/create',
+                name: 'create-event',
+                component: FormEventView
             }
         ],
     },
