@@ -5,44 +5,49 @@
             <p>{{ t('event_section_details_subtitle') }}</p>
         </header>
 
-        <form class="event-section__form">
+        <div class="event-section__form">
             <div class="event-section__grid event-section__grid--two">
                 <div class="form-field form-field--wide">
-                    <label for="description">{{ t('event_description_label') }}</label>
+                    <label for="description">
+                        {{ t('event_description_label') }}<span class="required">*</span>
+                    </label>
                     <textarea
                         id="description"
-                        v-model="description"
+                        v-model="details.description"
                         rows="4"
                         :placeholder="t('event_description_placeholder')"
-                        required
                     ></textarea>
+                    <p v-if="errors.description" class="field-error">{{ errors.description }}</p>
+                </div>
 
                 <div class="form-field">
                     <label for="teaser-text">{{ t('event_teaser_label') }}</label>
                     <input
                         id="teaser-text"
-                        v-model="teaserText"
+                        v-model="details.teaserText"
                         type="text"
                         :placeholder="t('event_teaser_placeholder')"
                     />
                 </div>
-                </div>
 
                 <div class="form-field">
-                    <label for="language">{{ t('event_language_label') }}</label>
-                    <select id="language" v-model="language" required>
+                    <label for="language">
+                        {{ t('event_language_label') }}<span class="required">*</span>
+                    </label>
+                    <select id="language" v-model="details.language">
                         <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                         <option v-for="lang in languages" :key="lang.code" :value="lang.code">
                             {{ lang.name }}
                         </option>
                     </select>
+                    <p v-if="errors.language" class="field-error">{{ errors.language }}</p>
                 </div>
 
                 <div class="form-field">
                     <label for="min-age">{{ t('event_min_age') }}</label>
                     <input
                         id="min-age"
-                        v-model.number="minAge"
+                        v-model.number="details.minAge"
                         type="number"
                         min="0"
                         :placeholder="t('event_min_age_placeholder')"
@@ -53,7 +58,7 @@
                     <label for="max-age">{{ t('event_max_age') }}</label>
                     <input
                         id="max-age"
-                        v-model.number="maxAge"
+                        v-model.number="details.maxAge"
                         type="number"
                         min="0"
                         :placeholder="t('event_max_age_placeholder')"
@@ -64,7 +69,7 @@
                     <label for="participation-info">{{ t('event_participation_label') }}</label>
                     <textarea
                         id="participation-info"
-                        v-model="participationInfo"
+                        v-model="details.participationInfo"
                         rows="3"
                         :placeholder="t('event_participation_placeholder')"
                     ></textarea>
@@ -74,36 +79,95 @@
                     <label for="organizer">{{ t('event_presented_by_label') }}</label>
                     <input
                         id="organizer"
-                        v-model="organizer"
+                        v-model="details.presenter"
                         type="text"
                         :placeholder="t('event_presented_by_placeholder')"
                     />
                 </div>
             </div>
-        </form>
+        </div>
     </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+const props = defineProps<{
+    organizerId: number | null
+    modelValue: EventDetailsModel
+}>()
+
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: EventDetailsModel): void
+}>()
 
 const { t } = useI18n({ useScope: 'global' })
 
-const description = ref('')
-const teaserText = ref('')
-const language = ref<string | null>(null)
-const minAge = ref<number | null>(null)
-const maxAge = ref<number | null>(null)
-const participationInfo = ref('')
-const location = ref('')
-const organizer = ref('')
+interface EventDetailsModel {
+    description: string
+    teaserText: string
+    language: string | null
+    minAge: number | null
+    maxAge: number | null
+    participationInfo: string
+    presenter: string
+}
+
+const emptyDetails = (): EventDetailsModel => ({
+    description: '',
+    teaserText: '',
+    language: null,
+    minAge: null,
+    maxAge: null,
+    participationInfo: '',
+    presenter: '',
+})
+
+const details = reactive<EventDetailsModel>(emptyDetails())
+const errors = reactive<{ description: string | null; language: string | null }>({
+    description: null,
+    language: null,
+})
 
 const languages = ref([
     { code: 'en', name: 'English' },
     { code: 'de', name: 'Deutsch' },
     { code: 'fr', name: 'Français' },
 ])
+
+watch(
+    () => props.modelValue,
+    (value) => {
+        Object.assign(details, emptyDetails(), value || {})
+    },
+    { deep: true, immediate: true }
+)
+
+watch(
+    details,
+    (value) => {
+        emit('update:modelValue', { ...value })
+    },
+    { deep: true }
+)
+
+const validate = () => {
+    errors.description = details.description.trim() ? null : t('event_error_required')
+    errors.language = details.language ? null : t('event_error_required')
+    return Object.values(errors).every((msg) => !msg)
+}
+
+watch(
+    details,
+    () => {
+        if (errors.description && details.description.trim()) errors.description = null
+        if (errors.language && details.language) errors.language = null
+    },
+    { deep: true }
+)
+
+defineExpose({ validate })
 </script>
 
 <style scoped lang="scss">
@@ -163,6 +227,11 @@ const languages = ref([
         letter-spacing: 0.01em;
     }
 
+    .required {
+        color: #dc2626;
+        margin-left: 0.25rem;
+    }
+
     input,
     select,
     textarea {
@@ -206,6 +275,13 @@ const languages = ref([
 
 .form-field--wide {
     grid-column: 1 / -1;
+}
+
+.field-error {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #b91c1c;
+    font-weight: 600;
 }
 
 @media (max-width: 540px) {

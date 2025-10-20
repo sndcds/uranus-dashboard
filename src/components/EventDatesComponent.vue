@@ -5,29 +5,34 @@
             <p>{{ t('event_section_dates_subtitle') }}</p>
         </header>
 
-        <form class="event-section__form">
+        <div class="event-section__form">
             <div class="event-dates">
-                <div v-for="(date, index) in eventDates" :key="index" class="event-dates__card">
+                <div v-for="(date, index) in localDates" :key="index" class="event-dates__card">
                     <div class="event-dates__meta">
                         <span class="badge">#{{ index + 1 }}</span>
                         <button
                             type="button"
                             class="link"
                             @click="removeDate(index)"
-                            v-if="eventDates.length > 1"
+                            v-if="localDates.length > 1"
                         >
                             {{ t('event_remove_date') }}
                         </button>
                     </div>
+                    <p v-if="errors[index]" class="field-error">{{ errors[index] }}</p>
                     <div class="event-dates__grid">
                         <div class="form-field">
-                            <label :for="`start-date-${index}`">{{ t('event_start_date') }}</label>
-                            <input :id="`start-date-${index}`" v-model="date.startDate" type="date" required />
+                            <label :for="`start-date-${index}`">
+                                {{ t('event_start_date') }}<span class="required">*</span>
+                            </label>
+                            <input :id="`start-date-${index}`" v-model="date.startDate" type="date" />
                         </div>
 
                         <div class="form-field">
-                            <label :for="`start-time-${index}`">{{ t('event_start_time') }}</label>
-                            <input :id="`start-time-${index}`" v-model="date.startTime" type="time" required />
+                            <label :for="`start-time-${index}`">
+                                {{ t('event_start_time') }}<span class="required">*</span>
+                            </label>
+                            <input :id="`start-time-${index}`" v-model="date.startTime" type="time" />
                         </div>
 
                         <div class="form-field">
@@ -36,8 +41,10 @@
                         </div>
 
                         <div class="form-field">
-                            <label :for="`end-time-${index}`">{{ t('event_end_time') }}</label>
-                            <input :id="`end-time-${index}`" v-model="date.endTime" type="time" required />
+                            <label :for="`end-time-${index}`">
+                                {{ t('event_end_time') }}<span class="required">*</span>
+                            </label>
+                            <input :id="`end-time-${index}`" v-model="date.endTime" type="time" />
                         </div>
 
                         <div class="form-field">
@@ -47,7 +54,7 @@
 
                         <div class="form-field">
                             <label :for="`space-${index}`">{{ t('event_space_label') }}</label>
-                            <select :id="`space-${index}`" v-model="date.spaceId" required>
+                            <select :id="`space-${index}`" v-model="date.spaceId">
                                 <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                                 <option v-for="sp in spaces" :key="sp.id" :value="sp.id">
                                     {{ sp.name }}
@@ -70,12 +77,22 @@
                     {{ t('event_add_date') }}
                 </button>
             </div>
-        </form>
+        </div>
     </section>
 </template>
+
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+const props = defineProps<{
+    organizerId: number | null
+    modelValue: EventDate[]
+}>()
+
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: EventDate[]): void
+}>()
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -89,35 +106,131 @@ interface EventDate {
     allDayEvent: boolean
 }
 
-const spaces = ref<Array<{ id: number; name: string }>>([])
+interface SelectOption {
+    id: number
+    name: string
+}
 
-const eventDates = ref<EventDate[]>([
-    {
-        startDate: '',
-        endDate: null,
-        startTime: '',
-        endTime: '',
-        entryTime: null,
-        spaceId: null,
-        allDayEvent: false,
+const spaces = ref<SelectOption[]>([])
+const localDates = ref<EventDate[]>([])
+const errors = ref<string[]>([])
+
+const emptyDate = (): EventDate => ({
+    startDate: '',
+    endDate: null,
+    startTime: '',
+    endTime: '',
+    entryTime: null,
+    spaceId: null,
+    allDayEvent: false,
+})
+
+const toMinutes = (time: string | null): number | null => {
+    if (!time) return null
+    const [hours, minutes] = time.split(':')
+    const h = Number(hours)
+    const m = Number(minutes)
+    if (Number.isNaN(h) || Number.isNaN(m)) return null
+    return h * 60 + m
+}
+
+const isAfter = (start: string, end: string | null): boolean => {
+    if (!end) return false
+    const startDate = new Date(start)
+    const endDate = new Date(end)
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) return false
+    return endDate.getTime() < startDate.getTime()
+}
+
+const evaluateDateError = (date: EventDate): string => {
+    if (!date.startDate) return t('event_error_required')
+    if (!date.startTime) return t('event_error_required')
+    if (!date.endTime) return t('event_error_required')
+
+    if (date.endDate && isAfter(date.startDate, date.endDate)) {
+        return t('event_error_date_order')
+    }
+
+    const startMinutes = toMinutes(date.startTime)
+    const endMinutes = toMinutes(date.endTime)
+
+    if (startMinutes === null || endMinutes === null || startMinutes > endMinutes) {
+        return t('event_error_time_order')
+    }
+
+    if (date.entryTime) {
+        const entryMinutes = toMinutes(date.entryTime)
+        if (
+            entryMinutes === null ||
+            entryMinutes < startMinutes ||
+            entryMinutes > endMinutes
+        ) {
+            return t('event_error_entry_range')
+        }
+    }
+
+    return ''
+}
+
+const initializeDates = (value: EventDate[] | undefined) => {
+    const incoming = Array.isArray(value) && value.length ? value : [emptyDate()]
+    localDates.value = incoming.map((item) => ({ ...emptyDate(), ...item }))
+    errors.value = incoming.map(() => '')
+}
+
+watch(
+    () => props.modelValue,
+    (value) => {
+        initializeDates(value)
     },
-])
+    { deep: true, immediate: true }
+)
+
+watch(
+    localDates,
+    (value) => {
+        emit(
+            'update:modelValue',
+            value.map((item) => ({ ...item }))
+        )
+        errors.value = errors.value.map((error, index) => {
+            if (!error) return ''
+            const date = value[index]
+            return date ? evaluateDateError(date) : ''
+        })
+    },
+    { deep: true }
+)
 
 const addDate = () => {
-    eventDates.value.push({
-        startDate: '',
-        endDate: null,
-        startTime: '',
-        endTime: '',
-        entryTime: null,
-        spaceId: null,
-        allDayEvent: false,
-    })
+    localDates.value = [...localDates.value, emptyDate()]
+    errors.value = [...errors.value, '']
 }
 
 const removeDate = (index: number) => {
-    eventDates.value.splice(index, 1)
+    const updated = [...localDates.value]
+    updated.splice(index, 1)
+    const updatedErrors = [...errors.value]
+    updatedErrors.splice(index, 1)
+    localDates.value = updated.length ? updated : [emptyDate()]
+    errors.value = updated.length ? updatedErrors : ['']
 }
+
+// TODO: fetch spaces (and other dependencies) when endpoints are available
+watch(
+    () => props.organizerId,
+    () => {
+        // placeholder for future fetch when organizer context changes
+    },
+    { immediate: true }
+)
+
+const validate = () => {
+    errors.value = localDates.value.map((date) => evaluateDateError(date))
+    return errors.value.every((msg) => !msg)
+}
+
+defineExpose({ validate })
 </script>
 
 <style scoped lang="scss">
@@ -226,6 +339,11 @@ const removeDate = (index: number) => {
         letter-spacing: 0.01em;
     }
 
+    .required {
+        color: #dc2626;
+        margin-left: 0.25rem;
+    }
+
     input,
     select {
         padding: 0.75rem 0.9rem;
@@ -316,5 +434,12 @@ const removeDate = (index: number) => {
     .event-section__actions {
         justify-content: center;
     }
+}
+
+.field-error {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #b91c1c;
+    font-weight: 600;
 }
 </style>
