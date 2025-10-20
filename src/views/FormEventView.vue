@@ -6,20 +6,23 @@
         </section>
 
         <section class="event-form-grid">
-            <EventBasicInfoComponent />
-            <EventDatesComponent />
-            <EventDetailsComponent />
+            <EventBasicInfoComponent :organizerId="appStore.organizerId" />
+            <EventDatesComponent :organizerId="appStore.organizerId" />
+            <EventDetailsComponent :organizerId="appStore.organizerId" />
         </section>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { useAppStore } from '@/store/appStore'
+
 import EventBasicInfoComponent from '@/components/EventBasicInfoComponent.vue'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import EventDetailsComponent from '@/components/EventDetailsComponent.vue'
 
 const { t } = useI18n({ useScope: 'global' })
+const appStore = useAppStore()
 </script>
 
 <style scoped lang="scss">

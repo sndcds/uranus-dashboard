@@ -73,8 +73,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { apiFetch } from '@/api'
+
+const props = defineProps<{
+    organizerId: number
+}>()
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -91,6 +96,63 @@ const organizers = ref<Array<{ id: number; name: string }>>([])
 const spaces = ref<Array<{ id: number; name: string }>>([])
 const eventTypes = ref<Array<{ id: number; name: string }>>([])
 const genres = ref<Array<{ id: number; name: string }>>([])
+
+onMounted(async () => {
+    await fetchSelectData()
+})
+
+const fetchSelectData = async () => {
+    try {
+        const { data } = await apiFetch<Array<{ id: number; name: string }>>(
+            `/api/admin/user/choosable-event-organizers/organizer/${props.organizerId}`
+        )
+
+        organizers.value = Array.isArray(data) ? data : []
+    } catch (error) {
+        console.error('Failed to load organizers', error)
+        organizers.value = []
+    }
+    try {
+        const { data } = await apiFetch<Array<{ id: number; name: string }>>(
+            `/api/admin/organizer/${props.organizerId}/venues`
+        )
+
+        venues.value = Array.isArray(data) ? data : []
+    } catch (error) {
+        console.error('Failed to load venues', error)
+        venues.value = []
+    }
+    try {
+        const { data } = await apiFetch<Array<{ id: number; name: string }>>(
+            `/api/admin/organizer/${props.organizerId}/spaces`
+        )
+
+        spaces.value = Array.isArray(data) ? data : []
+    } catch (error) {
+        console.error('Failed to load spaces', error)
+        spaces.value = []
+    }
+    try {
+        const { data } = await apiFetch<Array<{ id: number; name: string }>>(
+            `/api/admin/organizer/${props.organizerId}/event-types`
+        )
+
+        eventTypes.value = Array.isArray(data) ? data : []
+    } catch (error) {
+        console.error('Failed to load event types', error)
+        eventTypes.value = []
+    }
+    try {
+        const { data } = await apiFetch<Array<{ id: number; name: string }>>(
+            `/api/admin/organizer/${props.organizerId}/genres`
+        )
+
+        genres.value = Array.isArray(data) ? data : []
+    } catch (error) {
+        console.error('Failed to load genres', error)
+        genres.value = []
+    }
+}
 </script>
 
 <style scoped lang="scss">
