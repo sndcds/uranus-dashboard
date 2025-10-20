@@ -146,7 +146,7 @@ async function submitForm() {
 
         if (status >= 200 && status < 300) {
             if (Number.isFinite(organizerId)) {
-                router.push(`/organizer/${organizerId}`)
+                router.push(`/organizer/${organizerId}/venues`)
             }
         } else {
             errorMessage.value = `Failed to save space (status ${status}).`
