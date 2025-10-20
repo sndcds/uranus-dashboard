@@ -66,7 +66,7 @@ const error = ref<string | null>(null)
 onMounted(async () => {
   try {
     // Fetch a single organizer
-    const response = await apiFetch<Organizer>(`/api/admin/organizer/venues/${organizerId}?start=2000-01-01`)
+    const response = await apiFetch<Organizer>(`/api/admin/organizer/${organizerId}/venues?start=2000-01-01`)
 
     // If your API returns the organizer directly, just assign it:
     organizer.value = response.data

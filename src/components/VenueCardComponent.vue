@@ -24,35 +24,33 @@
 
       <table class="simple-table">
         <thead>
-        <tr>
-          <th>Space</th>
-          <th style="text-align: right;">Events</th>
-          <th></th>
-        </tr>
+          <tr>
+            <th>Space</th>
+            <th style="text-align: right;">Events</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
-        <tr v-for="space in venue.spaces" :key="space.space_id">
-          <td><strong>{{ space.space_name }}</strong></td>
-          <td style="text-align: right;">{{ space.upcoming_event_count }}</td>
-          <td style="text-align: right;">
-            <router-link :to="`/venues/${venue.venue_id}/spaces/${space.space_id}/events/new`"
-                         v-if="venue.can_add_event"
-                         class="table-func-button">
-              {{ t('add_new_event') }}
-            </router-link>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <router-link :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
-                         v-if="venue.can_add_space" class="table-func-button">
-              {{ t('add_new_space') }}
-            </router-link>
-          </td>
-          <td></td>
-          <td style="text-align: right;">
-          </td>
-        </tr>
+          <tr v-for="space in venue.spaces" :key="space.space_id">
+            <td><strong>{{ space.space_name }}</strong></td>
+            <td style="text-align: right;">{{ space.upcoming_event_count }}</td>
+            <td style="text-align: right;">
+              <router-link :to="`/venues/${venue.venue_id}/spaces/${space.space_id}/events/new`"
+                v-if="venue.can_add_event" class="table-func-button">
+                {{ t('add_new_event') }}
+              </router-link>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <router-link :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
+                v-if="venue.can_add_space" class="table-func-button">
+                {{ t('add_new_space') }}
+              </router-link>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
         </tbody>
       </table>
 
@@ -151,6 +149,5 @@ ul.venue-space-list {
   }
 }
 
-.card {
-}
+.card {}
 </style>

@@ -24,8 +24,8 @@ const appStore = useAppStore()
 const sidebarOptions = computed<SidebarOption[]>(() => [
   { id: 'dashboard', label: t('dashboard'), icon: '', route: '/' },
   { id: 'organizers', label: t('organizers'), icon: '', route: '/organizers' },
-  { id: 'venues', label: t('venues'), icon: '', route: `/organizer/venues/${appStore.organizerId ?? ''}` },
-  { id: 'events', label: t('events'), icon: '', route: '/events' },
+  { id: 'venues', label: t('venues'), icon: '', route: `/organizer/${appStore.organizerId ?? ''}/venues` },
+  { id: 'events', label: t('events'), icon: '', route: `/organizer/${appStore.organizerId ?? ''}/events` },
   { id: 'settings', label: t('settings'), icon: '', route: '/settings' },
   { id: 'logout', label: t('logout'), icon: '', route: '' },
 ])
@@ -54,7 +54,7 @@ function logout() {
 }
 
 .sidebar {
-  width: 220px;
+  width: 250px;
   position: sticky;
   top: 0;
   height: 100vh;
@@ -62,7 +62,6 @@ function logout() {
 
 .main-content {
   flex: 1;
-  padding: 24px;
   background-color: #f4f1ec;
 }
 
