@@ -11,12 +11,11 @@
                     <label for="description">
                         {{ t('event_description_label') }}<span class="required">*</span>
                     </label>
-                    <textarea
+                    <MarkdownEditorComponent
                         id="description"
                         v-model="details.description"
-                        rows="4"
                         :placeholder="t('event_description_placeholder')"
-                    ></textarea>
+                    />
                     <p v-if="errors.description" class="field-error">{{ errors.description }}</p>
                 </div>
 
@@ -92,6 +91,7 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 
 const props = defineProps<{
     organizerId: number | null
