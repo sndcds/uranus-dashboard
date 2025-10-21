@@ -211,12 +211,13 @@ const submitEvent = async () => {
         })),
     }
 
+    console.log(payload)
+
     try {
         const { status } = await apiFetch('/api/admin/event/create', {
             method: 'POST',
             body: JSON.stringify(payload),
         })
-
         if (status >= 200 && status < 300) {
             submitSuccess.value = t('event_submit_success')
             resetForm()
