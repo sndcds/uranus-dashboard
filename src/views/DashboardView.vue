@@ -1,13 +1,13 @@
 <template>
   <div class="dashboard-container">
     <h1>{{ t('dashboard') }}</h1>
-    <TwoStageTagListComponent />
+    <OrganizerChooser />
   </div>
 </template>
 
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
-import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue";
+import OrganizerChooser from "@/components/OrganizerChooser.vue";
 const { t } = useI18n()
 </script>
 

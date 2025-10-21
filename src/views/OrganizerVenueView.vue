@@ -1,6 +1,8 @@
 <template>
   <div class="dashboard-container">
     <h1 v-if="organizer">{{ organizer.organizer_name }}</h1>
+    <OrganizerChooser />
+
     <router-link :to="`/organizer/${organizerId}/venue/create`">Create New Venue</router-link>
 
     <p v-if="error" class="error">{{ error }}</p>
@@ -18,15 +20,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import VenueCardComponent from '@/components/VenueCardComponent.vue'
+import OrganizerChooser from "@/components/OrganizerChooser.vue";
+import { useAppStore } from '@/store/appStore'
 
 const { t } = useI18n()
-const route = useRoute()
-const organizerId = Number(route.params.id)
+const appStore = useAppStore()
+
+// Make organizerId reactive from the store
+const organizerId = computed({
+  get: () => appStore.organizerId,
+  set: (val: number | null) => appStore.setOrganizerId(val),
+})
 
 interface Space {
   space_id: number
@@ -63,25 +71,33 @@ interface Organizer {
 const organizer = ref<Organizer | null>(null)
 const error = ref<string | null>(null)
 
-onMounted(async () => {
-  try {
-    // Fetch a single organizer
-    const response = await apiFetch<Organizer>(`/api/admin/organizer/${organizerId}/venues?start=2000-01-01`)
+// Watch for changes in organizerId and fetch organizer data
+watch(
+    organizerId,
+    async (id) => {
+      if (id === null) {
+        organizer.value = null
+        return
+      }
 
-    // If your API returns the organizer directly, just assign it:
-    organizer.value = response.data
-
-    // If your API wraps it under "data", do:
-    // organizer.value = response.data
-  } catch (err: unknown) {
-    if (typeof err === 'object' && err && 'data' in err) {
-      const e = err as { data?: { error?: string } }
-      error.value = e.data?.error || 'Failed to load organizer venues'
-    } else {
-      error.value = 'Unknown error'
-    }
-  }
-})
+      try {
+        const response = await apiFetch<Organizer>(
+            `/api/admin/organizer/${id}/venues?start=2000-01-01`
+        )
+        organizer.value = response.data
+        error.value = null
+      } catch (err: unknown) {
+        if (typeof err === 'object' && err && 'data' in err) {
+          const e = err as { data?: { error?: string } }
+          error.value = e.data?.error || 'Failed to load organizer venues'
+        } else {
+          error.value = 'Unknown error'
+        }
+        organizer.value = null
+      }
+    },
+    { immediate: true } // fetch on initial load
+)
 </script>
 
 <style scoped lang="scss">

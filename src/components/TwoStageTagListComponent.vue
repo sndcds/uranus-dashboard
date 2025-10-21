@@ -34,28 +34,25 @@
       </button>
     </div>
 
-    <!-- Selected combinations -->
-    <div>
-      <h3 class="text-lg font-medium mb-2">Added combinations</h3>
-      <ul v-if="selectedList.length" class="divide-y divide-gray-200 border rounded-lg">
-        <li v-for="(item, index) in selectedList" :key="index" class="flex justify-between items-center px-3 py-2">
-          <span>
-            <strong>{{ item.type.name }}</strong>
-            <span v-if="item.genre"> / {{ item.genre.name }}</span>
-          </span>
-          <button @click="removeCombination(index)" class="text-red-600 hover:text-red-800 text-sm">
-            Remove
-          </button>
-        </li>
-      </ul>
-      <p v-else class="text-gray-500 text-sm">No combinations added yet.</p>
+    <div class="selected-combinations">
+      <ComboTagComponent
+          v-for="(item, index) in selectedList"
+          :key="item.type.type_id + '-' + (item.genre?.type_id || 0)"
+          :label="item.genre ? `${item.type.name} / ${item.genre.name}` : item.type.name"
+          theme="light"
+          @remove="removeCombination(index)"
+      />
+      <p v-if="!selectedList.length" class="text-gray-500 text-sm">
+        No combinations added yet.
+      </p>
     </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { apiFetch } from '@/api'
+import ComboTagComponent from "@/components/ComboTagComponent.vue";
 
 // --- Props ---
 interface Props {

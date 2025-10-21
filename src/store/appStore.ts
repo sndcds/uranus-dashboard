@@ -14,22 +14,24 @@ const getStoredOrganizerId = (): number | null => {
 
 export const useAppStore = defineStore('app', {
     state: () => ({
-        organizerId: getStoredOrganizerId(),
+        organizerId: null as number | null,
     }),
+
     actions: {
         setOrganizerId(id: number | null) {
             this.organizerId = id
-            if (typeof window === 'undefined') {
-                return
-            }
+            if (typeof window === 'undefined') return // SSR safety
             if (id === null) {
                 window.localStorage.removeItem(ORGANIZER_STORAGE_KEY)
             } else {
                 window.localStorage.setItem(ORGANIZER_STORAGE_KEY, String(id))
             }
         },
-        clearOrganizer() {
-            this.setOrganizerId(null)
-        },
+
+        loadOrganizerIdFromStorage() {
+            if (typeof window === 'undefined') return
+            const stored = window.localStorage.getItem(ORGANIZER_STORAGE_KEY)
+            this.organizerId = stored ? Number(stored) : null
+        }
     },
 })
