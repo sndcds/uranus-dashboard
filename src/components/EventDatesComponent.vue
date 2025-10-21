@@ -42,7 +42,7 @@
 
                         <div class="form-field">
                             <label :for="`end-time-${index}`">
-                                {{ t('event_end_time') }}<span class="required">*</span>
+                                {{ t('event_end_time') }}
                             </label>
                             <input :id="`end-time-${index}`" v-model="date.endTime" type="time" />
                         </div>
@@ -82,12 +82,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
     organizerId: number | null
     modelValue: EventDate[]
+    spaces?: SelectOption[]
 }>()
 
 const emit = defineEmits<{
@@ -111,9 +112,10 @@ interface SelectOption {
     name: string
 }
 
-const spaces = ref<SelectOption[]>([])
 const localDates = ref<EventDate[]>([])
 const errors = ref<string[]>([])
+const spaces = computed<SelectOption[]>(() => (Array.isArray(props.spaces) ? props.spaces : []))
+let suppressEmit = false
 
 const emptyDate = (): EventDate => ({
     startDate: '',
@@ -145,37 +147,47 @@ const isAfter = (start: string, end: string | null): boolean => {
 const evaluateDateError = (date: EventDate): string => {
     if (!date.startDate) return t('event_error_required')
     if (!date.startTime) return t('event_error_required')
-    if (!date.endTime) return t('event_error_required')
+    if (date.endTime) {
+        const startMinutes = toMinutes(date.startTime)
+        const endMinutes = toMinutes(date.endTime)
+
+        if (startMinutes === null || endMinutes === null || startMinutes > endMinutes) {
+            return t('event_error_time_order')
+        }
+
+        if (date.entryTime) {
+            const entryMinutes = toMinutes(date.entryTime)
+            if (
+                entryMinutes === null ||
+                entryMinutes < startMinutes ||
+                entryMinutes > endMinutes
+            ) {
+                return t('event_error_entry_range')
+            }
+        }
+    } else if (date.entryTime) {
+        const startMinutes = toMinutes(date.startTime)
+        const entryMinutes = toMinutes(date.entryTime)
+        if (startMinutes === null || entryMinutes === null || entryMinutes < startMinutes) {
+            return t('event_error_entry_range')
+        }
+    }
 
     if (date.endDate && isAfter(date.startDate, date.endDate)) {
         return t('event_error_date_order')
-    }
-
-    const startMinutes = toMinutes(date.startTime)
-    const endMinutes = toMinutes(date.endTime)
-
-    if (startMinutes === null || endMinutes === null || startMinutes > endMinutes) {
-        return t('event_error_time_order')
-    }
-
-    if (date.entryTime) {
-        const entryMinutes = toMinutes(date.entryTime)
-        if (
-            entryMinutes === null ||
-            entryMinutes < startMinutes ||
-            entryMinutes > endMinutes
-        ) {
-            return t('event_error_entry_range')
-        }
     }
 
     return ''
 }
 
 const initializeDates = (value: EventDate[] | undefined) => {
+    suppressEmit = true
     const incoming = Array.isArray(value) && value.length ? value : [emptyDate()]
     localDates.value = incoming.map((item) => ({ ...emptyDate(), ...item }))
     errors.value = incoming.map(() => '')
+    nextTick(() => {
+        suppressEmit = false
+    })
 }
 
 watch(
@@ -189,10 +201,12 @@ watch(
 watch(
     localDates,
     (value) => {
-        emit(
-            'update:modelValue',
-            value.map((item) => ({ ...item }))
-        )
+        if (!suppressEmit) {
+            emit(
+                'update:modelValue',
+                value.map((item) => ({ ...item }))
+            )
+        }
         errors.value = errors.value.map((error, index) => {
             if (!error) return ''
             const date = value[index]
@@ -215,15 +229,6 @@ const removeDate = (index: number) => {
     localDates.value = updated.length ? updated : [emptyDate()]
     errors.value = updated.length ? updatedErrors : ['']
 }
-
-// TODO: fetch spaces (and other dependencies) when endpoints are available
-watch(
-    () => props.organizerId,
-    () => {
-        // placeholder for future fetch when organizer context changes
-    },
-    { immediate: true }
-)
 
 const validate = () => {
     errors.value = localDates.value.map((date) => evaluateDateError(date))

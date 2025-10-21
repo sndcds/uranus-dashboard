@@ -11,11 +11,13 @@
                 :model-value="basicInfo"
                 :organizer-id="appStore.organizerId ?? null"
                 @update:modelValue="onBasicInfoUpdate"
+                @spaces-change="onSpacesChange"
             />
             <EventDatesComponent
                 ref="datesRef"
                 :model-value="eventDates"
                 :organizer-id="appStore.organizerId ?? null"
+                :spaces="availableSpaces"
                 @update:modelValue="onDatesUpdate"
             />
             <EventDetailsComponent
@@ -59,6 +61,11 @@ const appStore = useAppStore()
 const basicInfoRef = ref<InstanceType<typeof EventBasicInfoComponent> | null>(null)
 const datesRef = ref<InstanceType<typeof EventDatesComponent> | null>(null)
 const detailsRef = ref<InstanceType<typeof EventDetailsComponent> | null>(null)
+
+interface SelectOption {
+    id: number
+    name: string
+}
 
 interface BasicInfoModel {
     title: string
@@ -115,6 +122,7 @@ const eventDetails = reactive<EventDetailsModel>({
 const isSubmitting = ref(false)
 const submitError = ref<string | null>(null)
 const submitSuccess = ref<string | null>(null)
+const availableSpaces = ref<SelectOption[]>([])
 
 const onBasicInfoUpdate = (value: BasicInfoModel) => {
     Object.assign(basicInfo, value)
@@ -126,6 +134,31 @@ const onDatesUpdate = (value: EventDateModel[]) => {
 
 const onDetailsUpdate = (value: EventDetailsModel) => {
     Object.assign(eventDetails, value)
+}
+
+const onSpacesChange = (options: SelectOption[]) => {
+    const normalized = Array.isArray(options) ? [...options] : []
+
+    availableSpaces.value = normalized
+
+    const validIds = new Set(normalized.map((option) => option.id))
+
+    if (!validIds.has(basicInfo.spaceId ?? -1)) {
+        basicInfo.spaceId = null
+    }
+
+    let changed = false
+    const updatedDates = eventDates.value.map((date) => {
+        if (date.spaceId && !validIds.has(date.spaceId)) {
+            changed = true
+            return { ...date, spaceId: null }
+        }
+        return date
+    })
+
+    if (changed) {
+        eventDates.value = updatedDates
+    }
 }
 
 watch(

@@ -94,6 +94,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: BasicInfoModel): void
+    (e: 'spaces-change', value: SelectOption[]): void
 }>()
 
 const { t } = useI18n({ useScope: 'global' })
@@ -161,7 +162,8 @@ watch(
     async (id) => {
         await fetchOrganizers(id ?? null)
         await fetchVenues(id ?? null)
-        await fetchEventTypes()
+        await fetchSpaces(basicInfo.venueId)
+        await fetchEventTypes(id ?? null)
         await fetchGenres(id ?? null)
     },
     { immediate: true }
@@ -203,16 +205,32 @@ watch(
 )
 
 async function fetchVenues(contextId: number | null) {
+    if (!contextId) {
+        venues.value = []
+        basicInfo.venueId = null
+        emit('spaces-change', [])
+        return
+    }
+
     try {
         const { data } = await apiFetch<SelectOption[]>(`/api/choosable-venues/organizer/${contextId}`)
         venues.value = Array.isArray(data) ? data : []
     } catch (error) {
         console.error('Failed to load venues', error)
         venues.value = []
+        basicInfo.venueId = null
+        emit('spaces-change', [])
     }
 }
 
 async function fetchSpaces(contextId: number | null) {
+    if (!contextId) {
+        spaces.value = []
+        basicInfo.spaceId = null
+        emit('spaces-change', [])
+        return
+    }
+
     try {
         const { data } = await apiFetch<SelectOption[]>(`/api/choosable-spaces/venue/${contextId}`)
         spaces.value = Array.isArray(data) ? data : []
@@ -220,17 +238,26 @@ async function fetchSpaces(contextId: number | null) {
         if (!spaces.value.find((space) => space.id === basicInfo.spaceId)) {
             basicInfo.spaceId = null
         }
+
+        emit('spaces-change', [...spaces.value])
     } catch (error) {
         console.error('Failed to load spaces', error)
         spaces.value = []
         basicInfo.spaceId = null
+        emit('spaces-change', [])
     }
 }
 
-async function fetchEventTypes() {
+async function fetchEventTypes(contextId: number | null) {
+    if (!contextId) {
+        eventTypes.value = []
+        basicInfo.eventTypeIds = []
+        return
+    }
+
     try {
         const { data } = await apiFetch<Array<{ type_id: number; name: string }>>(
-            '/api/choosable-event-types'
+            `/api/choosable-event-types/organizer/${contextId}`
         )
 
         const mapped = Array.isArray(data)
@@ -254,12 +281,19 @@ async function fetchEventTypes() {
 }
 
 async function fetchGenres(contextId: number | null) {
+    if (!contextId) {
+        genres.value = []
+        basicInfo.genreId = null
+        return
+    }
+
     try {
         const { data } = await apiFetch<SelectOption[]>(`/api/choosable-genres/organizer/${contextId}`)
         genres.value = Array.isArray(data) ? data : []
     } catch (error) {
         console.error('Failed to load genres', error)
         genres.value = []
+        basicInfo.genreId = null
     }
 }
 
