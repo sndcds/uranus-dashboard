@@ -258,39 +258,18 @@ const submitEvent = async () => {
 
 <style scoped lang="scss">
 .event-form-page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-    padding: clamp(1.5rem, 4vw, 3rem);
-    background: linear-gradient(135deg, rgba(72, 93, 255, 0.1), rgba(141, 233, 255, 0.15));
-    backdrop-filter: blur(6px);
+    @include form-page();
 }
 
 .event-form-hero {
-    text-align: center;
-    max-width: 560px;
-    color: #1f2937;
-
-    h1 {
-        font-size: clamp(1.9rem, 3vw, 2.5rem);
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    p {
-        margin: 0;
-        font-size: clamp(1rem, 2.3vw, 1.15rem);
-        color: rgba(31, 41, 55, 0.75);
-        line-height: 1.6;
-    }
+    @include form-hero(560px);
 }
 
 .event-form-grid {
     width: min(1080px, 100%);
     display: grid;
     gap: clamp(1.5rem, 3vw, 2rem);
+    padding-bottom: 30px;
 }
 
 .event-form-actions {
@@ -301,58 +280,18 @@ const submitEvent = async () => {
 }
 
 button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.9rem 2.2rem;
-    border-radius: 999px;
-    border: none;
-    background: linear-gradient(135deg, #485dff, #60a5fa);
-    color: #fff;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-
-    &:hover:not(:disabled) {
-        transform: translateY(-1px);
-        box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
-        filter: brightness(1.05);
-    }
-
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.35);
-    }
-
-    &:disabled {
-        cursor: wait;
-        opacity: 0.7;
-        transform: none;
-        box-shadow: none;
-    }
+    @include form-primary-button($padding-y: 0.9rem, $padding-x: 2.2rem);
 }
 
 .feedback {
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: 12px;
-    padding: 0.75rem 1rem;
-    margin: 0;
-    text-align: right;
-    border: 1px solid transparent;
+    @include form-feedback($text-align: right);
 
     &--error {
-        color: #991b1b;
-        background: rgba(254, 202, 202, 0.45);
-        border-color: rgba(248, 113, 113, 0.35);
+        @include form-feedback-error();
     }
 
     &--success {
-        color: #047857;
-        background: rgba(167, 243, 208, 0.45);
-        border-color: rgba(74, 222, 128, 0.35);
+        @include form-feedback-success();
     }
 }
 

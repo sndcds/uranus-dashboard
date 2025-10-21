@@ -123,44 +123,20 @@ const signup = async () => {
 
 <style scoped lang="scss">
 .signup-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.35), transparent 55%), radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.3), transparent 45%);
+    @include form-page($justify: center, $padding: clamp(2rem, 6vw, 3rem));
 }
 
 .signup-card {
-    width: min(420px, 100%);
+    @include form-card(420px, clamp(2rem, 4vw, 2.75rem), clamp(1.5rem, 3vw, 2rem));
     background: rgba(255, 255, 255, 0.92);
-    border-radius: 24px;
-    padding: clamp(2rem, 4vw, 2.75rem);
-    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.15);
     backdrop-filter: blur(12px);
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.5rem, 3vw, 2rem);
 }
 
 .signup-header {
-    text-align: center;
+    @include form-hero(420px);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-
-    h1 {
-        font-size: clamp(1.9rem, 3vw, 2.4rem);
-        font-weight: 700;
-        color: #111827;
-        margin: 0;
-    }
-
-    p {
-        margin: 0;
-        font-size: 1rem;
-        color: rgba(55, 65, 81, 0.8);
-        line-height: 1.6;
-    }
 }
 
 .signup-form {
@@ -170,85 +146,18 @@ const signup = async () => {
 }
 
 .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    label {
-        font-weight: 600;
-        color: #1f2937;
-        letter-spacing: 0.015em;
-    }
-
-    input {
-        padding: 0.85rem 1rem;
-        border-radius: 14px;
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        background-color: rgba(248, 250, 252, 0.85);
-        font-size: 1rem;
-        color: #0f172a;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-
-        &::placeholder {
-            color: rgba(100, 116, 139, 0.6);
-        }
-
-        &:focus {
-            outline: none;
-            border-color: rgba(79, 70, 229, 0.75);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-            background-color: #fff;
-        }
-    }
+    @include form-group();
 }
 
 button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.9rem 1.5rem;
-    border-radius: 999px;
-    border: none;
-    background: linear-gradient(135deg, #4f46e5, #0ea5e9);
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-
-    &:hover:not(:disabled) {
-        transform: translateY(-1px);
-        box-shadow: 0 14px 30px rgba(79, 70, 229, 0.35);
-        filter: brightness(1.03);
-    }
-
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.3);
-    }
-
-    &:disabled {
-        cursor: wait;
-        opacity: 0.75;
-        transform: none;
-        box-shadow: none;
-    }
+    @include form-primary-button($padding-y: 0.9rem, $padding-x: 1.5rem);
 }
 
 .signup-feedback {
-    margin: 0;
-    border-radius: 14px;
-    padding: 0.85rem 1rem;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.95rem;
-    border: 1px solid transparent;
+    @include form-feedback();
 
     &--error {
-        color: #b91c1c;
-        background: rgba(254, 202, 202, 0.45);
-        border-color: rgba(248, 113, 113, 0.35);
+        @include form-feedback-error();
     }
 }
 

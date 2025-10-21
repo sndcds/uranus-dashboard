@@ -240,33 +240,11 @@ defineExpose({ validate })
 
 <style scoped lang="scss">
 .event-section {
-    background: #ffffff;
-    border-radius: 24px;
-    padding: clamp(1.75rem, 4vw, 2.5rem);
-    box-shadow: 0 24px 50px rgba(31, 41, 55, 0.14);
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.25rem, 3vw, 1.75rem);
+    @include form-section();
 }
 
 .event-section__header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-
-    h2 {
-        font-size: clamp(1.35rem, 2.5vw, 1.75rem);
-        font-weight: 700;
-        color: #111827;
-        margin: 0;
-    }
-
-    p {
-        margin: 0;
-        color: rgba(55, 65, 81, 0.8);
-        line-height: 1.6;
-        font-size: 0.98rem;
-    }
+    @include form-section-header();
 }
 
 .event-section__form {
@@ -334,54 +312,7 @@ defineExpose({ validate })
 }
 
 .form-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    label {
-        font-weight: 600;
-        color: #1f2937;
-        letter-spacing: 0.01em;
-    }
-
-    .required {
-        color: #dc2626;
-        margin-left: 0.25rem;
-    }
-
-    input,
-    select {
-        padding: 0.75rem 0.9rem;
-        border: 1px solid rgba(17, 24, 39, 0.1);
-        border-radius: 12px;
-        background-color: rgba(243, 244, 246, 0.6);
-        color: #0f172a;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-        font-size: 1rem;
-
-        &:focus {
-            outline: none;
-            border-color: rgba(79, 70, 229, 0.75);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-            background-color: #fff;
-        }
-    }
-
-    select {
-        padding-right: 2.4rem;
-        background:
-            linear-gradient(180deg, rgba(243, 244, 246, 0.9), rgba(229, 231, 235, 0.65)),
-            url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%2363748B'/%3E%3C/svg%3E")
-                no-repeat right 0.85rem center/0.9rem;
-        appearance: none;
-
-        &:focus {
-            background:
-                linear-gradient(180deg, #ffffff, rgba(229, 231, 235, 0.65)),
-                url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%234856FF'/%3E%3C/svg%3E")
-                    no-repeat right 0.85rem center/0.9rem;
-        }
-    }
+    @include form-group();
 }
 
 .form-field--checkbox {
@@ -404,27 +335,7 @@ defineExpose({ validate })
 }
 
 .secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1.5rem;
-    border-radius: 999px;
-    border: 1px solid rgba(79, 70, 229, 0.35);
-    background: #fff;
-    color: #4f46e5;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-
-    &:hover {
-        background: rgba(79, 70, 229, 0.08);
-        box-shadow: 0 10px 20px rgba(79, 70, 229, 0.15);
-    }
-
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
-    }
+    @include form-secondary-button();
 }
 
 @media (max-width: 540px) {

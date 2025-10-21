@@ -26,6 +26,7 @@
                                 <th>{{ t('event_title') }}</th>
                                 <th>{{ t('event_organizer') }}</th>
                                 <th>{{ t('event_type') }}</th>
+                                <th>{{ t('event_details') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -36,6 +37,14 @@
                                 <td>{{ event.event_organizer_name }}</td>
                                 <td>
                                     <span class="chip">{{ event.event_type || t('event_type_unknown') }}</span>
+                                </td>
+                                <td>
+                                    <router-link
+                                        :to="`/event/${event.event_id}`"
+                                        class="btn btn--sm btn--secondary"
+                                    >
+                                        {{ t('view_event') }}
+                                    </router-link>
                                 </td>
                             </tr>
                         </tbody>
@@ -130,44 +139,15 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .events-page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-    padding: clamp(1.5rem, 4vw, 3rem);
-    background: linear-gradient(135deg, rgba(72, 93, 255, 0.1), rgba(141, 233, 255, 0.15));
-    backdrop-filter: blur(6px);
+    @include form-page();
 }
 
 .events-hero {
-    text-align: center;
-    max-width: 560px;
-    color: #1f2937;
-
-    h1 {
-        font-size: clamp(1.9rem, 3vw, 2.5rem);
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    p {
-        margin: 0;
-        font-size: clamp(1rem, 2.3vw, 1.15rem);
-        color: rgba(31, 41, 55, 0.75);
-        line-height: 1.6;
-    }
+    @include form-hero(560px);
 }
 
 .events-card {
-    width: min(1280px, 100%);
-    background: #ffffff;
-    border-radius: 24px;
-    padding: clamp(1.75rem, 4vw, 2.5rem);
-    box-shadow: 0 24px 50px rgba(31, 41, 55, 0.16);
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.25rem, 3vw, 1.75rem);
+    @include form-card(1280px, clamp(1.75rem, 4vw, 2.5rem), clamp(1.25rem, 3vw, 1.75rem));
 }
 
 .table-wrapper {
@@ -217,18 +197,10 @@ tbody tr:hover {
 }
 
 .feedback {
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: 12px;
-    padding: 0.75rem 1rem;
-    margin: 0;
-    text-align: center;
-    border: 1px solid transparent;
+    @include form-feedback();
 
     &--error {
-        color: #991b1b;
-        background: rgba(254, 202, 202, 0.45);
-        border-color: rgba(248, 113, 113, 0.35);
+        @include form-feedback-error();
     }
 }
 

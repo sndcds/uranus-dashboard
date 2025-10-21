@@ -5,7 +5,7 @@
             <p>{{ venueDescription }}</p>
         </section>
 
-        <section class="card">
+        <section class="venue-card">
             <div class="venue-layout">
                 <form class="venue-form" @submit.prevent="submitForm">
                     <div class="form-grid">
@@ -49,7 +49,7 @@
                 </form>
 
                 <aside class="venue-map-panel">
-                    <LocationMapComponent v-model="location" :zoom="13">
+                    <LocationMapComponent v-model="location" :zoom="13" :selectable="true">
                         <template #footer>
                             {{ mapHint }}
                         </template>
@@ -148,44 +148,15 @@ const submitForm = async () => {
 
 <style scoped lang="scss">
 .venue-page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-    padding: clamp(1.5rem, 4vw, 3rem);
-    background: linear-gradient(135deg, rgba(72, 93, 255, 0.1), rgba(141, 233, 255, 0.15));
-    backdrop-filter: blur(6px);
+    @include form-page();
 }
 
 .venue-hero {
-    text-align: center;
-    max-width: 540px;
-    color: #1f2937;
-
-    h1 {
-        font-size: clamp(1.9rem, 3vw, 2.5rem);
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    p {
-        font-size: clamp(1rem, 2.3vw, 1.15rem);
-        color: rgba(31, 41, 55, 0.75);
-        line-height: 1.6;
-        margin: 0;
-    }
+    @include form-hero(960px);
 }
 
 .venue-card {
-    width: min(960px, 100%);
-    background: #ffffff;
-    border-radius: 24px;
-    padding: clamp(1.75rem, 4vw, 2.75rem);
-    box-shadow: 0 24px 50px rgba(31, 41, 55, 0.16);
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.25rem, 3vw, 1.75rem);
+    @include form-card(960px, clamp(1.75rem, 4vw, 2.75rem), clamp(1.25rem, 3vw, 1.75rem));
 }
 
 .venue-layout {
@@ -201,41 +172,11 @@ const submitForm = async () => {
 }
 
 .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: clamp(1rem, 2vw, 1.5rem);
+    @include form-grid();
 }
 
 .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    label {
-        font-weight: 600;
-        color: #111827;
-        letter-spacing: 0.01em;
-    }
-
-    input {
-        padding: 0.75rem 0.9rem;
-        border: 1px solid rgba(17, 24, 39, 0.1);
-        border-radius: 12px;
-        background-color: rgba(243, 244, 246, 0.6);
-        color: #111827;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-
-        &::placeholder {
-            color: rgba(31, 41, 55, 0.45);
-        }
-
-        &:focus {
-            outline: none;
-            border-color: rgba(91, 103, 255, 0.65);
-            box-shadow: 0 0 0 4px rgba(91, 103, 255, 0.15);
-            background-color: #fff;
-        }
-    }
+    @include form-group();
 }
 
 .form-actions {
@@ -244,36 +185,7 @@ const submitForm = async () => {
 }
 
 button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.85rem 2rem;
-    border: none;
-    border-radius: 999px;
-    background: linear-gradient(135deg, #485dff, #60a5fa);
-    color: #fff;
-    font-weight: 600;
-    font-size: 1rem;
-    letter-spacing: 0.02em;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-
-    &:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
-        filter: brightness(1.05);
-    }
-
-    &:active {
-        transform: translateY(0);
-        box-shadow: 0 6px 15px rgba(72, 93, 255, 0.3);
-    }
-
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.35);
-    }
+    @include form-primary-button($padding-y: 0.85rem, $padding-x: 2rem);
 }
 
 .venue-map-panel {
@@ -307,24 +219,14 @@ button {
 }
 
 .feedback {
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: 12px;
-    padding: 0.75rem 1rem;
-    margin: 0;
-    text-align: center;
-    border: 1px solid transparent;
+    @include form-feedback();
 
     &--error {
-        color: #991b1b;
-        background: rgba(254, 202, 202, 0.45);
-        border-color: rgba(248, 113, 113, 0.35);
+        @include form-feedback-error();
     }
 
     &--success {
-        color: #065f46;
-        background: rgba(167, 243, 208, 0.45);
-        border-color: rgba(110, 231, 183, 0.35);
+        @include form-feedback-success();
     }
 }
 
