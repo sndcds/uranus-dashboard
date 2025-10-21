@@ -62,20 +62,11 @@
                 <label for="event-type">
                     {{ t('event_type_label') }}<span class="required">*</span>
                 </label>
-                <TagListComponent :options="eventTypes" :model-value="basicInfo.eventTypeIds"
-                    :placeholder="t('event_type_placeholder')" @update:modelValue="updateEventTypes" />
-                <p v-if="errors.eventTypeIds" class="field-error">{{ errors.eventTypeIds }}</p>
-            </div>
-            <div>
-                <div class="form-field">
-                    <label for="genre">{{ t('event_genre_label') }}</label>
-                    <select id="genre" v-model="basicInfo.genreId">
-                        <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                        <option v-for="gen in genres" :key="gen.id" :value="gen.id">
-                            {{ gen.name }}
-                        </option>
-                    </select>
-                </div>
+              <TwoStageTagListComponent
+                  :fetchStage1="fetchEventTypes"
+                  :fetchStage2="fetchEventGenres"
+                  @update-selection="onEventSelectionUpdate"
+              />
             </div>
         </div>
     </section>
@@ -85,7 +76,7 @@
 import { reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import TagListComponent from '@/components/TagListComponent.vue'
+import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue";
 
 const props = defineProps<{
     organizerId: number | null
@@ -111,7 +102,7 @@ interface BasicInfoModel {
     venueId: number | null
     spaceId: number | null
     eventTypeIds: number[]
-    genreId: number | null
+    genreTypeIds: number[] | null
 }
 
 const emptyBasicInfo = (): BasicInfoModel => ({
@@ -121,7 +112,7 @@ const emptyBasicInfo = (): BasicInfoModel => ({
     venueId: null,
     spaceId: null,
     eventTypeIds: [],
-    genreId: null,
+    genreTypeIds: null,
 })
 
 const basicInfo = reactive<BasicInfoModel>(emptyBasicInfo())
@@ -137,8 +128,6 @@ const errors = reactive({
     organizerId: null as string | null,
     venueId: null as string | null,
     spaceId: null as string | null,
-    eventTypeIds: null as string | null,
-    genreId: null as string | null,
 })
 
 watch(
@@ -163,15 +152,9 @@ watch(
         await fetchOrganizers(id ?? null)
         await fetchVenues(id ?? null)
         await fetchSpaces(basicInfo.venueId)
-        await fetchEventTypes(id ?? null)
-        await fetchGenres(id ?? null)
     },
     { immediate: true }
 )
-
-const updateEventTypes = (value: number[]) => {
-    basicInfo.eventTypeIds = Array.isArray(value) ? [...value] : []
-}
 
 async function fetchOrganizers(contextId: number | null) {
     if (!contextId) {
@@ -248,59 +231,24 @@ async function fetchSpaces(contextId: number | null) {
     }
 }
 
-async function fetchEventTypes(contextId: number | null) {
-    if (!contextId) {
-        eventTypes.value = []
-        basicInfo.eventTypeIds = []
-        return
-    }
-
-    try {
-        const { data } = await apiFetch<Array<{ type_id: number; name: string }>>(
-            `/api/choosable-event-types/organizer/${contextId}`
-        )
-
-        const mapped = Array.isArray(data)
-            ? data.map((item) => ({ id: item.type_id, name: item.name }))
-            : []
-
-        const seen = new Set<number>()
-        eventTypes.value = mapped.filter((option) => {
-            if (seen.has(option.id)) return false
-            seen.add(option.id)
-            return true
-        })
-
-        const validIds = new Set(eventTypes.value.map((option) => option.id))
-        basicInfo.eventTypeIds = basicInfo.eventTypeIds.filter((id) => validIds.has(id))
-    } catch (error) {
-        console.error('Failed to load event types', error)
-        eventTypes.value = []
-        basicInfo.eventTypeIds = []
-    }
+async function fetchEventTypes() {
+  const { data } = await apiFetch('/api/choosable-event-types?lang=de')
+  return data
 }
 
-async function fetchGenres(contextId: number | null) {
-    if (!contextId) {
-        genres.value = []
-        basicInfo.genreId = null
-        return
-    }
+async function fetchEventGenres(typeId: number) {
+  const { data } = await apiFetch(`/api/choosable-event-genres/event-type/${typeId}?lang=de`)
+  return data
+}
 
-    try {
-        const { data } = await apiFetch<SelectOption[]>(`/api/choosable-genres/organizer/${contextId}`)
-        genres.value = Array.isArray(data) ? data : []
-    } catch (error) {
-        console.error('Failed to load genres', error)
-        genres.value = []
-        basicInfo.genreId = null
-    }
+function onEventSelectionUpdate(payload: { typeIds: number[], genreIds: number[] }) {
+  basicInfo.eventTypeIds = payload.typeIds
+  basicInfo.genreTypeIds = payload.genreIds
 }
 
 const validate = () => {
     errors.title = basicInfo.title.trim() ? null : t('event_error_required')
     errors.organizerId = basicInfo.organizerId ? null : t('event_error_required')
-    errors.eventTypeIds = basicInfo.eventTypeIds.length ? null : t('event_error_required_optional')
     errors.venueId = basicInfo.venueId ? null : t('event_error_required_optional')
 
     return Object.values(errors).every((msg) => !msg)
@@ -311,7 +259,6 @@ watch(
     () => {
         if (errors.title && basicInfo.title.trim()) errors.title = null
         if (errors.organizerId && basicInfo.organizerId) errors.organizerId = null
-        if (errors.eventTypeIds && basicInfo.eventTypeIds.length) errors.eventTypeIds = null
         if (errors.venueId && basicInfo.venueId) errors.venueId = null
     },
     { deep: true }

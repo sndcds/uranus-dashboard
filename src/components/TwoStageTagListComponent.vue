@@ -14,7 +14,7 @@
         >
           <option disabled value="">Select type...</option>
           <option
-              v-for="type in eventTypes || []"
+              v-for="type in eventTypes"
               :key="type.type_id"
               :value="type"
           >
@@ -24,7 +24,7 @@
       </div>
 
       <!-- Genre (only if available) -->
-      <div class="flex-1" v-if="selectedType && (genres?.length || 0) > 0">
+      <div class="flex-1" v-if="selectedType && genres.length > 0">
         <label class="block text-sm font-medium text-gray-700 mb-1">Genre</label>
         <select
             v-model="selectedGenre"
@@ -32,7 +32,7 @@
         >
           <option disabled value="">Select genre...</option>
           <option
-              v-for="genre in genres || []"
+              v-for="genre in genres"
               :key="genre.type_id"
               :value="genre"
           >
@@ -62,7 +62,7 @@
         >
           <span>
             <strong>{{ item.type.name }}</strong>
-            <span v-if="item.genre"> — {{ item.genre.name }}</span>
+            <span v-if="item.genre"> / {{ item.genre.name }}</span>
           </span>
           <button
               @click="removeCombination(index)"
@@ -77,22 +77,34 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { apiFetch } from '@/api'
 
+// --- Props ---
+interface Props {
+  fetchStage1: () => Promise<any[]>
+  fetchStage2: (typeId: number) => Promise<any[]>
+}
+
+const props = defineProps<Props>()
+
+// --- Emits ---
+const emit = defineEmits<{
+  (e: 'update-selection', payload: { typeIds: number[], genreIds: number[] }): void
+}>()
+
 // --- Reactive state ---
-const eventTypes = ref([])     // always array
-const genres = ref([])         // always array
-const selectedType = ref(null) // use null instead of ''
-const selectedGenre = ref(null)
-const selectedList = ref([])
+const eventTypes = ref<any[]>([])
+const genres = ref<any[]>([])
+const selectedType = ref<any | null>(null)
+const selectedGenre = ref<any | null>(null)
+const selectedList = ref<{ type: any; genre: any | null }[]>([])
 
 // --- Fetch Functions ---
-async function fetchStage1() {
+async function fetchEventTypes() {
   try {
-    const { status, data } = await apiFetch('/api/choosable-event-types')
-    if (status !== 200) throw new Error('Failed to fetch event types')
+    const data = await props.fetchStage1()
     eventTypes.value = Array.isArray(data) ? data : []
   } catch (err) {
     console.error('fetchStage1 error:', err)
@@ -100,10 +112,9 @@ async function fetchStage1() {
   }
 }
 
-async function fetchStage2(stage1Id) {
+async function fetchEventGenres(typeId: number) {
   try {
-    const { status, data } = await apiFetch(`/api/choosable-event-genres/event-type/${stage1Id}`)
-    if (status !== 200) throw new Error('Failed to fetch genres')
+    const data = await props.fetchStage2(typeId)
     genres.value = Array.isArray(data) ? data : []
   } catch (err) {
     console.error('fetchStage2 error:', err)
@@ -116,8 +127,16 @@ async function onTypeChange() {
   selectedGenre.value = null
   genres.value = []
   if (selectedType.value?.type_id) {
-    await fetchStage2(selectedType.value.type_id)
+    await fetchEventGenres(selectedType.value.type_id)
   }
+}
+
+function updateParentSelection() {
+  const typeIds = selectedList.value.map(item => item.type.type_id)
+  const genreIds = selectedList.value
+      .filter(item => item.genre)
+      .map(item => item.genre.type_id)
+  emit('update-selection', { typeIds, genreIds })
 }
 
 function addCombination() {
@@ -132,16 +151,18 @@ function addCombination() {
 
   selectedList.value.push({
     type: selectedType.value,
-    genre: (genres.value.length > 0 ? selectedGenre.value : null),
+    genre: genres.value.length > 0 ? selectedGenre.value : null,
   })
 
   selectedGenre.value = null
+  updateParentSelection()
 }
 
-function removeCombination(index) {
+function removeCombination(index: number) {
   selectedList.value.splice(index, 1)
+  updateParentSelection()
 }
 
 // --- On component mount ---
-onMounted(fetchStage1)
+onMounted(fetchEventTypes)
 </script>

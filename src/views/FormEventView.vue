@@ -74,7 +74,7 @@ interface BasicInfoModel {
     venueId: number | null
     spaceId: number | null
     eventTypeIds: number[]
-    genreId: number | null
+    genreTypeIds: number[] | null
 }
 
 interface EventDateModel {
@@ -104,7 +104,7 @@ const basicInfo = reactive<BasicInfoModel>({
     venueId: null,
     spaceId: null,
     eventTypeIds: [],
-    genreId: null,
+    genreTypeIds: [],
 })
 
 const eventDates = ref<EventDateModel[]>([])
@@ -172,7 +172,6 @@ const canSubmit = computed(() => {
     return (
         !!basicInfo.title &&
         basicInfo.organizerId !== null &&
-        basicInfo.eventTypeIds.length > 0 &&
         eventDates.value.length > 0 &&
         eventDates.value.every((date) => date.startDate && date.startTime && date.endTime)
     )
@@ -184,7 +183,7 @@ const resetForm = () => {
     basicInfo.venueId = null
     basicInfo.spaceId = null
     basicInfo.eventTypeIds = []
-    basicInfo.genreId = null
+    basicInfo.genreTypeIds = null
 
     eventDates.value = []
 
@@ -198,6 +197,8 @@ const resetForm = () => {
 }
 
 const submitEvent = async () => {
+    console.log("eventTypeIds" + basicInfo.eventTypeIds)
+    console.log("genreTypeIds" + basicInfo.genreTypeIds)
     const sectionResults = [
         basicInfoRef.value?.validate?.(),
         datesRef.value?.validate?.(),
@@ -223,7 +224,7 @@ const submitEvent = async () => {
         venue_id: basicInfo.venueId,
         default_space_id: basicInfo.spaceId,
         event_type_ids: basicInfo.eventTypeIds,
-        genre_id: basicInfo.genreId,
+        genre_type_ids: basicInfo.genreTypeIds,
         details: {
             description: eventDetails.description,
             teaser_text: eventDetails.teaserText || null,
@@ -243,8 +244,6 @@ const submitEvent = async () => {
             all_day: date.allDayEvent,
         })),
     }
-
-    console.log(payload)
 
     try {
         const { status } = await apiFetch('/api/admin/event/create', {
