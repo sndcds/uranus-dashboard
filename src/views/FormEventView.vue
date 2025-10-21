@@ -6,26 +6,13 @@
         </section>
 
         <form class="event-form-grid" @submit.prevent="submitEvent">
-            <EventBasicInfoComponent
-                ref="basicInfoRef"
-                :model-value="basicInfo"
-                :organizer-id="appStore.organizerId ?? null"
-                @update:modelValue="onBasicInfoUpdate"
-                @spaces-change="onSpacesChange"
-            />
-            <EventDatesComponent
-                ref="datesRef"
-                :model-value="eventDates"
-                :organizer-id="appStore.organizerId ?? null"
-                :spaces="availableSpaces"
-                @update:modelValue="onDatesUpdate"
-            />
-            <EventDetailsComponent
-                ref="detailsRef"
-                :model-value="eventDetails"
-                :organizer-id="appStore.organizerId ?? null"
-                @update:modelValue="onDetailsUpdate"
-            />
+            <EventBasicInfoComponent ref="basicInfoRef" :model-value="basicInfo"
+                :organizer-id="appStore.organizerId ?? null" @update:modelValue="onBasicInfoUpdate"
+                @spaces-change="onSpacesChange" />
+            <EventDatesComponent ref="datesRef" :model-value="eventDates" :organizer-id="appStore.organizerId ?? null"
+                :spaces="availableSpaces" @update:modelValue="onDatesUpdate" />
+            <EventDetailsComponent ref="detailsRef" :model-value="eventDetails"
+                :organizer-id="appStore.organizerId ?? null" @update:modelValue="onDetailsUpdate" />
 
             <div class="event-form-actions">
                 <transition name="fade">
@@ -173,7 +160,7 @@ const canSubmit = computed(() => {
         !!basicInfo.title &&
         basicInfo.organizerId !== null &&
         eventDates.value.length > 0 &&
-        eventDates.value.every((date) => date.startDate && date.startTime && date.endTime)
+        eventDates.value.every((date) => date.startDate && date.startTime)
     )
 })
 
@@ -197,8 +184,6 @@ const resetForm = () => {
 }
 
 const submitEvent = async () => {
-    console.log("eventTypeIds" + basicInfo.eventTypeIds)
-    console.log("genreTypeIds" + basicInfo.genreTypeIds)
     const sectionResults = [
         basicInfoRef.value?.validate?.(),
         datesRef.value?.validate?.(),
@@ -240,7 +225,7 @@ const submitEvent = async () => {
             start_time: date.startTime,
             end_time: date.endTime,
             entry_time: date.entryTime,
-            space_id: date.spaceId ?? basicInfo.spaceId,
+            space_id: date.spaceId,
             all_day: date.allDayEvent,
         })),
     }
