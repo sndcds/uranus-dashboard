@@ -231,14 +231,14 @@ async function fetchSpaces(contextId: number | null) {
     }
 }
 
-async function fetchEventTypes() {
-  const { data } = await apiFetch('/api/choosable-event-types?lang=de')
-  return data
+async function fetchEventTypes(): Promise<SelectOption[]> {
+  const { data } = await apiFetch<SelectOption[]>('/api/choosable-event-types?lang=de')
+  return Array.isArray(data) ? data : []
 }
 
-async function fetchEventGenres(typeId: number) {
-  const { data } = await apiFetch(`/api/choosable-event-genres/event-type/${typeId}?lang=de`)
-  return data
+async function fetchEventGenres(typeId: number): Promise<SelectOption[]> {
+  const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-genres/event-type/${typeId}?lang=de`)
+  return Array.isArray(data) ? data : []
 }
 
 function onEventSelectionUpdate(payload: { typeIds: number[], genreIds: number[] }) {
