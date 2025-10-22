@@ -68,7 +68,7 @@ interface EventDateModel {
     startDate: string
     endDate: string | null
     startTime: string
-    endTime: string
+    endTime: string | null
     entryTime: string | null
     spaceId: number | null
     allDayEvent: boolean
@@ -210,16 +210,13 @@ const submitEvent = async () => {
         space_id: basicInfo.spaceId,
         event_type_ids: basicInfo.eventTypeIds,
         genre_type_ids: basicInfo.genreTypeIds,
-        details: {
-            description: eventDetails.description,
-            teaser_text: eventDetails.teaserText || null,
-            language: eventDetails.language,
-            min_age: eventDetails.minAge,
-            max_age: eventDetails.maxAge,
-            participation_info: eventDetails.participationInfo,
-            presented_by: eventDetails.presenter,
-        },
-        occurrences: eventDates.value.map((date) => ({
+        description: eventDetails.description,
+        teaser_text: eventDetails.teaserText || null,
+        language: eventDetails.language,
+        min_age: eventDetails.minAge,
+        max_age: eventDetails.maxAge,
+        participation_info: eventDetails.participationInfo,
+        dates: eventDates.value.map((date) => ({
             start_date: date.startDate,
             end_date: date.endDate,
             start_time: date.startTime,
