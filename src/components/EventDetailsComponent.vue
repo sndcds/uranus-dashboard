@@ -19,7 +19,7 @@
                     <p v-if="errors.description" class="field-error">{{ errors.description }}</p>
                 </div>
 
-                <div class="form-field">
+                <div class="form-field form-field--wide">
                     <label for="teaser-text">{{ t('event_teaser_label') }}</label>
                     <input
                         id="teaser-text"
