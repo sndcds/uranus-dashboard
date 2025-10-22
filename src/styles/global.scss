@@ -146,7 +146,6 @@ $button-text-color: #333;
 }
 
 // Shared form layout tokens
-$uranus-form-page-background: linear-gradient(135deg, rgba(72, 93, 255, 0.1), rgba(141, 233, 255, 0.15));
 $uranus-form-card-shadow: 0 24px 50px rgba(31, 41, 55, 0.16);
 $uranus-form-card-radius: 24px;
 $uranus-form-control-border: rgba(148, 163, 184, 0.45);
@@ -161,14 +160,13 @@ $uranus-form-secondary-hover: rgba(79, 70, 229, 0.08);
 $uranus-form-select-icon: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%2363748B'/%3E%3C/svg%3E");
 $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%234856FF'/%3E%3C/svg%3E");
 
-@mixin form-page($background: $uranus-form-page-background, $justify: flex-start, $padding: clamp(1.5rem, 4vw, 3rem)) {
+@mixin form-page($justify: flex-start, $padding: clamp(1.5rem, 4vw, 3rem)) {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: $justify;
   gap: clamp(1.5rem, 3vw, 2.5rem);
-  background: $background;
   backdrop-filter: blur(6px);
 }
 

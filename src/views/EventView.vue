@@ -195,8 +195,6 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: clamp(1.5rem, 3vw, 2.5rem);
-    padding: clamp(1.5rem, 4vw, 3rem);
-    background: linear-gradient(135deg, rgba(72, 93, 255, 0.08), rgba(141, 233, 255, 0.12));
 }
 
 .event-hero {
