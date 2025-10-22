@@ -123,13 +123,12 @@ const signup = async () => {
 
 <style scoped lang="scss">
 .signup-page {
+    height: 100dvh;
     @include form-page($justify: center, $padding: clamp(2rem, 6vw, 3rem));
 }
 
 .signup-card {
     @include form-card(420px, clamp(2rem, 4vw, 2.75rem), clamp(1.5rem, 3vw, 2rem));
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(12px);
 }
 
 .signup-header {
@@ -166,15 +165,15 @@ button {
     justify-content: center;
     gap: 0.5rem;
     font-size: 0.95rem;
-    color: rgba(71, 85, 105, 0.95);
+    color: var(--muted-text);
 
     a {
         font-weight: 600;
-        color: #4f46e5;
+        color: var(--accent-primary);
         transition: color 0.2s ease;
 
         &:hover {
-            color: #4338ca;
+            color: var(--accent-secondary);
         }
     }
 }

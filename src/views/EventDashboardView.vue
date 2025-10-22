@@ -158,30 +158,30 @@ table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.95rem;
-    color: #1f2937;
+    color: var(--color-text);
 }
 
 thead {
-    background: rgba(72, 93, 255, 0.08);
+    background: var(--accent-muted);
 
     th {
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        color: rgba(31, 41, 55, 0.75);
+        color: var(--muted-text);
     }
 }
 
 th,
 td {
     padding: 0.9rem 1rem;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+    border-bottom: 1px solid var(--border-soft);
     text-align: left;
     vertical-align: top;
 }
 
 tbody tr:hover {
-    background: rgba(243, 244, 246, 0.65);
+    background: var(--surface-muted);
 }
 
 .chip {
@@ -189,8 +189,8 @@ tbody tr:hover {
     align-items: center;
     padding: 0.25rem 0.6rem;
     border-radius: 999px;
-    background: rgba(79, 70, 229, 0.1);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
     font-weight: 600;
     font-size: 0.82rem;
     letter-spacing: 0.02em;
@@ -207,7 +207,7 @@ tbody tr:hover {
 .events-loading,
 .events-empty {
     text-align: center;
-    color: rgba(55, 65, 81, 0.85);
+    color: var(--muted-text);
     font-weight: 500;
 }
 

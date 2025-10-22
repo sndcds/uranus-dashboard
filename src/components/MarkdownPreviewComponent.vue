@@ -176,9 +176,9 @@ const renderedContent = computed(() => renderMarkdown(props.value))
     min-height: 180px;
     padding: 1rem;
     border-radius: 12px;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    background: #fff;
-    color: #111827;
+    border: 1px solid var(--border-soft);
+    background: var(--card-bg);
+    color: var(--color-text);
     line-height: 1.6;
 }
 
@@ -208,22 +208,22 @@ const renderedContent = computed(() => renderMarkdown(props.value))
 
 :deep(.markdown-preview th),
 :deep(.markdown-preview td) {
-    border: 1px solid rgba(148, 163, 184, 0.45);
+    border: 1px solid var(--border-soft);
     padding: 0.5rem 0.75rem;
     text-align: left;
 }
 
 :deep(.markdown-preview thead th) {
-    background: rgba(99, 102, 241, 0.12);
+    background: var(--accent-muted);
     font-weight: 600;
 }
 
 :deep(.markdown-preview tbody tr:nth-child(odd)) {
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--card-bg);
 }
 
 :deep(.markdown-preview tbody tr:nth-child(even)) {
-    background: rgba(248, 250, 252, 0.6);
+    background: var(--input-bg);
 }
 
 :deep(.markdown-preview code) {
@@ -233,7 +233,7 @@ const renderedContent = computed(() => renderMarkdown(props.value))
 }
 
 :deep(.markdown-preview .empty) {
-    color: rgba(107, 114, 128, 0.85);
+    color: var(--muted-text);
     font-style: italic;
 }
 </style>

@@ -42,6 +42,7 @@ import { useAppStore } from '@/store/appStore'
 import EventBasicInfoComponent from '@/components/EventBasicInfoComponent.vue'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import EventDetailsComponent from '@/components/EventDetailsComponent.vue'
+import router from '@/router'
 
 const { t } = useI18n({ useScope: 'global' })
 const appStore = useAppStore()
@@ -164,25 +165,6 @@ const canSubmit = computed(() => {
     )
 })
 
-const resetForm = () => {
-    basicInfo.title = ''
-    basicInfo.subtitle = ''
-    basicInfo.venueId = null
-    basicInfo.spaceId = null
-    basicInfo.eventTypeIds = []
-    basicInfo.genreTypeIds = null
-
-    eventDates.value = []
-
-    eventDetails.description = ''
-    eventDetails.teaserText = ''
-    eventDetails.language = null
-    eventDetails.minAge = null
-    eventDetails.maxAge = null
-    eventDetails.participationInfo = ''
-    eventDetails.presenter = ''
-}
-
 const submitEvent = async () => {
     const sectionResults = [
         basicInfoRef.value?.validate?.(),
@@ -228,13 +210,13 @@ const submitEvent = async () => {
     }
 
     try {
-        const { status } = await apiFetch('/api/admin/event/create', {
+        const { status, data } = await apiFetch('/api/admin/event/create', {
             method: 'POST',
             body: JSON.stringify(payload),
         })
         if (status >= 200 && status < 300) {
             submitSuccess.value = t('event_submit_success')
-            resetForm()
+            router.push(`/event/${(data as any).event_id}`)
         } else {
             submitError.value = t('event_submit_error', { status })
         }

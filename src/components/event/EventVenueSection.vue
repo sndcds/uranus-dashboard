@@ -271,7 +271,7 @@ const saveSpace = async () => {
 
 <style scoped lang="scss">
 .event-venue {
-    background: #fff;
+    background: var(--card-bg);
     border-radius: 24px;
     padding: 1.4rem;
     box-shadow: 0 18px 40px rgba(31, 41, 55, 0.1);
@@ -292,8 +292,8 @@ const saveSpace = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.35rem 0.85rem;
-    background: rgba(79, 70, 229, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
@@ -307,7 +307,7 @@ const saveSpace = async () => {
 }
 
 .event-venue__edit:hover {
-    background: rgba(79, 70, 229, 0.2);
+    background: var(--accent-muted-hover);
 }
 
 .event-venue__controls {
@@ -318,7 +318,7 @@ const saveSpace = async () => {
 
 .event-venue__label {
     font-weight: 600;
-    color: #111827;
+    color: var(--color-text);
     text-align: left;
 }
 
@@ -326,16 +326,16 @@ const saveSpace = async () => {
     width: 100%;
     padding: 0.65rem 0.85rem;
     border-radius: 12px;
-    border: 1px solid rgba(17, 24, 39, 0.1);
-    background: rgba(243, 244, 246, 0.6);
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
     font-size: 1rem;
-    color: #111827;
+    color: var(--color-text);
 }
 
 .event-venue__empty {
     margin: 0;
     font-style: italic;
-    color: rgba(107, 114, 128, 0.75);
+    color: var(--muted-text);
 }
 
 .event-venue__actions {
@@ -348,7 +348,7 @@ const saveSpace = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.5rem 1.3rem;
-    background: linear-gradient(135deg, #485dff, #60a5fa);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: #fff;
     font-weight: 600;
     cursor: pointer;
@@ -366,8 +366,8 @@ const saveSpace = async () => {
 }
 
 .event-venue__button--cancel {
-    background: rgba(99, 102, 241, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
 }
 
 .event-venue__button--cancel:hover {
@@ -389,15 +389,15 @@ const saveSpace = async () => {
 
 .event-space__text {
     margin: 0;
-    color: rgba(55, 65, 81, 0.85);
+    color: var(--muted-text);
 }
 
 .event-space__edit {
     border: none;
     border-radius: 999px;
     padding: 0.35rem 0.85rem;
-    background: rgba(79, 70, 229, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
@@ -411,7 +411,7 @@ const saveSpace = async () => {
 }
 
 .event-space__edit:hover {
-    background: rgba(79, 70, 229, 0.2);
+    background: var(--accent-muted-hover);
 }
 
 .event-space__controls {
@@ -422,7 +422,7 @@ const saveSpace = async () => {
 
 .event-space__label {
     font-weight: 600;
-    color: #111827;
+    color: var(--color-text);
     text-align: left;
 }
 
@@ -430,16 +430,16 @@ const saveSpace = async () => {
     width: 100%;
     padding: 0.6rem 0.85rem;
     border-radius: 12px;
-    border: 1px solid rgba(17, 24, 39, 0.1);
-    background: rgba(243, 244, 246, 0.6);
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
     font-size: 1rem;
-    color: #111827;
+    color: var(--color-text);
 }
 
 .event-space__empty {
     margin: 0;
     font-style: italic;
-    color: rgba(107, 114, 128, 0.75);
+    color: var(--muted-text);
 }
 
 .event-space__actions {
@@ -452,7 +452,7 @@ const saveSpace = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.45rem 1.2rem;
-    background: linear-gradient(135deg, #485dff, #60a5fa);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: #fff;
     font-weight: 600;
     cursor: pointer;
@@ -470,8 +470,8 @@ const saveSpace = async () => {
 }
 
 .event-space__button--cancel {
-    background: rgba(99, 102, 241, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
 }
 
 .event-space__button--cancel:hover {

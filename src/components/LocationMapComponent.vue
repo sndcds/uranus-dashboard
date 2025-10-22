@@ -209,6 +209,6 @@ watch(
 
 .map-footer {
     font-size: 0.85rem;
-    color: rgba(55, 65, 81, 0.75);
+    color: var(--muted-text);
 }
 </style>

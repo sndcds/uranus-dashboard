@@ -62,7 +62,7 @@ function logout() {
 
 .main-content {
   flex: 1;
-  background: linear-gradient(135deg, #f4f5ff, #edf9ff);
+  background: var(--page-gradient);
   padding: 24px;
 }
 

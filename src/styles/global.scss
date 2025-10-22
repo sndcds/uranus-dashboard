@@ -1,3 +1,74 @@
+:root {
+    color-scheme: light;
+    --color-text: #0f172a;
+    --color-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --card-shadow: 0 24px 50px rgba(31, 41, 55, 0.12);
+    --muted-text: rgba(55, 65, 81, 0.8);
+    --input-border: rgba(148, 163, 184, 0.45);
+    --input-bg: rgba(248, 250, 252, 0.85);
+    --accent-primary: #4f46e5;
+    --accent-secondary: #0ea5e9;
+    --accent-muted: rgba(79, 70, 229, 0.12);
+    --accent-muted-hover: rgba(79, 70, 229, 0.2);
+    --border-soft: rgba(148, 163, 184, 0.25);
+    --surface-muted: rgba(243, 244, 246, 0.7);
+    --page-gradient: linear-gradient(135deg, rgba(72, 93, 255, 0.08), rgba(141, 233, 255, 0.12));
+
+    font-family: 'Inter', 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --color-text: #e2e8f0;
+    --color-bg: #0b1220;
+    --card-bg: #111827;
+    --card-shadow: 0 24px 50px rgba(2, 6, 23, 0.65);
+    --muted-text: rgba(203, 213, 225, 0.75);
+    --input-border: rgba(94, 106, 135, 0.55);
+    --input-bg: rgba(30, 41, 59, 0.85);
+    --accent-primary: #6366f1;
+    --accent-secondary: #22d3ee;
+    --accent-muted: rgba(99, 102, 241, 0.18);
+    --accent-muted-hover: rgba(99, 102, 241, 0.28);
+    --border-soft: rgba(71, 85, 105, 0.35);
+    --surface-muted: rgba(30, 41, 59, 0.75);
+    --page-gradient: linear-gradient(135deg, rgba(30, 41, 59, 0.65), rgba(15, 23, 42, 0.75));
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+#app {
+    min-height: 100dvh;
+    width: 100%;
+}
+
+
+
 $border-color: #ddd;
 $border-hover-color: #000;
 $text-color: #223;
@@ -11,8 +82,8 @@ $button-text-color: #333;
   border-radius: 8px;
   padding: 16px;
   padding-bottom: 50px;
-  background-color: #fff;
-  color: $text-color;
+  background-color: var(--card-bg);
+  color: var(--color-text);
   min-height: 200px;
   border: 4px solid transparent;
   transition: background-color 0.4s, border 0.4s;
@@ -72,11 +143,11 @@ $button-text-color: #333;
 
 .uranus-select {
   padding: 0.6rem 2rem 0.6rem 0.9rem; // right padding for arrow
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--input-border);
   border-radius: 0.5rem;
-  background-color: #f9fafb;
+  background-color: var(--input-bg);
   font-size: 1rem;
-  color: #111827;
+  color: var(--color-text);
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -89,15 +160,15 @@ $button-text-color: #333;
   background-size: 1rem 1rem;
 
   &:focus {
-    border-color: #4f46e5;
+    border-color: var(--accent-primary);
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-    background-color: #ffffff;
+    background-color: var(--card-bg);
   }
 }
 
 .uranus-select option {
-  color: #111827;
-  background-color: #ffffff;
+  color: var(--color-text);
+  background-color: var(--card-bg);
   /* padding may not work reliably in all browsers */
 }
 
@@ -146,22 +217,21 @@ $button-text-color: #333;
 }
 
 // Shared form layout tokens
-$uranus-form-card-shadow: 0 24px 50px rgba(31, 41, 55, 0.16);
+$uranus-form-card-shadow: var(--card-shadow);
 $uranus-form-card-radius: 24px;
-$uranus-form-control-border: rgba(148, 163, 184, 0.45);
-$uranus-form-control-background: rgba(248, 250, 252, 0.85);
-$uranus-form-control-color: #0f172a;
-$uranus-form-control-placeholder: rgba(100, 116, 139, 0.6);
-$uranus-form-focus-border: rgba(79, 70, 229, 0.75);
+$uranus-form-control-border: var(--input-border);
+$uranus-form-control-background: var(--input-bg);
+$uranus-form-control-color: var(--color-text);
+$uranus-form-control-placeholder: var(--muted-text);
+$uranus-form-focus-border: var(--accent-primary);
 $uranus-form-focus-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-$uranus-form-primary-gradient: linear-gradient(135deg, #4f46e5, #0ea5e9);
+$uranus-form-primary-gradient: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
 $uranus-form-secondary-border: rgba(79, 70, 229, 0.35);
-$uranus-form-secondary-hover: rgba(79, 70, 229, 0.08);
+$uranus-form-secondary-hover: var(--accent-muted);
 $uranus-form-select-icon: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%2363748B'/%3E%3C/svg%3E");
 $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%234856FF'/%3E%3C/svg%3E");
 
 @mixin form-page($justify: flex-start, $padding: clamp(1.5rem, 4vw, 3rem)) {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -173,7 +243,7 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
 @mixin form-hero($max-width: 1080px) {
   text-align: center;
   max-width: $max-width;
-  color: #1f2937;
+  color: var(--color-text);
 
   h1 {
     font-size: clamp(1.9rem, 3vw, 2.5rem);
@@ -184,17 +254,17 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
   p {
     margin: 0;
     font-size: clamp(1rem, 2.3vw, 1.15rem);
-    color: rgba(31, 41, 55, 0.75);
+    color: var(--color-text);
     line-height: 1.6;
   }
 }
 
 @mixin form-card($max-width: 1080px, $padding: clamp(1.75rem, 4vw, 2.75rem), $gap: clamp(1.25rem, 3vw, 1.75rem), $shadow: $uranus-form-card-shadow) {
   width: min(#{$max-width}, 100%);
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: $uranus-form-card-radius;
   padding: $padding;
-  box-shadow: $shadow;
+  box-shadow: var(--card-shadow, #{$shadow});
   display: flex;
   flex-direction: column;
   gap: $gap;
@@ -207,10 +277,10 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
 }
 
 @mixin form-section {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: $uranus-form-card-radius;
   padding: clamp(1.75rem, 4vw, 2.5rem);
-  box-shadow: 0 24px 50px rgba(31, 41, 55, 0.14);
+  box-shadow: var(--card-shadow, 0 24px 50px rgba(31, 41, 55, 0.14));
   display: flex;
   flex-direction: column;
   gap: clamp(1.25rem, 3vw, 1.75rem);
@@ -224,13 +294,13 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
   h2 {
     font-size: clamp(1.35rem, 2.5vw, 1.75rem);
     font-weight: 700;
-    color: #111827;
+    color: var(--color-text);
     margin: 0;
   }
 
   p {
     margin: 0;
-    color: rgba(55, 65, 81, 0.8);
+    color: var(--muted-text);
     line-height: 1.6;
     font-size: 0.98rem;
   }
@@ -253,7 +323,7 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
     outline: none;
     border-color: $uranus-form-focus-border;
     box-shadow: $uranus-form-focus-shadow;
-    background-color: #fff;
+    background-color: var(--card-bg);
   }
 }
 
@@ -261,13 +331,13 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
   @include form-control($padding-y, $padding-x);
   padding-right: $padding-x + 1.5rem;
   background:
-    linear-gradient(180deg, rgba(243, 244, 246, 0.9), rgba(229, 231, 235, 0.65)),
+    linear-gradient(180deg, transparent, transparent),
     $uranus-form-select-icon no-repeat right ($padding-x * 0.85) center/0.9rem;
   appearance: none;
 
   &:focus {
     background:
-      linear-gradient(180deg, #ffffff, rgba(229, 231, 235, 0.65)),
+      linear-gradient(180deg, transparent, transparent),
       $uranus-form-select-icon-active no-repeat right ($padding-x * 0.85) center/0.9rem;
   }
 }
@@ -279,7 +349,7 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
 
   label {
     font-weight: 600;
-    color: #1f2937;
+    color: var(--color-text);
     letter-spacing: 0.01em;
   }
 
@@ -339,14 +409,14 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
   padding: $padding-y $padding-x;
   border-radius: 999px;
   border: 1px solid $uranus-form-secondary-border;
-  background: #fff;
-  color: #4f46e5;
+  background: var(--card-bg);
+  color: var(--accent-primary);
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    background: $uranus-form-secondary-hover;
+    background: var(--accent-muted-hover, $uranus-form-secondary-hover);
     box-shadow: 0 10px 20px rgba(79, 70, 229, 0.15);
   }
 

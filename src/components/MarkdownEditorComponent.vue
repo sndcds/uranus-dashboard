@@ -363,8 +363,8 @@ onMounted(() => {
 
 .markdown-editor__toolbar button {
     border: 1px solid rgba(79, 70, 229, 0.3);
-    background: rgba(99, 102, 241, 0.08);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
     padding: 0.35rem 0.7rem;
     border-radius: 999px;
     cursor: pointer;
@@ -373,7 +373,7 @@ onMounted(() => {
 }
 
 .markdown-editor__toolbar button:hover {
-    background: rgba(79, 70, 229, 0.12);
+    background: var(--accent-muted-hover);
 }
 
 .markdown-editor__toolbar button:focus-visible {
@@ -389,18 +389,18 @@ textarea {
     min-height: 180px;
     padding: 0.9rem;
     border-radius: 12px;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    background: rgba(248, 250, 252, 0.6);
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
     font-size: 1rem;
-    color: #0f172a;
+    color: var(--color-text);
     resize: vertical;
 }
 
 textarea:focus {
     outline: none;
-    border-color: rgba(79, 70, 229, 0.75);
+    border-color: var(--accent-primary);
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-    background: #fff;
+    background: var(--card-bg);
 }
 
 .fade-enter-active,

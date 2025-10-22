@@ -259,10 +259,10 @@ defineExpose({ validate })
 }
 
 .event-dates__card {
-    border: 1px solid rgba(148, 163, 184, 0.25);
+    border: 1px solid var(--border-soft);
     border-radius: 20px;
     padding: clamp(1.2rem, 2.4vw, 1.6rem);
-    background: rgba(248, 250, 252, 0.85);
+    background: var(--input-bg);
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -273,7 +273,7 @@ defineExpose({ validate })
     justify-content: space-between;
     align-items: center;
     font-size: 0.9rem;
-    color: rgba(55, 65, 81, 0.9);
+    color: var(--muted-text);
 }
 
 .badge {
@@ -282,8 +282,8 @@ defineExpose({ validate })
     justify-content: center;
     padding: 0.25rem 0.6rem;
     border-radius: 999px;
-    background: rgba(79, 70, 229, 0.1);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
     font-weight: 600;
     letter-spacing: 0.02em;
 }
@@ -291,7 +291,7 @@ defineExpose({ validate })
 .link {
     background: none;
     border: none;
-    color: #4f46e5;
+    color: var(--accent-primary);
     font-weight: 600;
     cursor: pointer;
     padding: 0;
@@ -300,7 +300,7 @@ defineExpose({ validate })
     gap: 0.35rem;
 
     &:hover {
-        color: #4338ca;
+        color: var(--accent-secondary);
         text-decoration: underline;
     }
 }

@@ -15,6 +15,15 @@
             </option>
           </select>
         </div>
+
+        <div class="form-group">
+          <label for="theme-select">{{ t('settings_theme') }}</label>
+          <select id="theme-select" v-model="selectedTheme">
+            <option v-for="option in themeOptions" :key="option.value" :value="option.value">
+              {{ t(option.label) }}
+            </option>
+          </select>
+        </div>
       </form>
     </section>
   </div>
@@ -23,8 +32,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useThemeStore } from '@/store/themeStore'
 
 const { t, te, locale } = useI18n({ useScope: 'global' })
+const themeStore = useThemeStore()
 
 const selectedLocale = computed({
   get: () => locale.value,
@@ -40,6 +51,16 @@ const localeOptions = [
 ]
 
 const heroSubtitle = computed(() => (te('settings_subtitle') ? t('settings_subtitle') : 'Adjust how your workspace looks and feels.'))
+
+const selectedTheme = computed({
+  get: () => themeStore.theme,
+  set: (value) => themeStore.setTheme(value),
+})
+
+const themeOptions = [
+  { value: 'light', label: 'settings_theme_light' },
+  { value: 'dark', label: 'settings_theme_dark' },
+]
 </script>
 
 <style scoped lang="scss">

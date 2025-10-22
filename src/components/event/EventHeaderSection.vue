@@ -121,12 +121,12 @@ const saveHeader = async () => {
 .event-header-section__title {
     font-size: clamp(2rem, 4vw, 2.8rem);
     margin: 0;
-    color: #111827;
+    color: var(--color-text);
 }
 
 .event-header-section__subtitle {
     margin: 0;
-    color: rgba(55, 65, 81, 0.8);
+    color: var(--muted-text);
     font-size: 1.05rem;
 }
 
@@ -134,8 +134,8 @@ const saveHeader = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.35rem 0.85rem;
-    background: rgba(79, 70, 229, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
@@ -149,7 +149,7 @@ const saveHeader = async () => {
 }
 
 .event-header-section__edit:hover {
-    background: rgba(79, 70, 229, 0.2);
+    background: var(--accent-muted-hover);
 }
 
 .event-header-section__actions {
@@ -162,7 +162,7 @@ const saveHeader = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.5rem 1.3rem;
-    background: linear-gradient(135deg, #485dff, #60a5fa);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: #fff;
     font-weight: 600;
     cursor: pointer;
@@ -180,8 +180,8 @@ const saveHeader = async () => {
 }
 
 .event-header-section__button--cancel {
-    background: rgba(99, 102, 241, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
 }
 
 .event-header-section__button--cancel:hover {

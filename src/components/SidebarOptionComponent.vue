@@ -38,16 +38,16 @@ function handleClick() {
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1.1rem 0.75rem 1.5rem;
-    border-radius: 14px;
+    border-radius: 0 14px 14px 0;
     cursor: pointer;
-    color: rgba(15, 23, 42, 0.78);
+    color: var(--muted-text);
     font-weight: 500;
     letter-spacing: 0.01em;
     transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
 
     &:hover {
-        background: rgba(79, 70, 229, 0.06);
-        color: #111827;
+        background: var(--accent-muted);
+        color: var(--color-text);
         transform: translateX(2px);
 
     }
@@ -55,13 +55,13 @@ function handleClick() {
     &:focus-visible {
         outline: none;
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
-        background: rgba(79, 70, 229, 0.08);
+        background: var(--accent-muted);
     }
 
     &.active {
-        color: #1f2937;
-        background: linear-gradient(135deg, rgba(79, 70, 229, 0.14), rgba(14, 165, 233, 0.16));
-        box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12);
+        color: var(--color-text);
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.18), rgba(14, 165, 233, 0.22));
+        box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.18);
 
     }
 
@@ -77,8 +77,8 @@ function handleClick() {
     width: 1.75rem;
     height: 1.75rem;
     border-radius: 12px;
-    background: rgba(79, 70, 229, 0.09);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
     font-size: 0.95rem;
     box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12);
 }

@@ -199,7 +199,7 @@ onMounted(() => {
 
 .event-hero {
     text-align: center;
-    color: #1f2937;
+    color: var(--color-text);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -210,12 +210,12 @@ onMounted(() => {
     justify-content: center;
     gap: 1rem;
     font-weight: 600;
-    color: rgba(79, 70, 229, 0.85);
+    color: var(--accent-primary);
 }
 
 .event-hero__organizer {
     font-weight: 600;
-    color: rgba(31, 41, 55, 0.85);
+    color: var(--muted-text);
     margin: 0;
 }
 
@@ -238,20 +238,20 @@ onMounted(() => {
 }
 
 .event-meta {
-    background: #fff;
+    background: var(--card-bg);
     border-radius: 24px;
     padding: 1.4rem;
-    box-shadow: 0 18px 40px rgba(31, 41, 55, 0.1);
+    box-shadow: var(--card-shadow, 0 18px 40px rgba(31, 41, 55, 0.1));
 
     h3 {
         margin: 0 0 0.5rem 0;
-        color: #111827;
+        color: var(--color-text);
         font-size: 1.1rem;
     }
 
     p {
         margin: 0.35rem 0;
-        color: rgba(55, 65, 81, 0.85);
+        color: var(--muted-text);
         line-height: 1.5;
     }
 }
@@ -262,7 +262,7 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     font-size: 1.05rem;
-    color: rgba(55, 65, 81, 0.85);
+    color: var(--muted-text);
 }
 
 @media (max-width: 960px) {

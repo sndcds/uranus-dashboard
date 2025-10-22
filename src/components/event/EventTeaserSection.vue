@@ -106,7 +106,7 @@ const saveTeaser = async () => {
 
 <style scoped lang="scss">
 .event-teaser {
-    background: #fff;
+    background: var(--card-bg);
     border-radius: 24px;
     padding: clamp(1.75rem, 3vw, 2.4rem);
     box-shadow: 0 24px 50px rgba(31, 41, 55, 0.12);
@@ -133,7 +133,7 @@ const saveTeaser = async () => {
 
 .event-teaser__text {
     margin: 0;
-    color: rgba(31, 41, 55, 0.8);
+    color: var(--muted-text);
     font-size: 1.05rem;
     line-height: 1.6;
 }
@@ -142,8 +142,8 @@ const saveTeaser = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.35rem 0.85rem;
-    background: rgba(79, 70, 229, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
@@ -157,7 +157,7 @@ const saveTeaser = async () => {
 }
 
 .event-teaser__edit:hover {
-    background: rgba(79, 70, 229, 0.2);
+    background: var(--accent-muted-hover);
 }
 
 .event-teaser__actions {
@@ -170,7 +170,7 @@ const saveTeaser = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.5rem 1.3rem;
-    background: linear-gradient(135deg, #485dff, #60a5fa);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: #fff;
     font-weight: 600;
     cursor: pointer;
@@ -188,8 +188,8 @@ const saveTeaser = async () => {
 }
 
 .event-teaser__button--cancel {
-    background: rgba(99, 102, 241, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
 }
 
 .event-teaser__button--cancel:hover {

@@ -200,14 +200,14 @@ button {
     justify-content: space-between;
     gap: 0.5rem;
     font-size: 0.9rem;
-    background: rgba(243, 244, 246, 0.7);
+    background: var(--input-bg);
     border-radius: 14px;
     padding: 0.75rem 1rem;
 }
 
 .meta-label {
     font-weight: 600;
-    color: #111827;
+    color: var(--color-text);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-size: 0.78rem;
@@ -215,7 +215,7 @@ button {
 
 .meta-value {
     font-variant-numeric: tabular-nums;
-    color: rgba(17, 24, 39, 0.8);
+    color: var(--muted-text);
 }
 
 .feedback {

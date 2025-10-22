@@ -214,9 +214,9 @@ watch(
   flex-direction: column;
   gap: clamp(1rem, 2.5vw, 1.5rem);
   padding: clamp(1rem, 2.5vw, 1.5rem);
-  background: rgba(248, 250, 252, 0.8);
+  background: var(--card-bg);
   border-radius: 20px;
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  border: 1px solid var(--border-soft);
 }
 
 .tag-selector__header {
@@ -228,7 +228,7 @@ watch(
     margin: 0;
     font-size: clamp(1.1rem, 2vw, 1.35rem);
     font-weight: 700;
-    color: #111827;
+    color: var(--color-text);
   }
 }
 
@@ -256,7 +256,7 @@ watch(
 
 .tag-selector__empty {
   margin: 0;
-  color: rgba(71, 85, 105, 0.75);
+  color: var(--muted-text);
   font-size: 0.9rem;
 }
 

@@ -300,7 +300,7 @@ const saveTags = async () => {
 
 <style scoped lang="scss">
 .event-description {
-    background: #fff;
+    background: var(--card-bg);
     border-radius: 24px;
     padding: clamp(1.75rem, 3vw, 2.4rem);
     box-shadow: 0 24px 50px rgba(31, 41, 55, 0.12);
@@ -327,8 +327,8 @@ const saveTags = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.35rem 0.85rem;
-    background: rgba(79, 70, 229, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
@@ -342,7 +342,7 @@ const saveTags = async () => {
 }
 
 .event-description__edit:hover {
-    background: rgba(79, 70, 229, 0.2);
+    background: var(--accent-muted-hover);
 }
 
 .event-description__actions {
@@ -355,7 +355,7 @@ const saveTags = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.5rem 1.3rem;
-    background: linear-gradient(135deg, #485dff, #60a5fa);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: #fff;
     font-weight: 600;
     cursor: pointer;
@@ -373,8 +373,8 @@ const saveTags = async () => {
 }
 
 .event-description__button--cancel {
-    background: rgba(99, 102, 241, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
 }
 
 .event-description__button--cancel:hover {
@@ -398,13 +398,13 @@ const saveTags = async () => {
 .event-tags__lists h3 {
     margin: 0 0 0.35rem 0;
     font-size: 1rem;
-    color: #1f2937;
+    color: var(--color-text);
 }
 
 .event-tags__lists ul {
     margin: 0;
     padding-left: 1.1rem;
-    color: rgba(55, 65, 81, 0.85);
+    color: var(--muted-text);
 }
 
 .event-tags__edit {
@@ -412,8 +412,8 @@ const saveTags = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.35rem 0.85rem;
-    background: rgba(79, 70, 229, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
@@ -441,7 +441,7 @@ const saveTags = async () => {
     border: none;
     border-radius: 999px;
     padding: 0.5rem 1.3rem;
-    background: linear-gradient(135deg, #485dff, #60a5fa);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: #fff;
     font-weight: 600;
     cursor: pointer;
@@ -459,8 +459,8 @@ const saveTags = async () => {
 }
 
 .event-tags__button--cancel {
-    background: rgba(99, 102, 241, 0.12);
-    color: #4338ca;
+    background: var(--accent-muted);
+    color: var(--accent-primary);
 }
 
 .event-tags__button--cancel:hover {
@@ -469,7 +469,7 @@ const saveTags = async () => {
 
 .event-additional {
     font-size: 0.95rem;
-    color: rgba(55, 65, 81, 0.85);
+    color: var(--muted-text);
 }
 
 .event-additional p {
