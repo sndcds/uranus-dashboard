@@ -42,14 +42,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ComboTagComponent from "@/components/ComboTagComponent.vue";
 
 // --- Props ---
+interface SelectionPreset {
+  typeId: number
+  genreId: number | null
+}
+
 interface Props {
   fetchStage1: () => Promise<any[]>
   fetchStage2: (typeId: number) => Promise<any[]>
+  initialSelection?: SelectionPreset[]
 }
 
 const props = defineProps<Props>()
@@ -65,6 +71,9 @@ const genres = ref<any[]>([])
 const selectedType = ref<any | null>(null)
 const selectedGenre = ref<any | null>(null)
 const selectedList = ref<{ type: any; genre: any | null }[]>([])
+const initialSelectionQueue = ref<SelectionPreset[]>([])
+const genresCache: Record<number, any[]> = {}
+const isApplyingInitialSelection = ref(false)
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -73,6 +82,7 @@ async function fetchEventTypes() {
   try {
     const data = await props.fetchStage1()
     eventTypes.value = Array.isArray(data) ? data : []
+    await applyInitialSelection()
   } catch (err) {
     console.error('fetchStage1 error:', err)
     eventTypes.value = []
@@ -83,9 +93,51 @@ async function fetchEventGenres(typeId: number) {
   try {
     const data = await props.fetchStage2(typeId)
     genres.value = Array.isArray(data) ? data : []
+    genresCache[typeId] = genres.value
   } catch (err) {
     console.error('fetchStage2 error:', err)
     genres.value = []
+  }
+}
+
+async function ensureGenres(typeId: number) {
+  if (typeId in genresCache) {
+    return genresCache[typeId] ?? []
+  }
+  const data = await props.fetchStage2(typeId)
+  const options = Array.isArray(data) ? data : []
+  genresCache[typeId] = options
+  return options
+}
+
+async function applyInitialSelection() {
+  if (!initialSelectionQueue.value.length || !eventTypes.value.length) return
+
+  const selections = [...initialSelectionQueue.value]
+  initialSelectionQueue.value = []
+  const list: { type: any; genre: any | null }[] = []
+  isApplyingInitialSelection.value = true
+
+  try {
+    for (const selection of selections) {
+      const type = eventTypes.value.find((item) => (item.type_id ?? item.id) === selection.typeId)
+      if (!type) continue
+
+      let genre: any | null = null
+      if (selection.genreId !== null) {
+        const genreOptions = await ensureGenres(type.type_id ?? type.id)
+        genre =
+          genreOptions.find((option) => (option.type_id ?? option.genre_id ?? option.id) === selection.genreId) ||
+          genreOptions.find((option) => option.id === selection.genreId) ||
+          null
+      }
+
+      list.push({ type, genre })
+    }
+
+    selectedList.value = list
+  } finally {
+    isApplyingInitialSelection.value = false
   }
 }
 
@@ -93,16 +145,23 @@ async function fetchEventGenres(typeId: number) {
 async function onTypeChange() {
   selectedGenre.value = null
   genres.value = []
-  if (selectedType.value?.type_id) {
-    await fetchEventGenres(selectedType.value.type_id)
+  if (selectedType.value?.type_id ?? selectedType.value?.id) {
+    await fetchEventGenres(selectedType.value.type_id ?? selectedType.value.id)
   }
 }
 
 function updateParentSelection() {
-  const typeIds = selectedList.value.map(item => item.type.type_id)
-  const genreIds = selectedList.value
-    .filter(item => item.genre)
-    .map(item => item.genre.type_id)
+  if (isApplyingInitialSelection.value) return
+  const typeIds = Array.from(
+    new Set(selectedList.value.map(item => item.type.type_id ?? item.type.id))
+  )
+  const genreIds = Array.from(
+    new Set(
+      selectedList.value
+        .filter(item => item.genre)
+        .map(item => item.genre.type_id ?? item.genre.genre_id ?? item.genre.id)
+    )
+  )
   emit('update-selection', { typeIds, genreIds })
 }
 
@@ -111,8 +170,8 @@ function addCombination() {
 
   const exists = selectedList.value.some(
     item =>
-      item.type.type_id === selectedType.value.type_id &&
-      (item.genre?.type_id || null) === (selectedGenre.value?.type_id || null)
+      (item.type.type_id ?? item.type.id) === (selectedType.value.type_id ?? selectedType.value.id) &&
+      ((item.genre?.type_id ?? item.genre?.genre_id ?? item.genre?.id) || null) === ((selectedGenre.value?.type_id ?? selectedGenre.value?.genre_id ?? selectedGenre.value?.id) || null)
   )
   if (exists) return
 
@@ -131,7 +190,22 @@ function removeCombination(index: number) {
 }
 
 // --- On component mount ---
-onMounted(fetchEventTypes)
+onMounted(() => {
+  if (Array.isArray(props.initialSelection)) {
+    initialSelectionQueue.value = [...props.initialSelection]
+  }
+  void fetchEventTypes()
+})
+
+watch(
+  () => props.initialSelection,
+  (value) => {
+    if (!Array.isArray(value)) return
+    initialSelectionQueue.value = [...value]
+    void applyInitialSelection()
+  },
+  { deep: true }
+)
 </script>
 
 <style scoped lang="scss">

@@ -6,21 +6,13 @@
         </header>
 
         <div class="event-section__form">
-            <div class="form-field">
-                <label for="event-title">
-                    {{ t('event_title_label') }}
-                    <span class="required">*</span>
-                </label>
-                <input id="event-title" v-model="basicInfo.title" type="text"
-                    :placeholder="t('event_title_placeholder')" autocomplete="off" />
-                <p v-if="errors.title" class="field-error">{{ errors.title }}</p>
-            </div>
-
-            <div class="form-field">
-                <label for="event-subtitle">{{ t('event_subtitle_label') }}</label>
-                <input id="event-subtitle" v-model="basicInfo.subtitle" type="text"
-                    :placeholder="t('event_subtitle_placeholder')" autocomplete="off" />
-            </div>
+            <EventTitleFieldsComponent
+                :title="basicInfo.title"
+                :subtitle="basicInfo.subtitle"
+                :title-error="errors.title"
+                @update:title="basicInfo.title = $event"
+                @update:subtitle="basicInfo.subtitle = $event"
+            />
 
             <div class="event-section__grid">
                 <div class="form-field">
@@ -72,6 +64,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue"
+import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
 
 const props = defineProps<{
     organizerId: number | null
