@@ -207,7 +207,7 @@ const submitEvent = async () => {
         subtitle: basicInfo.subtitle || null,
         organizer_id: basicInfo.organizerId,
         venue_id: basicInfo.venueId,
-        default_space_id: basicInfo.spaceId,
+        space_id: basicInfo.spaceId,
         event_type_ids: basicInfo.eventTypeIds,
         genre_type_ids: basicInfo.genreTypeIds,
         details: {

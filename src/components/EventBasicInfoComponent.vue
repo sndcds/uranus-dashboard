@@ -209,7 +209,6 @@ async function fetchVenues(contextId: number | null) {
 async function fetchSpaces(contextId: number | null) {
     if (!contextId) {
         spaces.value = []
-        basicInfo.spaceId = null
         emit('spaces-change', [])
         return
     }
