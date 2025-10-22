@@ -40,7 +40,7 @@ const messages = {
         password: 'Passwort',
         website: 'Website',
         repeat_email: 'E-Mail wiederholen',
-        email_placeholder: "name\u0040beispiel.de",
+        email_placeholder: 'E-Mail-Adresse',
         repeat_email_placeholder: 'Bestätige deine E-Mail-Adresse',
         password_placeholder: 'Mindestens 8 Zeichen',
         signup_subtitle: 'Lege jetzt dein Konto an und verwalte deine Veranstaltungen zentral.',
@@ -223,7 +223,7 @@ const messages = {
         password: 'Password',
         website: 'Website',
         repeat_email: 'Repeat email',
-        email_placeholder: "name\u0040example.com",
+        email_placeholder: 'email address',
         repeat_email_placeholder: 'Confirm your email address',
         password_placeholder: 'At least 8 characters',
         signup_subtitle: 'Create your account and start organizing events effortlessly.',
@@ -406,7 +406,7 @@ const messages = {
         password: 'Adgangskode',
         website: 'Websted',
         repeat_email: 'Gentag e-mail',
-        email_placeholder: "navn\u0040eksempel.dk",
+        email_placeholder: 'E-mailadresse',
         repeat_email_placeholder: 'Bekræft din e-mailadresse',
         password_placeholder: 'Mindst 8 tegn',
         signup_subtitle: 'Opret din konto og kom i gang med at arrangere events.',
@@ -557,6 +557,7 @@ const i18n = createI18n({
     legacy: false, // use Composition API
     locale: initialLocale,  // default locale
     fallbackLocale: 'en',
+    messageSyntax: 'plain',
     messages,
 })
 
