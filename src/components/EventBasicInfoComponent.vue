@@ -59,14 +59,8 @@
                 </div>
             </div>
             <div class="form-field">
-                <label for="event-type">
-                    {{ t('event_type_label') }}<span class="required">*</span>
-                </label>
-              <TwoStageTagListComponent
-                  :fetchStage1="fetchEventTypes"
-                  :fetchStage2="fetchEventGenres"
-                  @update-selection="onEventSelectionUpdate"
-              />
+                <TwoStageTagListComponent :fetchStage1="fetchEventTypes" :fetchStage2="fetchEventGenres"
+                    @update-selection="onEventSelectionUpdate" />
             </div>
         </div>
     </section>
@@ -76,7 +70,8 @@
 import { reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue";
+
+import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue"
 
 const props = defineProps<{
     organizerId: number | null
@@ -231,18 +226,18 @@ async function fetchSpaces(contextId: number | null) {
 }
 
 async function fetchEventTypes(): Promise<SelectOption[]> {
-  const { data } = await apiFetch<SelectOption[]>('/api/choosable-event-types?lang=de')
-  return Array.isArray(data) ? data : []
+    const { data } = await apiFetch<SelectOption[]>('/api/choosable-event-types?lang=de')
+    return Array.isArray(data) ? data : []
 }
 
 async function fetchEventGenres(typeId: number): Promise<SelectOption[]> {
-  const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-genres/event-type/${typeId}?lang=de`)
-  return Array.isArray(data) ? data : []
+    const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-genres/event-type/${typeId}?lang=de`)
+    return Array.isArray(data) ? data : []
 }
 
 function onEventSelectionUpdate(payload: { typeIds: number[], genreIds: number[] }) {
-  basicInfo.eventTypeIds = payload.typeIds
-  basicInfo.genreTypeIds = payload.genreIds
+    basicInfo.eventTypeIds = payload.typeIds
+    basicInfo.genreTypeIds = payload.genreIds
 }
 
 const validate = () => {
