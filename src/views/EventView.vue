@@ -13,8 +13,37 @@
         <section class="event-layout">
             <article class="event-description">
                 <h2>{{ t('event_details_heading') }}</h2>
-                <p v-if="event.description" v-html="renderMarkdown(event.description)"></p>
-                <p v-else class="empty">{{ t('event_details_empty') }}</p>
+                <div class="event-description__content">
+                    <template v-if="isEditingDescription">
+                        <MarkdownEditorComponent
+                            v-model="editedDescription"
+                            :placeholder="t('event_description_placeholder')"
+                        />
+                        <div class="event-description__actions">
+                            <button
+                                type="button"
+                                class="event-description__button event-description__button--cancel"
+                                @click="cancelEditingDescription"
+                            >
+                                {{ t('event_description_cancel') }}
+                            </button>
+                            <button type="button" class="event-description__button" @click="saveDescription">
+                                {{ t('event_description_save') }}
+                            </button>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <MarkdownPreviewComponent v-if="event.description" :value="event.description" />
+                        <p v-else class="empty">{{ t('event_details_empty') }}</p>
+                        <button
+                            type="button"
+                            class="event-description__edit"
+                            @click="startEditingDescription"
+                        >
+                            {{ t('event_description_edit') }}
+                        </button>
+                    </template>
+                </div>
 
                 <div class="event-tags">
                     <div v-if="event.event_types?.length">
@@ -74,11 +103,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
+import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
+import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 
 interface EventType {
     id: number
@@ -119,6 +150,8 @@ const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
 const event = ref<EventDetail | null>(null)
 const error = ref<string | null>(null)
+const isEditingDescription = ref(false)
+const editedDescription = ref('')
 
 const eventId = computed(() => Number(route.params.id))
 
@@ -136,22 +169,31 @@ const formattedTime = computed(() =>
     event.value?.start_time ? timeFormatter.value.format(new Date(`${event.value.start_date}T${event.value.start_time}`)) : ''
 )
 
-const renderMarkdown = (source: string) => {
-    if (!source) return ''
-    const escaped = source
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-    return escaped
-        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-        .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-        .replace(/\n\n+/g, '</p><p>')
-        .replace(/\n/g, '<br />')
+const startEditingDescription = () => {
+    editedDescription.value = event.value?.description || ''
+    isEditingDescription.value = true
 }
+
+const cancelEditingDescription = () => {
+    editedDescription.value = event.value?.description || ''
+    isEditingDescription.value = false
+}
+
+const saveDescription = () => {
+    if (event.value) {
+        event.value.description = editedDescription.value
+    }
+    isEditingDescription.value = false
+}
+
+watch(
+    () => event.value?.description,
+    (value) => {
+        if (!isEditingDescription.value) {
+            editedDescription.value = value || ''
+        }
+    }
+)
 
 onMounted(async () => {
     try {
@@ -230,6 +272,7 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+    position: relative;
 
     h2 {
         margin-top: 0;
@@ -241,6 +284,71 @@ onMounted(async () => {
         font-style: italic;
         color: rgba(107, 114, 128, 0.85);
     }
+}
+
+.event-description__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    padding-top: 0.5rem;
+}
+
+.event-description__edit {
+    position: absolute;
+    top: 1.3rem;
+    right: 0.5rem;
+    z-index: 1;
+    border: none;
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    background: rgba(79, 70, 229, 0.12);
+    color: #4338ca;
+    font-weight: 600;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+.event-description:hover .event-description__edit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.event-description__edit:hover {
+    background: rgba(79, 70, 229, 0.2);
+}
+
+.event-description__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.event-description__button {
+    border: none;
+    border-radius: 999px;
+    padding: 0.5rem 1.3rem;
+    background: linear-gradient(135deg, #485dff, #60a5fa);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-description__button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
+}
+
+.event-description__button--cancel {
+    background: rgba(99, 102, 241, 0.12);
+    color: #4338ca;
+}
+
+.event-description__button--cancel:hover {
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
 }
 
 .event-tags {
