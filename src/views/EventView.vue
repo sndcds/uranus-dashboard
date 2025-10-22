@@ -8,18 +8,11 @@
 
             <div class="event-hero__header">
                 <template v-if="isEditingHeader">
-                    <EventTitleFieldsComponent
-                        :title="editedTitle"
-                        :subtitle="editedSubtitle"
-                        @update:title="editedTitle = $event"
-                        @update:subtitle="editedSubtitle = $event"
-                    />
+                    <EventTitleFieldsComponent :title="editedTitle" :subtitle="editedSubtitle"
+                        @update:title="editedTitle = $event" @update:subtitle="editedSubtitle = $event" />
                     <div class="event-hero__actions">
-                        <button
-                            type="button"
-                            class="event-hero__button event-hero__button--cancel"
-                            @click="cancelEditingHeader"
-                        >
+                        <button type="button" class="event-hero__button event-hero__button--cancel"
+                            @click="cancelEditingHeader">
                             {{ t('event_header_cancel') }}
                         </button>
                         <button type="button" class="event-hero__button" @click="saveHeader">
@@ -40,101 +33,128 @@
         </header>
 
         <section class="event-layout">
-            <article class="event-description">
-                <h2>{{ t('event_details_heading') }}</h2>
-                <div class="event-description__content">
-                    <template v-if="isEditingDescription">
-                        <MarkdownEditorComponent
-                            v-model="editedDescription"
-                            :placeholder="t('event_description_placeholder')"
-                        />
-                        <div class="event-description__actions">
-                            <button
-                                type="button"
-                                class="event-description__button event-description__button--cancel"
-                                @click="cancelEditingDescription"
-                            >
-                                {{ t('event_description_cancel') }}
-                            </button>
-                            <button type="button" class="event-description__button" @click="saveDescription">
-                                {{ t('event_description_save') }}
-                            </button>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <MarkdownPreviewComponent v-if="event.description" :value="event.description" />
-                        <p v-else class="empty">{{ t('event_details_empty') }}</p>
-                        <button
-                            type="button"
-                            class="event-description__edit"
-                            @click="startEditingDescription"
-                        >
+            <div class="event-main">
+                <article class="event-description">
+                    <header class="event-description__header">
+                        <h2>{{ t('event_details_heading') }}</h2>
+                        <button v-if="!isEditingDescription" type="button" class="event-description__edit"
+                            @click="startEditingDescription">
                             {{ t('event_description_edit') }}
                         </button>
-                    </template>
-                </div>
+                    </header>
 
-                <div class="event-tags">
-                    <template v-if="isEditingTags">
-                        <TwoStageTagListComponent
-                            :fetch-stage1="fetchEventTypesOptions"
-                            :fetch-stage2="fetchEventGenresOptions"
-                            :initial-selection="tagInitialSelection"
-                            @update-selection="onTagSelectionUpdate"
-                        />
-                        <div class="event-tags__actions">
-                            <button
-                                type="button"
-                                class="event-tags__button event-tags__button--cancel"
-                                @click="cancelEditingTags"
-                            >
-                                {{ t('event_tags_cancel') }}
-                            </button>
-                            <button type="button" class="event-tags__button" @click="saveTags">
-                                {{ t('event_tags_save') }}
-                            </button>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div class="event-tags__lists">
-                            <div v-if="event.event_types?.length">
-                                <h3>{{ t('event_types_heading') }}</h3>
-                                <ul>
-                                    <li v-for="type in event.event_types" :key="type.id">{{ type.name }}</li>
-                                </ul>
+                    <div class="event-description__content">
+                        <template v-if="isEditingDescription">
+                            <MarkdownEditorComponent v-model="editedDescription"
+                                :placeholder="t('event_description_placeholder')" />
+                            <div class="event-description__actions">
+                                <button type="button"
+                                    class="event-description__button event-description__button--cancel"
+                                    @click="cancelEditingDescription">
+                                    {{ t('event_description_cancel') }}
+                                </button>
+                                <button type="button" class="event-description__button" @click="saveDescription">
+                                    {{ t('event_description_save') }}
+                                </button>
                             </div>
-                            <div v-if="event.genre_types?.length">
-                                <h3>{{ t('event_genres_heading') }}</h3>
-                                <ul>
-                                    <li v-for="genre in event.genre_types" :key="genre.id">{{ genre.name }}</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <button type="button" class="event-tags__edit" @click="startEditingTags">
-                            {{ t('event_tags_edit') }}
-                        </button>
-                    </template>
-                </div>
+                        </template>
+                        <template v-else>
+                            <MarkdownPreviewComponent v-if="event.description" :value="event.description" />
+                            <p v-else class="empty">{{ t('event_details_empty') }}</p>
+                        </template>
+                    </div>
 
-                <div class="event-additional">
-                    <p v-if="event.participation_info">
-                        <strong>{{ t('event_participation_label') }}:</strong>
-                        {{ event.participation_info }}
-                    </p>
-                    <p v-if="event.meeting_point">
-                        <strong>{{ t('event_meeting_point') }}:</strong>
-                        {{ event.meeting_point }}
-                    </p>
-                </div>
-            </article>
+                    <div class="event-tags">
+                        <template v-if="isEditingTags">
+                            <TwoStageTagListComponent :fetch-stage1="fetchEventTypesOptions"
+                                :fetch-stage2="fetchEventGenresOptions" :initial-selection="tagInitialSelection"
+                                @update-selection="onTagSelectionUpdate" />
+                            <div class="event-tags__actions">
+                                <button type="button" class="event-tags__button event-tags__button--cancel"
+                                    @click="cancelEditingTags">
+                                    {{ t('event_tags_cancel') }}
+                                </button>
+                                <button type="button" class="event-tags__button" @click="saveTags">
+                                    {{ t('event_tags_save') }}
+                                </button>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div class="event-tags__lists">
+                                <div v-if="event.event_types?.length">
+                                    <h3>{{ t('event_types_heading') }}</h3>
+                                    <ul>
+                                        <li v-for="type in event.event_types" :key="type.id">{{ type.name }}</li>
+                                    </ul>
+                                </div>
+                                <div v-if="event.genre_types?.length">
+                                    <h3>{{ t('event_genres_heading') }}</h3>
+                                    <ul>
+                                        <li v-for="genre in event.genre_types" :key="genre.id">{{ genre.name }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <button type="button" class="event-tags__edit" @click="startEditingTags">
+                                {{ t('event_tags_edit') }}
+                            </button>
+                        </template>
+                    </div>
+
+                    <div class="event-additional">
+                        <p v-if="event.participation_info">
+                            <strong>{{ t('event_participation_label') }}:</strong>
+                            {{ event.participation_info }}
+                        </p>
+                        <p v-if="event.meeting_point">
+                            <strong>{{ t('event_meeting_point') }}:</strong>
+                            {{ event.meeting_point }}
+                        </p>
+                    </div>
+                </article>
+
+                <article class="event-teaser">
+                    <img
+                        class="event-teaser__image"
+                        src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80"
+                        alt="Event teaser image"
+                        width="1200"
+                        height="200"
+                        loading="lazy"
+                    />
+                    <div class="event-teaser__content">
+                        <template v-if="isEditingTeaser">
+                            <MarkdownEditorComponent
+                                v-model="editedTeaser"
+                                :placeholder="t('event_teaser_placeholder')"
+                            />
+                            <div class="event-teaser__actions">
+                                <button
+                                    type="button"
+                                    class="event-teaser__button event-teaser__button--cancel"
+                                    @click="cancelEditingTeaser"
+                                >
+                                    {{ t('event_teaser_cancel') }}
+                                </button>
+                                <button type="button" class="event-teaser__button" @click="saveTeaser">
+                                    {{ t('event_teaser_save') }}
+                                </button>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <p class="event-teaser__text">
+                                {{ event.teaser_text || t('event_teaser_fallback') }}
+                            </p>
+                            <button type="button" class="event-teaser__edit" @click="startEditingTeaser">
+                                {{ t('event_teaser_edit') }}
+                            </button>
+                        </template>
+                    </div>
+                </article>
+            </div>
 
             <aside class="event-aside">
-                <LocationMapComponent
-                    :latitude="event.venue_lat"
-                    :longitude="event.venue_lon"
-                    :zoom="18"
-                    :selectable="false"
-                />
+                <LocationMapComponent :latitude="event.venue_lat" :longitude="event.venue_lon" :zoom="18"
+                    :selectable="false" />
                 <section class="event-venue">
                     <h2>{{ event.venue_name }}</h2>
                     <p>
@@ -163,6 +183,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
@@ -196,6 +217,7 @@ interface EventDetail {
     genre_types: EventGenreType[]
     participation_info: string | null
     meeting_point: string | null
+    teaser_text: string | null
     venue_name: string
     venue_street: string
     venue_house_number: string
@@ -223,6 +245,8 @@ const editedSubtitle = ref('')
 const isEditingTags = ref(false)
 const selectedTypeIds = ref<number[]>([])
 const selectedGenreIds = ref<number[]>([])
+const isEditingTeaser = ref(false)
+const editedTeaser = ref('')
 
 const eventId = computed(() => Number(route.params.id))
 
@@ -315,6 +339,40 @@ const saveHeader = async () => {
         event.value.title = previousTitle
         event.value.subtitle = previousSubtitle
         isEditingHeader.value = false
+    }
+}
+
+const startEditingTeaser = () => {
+    editedTeaser.value = event.value?.teaser_text || ''
+    isEditingTeaser.value = true
+}
+
+const cancelEditingTeaser = () => {
+    editedTeaser.value = event.value?.teaser_text || ''
+    isEditingTeaser.value = false
+}
+
+const saveTeaser = async () => {
+    if (!event.value) return
+
+    const previousTeaser = event.value.teaser_text
+    event.value.teaser_text = editedTeaser.value
+
+    try {
+        await apiFetch(`/api/admin/event/${eventId.value}/teaser`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                teaser_text: editedTeaser.value,
+            }),
+        })
+        isEditingTeaser.value = false
+        await loadEvent()
+    } catch (err) {
+        console.error('Failed to update teaser', err)
+        if (event.value) {
+            event.value.teaser_text = previousTeaser
+        }
+        isEditingTeaser.value = false
     }
 }
 
@@ -468,6 +526,10 @@ const loadEvent = async () => {
                 editedSubtitle.value = event.value.subtitle || ''
             }
 
+            if (!isEditingTeaser.value) {
+                editedTeaser.value = event.value.teaser_text || ''
+            }
+
             if (!isEditingTags.value) {
                 selectedTypeIds.value = Array.from(new Set(normalizeCollection(event.value.event_types).map((type) => type.id)))
                 selectedGenreIds.value = Array.from(new Set(normalizeCollection(event.value.genre_types).map((genre) => genre.id)))
@@ -603,59 +665,136 @@ onMounted(() => {
 .event-layout {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: start;
     gap: clamp(1.5rem, 3vw, 2rem);
 }
 
-.event-description {
+.event-main {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+.event-description,
+.event-teaser {
     background: #fff;
     border-radius: 24px;
     padding: clamp(1.75rem, 3vw, 2.4rem);
     box-shadow: 0 24px 50px rgba(31, 41, 55, 0.12);
+    position: relative;
+}
+
+.event-description h2,
+.event-teaser h2 {
+    margin-top: 0;
+    color: #111827;
+    font-size: 1.35rem;
+}
+
+.event-description .empty,
+.event-teaser .empty {
+    font-style: italic;
+    color: rgba(107, 114, 128, 0.85);
+}
+
+.event-teaser {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    position: relative;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+}
 
-    h2 {
-        margin-top: 0;
-        color: #111827;
-        font-size: 1.35rem;
-    }
+.event-teaser__image {
+    width: min(520px, 100%);
+    border-radius: 20px;
+    object-fit: cover;
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.18);
+}
 
-    .empty {
-        font-style: italic;
-        color: rgba(107, 114, 128, 0.85);
-    }
+.event-teaser__text {
+    margin: 0;
+    color: rgba(31, 41, 55, 0.8);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.event-teaser__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+}
+
+.event-teaser__edit {
+    border: none;
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    background: rgba(79, 70, 229, 0.12);
+    color: #4338ca;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.event-teaser__edit:hover {
+    background: rgba(79, 70, 229, 0.2);
+}
+
+.event-teaser__actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.event-teaser__button {
+    border: none;
+    border-radius: 999px;
+    padding: 0.5rem 1.3rem;
+    background: linear-gradient(135deg, #485dff, #60a5fa);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-teaser__button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
+}
+
+.event-teaser__button--cancel {
+    background: rgba(99, 102, 241, 0.12);
+    color: #4338ca;
+}
+
+.event-teaser__button--cancel:hover {
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+}
+
+.event-description__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
 }
 
 .event-description__content {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    position: relative;
-    padding-top: 0.5rem;
 }
 
 .event-description__edit {
-    position: absolute;
-    top: -2rem;
-    right: 0.5rem;
-    z-index: 1;
     border: none;
     border-radius: 999px;
-    padding: 0.4rem 0.9rem;
+    padding: 0.35rem 0.85rem;
     background: rgba(79, 70, 229, 0.12);
     color: #4338ca;
     font-weight: 600;
     cursor: pointer;
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
-}
-
-.event-description:hover .event-description__edit {
-    opacity: 1;
-    transform: translateY(0);
+    transition: background-color 0.2s ease;
 }
 
 .event-description__edit:hover {
@@ -695,13 +834,14 @@ onMounted(() => {
 
 .event-tags {
     position: relative;
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     gap: 1rem;
+    align-self: center;
 }
 
 .event-tags__lists {
-    display: flex;
+    display: inline-flex;
     flex-wrap: wrap;
     gap: 1.2rem;
     justify-content: center;
@@ -744,9 +884,10 @@ onMounted(() => {
 }
 
 .event-tags__actions {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     gap: 0.75rem;
+    align-self: center;
 }
 
 .event-tags__button {
