@@ -3,8 +3,11 @@
         <section class="events-hero">
             <h1>{{ t('events_title') }}</h1>
             <p>{{ t('events_subtitle') }}</p>
-            <router-link :to="`/organizer/${organizerId}/event/create`" class="btn btn--primary">{{ t('add_new_event') }}</router-link>
         </section>
+
+        <router-link :to="`/organizer/${organizerId}/event/create`" class="events-hero__cta">
+            {{ t('add_new_event') }}
+        </router-link>
 
         <section class="events-card">
             <div v-if="error" class="feedback feedback--error" role="alert">
@@ -39,10 +42,7 @@
                                     <span class="chip">{{ event.event_type || t('event_type_unknown') }}</span>
                                 </td>
                                 <td>
-                                    <router-link
-                                        :to="`/event/${event.event_id}`"
-                                        class="btn btn--sm btn--secondary"
-                                    >
+                                    <router-link :to="`/event/${event.event_id}`" class="btn btn--sm btn--secondary">
                                         {{ t('view_event') }}
                                     </router-link>
                                 </td>
@@ -144,6 +144,36 @@ onMounted(async () => {
 
 .events-hero {
     @include form-hero(560px);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.events-hero__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 24px rgba(79, 70, 229, 0.24);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 28px rgba(79, 70, 229, 0.32);
+        filter: brightness(1.05);
+    }
+
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.22);
+    }
 }
 
 .events-card {
@@ -194,6 +224,19 @@ tbody tr:hover {
     font-weight: 600;
     font-size: 0.82rem;
     letter-spacing: 0.02em;
+}
+
+.btn {
+    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1rem);
+
+    &--sm {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    &--secondary {
+        @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1rem);
+    }
 }
 
 .feedback {
