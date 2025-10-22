@@ -453,8 +453,8 @@ const loadEvent = async () => {
             `/api/query?mode=event&events=${eventId.value}&start=2000-01-01`
         )
 
-        if (data?.events?.length) {
-            const eventData = data.events[0]
+        if (data?.events && data.events.length > 0) {
+            const eventData = data.events[0]!
             eventData.event_types = normalizeCollection(eventData.event_types)
             eventData.genre_types = normalizeCollection(eventData.genre_types)
             event.value = eventData
@@ -638,7 +638,7 @@ onMounted(() => {
 
 .event-description__edit {
     position: absolute;
-    top: 1.3rem;
+    top: -2rem;
     right: 0.5rem;
     z-index: 1;
     border: none;
