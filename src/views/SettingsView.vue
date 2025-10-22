@@ -8,7 +8,7 @@
     <section class="settings-card">
       <form class="settings-form">
         <div class="form-group">
-          <label for="language-select">{{ t('selectLanguage') }}</label>
+          <label for="language-select">{{ t('select_language') }}</label>
           <select id="language-select" v-model="selectedLocale">
             <option v-for="option in localeOptions" :key="option.value" :value="option.value">
               {{ option.label }}
