@@ -156,12 +156,94 @@
                 <LocationMapComponent :latitude="event.venue_lat" :longitude="event.venue_lon" :zoom="18"
                     :selectable="false" />
                 <section class="event-venue">
-                    <h2>{{ event.venue_name }}</h2>
-                    <p>
-                        {{ event.venue_street }} {{ event.venue_house_number }}<br />
-                        {{ event.venue_postal_code }} {{ event.venue_city }}
-                    </p>
-                    <p>{{ event.space_name }} ({{ event.space_total_capacity }} {{ t('event_capacity_label') }})</p>
+                    <header class="event-venue__header">
+                        <h2>{{ event.venue_name }}</h2>
+                        <button
+                            v-if="!isEditingVenue"
+                            type="button"
+                            class="event-venue__edit"
+                            @click="startEditingVenue"
+                        >
+                            {{ t('event_venue_edit') }}
+                        </button>
+                    </header>
+
+                    <template v-if="isEditingVenue">
+                        <div class="event-venue__controls">
+                            <label class="event-venue__label" for="event-venue-select">{{ t('event_venue_select_label') }}</label>
+                            <select
+                                id="event-venue-select"
+                                class="event-venue__select"
+                                v-model="selectedVenueId"
+                                :disabled="isLoadingVenues"
+                            >
+                                <option :value="null" disabled>{{ t('event_venue_select_placeholder') }}</option>
+                                <option v-for="venueOption in venueOptions" :key="venueOption.id" :value="venueOption.id">
+                                    {{ venueOption.name }}
+                                </option>
+                            </select>
+                            <p v-if="isLoadingVenues" class="event-venue__empty">{{ t('loading') }}</p>
+                            <p v-else-if="!venueOptions.length" class="event-venue__empty">{{ t('event_venue_no_options') }}</p>
+                        </div>
+                        <div class="event-venue__actions">
+                            <button type="button" class="event-venue__button event-venue__button--cancel" @click="cancelEditingVenue">
+                                {{ t('event_venue_cancel') }}
+                            </button>
+                            <button
+                                type="button"
+                                class="event-venue__button"
+                                :disabled="selectedVenueId === null || isLoadingVenues"
+                                @click="saveVenue"
+                            >
+                                {{ t('event_venue_save') }}
+                            </button>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <p>
+                            {{ event.venue_street }} {{ event.venue_house_number }}<br />
+                            {{ event.venue_postal_code }} {{ event.venue_city }}
+                        </p>
+                        <div class="event-space">
+                            <header class="event-space__header">
+                                <p class="event-space__text">{{ event.space_name }} ({{ event.space_total_capacity }} {{ t('event_capacity_label') }})</p>
+                                <button type="button" class="event-space__edit" @click="startEditingSpace">
+                                    {{ t('event_space_edit') }}
+                                </button>
+                            </header>
+                            <template v-if="isEditingSpace">
+                                <div class="event-space__controls">
+                                    <label class="event-space__label" for="event-space-select">{{ t('event_space_select_label') }}</label>
+                                    <select
+                                        id="event-space-select"
+                                        class="event-space__select"
+                                        v-model="selectedSpaceId"
+                                        :disabled="isLoadingSpaces"
+                                    >
+                                        <option :value="null" disabled>{{ t('event_space_select_placeholder') }}</option>
+                                        <option v-for="spaceOption in spaceOptions" :key="spaceOption.id" :value="spaceOption.id">
+                                            {{ spaceOption.name }}
+                                        </option>
+                                    </select>
+                                    <p v-if="isLoadingSpaces" class="event-space__empty">{{ t('loading') }}</p>
+                                    <p v-else-if="!spaceOptions.length" class="event-space__empty">{{ t('event_space_no_options') }}</p>
+                                </div>
+                                <div class="event-space__actions">
+                                    <button type="button" class="event-space__button event-space__button--cancel" @click="cancelEditingSpace">
+                                        {{ t('event_space_cancel') }}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="event-space__button"
+                                        :disabled="selectedSpaceId === null || isLoadingSpaces"
+                                        @click="saveSpace"
+                                    >
+                                        {{ t('event_space_save') }}
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
                 </section>
 
                 <section class="event-meta">
@@ -208,6 +290,7 @@ interface EventDetail {
     subtitle: string
     description: string
     organizer_name: string
+    organizer_id: number | null
     start_date: string
     start_time: string | null
     end_date: string | null
@@ -219,6 +302,7 @@ interface EventDetail {
     meeting_point: string | null
     teaser_text: string | null
     venue_name: string
+    venue_id: number | null
     venue_street: string
     venue_house_number: string
     venue_postal_code: string
@@ -226,6 +310,7 @@ interface EventDetail {
     venue_lat: number
     venue_lon: number
     space_name: string
+    space_id: number | null
     space_total_capacity: number
 }
 
@@ -247,6 +332,14 @@ const selectedTypeIds = ref<number[]>([])
 const selectedGenreIds = ref<number[]>([])
 const isEditingTeaser = ref(false)
 const editedTeaser = ref('')
+const isEditingVenue = ref(false)
+const selectedVenueId = ref<number | null>(null)
+const venueOptions = ref<Array<{ id: number; name: string }>>([])
+const isLoadingVenues = ref(false)
+const isEditingSpace = ref(false)
+const selectedSpaceId = ref<number | null>(null)
+const spaceOptions = ref<Array<{ id: number; name: string }>>([])
+const isLoadingSpaces = ref(false)
 
 const eventId = computed(() => Number(route.params.id))
 
@@ -376,6 +469,135 @@ const saveTeaser = async () => {
     }
 }
 
+const fetchVenueOptions = async () => {
+    if (!event.value?.organizer_id) {
+        venueOptions.value = []
+        return
+    }
+
+    isLoadingVenues.value = true
+    try {
+        const { data } = await apiFetch<Array<{ id: number; name: string }>>(
+            `/api/choosable-venues/organizer/${event.value.organizer_id}`
+        )
+        venueOptions.value = Array.isArray(data) ? data : []
+    } catch (err) {
+        console.error('Failed to load venues', err)
+        venueOptions.value = []
+    } finally {
+        isLoadingVenues.value = false
+    }
+}
+
+const startEditingVenue = async () => {
+    selectedVenueId.value = event.value?.venue_id ?? null
+    isEditingVenue.value = true
+    if (!venueOptions.value.length) {
+        await fetchVenueOptions()
+    }
+}
+
+const cancelEditingVenue = () => {
+    selectedVenueId.value = event.value?.venue_id ?? null
+    isEditingVenue.value = false
+}
+
+const saveVenue = async () => {
+    if (!event.value || selectedVenueId.value === null) {
+        isEditingVenue.value = false
+        return
+    }
+
+    const previousVenueId = event.value.venue_id
+
+    try {
+        await apiFetch(`/api/admin/event/${eventId.value}/venue`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                venue_id: selectedVenueId.value,
+            }),
+        })
+        isEditingVenue.value = false
+        await loadEvent()
+    } catch (err) {
+        console.error('Failed to update venue', err)
+        if (event.value) {
+            event.value.venue_id = previousVenueId
+        }
+        selectedVenueId.value = previousVenueId ?? null
+        isEditingVenue.value = false
+    }
+}
+
+const fetchSpaceOptions = async (venueId: number | null) => {
+    if (venueId === null) {
+        spaceOptions.value = []
+        return
+    }
+
+    isLoadingSpaces.value = true
+    try {
+        const { data } = await apiFetch<Array<{ id: number; name: string }>>(
+            `/api/choosable-spaces/venue/${venueId}`
+        )
+        spaceOptions.value = Array.isArray(data) ? data : []
+    } catch (err) {
+        console.error('Failed to load spaces', err)
+        spaceOptions.value = []
+    } finally {
+        isLoadingSpaces.value = false
+    }
+}
+
+const startEditingSpace = async () => {
+    selectedSpaceId.value = event.value?.space_id ?? null
+    isEditingSpace.value = true
+    if (!spaceOptions.value.length) {
+        await fetchSpaceOptions(event.value?.venue_id ?? null)
+    }
+}
+
+const cancelEditingSpace = () => {
+    selectedSpaceId.value = event.value?.space_id ?? null
+    isEditingSpace.value = false
+}
+
+const saveSpace = async () => {
+    if (!event.value || selectedSpaceId.value === null) {
+        isEditingSpace.value = false
+        return
+    }
+
+    const previousSpaceId = event.value.space_id
+
+    try {
+        await apiFetch(`/api/admin/event/${eventId.value}/space`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                space_id: selectedSpaceId.value,
+            }),
+        })
+        isEditingSpace.value = false
+        await loadEvent()
+    } catch (err) {
+        console.error('Failed to update space', err)
+        if (event.value) {
+            event.value.space_id = previousSpaceId
+        }
+        selectedSpaceId.value = previousSpaceId ?? null
+        isEditingSpace.value = false
+    }
+}
+
+watch(
+    () => event.value?.space_id,
+    (value) => {
+        if (!isEditingSpace.value) {
+            selectedSpaceId.value = value ?? null
+        }
+    }
+)
+
 watch(
     () => event.value?.title,
     (value) => {
@@ -390,6 +612,16 @@ watch(
     (value) => {
         if (!isEditingHeader.value) {
             editedSubtitle.value = value || ''
+        }
+    }
+)
+
+watch(
+    () => event.value?.venue_id,
+    async (venueId) => {
+        if (!isEditingSpace.value) {
+            selectedSpaceId.value = event.value?.space_id ?? null
+            await fetchSpaceOptions(venueId ?? null)
         }
     }
 )
@@ -528,6 +760,15 @@ const loadEvent = async () => {
 
             if (!isEditingTeaser.value) {
                 editedTeaser.value = event.value.teaser_text || ''
+            }
+
+            if (!isEditingVenue.value) {
+                selectedVenueId.value = event.value.venue_id ?? null
+            }
+
+            if (!isEditingSpace.value) {
+                selectedSpaceId.value = event.value.space_id ?? null
+                await fetchSpaceOptions(event.value.venue_id ?? null)
             }
 
             if (!isEditingTags.value) {
@@ -735,7 +976,14 @@ onMounted(() => {
     color: #4338ca;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    opacity: 0;
+    transform: translateY(-4px);
+}
+
+.event-teaser:hover .event-teaser__edit {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .event-teaser__edit:hover {
@@ -773,6 +1021,210 @@ onMounted(() => {
     box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
 }
 
+.event-venue {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+}
+
+.event-venue__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.event-venue__edit {
+    border: none;
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    background: rgba(79, 70, 229, 0.12);
+    color: #4338ca;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    opacity: 0;
+    transform: translateY(-4px);
+}
+
+.event-venue:hover .event-venue__edit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.event-venue__edit:hover {
+    background: rgba(79, 70, 229, 0.2);
+}
+
+.event-venue__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.event-venue__label {
+    font-weight: 600;
+    color: #111827;
+    text-align: left;
+}
+
+.event-venue__select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border-radius: 12px;
+    border: 1px solid rgba(17, 24, 39, 0.1);
+    background: rgba(243, 244, 246, 0.6);
+    font-size: 1rem;
+    color: #111827;
+}
+
+.event-venue__empty {
+    margin: 0;
+    font-style: italic;
+    color: rgba(107, 114, 128, 0.75);
+}
+
+.event-venue__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.event-venue__button {
+    border: none;
+    border-radius: 999px;
+    padding: 0.5rem 1.3rem;
+    background: linear-gradient(135deg, #485dff, #60a5fa);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-venue__button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
+}
+
+.event-venue__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.event-venue__button--cancel {
+    background: rgba(99, 102, 241, 0.12);
+    color: #4338ca;
+}
+
+.event-venue__button--cancel:hover {
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+}
+
+.event-space {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.event-space__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.event-space__text {
+    margin: 0;
+    color: rgba(55, 65, 81, 0.85);
+}
+
+.event-space__edit {
+    border: none;
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    background: rgba(79, 70, 229, 0.12);
+    color: #4338ca;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    opacity: 0;
+    transform: translateY(-4px);
+}
+
+.event-space:hover .event-space__edit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.event-space__edit:hover {
+    background: rgba(79, 70, 229, 0.2);
+}
+
+.event-space__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.event-space__label {
+    font-weight: 600;
+    color: #111827;
+    text-align: left;
+}
+
+.event-space__select {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    border-radius: 12px;
+    border: 1px solid rgba(17, 24, 39, 0.1);
+    background: rgba(243, 244, 246, 0.6);
+    font-size: 1rem;
+    color: #111827;
+}
+
+.event-space__empty {
+    margin: 0;
+    font-style: italic;
+    color: rgba(107, 114, 128, 0.75);
+}
+
+.event-space__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.event-space__button {
+    border: none;
+    border-radius: 999px;
+    padding: 0.45rem 1.2rem;
+    background: linear-gradient(135deg, #485dff, #60a5fa);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-space__button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
+}
+
+.event-space__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.event-space__button--cancel {
+    background: rgba(99, 102, 241, 0.12);
+    color: #4338ca;
+}
+
+.event-space__button--cancel:hover {
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+}
+
 .event-description__header {
     display: flex;
     justify-content: space-between;
@@ -794,7 +1246,14 @@ onMounted(() => {
     color: #4338ca;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    opacity: 0;
+    transform: translateY(-4px);
+}
+
+.event-description:hover .event-description__edit {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .event-description__edit:hover {
