@@ -2,7 +2,7 @@
   <aside class="sidebar">
     <div class="user-profile">
       <img src="https://i.pravatar.cc/250?u=mail@ashallendesign.co.uk" alt="User Profile" class="profile-image" />
-      <span class="user-name">John Doe</span>
+      <span class="user-name">{{ userStore.displayName || 'User' }}</span>
     </div>
     <SidebarOptionComponent
         v-for="option in options"
@@ -18,6 +18,7 @@
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import SidebarOptionComponent from './SidebarOptionComponent.vue'
+import { useUserStore } from '@/store/userStore'
 import type { SidebarOption } from '@/types/types'
 
 const props = defineProps<{
@@ -25,6 +26,7 @@ const props = defineProps<{
 }>()
 
 const route = useRoute()
+const userStore = useUserStore()
 
 // track the currently active route
 const activeRoute = ref(route.path)

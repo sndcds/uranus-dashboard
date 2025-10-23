@@ -4,6 +4,7 @@ let refreshPromise: Promise<boolean> | null = null;
 
 export interface LoginResponse {
     message: string;
+    display_name?: string;
     access_token?: string;
     refresh_token?: string;
 }

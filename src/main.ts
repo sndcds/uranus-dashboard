@@ -5,6 +5,7 @@ import i18n from './i18n' // import the i18n instance
 import router from './router'
 import { useAppStore } from '@/store/appStore'
 import { useThemeStore } from '@/store/themeStore'
+import { useUserStore } from '@/store/userStore'
 
 const app = createApp(App);
 const pinia = createPinia()
@@ -21,3 +22,6 @@ app.mount('#app');
 
 const appStore = useAppStore()
 appStore.loadOrganizerIdFromStorage() // sync with localStorage
+
+const userStore = useUserStore()
+userStore.loadDisplayNameFromStorage() // sync with localStorage

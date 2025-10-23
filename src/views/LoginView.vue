@@ -51,13 +51,15 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { apiFetch } from '../api'
-import type { LoginResponse } from '../api'
-import { useTokenStore } from '../store/token'
+import { apiFetch } from '@/api'
+import type { LoginResponse } from '@/api'
+import { useTokenStore } from '@/store/token'
+import { useUserStore } from '@/store/userStore'
 
 const { t, te } = useI18n()
 const router = useRouter()
 const tokenStore = useTokenStore()
+const userStore = useUserStore()
 
 const email = ref('')
 const password = ref('')
@@ -81,6 +83,9 @@ const login = async () => {
 
         if (status === 200 && data.message === 'login successful' && data.access_token && data.refresh_token) {
             tokenStore.setTokens(data.access_token, data.refresh_token)
+            if (data.display_name) {
+                userStore.setDisplayName(data.display_name)
+            }
             router.push('/')
         } else {
             error.value = te('invalid_credentials') ? t('invalid_credentials') : 'Invalid credentials'
