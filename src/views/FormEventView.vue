@@ -43,6 +43,7 @@ import EventBasicInfoComponent from '@/components/EventBasicInfoComponent.vue'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import EventDetailsComponent from '@/components/EventDetailsComponent.vue'
 import router from '@/router'
+import type { EventBasicInfoModel, EventDateModel, EventDetailsModel } from '@/models/event'
 
 const { t } = useI18n({ useScope: 'global' })
 const appStore = useAppStore()
@@ -55,44 +56,13 @@ interface SelectOption {
     name: string
 }
 
-interface BasicInfoModel {
-    title: string
-    subtitle: string
-    organizerId: number | null
-    venueId: number | null
-    spaceId: number | null
-    eventTypeIds: number[]
-    genreTypeIds: number[] | null
-}
-
-interface EventDateModel {
-    startDate: string
-    endDate: string | null
-    startTime: string
-    endTime: string | null
-    entryTime: string | null
-    spaceId: number | null
-    allDayEvent: boolean
-}
-
-interface EventDetailsModel {
-    description: string
-    teaserText: string
-    language: string | null
-    minAge: number | null
-    maxAge: number | null
-    participationInfo: string
-    presenter: string
-}
-
-const basicInfo = reactive<BasicInfoModel>({
+const basicInfo = reactive<EventBasicInfoModel>({
     title: '',
     subtitle: '',
     organizerId: null,
     venueId: null,
     spaceId: null,
-    eventTypeIds: [],
-    genreTypeIds: [],
+    typeGenrePairs: [],
 })
 
 const eventDates = ref<EventDateModel[]>([])
@@ -112,7 +82,7 @@ const submitError = ref<string | null>(null)
 const submitSuccess = ref<string | null>(null)
 const availableSpaces = ref<SelectOption[]>([])
 
-const onBasicInfoUpdate = (value: BasicInfoModel) => {
+const onBasicInfoUpdate = (value: EventBasicInfoModel) => {
     Object.assign(basicInfo, value)
 }
 
@@ -190,8 +160,10 @@ const submitEvent = async () => {
         organizer_id: basicInfo.organizerId,
         venue_id: basicInfo.venueId,
         space_id: basicInfo.spaceId,
-        event_type_ids: basicInfo.eventTypeIds,
-        genre_type_ids: basicInfo.genreTypeIds,
+        types: basicInfo.typeGenrePairs.map(pair => ({
+            type_id: pair.typeId,
+            genre_id: pair.genreId,
+        })),
         description: eventDetails.description,
         teaser_text: eventDetails.teaserText || null,
         language: eventDetails.language,

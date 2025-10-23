@@ -62,17 +62,18 @@
 import { reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+import type { EventBasicInfoModel } from '@/models/event'
 
 import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue"
 import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
 
 const props = defineProps<{
     organizerId: number | null
-    modelValue: BasicInfoModel
+    modelValue: EventBasicInfoModel
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: BasicInfoModel): void
+    (e: 'update:modelValue', value: EventBasicInfoModel): void
     (e: 'spaces-change', value: SelectOption[]): void
 }>()
 
@@ -83,27 +84,16 @@ interface SelectOption {
     name: string
 }
 
-interface BasicInfoModel {
-    title: string
-    subtitle: string
-    organizerId: number | null
-    venueId: number | null
-    spaceId: number | null
-    eventTypeIds: number[]
-    genreTypeIds: number[] | null
-}
-
-const emptyBasicInfo = (): BasicInfoModel => ({
+const emptyBasicInfo = (): EventBasicInfoModel => ({
     title: '',
     subtitle: '',
     organizerId: null,
     venueId: null,
     spaceId: null,
-    eventTypeIds: [],
-    genreTypeIds: null,
+    typeGenrePairs: [],
 })
 
-const basicInfo = reactive<BasicInfoModel>(emptyBasicInfo())
+const basicInfo = reactive<EventBasicInfoModel>(emptyBasicInfo())
 
 const venues = ref<SelectOption[]>([])
 const organizers = ref<SelectOption[]>([])
@@ -228,9 +218,11 @@ async function fetchEventGenres(typeId: number): Promise<SelectOption[]> {
     return Array.isArray(data) ? data : []
 }
 
-function onEventSelectionUpdate(payload: { typeIds: number[], genreIds: number[] }) {
-    basicInfo.eventTypeIds = payload.typeIds
-    basicInfo.genreTypeIds = payload.genreIds
+function onEventSelectionUpdate(payload: { typeGenrePairs: [number, number][] }) {
+  basicInfo.typeGenrePairs = payload.typeGenrePairs.map(([typeId, genreId]) => ({
+    typeId,
+    genreId,
+  }))
 }
 
 const validate = () => {
