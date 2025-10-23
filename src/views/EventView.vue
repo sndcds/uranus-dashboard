@@ -42,6 +42,7 @@
                     :longitude="event.venue_lon"
                     :zoom="18"
                     :selectable="false"
+                    class="event-map"
                 />
 
                 <EventVenueSection
@@ -229,6 +230,11 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+.event-map {
+    width: 100%;
+    height: 300px;
 }
 
 .event-aside {
