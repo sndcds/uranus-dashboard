@@ -24,26 +24,30 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>{{ t('event_datetime') }}</th>
-                                <th>{{ t('event_space') }}</th>
+                                <th>{{ t('date') }}</th>
+                                <th>{{ t('begin') }}</th>
                                 <th>{{ t('event_title') }}</th>
+                                <th>{{ t('venue') }}</th>
+                                <th>{{ t('space') }}</th>
                                 <th>{{ t('event_organizer') }}</th>
                                 <th>{{ t('event_type') }}</th>
-                                <th>{{ t('event_details') }}</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="event in events" :key="event.event_id">
-                                <td>{{ formatDateTime(event.start_date, event.start_time) }}</td>
+                                <td>{{ formatDate(event.start_date) }}</td>
+                                <td>{{ event.start_time }}</td>
+                                <td><strong>{{ event.event_title }}</strong></td>
+                                <td>{{ event.venue_name || '—' }}</td>
                                 <td>{{ event.space_name || '—' }}</td>
-                                <td>{{ event.event_title }}</td>
                                 <td>{{ event.event_organizer_name }}</td>
                                 <td>
                                     <span class="chip">{{ event.event_type || t('event_type_unknown') }}</span>
                                 </td>
                                 <td>
                                     <router-link :to="`/event/${event.event_id}`" class="btn btn--sm btn--secondary">
-                                        {{ t('view_event') }}
+                                        {{ t('edit') }}
                                     </router-link>
                                 </td>
                             </tr>
@@ -70,6 +74,7 @@ interface EventItem {
     event_title: string
     start_date: string
     start_time: string
+    venue_name: string
     space_name: string
     event_organizer_name: string
     event_type: string
@@ -196,7 +201,7 @@ thead {
 
     th {
         font-weight: 600;
-        text-transform: uppercase;
+        // text-transform: uppercase;
         letter-spacing: 0.06em;
         color: var(--muted-text);
     }

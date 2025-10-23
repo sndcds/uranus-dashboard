@@ -239,10 +239,30 @@ const buildTagSelection = computed(() => {
 })
 
 const startEditingTags = async () => {
-    selectedTypeIds.value = Array.from(new Set(props.eventTypes.map((type) => type.id)))
-    selectedGenreIds.value = Array.from(new Set(props.genreTypes.map((genre) => genre.id)))
-    tagInitialSelection.value = buildTagSelection.value
-    isEditingTags.value = true
+  // buildTagSelection already returns an array of { typeId, genreId }
+  const selections = buildTagSelection.value ?? []
+
+  // Normalize and deduplicate (in case of duplicates or malformed input)
+  const normalized = selections
+      .map((s) => ({
+        typeId: s.typeId ?? (s as any).type_id ?? 0,
+        genreId: s.genreId ?? (s as any).genre_id ?? null,
+      }))
+      .filter((s) => Number.isFinite(s.typeId) && s.typeId > 0)
+
+  const unique = Array.from(
+      new Map(normalized.map((s) => [`${s.typeId}-${s.genreId ?? 'null'}`, s])).values()
+  )
+
+  // Set for <TwoStageTagListComponent>
+  tagInitialSelection.value = unique
+
+  // Derive selected IDs for other logic / UI
+  selectedTypeIds.value = Array.from(new Set(unique.map((s) => s.typeId)))
+  selectedGenreIds.value = Array.from(new Set(unique.map((s) => s.genreId).filter((g) => g != null)))
+
+  // Enter edit mode
+  isEditingTags.value = true
 }
 
 const cancelEditingTags = () => {

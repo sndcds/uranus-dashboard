@@ -51,8 +51,12 @@
                 </div>
             </div>
             <div class="form-field">
-                <TwoStageTagListComponent :fetchStage1="fetchEventTypes" :fetchStage2="fetchEventGenres"
-                    @update-selection="onEventSelectionUpdate" />
+              <TwoStageTagListComponent
+                  :fetchStage1="fetchEventTypes"
+                  :fetchStage2="fetchEventGenres"
+                  :initial-selection="basicInfo.typeGenrePairs"
+                  @update-selection="onEventSelectionUpdate"
+              />
             </div>
         </div>
     </section>
@@ -218,10 +222,10 @@ async function fetchEventGenres(typeId: number): Promise<SelectOption[]> {
     return Array.isArray(data) ? data : []
 }
 
-function onEventSelectionUpdate(payload: { typeGenrePairs: [number, number][] }) {
-  basicInfo.typeGenrePairs = payload.typeGenrePairs.map(([typeId, genreId]) => ({
-    typeId,
-    genreId,
+function onEventSelectionUpdate(payload: { typeGenrePairs: { type_id: number; genre_id: number }[] }) {
+  basicInfo.typeGenrePairs = payload.typeGenrePairs.map(({ type_id, genre_id }) => ({
+    typeId: type_id,
+    genreId: genre_id === 0 ? null : genre_id, // Normalize "0" to null for cleaner API data
   }))
 }
 

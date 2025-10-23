@@ -45,46 +45,66 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import ComboTagComponent from "@/components/ComboTagComponent.vue"
+import ComboTagComponent from '@/components/ComboTagComponent.vue'
 
-// --- Props ---
+// --- Types ---
+interface EventType {
+  type_id: number
+  name: string
+}
+
+interface EventGenre {
+  type_id: number
+  name: string
+}
+
+interface TypeGenrePair {
+  type_id: number
+  genre_id: number
+}
+
 interface SelectionPreset {
   typeId: number
   genreId: number | null
 }
 
+type SelectionTuple = [number, number]
+type InitialSelectionItem = SelectionPreset | SelectionTuple
+
 interface Props {
-  fetchStage1: () => Promise<any[]>
-  fetchStage2: (typeId: number) => Promise<any[]>
-  initialSelection?: SelectionPreset[] | [number, number][]
+  fetchStage1: () => Promise<EventType[]>
+  fetchStage2: (typeId: number) => Promise<EventGenre[]>
+  initialSelection?: InitialSelectionItem[]
 }
 
-const props = defineProps<Props>()
+interface SelectedItem {
+  type: EventType
+  genre: EventGenre | null
+}
 
-// --- Emits ---
+// --- Props & Emits ---
+const props = defineProps<Props>()
 const emit = defineEmits<{
-  (e: 'update-selection', payload: { typeGenrePairs: [number, number][] }): void
+  (e: 'update-selection', payload: { typeGenrePairs: TypeGenrePair[] }): void
 }>()
 
-// --- Reactive state ---
-const eventTypes = ref<any[]>([])
-const genres = ref<any[]>([])
-const selectedType = ref<any | null>(null)
-const selectedGenre = ref<any | null>(null)
-const selectedList = ref<{ type: any; genre: any | null }[]>([])
-const initialSelectionQueue = ref<SelectionPreset[] | [number, number][]>([])
-const genresCache: Record<number, any[]> = {}
-const isApplyingInitialSelection = ref(false)
-
+// --- Reactive State ---
 const { t } = useI18n({ useScope: 'global' })
+const eventTypes = ref<EventType[]>([])
+const genres = ref<EventGenre[]>([])
+const selectedType = ref<EventType | null>(null)
+const selectedGenre = ref<EventGenre | null>(null)
+const selectedList = ref<SelectedItem[]>([])
+const genresCache: Record<number, EventGenre[]> = {}
+const isApplyingInitialSelection = ref(false)
+const initialSelectionQueue = ref<InitialSelectionItem[]>([])
 
 // --- Fetch Functions ---
 async function fetchEventTypes() {
   try {
-    const data = await props.fetchStage1()
-    eventTypes.value = Array.isArray(data) ? data : []
+    eventTypes.value = await props.fetchStage1() ?? []
     await applyInitialSelection()
   } catch (err) {
     console.error('fetchStage1 error:', err)
@@ -95,7 +115,7 @@ async function fetchEventTypes() {
 async function fetchEventGenres(typeId: number) {
   try {
     const data = await props.fetchStage2(typeId)
-    genres.value = Array.isArray(data) ? data : []
+    genres.value = data ?? []
     genresCache[typeId] = genres.value
   } catch (err) {
     console.error('fetchStage2 error:', err)
@@ -104,46 +124,45 @@ async function fetchEventGenres(typeId: number) {
 }
 
 async function ensureGenres(typeId: number) {
-  if (typeId in genresCache) {
-    return genresCache[typeId] ?? []
-  }
+  if (typeId in genresCache) return genresCache[typeId] ?? []
   const data = await props.fetchStage2(typeId)
-  const options = Array.isArray(data) ? data : []
+  const options = data ?? []
   genresCache[typeId] = options
   return options
 }
 
-// --- Apply initial selection ---
+// --- Initial Selection ---
 async function applyInitialSelection() {
   if (!initialSelectionQueue.value.length || !eventTypes.value.length) return
-
   const selections = [...initialSelectionQueue.value]
   initialSelectionQueue.value = []
-  const list: { type: any; genre: any | null }[] = []
+  const list: SelectedItem[] = []
   isApplyingInitialSelection.value = true
 
   try {
-    for (const selection of selections) {
+    for (const sel of selections) {
       let typeId: number
       let genreId: number | null = null
 
-      if (Array.isArray(selection)) {
-        [typeId, genreId] = selection as [number, number]
+      if (Array.isArray(sel)) {
+        [typeId, genreId] = sel
       } else {
-        typeId = (selection as SelectionPreset).typeId
-        genreId = (selection as SelectionPreset).genreId ?? null
+        typeId = sel.typeId
+        genreId = sel.genreId ?? null
       }
 
-      const type = eventTypes.value.find(item => (item.type_id ?? item.id) === typeId)
+      const type = eventTypes.value.find(item => item.type_id === typeId)
       if (!type) continue
 
-      let genre: any | null = null
-      if (genreId !== null) {
-        const genreOptions = await ensureGenres(type.type_id ?? type.id)
+      let genre: EventGenre | null = null
+      if (genreId !== null && genreId > 0) {
+        const genreOptions = await ensureGenres(type.type_id)
         genre =
-            genreOptions.find(option => (option.type_id ?? option.genre_id ?? option.id) === genreId) ||
-            genreOptions.find(option => option.id === genreId) ||
-            null
+            genreOptions.find(opt =>
+                opt.type_id === genreId ||
+                (opt as any).genre_id === genreId ||
+                (opt as any).id === genreId
+            ) ?? null
       }
 
       list.push({ type, genre })
@@ -160,18 +179,18 @@ async function applyInitialSelection() {
 async function onTypeChange() {
   selectedGenre.value = null
   genres.value = []
-  if (selectedType.value?.type_id ?? selectedType.value?.id) {
-    await fetchEventGenres(selectedType.value.type_id ?? selectedType.value.id)
+  if (selectedType.value) {
+    await fetchEventGenres(selectedType.value.type_id)
   }
 }
 
 function updateParentSelection() {
   if (isApplyingInitialSelection.value) return
 
-  const typeGenrePairs: [number, number][] = selectedList.value.map(item => [
-    item.type.type_id ?? item.type.id,
-    item.genre?.type_id ?? item.genre?.genre_id ?? item.genre?.id ?? 0,
-  ])
+  const typeGenrePairs: TypeGenrePair[] = selectedList.value.map(item => ({
+    type_id: item.type.type_id,
+    genre_id: item.genre?.type_id ?? 0,
+  }))
 
   emit('update-selection', { typeGenrePairs })
 }
@@ -179,13 +198,11 @@ function updateParentSelection() {
 function addCombination() {
   if (!selectedType.value) return
 
-  const typeId = selectedType.value.type_id ?? selectedType.value.id
-  const genreId = selectedGenre.value?.type_id ?? selectedGenre.value?.genre_id ?? selectedGenre.value?.id ?? 0
+  const typeId = selectedType.value.type_id
+  const genreId = selectedGenre.value?.type_id ?? 0
 
   const exists = selectedList.value.some(
-      item =>
-          (item.type.type_id ?? item.type.id) === typeId &&
-          ((item.genre?.type_id ?? item.genre?.genre_id ?? item.genre?.id) || 0) === genreId
+      item => item.type.type_id === typeId && (item.genre?.type_id ?? 0) === genreId
   )
   if (exists) return
 
@@ -205,16 +222,14 @@ function removeCombination(index: number) {
 
 // --- Lifecycle ---
 onMounted(() => {
-  if (Array.isArray(props.initialSelection)) {
-    initialSelectionQueue.value = [...props.initialSelection]
-  }
+  if (props.initialSelection) initialSelectionQueue.value = [...props.initialSelection]
   void fetchEventTypes()
 })
 
 watch(
     () => props.initialSelection,
     (value) => {
-      if (!Array.isArray(value)) return
+      if (!value) return
       initialSelectionQueue.value = [...value]
       void applyInitialSelection()
     },
@@ -231,19 +246,6 @@ watch(
   background: var(--card-bg);
   border-radius: 20px;
   border: 1px solid var(--border-soft);
-}
-
-.tag-selector__header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-
-  h2 {
-    margin: 0;
-    font-size: clamp(1.1rem, 2vw, 1.35rem);
-    font-weight: 700;
-    color: var(--color-text);
-  }
 }
 
 .tag-selector__controls {
