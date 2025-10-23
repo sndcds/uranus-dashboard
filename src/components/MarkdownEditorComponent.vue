@@ -1,58 +1,28 @@
 <template>
     <div class="markdown-editor">
         <div class="markdown-editor__toolbar" role="toolbar">
-            <button
-                type="button"
-                @click="applySyntax('**', '**')"
-                @keydown="handleToolbarShortcut($event, 'bold')"
-                :title="t('markdown_toolbar_bold')"
-                :aria-label="t('markdown_toolbar_bold')"
-            >
+            <button type="button" @click="applySyntax('**', '**')" @keydown="handleToolbarShortcut($event, 'bold')"
+                :title="t('markdown_toolbar_bold')" :aria-label="t('markdown_toolbar_bold')">
                 <strong>B</strong>
             </button>
-            <button
-                type="button"
-                @click="applySyntax('*', '*')"
-                @keydown="handleToolbarShortcut($event, 'italic')"
-                :title="t('markdown_toolbar_italic')"
-                :aria-label="t('markdown_toolbar_italic')"
-            >
+            <button type="button" @click="applySyntax('*', '*')" @keydown="handleToolbarShortcut($event, 'italic')"
+                :title="t('markdown_toolbar_italic')" :aria-label="t('markdown_toolbar_italic')">
                 <em>I</em>
             </button>
-            <button
-                type="button"
-                @click="applySyntax('`', '`')"
-                @keydown="handleToolbarShortcut($event, 'code')"
-                :title="t('markdown_toolbar_code')"
-                :aria-label="t('markdown_toolbar_code')"
-            >
+            <button type="button" @click="applySyntax('`', '`')" @keydown="handleToolbarShortcut($event, 'code')"
+                :title="t('markdown_toolbar_code')" :aria-label="t('markdown_toolbar_code')">
                 { }
             </button>
-            <button
-                type="button"
-                @click="applyPrefix('- ')"
-                @keydown="handleToolbarShortcut($event, 'bullet')"
-                :title="t('markdown_toolbar_bullet')"
-                :aria-label="t('markdown_toolbar_bullet')"
-            >
+            <button type="button" @click="applyPrefix('- ')" @keydown="handleToolbarShortcut($event, 'bullet')"
+                :title="t('markdown_toolbar_bullet')" :aria-label="t('markdown_toolbar_bullet')">
                 •
             </button>
-            <button
-                type="button"
-                @click="applyPrefix('1. ')"
-                @keydown="handleToolbarShortcut($event, 'number')"
-                :title="t('markdown_toolbar_number')"
-                :aria-label="t('markdown_toolbar_number')"
-            >
+            <button type="button" @click="applyPrefix('1. ')" @keydown="handleToolbarShortcut($event, 'number')"
+                :title="t('markdown_toolbar_number')" :aria-label="t('markdown_toolbar_number')">
                 1.
             </button>
-            <button
-                type="button"
-                @click="insertTable"
-                @keydown="handleToolbarShortcut($event, 'table')"
-                :title="t('markdown_insert_table')"
-                :aria-label="t('markdown_insert_table')"
-            >
+            <button type="button" @click="insertTable" @keydown="handleToolbarShortcut($event, 'table')"
+                :title="t('markdown_insert_table')" :aria-label="t('markdown_insert_table')">
                 {{ t('markdown_toolbar_table_label') }}
             </button>
             <button type="button" class="markdown-editor__toggle" @click="togglePreview">
@@ -60,14 +30,8 @@
             </button>
         </div>
 
-        <textarea
-            v-if="!previewMode"
-            ref="textareaRef"
-            v-model="draft"
-            :placeholder="placeholder"
-            @input="emitValue"
-            @keydown="handleKeydown"
-        ></textarea>
+        <textarea v-if="!previewMode" ref="textareaRef" v-model="draft" :placeholder="placeholder" @input="emitValue"
+            @keydown="handleKeydown"></textarea>
 
         <MarkdownPreviewComponent v-else :value="draft" />
     </div>
@@ -348,7 +312,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .markdown-editor {
     display: flex;
     flex-direction: column;
@@ -362,23 +326,22 @@ onMounted(() => {
 }
 
 .markdown-editor__toolbar button {
-    border: 1px solid rgba(79, 70, 229, 0.3);
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-    padding: 0.35rem 0.7rem;
-    border-radius: 999px;
-    cursor: pointer;
+    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.7rem);
     font-size: 0.85rem;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
+    color: var(--color-text);
+    background: var(--accent-muted);
+    border-color: var(--accent-muted);
+    border-radius: 10px;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
 
-.markdown-editor__toolbar button:hover {
-    background: var(--accent-muted-hover);
-}
+    &:hover {
+        background: var(--accent-muted-hover);
+    }
 
-.markdown-editor__toolbar button:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+    &:focus-visible {
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+    }
 }
 
 .markdown-editor__toolbar button.markdown-editor__toggle {
@@ -386,21 +349,9 @@ onMounted(() => {
 }
 
 textarea {
+    @include form-control($padding-y: 0.9rem, $padding-x: 1rem);
     min-height: 180px;
-    padding: 0.9rem;
-    border-radius: 12px;
-    border: 1px solid var(--input-border);
-    background: var(--input-bg);
-    font-size: 1rem;
-    color: var(--color-text);
     resize: vertical;
-}
-
-textarea:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-    background: var(--card-bg);
 }
 
 .fade-enter-active,

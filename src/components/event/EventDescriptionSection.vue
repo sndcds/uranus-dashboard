@@ -340,25 +340,15 @@ const saveTags = async () => {
 }
 
 .event-description__edit {
-    border: none;
-    border-radius: 999px;
-    padding: 0.35rem 0.85rem;
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
     opacity: 0;
     transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .event-description:hover .event-description__edit {
     opacity: 1;
     transform: translateY(0);
-}
-
-.event-description__edit:hover {
-    background: var(--accent-muted-hover);
 }
 
 .event-description__actions {
@@ -368,33 +358,39 @@ const saveTags = async () => {
 }
 
 .event-description__button {
-    border: none;
-    border-radius: 999px;
-    padding: 0.5rem 1.3rem;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.event-description__button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
-}
-
-.event-description__button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
 .event-description__button--cancel {
-    background: var(--accent-muted);
-    color: var(--accent-primary);
+    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
-.event-description__button--cancel:hover {
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+.event-tags__edit {
+    align-self: center;
+    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.event-description:hover .event-tags__edit,
+.event-tags:hover .event-tags__edit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.event-tags__actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.event-tags__button {
+    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
+}
+
+.event-tags__button--cancel {
+    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
 .event-tags {
@@ -425,16 +421,10 @@ const saveTags = async () => {
 
 .event-tags__edit {
     align-self: center;
-    border: none;
-    border-radius: 999px;
-    padding: 0.35rem 0.85rem;
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
     opacity: 0;
     transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .event-description:hover .event-tags__edit,
@@ -443,44 +433,10 @@ const saveTags = async () => {
     transform: translateY(0);
 }
 
-.event-tags__edit:hover {
-    background: rgba(79, 70, 229, 0.2);
-}
-
 .event-tags__actions {
     display: flex;
     justify-content: center;
     gap: 0.75rem;
-}
-
-.event-tags__button {
-    border: none;
-    border-radius: 999px;
-    padding: 0.5rem 1.3rem;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.event-tags__button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
-}
-
-.event-tags__button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.event-tags__button--cancel {
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-}
-
-.event-tags__button--cancel:hover {
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
 }
 
 .event-additional {

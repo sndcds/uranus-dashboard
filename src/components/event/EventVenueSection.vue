@@ -289,25 +289,15 @@ const saveSpace = async () => {
 }
 
 .event-venue__edit {
-    border: none;
-    border-radius: 999px;
-    padding: 0.35rem 0.85rem;
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
     opacity: 0;
     transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .event-venue:hover .event-venue__edit {
     opacity: 1;
     transform: translateY(0);
-}
-
-.event-venue__edit:hover {
-    background: var(--accent-muted-hover);
 }
 
 .event-venue__controls {
@@ -345,33 +335,11 @@ const saveSpace = async () => {
 }
 
 .event-venue__button {
-    border: none;
-    border-radius: 999px;
-    padding: 0.5rem 1.3rem;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.event-venue__button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
-}
-
-.event-venue__button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
 .event-venue__button--cancel {
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-}
-
-.event-venue__button--cancel:hover {
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
 .event-space {
@@ -393,25 +361,15 @@ const saveSpace = async () => {
 }
 
 .event-space__edit {
-    border: none;
-    border-radius: 999px;
-    padding: 0.35rem 0.85rem;
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
     opacity: 0;
     transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .event-space:hover .event-space__edit {
     opacity: 1;
     transform: translateY(0);
-}
-
-.event-space__edit:hover {
-    background: var(--accent-muted-hover);
 }
 
 .event-space__controls {
@@ -449,32 +407,10 @@ const saveSpace = async () => {
 }
 
 .event-space__button {
-    border: none;
-    border-radius: 999px;
-    padding: 0.45rem 1.2rem;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.event-space__button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
-}
-
-.event-space__button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+    @include form-primary-button($padding-y: 0.45rem, $padding-x: 1.2rem);
 }
 
 .event-space__button--cancel {
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-}
-
-.event-space__button--cancel:hover {
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+    @include form-secondary-button($padding-y: 0.45rem, $padding-x: 1.2rem);
 }
 </style>

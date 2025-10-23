@@ -248,6 +248,7 @@ watch(
   border: 1px solid var(--border-soft);
 }
 
+// Mobile-first: Single column layout by default
 .tag-selector__controls {
   display: flex;
   flex-wrap: wrap;
@@ -276,18 +277,19 @@ watch(
   font-size: 0.9rem;
 }
 
-@media (max-width: 640px) {
+// Tablet and up: Enhanced layout
+@media (min-width: 640px) {
   .tag-selector {
-    padding: clamp(0.85rem, 5vw, 1.2rem);
+    padding: clamp(1rem, 2.5vw, 1.5rem);
   }
 
   .tag-selector__controls {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: flex-end;
   }
 
   .tag-selector__add {
-    width: 100%;
+    width: auto;
   }
 }
 </style>

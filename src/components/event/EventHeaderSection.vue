@@ -131,25 +131,15 @@ const saveHeader = async () => {
 }
 
 .event-header-section__edit {
-    border: none;
-    border-radius: 999px;
-    padding: 0.35rem 0.85rem;
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
     opacity: 0;
     transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .event-header-section:hover .event-header-section__edit {
     opacity: 1;
     transform: translateY(0);
-}
-
-.event-header-section__edit:hover {
-    background: var(--accent-muted-hover);
 }
 
 .event-header-section__actions {
@@ -159,32 +149,10 @@ const saveHeader = async () => {
 }
 
 .event-header-section__button {
-    border: none;
-    border-radius: 999px;
-    padding: 0.5rem 1.3rem;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.event-header-section__button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
-}
-
-.event-header-section__button:disabled {
-    opacity: 0.6;
-    cursor: wait;
+    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
 .event-header-section__button--cancel {
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-}
-
-.event-header-section__button--cancel:hover {
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 </style>

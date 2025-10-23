@@ -532,8 +532,15 @@ const saveImage = async () => {
 
 .metadata-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1rem;
+}
+
+// Tablet and up: Multi-column layout
+@media (min-width: 640px) {
+    .metadata-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
 }
 
 .form-field {

@@ -1,5 +1,5 @@
 <template>
-    <div class="tag-list" ref="containerRef">
+    <div class="tag-list" ref="containerRef" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
         <ComboTagComponent
             v-for="option in selectedOptions"
             :key="option.id"
@@ -8,49 +8,32 @@
             @remove="remove(option.id)"
         />
 
-        <button
-            type="button"
-            class="tag-picker"
-            :disabled="!availableOptions.length"
-            @click="toggleDropdown"
-        >
-            {{ placeholder }}
-            <span class="caret" aria-hidden="true">▾</span>
-        </button>
+        <div v-if="selectedOptions.length === 0" class="tag-placeholder">
+            {{ t('tag_no_tags') }}
+        </div>
 
-        <transition name="fade">
-            <ul v-if="dropdownOpen" class="tag-dropdown" role="listbox">
-                <li
-                    v-for="option in availableOptions"
-                    :key="option.id"
-                    class="tag-dropdown__item"
-                    @click="select(option.id)"
-                >
-                    {{ option.name }}
-                </li>
-                <li v-if="!availableOptions.length" class="tag-dropdown__empty">
-                    {{ tNoMoreOptions }}
-                </li>
-            </ul>
-        </transition>
+        <input
+            v-if="isHovered"
+            type="text"
+            class="tag-input"
+            :placeholder="placeholder"
+            v-model="searchQuery"
+            @keydown.enter="addTag"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import ComboTagComponent from './ComboTagComponent.vue'
+import { apiFetch } from '@/api'
 
-interface Option {
-    id: number
-    name: string
-}
+import ComboTagComponent from './ComboTagComponent.vue'
 
 const props = defineProps<{
     modelValue: number[]
-    options: Option[]
     placeholder?: string
-    emptyText?: string
+    eventId: number
 }>()
 
 const emit = defineEmits<{
@@ -58,68 +41,75 @@ const emit = defineEmits<{
 }>()
 
 const containerRef = ref<HTMLElement | null>(null)
-const dropdownOpen = ref(false)
+const searchQuery = ref('')
+const customTagNames = ref<Record<number, string>>({})
+const isHovered = ref(false)
 
 const internalValue = ref<number[]>([])
 const { t } = useI18n({ useScope: 'global' })
 
-watch(
-    () => props.modelValue,
-    (value) => {
-        internalValue.value = Array.isArray(value) ? [...value] : []
-    },
-    { immediate: true, deep: true }
-)
-
-const optionsList = computed<Option[]>(() => (Array.isArray(props.options) ? props.options : []))
-
-const selectedOptions = computed(() =>
-    optionsList.value.filter((option) => internalValue.value.includes(option.id))
-)
-
-const availableOptions = computed(() =>
-    optionsList.value.filter((option) => !internalValue.value.includes(option.id))
-)
+const selectedOptions = computed(() => {
+    return internalValue.value.map((id) => ({
+        id,
+        name: customTagNames.value[id] || ''
+    }))
+})
 
 const placeholder = computed(() => props.placeholder || t('tag_select_placeholder'))
-const tNoMoreOptions = computed(() => props.emptyText || t('tag_no_more_options'))
 
-const select = (id: number) => {
-    if (!internalValue.value.includes(id)) {
-        const updated = [...internalValue.value, id]
+const addTag = async () => {
+    if (searchQuery.value.trim() === '') return
+    
+    const tagName = searchQuery.value.trim()
+    const customId = Math.min(...internalValue.value, 0) - 1
+    
+    if (!internalValue.value.includes(customId)) {
+        const updated = [...internalValue.value, customId]
         internalValue.value = updated
         emit('update:modelValue', updated)
+        
+        // Store the custom tag name for display
+        customTagNames.value[customId] = tagName
+        
+        // Save to API
+        try {
+            await apiFetch(`/api/admin/event/${props.eventId}/tags`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    tags: updated.map(id => customTagNames.value[id] || '').filter(name => name)
+                }),
+            })
+        } catch (err) {
+            console.error('Failed to save tags', err)
+        }
     }
-    dropdownOpen.value = false
+    
+    searchQuery.value = ''
 }
 
-const remove = (id: number) => {
+const remove = async (id: number) => {
     const updated = internalValue.value.filter((value) => value !== id)
     internalValue.value = updated
     emit('update:modelValue', updated)
-}
-
-const toggleDropdown = () => {
-    if (!availableOptions.value.length) return
-    dropdownOpen.value = !dropdownOpen.value
-}
-
-const handleClickOutside = (event: MouseEvent) => {
-    if (containerRef.value && !containerRef.value.contains(event.target as Node)) {
-        dropdownOpen.value = false
+    
+    // Clean up custom tag name if it exists
+    delete customTagNames.value[id]
+    
+    // Save to API
+    try {
+        await apiFetch(`/api/admin/event/${props.eventId}/tags`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                tags: updated.map(id => customTagNames.value[id] || '').filter(name => name)
+            }),
+        })
+    } catch (err) {
+        console.error('Failed to save tags', err)
     }
 }
-
-onMounted(() => {
-    document.addEventListener('click', handleClickOutside)
-})
-
-onBeforeUnmount(() => {
-    document.removeEventListener('click', handleClickOutside)
-})
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .tag-list {
     display: flex;
     flex-wrap: wrap;
@@ -128,74 +118,16 @@ onBeforeUnmount(() => {
     position: relative;
 }
 
-.tag-picker {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 1px solid var(--accent-primary);
-    background-color: var(--accent-muted);
-    color: var(--accent-primary);
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+.tag-input {
+    @include form-control();
+    flex: 1;
+    min-width: 180px;
 }
 
-.tag-picker:hover:not(:disabled) {
-    background-color: var(--accent-muted-hover);
-}
-
-.tag-picker:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-.caret {
-    font-size: 0.7rem;
-}
-
-.tag-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    margin-top: 0.4rem;
-    background: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: var(--card-shadow, 0 12px 24px rgba(15, 23, 42, 0.18));
-    padding: 0.4rem;
-    list-style: none;
-    min-width: 220px;
-    max-height: 220px;
-    overflow-y: auto;
-    z-index: 20;
-}
-
-.tag-dropdown__item {
-    padding: 0.6rem 0.75rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.tag-dropdown__item:hover {
-    background-color: var(--accent-muted);
-    color: var(--accent-primary);
-}
-
-.tag-dropdown__empty {
-    padding: 0.6rem 0.75rem;
-    border-radius: 8px;
+.tag-placeholder {
     color: var(--muted-text);
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.15s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-right: 0.5rem;
 }
 </style>

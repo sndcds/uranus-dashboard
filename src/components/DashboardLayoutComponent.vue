@@ -48,22 +48,37 @@ function logout() {
 </script>
 
 <style scoped>
+/* Mobile-first: Full width layout, sidebar hidden by default */
 .dashboard-layout {
-  display: flex;
   min-height: 100vh;
+  position: relative;
 }
 
-.sidebar {
-  width: 250px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-
+/* Mobile: Main content takes full width, with top padding for hamburger */
 .main-content {
-  flex: 1;
+  width: 100%;
+  min-height: 100vh;
   background: var(--page-gradient);
-  padding: 24px;
+  padding: 5rem 1rem 2rem 1rem; /* Top padding for hamburger button */
 }
 
+/* Tablet and up: Sidebar layout */
+@media (min-width: 768px) {
+  .dashboard-layout {
+    display: flex;
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+    margin-left: 0;
+  }
+}
+
+/* Desktop: Enhanced spacing */
+@media (min-width: 1024px) {
+  .main-content {
+    padding: 2.5rem;
+  }
+}
 </style>

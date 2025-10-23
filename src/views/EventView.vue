@@ -222,104 +222,242 @@ onMounted(() => {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    gap: clamp(1.5rem, 3vw, 2.5rem);
+    gap: clamp(1rem, 4vw, 1.5rem);
+    padding: 0 clamp(1rem, 4vw, 2rem);
 }
 
+// Mobile-first: Single column layout by default
 .event-hero {
     text-align: center;
     color: var(--color-text);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    padding: 1rem 0;
 }
 
 .event-hero__meta {
     display: flex;
-    justify-content: center;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
     font-weight: 600;
     color: var(--accent-primary);
+    font-size: 0.9rem;
 }
 
 .event-hero__organizer {
     font-weight: 600;
     color: var(--muted-text);
     margin: 0;
+    font-size: 0.85rem;
 }
 
+// Mobile: Single column, stacked layout
 .event-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    gap: clamp(1.5rem, 3vw, 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 4vw, 1.5rem);
 }
 
 .event-main {
-    grid-row: 1 / 2;
-    grid-column: 1 / 2;
-    border-radius: 24px;
-    padding: clamp(1.75rem, 3vw, 2.4rem);
+    border-radius: 16px;
+    padding: clamp(1rem, 4vw, 1.5rem);
     background: var(--card-bg);
     display: flex;
     flex-direction: column;
-    gap: clamp(1.5rem, 3vw, 2rem);
+    gap: clamp(1rem, 4vw, 1.25rem);
+    order: 1;
 }
 
 .event-teaser {
-    grid-row: 2 / 3;
-    grid-column: 1 / 2;
+    order: 2;
 }
 
 .event-map {
     width: 100%;
-    height: 300px;
+    height: 250px;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .event-aside {
-    grid-row: 1 / 3;
-    grid-column: 2 / 3;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1rem;
+    order: 3;
 }
 
 .event-meta {
     background: var(--card-bg);
-    border-radius: 24px;
-    padding: 1.4rem;
+    border-radius: 16px;
+    padding: 1rem;
     box-shadow: var(--card-shadow, 0 18px 40px rgba(31, 41, 55, 0.1));
 
     h3 {
         margin: 0 0 0.5rem 0;
         color: var(--color-text);
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     p {
-        margin: 0.35rem 0;
+        margin: 0.25rem 0;
         color: var(--muted-text);
         line-height: 1.5;
+        font-size: 0.9rem;
     }
 }
 
 .event-loading {
-    min-height: 60vh;
+    min-height: 50vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.05rem;
+    font-size: 1rem;
     color: var(--muted-text);
+    padding: 2rem 1rem;
 }
 
-@media (max-width: 960px) {
+// Tablet: Enhanced spacing and sizing
+@media (min-width: 640px) {
+    .event-page {
+        gap: clamp(1.25rem, 3vw, 2rem);
+        padding: 0 clamp(1.5rem, 5vw, 3rem);
+    }
+
+    .event-hero {
+        padding: 1.5rem 0;
+        gap: 0.75rem;
+    }
+
+    .event-hero__meta {
+        flex-direction: row;
+        gap: 1rem;
+        font-size: 1rem;
+    }
+
+    .event-hero__organizer {
+        font-size: 0.9rem;
+    }
+
     .event-layout {
-        grid-template-columns: 1fr;
+        gap: clamp(1.25rem, 3vw, 2rem);
+    }
+
+    .event-main {
+        border-radius: 20px;
+        padding: clamp(1.25rem, 3vw, 2rem);
+        gap: clamp(1.25rem, 3vw, 1.75rem);
+    }
+
+    .event-map {
+        height: 280px;
+    }
+
+    .event-aside {
+        gap: 1.25rem;
+    }
+
+    .event-meta {
+        border-radius: 20px;
+        padding: 1.25rem;
+
+        h3 {
+            font-size: 1.1rem;
+        }
+
+        p {
+            font-size: 0.95rem;
+        }
     }
 }
 
-@media (max-width: 540px) {
+// Desktop: Two-column layout
+@media (min-width: 1024px) {
+    .event-page {
+        gap: clamp(1.5rem, 3vw, 2.5rem);
+        padding: 0 clamp(2rem, 6vw, 4rem);
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .event-hero {
+        padding: 2rem 0;
+        gap: 1rem;
+    }
+
+    .event-hero__meta {
+        font-size: 1.1rem;
+    }
+
+    .event-hero__organizer {
+        font-size: 1rem;
+    }
+
+    // Desktop: Two-column grid layout
+    .event-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        gap: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    .event-main {
+        grid-row: 1 / 2;
+        grid-column: 1 / 2;
+        border-radius: 24px;
+        padding: clamp(1.75rem, 3vw, 2.4rem);
+        gap: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    .event-teaser {
+        grid-row: 2 / 3;
+        grid-column: 1 / 2;
+    }
+
+    .event-map {
+        height: 300px;
+    }
+
+    .event-aside {
+        grid-row: 1 / 3;
+        grid-column: 2 / 3;
+        gap: 1.2rem;
+    }
+
     .event-meta {
-        border-radius: 20px;
-        padding: clamp(1.25rem, 6vw, 1.8rem);
+        border-radius: 24px;
+        padding: 1.4rem;
+
+        h3 {
+            font-size: 1.1rem;
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    }
+}
+
+// Large desktop: Enhanced spacing
+@media (min-width: 1280px) {
+    .event-page {
+        padding: 0 clamp(3rem, 8vw, 6rem);
+    }
+
+    .event-layout {
+        gap: clamp(2rem, 4vw, 3rem);
+    }
+
+    .event-main {
+        padding: clamp(2rem, 4vw, 3rem);
+    }
+
+    .event-map {
+        height: 350px;
+    }
+
+    .event-meta {
+        padding: 1.75rem;
     }
 }
 </style>

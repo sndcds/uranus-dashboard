@@ -5,16 +5,6 @@
 
             <div class="form-grid">
                 <div class="form-field">
-                    <label for="link-url">{{ t('event_link_url') }}</label>
-                    <input id="link-url" v-model="newLink.url" type="url"
-                        :placeholder="t('event_link_url_placeholder')" />
-                </div>
-                <div class="form-field">
-                    <label for="link-title">{{ t('event_link_title') }}</label>
-                    <input id="link-title" v-model="newLink.title" type="text"
-                        :placeholder="t('event_link_title_placeholder')" />
-                </div>
-                <div class="form-field">
                     <label for="link-type">{{ t('event_link_type') }}</label>
                     <select id="link-type" v-model="newLink.url_type">
                         <option value="">{{ t('event_link_type_select') }}</option>
@@ -22,6 +12,16 @@
                             {{ option.label }}
                         </option>
                     </select>
+                </div>
+                <div class="form-field">
+                    <label for="link-title">{{ t('event_link_title') }}</label>
+                    <input id="link-title" v-model="newLink.title" type="text"
+                        :placeholder="t('event_link_title_placeholder')" />
+                </div>
+                <div class="form-field">
+                    <label for="link-url">{{ t('event_link_url') }}</label>
+                    <input id="link-url" v-model="newLink.url" type="url"
+                        :placeholder="t('event_link_url_placeholder')" />
                 </div>
             </div>
             <div class="form-actions">
@@ -108,7 +108,7 @@ const editingIndex = ref<number | null>(null)
 
 // Computed properties
 const canAddLink = computed(() => {
-    return newLink.value.url.trim() && newLink.value.title.trim()
+    return newLink.value.url.trim()
 })
 
 const isEditing = computed(() => editingIndex.value !== null)
@@ -232,9 +232,16 @@ onMounted(() => {
 
 .form-grid {
     display: grid;
-    grid-template-columns: 2fr 2fr 1fr;
+    grid-template-columns: 1fr;
     gap: 1rem;
     margin-bottom: 1rem;
+}
+
+// Tablet and up: Multi-column layout
+@media (min-width: 640px) {
+    .form-grid {
+        grid-template-columns: 1fr 2fr 2fr;
+    }
 }
 
 .form-field {

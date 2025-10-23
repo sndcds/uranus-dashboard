@@ -42,14 +42,25 @@
                 </button>
             </template>
         </div>
+
+        <div>
+            <h4 class="event-teaser__subtitle">{{ t('event_teaser_tags') }}</h4>
+            <TagListComponent
+                :model-value="selectedTagIds"
+                :event-id="eventId"
+                @update:model-value="updateTags"
+            />
+        </div>
     </article>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
+import TagListComponent from '@/components/TagListComponent.vue'
 
 const props = defineProps<{
     eventId: number
@@ -65,6 +76,7 @@ const { t } = useI18n({ useScope: 'global' })
 const isEditing = ref(false)
 const isSaving = ref(false)
 const editedTeaser = ref(props.teaserText ?? '')
+const selectedTagIds = ref<number[]>([])
 
 watch(
     () => props.teaserText,
@@ -83,6 +95,10 @@ const startEditing = () => {
 const cancelEditing = () => {
     editedTeaser.value = props.teaserText ?? ''
     isEditing.value = false
+}
+
+const updateTags = (tagIds: number[]) => {
+    selectedTagIds.value = tagIds
 }
 
 const saveTeaser = async () => {
@@ -139,25 +155,15 @@ const saveTeaser = async () => {
 }
 
 .event-teaser__edit {
-    border: none;
-    border-radius: 999px;
-    padding: 0.35rem 0.85rem;
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
     opacity: 0;
     transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .event-teaser:hover .event-teaser__edit {
     opacity: 1;
     transform: translateY(0);
-}
-
-.event-teaser__edit:hover {
-    background: var(--accent-muted-hover);
 }
 
 .event-teaser__actions {
@@ -167,32 +173,18 @@ const saveTeaser = async () => {
 }
 
 .event-teaser__button {
-    border: none;
-    border-radius: 999px;
-    padding: 0.5rem 1.3rem;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.event-teaser__button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
-}
-
-.event-teaser__button:disabled {
-    opacity: 0.6;
-    cursor: wait;
+    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
 .event-teaser__button--cancel {
-    background: var(--accent-muted);
-    color: var(--accent-primary);
+    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
-.event-teaser__button--cancel:hover {
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.18);
+.event-teaser__subtitle {
+    margin: 0 0 0.75rem 0;
+    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }
 </style>

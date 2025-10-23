@@ -1,24 +1,46 @@
 <template>
-  <div class="dashboard-container">
-    <h1>{{ t('organizers') }}</h1>
-    <p v-if="!organizers.length">{{ t('no_organizers_help') }}</p>
+  <div class="organizer-dashboard-view">
+    <!-- Page Header -->
+    <header class="organizer-dashboard-view__header">
+      <h1 class="organizer-dashboard-view__title">{{ t('organizers') }}</h1>
+    </header>
 
-    <router-link to="/organizer/create">{{ t('create_organizer') }}</router-link>
-
-    <p v-if="error" class="error">{{ error }}</p>
-
-    <div class="cards">
-      <OrganizerCardComponent v-for="organizer in organizers" :key="organizer.organizer_id" :organizer="organizer" />
+    <!-- Empty State Message -->
+    <div v-if="!organizers.length" class="organizer-dashboard-view__empty">
+      <p class="organizer-dashboard-view__empty-text">{{ t('no_organizers_help') }}</p>
     </div>
 
-    <!--pre>{{ organizers }}</pre-->
+    <!-- Create Organizer Action -->
+    <div class="organizer-dashboard-view__actions">
+      <router-link
+        to="/organizer/create"
+        class="organizer-dashboard-view__create-btn"
+      >
+        {{ t('create_organizer') }}
+      </router-link>
+    </div>
+
+    <!-- Error Message -->
+    <div v-if="error" class="organizer-dashboard-view__error">
+      <p class="form-feedback-error">{{ error }}</p>
+    </div>
+
+    <!-- Organizer Cards Grid -->
+    <div class="organizer-dashboard-view__grid">
+      <OrganizerCardComponent
+        v-for="organizer in organizers"
+        :key="organizer.organizer_id"
+        :organizer="organizer"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '../api'
+import { apiFetch } from '@/api'
+
 import OrganizerCardComponent from '@/components/OrganizerCardComponent.vue'
 
 const { t } = useI18n()
@@ -62,20 +84,103 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-.dashboard-container {
+// Mobile-first responsive OrganizerDashboardView
+.organizer-dashboard-view {
+  @include form-page();
+  padding: clamp(1rem, 4vw, 2rem);
+  min-height: 100vh;
+}
+
+// Header section
+.organizer-dashboard-view__header {
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+}
+
+.organizer-dashboard-view__title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+// Empty state
+.organizer-dashboard-view__empty {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.organizer-dashboard-view__empty-text {
+  margin: 0;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: var(--muted-text);
+  line-height: 1.6;
+}
+
+// Actions section
+.organizer-dashboard-view__actions {
+  width: 100%;
+  max-width: 1200px;
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  justify-content: center;
 }
 
-.error {
-  color: red;
-  margin-bottom: 16px;
+.organizer-dashboard-view__create-btn {
+  @include form-primary-button();
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 
-.cards {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+// Error feedback
+.organizer-dashboard-view__error {
+  width: 100%;
+  max-width: 600px;
+}
+
+.form-feedback-error {
+  @include form-feedback();
+  @include form-feedback-error();
+}
+
+// Organizer cards grid - mobile first
+.organizer-dashboard-view__grid {
+  @include form-grid(280px, clamp(1rem, 3vw, 1.5rem));
+  width: 100%;
+  max-width: 1200px;
+}
+
+// Tablet enhancements (640px+)
+@media (min-width: 640px) {
+  .organizer-dashboard-view__actions {
+    justify-content: flex-end;
+  }
+
+  .organizer-dashboard-view__grid {
+    @include form-grid(320px, clamp(1.25rem, 3.5vw, 1.75rem));
+  }
+}
+
+// Desktop enhancements (1024px+)
+@media (min-width: 1024px) {
+  .organizer-dashboard-view {
+    padding: clamp(2rem, 6vw, 4rem);
+  }
+
+  .organizer-dashboard-view__grid {
+    @include form-grid(360px, clamp(1.5rem, 4vw, 2rem));
+  }
+}
+
+// Large desktop (1280px+)
+@media (min-width: 1280px) {
+  .organizer-dashboard-view__grid {
+    @include form-grid(400px, clamp(2rem, 5vw, 2.5rem));
+  }
 }
 </style>
