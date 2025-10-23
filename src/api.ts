@@ -42,7 +42,8 @@ export async function apiFetch<T = unknown>(
     const doFetch = async (): Promise<ApiResponse<T>> => {
         const headers = new Headers(options.headers ?? undefined);
 
-        if (!headers.has('Content-Type')) {
+        // Only set JSON Content-Type if body is NOT FormData
+        if (!(options.body instanceof FormData) && !headers.has('Content-Type')) {
             headers.set('Content-Type', 'application/json');
         }
 
@@ -52,13 +53,7 @@ export async function apiFetch<T = unknown>(
             headers.delete('Authorization');
         }
 
-        const res = await fetch(
-            url,
-            {
-                ...options,
-                headers,
-            }
-        );
+        const res = await fetch(url, { ...options, headers });
 
         const contentType = res.headers.get('content-type') ?? '';
         let data: unknown = null;

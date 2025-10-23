@@ -326,42 +326,41 @@ onMounted(() => {
 })
 
 const saveImage = async () => {
-    if (!props.modelValue || !props.eventId || isSaving.value) {
-        return
+  if (!props.modelValue || !props.eventId || isSaving.value) return
+
+  isSaving.value = true
+  error.value = ''
+
+  try {
+    const formData = new FormData()
+    formData.append('image', props.modelValue)
+
+    if (localAltText.value.trim()) {
+      formData.append('alt_text', localAltText.value.trim())
     }
-
-    isSaving.value = true
-    error.value = ''
-
-    try {
-        const formData = new FormData()
-        formData.append('image', props.modelValue)
-
-        if (localAltText.value.trim()) {
-            formData.append('alt_text', localAltText.value.trim())
-        }
-        if (localCopyright.value) {
-            formData.append('copyright', localCopyright.value)
-        }
-        if (localLicense.value) {
-            formData.append('license', localLicense.value)
-        }
-        if (localCreatedBy.value.trim()) {
-            formData.append('created_by', localCreatedBy.value.trim())
-        }
-
-        await apiFetch(`/api/admin/event/${props.eventId}/image`, {
-            method: 'POST',
-            body: formData,
-        })
-
-        emit('updated')
-    } catch (err) {
-        console.error('Failed to save image', err)
-        error.value = t('event_image_save_error')
-    } finally {
-        isSaving.value = false
+    if (localCopyright.value) {
+      formData.append('copyright', localCopyright.value)
     }
+    if (localLicense.value) {
+      formData.append('licence_id', localLicense.value) // must match Go struct
+    }
+    if (localCreatedBy.value.trim()) {
+      formData.append('created_by', localCreatedBy.value.trim())
+    }
+    console.log(formData.values())
+
+    await apiFetch(`/api/admin/event/${props.eventId}/image`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    emit('updated')
+  } catch (err) {
+    console.error('Failed to save image', err)
+    error.value = t('event_image_save_error')
+  } finally {
+    isSaving.value = false
+  }
 }
 </script>
 
