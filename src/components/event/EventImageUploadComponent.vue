@@ -157,7 +157,7 @@ const emit = defineEmits<{
     'updated': []
 }>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const fileInput = ref<HTMLInputElement>()
 const isDragOver = ref(false)
@@ -302,9 +302,8 @@ const fetchLicenses = async () => {
     licenseError.value = ''
 
     try {
-        const { data } = await apiFetch(`/api/choosable-licenses?lang=de`) // TODO: user language
+        const { data } = await apiFetch(`/api/choosable-licenses?lang=${locale.value}`)
 
-        // Assuming the API returns an array of license objects with id and name properties
         if (Array.isArray(data)) {
             licenseOptions.value = data.map((license: any) => ({
                 value: license.license_id,
@@ -316,14 +315,12 @@ const fetchLicenses = async () => {
     } catch (err) {
         console.error('Failed to fetch licenses', err)
         licenseError.value = t('event_image_license_load_error')
-        // Fallback to empty array
         licenseOptions.value = []
     } finally {
         licenseLoading.value = false
     }
 }
 
-// Fetch licenses on component mount
 onMounted(() => {
     fetchLicenses()
 })
