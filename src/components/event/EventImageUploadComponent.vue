@@ -302,13 +302,13 @@ const fetchLicenses = async () => {
     licenseError.value = ''
 
     try {
-        const { data } = await apiFetch(`/api/admin/licenses?lang=${navigator.language}`)
+        const { data } = await apiFetch(`/api/choosable-licenses?lang=de`) // TODO: user language
 
         // Assuming the API returns an array of license objects with id and name properties
         if (Array.isArray(data)) {
             licenseOptions.value = data.map((license: any) => ({
-                value: license.id || license.code || license.value || license,
-                label: license.name || license.title || license.label || license
+                value: license.license_id,
+                label: license.license_name
             }))
         } else {
             licenseOptions.value = []
