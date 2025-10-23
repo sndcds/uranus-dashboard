@@ -18,6 +18,18 @@
 
         <section class="event-layout">
             <div class="event-main">
+                <EventImageUploadComponent
+                    v-model="eventImage"
+                    v-model:alt-text="imageAltText"
+                    v-model:copyright="imageCopyright"
+                    v-model:license="imageLicense"
+                    v-model:created-by="imageCreatedBy"
+                    :event-id="eventId"
+                    :max-size="5 * 1024 * 1024"
+                    :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
+                    @updated="loadEvent"
+                />
+
                 <EventDescriptionSection
                     :event-id="event.id"
                     :description="event.description"
@@ -25,7 +37,7 @@
                     :meeting-point="event.meeting_point"
                     :event-types="event.event_types"
                     :genre-types="event.genre_types"
-                    :locale="locale.value"
+                    :locale="locale"
                     @updated="loadEvent"
                 />
 
@@ -80,6 +92,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
+import EventImageUploadComponent from '@/components/event/EventImageUploadComponent.vue'
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import EventHeaderSection from '@/components/event/EventHeaderSection.vue'
 import EventDescriptionSection from '@/components/event/EventDescriptionSection.vue'
@@ -138,6 +151,11 @@ const event = ref<EventDetail | null>(null)
 const error = ref<string | null>(null)
 
 const eventId = computed(() => Number(route.params.id))
+const eventImage = ref<File | null>(null)
+const imageAltText = ref('')
+const imageCopyright = ref('')
+const imageLicense = ref('')
+const imageCreatedBy = ref('')
 
 const dateFormatter = computed(
     () =>
@@ -173,9 +191,11 @@ const loadEvent = async () => {
 
         if (data?.events?.length) {
             const eventData = data.events[0]
-            eventData.event_types = normalizeCollection(eventData.event_types)
-            eventData.genre_types = normalizeCollection(eventData.genre_types)
-            event.value = eventData
+            if (eventData) {
+                eventData.event_types = normalizeCollection(eventData.event_types)
+                eventData.genre_types = normalizeCollection(eventData.genre_types)
+                event.value = eventData
+            }
         } else {
             error.value = t('event_not_found')
         }
