@@ -1,5 +1,9 @@
 <template>
   <aside class="sidebar">
+    <div class="user-profile">
+      <img src="https://i.pravatar.cc/250?u=mail@ashallendesign.co.uk" alt="User Profile" class="profile-image" />
+      <span class="user-name">John Doe</span>
+    </div>
     <SidebarOptionComponent
         v-for="option in options"
         :key="option.id"
@@ -30,3 +34,32 @@ watch(route, (newRoute) => {
 })
 
 </script>
+
+<style scoped lang="scss">
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-primary);
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+</style>
