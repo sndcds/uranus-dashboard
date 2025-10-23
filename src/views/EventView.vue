@@ -41,12 +41,18 @@
                     @updated="loadEvent"
                 />
 
-                <EventTeaserSection
+                <EventUrlSection
                     :event-id="event.id"
-                    :teaser-text="event.teaser_text"
                     @updated="loadEvent"
                 />
             </div>
+
+            <EventTeaserSection
+                :event-id="event.id"
+                :teaser-text="event.teaser_text"
+                @updated="loadEvent"
+                class="event-teaser"
+            />
 
             <aside class="event-aside">
                 <LocationMapComponent
@@ -98,6 +104,7 @@ import EventHeaderSection from '@/components/event/EventHeaderSection.vue'
 import EventDescriptionSection from '@/components/event/EventDescriptionSection.vue'
 import EventTeaserSection from '@/components/event/EventTeaserSection.vue'
 import EventVenueSection from '@/components/event/EventVenueSection.vue'
+import EventUrlSection from '@/components/event/EventUrlSection.vue'
 
 interface EventType {
     id: number
@@ -247,9 +254,19 @@ onMounted(() => {
 }
 
 .event-main {
+    grid-row: 1 / 2;
+    grid-column: 1 / 2;
+    border-radius: 24px;
+    padding: clamp(1.75rem, 3vw, 2.4rem);
+    background: var(--card-bg);
     display: flex;
     flex-direction: column;
     gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+.event-teaser {
+    grid-row: 2 / 3;
+    grid-column: 1 / 2;
 }
 
 .event-map {
@@ -258,6 +275,8 @@ onMounted(() => {
 }
 
 .event-aside {
+    grid-row: 1 / 3;
+    grid-column: 2 / 3;
     display: flex;
     flex-direction: column;
     gap: 1.2rem;

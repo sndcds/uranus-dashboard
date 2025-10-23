@@ -320,10 +320,6 @@ const saveTags = async () => {
 
 <style scoped lang="scss">
 .event-description {
-    background: var(--card-bg);
-    border-radius: 24px;
-    padding: clamp(1.75rem, 3vw, 2.4rem);
-    box-shadow: 0 24px 50px rgba(31, 41, 55, 0.12);
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
