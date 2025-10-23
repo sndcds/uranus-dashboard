@@ -91,33 +91,27 @@
 
             <div class="form-field">
                 <label for="image-copyright">{{ t('event_image_copyright') }}</label>
-                <select id="image-copyright" v-model="localCopyright">
-                    <option value="">{{ t('event_image_copyright_select') }}</option>
-                    <option v-for="option in copyrightOptions" :key="option.value" :value="option.value">
-                        {{ option.label }}
-                    </option>
-                </select>
+                <input id="image-copyright" v-model="localCopyright" type="text"
+                    :placeholder="t('event_image_copyright_placeholder')" />
             </div>
 
             <div class="form-field">
                 <label for="image-license">{{ t('event_image_license') }}</label>
-                <select id="image-license" v-model="localLicense">
-                    <option value="">{{ t('event_image_license_select') }}</option>
+                <select id="image-license" v-model="localLicense" :disabled="licenseLoading">
+                    <option value="">{{ licenseLoading ? t('loading') : t('event_image_license_select') }}</option>
                     <option v-for="option in licenseOptions" :key="option.value" :value="option.value">
                         {{ option.label }}
                     </option>
                 </select>
+                <div v-if="licenseError" class="form-error">
+                    {{ licenseError }}
+                </div>
             </div>
         </div>
 
         <!-- Save button -->
         <div class="metadata-actions">
-            <button
-                type="button"
-                class="save-button"
-                @click="saveImage"
-                :disabled="isSaving || !canSave"
-            >
+            <button type="button" class="save-button" @click="saveImage" :disabled="isSaving || !canSave">
                 <span v-if="!isSaving">{{ t('event_image_save') }}</span>
                 <span v-else>{{ t('saving') }}</span>
             </button>
@@ -129,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
@@ -204,23 +198,9 @@ watch(localLicense, (newVal) => emit('update:license', newVal))
 watch(localCreatedBy, (newVal) => emit('update:createdBy', newVal))
 
 // Dropdown options
-const copyrightOptions = [
-    { value: 'all-rights-reserved', label: t('event_image_copyright_all_rights') },
-    { value: 'cc-by', label: t('event_image_copyright_cc_by') },
-    { value: 'cc-by-sa', label: t('event_image_copyright_cc_by_sa') },
-    { value: 'cc-by-nc', label: t('event_image_copyright_cc_by_nc') },
-    { value: 'cc-by-nc-sa', label: t('event_image_copyright_cc_by_nc_sa') },
-    { value: 'public-domain', label: t('event_image_copyright_public_domain') },
-]
-
-const licenseOptions = [
-    { value: 'copyright', label: t('event_image_license_copyright') },
-    { value: 'cc-by-4.0', label: t('event_image_license_cc_by_4') },
-    { value: 'cc-by-sa-4.0', label: t('event_image_license_cc_by_sa_4') },
-    { value: 'cc-by-nc-4.0', label: t('event_image_license_cc_by_nc_4') },
-    { value: 'cc-by-nc-sa-4.0', label: t('event_image_license_cc_by_nc_sa_4') },
-    { value: 'public-domain', label: t('event_image_license_public_domain') },
-]
+const licenseOptions = ref<Array<{ value: string; label: string }>>([])
+const licenseLoading = ref(false)
+const licenseError = ref<string>('')
 
 const createPreview = (file: File) => {
     if (!file) return
@@ -315,6 +295,37 @@ const formatFileSize = (bytes: number): string => {
 import { onUnmounted } from 'vue'
 onUnmounted(() => {
     clearPreview()
+})
+
+const fetchLicenses = async () => {
+    licenseLoading.value = true
+    licenseError.value = ''
+
+    try {
+        const { data } = await apiFetch(`/api/admin/licenses?lang=${navigator.language}`)
+
+        // Assuming the API returns an array of license objects with id and name properties
+        if (Array.isArray(data)) {
+            licenseOptions.value = data.map((license: any) => ({
+                value: license.id || license.code || license.value || license,
+                label: license.name || license.title || license.label || license
+            }))
+        } else {
+            licenseOptions.value = []
+        }
+    } catch (err) {
+        console.error('Failed to fetch licenses', err)
+        licenseError.value = t('event_image_license_load_error')
+        // Fallback to empty array
+        licenseOptions.value = []
+    } finally {
+        licenseLoading.value = false
+    }
+}
+
+// Fetch licenses on component mount
+onMounted(() => {
+    fetchLicenses()
 })
 
 const saveImage = async () => {
