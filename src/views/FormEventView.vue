@@ -9,8 +9,15 @@
             <EventBasicInfoComponent ref="basicInfoRef" :model-value="basicInfo"
                 :organizer-id="appStore.organizerId ?? null" @update:modelValue="onBasicInfoUpdate"
                 @spaces-change="onSpacesChange" />
-            <EventDatesComponent ref="datesRef" :model-value="eventDates" :organizer-id="appStore.organizerId ?? null"
-                :spaces="availableSpaces" @update:modelValue="onDatesUpdate" />
+            <section class="event-dates-section">
+                <header class="event-dates-section__header">
+                    <h2>{{ t('event_section_dates') }}</h2>
+                    <p>{{ t('event_section_dates_subtitle') }}</p>
+                </header>
+                <EventDatesComponent ref="datesRef" :model-value="eventDates"
+                    :organizer-id="appStore.organizerId ?? null" :spaces="availableSpaces"
+                    @update:modelValue="onDatesUpdate" />
+            </section>
             <EventDetailsComponent ref="detailsRef" :model-value="eventDetails"
                 :organizer-id="appStore.organizerId ?? null" @update:modelValue="onDetailsUpdate" />
 
@@ -216,6 +223,12 @@ const submitEvent = async () => {
     @include form-hero(560px);
 }
 
+.event-dates-section {
+    @include form-section();
+}
+.event-dates-section__header {
+    @include form-section-header();
+}
 .event-form-grid {
     width: min(1080px, 100%);
     display: grid;

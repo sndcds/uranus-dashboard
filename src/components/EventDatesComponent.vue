@@ -1,21 +1,11 @@
 <template>
     <section class="event-section">
-        <header class="event-section__header">
-            <h2>{{ t('event_section_dates') }}</h2>
-            <p>{{ t('event_section_dates_subtitle') }}</p>
-        </header>
-
         <div class="event-section__form">
             <div class="event-dates">
                 <div v-for="(date, index) in localDates" :key="index" class="event-dates__card">
                     <div class="event-dates__meta">
                         <span class="badge">#{{ index + 1 }}</span>
-                        <button
-                            type="button"
-                            class="link"
-                            @click="removeDate(index)"
-                            v-if="localDates.length > 1"
-                        >
+                        <button type="button" class="link" @click="removeDate(index)" v-if="localDates.length > 1">
                             {{ t('event_remove_date') }}
                         </button>
                     </div>
@@ -239,10 +229,6 @@ defineExpose({ validate })
 </script>
 
 <style scoped lang="scss">
-.event-section {
-    @include form-section();
-}
-
 .event-section__header {
     @include form-section-header();
 }
@@ -307,7 +293,7 @@ defineExpose({ validate })
 
 .event-dates__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(0.75rem, 2vw, 1.2rem);
 }
 
@@ -317,8 +303,9 @@ defineExpose({ validate })
 
 .form-field--checkbox {
     flex-direction: row;
-    align-items: center;
+    align-items: end;
     gap: 0.6rem;
+    padding-bottom: 1rem;
 
     label {
         display: inline-flex;
@@ -349,6 +336,12 @@ defineExpose({ validate })
 
     .event-section__actions {
         justify-content: center;
+    }
+}
+
+@media (min-width: 1024px) {
+    .event-dates__grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
 

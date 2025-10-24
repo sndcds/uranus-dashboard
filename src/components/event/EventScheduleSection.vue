@@ -243,6 +243,17 @@ const mapApiDateToEntry = (item: EventDateApi): EventScheduleEntry => ({
     spaceId: typeof item.space_id === 'number' ? item.space_id : null,
 })
 
+const createScheduleEntryFromDraft = (entry: ScheduleDraftEntry): EventScheduleEntry => ({
+    id: entry.id ?? null,
+    startDate: entry.startDate,
+    startTime: entry.startTime,
+    endDate: entry.endDate,
+    endTime: entry.endTime,
+    entryTime: entry.entryTime,
+    allDay: entry.allDayEvent,
+    spaceId: entry.spaceId,
+})
+
 const deriveScheduleFromProps = (): EventScheduleEntry[] => {
     const fromDates = normalizeCollection<EventDateApi>(props.dates)
     const fromEventDates = normalizeCollection<EventDateApi>(props.eventDates)
@@ -267,6 +278,16 @@ const deriveScheduleFromProps = (): EventScheduleEntry[] => {
     return fallback.startDate || fallback.startTime ? [fallback] : []
 }
 
+const syncScheduleEntries = (force = false) => {
+    if (isEditingSchedule.value && !force) {
+        return
+    }
+
+    scheduleEntries.value = deriveScheduleFromProps()
+}
+
+syncScheduleEntries(true)
+
 const loadSpaces = async (venueId: number | null) => {
     if (venueId === null || !Number.isFinite(venueId)) {
         availableSpaces.value = []
@@ -279,31 +300,6 @@ const loadSpaces = async (venueId: number | null) => {
     } catch (err) {
         console.error('Failed to load spaces', err)
         availableSpaces.value = []
-    }
-}
-
-const loadSchedule = async (force = false) => {
-    if (isEditingSchedule.value && !force) {
-        return
-    }
-
-    const fallback = deriveScheduleFromProps()
-
-    if (!Number.isFinite(props.eventId) || props.eventId <= 0) {
-        scheduleEntries.value = fallback
-        return
-    }
-
-    try {
-        const { data } = await apiFetch<EventDateApi[]>(`/api/admin/event/${props.eventId}/dates`)
-        const mapped = Array.isArray(data)
-            ? data.map(mapApiDateToEntry).filter((entry) => entry.startDate || entry.startTime)
-            : []
-
-        scheduleEntries.value = mapped.length ? mapped : fallback
-    } catch (err) {
-        console.error('Failed to load event dates', err)
-        scheduleEntries.value = fallback
     }
 }
 
@@ -410,8 +406,12 @@ const saveSchedule = async () => {
         })
 
         isEditingSchedule.value = false
+        const updatedEntries = scheduleDraft.value
+            .map(createScheduleEntryFromDraft)
+            .filter((entry) => entry.startDate || entry.startTime)
+        scheduleEntries.value = updatedEntries
         scheduleDraft.value = []
-        await Promise.all([loadSpaces(props.venueId ?? null), loadSchedule(true)])
+        await loadSpaces(props.venueId ?? null)
         emit('updated')
     } catch (err) {
         console.error('Failed to update event dates', err)
@@ -424,7 +424,7 @@ const saveSchedule = async () => {
 watch(
     () => props.eventId,
     () => {
-        void loadSchedule(true)
+        syncScheduleEntries(true)
     }
 )
 
@@ -439,14 +439,14 @@ watch(
 watch(
     () => [props.startDate, props.startTime, props.endDate, props.endTime, props.entryTime, props.spaceId],
     () => {
-        void loadSchedule()
+        syncScheduleEntries()
     }
 )
 
 watch(
     () => props.dates,
     () => {
-        void loadSchedule()
+        syncScheduleEntries()
     },
     { deep: true }
 )
@@ -454,14 +454,14 @@ watch(
 watch(
     () => props.eventDates,
     () => {
-        void loadSchedule()
+        syncScheduleEntries()
     },
     { deep: true }
 )
 
 onMounted(() => {
     void loadSpaces(props.venueId ?? null)
-    void loadSchedule()
+    syncScheduleEntries(true)
 })
 </script>
 
@@ -470,7 +470,6 @@ onMounted(() => {
     background: var(--card-bg);
     border-radius: 16px;
     padding: 1rem;
-    box-shadow: var(--card-shadow, 0 18px 40px rgba(31, 41, 55, 0.1));
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -601,6 +600,10 @@ onMounted(() => {
         p {
             font-size: 1rem;
         }
+    }
+
+    .event-meta__editor :deep(.event-dates__grid) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
