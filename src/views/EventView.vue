@@ -223,10 +223,8 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: clamp(1rem, 4vw, 1.5rem);
-    padding: 0 clamp(1rem, 4vw, 2rem);
 }
 
-// Mobile-first: Single column layout by default
 .event-hero {
     text-align: center;
     color: var(--color-text);
@@ -376,8 +374,6 @@ onMounted(() => {
 @media (min-width: 1024px) {
     .event-page {
         gap: clamp(1.5rem, 3vw, 2.5rem);
-        padding: 0 clamp(2rem, 6vw, 4rem);
-        max-width: 1400px;
         margin: 0 auto;
     }
 

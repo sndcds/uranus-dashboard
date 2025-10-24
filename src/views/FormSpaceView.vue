@@ -60,9 +60,9 @@
 
 <script setup lang="ts">
 import { onMounted, computed, reactive, ref } from 'vue'
-import { apiFetch } from '../api'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { apiFetch } from '@/api'
 
 const route = useRoute()
 const router = useRouter()

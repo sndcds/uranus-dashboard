@@ -75,7 +75,8 @@
 import { computed, ref } from 'vue'
 import type { LatLngLiteral } from 'leaflet'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '../api'
+import { apiFetch } from '@/api'
+
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 
 const { t, te } = useI18n()

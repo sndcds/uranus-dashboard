@@ -1,18 +1,11 @@
 <template>
-    <div class="event-header-section">
+    <div class="event-header-section" :class="{ 'event-header-section--editing': isEditing }">
         <template v-if="isEditing">
-            <EventTitleFieldsComponent
-                :title="editedTitle"
-                :subtitle="editedSubtitle"
-                @update:title="editedTitle = $event"
-                @update:subtitle="editedSubtitle = $event"
-            />
+            <EventTitleFieldsComponent :title="editedTitle" :subtitle="editedSubtitle"
+                @update:title="editedTitle = $event" @update:subtitle="editedSubtitle = $event" />
             <div class="event-header-section__actions">
-                <button
-                    type="button"
-                    class="event-header-section__button event-header-section__button--cancel"
-                    @click="cancelEditing"
-                >
+                <button type="button" class="event-header-section__button event-header-section__button--cancel"
+                    @click="cancelEditing">
                     {{ t('event_header_cancel') }}
                 </button>
                 <button type="button" class="event-header-section__button" @click="saveHeader" :disabled="isSaving">
@@ -35,6 +28,7 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+
 import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
 
 const props = defineProps<{
@@ -116,6 +110,21 @@ const saveHeader = async () => {
     gap: 0.75rem;
     align-items: center;
     text-align: center;
+    width: 100%;
+}
+
+.event-header-section--editing {
+    align-items: stretch;
+    text-align: left;
+}
+
+.event-header-section--editing .title-fields {
+    width: 100%;
+}
+
+.event-header-section--editing .event-header-section__actions {
+    justify-content: flex-end;
+    width: 100%;
 }
 
 .event-header-section__title {

@@ -1,124 +1,115 @@
-<!--
-  EventImageUploadComponent
-
-  A Vue 3 component for uploading and managing event images with drag & drop support.
-
-  Usage:
-    <EventImageUploadComponent
-      v-model="eventImage"
-      v-model:alt-text="imageAltText"
-      v-model:copyright="imageCopyright"
-      v-model:license="imageLicense"
-      v-model:created-by="imageCreatedBy"
-      :max-size="5 * 1024 * 1024"
-      :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
-    />
-
-  Props:
-    - modelValue: File | null - The selected image file (v-model binding)
-    - altText: string - Alt text for the image (v-model:alt-text)
-    - copyright: string - Copyright information (v-model:copyright)
-    - license: string - License type (v-model:license)
-    - createdBy: string - Creator name (v-model:created-by)
-    - maxSize: number - Maximum file size in bytes (default: 5MB)
-    - acceptedTypes: string[] - Accepted MIME types (default: ['image/jpeg', 'image/png', 'image/webp'])
-
-  Events:
-    - update:modelValue - Emitted when a file is selected or removed
-    - update:altText - Emitted when alt text changes
-    - update:copyright - Emitted when copyright changes
-    - update:license - Emitted when license changes
-    - update:createdBy - Emitted when created by changes
--->
 <template>
     <div class="event-image-upload">
-        <div class="upload-area" :class="{ 'has-image': hasImage, 'drag-over': isDragOver }" @dragover.prevent
-            @dragleave.prevent @drop.prevent="handleDrop">
-            <div v-if="!hasImage" class="upload-placeholder">
-                <div class="upload-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M14,4L20,10H14V4Z"
-                            fill="currentColor" />
-                    </svg>
+        <!-- Image Upload Section -->
+        <div class="event-image-upload__upload-section">
+            <div class="event-image-upload__upload-area"
+                :class="{ 'event-image-upload__upload-area--has-image': hasImage, 'event-image-upload__upload-area--drag-over': isDragOver }"
+                @dragover.prevent @dragleave.prevent @drop.prevent="handleDrop">
+                <!-- Upload Placeholder -->
+                <div v-if="!hasImage" class="event-image-upload__placeholder">
+                    <div class="event-image-upload__icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M14,4L20,10H14V4Z"
+                                fill="currentColor" />
+                        </svg>
+                    </div>
+                    <div class="event-image-upload__text">
+                        <p class="event-image-upload__title">{{ t('event_image_upload_title') }}</p>
+                        <p class="event-image-upload__subtitle">{{ t('event_image_upload_subtitle') }}</p>
+                    </div>
+                    <input ref="fileInput" type="file" accept="image/*" @change="handleFileSelect"
+                        class="event-image-upload__file-input" />
+                    <button type="button" class="event-image-upload__upload-btn" @click="fileInput?.click()">
+                        {{ t('event_image_choose_file') }}
+                    </button>
                 </div>
-                <div class="upload-text">
-                    <p class="upload-title">{{ t('event_image_upload_title') }}</p>
-                    <p class="upload-subtitle">{{ t('event_image_upload_subtitle') }}</p>
+
+                <!-- Image Preview -->
+                <div v-else class="event-image-upload__preview">
+                    <img :src="previewUrl" :alt="t('event_image_preview')" class="event-image-upload__preview-image" />
+                    <div class="event-image-upload__preview-overlay">
+                        <button type="button" class="event-image-upload__change-btn" @click="fileInput?.click()">
+                            {{ t('event_image_change') }}
+                        </button>
+                        <button type="button" class="event-image-upload__remove-btn" @click="removeImage">
+                            {{ t('event_image_remove') }}
+                        </button>
+                    </div>
+                    <input ref="fileInput" type="file" accept="image/*" @change="handleFileSelect"
+                        class="event-image-upload__file-input" />
                 </div>
-                <input ref="fileInput" type="file" accept="image/*" @change="handleFileSelect" class="file-input" />
-                <button type="button" class="upload-button" @click="fileInput?.click()">
-                    {{ t('event_image_choose_file') }}
+            </div>
+
+            <!-- Upload Error -->
+            <div v-if="error" class="event-image-upload__error">
+                <p class="form-feedback-error">{{ error }}</p>
+            </div>
+
+            <!-- Image Info -->
+            <div v-if="hasImage" class="event-image-upload__info">
+                <span class="event-image-upload__file-name">{{ fileName }}</span>
+                <span class="event-image-upload__file-size">({{ formatFileSize(fileSize) }})</span>
+            </div>
+        </div>
+
+        <!-- Image Metadata Form -->
+        <div v-if="hasImage && showMetadata" class="event-image-upload__metadata">
+            <div class="event-image-upload__metadata-grid">
+                <div class="event-image-upload__field event-image-upload__field--full-width">
+                    <label for="image-alt-text" class="event-image-upload__label">
+                        {{ t('event_image_alt_text') }}
+                    </label>
+                    <input id="image-alt-text" v-model="localAltText" type="text" class="event-image-upload__input"
+                        :placeholder="t('event_image_alt_text_placeholder')" />
+                </div>
+
+                <div class="event-image-upload__field">
+                    <label for="image-created-by" class="event-image-upload__label">{{ t('event_image_created_by')
+                        }}</label>
+                    <input id="image-created-by" v-model="localCreatedBy" type="text" class="event-image-upload__input"
+                        :placeholder="t('event_image_created_by_placeholder')" />
+                </div>
+
+                <div class="event-image-upload__field">
+                    <label for="image-copyright" class="event-image-upload__label">{{ t('event_image_copyright')
+                        }}</label>
+                    <input id="image-copyright" v-model="localCopyright" type="text" class="event-image-upload__input"
+                        :placeholder="t('event_image_copyright_placeholder')" />
+                </div>
+
+                <div class="event-image-upload__field">
+                    <label for="image-license" class="event-image-upload__label">{{ t('event_image_license') }}</label>
+                    <select id="image-license" v-model="localLicense" class="event-image-upload__select"
+                        :disabled="licenseLoading">
+                        <option value="">{{ licenseLoading ? t('loading') : t('event_image_license_select') }}</option>
+                        <option v-for="option in licenseOptions" :key="option.value" :value="option.value">
+                            {{ option.label }}
+                        </option>
+                    </select>
+                    <div v-if="licenseError" class="event-image-upload__field-error">
+                        <p class="form-feedback-error">{{ licenseError }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Action -->
+            <div class="event-image-upload__actions">
+                <button type="button" class="event-image-upload__save-btn" @click="saveImage"
+                    :disabled="isSaving || !canSave">
+                    <span v-if="!isSaving">{{ t('event_image_save') }}</span>
+                    <span v-else>{{ t('saving') }}</span>
                 </button>
             </div>
-
-            <div v-else class="image-preview">
-                <img :src="previewUrl" :alt="t('event_image_preview')" class="preview-image" />
-                <div class="preview-overlay">
-                    <button type="button" class="change-button" @click="fileInput?.click()">
-                        {{ t('event_image_change') }}
-                    </button>
-                    <button type="button" class="remove-button" @click="removeImage">
-                        {{ t('event_image_remove') }}
-                    </button>
-                </div>
-                <input ref="fileInput" type="file" accept="image/*" @change="handleFileSelect" class="file-input" />
-            </div>
         </div>
 
-        <div v-if="error" class="upload-error">
-            {{ error }}
-        </div>
-
-        <div v-if="hasImage" class="image-info">
-            <span class="file-name">{{ fileName }}</span>
-            <span class="file-size">({{ formatFileSize(fileSize) }})</span>
-        </div>
-    </div>
-
-    <!-- Image metadata form -->
-    <div v-if="hasImage" class="image-metadata">
-        <div class="metadata-grid">
-            <div class="form-field full-width">
-                <label for="image-alt-text">{{ t('event_image_alt_text') }}</label>
-                <input id="image-alt-text" v-model="localAltText" type="text"
-                    :placeholder="t('event_image_alt_text_placeholder')" />
-            </div>
-            <div class="form-field">
-                <label for="image-created-by">{{ t('event_image_created_by') }}</label>
-                <input id="image-created-by" v-model="localCreatedBy" type="text"
-                    :placeholder="t('event_image_created_by_placeholder')" />
-            </div>
-
-            <div class="form-field">
-                <label for="image-copyright">{{ t('event_image_copyright') }}</label>
-                <input id="image-copyright" v-model="localCopyright" type="text"
-                    :placeholder="t('event_image_copyright_placeholder')" />
-            </div>
-
-            <div class="form-field">
-                <label for="image-license">{{ t('event_image_license') }}</label>
-                <select id="image-license" v-model="localLicense" :disabled="licenseLoading">
-                    <option value="">{{ licenseLoading ? t('loading') : t('event_image_license_select') }}</option>
-                    <option v-for="option in licenseOptions" :key="option.value" :value="option.value">
-                        {{ option.label }}
-                    </option>
-                </select>
-                <div v-if="licenseError" class="form-error">
-                    {{ licenseError }}
-                </div>
-            </div>
-        </div>
-
-        <!-- Save button -->
-        <div class="metadata-actions">
-            <button type="button" class="save-button" @click="saveImage" :disabled="isSaving || !canSave">
-                <span v-if="!isSaving">{{ t('event_image_save') }}</span>
-                <span v-else>{{ t('saving') }}</span>
-            </button>
-        </div>
-    </div>
-
-    <div v-if="error" class="upload-error">
+        <button
+            v-if="hasImage && !showMetadata"
+            type="button"
+            class="event-image-upload__toggle-btn"
+            @click="showMetadata = true"
+        >
+            {{ t('edit') }}
+        </button>
     </div>
 </template>
 
@@ -163,6 +154,7 @@ const fileInput = ref<HTMLInputElement>()
 const isDragOver = ref(false)
 const error = ref<string>('')
 const isSaving = ref(false)
+const showMetadata = ref(false)
 
 const hasImage = computed(() => !!props.modelValue)
 const previewUrl = ref<string>('')
@@ -184,6 +176,10 @@ const canSave = computed(() => {
         localCreatedBy.value.trim()
     )
 })
+
+watch(() => props.modelValue, (newFile) => {
+    showMetadata.value = !!newFile
+}, { immediate: true })
 
 // Watch for prop changes to sync local values
 watch(() => props.altText, (newVal) => { localAltText.value = newVal })
@@ -326,127 +322,156 @@ onMounted(() => {
 })
 
 const saveImage = async () => {
-  if (!props.modelValue || !props.eventId || isSaving.value) return
+    if (!props.modelValue || !props.eventId || isSaving.value) return
 
-  isSaving.value = true
-  error.value = ''
+    isSaving.value = true
+    error.value = ''
 
-  try {
-    const formData = new FormData()
-    formData.append('image', props.modelValue)
+    try {
+        const formData = new FormData()
+        formData.append('image', props.modelValue)
 
-    if (localAltText.value.trim()) {
-      formData.append('alt_text', localAltText.value.trim())
-    }
-    if (localCopyright.value) {
-      formData.append('copyright', localCopyright.value)
-    }
-    if (localLicense.value) {
-      formData.append('licence_id', localLicense.value) // must match Go struct
-    }
-    if (localCreatedBy.value.trim()) {
-      formData.append('created_by', localCreatedBy.value.trim())
-    }
-    console.log(formData.values())
+        if (localAltText.value.trim()) {
+            formData.append('alt_text', localAltText.value.trim())
+        }
+        if (localCopyright.value) {
+            formData.append('copyright', localCopyright.value)
+        }
+        if (localLicense.value) {
+            formData.append('licence_id', localLicense.value) // must match Go struct
+        }
+        if (localCreatedBy.value.trim()) {
+            formData.append('created_by', localCreatedBy.value.trim())
+        }
+        console.log(formData.values())
 
-    await apiFetch(`/api/admin/event/${props.eventId}/image`, {
-      method: 'POST',
-      body: formData,
-    })
+        await apiFetch(`/api/admin/event/${props.eventId}/image`, {
+            method: 'POST',
+            body: formData,
+        })
 
+    showMetadata.value = false
     emit('updated')
-  } catch (err) {
-    console.error('Failed to save image', err)
-    error.value = t('event_image_save_error')
-  } finally {
-    isSaving.value = false
-  }
+    } catch (err) {
+        console.error('Failed to save image', err)
+        error.value = t('event_image_save_error')
+    } finally {
+        isSaving.value = false
+    }
 }
 </script>
 
 <style scoped lang="scss">
+// Mobile-first responsive EventImageUploadComponent
 .event-image-upload {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: clamp(1rem, 4vw, 1.5rem);
 }
 
-.upload-area {
+// Upload Section
+.event-image-upload__upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 4vw, 1rem);
+}
+
+// Upload Area - Mobile first
+.event-image-upload__upload-area {
     position: relative;
     border: 2px dashed var(--input-border);
-    border-radius: 12px;
+    border-radius: 14px;
     background: var(--card-bg);
     transition: all 0.2s ease;
     cursor: pointer;
+    aspect-ratio: 16/9;
+    min-height: 200px;
 
-    &.has-image {
+    &--has-image {
         border-style: solid;
         border-color: var(--accent-primary);
         background: var(--surface-muted);
     }
 
-    &.drag-over {
+    &--drag-over {
         border-color: var(--accent-primary);
-        background: rgba(var(--accent-primary-rgb, 79, 70, 229), 0.05);
+        background: rgba(79, 70, 229, 0.05);
+        transform: scale(1.02);
     }
 
-    &:hover:not(.has-image) {
+    &:hover:not(.event-image-upload__upload-area--has-image) {
         border-color: var(--accent-primary);
         background: var(--surface-muted);
     }
 }
 
-.upload-placeholder {
+// Upload Placeholder
+.event-image-upload__placeholder {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 3rem 2rem;
-    gap: 1rem;
+    padding: clamp(1.5rem, 5vw, 2.5rem) clamp(1rem, 4vw, 2rem);
+    gap: clamp(0.75rem, 3vw, 1.25rem);
     text-align: center;
+    height: 100%;
 }
 
-.upload-icon {
+.event-image-upload__icon {
     color: var(--muted-text);
     opacity: 0.7;
+    transition: all 0.2s ease;
+
+    .event-image-upload__upload-area:hover & {
+        color: var(--accent-primary);
+        opacity: 1;
+    }
 }
 
-.upload-text {
-    .upload-title {
+.event-image-upload__text {
+    .event-image-upload__title {
         font-weight: 600;
         color: var(--color-text);
         margin: 0 0 0.25rem 0;
-        font-size: 1.1rem;
+        font-size: clamp(1.1rem, 3vw, 1.25rem);
+        line-height: 1.3;
     }
 
-    .upload-subtitle {
+    .event-image-upload__subtitle {
         color: var(--muted-text);
         margin: 0;
-        font-size: 0.9rem;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
         line-height: 1.4;
     }
 }
 
-.upload-button {
+.event-image-upload__upload-btn {
     @include form-secondary-button($padding-y: 0.75rem, $padding-x: 1.5rem);
-    font-size: 0.9rem;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    align-self: center;
 }
 
-.image-preview {
+// Image Preview
+.event-image-upload__preview {
     position: relative;
     width: 100%;
-    height: 200px;
+    height: 100%;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
-.preview-image {
+.event-image-upload__preview-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.2s ease;
+
+    .event-image-upload__upload-area:hover & {
+        transform: scale(1.05);
+    }
 }
 
-.preview-overlay {
+.event-image-upload__preview-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -456,135 +481,179 @@ const saveImage = async () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: clamp(0.5rem, 2vw, 0.75rem);
     opacity: 0;
     transition: opacity 0.2s ease;
 
-    .image-preview:hover & {
+    .event-image-upload__preview:hover & {
         opacity: 1;
     }
 }
 
-.change-button,
-.remove-button {
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
+.event-image-upload__change-btn,
+.event-image-upload__remove-btn {
+    padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 3vw, 1rem);
+    border-radius: 8px;
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
 }
 
-.change-button {
+.event-image-upload__change-btn {
     background: var(--accent-primary);
     color: white;
 
     &:hover {
         background: var(--accent-secondary);
+        transform: translateY(-1px);
     }
 }
 
-.remove-button {
+.event-image-upload__remove-btn {
     background: rgba(239, 68, 68, 0.9);
     color: white;
 
     &:hover {
         background: rgba(239, 68, 68, 1);
+        transform: translateY(-1px);
     }
 }
 
-.file-input {
+// File Input (hidden)
+.event-image-upload__file-input {
     position: absolute;
     opacity: 0;
     pointer-events: none;
 }
 
-.upload-error {
+// Error and Info
+.event-image-upload__error {
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-feedback-error {
+    @include form-feedback();
     @include form-feedback-error();
     text-align: center;
 }
 
-.image-info {
+.event-image-upload__info {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.85rem;
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
     color: var(--muted-text);
-
-    .file-name {
-        font-weight: 500;
-    }
-
-    .file-size {
-        color: var(--muted-text);
-        opacity: 0.8;
-    }
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
-.image-metadata {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: var(--card-bg);
-    border-radius: 12px;
-    border: 1px solid var(--input-border);
+.event-image-upload__file-name {
+    font-weight: 500;
+    color: var(--color-text);
 }
 
-.metadata-grid {
+.event-image-upload__file-size {
+    color: var(--muted-text);
+    opacity: 0.8;
+}
+
+// Metadata Section
+.event-image-upload__metadata {
+    margin-top: clamp(1rem, 4vw, 1.5rem);
+}
+
+// Metadata Grid - Mobile first
+.event-image-upload__metadata-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: clamp(1rem, 4vw, 1.5rem);
 }
 
-// Tablet and up: Multi-column layout
-@media (min-width: 640px) {
-    .metadata-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
-}
-
-.form-field {
+.event-image-upload__field {
     @include form-group();
 
-    &.full-width {
-        grid-column: span 3;
+    &--full-width {
+        grid-column: 1 / -1;
     }
 }
 
-.metadata-actions {
-    margin-top: 1rem;
+.event-image-upload__label {
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: 0.01em;
+    display: block;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+}
+
+.event-image-upload__input,
+.event-image-upload__select {
+    width: 100%;
+    font-size: clamp(0.95rem, 2vw, 1rem);
+}
+
+.event-image-upload__field-error {
+    margin-top: 0.5rem;
+}
+
+.event-image-upload__toggle-btn {
+    margin-top: clamp(1rem, 3vw, 1.5rem);
+    @include form-secondary-button($padding-y: 0.65rem, $padding-x: 1.5rem);
+    align-self: flex-start;
+}
+
+.event-image-upload__actions {
+    margin-top: clamp(1.25rem, 4vw, 2rem);
     display: flex;
     justify-content: flex-end;
 }
 
-.save-button {
+.event-image-upload__save-btn {
     @include form-primary-button();
-    font-size: 0.9rem;
-    padding: 0.75rem 1.5rem;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
 
     &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
+        transform: none;
     }
 }
 
-.upload-error {
-    .upload-placeholder {
-        padding: 2rem 1.5rem;
+@media (min-width: 640px) {
+    .event-image-upload__upload-area {
+        min-height: 250px;
     }
 
-    .image-preview {
-        height: 150px;
+    .event-image-upload__metadata-grid {
+        gap: clamp(1.25rem, 3vw, 1.75rem);
     }
 
-    .preview-overlay {
-        gap: 0.5rem;
+    .event-image-upload__field--full-width {
+        grid-column: span 2;
+    }
 
-        .change-button,
-        .remove-button {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
-        }
+    .event-image-upload__actions {
+        justify-content: flex-end;
+    }
+}
+
+@media (min-width: 1024px) {
+    .event-image-upload__upload-area {
+        min-height: 300px;
+        aspect-ratio: 21/9;
+    }
+
+    .event-image-upload__metadata-grid {
+        gap: clamp(1.5rem, 3vw, 2rem);
+    }
+}
+
+@media (min-width: 1280px) {
+    .event-image-upload__metadata-grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
     }
 }
 </style>

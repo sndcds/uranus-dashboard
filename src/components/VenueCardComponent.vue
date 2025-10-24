@@ -1,74 +1,34 @@
 <template>
-  <div class="card">
-    <h2>{{ venue.venue_name }}</h2>
-    <p>Upcoming Events: {{ venue.upcoming_event_count }}</p>
+  <article class="venue-card">
+    <header class="venue-card__header">
+      <h2 class="venue-card__title">{{ venue.venue_name }}</h2>
+      <p class="venue-card__stat">
+        <span class="venue-card__stat-value">{{ venue.upcoming_event_count }}</span>
+        <span class="venue-card__stat-label">{{ t('events') }}</span>
+      </p>
+    </header>
 
-    <!--div class="permissions">
-      <h4>Permissions</h4>
-      <ul>
-        <li>Edit Venue: {{ venue.can_edit_venue ? 'Yes' : 'No' }}</li>
-        <li>Delete Venue: {{ venue.can_delete_venue ? 'Yes' : 'No' }}</li>
-        <li>Add Space: {{ venue.can_add_space ? 'Yes' : 'No' }}</li>
-        <li>Edit Space: {{ venue.can_edit_space ? 'Yes' : 'No' }}</li>
-        <li>Delete Space: {{ venue.can_delete_space ? 'Yes' : 'No' }}</li>
-        <li>Add Event: {{ venue.can_add_event ? 'Yes' : 'No' }}</li>
-        <li>Edit Event: {{ venue.can_edit_event ? 'Yes' : 'No' }}</li>
-        <li>Delete Event: {{ venue.can_delete_event ? 'Yes' : 'No' }}</li>
-        <li>Release Event: {{ venue.can_release_event ? 'Yes' : 'No' }}</li>
-        <li>Can Edit Overall: {{ venue.can_edit ? 'Yes' : 'No' }}</li>
-      </ul>
-    </div-->
+    <section v-if="venue.spaces.length" class="venue-card__section">
+      <h3 class="venue-card__section-title">{{ t('spaces') }}</h3>
 
-    <div v-if="venue.spaces.length">
-      <h4>Spaces</h4>
-
-      <table class="simple-table">
-        <thead>
-          <tr>
-            <th>Space</th>
-            <th style="text-align: right;">Events</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="space in venue.spaces" :key="space.space_id">
-            <td><strong>{{ space.space_name }}</strong></td>
-            <td style="text-align: right;">{{ space.upcoming_event_count }}</td>
-            <td style="text-align: right;">
-              <router-link :to="`/venues/${venue.venue_id}/spaces/${space.space_id}/events/new`"
-                v-if="venue.can_add_event" class="table-func-button">
-                {{ t('add_new_event') }}
-              </router-link>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <router-link :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
-                v-if="venue.can_add_space" class="table-func-button">
-                {{ t('add_new_space') }}
-              </router-link>
-            </td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!--ul class="venue-space-list">
-        <li v-for="space in venue.spaces" :key="space.space_id" class="venue-space">
-          <div>{{ space.space_name }} ({{ space.upcoming_event_count }} events) </div>
-          <div class="venue-space-action">
-            <router-link :to="`/venues/${venue.venue_id}/spaces/${space.space_id}/events/new`"
-              v-if="venue.can_add_event">Add Event</router-link>
-            <router-link :to="`/venues/${venue.venue_id}/spaces/${space.space_id}/edit`"
-              v-if="venue.can_edit_space">Edit</router-link>
-            <router-link :to="`/venues/${venue.venue_id}/spaces/${space.space_id}/delete`"
-              v-if="venue.can_delete_space">Delete</router-link>
+      <ul class="venue-card__space-list">
+        <li v-for="space in venue.spaces" :key="space.space_id" class="venue-card__space">
+          <div class="venue-card__space-info">
+            <span class="venue-card__space-name">{{ space.space_name }}</span>
+            <span class="venue-card__space-events">
+              {{ space.upcoming_event_count }}
+              <span class="venue-card__space-events-label">{{ t('events') }}</span>
+            </span>
           </div>
         </li>
-      </ul-->
-    </div>
-  </div>
+      </ul>
+
+      <router-link v-if="venue.can_add_space" :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
+        class="venue-card__action">
+        {{ t('add_new_space') }}
+      </router-link>
+    </section>
+  </article>
 </template>
 
 <script setup lang="ts">
@@ -106,48 +66,124 @@ interface Venue {
 </script>
 
 <style scoped lang="scss">
-.new-venue-space {
-  display: inline-block;
-  margin-top: 12px;
-  padding: 6px 12px;
-  background-color: seagreen;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
-
-  &:hover {
-    background-color: mediumseagreen;
-  }
+.venue-card {
+  @include form-section();
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 4vw, 1.5rem);
+  padding: clamp(1rem, 4vw, 1.5rem);
 }
 
-ul.venue-space-list {
+.venue-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.venue-card__title {
+  margin: 0;
+  font-size: clamp(1.4rem, 5vw, 1.75rem);
+  color: var(--color-text);
+}
+
+.venue-card__stat {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--muted-text);
+  font-size: clamp(0.95rem, 3vw, 1.05rem);
+}
+
+.venue-card__stat-value {
+  font-weight: 700;
+  font-size: clamp(1.1rem, 4vw, 1.35rem);
+  color: var(--accent-primary);
+}
+
+.venue-card__section-title {
+  margin: 0;
+  font-size: clamp(1.1rem, 3.5vw, 1.3rem);
+  color: var(--color-text);
+}
+
+.venue-card__space-list {
+  list-style: none;
   margin: 0;
   padding: 0;
-
-  li {
-    margin-bottom: 18px;
-  }
-}
-
-.venue-space {
   display: flex;
-  align-items: end;
+  flex-direction: column;
+  gap: clamp(0.75rem, 3vw, 1rem);
+}
+
+.venue-card__space {
+  @include form-section();
+  background: var(--surface-muted);
+  border-radius: 14px;
+  padding: clamp(0.85rem, 3vw, 1.1rem);
+}
+
+.venue-card__space-info {
+  display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
+  align-items: center;
+  gap: 0.75rem;
+}
 
-  .venue-space-action>a {
-    background-color: cornflowerblue;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    text-decoration: none;
-    margin-left: 8px;
+.venue-card__space-name {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: clamp(1rem, 3vw, 1.1rem);
+}
 
-    &:hover {
-      background-color: royalblue;
-    }
+.venue-card__space-events {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+.venue-card__space-events-label {
+  font-size: 0.85em;
+  color: var(--muted-text);
+}
+
+.venue-card__action {
+  align-self: flex-start;
+  @include form-secondary-button($padding-y: 0.7rem, $padding-x: 1.35rem);
+}
+
+@media (min-width: 640px) {
+  .venue-card {
+    padding: clamp(1.25rem, 4vw, 2rem);
+    gap: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .venue-card__space-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: clamp(1rem, 3vw, 1.5rem);
+  }
+
+  .venue-card__space {
+    padding: clamp(1rem, 3vw, 1.35rem);
   }
 }
 
-.card {}
+@media (min-width: 1024px) {
+  .venue-card {
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  .venue-card__header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .venue-card__stat {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+  }
+}
 </style>
