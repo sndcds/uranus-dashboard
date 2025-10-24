@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath } from 'node:url'
-import { dirname, resolve } from 'node:path'
+import { dirname } from 'node:path'
 import path from 'path'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -18,7 +18,7 @@ export default defineConfig({
     css: {
         preprocessorOptions: {
             scss: {
-                additionalData: `@use "@/styles/global.scss" as *;`
+                additionalData: `@use "@/styles/_mixins.scss" as *;`
             }
         }
     }

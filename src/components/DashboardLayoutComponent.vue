@@ -1,6 +1,8 @@
 <template>
   <div class="dashboard-layout">
-    <SidebarComponent :options="sidebarOptions" @change="onSidebarChange" />
+    <div class="sidebar-container">
+      <SidebarComponent :options="sidebarOptions" @change="onSidebarChange" />
+    </div>
     <main class="main-content">
       <router-view />
     </main>
@@ -13,8 +15,8 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import SidebarComponent from './SidebarComponent.vue'
 import type { SidebarOption } from '@/types/types'
-import { useTokenStore } from "@/store/token";
-import { useAppStore } from "@/store/appStore";
+import { useTokenStore } from "@/store/token"
+import { useAppStore } from "@/store/appStore"
 
 const router = useRouter()
 const { t } = useI18n()
@@ -54,12 +56,18 @@ function logout() {
   position: relative;
 }
 
+.sidebar-container {
+  position: relative;
+  width: 280px;
+}
+
 /* Mobile: Main content takes full width, with top padding for hamburger */
 .main-content {
   width: 100%;
   min-height: 100vh;
   background: var(--page-gradient);
-  padding: 5rem 1rem 2rem 1rem; /* Top padding for hamburger button */
+  padding: 5rem 1rem 2rem 1rem;
+  /* Top padding for hamburger button */
 }
 
 /* Tablet and up: Sidebar layout */

@@ -3,7 +3,6 @@
     <!-- Page Header -->
     <header class="organizer-venue-view__header">
       <h1 v-if="organizer" class="organizer-venue-view__title">{{ organizer.organizer_name }}</h1>
-      <OrganizerChooser />
     </header>
 
     <!-- Create Venue Action -->
@@ -48,7 +47,6 @@ import { apiFetch } from '@/api'
 import { useAppStore } from '@/store/appStore'
 
 import VenueCardComponent from '@/components/VenueCardComponent.vue'
-import OrganizerChooser from "@/components/OrganizerChooser.vue";
 
 const { t } = useI18n()
 const appStore = useAppStore()

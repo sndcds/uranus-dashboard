@@ -1,24 +1,12 @@
 <template>
-  <!-- Mobile hamburger button - positioned outside sidebar -->
-  <button
-    type="button"
-    class="sidebar__hamburger"
-    :class="{ 'sidebar__hamburger--hidden': isOpen }"
-    @click="toggleSidebar"
-    :aria-label="isOpen ? 'Close menu' : 'Open menu'"
-    aria-expanded="false"
-  >
+  <button type="button" class="sidebar__hamburger" :class="{ 'sidebar__hamburger--hidden': isOpen }"
+    @click="toggleSidebar" :aria-label="isOpen ? 'Close menu' : 'Open menu'" aria-expanded="false">
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
   </button>
 
-  <!-- Mobile overlay - positioned outside sidebar -->
-  <div
-    v-if="isOpen"
-    class="sidebar__overlay"
-    @click="closeSidebar"
-  ></div>
+  <div v-if="isOpen" class="sidebar__overlay" @click="closeSidebar"></div>
 
   <aside class="sidebar" :class="{ 'sidebar--open': isOpen }">
     <!-- Sidebar content -->
@@ -29,13 +17,9 @@
       </div>
 
       <nav class="sidebar__nav">
-        <SidebarOptionComponent
-            v-for="option in options"
-            :key="option.id"
-            :option="option"
-            :active="option.route === activeRoute"
-            @change="handleOptionChange"
-        />
+        <SidebarOptionComponent v-for="option in options" :key="option.id" :option="option"
+          :active="option.route === activeRoute" @change="handleOptionChange" />
+        <OrganizerChooserMenu />
       </nav>
     </div>
   </aside>
@@ -48,6 +32,7 @@ import { useRoute } from 'vue-router'
 import SidebarOptionComponent from './SidebarOptionComponent.vue'
 import { useUserStore } from '@/store/userStore'
 import type { SidebarOption } from '@/types/types'
+import OrganizerChooserMenu from './OrganizerChooserMenu.vue'
 
 const props = defineProps<{
   options: SidebarOption[]
@@ -210,14 +195,16 @@ const handleOptionChange = (optionId: string) => {
 // Tablet and up: Show sidebar by default, hide hamburger
 @media (min-width: 768px) {
   .sidebar {
-    position: static;
-    height: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
     width: 280px;
     transform: translateX(0);
-    border-radius: 12px;
+    border-radius: 0;
 
     &.sidebar--open {
-      transform: none;
+      transform: translateX(0);
     }
   }
 

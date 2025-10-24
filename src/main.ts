@@ -6,6 +6,7 @@ import router from './router'
 import { useAppStore } from '@/store/appStore'
 import { useThemeStore } from '@/store/themeStore'
 import { useUserStore } from '@/store/userStore'
+import '@/styles/global.scss' // Import global styles
 
 const app = createApp(App);
 const pinia = createPinia()
