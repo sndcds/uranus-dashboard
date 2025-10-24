@@ -1,132 +1,86 @@
+
 <template>
     <section class="event-meta">
         <header class="event-meta__header">
             <h3>{{ t('event_details_time') }}</h3>
             <button
-                v-if="!isEditingDates"
+                v-if="!isEditingSchedule"
                 type="button"
                 class="event-meta__edit"
-                @click="startEditingDates"
+                @click="startEditingSchedule"
             >
-                {{ t('edit') }}
+                {{ scheduleEntries.length ? t('event_edit_schedule') : t('event_add_schedule') }}
+            </button>
+            <button
+                v-else
+                type="button"
+                class="event-meta__edit event-meta__edit--cancel"
+                @click="cancelEditingSchedule"
+            >
+                {{ t('form_cancel') }}
             </button>
         </header>
 
-        <template v-if="isEditingDates">
-            <div
-                v-for="(entry, index) in scheduleEntries"
-                :key="entry.id !== null ? `edit-schedule-${entry.id}` : `edit-schedule-${index}`"
-                class="event-meta__item"
-            >
-                <div class="event-meta__meta">
-                    <span class="event-meta__badge">#{{ index + 1 }}</span>
-                    <button
-                        v-if="scheduleEntries.length > 1"
-                        type="button"
-                        class="event-meta__remove"
-                        @click="removeScheduleEntry(index)"
-                        :disabled="isSavingDates"
-                    >
-                        {{ t('event_remove_date') }}
-                    </button>
-                </div>
+        <EventDatesComponent
+            v-if="isEditingSchedule"
+            ref="scheduleEditorRef"
+            class="event-meta__editor"
+            :model-value="scheduleDraft"
+            :spaces="availableSpaces"
+            :organizer-id="organizerId"
+            @update:model-value="onScheduleDraftChange"
+        />
 
-                <div class="event-meta__grid">
-                    <label class="event-meta__field">
-                        <span>{{ t('event_start_date') }}<span class="required">*</span></span>
-                        <input type="date" v-model="entry.startDate" />
-                    </label>
-                    <label class="event-meta__field">
-                        <span>{{ t('event_start_time') }}<span class="required">*</span></span>
-                        <input type="time" v-model="entry.startTime" />
-                    </label>
-                    <label class="event-meta__field">
-                        <span>{{ t('event_end_date') }}</span>
-                        <input type="date" v-model="entry.endDate" />
-                    </label>
-                    <label class="event-meta__field">
-                        <span>{{ t('event_end_time') }}</span>
-                        <input type="time" v-model="entry.endTime" />
-                    </label>
-                    <label class="event-meta__field">
-                        <span>{{ t('event_entry_time') }}</span>
-                        <input type="time" v-model="entry.entryTime" />
-                    </label>
-                    <label class="event-meta__field event-meta__field--checkbox">
-                        <input type="checkbox" v-model="entry.allDay" />
-                        <span>{{ t('event_all_day') }}</span>
-                    </label>
-                </div>
+        <p v-if="scheduleSaveError" class="event-meta__error event-meta__error--global">
+            {{ scheduleSaveError }}
+        </p>
 
-                <p v-if="scheduleErrors[index]" class="event-meta__error">
-                    {{ scheduleErrors[index] }}
+        <div v-if="!isEditingSchedule && !eventScheduleDisplay.length" class="event-meta__empty">
+            {{ t('event_schedule_empty') }}
+        </div>
+
+        <div v-if="!isEditingSchedule && eventScheduleDisplay.length" class="event-meta__list">
+            <article v-for="entry in eventScheduleDisplay" :key="entry.key" class="event-meta__display">
+                <div class="event-meta__row">
+                    <span class="event-meta__label">{{ entry.startDate }}</span>
+                    <p class="event-meta__value">
+                        <template v-if="entry.allDay">
+                            {{ t('event_schedule_all_day') }}
+                        </template>
+                        <template v-else>
+                            {{ entry.startTime }}
+                            <template v-if="entry.endTime">
+                                &nbsp;– {{ entry.endTime }}
+                            </template>
+                        </template>
+                    </p>
+                </div>
+                <p v-if="entry.endDate && entry.endDate !== entry.startDate" class="event-meta__value">
+                    {{ t('event_schedule_until', { date: entry.endDate }) }}
                 </p>
-            </div>
+                <p v-if="entry.entryTime" class="event-meta__value">
+                    {{ t('event_schedule_entry_time', { time: entry.entryTime }) }}
+                </p>
+                <p v-if="entry.spaceDisplay" class="event-meta__value">
+                    {{ entry.spaceDisplay }}
+                </p>
+            </article>
+        </div>
 
+        <div v-if="isEditingSchedule" class="event-meta__actions">
+            <button type="button" class="event-meta__button event-meta__button--cancel" @click="cancelEditingSchedule">
+                {{ t('form_cancel') }}
+            </button>
             <button
                 type="button"
-                class="event-meta__add"
-                @click="addScheduleEntry"
-                :disabled="isSavingDates"
+                class="event-meta__button"
+                :disabled="isSavingSchedule"
+                @click="saveSchedule"
             >
-                {{ t('event_add_date') }}
+                <span v-if="isSavingSchedule">{{ t('form_saving') }}</span>
+                <span v-else>{{ t('form_save') }}</span>
             </button>
-
-            <p v-if="scheduleSaveError" class="event-meta__error event-meta__error--global">
-                {{ scheduleSaveError }}
-            </p>
-
-            <div class="event-meta__actions">
-                <button
-                    type="button"
-                    class="event-meta__button event-meta__button--cancel"
-                    @click="cancelEditingDates"
-                    :disabled="isSavingDates"
-                >
-                    {{ t('event_header_cancel') }}
-                </button>
-                <button
-                    type="button"
-                    class="event-meta__button"
-                    @click="saveSchedule"
-                    :disabled="isSavingDates"
-                >
-                    <span v-if="!isSavingDates">{{ t('event_header_save') }}</span>
-                    <span v-else>{{ t('saving') }}</span>
-                </button>
-            </div>
-        </template>
-
-        <template v-else>
-            <div
-                v-for="schedule in eventScheduleDisplay"
-                :key="schedule.key"
-                class="event-meta__display"
-            >
-                <div class="event-meta__row">
-                    <span class="event-meta__label">{{ t('event_start_date') }}</span>
-                    <p class="event-meta__value">
-                        {{ schedule.startDate || '—' }}
-                        <span v-if="schedule.startTime"> · {{ schedule.startTime }}</span>
-                        <span v-else-if="schedule.allDay"> · {{ t('event_all_day') }}</span>
-                    </p>
-                </div>
-                <div
-                    class="event-meta__row"
-                    v-if="schedule.endDate || schedule.endTime"
-                >
-                    <span class="event-meta__label">{{ t('event_end_date') }}</span>
-                    <p class="event-meta__value">
-                        {{ schedule.endDate || schedule.startDate || '—' }}
-                        <span v-if="schedule.endTime"> · {{ schedule.endTime }}</span>
-                    </p>
-                </div>
-                <div class="event-meta__row" v-if="schedule.entryTime">
-                    <span class="event-meta__label">{{ t('event_entry_time') }}</span>
-                    <p class="event-meta__value">{{ schedule.entryTime }}</p>
-                </div>
-            </div>
-        </template>
+        </div>
     </section>
 </template>
 
@@ -134,6 +88,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+import EventDatesComponent from '@/components/EventDatesComponent.vue'
 
 interface EventDateApi {
     id?: number | null
@@ -143,18 +98,36 @@ interface EventDateApi {
     end_time?: string | null
     entry_time?: string | null
     all_day?: boolean | null
+    space_id?: number | null
 }
 
 type EventDateSource = EventDateApi[] | Record<string, EventDateApi> | null | undefined
+
+interface SelectOption {
+    id: number
+    name: string
+}
 
 interface EventScheduleEntry {
     id: number | null
     startDate: string
     startTime: string
-    endDate: string
+    endDate: string | null
     endTime: string
-    entryTime: string
+    entryTime: string | null
     allDay: boolean
+    spaceId: number | null
+}
+
+interface ScheduleDraftEntry {
+    id: number | null
+    startDate: string
+    endDate: string | null
+    startTime: string
+    endTime: string
+    entryTime: string | null
+    spaceId: number | null
+    allDayEvent: boolean
 }
 
 interface EventScheduleDisplay {
@@ -165,10 +138,13 @@ interface EventScheduleDisplay {
     endTime: string
     entryTime: string
     allDay: boolean
+    spaceDisplay: string
 }
 
 const props = defineProps<{
     eventId: number
+    organizerId: number | null
+    venueId: number | null
     startDate: string
     startTime: string | null
     endDate: string | null
@@ -176,20 +152,21 @@ const props = defineProps<{
     entryTime: string | null
     dates?: EventDateSource
     eventDates?: EventDateSource
+    spaceId: number | null
+    spaceName?: string | null
 }>()
 
-const emit = defineEmits<{
-    (e: 'updated'): void
-}>()
+const emit = defineEmits<{ (e: 'updated'): void }>()
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
-const eventDates = ref<EventScheduleEntry[]>([])
-const isEditingDates = ref(false)
-const isSavingDates = ref(false)
+const availableSpaces = ref<SelectOption[]>([])
 const scheduleEntries = ref<EventScheduleEntry[]>([])
-const scheduleErrors = ref<string[]>([])
+const scheduleDraft = ref<ScheduleDraftEntry[]>([])
+const isEditingSchedule = ref(false)
+const isSavingSchedule = ref(false)
 const scheduleSaveError = ref<string | null>(null)
+const scheduleEditorRef = ref<InstanceType<typeof EventDatesComponent> | null>(null)
 
 const dateFormatter = computed(
     () =>
@@ -203,36 +180,6 @@ const dateFormatter = computed(
 
 const timeFormatter = computed(() => new Intl.DateTimeFormat(locale.value, { hour: '2-digit', minute: '2-digit' }))
 
-const formatDisplayDate = (value: string): string => {
-    if (!value) return ''
-    const date = new Date(value)
-    return Number.isNaN(date.getTime()) ? value : dateFormatter.value.format(date)
-}
-
-const formatDisplayTime = (date: string, time: string): string => {
-    if (!date || !time) return ''
-    const dateTime = new Date(`${date}T${time}`)
-    return Number.isNaN(dateTime.getTime()) ? time : timeFormatter.value.format(dateTime)
-}
-
-const eventScheduleDisplay = computed<EventScheduleDisplay[]>(() =>
-    eventDates.value.map((entry, index) => {
-        const key = entry.id !== null ? `schedule-${entry.id}` : `schedule-${index}`
-        const startDate = formatDisplayDate(entry.startDate)
-        const endDate = formatDisplayDate(entry.endDate)
-        const allDay = !!entry.allDay
-        return {
-            key,
-            startDate,
-            startTime: allDay ? '' : formatDisplayTime(entry.startDate, entry.startTime),
-            endDate,
-            endTime: allDay ? '' : formatDisplayTime(entry.endDate || entry.startDate, entry.endTime),
-            entryTime: allDay ? '' : formatDisplayTime(entry.startDate, entry.entryTime),
-            allDay,
-        }
-    })
-)
-
 const normalizeCollection = <T>(collection: T[] | Record<string, T> | null | undefined): T[] => {
     if (Array.isArray(collection)) return collection
     if (collection && typeof collection === 'object') {
@@ -241,27 +188,62 @@ const normalizeCollection = <T>(collection: T[] | Record<string, T> | null | und
     return []
 }
 
+const formatDisplayDate = (value: string | null): string => {
+    if (!value) return ''
+    const parsed = new Date(value)
+    return Number.isNaN(parsed.getTime()) ? value : dateFormatter.value.format(parsed)
+}
+
+const formatDisplayTime = (date: string | null, time: string | null): string => {
+    if (!date || !time) return ''
+    const parsed = new Date(`${date}T${time}`)
+    return Number.isNaN(parsed.getTime()) ? time : timeFormatter.value.format(parsed)
+}
+
+const spaceLookup = computed<Record<number, string>>(() => {
+    const map: Record<number, string> = {}
+    availableSpaces.value.forEach((option) => {
+        map[option.id] = option.name
+    })
+
+    if (props.spaceId !== null && props.spaceName) {
+        map[props.spaceId] = props.spaceName
+    }
+
+    return map
+})
+
+const eventScheduleDisplay = computed<EventScheduleDisplay[]>(() =>
+    scheduleEntries.value.map((entry, index) => {
+        const key = entry.id !== null ? `schedule-${entry.id}` : `schedule-${index}`
+        const startDateLabel = formatDisplayDate(entry.startDate)
+        const endDateLabel = formatDisplayDate(entry.endDate)
+        const allDay = !!entry.allDay
+        return {
+            key,
+            startDate: startDateLabel,
+            startTime: allDay ? '' : formatDisplayTime(entry.startDate, entry.startTime),
+            endDate: endDateLabel,
+            endTime: allDay ? '' : formatDisplayTime(entry.endDate || entry.startDate, entry.endTime),
+            entryTime: allDay ? '' : formatDisplayTime(entry.startDate, entry.entryTime),
+            allDay,
+            spaceDisplay: entry.spaceId !== null ? spaceLookup.value[entry.spaceId] ?? '' : '',
+        }
+    })
+)
+
 const mapApiDateToEntry = (item: EventDateApi): EventScheduleEntry => ({
     id: typeof item.id === 'number' ? item.id : null,
     startDate: item.start_date ?? '',
     startTime: item.start_time ?? '',
-    endDate: item.end_date ?? '',
+    endDate: item.end_date ?? null,
     endTime: item.end_time ?? '',
-    entryTime: item.entry_time ?? '',
+    entryTime: item.entry_time ?? null,
     allDay: item.all_day ?? false,
+    spaceId: typeof item.space_id === 'number' ? item.space_id : null,
 })
 
-const createEntryFromProps = (): EventScheduleEntry => ({
-    id: null,
-    startDate: props.startDate ?? '',
-    startTime: props.startTime ?? '',
-    endDate: props.endDate ?? '',
-    endTime: props.endTime ?? '',
-    entryTime: props.entryTime ?? '',
-    allDay: false,
-})
-
-const deriveScheduleEntriesFromProps = (): EventScheduleEntry[] => {
+const deriveScheduleFromProps = (): EventScheduleEntry[] => {
     const fromDates = normalizeCollection<EventDateApi>(props.dates)
     const fromEventDates = normalizeCollection<EventDateApi>(props.eventDates)
     const normalized = fromDates.length ? fromDates : fromEventDates
@@ -271,167 +253,191 @@ const deriveScheduleEntriesFromProps = (): EventScheduleEntry[] => {
         return mapped
     }
 
-    return [createEntryFromProps()]
-}
-
-const fetchEventSchedule = async (id: number): Promise<EventScheduleEntry[] | null> => {
-    if (!Number.isFinite(id) || id <= 0) return null
-
-    try {
-        const { data } = await apiFetch<EventDateApi[]>(`/api/admin/event/${id}/dates`)
-        if (Array.isArray(data)) {
-            const mapped = data.map(mapApiDateToEntry).filter((entry) => entry.startDate || entry.startTime)
-            return mapped.length ? mapped : null
-        }
-    } catch (err) {
-        console.error('Failed to load event dates', err)
+    const fallback: EventScheduleEntry = {
+        id: null,
+        startDate: props.startDate ?? '',
+        startTime: props.startTime ?? '',
+        endDate: props.endDate ?? null,
+        endTime: props.endTime ?? '',
+        entryTime: props.entryTime ?? null,
+        allDay: false,
+        spaceId: props.spaceId ?? null,
     }
 
-    return null
+    return fallback.startDate || fallback.startTime ? [fallback] : []
 }
 
-const syncFromProps = () => {
-    if (isEditingDates.value) return
-    const derived = deriveScheduleEntriesFromProps()
-    eventDates.value = derived.length ? derived : []
-}
-
-const loadSchedule = async () => {
-    if (isEditingDates.value) {
+const loadSpaces = async (venueId: number | null) => {
+    if (venueId === null || !Number.isFinite(venueId)) {
+        availableSpaces.value = []
         return
     }
 
-    syncFromProps()
-
-    const remoteSchedule = await fetchEventSchedule(props.eventId)
-    if (remoteSchedule && remoteSchedule.length && !isEditingDates.value) {
-        eventDates.value = remoteSchedule
+    try {
+        const { data } = await apiFetch<SelectOption[]>(`/api/choosable-spaces/venue/${venueId}`)
+        availableSpaces.value = Array.isArray(data) ? data : []
+    } catch (err) {
+        console.error('Failed to load spaces', err)
+        availableSpaces.value = []
     }
 }
 
-const emptyScheduleEntry = (): EventScheduleEntry => ({
-    id: null,
-    startDate: '',
-    startTime: '',
-    endDate: '',
-    endTime: '',
-    entryTime: '',
-    allDay: false,
+const loadSchedule = async (force = false) => {
+    if (isEditingSchedule.value && !force) {
+        return
+    }
+
+    const fallback = deriveScheduleFromProps()
+
+    if (!Number.isFinite(props.eventId) || props.eventId <= 0) {
+        scheduleEntries.value = fallback
+        return
+    }
+
+    try {
+        const { data } = await apiFetch<EventDateApi[]>(`/api/admin/event/${props.eventId}/dates`)
+        const mapped = Array.isArray(data)
+            ? data.map(mapApiDateToEntry).filter((entry) => entry.startDate || entry.startTime)
+            : []
+
+        scheduleEntries.value = mapped.length ? mapped : fallback
+    } catch (err) {
+        console.error('Failed to load event dates', err)
+        scheduleEntries.value = fallback
+    }
+}
+
+const onScheduleDraftChange = (value: Array<Partial<ScheduleDraftEntry>>) => {
+    scheduleDraft.value = value.map((entry) => ({
+        id: entry.id ?? null,
+        startDate: entry.startDate ?? '',
+        endDate: entry.endDate ?? null,
+        startTime: entry.startTime ?? '',
+        endTime: entry.endTime ?? '',
+        entryTime: entry.entryTime ?? null,
+        spaceId: entry.spaceId ?? null,
+        allDayEvent: entry.allDayEvent ?? false,
+    }))
+}
+
+const createDraftEntryFromSchedule = (entry: EventScheduleEntry): ScheduleDraftEntry => ({
+    id: entry.id,
+    startDate: entry.startDate,
+    endDate: entry.endDate,
+    startTime: entry.startTime,
+    endTime: entry.endTime,
+    entryTime: entry.entryTime,
+    spaceId: entry.spaceId,
+    allDayEvent: entry.allDay,
 })
 
-const startEditingDates = () => {
-    const entries = eventDates.value.length ? eventDates.value : deriveScheduleEntriesFromProps()
-    scheduleEntries.value = entries.length ? entries.map((entry) => ({ ...entry })) : [emptyScheduleEntry()]
-    scheduleErrors.value = scheduleEntries.value.map(() => '')
-    scheduleSaveError.value = null
-    isEditingDates.value = true
-}
+const createEmptyDraftEntry = (): ScheduleDraftEntry => ({
+    id: null,
+    startDate: '',
+    endDate: null,
+    startTime: '',
+    endTime: '',
+    entryTime: null,
+    spaceId: props.spaceId ?? null,
+    allDayEvent: false,
+})
 
-const cancelEditingDates = () => {
-    isEditingDates.value = false
-    scheduleEntries.value = []
-    scheduleErrors.value = []
-    scheduleSaveError.value = null
-}
-
-const addScheduleEntry = () => {
-    scheduleEntries.value.push(emptyScheduleEntry())
-    scheduleErrors.value.push('')
-    scheduleSaveError.value = null
-}
-
-const removeScheduleEntry = (index: number) => {
-    if (scheduleEntries.value.length <= 1) return
-    scheduleEntries.value.splice(index, 1)
-    scheduleErrors.value.splice(index, 1)
-    scheduleSaveError.value = null
-}
-
-const toMinutes = (time: string): number | null => {
-    if (!time) return null
-    const [hours, minutes] = time.split(':')
-    const h = Number(hours)
-    const m = Number(minutes)
-    if (Number.isNaN(h) || Number.isNaN(m)) return null
-    return h * 60 + m
-}
-
-const isAfter = (start: string, end: string): boolean => {
-    if (!end) return false
-    const startDate = new Date(start)
-    const endDate = new Date(end)
-    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) return false
-    return endDate.getTime() < startDate.getTime()
-}
-
-const evaluateScheduleEntry = (entry: EventScheduleEntry): string => {
-    if (!entry.startDate) return t('event_error_required')
-    if (!entry.startTime) return t('event_error_required')
-
-    const endTimeValue = entry.endTime || ''
-    const entryTimeValue = entry.entryTime || ''
-
-    if (endTimeValue) {
-        const startMinutes = toMinutes(entry.startTime)
-        const endMinutes = toMinutes(endTimeValue)
-
-        if (startMinutes === null || endMinutes === null || startMinutes > endMinutes) {
-            return t('event_error_time_order')
-        }
-
-        if (entryTimeValue) {
-            const entryMinutes = toMinutes(entryTimeValue)
-            if (entryMinutes === null || entryMinutes < startMinutes || entryMinutes > endMinutes) {
-                return t('event_error_entry_range')
-            }
-        }
-    } else if (entryTimeValue) {
-        const startMinutes = toMinutes(entry.startTime)
-        const entryMinutes = toMinutes(entryTimeValue)
-        if (startMinutes === null || entryMinutes === null || entryMinutes < startMinutes) {
-            return t('event_error_entry_range')
-        }
+const startEditingSchedule = async () => {
+    if (!scheduleEntries.value.length) {
+        scheduleEntries.value = deriveScheduleFromProps()
     }
 
-    if (entry.endDate && isAfter(entry.startDate, entry.endDate)) {
-        return t('event_error_date_order')
+    scheduleDraft.value = scheduleEntries.value.length
+        ? scheduleEntries.value.map(createDraftEntryFromSchedule)
+        : [createEmptyDraftEntry()]
+
+    scheduleSaveError.value = null
+    isEditingSchedule.value = true
+    await loadSpaces(props.venueId ?? null)
+}
+
+const cancelEditingSchedule = () => {
+    isEditingSchedule.value = false
+    scheduleDraft.value = []
+    scheduleSaveError.value = null
+}
+
+const saveSchedule = async () => {
+    scheduleSaveError.value = null
+
+    const validationResult = scheduleEditorRef.value?.validate?.()
+    if (validationResult === false) {
+        scheduleSaveError.value = t('event_submit_missing_fields')
+        return
     }
 
-    return ''
-}
+    if (!scheduleDraft.value.length) {
+        scheduleSaveError.value = t('event_submit_error_generic')
+        return
+    }
 
-const validateScheduleEntries = (): boolean => {
-    const errors = scheduleEntries.value.map((entry) => evaluateScheduleEntry(entry))
-    scheduleErrors.value = errors
-    return errors.every((msg) => !msg)
-}
+    if (!Number.isFinite(props.eventId)) {
+        scheduleSaveError.value = t('event_submit_error_generic')
+        return
+    }
 
-watch(
-    scheduleEntries,
-    (value) => {
-        if (scheduleErrors.value.length !== value.length) {
-            scheduleErrors.value = value.map(() => '')
-            return
+    isSavingSchedule.value = true
+
+    try {
+        const payload = {
+            dates: scheduleDraft.value.map((entry) => {
+                const body: Record<string, unknown> = {
+                    start_date: entry.startDate,
+                    start_time: entry.startTime,
+                    end_date: entry.endDate || null,
+                    end_time: entry.endTime || null,
+                    entry_time: entry.entryTime || null,
+                    all_day: entry.allDayEvent ?? false,
+                    space_id: entry.spaceId ?? null,
+                }
+
+                if (entry.id !== null) {
+                    body.id = entry.id
+                }
+
+                return body
+            }),
         }
 
-        scheduleErrors.value = scheduleErrors.value.map((error, index) => {
-            if (!error) return ''
-            const entry = value[index]
-            return entry ? evaluateScheduleEntry(entry) : ''
+        await apiFetch(`/api/admin/event/${props.eventId}/dates`, {
+            method: 'PUT',
+            body: JSON.stringify(payload),
         })
-    },
-    { deep: true }
-)
+
+        isEditingSchedule.value = false
+        scheduleDraft.value = []
+        await Promise.all([loadSpaces(props.venueId ?? null), loadSchedule(true)])
+        emit('updated')
+    } catch (err) {
+        console.error('Failed to update event dates', err)
+        scheduleSaveError.value = t('event_submit_error_generic')
+    } finally {
+        isSavingSchedule.value = false
+    }
+}
 
 watch(
     () => props.eventId,
     () => {
-        void loadSchedule()
+        void loadSchedule(true)
     }
 )
 
 watch(
-    () => [props.startDate, props.startTime, props.endDate, props.endTime, props.entryTime],
+    () => props.venueId,
+    (venueId) => {
+        void loadSpaces(venueId ?? null)
+    },
+    { immediate: true }
+)
+
+watch(
+    () => [props.startDate, props.startTime, props.endDate, props.endTime, props.entryTime, props.spaceId],
     () => {
         void loadSchedule()
     }
@@ -453,66 +459,9 @@ watch(
     { deep: true }
 )
 
-const saveSchedule = async () => {
-    if (!scheduleEntries.value.length) {
-        scheduleSaveError.value = t('event_submit_error_generic')
-        return
-    }
-
-    scheduleSaveError.value = null
-
-    if (!validateScheduleEntries()) {
-        return
-    }
-
-    if (!Number.isFinite(props.eventId)) {
-        scheduleSaveError.value = t('event_submit_error_generic')
-        return
-    }
-
-    isSavingDates.value = true
-
-    try {
-        const payload = {
-            dates: scheduleEntries.value.map((entry) => {
-                const body: Record<string, unknown> = {
-                    start_date: entry.startDate,
-                    start_time: entry.startTime,
-                    end_date: entry.endDate || null,
-                    end_time: entry.endTime || null,
-                    entry_time: entry.entryTime || null,
-                    all_day: entry.allDay ?? false,
-                }
-
-                if (entry.id !== null) {
-                    body.id = entry.id
-                }
-
-                return body
-            }),
-        }
-
-        await apiFetch(`/api/admin/event/${props.eventId}/dates`, {
-            method: 'PUT',
-            body: JSON.stringify(payload),
-        })
-
-        isEditingDates.value = false
-        scheduleEntries.value = []
-        scheduleErrors.value = []
-
-        await loadSchedule()
-        emit('updated')
-    } catch (err) {
-        console.error('Failed to update event dates', err)
-        scheduleSaveError.value = t('event_submit_error_generic')
-    } finally {
-        isSavingDates.value = false
-    }
-}
-
 onMounted(() => {
-    loadSchedule()
+    void loadSpaces(props.venueId ?? null)
+    void loadSchedule()
 })
 </script>
 
@@ -538,133 +487,29 @@ onMounted(() => {
         opacity: 0;
         transform: translateY(-4px);
         transition: opacity 0.2s ease, transform 0.2s ease;
+
+        &--cancel {
+            @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
+        }
     }
 
-    &__item {
+    &__editor {
         border: 1px solid var(--border-soft);
         border-radius: 14px;
         padding: 0.75rem;
         background: var(--input-bg);
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
     }
 
-    &__meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 0.9rem;
-        color: var(--muted-text);
-    }
-
-    &__badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.25rem 0.6rem;
-        border-radius: 999px;
-        background: var(--accent-muted);
-        color: var(--accent-primary);
-        font-weight: 600;
-        letter-spacing: 0.02em;
-    }
-
-    &__grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 0.75rem;
-    }
-
-    &__field {
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-        font-size: 0.9rem;
-        color: var(--color-text);
-
-        span {
-            font-weight: 600;
-        }
-
-        input[type='date'],
-        input[type='time'] {
-            width: 100%;
-            padding: 0.55rem 0.8rem;
-            border-radius: 12px;
-            border: 1px solid var(--input-border);
-            background: var(--input-bg);
-            color: var(--color-text);
-        }
-    }
-
-    &__remove {
-        background: none;
-        border: none;
-        color: var(--accent-primary);
-        font-weight: 600;
-        cursor: pointer;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-
-        &:hover {
-            color: var(--accent-secondary);
-            text-decoration: underline;
-        }
-
-        &:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            text-decoration: none;
-        }
-    }
-
-    &__add {
-        @include form-secondary-button($padding-y: 0.45rem, $padding-x: 1rem);
-        align-self: flex-start;
-    }
-
-    &__actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.75rem;
-    }
-
-    &__button {
-        @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-
-        &--cancel {
-            @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-        }
-    }
-
-    &__error {
+    &__empty {
         margin: 0;
-        color: #b91c1c;
-        font-weight: 600;
-        font-size: 0.85rem;
-
-        &--global {
-            align-self: flex-start;
-        }
+        color: var(--muted-text);
+        font-size: 0.95rem;
     }
 
-    &__field--checkbox {
-        flex-direction: row;
-        align-items: center;
-        gap: 0.5rem;
-
-        span {
-            font-weight: 600;
-        }
-
-        input[type='checkbox'] {
-            width: auto;
-            padding: 0;
-            border: none;
-        }
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
     }
 
     &__display {
@@ -696,6 +541,31 @@ onMounted(() => {
         line-height: 1.4;
     }
 
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    &__button {
+        @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
+
+        &--cancel {
+            @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
+        }
+    }
+
+    &__error {
+        margin: 0;
+        color: #b91c1c;
+        font-weight: 600;
+        font-size: 0.85rem;
+
+        &--global {
+            align-self: flex-start;
+        }
+    }
+
     h3 {
         margin: 0;
         color: var(--color-text);
@@ -715,10 +585,6 @@ onMounted(() => {
 
         h3 {
             font-size: 1.1rem;
-        }
-
-        p {
-            font-size: 0.95rem;
         }
     }
 }

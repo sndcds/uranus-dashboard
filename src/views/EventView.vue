@@ -80,6 +80,8 @@
 
                 <EventScheduleSection
                     :event-id="event.id"
+                    :organizer-id="event.organizer_id"
+                    :venue-id="event.venue_id"
                     :start-date="event.start_date"
                     :start-time="event.start_time"
                     :end-date="event.end_date"
@@ -87,6 +89,8 @@
                     :entry-time="event.entry_time"
                     :dates="event.dates"
                     :event-dates="event.event_dates"
+                    :space-id="event.space_id"
+                    :space-name="event.space_name"
                     @updated="loadEvent"
                 />
             </aside>
@@ -133,6 +137,7 @@ interface EventDateApi {
     end_time?: string | null
     entry_time?: string | null
     all_day?: boolean | null
+    space_id?: number | null
 }
 
 type EventDateSource = EventDateApi[] | Record<string, EventDateApi> | null | undefined
@@ -184,7 +189,6 @@ const imageAltText = ref('')
 const imageCopyright = ref('')
 const imageLicense = ref('')
 const imageCreatedBy = ref('')
-
 const dateFormatter = computed(
     () =>
         new Intl.DateTimeFormat(locale.value, {
