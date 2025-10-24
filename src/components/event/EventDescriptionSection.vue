@@ -48,7 +48,7 @@
                 <TwoStageTagListComponent
                   :fetchPrimaries="fetchEventTypes"
                   :fetchSecondaries="fetchEventGenres"
-                  :initialSelection="[{ primaryId: 1, secondaryId: 15 },{ primaryId: 2 }]"
+                  :initialSelection="tagInitialSelection?.map(s => ({ primaryId: s.primaryId, secondaryId: s.secondaryId }))"
                   labelPrimary="Event Type"
                   labelSecondary="Genre"
                   />
@@ -106,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
@@ -114,171 +114,149 @@ import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
 import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
 
 interface EventType {
-    id: number
-    name: string
+  id: number
+  name: string
 }
 
 interface EventGenreType {
-    id: number
-    name: string
-    event_type_id?: number | null
-    type_id?: number | null
+  id: number
+  name: string
+  event_type_id?: number | null
+  type_id?: number | null
 }
 
 interface SelectionPreset {
-    typeId: number
-    genreId: number | null
+  typeId: number
+  genreId: number | null
+}
+
+interface Selection {
+  primaryId: number
+  secondaryId: number | null
+}
+
+interface SelectOption {
+  id: number
+  name: string
 }
 
 const props = defineProps<{
-    eventId: number
-    description: string | null
-    participationInfo: string | null
-    meetingPoint: string | null
-    eventTypes: EventType[]
-    genreTypes: EventGenreType[]
-    locale: string
+  eventId: number
+  description: string | null
+  participationInfo: string | null
+  meetingPoint: string | null
+  eventTypes: EventType[]
+  genreTypes: EventGenreType[]
+  locale: string
 }>()
 
 const emit = defineEmits<{
-    (e: 'updated'): void
+  (e: 'updated'): void
 }>()
 
 const { t } = useI18n({ useScope: 'global' })
 
+// Description editing
 const isEditingDescription = ref(false)
 const isSavingDescription = ref(false)
 const editedDescription = ref(props.description ?? '')
 
+// Tags editing
 const isEditingTags = ref(false)
 const isSavingTags = ref(false)
 const selectedTypeIds = ref<number[]>([])
 const selectedGenreIds = ref<number[]>([])
-const tagInitialSelection = ref<SelectionPreset[] | null>(null)
+const tagInitialSelection = ref<Selection[] | undefined>(undefined)
 
-watch(
-    () => props.description,
-    (value) => {
-        if (!isEditingDescription.value) {
-            editedDescription.value = value ?? ''
-        }
-    }
-)
+// Watchers for props
+watch(() => props.description, v => {
+  if (!isEditingDescription.value) editedDescription.value = v ?? ''
+})
+watch(() => props.eventTypes, v => {
+  if (!isEditingTags.value) selectedTypeIds.value = Array.from(new Set((v ?? []).map(t => t.id)))
+}, { deep: true })
+watch(() => props.genreTypes, v => {
+  if (!isEditingTags.value) selectedGenreIds.value = Array.from(new Set((v ?? []).map(g => g.id)))
+}, { deep: true })
 
-watch(
-    () => props.eventTypes,
-    (value) => {
-        if (!isEditingTags.value) {
-            selectedTypeIds.value = Array.from(new Set((value ?? []).map((type) => type.id)))
-        }
-    },
-    { deep: true }
-)
-
-watch(
-    () => props.genreTypes,
-    (value) => {
-        if (!isEditingTags.value) {
-            selectedGenreIds.value = Array.from(new Set((value ?? []).map((genre) => genre.id)))
-        }
-    },
-    { deep: true }
-)
-
-const startEditingDescription = () => {
-    editedDescription.value = props.description ?? ''
-    isEditingDescription.value = true
-}
-
-const cancelEditingDescription = () => {
-    editedDescription.value = props.description ?? ''
-    isEditingDescription.value = false
-}
-
+// Description actions
+const startEditingDescription = () => { editedDescription.value = props.description ?? ''; isEditingDescription.value = true }
+const cancelEditingDescription = () => { editedDescription.value = props.description ?? ''; isEditingDescription.value = false }
 const saveDescription = async () => {
-    if (!props.eventId) return
-
-    isSavingDescription.value = true
-    try {
-        await apiFetch(`/api/admin/event/${props.eventId}/description`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                description: editedDescription.value,
-            }),
-        })
-        isEditingDescription.value = false
-        emit('updated')
-    } catch (err) {
-        console.error('Failed to update description', err)
-    } finally {
-        isSavingDescription.value = false
-    }
+  if (!props.eventId) return
+  isSavingDescription.value = true
+  try {
+    await apiFetch(`/api/admin/event/${props.eventId}/description`, {
+      method: 'PUT',
+      body: JSON.stringify({ description: editedDescription.value }),
+    })
+    isEditingDescription.value = false
+    emit('updated')
+  } catch (err) {
+    console.error(err)
+  } finally {
+    isSavingDescription.value = false
+  }
 }
 
-const buildTagSelection = computed(() => {
-    const selections: SelectionPreset[] = []
-    const genreMap = new Map<number, number[]>()
-
-    props.genreTypes.forEach((genre) => {
-        const typeId = genre.event_type_id ?? genre.type_id ?? null
-        if (typeof typeId !== 'number') return
-        const list = genreMap.get(typeId) ?? []
-        list.push(genre.id)
-        genreMap.set(typeId, list)
-    })
-
-    props.eventTypes.forEach((type) => {
-        const genreList = genreMap.get(type.id)
-        if (genreList && genreList.length) {
-            genreList.forEach((genreId) => selections.push({ typeId: type.id, genreId }))
-        } else {
-            selections.push({ typeId: type.id, genreId: null })
-        }
-    })
-
-    return selections
+// Build initial selection for TwoStageTagListComponent
+const buildTagSelection = computed<SelectionPreset[]>(() => {
+  const selections: SelectionPreset[] = []
+  const genreMap = new Map<number, number[]>()
+  props.genreTypes.forEach(g => {
+    const typeId = g.event_type_id ?? g.type_id ?? null
+    if (typeof typeId !== 'number') return
+    const list = genreMap.get(typeId) ?? []
+    list.push(g.id)
+    genreMap.set(typeId, list)
+  })
+  props.eventTypes.forEach(t => {
+    const genreList = genreMap.get(t.id)
+    if (genreList?.length) genreList.forEach(gid => selections.push({ typeId: t.id, genreId: gid }))
+    else selections.push({ typeId: t.id, genreId: null })
+  })
+  return selections
 })
 
-const startEditingTags = async () => {
-  // buildTagSelection already returns an array of { typeId, genreId }
+// Tags actions
+const startEditingTags = () => {
+
   const selections = buildTagSelection.value ?? []
 
-  // Normalize and deduplicate (in case of duplicates or malformed input)
-  const normalized = selections
-      .map((s) => ({
-        typeId: s.typeId ?? (s as any).type_id ?? 0,
-        genreId: s.genreId ?? (s as any).genre_id ?? null,
-      }))
-      .filter((s) => Number.isFinite(s.typeId) && s.typeId > 0)
+  // Deduplicate and normalize
+  const normalized: SelectionPreset[] = selections
+      .map(s => ({ typeId: s.typeId, genreId: s.genreId ?? null }))
+      .filter(s => Number.isFinite(s.typeId) && s.typeId > 0)
 
   const unique = Array.from(
-      new Map(normalized.map((s) => [`${s.typeId}-${s.genreId ?? 'null'}`, s])).values()
+      new Map(normalized.map(s => [`${s.typeId}-${s.genreId ?? 'null'}`, s])).values()
   )
 
-  // Set for <TwoStageTagListComponent>
-  tagInitialSelection.value = unique
 
-  // Derive selected IDs for other logic / UI
-  selectedTypeIds.value = Array.from(new Set(unique.map((s) => s.typeId)))
-  selectedGenreIds.value = Array.from(new Set(unique.map((s) => s.genreId).filter((g) => g != null)))
+  // Convert to Selection for component
+  tagInitialSelection.value = unique.map(s => ({ primaryId: s.typeId, secondaryId: s.genreId }))
 
-  // Enter edit mode
+  // Update selected IDs
+  selectedTypeIds.value = tagInitialSelection.value.map(s => s.primaryId)
+  selectedGenreIds.value = tagInitialSelection.value.map(s => s.secondaryId).filter(g => g != null)
+
   isEditingTags.value = true
 }
 
 const cancelEditingTags = () => {
-    selectedTypeIds.value = Array.from(new Set(props.eventTypes.map((type) => type.id)))
-    selectedGenreIds.value = Array.from(new Set(props.genreTypes.map((genre) => genre.id)))
-    tagInitialSelection.value = null
-    isEditingTags.value = false
+  selectedTypeIds.value = props.eventTypes.map(t => t.id)
+  selectedGenreIds.value = props.genreTypes.map(g => g.id)
+  tagInitialSelection.value = undefined
+  isEditingTags.value = false
 }
 
-const onTagSelectionUpdate = (payload: { typeIds: number[]; genreIds: number[] }) => {
-    selectedTypeIds.value = payload.typeIds
-    selectedGenreIds.value = payload.genreIds
+const onTagSelectionUpdate = (payload: Selection[]) => {
+  selectedTypeIds.value = payload.map(s => s.primaryId)
+  selectedGenreIds.value = payload.map(s => s.secondaryId).filter(g => g != null)
+  tagInitialSelection.value = payload
 }
 
-
+// Fetch options
 async function fetchEventTypes(): Promise<SelectOption[]> {
   const { data } = await apiFetch<SelectOption[]>('/api/choosable-event-types?lang=de')
   return Array.isArray(data) ? data : []
@@ -289,31 +267,26 @@ async function fetchEventGenres(typeId: number): Promise<SelectOption[]> {
   return Array.isArray(data) ? data : []
 }
 
-
 const saveTags = async () => {
-    if (!props.eventId) return
-
-    isSavingTags.value = true
-    const uniqueTypeIds = Array.from(new Set(selectedTypeIds.value))
-    const uniqueGenreIds = Array.from(new Set(selectedGenreIds.value))
-
-    try {
-        await apiFetch(`/api/admin/event/${props.eventId}/types`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                event_type_ids: uniqueTypeIds,
-                genre_type_ids: uniqueGenreIds,
-            }),
-        })
-        isEditingTags.value = false
-        tagInitialSelection.value = null
-        emit('updated')
-    } catch (err) {
-        console.error('Failed to update event types', err)
-        isEditingTags.value = false
-    } finally {
-        isSavingTags.value = false
-    }
+  if (!props.eventId) return
+  isSavingTags.value = true
+  try {
+    await apiFetch(`/api/admin/event/${props.eventId}/types`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        event_type_ids: Array.from(new Set(selectedTypeIds.value)),
+        genre_type_ids: Array.from(new Set(selectedGenreIds.value))
+      }),
+    })
+    isEditingTags.value = false
+    tagInitialSelection.value = undefined
+    emit('updated')
+  } catch (err) {
+    console.error(err)
+    isEditingTags.value = false
+  } finally {
+    isSavingTags.value = false
+  }
 }
 </script>
 
