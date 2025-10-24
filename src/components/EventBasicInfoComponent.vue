@@ -52,10 +52,12 @@
             </div>
             <div class="form-field">
               <TwoStageTagListComponent
-                  :fetchStage1="fetchEventTypes"
-                  :fetchStage2="fetchEventGenres"
-                  :initial-selection="basicInfo.typeGenrePairs"
-                  @update-selection="onEventSelectionUpdate"
+                  :fetchPrimaries="fetchEventTypes"
+                  :fetchSecondaries="fetchEventGenres"
+                  :initialSelection="[]"
+                  labelPrimary="Event Type"
+                  labelSecondary="Genre"
+                  @update-selection="onSelectionUpdate"
               />
             </div>
         </div>
@@ -70,6 +72,21 @@ import type { EventBasicInfoModel } from '@/models/event'
 
 import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue"
 import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
+
+interface Selection {
+  primaryId: number
+  secondaryId?: number | null
+}
+
+const onSelectionUpdate = (selection: Selection[]) => {
+  // Map the emitted selection to your internal EventTypeGenrePair format
+  basicInfo.typeGenrePairs = selection.map(pair => ({
+    typeId: pair.primaryId,
+    genreId: pair.secondaryId ?? null,
+  }))
+
+  console.log('Updated typeGenrePairs:', basicInfo.typeGenrePairs)
+}
 
 const props = defineProps<{
     organizerId: number | null
@@ -102,8 +119,6 @@ const basicInfo = reactive<EventBasicInfoModel>(emptyBasicInfo())
 const venues = ref<SelectOption[]>([])
 const organizers = ref<SelectOption[]>([])
 const spaces = ref<SelectOption[]>([])
-const eventTypes = ref<SelectOption[]>([])
-const genres = ref<SelectOption[]>([])
 const errors = reactive({
     title: null as string | null,
     subtitle: null as string | null,
@@ -220,13 +235,6 @@ async function fetchEventTypes(): Promise<SelectOption[]> {
 async function fetchEventGenres(typeId: number): Promise<SelectOption[]> {
     const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-genres/event-type/${typeId}?lang=de`)
     return Array.isArray(data) ? data : []
-}
-
-function onEventSelectionUpdate(payload: { typeGenrePairs: { type_id: number; genre_id: number }[] }) {
-  basicInfo.typeGenrePairs = payload.typeGenrePairs.map(({ type_id, genre_id }) => ({
-    typeId: type_id,
-    genreId: genre_id === 0 ? null : genre_id, // Normalize "0" to null for cleaner API data
-  }))
 }
 
 const validate = () => {

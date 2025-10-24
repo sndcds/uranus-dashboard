@@ -1,295 +1,212 @@
 <template>
-  <div class="tag-selector">
-    <div class="tag-selector__controls">
-      <!-- Event Type Selector -->
-      <div class="tag-selector__group">
-        <label for="event-type-select">{{ t('event_type_label') }}</label>
-        <select id="event-type-select" v-model="selectedType" @change="onTypeChange">
-          <option disabled :value="null">{{ t('event_type_placeholder') }}</option>
-          <option v-for="type in eventTypes" :key="type.type_id" :value="type">
-            {{ type.name }}
-          </option>
+  <div class="two-stage-list">
+    <div class="two-stage-list__controls">
+      <!-- Primary Selector -->
+      <div class="two-stage-list__group">
+        <label>{{ labelPrimary }}</label>
+        <select v-model="selectedPrimary" @change="onPrimaryChange">
+          <option disabled :value="null">{{ placeholderPrimary }}</option>
+          <option v-for="item in primaries" :key="item.id" :value="item">{{ item.name }}</option>
         </select>
       </div>
 
-      <!-- Event Genre Selector -->
-      <div class="tag-selector__group" v-if="selectedType && genres.length > 0">
-        <label for="event-genre-select">{{ t('event_genre_label') }}</label>
-        <select id="event-genre-select" v-model="selectedGenre">
-          <option disabled :value="null">{{ t('event_genre_placeholder') }}</option>
-          <option v-for="genre in genres" :key="genre.type_id" :value="genre">
-            {{ genre.name }}
-          </option>
+      <!-- Secondary Selector -->
+      <div class="two-stage-list__group" v-if="selectedPrimary && secondaryOptions.length">
+        <label>{{ labelSecondary }}</label>
+        <select v-model="selectedSecondary">
+          <option disabled :value="null">{{ placeholderSecondary }}</option>
+          <option v-for="item in secondaryOptions" :key="item.id" :value="item">{{ item.name }}</option>
         </select>
       </div>
 
-      <button class="tag-selector__add" @click.prevent="addCombination" :disabled="!selectedType">
-        {{ t('tag_selector_add') }}
+      <button
+          class="two-stage-list__add"
+          @click.prevent="addCombination"
+          :disabled="!selectedPrimary"
+      >
+        {{ t('add') }}
       </button>
     </div>
 
     <!-- Selected List -->
-    <div class="tag-selector__list">
+    <div class="two-stage-list__list">
       <ComboTagComponent
           v-for="(item, index) in selectedList"
-          :key="item.type.type_id + '-' + (item.genre?.type_id || 0)"
-          :label="item.genre ? `${item.type.name} / ${item.genre.name}` : item.type.name"
+          :key="item.primary.id + '-' + (item.secondary?.id ?? 0)"
+          :label="item.secondary ? `${item.primary.name} / ${item.secondary.name}` : item.primary.name"
           theme="light"
           @remove="removeCombination(index)"
       />
-      <p v-if="!selectedList.length" class="tag-selector__empty">
-        {{ t('tag_selector_empty') }}
-      </p>
+      <p v-if="!selectedList.length" class="two-stage-list__empty">{{ t('none_selected') }}</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ComboTagComponent from '@/components/ComboTagComponent.vue'
 
-// --- Types ---
-interface EventType {
-  type_id: number
-  name: string
-}
-
-interface EventGenre {
-  type_id: number
-  name: string
-}
-
-interface TypeGenrePair {
-  type_id: number
-  genre_id: number
-}
-
-interface SelectionPreset {
-  typeId: number
-  genreId: number | null
-}
-
-type SelectionTuple = [number, number]
-type InitialSelectionItem = SelectionPreset | SelectionTuple
+interface Item { id: number; name: string }
+interface Selection { primaryId: number; secondaryId?: number | null }
+interface SelectedItem { primary: Item; secondary?: Item | null }
 
 interface Props {
-  fetchStage1: () => Promise<EventType[]>
-  fetchStage2: (typeId: number) => Promise<EventGenre[]>
-  initialSelection?: InitialSelectionItem[]
+  fetchPrimaries: () => Promise<Item[]>
+  fetchSecondaries?: (primaryId: number) => Promise<Item[]>
+  initialSelection?: Selection[]
+  labelPrimary?: string
+  labelSecondary?: string
+  placeholderPrimary?: string
+  placeholderSecondary?: string
 }
 
-interface SelectedItem {
-  type: EventType
-  genre: EventGenre | null
-}
+const props = withDefaults(defineProps<Props>(), {
+  labelPrimary: 'Primary',
+  labelSecondary: 'Secondary',
+  placeholderPrimary: 'Select primary',
+  placeholderSecondary: 'Select secondary',
+})
 
-// --- Props & Emits ---
-const props = defineProps<Props>()
 const emit = defineEmits<{
-  (e: 'update-selection', payload: { typeGenrePairs: TypeGenrePair[] }): void
+  (e: 'update-selection', payload: Selection[]): void
 }>()
 
-// --- Reactive State ---
 const { t } = useI18n({ useScope: 'global' })
-const eventTypes = ref<EventType[]>([])
-const genres = ref<EventGenre[]>([])
-const selectedType = ref<EventType | null>(null)
-const selectedGenre = ref<EventGenre | null>(null)
+
+// --- State ---
+const primaries = ref<Item[]>([])
+const secondaryOptions = ref<Item[]>([])
+const secondaryCache: Record<number, Item[]> = {}
+
+const selectedPrimary = ref<Item | null>(null)
+const selectedSecondary = ref<Item | null>(null)
 const selectedList = ref<SelectedItem[]>([])
-const genresCache: Record<number, EventGenre[]> = {}
-const isApplyingInitialSelection = ref(false)
-const initialSelectionQueue = ref<InitialSelectionItem[]>([])
 
 // --- Fetch Functions ---
-async function fetchEventTypes() {
+async function loadPrimaries() {
   try {
-    eventTypes.value = await props.fetchStage1() ?? []
+    primaries.value = await props.fetchPrimaries() ?? []
     await applyInitialSelection()
   } catch (err) {
-    console.error('fetchStage1 error:', err)
-    eventTypes.value = []
+    console.error('fetchPrimaries error:', err)
+    primaries.value = []
   }
 }
 
-async function fetchEventGenres(typeId: number) {
+async function loadSecondaries(primaryId: number) {
+  if (!props.fetchSecondaries) return []
+
+  if (secondaryCache[primaryId]) {
+    secondaryOptions.value = secondaryCache[primaryId]
+    return secondaryCache[primaryId]
+  }
+
   try {
-    const data = await props.fetchStage2(typeId)
-    genres.value = data ?? []
-    genresCache[typeId] = genres.value
+    const data = await props.fetchSecondaries(primaryId)
+    secondaryCache[primaryId] = data ?? []
+    secondaryOptions.value = secondaryCache[primaryId]
+    return secondaryCache[primaryId]
   } catch (err) {
-    console.error('fetchStage2 error:', err)
-    genres.value = []
-  }
-}
-
-async function ensureGenres(typeId: number) {
-  if (typeId in genresCache) return genresCache[typeId] ?? []
-  const data = await props.fetchStage2(typeId)
-  const options = data ?? []
-  genresCache[typeId] = options
-  return options
-}
-
-// --- Initial Selection ---
-async function applyInitialSelection() {
-  if (!initialSelectionQueue.value.length || !eventTypes.value.length) return
-  const selections = [...initialSelectionQueue.value]
-  initialSelectionQueue.value = []
-  const list: SelectedItem[] = []
-  isApplyingInitialSelection.value = true
-
-  try {
-    for (const sel of selections) {
-      let typeId: number
-      let genreId: number | null = null
-
-      if (Array.isArray(sel)) {
-        [typeId, genreId] = sel
-      } else {
-        typeId = sel.typeId
-        genreId = sel.genreId ?? null
-      }
-
-      const type = eventTypes.value.find(item => item.type_id === typeId)
-      if (!type) continue
-
-      let genre: EventGenre | null = null
-      if (genreId !== null && genreId > 0) {
-        const genreOptions = await ensureGenres(type.type_id)
-        genre =
-            genreOptions.find(opt =>
-                opt.type_id === genreId ||
-                (opt as any).genre_id === genreId ||
-                (opt as any).id === genreId
-            ) ?? null
-      }
-
-      list.push({ type, genre })
-    }
-
-    selectedList.value = list
-  } finally {
-    isApplyingInitialSelection.value = false
-    updateParentSelection()
+    console.error('fetchSecondaries error:', err)
+    secondaryOptions.value = []
+    return []
   }
 }
 
 // --- Handlers ---
-async function onTypeChange() {
-  selectedGenre.value = null
-  genres.value = []
-  if (selectedType.value) {
-    await fetchEventGenres(selectedType.value.type_id)
+async function onPrimaryChange() {
+  selectedSecondary.value = null
+  if (selectedPrimary.value && props.fetchSecondaries) {
+    await loadSecondaries(selectedPrimary.value.id)
+  } else {
+    secondaryOptions.value = []
   }
 }
 
-function updateParentSelection() {
-  if (isApplyingInitialSelection.value) return
-
-  const typeGenrePairs: TypeGenrePair[] = selectedList.value.map(item => ({
-    type_id: item.type.type_id,
-    genre_id: item.genre?.type_id ?? 0,
-  }))
-
-  emit('update-selection', { typeGenrePairs })
-}
-
 function addCombination() {
-  if (!selectedType.value) return
-
-  const typeId = selectedType.value.type_id
-  const genreId = selectedGenre.value?.type_id ?? 0
+  if (!selectedPrimary.value) return
 
   const exists = selectedList.value.some(
-      item => item.type.type_id === typeId && (item.genre?.type_id ?? 0) === genreId
+      item =>
+          item.primary.id === selectedPrimary.value!.id &&
+          (item.secondary?.id ?? 0) === (selectedSecondary.value?.id ?? 0)
   )
   if (exists) return
 
   selectedList.value.push({
-    type: selectedType.value,
-    genre: genres.value.length > 0 ? selectedGenre.value : null,
+    primary: selectedPrimary.value,
+    secondary: secondaryOptions.value.length ? selectedSecondary.value ?? null : undefined,
   })
 
-  selectedGenre.value = null
-  updateParentSelection()
+  selectedSecondary.value = null
+  emitSelection()
 }
 
 function removeCombination(index: number) {
   selectedList.value.splice(index, 1)
-  updateParentSelection()
+  emitSelection()
+}
+
+function emitSelection() {
+  const payload: Selection[] = selectedList.value.map(item => ({
+    primaryId: item.primary.id,
+    secondaryId: item.secondary?.id ?? null,
+  }))
+  emit('update-selection', payload)
+}
+
+// --- Initial Selection ---
+async function applyInitialSelection() {
+  if (!props.initialSelection?.length || !primaries.value.length) return
+
+  const list: SelectedItem[] = []
+
+  for (const sel of props.initialSelection) {
+    const primary = primaries.value.find(p => p.id === sel.primaryId)
+    if (!primary) continue
+
+    let secondary: Item | null | undefined = undefined
+    if (sel.secondaryId !== undefined && props.fetchSecondaries) {
+      const options = await loadSecondaries(primary.id)
+      secondary = options.find(s => s.id === sel.secondaryId) ?? null
+    }
+
+    list.push({ primary, secondary })
+  }
+
+  selectedList.value = list
+  emitSelection()
 }
 
 // --- Lifecycle ---
-onMounted(() => {
-  if (props.initialSelection) initialSelectionQueue.value = [...props.initialSelection]
-  void fetchEventTypes()
-})
-
-watch(
-    () => props.initialSelection,
-    (value) => {
-      if (!value) return
-      initialSelectionQueue.value = [...value]
-      void applyInitialSelection()
-    },
-    { deep: true }
-)
+onMounted(() => void loadPrimaries())
+watch(() => props.initialSelection, () => void applyInitialSelection(), { deep: true })
 </script>
 
 <style scoped lang="scss">
-.tag-selector {
+.two-stage-list {
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 2.5vw, 1.5rem);
-  padding: clamp(1rem, 2.5vw, 1.5rem);
+  gap: 1rem;
+  padding: 1rem;
   background: var(--card-bg);
-  border-radius: 20px;
+  border-radius: 1rem;
   border: 1px solid var(--border-soft);
-}
 
-// Mobile-first: Single column layout by default
-.tag-selector__controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: clamp(0.75rem, 2vw, 1rem);
-  align-items: flex-end;
-}
-
-.tag-selector__group {
-  flex: 1 1 220px;
-  @include form-group();
-}
-
-.tag-selector__add {
-  @include form-primary-button($padding-y: 0.75rem, $padding-x: 1.5rem);
-}
-
-.tag-selector__list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.tag-selector__empty {
-  margin: 0;
-  color: var(--muted-text);
-  font-size: 0.9rem;
-}
-
-// Tablet and up: Enhanced layout
-@media (min-width: 640px) {
-  .tag-selector {
-    padding: clamp(1rem, 2.5vw, 1.5rem);
-  }
-
-  .tag-selector__controls {
-    flex-direction: row;
+  &__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     align-items: flex-end;
   }
 
-  .tag-selector__add {
-    width: auto;
-  }
+  &__group { flex: 1 1 220px; }
+
+  &__add { padding: 0.5rem 1rem; }
+
+  &__list { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+  &__empty { color: var(--muted-text); font-size: 0.9rem; }
 }
 </style>

@@ -46,11 +46,12 @@
         <div class="event-tags">
             <template v-if="isEditingTags">
                 <TwoStageTagListComponent
-                    :fetch-stage1="fetchEventTypesOptions"
-                    :fetch-stage2="fetchEventGenresOptions"
-                    :initial-selection="tagInitialSelection"
-                    @update-selection="onTagSelectionUpdate"
-                />
+                  :fetchPrimaries="fetchEventTypes"
+                  :fetchSecondaries="fetchEventGenres"
+                  :initialSelection="[{ primaryId: 1, secondaryId: 15 },{ primaryId: 2 }]"
+                  labelPrimary="Event Type"
+                  labelSecondary="Genre"
+                  />
                 <div class="event-tags__actions">
                     <button
                         type="button"
@@ -277,19 +278,17 @@ const onTagSelectionUpdate = (payload: { typeIds: number[]; genreIds: number[] }
     selectedGenreIds.value = payload.genreIds
 }
 
-const fetchEventTypesOptions = async () => {
-    const { data } = await apiFetch<Array<{ id: number; name: string } | { type_id: number; name: string }>>(
-        `/api/choosable-event-types?lang=${props.locale}`
-    )
-    return Array.isArray(data) ? data : []
+
+async function fetchEventTypes(): Promise<SelectOption[]> {
+  const { data } = await apiFetch<SelectOption[]>('/api/choosable-event-types?lang=de')
+  return Array.isArray(data) ? data : []
 }
 
-const fetchEventGenresOptions = async (typeId: number) => {
-    const { data } = await apiFetch<Array<{ id: number; name: string } | { type_id: number; name: string }>>(
-        `/api/choosable-event-genres/event-type/${typeId}?lang=${props.locale}`
-    )
-    return Array.isArray(data) ? data : []
+async function fetchEventGenres(typeId: number): Promise<SelectOption[]> {
+  const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-genres/event-type/${typeId}?lang=de`)
+  return Array.isArray(data) ? data : []
 }
+
 
 const saveTags = async () => {
     if (!props.eventId) return

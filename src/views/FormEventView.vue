@@ -43,7 +43,7 @@ import EventBasicInfoComponent from '@/components/EventBasicInfoComponent.vue'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import EventDetailsComponent from '@/components/EventDetailsComponent.vue'
 import router from '@/router'
-import type { EventBasicInfoModel, EventDateModel, EventDetailsModel } from '@/models/event'
+import type { EventBasicInfoModel, EventDateModel, EventDetailsModel, EventTypeGenrePair } from '@/models/event'
 
 const { t } = useI18n({ useScope: 'global' })
 const appStore = useAppStore()
@@ -160,9 +160,9 @@ const submitEvent = async () => {
         organizer_id: basicInfo.organizerId,
         venue_id: basicInfo.venueId,
         space_id: basicInfo.spaceId,
-        types: basicInfo.typeGenrePairs.map(pair => ({
-            type_id: pair.typeId,
-            genre_id: pair.genreId,
+        types: basicInfo.typeGenrePairs.map((pair: EventTypeGenrePair) => ({
+            type_id: pair.typeId,            // can be number or null
+            genre_id: pair.genreId ?? null,  // always null if no secondary selected
         })),
         description: eventDetails.description,
         teaser_text: eventDetails.teaserText || null,
