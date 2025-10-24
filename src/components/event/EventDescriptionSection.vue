@@ -1,108 +1,107 @@
 <template>
-    <article class="event-description">
-        <header class="event-description__header">
-            <h2>{{ t('event_details_heading') }}</h2>
-            <button
-                v-if="!isEditingDescription"
-                type="button"
-                class="event-description__edit"
-                @click="startEditingDescription"
-            >
-                {{ t('event_description_edit') }}
-            </button>
-        </header>
+  <article class="event-description">
+    <!-- Description Header -->
+    <header class="event-description__header">
+      <h2>{{ t('event_details_heading') }}</h2>
+      <button
+          v-if="!isEditingDescription"
+          type="button"
+          class="event-description__edit"
+          @click="startEditingDescription"
+      >
+        {{ t('event_description_edit') }}
+      </button>
+    </header>
 
-        <div class="event-description__content">
-            <template v-if="isEditingDescription">
-                <MarkdownEditorComponent
-                    v-model="editedDescription"
-                    :placeholder="t('event_description_placeholder')"
-                />
-                <div class="event-description__actions">
-                    <button
-                        type="button"
-                        class="event-description__button event-description__button--cancel"
-                        @click="cancelEditingDescription"
-                    >
-                        {{ t('event_description_cancel') }}
-                    </button>
-                    <button
-                        type="button"
-                        class="event-description__button"
-                        :disabled="isSavingDescription"
-                        @click="saveDescription"
-                    >
-                        <span v-if="!isSavingDescription">{{ t('event_description_save') }}</span>
-                        <span v-else>{{ t('saving') }}</span>
-                    </button>
-                </div>
-            </template>
-            <template v-else>
-                <MarkdownPreviewComponent v-if="description" :value="description" />
-                <p v-else class="empty">{{ t('event_details_empty') }}</p>
-            </template>
+    <!-- Description Content -->
+    <div class="event-description__content">
+      <template v-if="isEditingDescription">
+        <MarkdownEditorComponent
+            v-model="editedDescription"
+            :placeholder="t('event_description_placeholder')"
+        />
+        <div class="event-description__actions">
+          <button
+              type="button"
+              class="event-description__button event-description__button--cancel"
+              @click="cancelEditingDescription"
+          >
+            {{ t('event_description_cancel') }}
+          </button>
+          <button
+              type="button"
+              class="event-description__button"
+              :disabled="isSavingDescription"
+              @click="saveDescription"
+          >
+            <span v-if="!isSavingDescription">{{ t('event_description_save') }}</span>
+            <span v-else>{{ t('saving') }}</span>
+          </button>
         </div>
+      </template>
+      <template v-else>
+        <MarkdownPreviewComponent v-if="description" :value="description" />
+        <p v-else class="empty">{{ t('event_details_empty') }}</p>
+      </template>
+    </div>
 
-        <div class="event-tags">
-            <template v-if="isEditingTags">
-                <TwoStageTagListComponent
-                  :fetchPrimaries="fetchEventTypes"
-                  :fetchSecondaries="fetchEventGenres"
-                  :initialSelection="tagInitialSelection?.map(s => ({ primaryId: s.primaryId, secondaryId: s.secondaryId }))"
-                  labelPrimary="Event Type"
-                  labelSecondary="Genre"
-                  />
-                <div class="event-tags__actions">
-                    <button
-                        type="button"
-                        class="event-tags__button event-tags__button--cancel"
-                        @click="cancelEditingTags"
-                    >
-                        {{ t('event_tags_cancel') }}
-                    </button>
-                    <button
-                        type="button"
-                        class="event-tags__button"
-                        :disabled="isSavingTags"
-                        @click="saveTags"
-                    >
-                        <span v-if="!isSavingTags">{{ t('event_tags_save') }}</span>
-                        <span v-else>{{ t('saving') }}</span>
-                    </button>
-                </div>
-            </template>
-            <template v-else>
-                <div class="event-tags__lists">
-                    <div v-if="eventTypes.length">
-                        <h3>{{ t('event_types_heading') }}</h3>
-                        <ul>
-                            <li v-for="type in eventTypes" :key="type.id">{{ type.name }}</li>
-                        </ul>
-                    </div>
-                    <div v-if="genreTypes.length">
-                        <h3>{{ t('event_genres_heading') }}</h3>
-                        <ul>
-                            <li v-for="genre in genreTypes" :key="genre.id">{{ genre.name }}</li>
-                        </ul>
-                    </div>
-                </div>
-                <button type="button" class="event-tags__edit" @click="startEditingTags">
-                    {{ t('event_tags_edit') }}
-                </button>
-            </template>
+    <!-- Tags Section -->
+    <div class="event-tags">
+      <template v-if="isEditingTags">
+        <TwoStageTagListComponent
+            :fetchPrimaries="fetchEventTypes"
+            :fetchSecondaries="fetchEventGenres"
+            :initialSelection="tagInitialSelection"
+            labelPrimary="Event Type"
+            labelSecondary="Genre"
+            @update="onTagSelectionUpdate"
+        />
+        <div class="event-tags__actions">
+          <button
+              type="button"
+              class="event-tags__button event-tags__button--cancel"
+              @click="cancelEditingTags"
+          >
+            {{ t('event_tags_cancel') }}
+          </button>
+          <button
+              type="button"
+              class="event-tags__button"
+              :disabled="isSavingTags"
+              @click="saveTags"
+          >
+            <span v-if="!isSavingTags">{{ t('event_tags_save') }}</span>
+            <span v-else>{{ t('saving') }}</span>
+          </button>
         </div>
+      </template>
+      <template v-else>
+        <div class="event-tags__lists">
+          <div v-if="eventTypes.length">
+            <h3>{{ t('event_types_heading') }}</h3>
+            <!--ul>
+              <li v-for="type in eventTypes" :key="type.id">{{ type.name }}</li>
+            </ul-->
+          </div>
+        </div>
+        <button type="button" class="event-tags__edit" @click="startEditingTags">
+          {{ t('event_tags_edit') }}
+        </button>
+      </template>
+    </div>
 
-        <div class="event-additional">
-            <p v-if="participationInfo">
-                <strong>{{ t('event_participation_label') }}:</strong>
-                {{ participationInfo }}
-            </p>
-            <p v-if="meetingPoint">
-                <strong>{{ t('event_meeting_point') }}:</strong>
-                {{ meetingPoint }}
-            </p>
-        </div>
-    </article>
+    <!-- Additional Info -->
+    <div class="event-additional">
+      <p v-if="participationInfo">
+        <strong>{{ t('event_participation_label') }}:</strong>
+        {{ participationInfo }}
+      </p>
+      <p v-if="meetingPoint">
+        <strong>{{ t('event_meeting_point') }}:</strong>
+        {{ meetingPoint }}
+      </p>
+    </div>
+  </article>
 </template>
 
 <script setup lang="ts">
@@ -113,32 +112,9 @@ import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
 import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
 
-interface EventType {
-  id: number
-  name: string
-}
-
-interface EventGenreType {
-  id: number
-  name: string
-  event_type_id?: number | null
-  type_id?: number | null
-}
-
-interface SelectionPreset {
-  typeId: number
-  genreId: number | null
-}
-
-interface Selection {
-  primaryId: number
-  secondaryId: number | null
-}
-
-interface SelectOption {
-  id: number
-  name: string
-}
+interface EventType { type_id: number; type_name: string; genre_id: number; genre_name: string | null }
+interface Selection { primaryId: number; secondaryId: number | null }
+interface SelectOption { id: number; name: string }
 
 const props = defineProps<{
   eventId: number
@@ -146,38 +122,30 @@ const props = defineProps<{
   participationInfo: string | null
   meetingPoint: string | null
   eventTypes: EventType[]
-  genreTypes: EventGenreType[]
   locale: string
 }>()
 
-const emit = defineEmits<{
-  (e: 'updated'): void
-}>()
+const emit = defineEmits<{ (e: 'updated'): void }>()
 
 const { t } = useI18n({ useScope: 'global' })
 
-// Description editing
+// Description state
 const isEditingDescription = ref(false)
 const isSavingDescription = ref(false)
 const editedDescription = ref(props.description ?? '')
 
-// Tags editing
+// Tags state
 const isEditingTags = ref(false)
 const isSavingTags = ref(false)
-const selectedTypeIds = ref<number[]>([])
-const selectedGenreIds = ref<number[]>([])
 const tagInitialSelection = ref<Selection[] | undefined>(undefined)
 
-// Watchers for props
+// Watch props for description
 watch(() => props.description, v => {
   if (!isEditingDescription.value) editedDescription.value = v ?? ''
 })
-watch(() => props.eventTypes, v => {
-  if (!isEditingTags.value) selectedTypeIds.value = Array.from(new Set((v ?? []).map(t => t.id)))
-}, { deep: true })
-watch(() => props.genreTypes, v => {
-  if (!isEditingTags.value) selectedGenreIds.value = Array.from(new Set((v ?? []).map(g => g.id)))
-}, { deep: true })
+
+// Watchers for event types to rebuild selection if not editing
+watch(() => props.eventTypes, () => { if (!isEditingTags.value) buildInitialSelection() }, { deep: true })
 
 // Description actions
 const startEditingDescription = () => { editedDescription.value = props.description ?? ''; isEditingDescription.value = true }
@@ -190,69 +158,39 @@ const saveDescription = async () => {
       method: 'PUT',
       body: JSON.stringify({ description: editedDescription.value }),
     })
-    isEditingDescription.value = false
     emit('updated')
-  } catch (err) {
-    console.error(err)
-  } finally {
-    isSavingDescription.value = false
-  }
+    isEditingDescription.value = false
+  } catch (err) { console.error(err) }
+  finally { isSavingDescription.value = false }
 }
 
-// Build initial selection for TwoStageTagListComponent
-const buildTagSelection = computed<SelectionPreset[]>(() => {
-  const selections: SelectionPreset[] = []
-  const genreMap = new Map<number, number[]>()
-  props.genreTypes.forEach(g => {
-    const typeId = g.event_type_id ?? g.type_id ?? null
-    if (typeof typeId !== 'number') return
-    const list = genreMap.get(typeId) ?? []
-    list.push(g.id)
-    genreMap.set(typeId, list)
-  })
-  props.eventTypes.forEach(t => {
-    const genreList = genreMap.get(t.id)
-    if (genreList?.length) genreList.forEach(gid => selections.push({ typeId: t.id, genreId: gid }))
-    else selections.push({ typeId: t.id, genreId: null })
-  })
-  return selections
-})
+// Build initial selection for the component
+const buildInitialSelection = () => {
+  if (!props.eventTypes?.length) {
+    tagInitialSelection.value = []
+    return
+  }
+
+  const selections: Selection[] = props.eventTypes.map(t => ({
+    primaryId: t.type_id,
+    secondaryId: t.genre_id || null, // set null if genre_id is 0 or missing
+  }))
+
+  tagInitialSelection.value = selections
+}
 
 // Tags actions
 const startEditingTags = () => {
-
-  const selections = buildTagSelection.value ?? []
-
-  // Deduplicate and normalize
-  const normalized: SelectionPreset[] = selections
-      .map(s => ({ typeId: s.typeId, genreId: s.genreId ?? null }))
-      .filter(s => Number.isFinite(s.typeId) && s.typeId > 0)
-
-  const unique = Array.from(
-      new Map(normalized.map(s => [`${s.typeId}-${s.genreId ?? 'null'}`, s])).values()
-  )
-
-
-  // Convert to Selection for component
-  tagInitialSelection.value = unique.map(s => ({ primaryId: s.typeId, secondaryId: s.genreId }))
-
-  // Update selected IDs
-  selectedTypeIds.value = tagInitialSelection.value.map(s => s.primaryId)
-  selectedGenreIds.value = tagInitialSelection.value.map(s => s.secondaryId).filter(g => g != null)
-
+  buildInitialSelection()
   isEditingTags.value = true
 }
 
 const cancelEditingTags = () => {
-  selectedTypeIds.value = props.eventTypes.map(t => t.id)
-  selectedGenreIds.value = props.genreTypes.map(g => g.id)
-  tagInitialSelection.value = undefined
+  buildInitialSelection()
   isEditingTags.value = false
 }
 
 const onTagSelectionUpdate = (payload: Selection[]) => {
-  selectedTypeIds.value = payload.map(s => s.primaryId)
-  selectedGenreIds.value = payload.map(s => s.secondaryId).filter(g => g != null)
   tagInitialSelection.value = payload
 }
 
@@ -261,32 +199,29 @@ async function fetchEventTypes(): Promise<SelectOption[]> {
   const { data } = await apiFetch<SelectOption[]>('/api/choosable-event-types?lang=de')
   return Array.isArray(data) ? data : []
 }
-
 async function fetchEventGenres(typeId: number): Promise<SelectOption[]> {
   const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-genres/event-type/${typeId}?lang=de`)
   return Array.isArray(data) ? data : []
 }
 
+// Save tags
 const saveTags = async () => {
-  if (!props.eventId) return
+  if (!props.eventId || !tagInitialSelection.value) return
   isSavingTags.value = true
   try {
     await apiFetch(`/api/admin/event/${props.eventId}/types`, {
       method: 'PUT',
       body: JSON.stringify({
-        event_type_ids: Array.from(new Set(selectedTypeIds.value)),
-        genre_type_ids: Array.from(new Set(selectedGenreIds.value))
+        event_type_ids: Array.from(new Set(tagInitialSelection.value.map(s => s.primaryId))),
+        genre_type_ids: Array.from(new Set(tagInitialSelection.value.map(s => s.secondaryId).filter(g => g != null)))
       }),
     })
-    isEditingTags.value = false
-    tagInitialSelection.value = undefined
     emit('updated')
+    isEditingTags.value = false
   } catch (err) {
     console.error(err)
     isEditingTags.value = false
-  } finally {
-    isSavingTags.value = false
-  }
+  } finally { isSavingTags.value = false }
 }
 </script>
 
