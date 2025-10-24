@@ -1,29 +1,19 @@
 <template>
     <div class="title-fields">
-        <div class="form-field">
+        <div class="form-field event-title-field">
             <label :for="titleId">
                 {{ t('event_title_label') }}
                 <span class="required">*</span>
             </label>
-            <input
-                :id="titleId"
-                v-model="localTitle"
-                type="text"
-                :placeholder="t('event_title_placeholder')"
-                autocomplete="off"
-            />
+            <input :id="titleId" v-model="localTitle" type="text" :placeholder="t('event_title_placeholder')"
+                autocomplete="off" />
             <p v-if="titleError" class="field-error">{{ titleError }}</p>
         </div>
 
         <div class="form-field">
             <label :for="subtitleId">{{ t('event_subtitle_label') }}</label>
-            <input
-                :id="subtitleId"
-                v-model="localSubtitle"
-                type="text"
-                :placeholder="t('event_subtitle_placeholder')"
-                autocomplete="off"
-            />
+            <input :id="subtitleId" v-model="localSubtitle" type="text" :placeholder="t('event_subtitle_placeholder')"
+                autocomplete="off" />
         </div>
     </div>
 </template>
@@ -72,6 +62,13 @@ const titleError = computed(() => props.titleError ?? null)
 
 .form-field {
     @include form-group();
+}
+
+.event-title-field {
+    input {
+        font-size: clamp(1.25rem, 3vw, 1.5rem);
+        font-weight: 600;
+    }
 }
 
 .field-error {

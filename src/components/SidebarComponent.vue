@@ -189,7 +189,6 @@ const handleOptionChange = (optionId: string) => {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
-  backdrop-filter: blur(2px);
 }
 
 // Tablet and up: Show sidebar by default, hide hamburger

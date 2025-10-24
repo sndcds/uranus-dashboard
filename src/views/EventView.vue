@@ -78,11 +78,17 @@
                     @updated="loadEvent"
                 />
 
-                <section class="event-meta">
-                    <h3>{{ t('event_details_time') }}</h3>
-                    <p>{{ formattedDate }}</p>
-                    <p v-if="event.start_time">{{ formattedTime }}</p>
-                </section>
+                <EventScheduleSection
+                    :event-id="event.id"
+                    :start-date="event.start_date"
+                    :start-time="event.start_time"
+                    :end-date="event.end_date"
+                    :end-time="event.end_time"
+                    :entry-time="event.entry_time"
+                    :dates="event.dates"
+                    :event-dates="event.event_dates"
+                    @updated="loadEvent"
+                />
             </aside>
         </section>
     </div>
@@ -105,6 +111,7 @@ import EventDescriptionSection from '@/components/event/EventDescriptionSection.
 import EventTeaserSection from '@/components/event/EventTeaserSection.vue'
 import EventVenueSection from '@/components/event/EventVenueSection.vue'
 import EventUrlSection from '@/components/event/EventUrlSection.vue'
+import EventScheduleSection from '@/components/event/EventScheduleSection.vue'
 
 interface EventType {
     id: number
@@ -117,6 +124,18 @@ interface EventGenreType {
     event_type_id?: number | null
     type_id?: number | null
 }
+
+interface EventDateApi {
+    id?: number | null
+    start_date?: string
+    end_date?: string | null
+    start_time?: string | null
+    end_time?: string | null
+    entry_time?: string | null
+    all_day?: boolean | null
+}
+
+type EventDateSource = EventDateApi[] | Record<string, EventDateApi> | null | undefined
 
 interface EventDetail {
     id: number
@@ -146,6 +165,8 @@ interface EventDetail {
     space_name: string
     space_id: number | null
     space_total_capacity: number
+    dates?: EventDateSource
+    event_dates?: EventDateSource
 }
 
 interface QueryResponse {
@@ -202,13 +223,16 @@ const loadEvent = async () => {
                 eventData.event_types = normalizeCollection(eventData.event_types)
                 eventData.genre_types = normalizeCollection(eventData.genre_types)
                 event.value = eventData
+                error.value = null
             }
         } else {
             error.value = t('event_not_found')
+            event.value = null
         }
     } catch (err) {
         console.error(err)
         error.value = t('event_load_error')
+        event.value = null
     }
 }
 
@@ -286,25 +310,6 @@ onMounted(() => {
     order: 3;
 }
 
-.event-meta {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 1rem;
-    box-shadow: var(--card-shadow, 0 18px 40px rgba(31, 41, 55, 0.1));
-
-    h3 {
-        margin: 0 0 0.5rem 0;
-        color: var(--color-text);
-        font-size: 1rem;
-    }
-
-    p {
-        margin: 0.25rem 0;
-        color: var(--muted-text);
-        line-height: 1.5;
-        font-size: 0.9rem;
-    }
-}
 
 .event-loading {
     min-height: 50vh;
@@ -356,18 +361,6 @@ onMounted(() => {
         gap: 1.25rem;
     }
 
-    .event-meta {
-        border-radius: 20px;
-        padding: 1.25rem;
-
-        h3 {
-            font-size: 1.1rem;
-        }
-
-        p {
-            font-size: 0.95rem;
-        }
-    }
 }
 
 // Desktop: Two-column layout
@@ -420,18 +413,6 @@ onMounted(() => {
         gap: 1.2rem;
     }
 
-    .event-meta {
-        border-radius: 24px;
-        padding: 1.4rem;
-
-        h3 {
-            font-size: 1.1rem;
-        }
-
-        p {
-            font-size: 1rem;
-        }
-    }
 }
 
 // Large desktop: Enhanced spacing
@@ -452,8 +433,5 @@ onMounted(() => {
         height: 350px;
     }
 
-    .event-meta {
-        padding: 1.75rem;
-    }
 }
 </style>
