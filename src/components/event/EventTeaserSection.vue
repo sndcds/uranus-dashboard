@@ -2,7 +2,7 @@
     <article class="event-teaser">
         <img
             class="event-teaser__image"
-            src="https://uranus2.oklabflensburg.de/api/image/get?id=47&mode=cover&width=400&ratio=3by2&focusx=0.5&focusy=0.5&type=webp&quality=90"
+            src="https://uranus2.oklabflensburg.de/api/image/47?mode=cover&width=400&ratio=3by2&focusx=0.5&focusy=0.5&type=webp&quality=90"
             alt="Event teaser image"
             width="1200"
             height="200"
