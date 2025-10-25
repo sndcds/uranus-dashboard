@@ -57,7 +57,7 @@
 
         <div class="event-space">
             <header class="event-space__header">
-                <p class="event-space__text">{{ spaceName }} ({{ spaceTotalCapacity }} {{ t('event_capacity_label') }})</p>
+                <p class="event-space__text">{{ spaceName }} ({{ spaceCapacityDisplay }} {{ t('event_capacity_label') }})</p>
                 <button type="button" class="event-space__edit" @click="startEditingSpace">
                     {{ t('event_space_edit') }}
                 </button>
@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
@@ -135,6 +135,13 @@ const selectedSpaceId = ref<number | null>(props.spaceId ?? null)
 const spaceOptions = ref<Array<{ id: number; name: string }>>([])
 const isLoadingSpaces = ref(false)
 const isSavingSpace = ref(false)
+
+const spaceCapacityDisplay = computed(() => {
+    if (props.spaceTotalCapacity == null || Number.isNaN(props.spaceTotalCapacity)) {
+        return '—'
+    }
+    return String(props.spaceTotalCapacity)
+})
 
 watch(
     () => props.venueId,
@@ -274,7 +281,6 @@ const saveSpace = async () => {
     background: var(--card-bg);
     border-radius: 24px;
     padding: 1.4rem;
-    box-shadow: 0 18px 40px rgba(31, 41, 55, 0.1);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;

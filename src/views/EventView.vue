@@ -6,93 +6,46 @@
                 <p class="event-hero__time" v-if="event.start_time">{{ formattedTime }}</p>
             </div>
 
-            <EventHeaderSection
-                :event-id="event.id"
-                :title="event.title"
-                :subtitle="event.subtitle"
-                @updated="loadEvent"
-            />
+            <EventHeaderSection :event-id="event.id" :title="event.title" :subtitle="event.subtitle"
+                @updated="loadEvent" />
 
             <p class="event-hero__organizer">{{ event.organizer_name }}</p>
         </header>
 
         <section class="event-layout">
             <div class="event-main">
-                <EventImageUploadComponent
-                    v-model="eventImage"
-                    v-model:alt-text="imageAltText"
-                    v-model:copyright="imageCopyright"
-                    v-model:license="imageLicense"
-                    v-model:created-by="imageCreatedBy"
-                    :event-id="eventId"
-                    :max-size="5 * 1024 * 1024"
-                    :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
-                    @updated="loadEvent"
-                />
+                <EventImageUploadComponent v-model="eventImage" v-model:alt-text="imageAltText"
+                    v-model:copyright="imageCopyright" v-model:license="imageLicense"
+                    v-model:created-by="imageCreatedBy" :event-id="eventId" :max-size="5 * 1024 * 1024"
+                    :accepted-types="['image/jpeg', 'image/png', 'image/webp']" @updated="loadEvent" />
 
-                <EventDescriptionSection
-                    :event-id="event.id"
-                    :description="event.description"
-                    :participation-info="event.participation_info"
-                    :meeting-point="event.meeting_point"
-                    :event-types="event.event_types"
-                    :genre-types="event.genre_types"
-                    :locale="locale"
-                    @updated="loadEvent"
-                />
+                <EventDescriptionSection :event-id="event.id" :description="event.description"
+                    :participation-info="event.participation_info" :meeting-point="event.meeting_point"
+                    :event-types="event.event_types" :genre-types="event.genre_types" :locale="locale"
+                    @updated="loadEvent" />
 
-                <EventUrlSection
-                    :event-id="event.id"
-                    @updated="loadEvent"
-                />
+                <EventUrlSection :event-id="event.id" @updated="loadEvent" />
             </div>
 
-            <EventTeaserSection
-                :event-id="event.id"
-                :teaser-text="event.teaser_text"
-                @updated="loadEvent"
-                class="event-teaser"
-            />
+            <EventTeaserSection :event-id="event.id" :teaser-text="event.teaser_text"
+                :has-main-image="event.has_main_image" :image-id="event.image_id" :image-focus-x="event.image_focus_x"
+                :image-focus-y="event.image_focus_y" @updated="loadEvent" class="event-teaser" />
 
             <aside class="event-aside">
-                <LocationMapComponent
-                    :latitude="event.venue_lat"
-                    :longitude="event.venue_lon"
-                    :zoom="18"
-                    :selectable="false"
-                    class="event-map"
-                />
+                <LocationMapComponent :latitude="event.venue_lat" :longitude="event.venue_lon" :zoom="18"
+                    :selectable="false" class="event-map" />
 
-                <EventVenueSection
-                    :event-id="event.id"
-                    :organizer-id="event.organizer_id"
-                    :venue-id="event.venue_id"
-                    :venue-name="event.venue_name"
-                    :venue-street="event.venue_street"
-                    :venue-house-number="event.venue_house_number"
-                    :venue-postal-code="event.venue_postal_code"
-                    :venue-city="event.venue_city"
-                    :space-id="event.space_id"
-                    :space-name="event.space_name"
-                    :space-total-capacity="event.space_total_capacity"
-                    @updated="loadEvent"
-                />
+                <EventVenueSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
+                    :venue-name="event.venue_name" :venue-street="event.venue_street"
+                    :venue-house-number="event.venue_house_number" :venue-postal-code="event.venue_postal_code"
+                    :venue-city="event.venue_city" :space-id="event.space_id" :space-name="event.space_name"
+                    :space-total-capacity="event.space_total_capacity" @updated="loadEvent" />
 
-                <EventScheduleSection
-                    :event-id="event.id"
-                    :organizer-id="event.organizer_id"
-                    :venue-id="event.venue_id"
-                    :start-date="event.start_date"
-                    :start-time="event.start_time"
-                    :end-date="event.end_date"
-                    :end-time="event.end_time"
-                    :entry-time="event.entry_time"
-                    :dates="event.dates"
-                    :event-dates="event.event_dates"
-                    :space-id="event.space_id"
-                    :space-name="event.space_name"
-                    @updated="loadEvent"
-                />
+                <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
+                    :start-date="event.start_date" :start-time="event.start_time" :end-date="event.end_date"
+                    :end-time="event.end_time" :entry-time="event.entry_time" :dates="event.dates"
+                    :event-dates="event.event_dates" :space-id="event.space_id" :space-name="event.space_name"
+                    @updated="loadEvent" />
             </aside>
         </section>
     </div>
@@ -184,9 +137,9 @@ interface EventDetail {
     image_focus_y?: number | null
     duration?: number | null
     accessibility_flag_names?: string[] | null
-    accessibility_flags?: unknown
+    accessibility_flags?: number | null
     visitor_info_flag_names?: string[] | null
-    visitor_info_flags?: unknown
+    visitor_info_flags?: number | null
     dates?: EventDateSource
     event_dates?: EventDateSource
 }
@@ -402,9 +355,9 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
     if ('image_focus_y' in record) detail.image_focus_y = toNumberOrNull(record.image_focus_y)
     if ('duration' in record) detail.duration = toNumberOrNull(record.duration)
     if ('accessibility_flag_names' in record) detail.accessibility_flag_names = toStringArrayOrNull(record.accessibility_flag_names)
-    if ('accessibility_flags' in record) detail.accessibility_flags = record.accessibility_flags
+    if ('accessibility_flags' in record) detail.accessibility_flags = toNumberOrNull(record.accessibility_flags)
     if ('visitor_info_flag_names' in record) detail.visitor_info_flag_names = toStringArrayOrNull(record.visitor_info_flag_names)
-    if ('visitor_info_flags' in record) detail.visitor_info_flags = record.visitor_info_flags
+    if ('visitor_info_flags' in record) detail.visitor_info_flags = toNumberOrNull(record.visitor_info_flags)
 
     return detail
 }
@@ -416,6 +369,9 @@ const extractEvents = (payload: unknown): unknown[] => {
         if (Array.isArray(maybeEvents)) {
             return maybeEvents
         }
+        if ('id' in payload) {
+            return [payload]
+        }
     }
     return []
 }
@@ -423,7 +379,7 @@ const extractEvents = (payload: unknown): unknown[] => {
 const loadEvent = async () => {
     try {
         const { data } = await apiFetch<unknown>(
-            `/api/events?events=${eventId.value}&start=2000-01-01`
+            `/api/event/${eventId.value}?lang=${locale.value}`
         )
 
         const events = extractEvents(data)
