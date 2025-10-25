@@ -9,10 +9,10 @@
                 <div class="event-teaser__actions">
                     <button type="button" class="event-teaser__button event-teaser__button--cancel"
                         @click="cancelEditing">
-                        {{ t('event_teaser_cancel') }}
+                        {{ t('form_cancel') }}
                     </button>
                     <button type="button" class="event-teaser__button" :disabled="isSaving" @click="saveTeaser">
-                        <span v-if="!isSaving">{{ t('event_teaser_save') }}</span>
+                        <span v-if="!isSaving">{{ t('form_save') }}</span>
                         <span v-else>{{ t('saving') }}</span>
                     </button>
                 </div>

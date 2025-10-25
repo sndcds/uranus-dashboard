@@ -6,10 +6,10 @@
             <div class="event-header-section__actions">
                 <button type="button" class="event-header-section__button event-header-section__button--cancel"
                     @click="cancelEditing">
-                    {{ t('event_header_cancel') }}
+                    {{ t('form_cancel') }}
                 </button>
                 <button type="button" class="event-header-section__button" @click="saveHeader" :disabled="isSaving">
-                    <span v-if="!isSaving">{{ t('event_header_save') }}</span>
+                    <span v-if="!isSaving">{{ t('form_save') }}</span>
                     <span v-else>{{ t('saving') }}</span>
                 </button>
             </div>

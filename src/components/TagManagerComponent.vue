@@ -45,18 +45,18 @@
                 <div class="tag-manager__actions">
                     <button
                         type="button"
-                    class="tag-manager__button tag-manager__button--secondary"
-                    @click="cancelEditing"
-                    :disabled="isSaving"
-                >
-                    {{ labels.cancel }}
-                </button>
-                <button
-                    type="button"
-                    class="tag-manager__button tag-manager__button--primary"
-                    :disabled="isSaving || !draftTags.length"
-                    @click="handleSave"
-                >
+                        class="tag-manager__button tag-manager__button--secondary"
+                        @click="cancelEditing"
+                        :disabled="isSaving"
+                    >
+                        {{ labels.cancel }}
+                    </button>
+                    <button
+                        type="button"
+                        class="tag-manager__button tag-manager__button--primary"
+                        :disabled="isSaving"
+                        @click="handleSave"
+                    >
                         <span v-if="!isSaving">{{ labels.save }}</span>
                         <span v-else>{{ labels.saving }}</span>
                     </button>
@@ -137,9 +137,9 @@ const labels = computed(() => ({
     empty: props.emptyLabel || t('tag_no_tags'),
     placeholder: props.addPlaceholder || t('tag_select_placeholder'),
     add: props.addButtonLabel || t('tag_selector_add'),
-    save: props.saveLabel || t('event_tags_save'),
-    cancel: props.cancelLabel || t('event_tags_cancel'),
-    saving: props.savingLabel || t('saving')
+    save: props.saveLabel || t('form_save'),
+    cancel: props.cancelLabel || t('form_cancel'),
+    saving: props.savingLabel || t('form_saving')
 }))
 
 const resetEditor = () => {

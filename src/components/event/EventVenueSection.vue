@@ -35,7 +35,7 @@
                     class="event-venue__button event-venue__button--cancel"
                     @click="cancelEditingVenue"
                 >
-                    {{ t('event_venue_cancel') }}
+                    {{ t('form_cancel') }}
                 </button>
                 <button
                     type="button"
@@ -43,7 +43,7 @@
                     :disabled="selectedVenueId === null || isLoadingVenues"
                     @click="saveVenue"
                 >
-                    <span v-if="!isSavingVenue">{{ t('event_venue_save') }}</span>
+                    <span v-if="!isSavingVenue">{{ t('form_save') }}</span>
                     <span v-else>{{ t('saving') }}</span>
                 </button>
             </div>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="event-space__actions">
                     <button type="button" class="event-space__button event-space__button--cancel" @click="cancelEditingSpace">
-                        {{ t('event_space_cancel') }}
+                        {{ t('form_cancel') }}
                     </button>
                     <button
                         type="button"
@@ -90,7 +90,7 @@
                         :disabled="selectedSpaceId === null || isLoadingSpaces"
                         @click="saveSpace"
                     >
-                        <span v-if="!isSavingSpace">{{ t('event_space_save') }}</span>
+                        <span v-if="!isSavingSpace">{{ t('form_save') }}</span>
                         <span v-else>{{ t('saving') }}</span>
                     </button>
                 </div>

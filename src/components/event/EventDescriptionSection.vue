@@ -26,7 +26,7 @@
               class="event-description__button event-description__button--cancel"
               @click="cancelEditingDescription"
           >
-            {{ t('event_description_cancel') }}
+            {{ t('form_cancel') }}
           </button>
           <button
               type="button"
@@ -34,7 +34,7 @@
               :disabled="isSavingDescription"
               @click="saveDescription"
           >
-            <span v-if="!isSavingDescription">{{ t('event_description_save') }}</span>
+            <span v-if="!isSavingDescription">{{ t('form_save') }}</span>
             <span v-else>{{ t('saving') }}</span>
           </button>
         </div>
@@ -67,7 +67,7 @@
             class="event-tags__button event-tags__button--cancel"
             @click="cancelEditingTags"
         >
-          {{ t('event_tags_cancel') }}
+          {{ t('form_cancel') }}
         </button>
         <button
             type="button"
@@ -75,7 +75,7 @@
             :disabled="isSavingTags"
             @click="saveTags"
         >
-          <span v-if="!isSavingTags">{{ t('event_tags_save') }}</span>
+          <span v-if="!isSavingTags">{{ t('form_save') }}</span>
           <span v-else>{{ t('saving') }}</span>
         </button>
       </div>
