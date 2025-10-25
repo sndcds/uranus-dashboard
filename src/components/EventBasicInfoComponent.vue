@@ -57,6 +57,8 @@
                   :initialSelection="[]"
                   labelPrimary="Event Type"
                   labelSecondary="Genre"
+                  :editable="true"
+                  :isEditing="true"
                   @update-selection="onSelectionUpdate"
               />
             </div>
