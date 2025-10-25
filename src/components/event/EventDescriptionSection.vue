@@ -112,7 +112,7 @@ import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
 import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
 
-interface EventType { type_id: number; type_name: string; genre_id: number; genre_name: string | null }
+interface EventType { type_id: number; type_name: string; genre_id: number | null; genre_name: string | null }
 interface Selection { primaryId: number; secondaryId: number | null }
 interface SelectOption { id: number; name: string }
 

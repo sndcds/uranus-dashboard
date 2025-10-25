@@ -118,8 +118,10 @@ import EventUrlSection from '@/components/event/EventUrlSection.vue'
 import EventScheduleSection from '@/components/event/EventScheduleSection.vue'
 
 interface EventType {
-    id: number
-    name: string
+    type_id: number
+    type_name: string
+    genre_id: number | null
+    genre_name: string | null
 }
 
 interface EventGenreType {
@@ -146,7 +148,7 @@ interface EventDetail {
     id: number
     title: string
     subtitle: string
-    description: string
+    description: string | null
     organizer_name: string
     organizer_id: number | null
     start_date: string
@@ -165,18 +167,31 @@ interface EventDetail {
     venue_house_number: string
     venue_postal_code: string
     venue_city: string
-    venue_lat: number
-    venue_lon: number
+    venue_lat: number | null
+    venue_lon: number | null
+    venue_country?: string | null
+    venue_state?: string | null
+    venue_geometry?: string | null
     space_name: string
     space_id: number | null
-    space_total_capacity: number
+    space_total_capacity: number | null
+    space_seating_capacity?: number | null
+    space_building_level?: number | null
+    space_url?: string | null
+    has_main_image?: boolean | null
+    image_id?: number | null
+    image_focus_x?: number | null
+    image_focus_y?: number | null
+    duration?: number | null
+    accessibility_flag_names?: string[] | null
+    accessibility_flags?: unknown
+    visitor_info_flag_names?: string[] | null
+    visitor_info_flags?: unknown
     dates?: EventDateSource
     event_dates?: EventDateSource
 }
 
-interface QueryResponse {
-    events: EventDetail[]
-}
+type QueryResponse = { events?: unknown }
 
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -201,11 +216,22 @@ const dateFormatter = computed(
 
 const timeFormatter = computed(() => new Intl.DateTimeFormat(locale.value, { hour: '2-digit', minute: '2-digit' }))
 
-const formattedDate = computed(() => (event.value ? dateFormatter.value.format(new Date(event.value.start_date)) : ''))
+const formattedDate = computed(() => {
+    const startDate = event.value?.start_date
+    if (!startDate) return ''
 
-const formattedTime = computed(() =>
-    event.value?.start_time ? timeFormatter.value.format(new Date(`${event.value.start_date}T${event.value.start_time}`)) : ''
-)
+    const parsed = new Date(startDate)
+    return Number.isNaN(parsed.getTime()) ? '' : dateFormatter.value.format(parsed)
+})
+
+const formattedTime = computed(() => {
+    const startDate = event.value?.start_date
+    const startTime = event.value?.start_time
+    if (!startDate || !startTime) return ''
+
+    const parsed = new Date(`${startDate}T${startTime}`)
+    return Number.isNaN(parsed.getTime()) ? '' : timeFormatter.value.format(parsed)
+})
 
 const normalizeCollection = <T>(collection: T[] | Record<string, T> | null | undefined): T[] => {
     if (Array.isArray(collection)) return collection
@@ -215,20 +241,197 @@ const normalizeCollection = <T>(collection: T[] | Record<string, T> | null | und
     return []
 }
 
+const toNumberOrNull = (value: unknown): number | null => {
+    if (typeof value === 'number' && Number.isFinite(value)) return value
+    if (typeof value === 'string' && value.trim() !== '') {
+        const parsed = Number(value)
+        return Number.isFinite(parsed) ? parsed : null
+    }
+    return null
+}
+
+const toStringOrEmpty = (value: unknown): string => {
+    if (typeof value === 'string') return value
+    if (value == null) return ''
+    return String(value)
+}
+
+const toNullableString = (value: unknown): string | null => {
+    if (typeof value === 'string') {
+        const trimmed = value.trim()
+        return trimmed.length ? trimmed : null
+    }
+    return null
+}
+
+const toStringArrayOrNull = (value: unknown): string[] | null => {
+    if (!Array.isArray(value)) return null
+    const filtered = value.filter((entry): entry is string => typeof entry === 'string')
+    return filtered.length ? filtered : []
+}
+
+const mapEventType = (raw: unknown): EventType | null => {
+    if (!raw || typeof raw !== 'object') return null
+    const record = raw as Record<string, unknown>
+
+    const typeId =
+        toNumberOrNull(record.type_id) ??
+        toNumberOrNull(record.typeId) ??
+        toNumberOrNull(record.id) ??
+        toNumberOrNull(record.event_type_id) ??
+        toNumberOrNull(record.eventTypeId)
+
+    if (typeId === null) return null
+
+    const typeName =
+        toNullableString(record.type_name) ??
+        toNullableString(record.typeName) ??
+        toNullableString(record.name) ??
+        ''
+
+    const genreRecord = typeof record.genre === 'object' && record.genre ? (record.genre as Record<string, unknown>) : null
+
+    const genreId =
+        toNumberOrNull(record.genre_id) ??
+        toNumberOrNull(record.genreId) ??
+        toNumberOrNull(record.genre_type_id) ??
+        (genreRecord ? toNumberOrNull(genreRecord.id) : null)
+
+    const genreName =
+        toNullableString(record.genre_name) ||
+        toNullableString(record.genreName) ||
+        (genreRecord ? toNullableString(genreRecord.name) : null)
+
+    return {
+        type_id: typeId,
+        type_name: typeName,
+        genre_id: genreId,
+        genre_name: genreName,
+    }
+}
+
+const mapEventGenreType = (raw: unknown): EventGenreType | null => {
+    if (!raw || typeof raw !== 'object') return null
+    const record = raw as Record<string, unknown>
+
+    const id = toNumberOrNull(record.id) ?? toNumberOrNull(record.genre_id)
+    const name =
+        toNullableString(record.name) ??
+        toNullableString(record.genre_name) ??
+        null
+
+    if (id === null || name === null) return null
+
+    return {
+        id,
+        name,
+        event_type_id: toNumberOrNull(record.event_type_id) ?? null,
+        type_id: toNumberOrNull(record.type_id) ?? null,
+    }
+}
+
+const mapEventDetail = (raw: unknown): EventDetail | null => {
+    if (!raw || typeof raw !== 'object') return null
+    const record = raw as Record<string, unknown>
+
+    const id = toNumberOrNull(record.id)
+    const startDate = toNullableString(record.start_date)
+
+    if (id === null || !startDate) return null
+
+    const rawEventTypes = normalizeCollection<unknown>(record['event_types'] as
+        | Array<unknown>
+        | Record<string, unknown>
+        | null
+        | undefined)
+    const eventTypes = rawEventTypes.map(mapEventType).filter(Boolean) as EventType[]
+
+    const rawGenreTypes = normalizeCollection<unknown>(record['genre_types'] as
+        | Array<unknown>
+        | Record<string, unknown>
+        | null
+        | undefined)
+    const genreTypes = rawGenreTypes
+        .map(mapEventGenreType)
+        .filter(Boolean) as EventGenreType[]
+
+    const detail: EventDetail = {
+        id,
+        title: toStringOrEmpty(record.title),
+        subtitle: toStringOrEmpty(record.subtitle),
+        description: toNullableString(record.description),
+        organizer_name: toStringOrEmpty(record.organizer_name),
+        organizer_id: toNumberOrNull(record.organizer_id),
+        start_date: startDate,
+        start_time: toNullableString(record.start_time),
+        end_date: toNullableString(record.end_date),
+        end_time: toNullableString(record.end_time),
+        entry_time: toNullableString(record.entry_time),
+        event_types: eventTypes,
+        genre_types: genreTypes,
+        participation_info: toNullableString(record.participation_info),
+        meeting_point: toNullableString(record.meeting_point),
+        teaser_text: toNullableString(record.teaser_text),
+        venue_name: toStringOrEmpty(record.venue_name),
+        venue_id: toNumberOrNull(record.venue_id),
+        venue_street: toStringOrEmpty(record.venue_street),
+        venue_house_number: toStringOrEmpty(record.venue_house_number),
+        venue_postal_code: toStringOrEmpty(record.venue_postal_code),
+        venue_city: toStringOrEmpty(record.venue_city),
+        venue_lat: toNumberOrNull(record.venue_lat),
+        venue_lon: toNumberOrNull(record.venue_lon),
+        space_name: toStringOrEmpty(record.space_name),
+        space_id: toNumberOrNull(record.space_id),
+        space_total_capacity: toNumberOrNull(record.space_total_capacity),
+        dates: record['dates'] as EventDateSource,
+        event_dates: record['event_dates'] as EventDateSource,
+    }
+
+    if ('venue_country' in record) detail.venue_country = toNullableString(record.venue_country)
+    if ('venue_state' in record) detail.venue_state = toNullableString(record.venue_state)
+    if ('venue_geometry' in record) detail.venue_geometry = toNullableString(record.venue_geometry)
+    if ('space_seating_capacity' in record) detail.space_seating_capacity = toNumberOrNull(record.space_seating_capacity)
+    if ('space_building_level' in record) detail.space_building_level = toNumberOrNull(record.space_building_level)
+    if ('space_url' in record) detail.space_url = toNullableString(record.space_url)
+    if ('has_main_image' in record) {
+        const value = record.has_main_image
+        detail.has_main_image = value == null ? null : Boolean(value)
+    }
+    if ('image_id' in record) detail.image_id = toNumberOrNull(record.image_id)
+    if ('image_focus_x' in record) detail.image_focus_x = toNumberOrNull(record.image_focus_x)
+    if ('image_focus_y' in record) detail.image_focus_y = toNumberOrNull(record.image_focus_y)
+    if ('duration' in record) detail.duration = toNumberOrNull(record.duration)
+    if ('accessibility_flag_names' in record) detail.accessibility_flag_names = toStringArrayOrNull(record.accessibility_flag_names)
+    if ('accessibility_flags' in record) detail.accessibility_flags = record.accessibility_flags
+    if ('visitor_info_flag_names' in record) detail.visitor_info_flag_names = toStringArrayOrNull(record.visitor_info_flag_names)
+    if ('visitor_info_flags' in record) detail.visitor_info_flags = record.visitor_info_flags
+
+    return detail
+}
+
+const extractEvents = (payload: unknown): unknown[] => {
+    if (Array.isArray(payload)) return payload
+    if (payload && typeof payload === 'object') {
+        const maybeEvents = (payload as QueryResponse).events
+        if (Array.isArray(maybeEvents)) {
+            return maybeEvents
+        }
+    }
+    return []
+}
+
 const loadEvent = async () => {
     try {
-        const { data } = await apiFetch<QueryResponse>(
-            `/api/query?mode=event&events=${eventId.value}&start=2000-01-01`
+        const { data } = await apiFetch<unknown>(
+            `/api/events?events=${eventId.value}&start=2000-01-01`
         )
 
-        if (data?.events?.length) {
-            const eventData = data.events[0]
-            if (eventData) {
-                eventData.event_types = normalizeCollection(eventData.event_types)
-                eventData.genre_types = normalizeCollection(eventData.genre_types)
-                event.value = eventData
-                error.value = null
-            }
+        const events = extractEvents(data)
+        const mapped = events.length ? mapEventDetail(events[0]) : null
+
+        if (mapped) {
+            event.value = mapped
+            error.value = null
         } else {
             error.value = t('event_not_found')
             event.value = null

@@ -492,13 +492,6 @@ onMounted(() => {
         }
     }
 
-    &__editor {
-        border: 1px solid var(--border-soft);
-        border-radius: 14px;
-        padding: 0.75rem;
-        background: var(--input-bg);
-    }
-
     &__empty {
         margin: 0;
         color: var(--muted-text);

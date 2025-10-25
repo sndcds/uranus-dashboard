@@ -229,10 +229,6 @@ defineExpose({ validate })
 </script>
 
 <style scoped lang="scss">
-.event-section__header {
-    @include form-section-header();
-}
-
 .event-section__form {
     display: flex;
     flex-direction: column;
@@ -245,10 +241,6 @@ defineExpose({ validate })
 }
 
 .event-dates__card {
-    border: 1px solid var(--border-soft);
-    border-radius: 20px;
-    padding: clamp(1.2rem, 2.4vw, 1.6rem);
-    background: var(--input-bg);
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -326,10 +318,6 @@ defineExpose({ validate })
 }
 
 @media (max-width: 540px) {
-    .event-section {
-        padding: clamp(1.25rem, 6vw, 1.8rem);
-    }
-
     .event-dates__grid {
         grid-template-columns: 1fr;
     }
