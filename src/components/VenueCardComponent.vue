@@ -8,25 +8,32 @@
       </p>
     </header>
 
-    <section v-if="venue.spaces.length" class="venue-card__section">
-      <h3 class="venue-card__section-title">{{ t('spaces') }}</h3>
+    <section class="venue-card__section">
+      <div class="venue-card__section-header">
+        <h3 class="venue-card__section-title">{{ t('spaces') }}</h3>
+        <router-link
+          v-if="venue.can_add_space"
+          :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
+          class="venue-card__action"
+        >
+          {{ t('add_new_space') }}
+        </router-link>
+      </div>
 
-      <ul class="venue-card__space-list">
-        <li v-for="space in venue.spaces" :key="space.space_id" class="venue-card__space">
-          <div class="venue-card__space-info">
-            <span class="venue-card__space-name">{{ space.space_name }}</span>
-            <span class="venue-card__space-events">
-              {{ space.upcoming_event_count }}
-              <span class="venue-card__space-events-label">{{ t('events') }}</span>
-            </span>
-          </div>
-        </li>
-      </ul>
-
-      <router-link v-if="venue.can_add_space" :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
-        class="venue-card__action">
-        {{ t('add_new_space') }}
-      </router-link>
+      <template v-if="venue.spaces.length">
+        <ul class="venue-card__space-list">
+          <li v-for="space in venue.spaces" :key="space.space_id" class="venue-card__space">
+            <div class="venue-card__space-info">
+              <span class="venue-card__space-name">{{ space.space_name }}</span>
+              <span class="venue-card__space-events">
+                {{ space.upcoming_event_count }}
+                <span class="venue-card__space-events-label">{{ t('events') }}</span>
+              </span>
+            </div>
+          </li>
+        </ul>
+      </template>
+      <p v-else class="venue-card__empty">{{ t('spaces_empty') }}</p>
     </section>
   </article>
 </template>
@@ -107,6 +114,14 @@ interface Venue {
   color: var(--color-text);
 }
 
+.venue-card__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
+}
+
 .venue-card__space-list {
   list-style: none;
   margin: 0;
@@ -150,8 +165,17 @@ interface Venue {
 }
 
 .venue-card__action {
-  align-self: flex-start;
   @include form-secondary-button($padding-y: 0.7rem, $padding-x: 1.35rem);
+  white-space: nowrap;
+}
+
+.venue-card__empty {
+  margin: 0;
+  padding: clamp(0.85rem, 3vw, 1.1rem);
+  border-radius: 14px;
+  background: var(--surface-muted);
+  color: var(--muted-text);
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
 }
 
 @media (min-width: 640px) {

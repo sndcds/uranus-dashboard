@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import SidebarOptionComponent from './SidebarOptionComponent.vue'
 import { useUserStore } from '@/store/userStore'
@@ -43,6 +43,7 @@ const emit = defineEmits<{
 }>()
 
 const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
 
 // Mobile sidebar state
@@ -51,11 +52,14 @@ const isOpen = ref(false)
 // track the currently active route
 const activeRoute = ref(route.path)
 
-watch(route, (newRoute) => {
-  activeRoute.value = newRoute.path
-  // Close sidebar on route change (mobile)
-  isOpen.value = false
-})
+watch(
+  () => route.path,
+  (newPath) => {
+    activeRoute.value = newPath
+    // Close sidebar on route change (mobile)
+    isOpen.value = false
+  }
+)
 
 // Mobile sidebar methods
 const toggleSidebar = () => {
@@ -66,7 +70,27 @@ const closeSidebar = () => {
   isOpen.value = false
 }
 
-const handleOptionChange = (optionId: string) => {
+const handleOptionChange = async (optionId: string) => {
+  const selectedOption = props.options.find((option) => option.id === optionId)
+
+  if (!selectedOption) {
+    return
+  }
+
+  if (selectedOption.id === 'logout') {
+    emit('change', optionId)
+    isOpen.value = false
+    return
+  }
+
+  if (selectedOption.route && selectedOption.route !== activeRoute.value) {
+    try {
+      await router.push(selectedOption.route)
+    } catch (err) {
+      console.warn('Navigation aborted for route:', selectedOption.route, err)
+    }
+  }
+
   emit('change', optionId)
   // Close sidebar after navigation on mobile
   isOpen.value = false
@@ -80,7 +104,7 @@ const handleOptionChange = (optionId: string) => {
   top: 0;
   left: 0;
   height: 100vh;
-  width: 280px;
+  width: 300px;
   background: var(--card-bg);
   border-right: 1px solid var(--border-soft);
   transform: translateX(-100%);
@@ -198,7 +222,7 @@ const handleOptionChange = (optionId: string) => {
     top: 0;
     left: 0;
     height: 100vh;
-    width: 280px;
+    width: 320px;
     transform: translateX(0);
     border-radius: 0;
 

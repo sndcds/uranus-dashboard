@@ -13,86 +13,122 @@ import FormSpaceView from '@/views/FormSpaceView.vue'
 import EventDashboardView from '@/views/EventDashboardView.vue'
 import FormEventView from '@/views/FormEventView.vue'
 import EventView from '@/views/EventView.vue'
+import UserPermissionView from '@/views/UserPermissionView.vue'
+import { useTokenStore } from '@/store/token'
 
 const routes = [
     {
         path: '/',
         component: DashboardLayoutComponent,
+        meta: { requiresAuth: true },
         children: [
             {
                 path: '',
                 name: 'dashboard',
-                component: DashboardView
+                component: DashboardView,
             },
             {
                 path: '/organizers',
                 name: 'organizers',
-                component: OrganizerDashboardView
+                component: OrganizerDashboardView,
             },
             {
                 path: '/settings',
                 name: 'settings',
-                component: SettingsView
+                component: SettingsView,
             },
             {
                 path: '/organizer/create',
                 name: 'create-organizer',
-                component: FormOrganizerView
+                component: FormOrganizerView,
             },
             {
                 path: '/organizer/:id/venue/create',
                 name: 'create-venue',
-                component: FormVenueView
+                component: FormVenueView,
             },
             {
                 path: '/organizer/:id/venue/:venueId/space/create',
                 name: 'create-space',
-                component: FormSpaceView
+                component: FormSpaceView,
             },
             {
                 path: '/organizer/:id/venues',
                 name: 'venues',
-                component: OrganizerVenueView
+                component: OrganizerVenueView,
             },
             {
                 path: '/organizer/:id/events',
                 name: 'organizer-events',
-                component: EventDashboardView
+                component: EventDashboardView,
             },
             {
                 path: '/organizer/:id/event/create',
                 name: 'create-event',
-                component: FormEventView
+                component: FormEventView,
             },
             {
                 path: '/event/:id',
                 name: 'event-details',
-                component: EventView
-            }
+                component: EventView,
+            },
+            {
+                path: 'user/permissions',
+                name: 'user-permissions',
+                component: UserPermissionView,
+            },
         ],
     },
     {
         path: '/login',
         component: AuthLayoutComponent,
+        meta: { guestOnly: true },
         children: [
             {
                 path: '',
                 name: 'login',
-                component: LoginView
+                component: LoginView,
+                meta: { guestOnly: true },
             },
+        ],
+    },
+    {
+        path: '/signup',
+        component: AuthLayoutComponent,
+        meta: { guestOnly: true },
+        children: [
             {
-                path: '/signup',
+                path: '',
                 name: 'signup',
-                component: SignupView
-            }
+                component: SignupView,
+                meta: { guestOnly: true },
+            },
         ],
     },
 ]
 
-
 const router = createRouter({
     history: createWebHistory(),
     routes,
+})
+
+router.beforeEach((to, from, next) => {
+    const tokenStore = useTokenStore()
+    const isAuthenticated = Boolean(tokenStore.accessToken)
+    const requiresAuth = to.matched.some((record) => record.meta?.requiresAuth)
+    const guestOnly = to.matched.some((record) => record.meta?.guestOnly)
+
+    if (requiresAuth && !isAuthenticated) {
+        next({ name: 'login', query: { redirect: to.fullPath } })
+        return
+    }
+
+    if (guestOnly && isAuthenticated) {
+        next({ name: 'dashboard' })
+        return
+    }
+
+    next()
 })
 
 export default router

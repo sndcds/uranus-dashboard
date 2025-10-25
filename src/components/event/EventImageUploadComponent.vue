@@ -293,6 +293,69 @@ onUnmounted(() => {
     clearPreview()
 })
 
+const resolveLicenseLabel = (license: Record<string, any>): string => {
+    if (!license) return ''
+
+    const currentLocale = (locale.value || '').toLowerCase()
+    const shortLocale = currentLocale.split('-')[0]
+    const localeCandidates = [currentLocale, shortLocale].filter((val, index, arr) => !!val && arr.indexOf(val) === index)
+
+    const translationSources = ['names', 'translations', 'localized_names', 'license_translations', 'license_names']
+        .map((key) => license[key])
+        .filter((source): source is Record<string, string> => !!source && typeof source === 'object')
+
+    const tryGetFromSources = (lang?: string): string | undefined => {
+        if (!lang) return undefined
+        const normalized = lang.toLowerCase()
+
+        for (const source of translationSources) {
+            const match = source[normalized] || source[normalized.toUpperCase()]
+            if (typeof match === 'string' && match.trim()) {
+                return match.trim()
+            }
+        }
+
+        const directKeys = [`license_name_${normalized}`, `name_${normalized}`, normalized]
+        for (const key of directKeys) {
+            const value = license[key]
+            if (typeof value === 'string' && value.trim()) {
+                return value.trim()
+            }
+        }
+
+        return undefined
+    }
+
+    for (const candidate of localeCandidates) {
+        const translation = tryGetFromSources(candidate)
+        if (translation) {
+            return translation
+        }
+    }
+
+    const englishFallback = tryGetFromSources('en') || tryGetFromSources('english')
+    if (englishFallback) {
+        return englishFallback
+    }
+
+    for (const source of translationSources) {
+        const value = Object.values(source).find((val) => typeof val === 'string' && val.trim())
+        if (value) {
+            return value.trim()
+        }
+    }
+
+    if (typeof license.license_name === 'string' && license.license_name.trim()) {
+        return license.license_name.trim()
+    }
+
+    if (typeof license.name === 'string' && license.name.trim()) {
+        return license.name.trim()
+    }
+
+    return ''
+}
+
 const fetchLicenses = async () => {
     licenseLoading.value = true
     licenseError.value = ''
@@ -303,7 +366,7 @@ const fetchLicenses = async () => {
         if (Array.isArray(data)) {
             licenseOptions.value = data.map((license: any) => ({
                 value: license.license_id,
-                label: license.license_name
+                label: resolveLicenseLabel(license)
             }))
         } else {
             licenseOptions.value = []

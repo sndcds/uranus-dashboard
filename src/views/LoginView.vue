@@ -50,7 +50,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api'
 import type { LoginResponse } from '@/api'
 import { useTokenStore } from '@/store/token'
@@ -58,6 +58,7 @@ import { useUserStore } from '@/store/userStore'
 
 const { t, te } = useI18n()
 const router = useRouter()
+const route = useRoute()
 const tokenStore = useTokenStore()
 const userStore = useUserStore()
 
@@ -86,7 +87,8 @@ const login = async () => {
             if (data.display_name) {
                 userStore.setDisplayName(data.display_name)
             }
-            router.push('/')
+            const redirectTarget = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
+            router.replace(redirectTarget)
         } else {
             error.value = te('invalid_credentials') ? t('invalid_credentials') : 'Invalid credentials'
         }

@@ -33,13 +33,8 @@ const sidebarOptions = computed<SidebarOption[]>(() => [
 ])
 
 function onSidebarChange(id: string) {
-  const option = sidebarOptions.value.find(o => o.id === id)
-  if (option) {
-    if (option.id === 'logout') {
-      logout()
-      return
-    }
-    if (option?.route) router.push(option.route)
+  if (id === 'logout') {
+    logout()
   }
 }
 
