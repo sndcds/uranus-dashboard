@@ -6,25 +6,12 @@
     </section>
 
     <section class="settings-card">
-      <form class="settings-form">
-        <div class="form-group">
-          <label for="language-select">{{ t('select_language') }}</label>
-          <select id="language-select" v-model="selectedLocale">
-            <option v-for="option in localeOptions" :key="option.value" :value="option.value">
-              {{ option.label }}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="theme-select">{{ t('settings_theme') }}</label>
-          <select id="theme-select" v-model="selectedTheme">
-            <option v-for="option in themeOptions" :key="option.value" :value="option.value">
-              {{ t(option.label) }}
-            </option>
-          </select>
-        </div>
-      </form>
+      <div class="settings-notice">
+        <p>{{ preferencesNotice }}</p>
+        <RouterLink class="settings-notice__link" :to="{ name: 'user-profile' }">
+          {{ openProfileLabel }}
+        </RouterLink>
+      </div>
     </section>
   </div>
 </template>
@@ -32,35 +19,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useThemeStore } from '@/store/themeStore'
 
-const { t, te, locale } = useI18n({ useScope: 'global' })
-const themeStore = useThemeStore()
-
-const selectedLocale = computed({
-  get: () => locale.value,
-  set: (value: string) => {
-    locale.value = value
-  },
-})
-
-const localeOptions = [
-  { value: 'en', label: 'English' },
-  { value: 'da', label: 'Dansk' },
-  { value: 'de', label: 'Deutsch' },
-]
+const { t, te } = useI18n({ useScope: 'global' })
 
 const heroSubtitle = computed(() => (te('settings_subtitle') ? t('settings_subtitle') : 'Adjust how your workspace looks and feels.'))
-
-const selectedTheme = computed({
-  get: () => themeStore.theme,
-  set: (value) => themeStore.setTheme(value),
-})
-
-const themeOptions = [
-  { value: 'light', label: 'settings_theme_light' },
-  { value: 'dark', label: 'settings_theme_dark' },
-]
+const preferencesNotice = computed(() => (te('settings_preferences_notice') ? t('settings_preferences_notice') : 'Language and theme now live inside your profile preferences.'))
+const openProfileLabel = computed(() => (te('settings_open_profile') ? t('settings_open_profile') : 'Open profile preferences'))
 </script>
 
 <style scoped lang="scss">
@@ -76,14 +40,18 @@ const themeOptions = [
   @include form-card(720px, clamp(1.75rem, 4vw, 2.5rem), clamp(1.25rem, 3vw, 1.75rem));
 }
 
-.settings-form {
+.settings-notice {
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 2vw, 1.5rem);
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  color: var(--muted-text);
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
-.form-group {
-  @include form-group();
+.settings-notice__link {
+  align-self: flex-start;
+  @include form-secondary-button($padding-y: 0.65rem, $padding-x: 1.4rem);
 }
 
 @media (max-width: 540px) {

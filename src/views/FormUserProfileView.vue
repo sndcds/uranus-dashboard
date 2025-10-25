@@ -96,6 +96,31 @@
 								/>
 							</div>
 						</div>
+
+						<div class="profile-preferences">
+							<div class="profile-preferences__header">
+								<h4>{{ preferencesHeading }}</h4>
+								<p>{{ preferencesDescription }}</p>
+							</div>
+							<div class="profile-preferences__grid">
+								<div class="form-group">
+									<label for="profile_language">{{ t('select_language') }}</label>
+									<select id="profile_language" v-model="selectedLocale" :disabled="isSubmitting">
+										<option v-for="option in localeOptions" :key="option.value" :value="option.value">
+											{{ option.label }}
+										</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="profile_theme">{{ t('settings_theme') }}</label>
+									<select id="profile_theme" v-model="selectedTheme" :disabled="isSubmitting">
+										<option v-for="option in themeOptions" :key="option.value" :value="option.value">
+											{{ t(option.label) }}
+										</option>
+									</select>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -124,6 +149,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useThemeStore } from '@/store/themeStore'
+import type { ThemeMode } from '@/utils/theme'
 import { apiFetch } from '@/api'
 
 interface UserProfilePayload {
@@ -132,9 +159,14 @@ interface UserProfilePayload {
 	first_name?: string | null
 	last_name?: string | null
 	avatar_url?: string | null
+	locale?: string | null
+	theme?: ThemeMode | null
 }
 
-const { t, te } = useI18n({ useScope: 'global' })
+const { t, te, locale } = useI18n({ useScope: 'global' })
+const themeStore = useThemeStore()
+
+const isThemeMode = (value: unknown): value is ThemeMode => value === 'light' || value === 'dark'
 
 const profile = reactive({
 	displayName: '',
@@ -155,6 +187,17 @@ const loadError = ref<string | null>(null)
 const submitError = ref<string | null>(null)
 const submitSuccess = ref<string | null>(null)
 
+const localeOptions: Array<{ value: string; label: string }> = [
+	{ value: 'en', label: 'English' },
+	{ value: 'da', label: 'Dansk' },
+	{ value: 'de', label: 'Deutsch' },
+]
+
+const themeOptions: Array<{ value: ThemeMode; label: string }> = [
+	{ value: 'light', label: 'settings_theme_light' },
+	{ value: 'dark', label: 'settings_theme_dark' },
+]
+
 const heroTitle = computed(() => (te('user_profile_title') ? t('user_profile_title') : 'Update your profile'))
 const heroSubtitle = computed(() => (te('user_profile_subtitle') ? t('user_profile_subtitle') : 'Manage how others see your information.'))
 const photoLabel = computed(() => (te('user_profile_photo_label') ? t('user_profile_photo_label') : 'Profile picture'))
@@ -168,6 +211,19 @@ const loadErrorMessage = computed(() => (te('user_profile_load_error') ? t('user
 const loadingLabel = computed(() => (te('user_profile_loading') ? t('user_profile_loading') : 'Loading profile…'))
 const validationMessage = computed(() => (te('user_profile_validation_error') ? t('user_profile_validation_error') : 'Please provide a display name and email address.'))
 const savingLabel = computed(() => (te('form_saving') ? t('form_saving') : 'Saving…'))
+const preferencesHeading = computed(() => (te('user_profile_preferences_heading') ? t('user_profile_preferences_heading') : 'Workspace preferences'))
+const preferencesDescription = computed(() => (te('user_profile_preferences_description') ? t('user_profile_preferences_description') : 'Choose your language and theme for the dashboard.'))
+const selectedLocale = computed({
+	get: () => locale.value,
+	set: (value: string) => {
+		locale.value = value
+	},
+})
+
+const selectedTheme = computed({
+	get: () => themeStore.theme,
+	set: (value: ThemeMode) => themeStore.setTheme(value),
+})
 
 const displayAvatar = computed(() => avatarPreviewUrl.value || currentAvatarUrl.value || null)
 const avatarInitial = computed(() => {
@@ -227,6 +283,14 @@ const mapResponseToState = (payload: UserProfilePayload | null | undefined) => {
 		profile.lastName = payload.last_name ?? ''
 		initialAvatarUrl.value = payload.avatar_url ?? null
 		currentAvatarUrl.value = initialAvatarUrl.value
+
+		if (payload.locale) {
+			locale.value = payload.locale
+		}
+
+		if (payload.theme && isThemeMode(payload.theme)) {
+			themeStore.setTheme(payload.theme)
+		}
 	}
 
 	removeAvatar.value = false
@@ -268,6 +332,8 @@ const submitProfile = async () => {
 	formData.append('email', profile.email.trim())
 	formData.append('first_name', profile.firstName.trim())
 	formData.append('last_name', profile.lastName.trim())
+	formData.append('locale', selectedLocale.value)
+	formData.append('theme', selectedTheme.value)
 
 	const requestedRemoval = removeAvatar.value
 
@@ -469,6 +535,40 @@ onBeforeUnmount(() => {
 	display: flex;
 	flex-direction: column;
 	gap: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+.profile-preferences {
+	display: flex;
+	flex-direction: column;
+	gap: clamp(0.75rem, 2vw, 1.1rem);
+	padding: clamp(1rem, 3vw, 1.5rem);
+	border-radius: 18px;
+	border: 1px solid var(--border-soft);
+	background: var(--input-bg);
+}
+
+.profile-preferences__header {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+}
+
+.profile-preferences__header h4 {
+	margin: 0;
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--color-text);
+}
+
+.profile-preferences__header p {
+	margin: 0;
+	color: var(--muted-text);
+	font-size: 0.9rem;
+	line-height: 1.5;
+}
+
+.profile-preferences__grid {
+	@include form-grid(220px, clamp(0.9rem, 2vw, 1.2rem));
 }
 
 .form-grid {
