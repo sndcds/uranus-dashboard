@@ -13,10 +13,11 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import SidebarComponent from './SidebarComponent.vue'
 import type { SidebarOption } from '@/types/types'
 import { useTokenStore } from "@/store/token"
 import { useAppStore } from "@/store/appStore"
+
+import SidebarComponent from './SidebarComponent.vue'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -28,6 +29,8 @@ const sidebarOptions = computed<SidebarOption[]>(() => [
   { id: 'organizers', label: t('organizers'), icon: '', route: '/organizers' },
   { id: 'venues', label: t('venues'), icon: '', route: `/organizer/${appStore.organizerId ?? ''}/venues` },
   { id: 'events', label: t('events'), icon: '', route: `/organizer/${appStore.organizerId ?? ''}/events` },
+  { id: 'permissions', label: t('permissions'), icon: '', route: '/user/permissions' },
+  { id: 'profile', label: t('user_profile'), icon: '', route: '/user/profile' },
   { id: 'settings', label: t('settings'), icon: '', route: '/settings' },
   { id: 'logout', label: t('logout'), icon: '', route: '' },
 ])
@@ -47,7 +50,6 @@ function logout() {
 <style scoped>
 /* Mobile-first: Full width layout, sidebar hidden by default */
 .dashboard-layout {
-  min-height: 100vh;
   position: relative;
 }
 

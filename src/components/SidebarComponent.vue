@@ -28,10 +28,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-
-import SidebarOptionComponent from './SidebarOptionComponent.vue'
 import { useUserStore } from '@/store/userStore'
 import type { SidebarOption } from '@/types/types'
+
+import SidebarOptionComponent from './SidebarOptionComponent.vue'
 import OrganizerChooserMenu from './OrganizerChooserMenu.vue'
 
 const props = defineProps<{

@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useTokenStore } from '@/store/token'
+
 import DashboardLayoutComponent from '@/components/DashboardLayoutComponent.vue'
 import AuthLayoutComponent from '@/components/AuthLayoutComponent.vue'
 import DashboardView from '@/views/DashboardView.vue'
@@ -14,7 +16,7 @@ import EventDashboardView from '@/views/EventDashboardView.vue'
 import FormEventView from '@/views/FormEventView.vue'
 import EventView from '@/views/EventView.vue'
 import UserPermissionView from '@/views/UserPermissionView.vue'
-import { useTokenStore } from '@/store/token'
+import FormUserProfileView from '@/views/FormUserProfileView.vue'
 
 const routes = [
     {
@@ -73,10 +75,15 @@ const routes = [
                 component: EventView,
             },
             {
-                path: 'user/permissions',
+                path: '/user/permissions',
                 name: 'user-permissions',
                 component: UserPermissionView,
             },
+            {
+                path: '/user/profile',
+                name: 'user-profile',
+                component: FormUserProfileView,
+            }
         ],
     },
     {
