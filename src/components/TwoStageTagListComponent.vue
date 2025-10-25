@@ -1,7 +1,7 @@
 <template>
   <div class="two-stage-list">
-    <div class="two-stage-list__controls">
-      <!-- Primary Selector -->
+    <!-- Controls (only visible if editable and parent says editing) -->
+    <div v-if="editable && isEditing" class="two-stage-list__controls">
       <div class="two-stage-list__group">
         <label>{{ labelPrimary }}</label>
         <select v-model="selectedPrimary" @change="onPrimaryChange">
@@ -10,7 +10,6 @@
         </select>
       </div>
 
-      <!-- Secondary Selector -->
       <div class="two-stage-list__group" v-if="selectedPrimary && secondaryOptions.length">
         <label>{{ labelSecondary }}</label>
         <select v-model="selectedSecondary">
@@ -19,23 +18,20 @@
         </select>
       </div>
 
-      <button
-          class="two-stage-list__add"
-          @click.prevent="addCombination"
-          :disabled="!selectedPrimary"
-      >
+      <button class="two-stage-list__add" @click.prevent="addCombination" :disabled="!selectedPrimary">
         {{ t('add') }}
       </button>
     </div>
 
-    <!-- Selected List -->
+    <!-- Selected tags (always visible) -->
     <div class="two-stage-list__list">
       <ComboTagComponent
           v-for="(item, index) in selectedList"
           :key="item.primary.id + '-' + (item.secondary?.id ?? 0)"
           :label="item.secondary ? `${item.primary.name} / ${item.secondary.name}` : item.primary.name"
           theme="light"
-          @remove="removeCombination(index)"
+          :editable="editable && isEditing"
+          @remove="onRemove(index)"
       />
       <p v-if="!selectedList.length" class="two-stage-list__empty">{{ t('none_selected') }}</p>
     </div>
@@ -43,12 +39,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ComboTagComponent from '@/components/ComboTagComponent.vue'
 
 interface Item { id: number; name: string }
-interface Selection { primaryId: number; secondaryId?: number | null }
+export interface Selection { primaryId: number; secondaryId?: number | null }
 interface SelectedItem { primary: Item; secondary?: Item | null }
 
 interface Props {
@@ -59,6 +55,8 @@ interface Props {
   labelSecondary?: string
   placeholderPrimary?: string
   placeholderSecondary?: string
+  editable?: boolean
+  isEditing?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -66,6 +64,8 @@ const props = withDefaults(defineProps<Props>(), {
   labelSecondary: 'Secondary',
   placeholderPrimary: 'Select primary',
   placeholderSecondary: 'Select secondary',
+  editable: true,
+  isEditing: false,
 })
 
 const emit = defineEmits<{
@@ -83,10 +83,10 @@ const selectedPrimary = ref<Item | null>(null)
 const selectedSecondary = ref<Item | null>(null)
 const selectedList = ref<SelectedItem[]>([])
 
-// --- Fetch Functions ---
+// --- Fetch functions ---
 async function loadPrimaries() {
   try {
-    primaries.value = await props.fetchPrimaries() ?? []
+    primaries.value = (await props.fetchPrimaries()) ?? []
     await applyInitialSelection()
   } catch (err) {
     console.error('fetchPrimaries error:', err)
@@ -96,12 +96,10 @@ async function loadPrimaries() {
 
 async function loadSecondaries(primaryId: number) {
   if (!props.fetchSecondaries) return []
-
   if (secondaryCache[primaryId]) {
     secondaryOptions.value = secondaryCache[primaryId]
     return secondaryCache[primaryId]
   }
-
   try {
     const data = await props.fetchSecondaries(primaryId)
     secondaryCache[primaryId] = data ?? []
@@ -126,10 +124,8 @@ async function onPrimaryChange() {
 
 function addCombination() {
   if (!selectedPrimary.value) return
-
   const exists = selectedList.value.some(
-      item =>
-          item.primary.id === selectedPrimary.value!.id &&
+      item => item.primary.id === selectedPrimary.value!.id &&
           (item.secondary?.id ?? 0) === (selectedSecondary.value?.id ?? 0)
   )
   if (exists) return
@@ -138,7 +134,6 @@ function addCombination() {
     primary: selectedPrimary.value,
     secondary: secondaryOptions.value.length ? selectedSecondary.value ?? null : undefined,
   })
-
   selectedSecondary.value = null
   emitSelection()
 }
@@ -146,6 +141,10 @@ function addCombination() {
 function removeCombination(index: number) {
   selectedList.value.splice(index, 1)
   emitSelection()
+}
+
+function onRemove(index: number) {
+  if (props.editable && props.isEditing) removeCombination(index)
 }
 
 function emitSelection() {
@@ -156,24 +155,23 @@ function emitSelection() {
   emit('update-selection', payload)
 }
 
-// --- Initial Selection ---
+// --- Apply initial selection safely ---
 async function applyInitialSelection() {
   if (!props.initialSelection?.length || !primaries.value.length) return
 
   const list: SelectedItem[] = []
-
-  for (const sel of props.initialSelection) {
-    const primary = primaries.value.find(p => p.id === sel.primaryId)
-    if (!primary) continue
-
-    let secondary: Item | null | undefined = undefined
-    if (sel.secondaryId !== undefined && props.fetchSecondaries) {
-      const options = await loadSecondaries(primary.id)
-      secondary = options.find(s => s.id === sel.secondaryId) ?? null
-    }
-
-    list.push({ primary, secondary })
-  }
+  await Promise.all(
+      props.initialSelection.map(async sel => {
+        const primary = primaries.value.find(p => p.id === sel.primaryId)
+        if (!primary) return
+        let secondary: Item | null | undefined = undefined
+        if (sel.secondaryId !== undefined && props.fetchSecondaries) {
+          const options = secondaryCache[primary.id] ?? await loadSecondaries(primary.id)
+          secondary = options.find(s => s.id === sel.secondaryId) ?? null
+        }
+        list.push({ primary, secondary })
+      })
+  )
 
   selectedList.value = list
   emitSelection()
@@ -181,7 +179,6 @@ async function applyInitialSelection() {
 
 // --- Lifecycle ---
 onMounted(() => void loadPrimaries())
-watch(() => props.initialSelection, () => void applyInitialSelection(), { deep: true })
 </script>
 
 <style scoped lang="scss">
@@ -194,19 +191,11 @@ watch(() => props.initialSelection, () => void applyInitialSelection(), { deep: 
   border-radius: 1rem;
   border: 1px solid var(--border-soft);
 
-  &__controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: flex-end;
-  }
-
+  &__header { display: flex; justify-content: flex-end; }
+  &__controls { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
   &__group { flex: 1 1 220px; }
-
   &__add { padding: 0.5rem 1rem; }
-
   &__list { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-
   &__empty { color: var(--muted-text); font-size: 0.9rem; }
 }
 </style>

@@ -47,47 +47,48 @@
 
     <!-- Tags Section -->
     <div class="event-tags">
-      <template v-if="isEditingTags">
-        <TwoStageTagListComponent
-            :fetchPrimaries="fetchEventTypes"
-            :fetchSecondaries="fetchEventGenres"
-            :initialSelection="tagInitialSelection"
-            labelPrimary="Event Type"
-            labelSecondary="Genre"
-            @update="onTagSelectionUpdate"
-        />
-        <div class="event-tags__actions">
-          <button
-              type="button"
-              class="event-tags__button event-tags__button--cancel"
-              @click="cancelEditingTags"
-          >
-            {{ t('event_tags_cancel') }}
-          </button>
-          <button
-              type="button"
-              class="event-tags__button"
-              :disabled="isSavingTags"
-              @click="saveTags"
-          >
-            <span v-if="!isSavingTags">{{ t('event_tags_save') }}</span>
-            <span v-else>{{ t('saving') }}</span>
-          </button>
-        </div>
-      </template>
-      <template v-else>
-        <div class="event-tags__lists">
-          <div v-if="eventTypes.length">
-            <h3>{{ t('event_types_heading') }}</h3>
-            <!--ul>
-              <li v-for="type in eventTypes" :key="type.id">{{ type.name }}</li>
-            </ul-->
-          </div>
-        </div>
-        <button type="button" class="event-tags__edit" @click="startEditingTags">
-          {{ t('event_tags_edit') }}
+      <!-- Always render the tag list -->
+      <TwoStageTagListComponent
+          v-if="tagInitialSelection"
+          :fetchPrimaries="fetchEventTypes"
+          :fetchSecondaries="fetchEventGenres"
+          :initialSelection="tagInitialSelection"
+          labelPrimary="Event Type"
+          labelSecondary="Genre"
+          :editable="true"
+          :isEditing="isEditingTags"
+          @update-selection="onTagSelectionUpdate"
+      />
+
+      <!-- Edit actions -->
+      <div v-if="isEditingTags" class="event-tags__actions">
+        <button
+            type="button"
+            class="event-tags__button event-tags__button--cancel"
+            @click="cancelEditingTags"
+        >
+          {{ t('event_tags_cancel') }}
         </button>
-      </template>
+        <button
+            type="button"
+            class="event-tags__button"
+            :disabled="isSavingTags"
+            @click="saveTags"
+        >
+          <span v-if="!isSavingTags">{{ t('event_tags_save') }}</span>
+          <span v-else>{{ t('saving') }}</span>
+        </button>
+      </div>
+
+      <!-- Edit button in view mode -->
+      <button
+          v-if="!isEditingTags"
+          type="button"
+          class="event-tags__edit"
+          @click="startEditingTags"
+      >
+        {{ t('event_tags_edit') }}
+      </button>
     </div>
 
     <!-- Additional Info -->
@@ -105,15 +106,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
 import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
 
+onMounted(() => {
+  buildInitialSelection()
+})
+
 interface EventType { type_id: number; type_name: string; genre_id: number | null; genre_name: string | null }
-interface Selection { primaryId: number; secondaryId: number | null }
+interface Selection { primaryId: number; secondaryId?: number | null }
 interface SelectOption { id: number; name: string }
 
 const props = defineProps<{
@@ -144,8 +149,12 @@ watch(() => props.description, v => {
   if (!isEditingDescription.value) editedDescription.value = v ?? ''
 })
 
-// Watchers for event types to rebuild selection if not editing
-watch(() => props.eventTypes, () => { if (!isEditingTags.value) buildInitialSelection() }, { deep: true })
+// Watch event types to rebuild initial selection
+watch(
+    () => props.eventTypes,
+    () => { if (!isEditingTags.value) buildInitialSelection() },
+    { deep: true }
+)
 
 // Description actions
 const startEditingDescription = () => { editedDescription.value = props.description ?? ''; isEditingDescription.value = true }
@@ -164,35 +173,22 @@ const saveDescription = async () => {
   finally { isSavingDescription.value = false }
 }
 
-// Build initial selection for the component
+// Build initial tag selection
 const buildInitialSelection = () => {
   if (!props.eventTypes?.length) {
     tagInitialSelection.value = []
     return
   }
-
-  const selections: Selection[] = props.eventTypes.map(t => ({
+  tagInitialSelection.value = props.eventTypes.map(t => ({
     primaryId: t.type_id,
-    secondaryId: t.genre_id || null, // set null if genre_id is 0 or missing
+    secondaryId: t.genre_id || null,
   }))
-
-  tagInitialSelection.value = selections
 }
 
 // Tags actions
-const startEditingTags = () => {
-  buildInitialSelection()
-  isEditingTags.value = true
-}
-
-const cancelEditingTags = () => {
-  buildInitialSelection()
-  isEditingTags.value = false
-}
-
-const onTagSelectionUpdate = (payload: Selection[]) => {
-  tagInitialSelection.value = payload
-}
+const startEditingTags = () => { buildInitialSelection(); isEditingTags.value = true }
+const cancelEditingTags = () => { buildInitialSelection(); isEditingTags.value = false }
+const onTagSelectionUpdate = (payload: Selection[]) => { tagInitialSelection.value = payload }
 
 // Fetch options
 async function fetchEventTypes(): Promise<SelectOption[]> {
@@ -213,7 +209,7 @@ const saveTags = async () => {
       method: 'PUT',
       body: JSON.stringify({
         event_type_ids: Array.from(new Set(tagInitialSelection.value.map(s => s.primaryId))),
-        genre_type_ids: Array.from(new Set(tagInitialSelection.value.map(s => s.secondaryId).filter(g => g != null)))
+        genre_type_ids: Array.from(new Set(tagInitialSelection.value.map(s => s.secondaryId).filter(g => g != null))),
       }),
     })
     emit('updated')
@@ -226,132 +222,27 @@ const saveTags = async () => {
 </script>
 
 <style scoped lang="scss">
-.event-description {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-    position: relative;
-}
+.event-description { display: flex; flex-direction: column; gap: 1.2rem; position: relative; }
+.event-description__header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.event-description__content { display: flex; flex-direction: column; gap: 1rem; }
+.event-description__edit { @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem); opacity: 0; transform: translateY(-4px); transition: opacity 0.2s ease, transform 0.2s ease; }
+.event-description:hover .event-description__edit { opacity: 1; transform: translateY(0); }
+.event-description__actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
+.event-description__button { @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem); }
+.event-description__button--cancel { @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem); }
 
-.event-description__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-}
+.event-tags__edit { align-self: center; @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem); opacity: 0; transform: translateY(-4px); transition: opacity 0.2s ease, transform 0.2s ease; }
+.event-description:hover .event-tags__edit, .event-tags:hover .event-tags__edit { opacity: 1; transform: translateY(0); }
 
-.event-description__content {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
+.event-tags__actions { display: flex; justify-content: center; gap: 0.75rem; }
+.event-tags__button { @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem); }
+.event-tags__button--cancel { @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem); }
 
-.event-description__edit {
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
+.event-tags { position: relative; display: flex; flex-direction: column; gap: 1rem; }
+.event-tags__lists { display: flex; flex-wrap: wrap; gap: 1.2rem; justify-content: center; }
+.event-tags__lists h3 { margin: 0 0 0.35rem 0; font-size: 1rem; color: var(--color-text); }
+.event-tags__lists ul { margin: 0; padding-left: 1.1rem; color: var(--muted-text); }
 
-.event-description:hover .event-description__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.event-description__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-}
-
-.event-description__button {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-description__button--cancel {
-    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-tags__edit {
-    align-self: center;
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.event-description:hover .event-tags__edit,
-.event-tags:hover .event-tags__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.event-tags__actions {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-}
-
-.event-tags__button {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-tags__button--cancel {
-    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-tags {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.event-tags__lists {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    justify-content: center;
-}
-
-.event-tags__lists h3 {
-    margin: 0 0 0.35rem 0;
-    font-size: 1rem;
-    color: var(--color-text);
-}
-
-.event-tags__lists ul {
-    margin: 0;
-    padding-left: 1.1rem;
-    color: var(--muted-text);
-}
-
-.event-tags__edit {
-    align-self: center;
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.event-description:hover .event-tags__edit,
-.event-tags:hover .event-tags__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.event-tags__actions {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-}
-
-.event-additional {
-    font-size: 0.95rem;
-    color: var(--muted-text);
-}
-
-.event-additional p {
-    margin: 0.4rem 0;
-}
+.event-additional { font-size: 0.95rem; color: var(--muted-text); }
+.event-additional p { margin: 0.4rem 0; }
 </style>
