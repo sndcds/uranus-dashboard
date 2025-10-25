@@ -123,12 +123,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 interface Props {
     eventId: number
+    links?: unknown
 }
 
 interface EventLink {
@@ -281,20 +282,13 @@ const normalizeLinks = (data: unknown): EventLink[] => {
     return []
 }
 
-const loadLinks = async () => {
-    if (!props.eventId) return
-
-    try {
-        const { data } = await apiFetch<unknown>(`/api/admin/event/${props.eventId}/links`)
-        savedLinks.value = normalizeLinks(data)
-    } catch (err) {
-        console.error('Failed to load links', err)
-    }
-}
-
-onMounted(() => {
-    void loadLinks()
-})
+watch(
+    () => props.links,
+    (value) => {
+        savedLinks.value = normalizeLinks(value)
+    },
+    { immediate: true, deep: true }
+)
 </script>
 
 <style scoped lang="scss">

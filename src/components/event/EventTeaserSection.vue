@@ -27,76 +27,14 @@
             </template>
         </div>
 
-        <div class="event-teaser__tags" :class="{ 'event-teaser__tags--editing': isEditingTags }">
-            <header class="event-teaser__tags-header">
-                <h4 class="event-teaser__subtitle">{{ t('event_teaser_tags') }}</h4>
-                <button
-                    v-if="!isEditingTags"
-                    type="button"
-                    class="event-teaser__tags-edit"
-                    @click="startEditingTags"
-                >
-                    {{ t('event_tags_edit') }}
-                </button>
-            </header>
-
-            <template v-if="isEditingTags">
-                <div class="event-teaser__tags-editor">
-                    <div class="event-teaser__tag-editor-list">
-                        <span
-                            v-for="(tag, index) in draftTags"
-                            :key="`${tag}-${index}`"
-                            class="event-teaser__tag-chip"
-                        >
-                            {{ tag }}
-                            <button type="button" class="event-teaser__tag-remove" @click="removeDraftTag(index)">
-                                ×
-                            </button>
-                        </span>
-                        <span v-if="!draftTags.length" class="event-teaser__tags-empty">{{ t('tag_no_tags') }}</span>
-                    </div>
-                    <div class="event-teaser__tag-add">
-                        <input
-                            v-model="newTagName"
-                            type="text"
-                            class="event-teaser__tag-input"
-                            :placeholder="t('tag_select_placeholder')"
-                            @keydown.enter.prevent="addDraftTag"
-                        />
-                        <button type="button" class="event-teaser__tag-add-button" @click="addDraftTag">
-                            {{ t('tag_selector_add') }}
-                        </button>
-                    </div>
-                    <p v-if="tagsError" class="event-teaser__tags-error">{{ tagsError }}</p>
-                    <div class="event-teaser__tags-actions">
-                        <button
-                            type="button"
-                            class="event-teaser__button event-teaser__button--cancel"
-                            @click="cancelEditingTags"
-                        >
-                            {{ t('event_tags_cancel') }}
-                        </button>
-                        <button
-                            type="button"
-                            class="event-teaser__button"
-                            :disabled="isSavingTags"
-                            @click="saveTags"
-                        >
-                            <span v-if="!isSavingTags">{{ t('event_tags_save') }}</span>
-                            <span v-else>{{ t('saving') }}</span>
-                        </button>
-                    </div>
-                </div>
-            </template>
-            <template v-else>
-                <div v-if="savedTags.length" class="event-teaser__tag-list">
-                    <span v-for="(tag, index) in savedTags" :key="`${tag}-${index}`" class="event-teaser__tag">
-                        {{ tag }}
-                    </span>
-                </div>
-                <p v-else class="event-teaser__tags-empty">{{ t('tag_no_tags') }}</p>
-            </template>
-        </div>
+        <TagManagerComponent
+            class="event-teaser__tags"
+            :tags="savedTags"
+            :is-saving="isSavingTags"
+            :error="tagsError"
+            @save="handleTagsSave"
+            @cancel="handleTagsCancel"
+        />
     </article>
 </template>
 
@@ -106,6 +44,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
+import TagManagerComponent from '@/components/TagManagerComponent.vue'
 
 const props = defineProps<{
     eventId: number
@@ -125,11 +64,8 @@ const { t } = useI18n({ useScope: 'global' })
 const isEditing = ref(false)
 const isSaving = ref(false)
 const editedTeaser = ref(props.teaserText ?? '')
-const isEditingTags = ref(false)
 const isSavingTags = ref(false)
 const savedTags = ref<string[]>([])
-const draftTags = ref<string[]>([])
-const newTagName = ref('')
 const tagsError = ref('')
 
 const fallbackImageUrl = 'https://uranus2.oklabflensburg.de/api/image/47?mode=cover&width=400&ratio=3by2&focusx=0.5&focusy=0.5&type=webp&quality=90'
@@ -188,36 +124,7 @@ const cancelEditing = () => {
 
 const normalizeTag = (value: string): string => value.replace(/\s+/g, ' ').trim()
 
-const startEditingTags = () => {
-    draftTags.value = [...savedTags.value]
-    newTagName.value = ''
-    tagsError.value = ''
-    isEditingTags.value = true
-}
-
-const cancelEditingTags = () => {
-    draftTags.value = []
-    newTagName.value = ''
-    tagsError.value = ''
-    isEditingTags.value = false
-}
-
-const addDraftTag = () => {
-    const normalized = normalizeTag(newTagName.value)
-    if (!normalized) return
-
-    if (!draftTags.value.includes(normalized)) {
-        draftTags.value.push(normalized)
-    }
-
-    newTagName.value = ''
-}
-
-const removeDraftTag = (index: number) => {
-    draftTags.value.splice(index, 1)
-}
-
-const saveTags = async () => {
+const handleTagsSave = async (tags: string[]) => {
     if (isSavingTags.value) return
 
     isSavingTags.value = true
@@ -226,7 +133,7 @@ const saveTags = async () => {
     try {
         const payload = Array.from(
             new Set(
-                draftTags.value
+                tags
                     .map((tag) => normalizeTag(tag))
                     .filter((tag) => tag.length > 0)
             )
@@ -238,7 +145,6 @@ const saveTags = async () => {
         })
 
         savedTags.value = [...payload]
-        cancelEditingTags()
         emit('updated')
     } catch (err) {
         console.error('Failed to save tags', err)
@@ -246,6 +152,10 @@ const saveTags = async () => {
     } finally {
         isSavingTags.value = false
     }
+}
+
+const handleTagsCancel = () => {
+    tagsError.value = ''
 }
 
 const loadTags = async () => {
@@ -368,116 +278,4 @@ onMounted(() => {
     @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
-.event-teaser__tags {
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    position: relative;
-}
-
-.event-teaser__tags-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-}
-
-.event-teaser__tags-edit {
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.event-teaser__tags:hover .event-teaser__tags-edit,
-.event-teaser__tags--editing .event-teaser__tags-edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.event-teaser__tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.event-teaser__tag,
-.event-teaser__tag-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.35rem 0.8rem;
-    border-radius: 999px;
-    background: rgba(79, 70, 229, 0.1);
-    color: var(--color-text);
-    font-size: 0.9rem;
-}
-
-.event-teaser__tag-editor-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.event-teaser__tag-remove {
-    border: none;
-    background: transparent;
-    color: var(--muted-text);
-    cursor: pointer;
-    font-size: 1rem;
-    line-height: 1;
-    padding: 0;
-}
-
-.event-teaser__tag-remove:hover {
-    color: var(--color-text);
-}
-
-.event-teaser__tag-add {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-.event-teaser__tag-input {
-    @include form-control();
-    flex: 1;
-}
-
-.event-teaser__tag-add-button {
-    @include form-secondary-button($padding-y: 0.45rem, $padding-x: 1rem);
-}
-
-.event-teaser__tags-editor {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.event-teaser__tags-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-}
-
-.event-teaser__tags-empty {
-    margin: 0;
-    color: var(--muted-text);
-    font-style: italic;
-}
-
-.event-teaser__tags-error {
-    @include form-feedback-error();
-    margin: 0;
-}
-
-.event-teaser__subtitle {
-    margin: 0 0 0.75rem 0;
-    color: var(--color-text);
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-}
 </style>

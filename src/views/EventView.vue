@@ -24,7 +24,7 @@
                     :event-types="event.event_types" :genre-types="event.genre_types" :locale="locale"
                     @updated="loadEvent" />
 
-                <EventUrlSection :event-id="event.id" @updated="loadEvent" />
+                <EventUrlSection :event-id="event.id" :links="eventLinks" @updated="loadEvent" />
             </div>
 
             <EventTeaserSection :event-id="event.id" :teaser-text="event.teaser_text"
@@ -82,6 +82,13 @@ interface EventGenreType {
     name: string
     event_type_id?: number | null
     type_id?: number | null
+}
+
+interface EventUrl {
+    id: number | null
+    title: string
+    url: string
+    url_type: string
 }
 
 interface EventDateApi {
@@ -142,6 +149,7 @@ interface EventDetail {
     visitor_info_flags?: number | null
     dates?: EventDateSource
     event_dates?: EventDateSource
+    event_urls?: EventUrl[]
 }
 
 type QueryResponse = { events?: unknown }
@@ -150,6 +158,7 @@ const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
 const event = ref<EventDetail | null>(null)
 const error = ref<string | null>(null)
+const eventLinks = ref<EventUrl[]>([])
 
 const eventId = computed(() => Number(route.params.id))
 const eventImage = ref<File | null>(null)
@@ -215,6 +224,21 @@ const toNullableString = (value: unknown): string | null => {
         return trimmed.length ? trimmed : null
     }
     return null
+}
+
+const toEventUrl = (raw: unknown): EventUrl | null => {
+    if (!raw || typeof raw !== 'object') return null
+    const record = raw as Record<string, unknown>
+
+    const url = toNullableString(record.url)
+    if (!url) return null
+
+    return {
+        id: toNumberOrNull(record.id),
+        title: toNullableString(record.title) ?? '',
+        url,
+        url_type: toNullableString(record.url_type) ?? '',
+    }
 }
 
 const toStringArrayOrNull = (value: unknown): string[] | null => {
@@ -308,6 +332,22 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
         .map(mapEventGenreType)
         .filter(Boolean) as EventGenreType[]
 
+    const eventUrlsSource = record['event_urls'] as unknown
+    let rawEventUrls: unknown[] = []
+
+    if (Array.isArray(eventUrlsSource)) {
+        rawEventUrls = eventUrlsSource
+    } else if (eventUrlsSource && typeof eventUrlsSource === 'object') {
+        const maybeLinks = (eventUrlsSource as { links?: unknown }).links
+        if (Array.isArray(maybeLinks)) {
+            rawEventUrls = maybeLinks
+        } else {
+            rawEventUrls = Object.values(eventUrlsSource as Record<string, unknown>)
+        }
+    }
+
+    const eventUrls = rawEventUrls.map(toEventUrl).filter(Boolean) as EventUrl[]
+
     const detail: EventDetail = {
         id,
         title: toStringOrEmpty(record.title),
@@ -338,6 +378,7 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
         space_total_capacity: toNumberOrNull(record.space_total_capacity),
         dates: record['dates'] as EventDateSource,
         event_dates: record['event_dates'] as EventDateSource,
+        event_urls: eventUrls,
     }
 
     if ('venue_country' in record) detail.venue_country = toNullableString(record.venue_country)
@@ -388,19 +429,22 @@ const loadEvent = async () => {
         if (mapped) {
             event.value = mapped
             error.value = null
+            eventLinks.value = mapped.event_urls ?? []
         } else {
             error.value = t('event_not_found')
             event.value = null
+            eventLinks.value = []
         }
     } catch (err) {
         console.error(err)
         error.value = t('event_load_error')
         event.value = null
+        eventLinks.value = []
     }
 }
 
 onMounted(() => {
-    loadEvent()
+    void loadEvent()
 })
 </script>
 
