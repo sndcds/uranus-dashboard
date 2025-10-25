@@ -95,8 +95,6 @@ export async function apiFetch<T = unknown>(
             err.status === 401 &&
             !url.includes('/refresh')
         ) {
-            console.log('Access token expired — refreshing...');
-
             if (!refreshPromise) {
                 refreshPromise = (async () => {
                     if (!tokenStore.refreshToken) {
