@@ -533,12 +533,15 @@ onBeforeUnmount(() => {
 .profile-photo-placeholder__hint {
     font-size: 0.85rem;
     color: var(--muted-text);
+    text-align: center;
 }
 
 .profile-photo-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+    justify-content: center;
+    align-items: center;
 }
 
 .profile-upload {
@@ -582,6 +585,7 @@ onBeforeUnmount(() => {
     font-size: 0.85rem;
     color: var(--muted-text);
     line-height: 1.5;
+    text-align: center;
 }
 
 .profile-fields {
