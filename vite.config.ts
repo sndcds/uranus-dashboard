@@ -21,5 +21,14 @@ export default defineConfig({
                 additionalData: `@use "@/styles/_mixins.scss" as *;`
             }
         }
-    }
+    },
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:9090',
+                changeOrigin: true,
+                secure: false,
+            },
+        },
+    },
 })

@@ -12,7 +12,11 @@
     <!-- Sidebar content -->
     <div class="sidebar__content">
       <div class="user-profile">
-        <img src="https://uranus2.oklabflensburg.de/api/user/12/avatar/64" alt="User Profile" class="profile-image" />
+        <img
+            :src="`/api/user/12/avatar/64`"
+            @error="onAvatarError"
+            alt="User Profile"
+            class="profile-image" />
         <span class="user-name">{{ userStore.displayName }}</span>
       </div>
 
@@ -60,6 +64,11 @@ watch(
     isOpen.value = false
   }
 )
+
+function onAvatarError(event: Event) {
+  const target = event.target as HTMLImageElement
+  target.src = '/public/default-avatar.webp'
+}
 
 // Mobile sidebar methods
 const toggleSidebar = () => {
