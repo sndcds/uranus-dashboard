@@ -1,5 +1,5 @@
-import { useTokenStore } from './store/token'
-import type { ThemeMode } from './utils/theme'
+import { useTokenStore } from '@/store/token'
+import type { ThemeMode } from '@/utils/theme'
 
 let refreshPromise: Promise<boolean> | null = null;
 

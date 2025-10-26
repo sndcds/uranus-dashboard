@@ -11,8 +11,8 @@
   <aside class="sidebar" :class="{ 'sidebar--open': isOpen }">
     <!-- Sidebar content -->
     <div class="sidebar__content">
-      <div class="user-profile">
-        <img :src="`/api/user/${userStore.userId}/avatar/64`" @error="onAvatarError" alt="User Profile"
+<div class="user-profile">
+        <img :src="avatarSrc" @error="onAvatarError" alt="User Profile"
           class="profile-image" />
         <span class="user-name">{{ userStore.displayName }}</span>
       </div>
@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/store/userStore'
 import type { SidebarOption } from '@/types/types'
@@ -46,6 +46,15 @@ const emit = defineEmits<{
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const avatarErrored = ref(false)
+
+const avatarSrc = computed(() => {
+  if (avatarErrored.value || !userStore.userId) {
+    return '/public/default-avatar.webp'
+  }
+  const base = `/api/user/${userStore.userId}/avatar/64`
+  return userStore.avatarVersion ? `${base}?v=${userStore.avatarVersion}` : base
+})
 
 // Mobile sidebar state
 const isOpen = ref(false)
@@ -62,9 +71,15 @@ watch(
   }
 )
 
+watch(
+  () => [userStore.avatarVersion, userStore.userId],
+  () => {
+    avatarErrored.value = false
+  }
+)
+
 function onAvatarError(event: Event) {
-  const target = event.target as HTMLImageElement
-  target.src = '/public/default-avatar.webp'
+  avatarErrored.value = true
 }
 
 // Mobile sidebar methods

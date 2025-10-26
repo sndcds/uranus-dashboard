@@ -38,7 +38,8 @@ const storeUserId = (userId: string) => {
 export const useUserStore = defineStore('user', {
     state: () => ({
         displayName: getStoredDisplayName(),
-        userId: getStoredUserId()
+        userId: getStoredUserId(),
+        avatarVersion: 0,
     }),
 
     actions: {
@@ -49,6 +50,7 @@ export const useUserStore = defineStore('user', {
 
         clearUserId() {
             this.userId = ''
+            this.avatarVersion = 0
             storeUserId('')
         },
 
@@ -70,6 +72,10 @@ export const useUserStore = defineStore('user', {
         loadDisplayNameFromStorage() {
             if (typeof window === 'undefined') return
             this.displayName = window.localStorage.getItem(DISPLAY_NAME_STORAGE_KEY) || ''
+        },
+
+        bumpAvatarVersion() {
+            this.avatarVersion = Date.now()
         }
     },
 })

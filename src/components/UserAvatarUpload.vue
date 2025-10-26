@@ -2,18 +2,11 @@
     <aside class="profile-photo-panel">
         <span class="profile-photo-panel__label">{{ label }}</span>
 
-        <div
-            class="profile-photo-wrapper"
-            :class="{
-                'profile-photo-wrapper--has-image': !!displayAvatar,
-                'profile-photo-wrapper--dragover': isDragOver && !isInputDisabled
-            }"
-            @dragenter.prevent="onDragEnter"
-            @dragover.prevent="onDragOver"
-            @dragleave.prevent="onDragLeave"
-            @dragend.prevent="onDragLeave"
-            @drop.prevent="onDrop"
-        >
+        <div class="profile-photo-wrapper" :class="{
+            'profile-photo-wrapper--has-image': !!displayAvatar,
+            'profile-photo-wrapper--dragover': isDragOver && !isInputDisabled
+        }" @dragenter.prevent="onDragEnter" @dragover.prevent="onDragOver" @dragleave.prevent="onDragLeave"
+            @dragend.prevent="onDragLeave" @drop.prevent="onDrop">
             <img v-if="displayAvatar" :src="displayAvatar" alt="" />
             <div v-else class="profile-photo-placeholder" aria-hidden="true">
                 <span class="profile-photo-initial">{{ initialsText }}</span>
@@ -23,22 +16,12 @@
 
         <div class="profile-photo-actions">
             <label class="profile-upload" :class="{ 'profile-upload--disabled': isInputDisabled }">
-                <input
-                    class="profile-upload__input"
-                    type="file"
-                    accept="image/*"
-                    :disabled="isInputDisabled"
-                    @change="onFileChange"
-                />
+                <input class="profile-upload__input" type="file" accept="image/*" :disabled="isInputDisabled"
+                    @change="onFileChange" />
                 <span>{{ uploadLabel }}</span>
             </label>
-            <button
-                v-if="displayAvatar"
-                class="profile-remove"
-                type="button"
-                :disabled="isInputDisabled"
-                @click="removePhoto"
-            >
+            <button v-if="displayAvatar" class="profile-remove" type="button" :disabled="isInputDisabled"
+                @click="removePhoto">
                 {{ removeLabel }}
             </button>
         </div>
@@ -71,6 +54,7 @@ const emit = defineEmits<{
     (e: 'busy-change', value: boolean): void
     (e: 'error', value: string | null): void
     (e: 'clear-feedback'): void
+    (e: 'avatar-updated'): void
 }>()
 
 const userStore = useUserStore()
@@ -247,6 +231,7 @@ const uploadAvatarFromSelection = async (file: File) => {
     try {
         await uploadAvatar(file)
         await loadAvatar()
+        emit('avatar-updated')
 
         if (avatarPreviewUrl.value === previewSnapshot) {
             revokePreview()
@@ -335,6 +320,7 @@ const removePhoto = async () => {
     try {
         await deleteAvatar()
         updateAvatarFromServer(null)
+        emit('avatar-updated')
     } catch (err) {
         emit('error', resolveErrorMessage(err))
     } finally {

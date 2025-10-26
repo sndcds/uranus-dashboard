@@ -21,7 +21,7 @@
                     <UserAvatarUpload :label="photoLabel" :hint="photoHint" :upload-label="uploadLabel"
                         :remove-label="removeLabel" :initials="avatarInitial" :disabled="isSubmitting"
                         @busy-change="handleAvatarBusyChange" @error="handleAvatarError"
-                        @clear-feedback="handleAvatarFeedbackClear" />
+                        @clear-feedback="handleAvatarFeedbackClear" @avatar-updated="handleAvatarUpdated" />
 
                     <div class="profile-fields">
                         <div class="form-grid">
@@ -310,6 +310,10 @@ const handleAvatarError = (message: string | null) => {
 const handleAvatarFeedbackClear = () => {
     submitError.value = null
     submitSuccess.value = null
+}
+
+const handleAvatarUpdated = () => {
+    userStore.bumpAvatarVersion()
 }
 </script>
 
