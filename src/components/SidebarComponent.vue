@@ -12,7 +12,7 @@
     <!-- Sidebar content -->
     <div class="sidebar__content">
       <div class="user-profile">
-        <img src="https://i.pravatar.cc/250?u=mail@ashallendesign.co.uk" alt="User Profile" class="profile-image" />
+        <img src="https://uranus2.oklabflensburg.de/api/user/12/avatar/64" alt="User Profile" class="profile-image" />
         <span class="user-name">{{ userStore.displayName }}</span>
       </div>
 
