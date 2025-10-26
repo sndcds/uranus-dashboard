@@ -17,6 +17,7 @@ import FormEventView from '@/views/FormEventView.vue'
 import EventView from '@/views/EventView.vue'
 import UserPermissionView from '@/views/UserPermissionView.vue'
 import FormUserProfileView from '@/views/FormUserProfileView.vue'
+import EventCalendarView from '@/views/EventCalendarView.vue'
 
 const routes = [
     {
@@ -85,6 +86,11 @@ const routes = [
                 component: FormUserProfileView,
             }
         ],
+    },
+    {
+        path: '/events',
+        name: 'events',
+        component: EventCalendarView,
     },
     {
         path: '/login',
