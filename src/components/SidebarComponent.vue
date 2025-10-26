@@ -12,11 +12,8 @@
     <!-- Sidebar content -->
     <div class="sidebar__content">
       <div class="user-profile">
-        <img
-            :src="`/api/user/${userStore.userId}/avatar/64`"
-            @error="onAvatarError"
-            alt="User Profile"
-            class="profile-image" />
+        <img :src="`/api/user/${userStore.userId}/avatar/64`" @error="onAvatarError" alt="User Profile"
+          class="profile-image" />
         <span class="user-name">{{ userStore.displayName }}</span>
       </div>
 
