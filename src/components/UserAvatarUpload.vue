@@ -184,7 +184,7 @@ const uploadAvatar = async (file: File) => {
     const method = avatarExistsOnServer.value ? 'PUT' : 'POST'
 
     await apiFetch<unknown>('/api/admin/user/me/avatar', {
-        method,
+        method: 'POST',
         body: formData,
     })
 

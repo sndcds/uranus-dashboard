@@ -50,7 +50,7 @@ const avatarErrored = ref(false)
 
 const avatarSrc = computed(() => {
   if (avatarErrored.value || !userStore.userId) {
-    return '/public/default-avatar.webp'
+    return '/default-avatar.webp'
   }
   const base = `/api/user/${userStore.userId}/avatar/64`
   return userStore.avatarVersion ? `${base}?v=${userStore.avatarVersion}` : base
