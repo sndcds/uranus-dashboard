@@ -64,7 +64,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="profile_email">{{ t('user_profile_email') }}</label>
-                                <input id="profile_email" v-model="profile.email" type="email" autocomplete="email"
+                                <input id="profile_email" v-model="profile.emailAddress" type="email" autocomplete="email"
                                     :disabled="isSubmitting" required />
                             </div>
                         </div>
@@ -129,7 +129,7 @@ import { apiFetch } from '@/api'
 
 interface UserProfilePayload {
     display_name?: string | null
-    email?: string | null
+    email_address?: string | null
     first_name?: string | null
     last_name?: string | null
     avatar_url?: string | null
@@ -144,7 +144,7 @@ const isThemeMode = (value: unknown): value is ThemeMode => value === 'light' ||
 
 const profile = reactive({
     displayName: '',
-    email: '',
+    emailAddress: '',
     firstName: '',
     lastName: '',
 })
@@ -210,7 +210,7 @@ const avatarInitial = computed(() => {
 
 const saveDisabled = computed(() => {
     if (isLoading.value || isSubmitting.value) return true
-    return !profile.displayName.trim() || !profile.email.trim()
+    return !profile.displayName.trim() || !profile.emailAddress.trim()
 })
 
 const revokePreview = () => {
@@ -321,7 +321,7 @@ const removePhoto = () => {
 const mapResponseToState = (payload: UserProfilePayload | null | undefined) => {
     if (payload) {
         profile.displayName = payload.display_name ?? ''
-        profile.email = payload.email ?? ''
+        profile.emailAddress = payload.email_address ?? ''
         profile.firstName = payload.first_name ?? ''
         profile.lastName = payload.last_name ?? ''
         initialAvatarUrl.value = payload.avatar_url ?? null
@@ -363,7 +363,7 @@ const submitProfile = async () => {
     submitError.value = null
     submitSuccess.value = null
 
-    if (!profile.displayName.trim() || !profile.email.trim()) {
+    if (!profile.displayName.trim() || !profile.emailAddress.trim()) {
         submitError.value = validationMessage.value
         return
     }
@@ -372,7 +372,7 @@ const submitProfile = async () => {
 
     const formData = new FormData()
     formData.append('display_name', profile.displayName.trim())
-    formData.append('email', profile.email.trim())
+    formData.append('email_address', profile.emailAddress.trim())
     formData.append('first_name', profile.firstName.trim())
     formData.append('last_name', profile.lastName.trim())
     formData.append('locale', selectedLocale.value)

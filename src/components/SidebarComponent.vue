@@ -13,7 +13,7 @@
     <div class="sidebar__content">
       <div class="user-profile">
         <img
-            :src="`/api/user/12/avatar/64`"
+            :src="`/api/user/${userStore.userId}/avatar/64`"
             @error="onAvatarError"
             alt="User Profile"
             class="profile-image" />
