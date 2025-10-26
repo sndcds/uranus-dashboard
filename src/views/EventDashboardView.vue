@@ -99,14 +99,6 @@ const formatDate = (value: string) => {
     return dateFormatter.value.format(date)
 }
 
-const formatDateTime = (dateValue: string, timeValue?: string) => {
-    const formattedDate = formatDate(dateValue)
-    if (timeValue) {
-        return `${formattedDate} · ${timeValue}`
-    }
-    return formattedDate
-}
-
 onMounted(async () => {
     isLoading.value = true
     error.value = null
