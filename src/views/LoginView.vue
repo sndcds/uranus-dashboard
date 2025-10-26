@@ -13,25 +13,13 @@
             <form class="auth-form" @submit.prevent="login">
                 <div class="input-group">
                     <label for="login-email">{{ t('email') }}</label>
-                    <input
-                        id="login-email"
-                        v-model="email"
-                        type="email"
-                        autocomplete="email"
-                        :placeholder="t('email_placeholder')"
-                        required
-                    />
+                    <input id="login-email" v-model="email" type="email" autocomplete="email"
+                        :placeholder="t('email_placeholder')" required />
                 </div>
                 <div class="input-group">
                     <label for="login-password">{{ t('password') }}</label>
-                    <input
-                        id="login-password"
-                        v-model="password"
-                        type="password"
-                        autocomplete="current-password"
-                        :placeholder="t('password_placeholder_login')"
-                        required
-                    />
+                    <input id="login-password" v-model="password" type="password" autocomplete="current-password"
+                        :placeholder="t('password_placeholder_login')" required />
                 </div>
                 <button :disabled="isSubmitting" type="submit">
                     <span v-if="!isSubmitting">{{ t('login_cta') }}</span>
@@ -55,12 +43,22 @@ import { apiFetch } from '@/api'
 import type { LoginResponse } from '@/api'
 import { useTokenStore } from '@/store/token'
 import { useUserStore } from '@/store/userStore'
+import { useThemeStore } from '@/store/themeStore'
 
 const { t, te } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const tokenStore = useTokenStore()
 const userStore = useUserStore()
+const themeStore = useThemeStore()
+
+const { locale } = useI18n({ useScope: 'global' })
+const selectedLocale = computed({
+    get: () => locale.value,
+    set: (value: string) => {
+        locale.value = value
+    },
+})
 
 const email = ref('')
 const password = ref('')
@@ -84,9 +82,23 @@ const login = async () => {
 
         if (status === 200 && data.message === 'login successful' && data.access_token && data.refresh_token) {
             tokenStore.setTokens(data.access_token, data.refresh_token)
+            if (data.user_id) {
+                userStore.setUserId(data.user_id)
+            }
+
             if (data.display_name) {
                 userStore.setDisplayName(data.display_name)
             }
+
+            if (data.locale) {
+                selectedLocale.value = data.locale
+                
+            }
+
+            if (data.theme) {
+                themeStore.setTheme(data.theme)
+            }
+
             const redirectTarget = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
             router.replace(redirectTarget)
         } else {

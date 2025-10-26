@@ -1,9 +1,13 @@
 import { useTokenStore } from './store/token'
+import type { ThemeMode } from './utils/theme'
 
 let refreshPromise: Promise<boolean> | null = null;
 
 export interface LoginResponse {
     message: string;
+    user_id?: string;
+    locale?: string;
+    theme?: ThemeMode;
     display_name?: string;
     access_token?: string;
     refresh_token?: string;
