@@ -88,7 +88,14 @@
                         </header>
                         <div class="calendar-group__events">
                             <article v-for="event in group.events" :key="event.id" class="calendar-card">
-                                <img v-if="event.image_path" :src="event.image_path" alt="" class="calendar-card__image" />
+                                <img
+                                    v-if="event.image_path"
+                                    :src="event.image_path.includes('?') 
+                                        ? `${event.image_path}&ratio=16by9&width=320`
+                                        : `${event.image_path}?ratio=16by9&width=320`"
+                                    alt=""
+                                    class="calendar-card__image"
+                                />
                                 <div class="calendar-card__time">
                                     <span>{{ formatTime(event.start_date, event.start_time) }}</span>
                                 </div>
