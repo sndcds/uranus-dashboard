@@ -1,41 +1,51 @@
 <template>
-  <div class="two-stage-list">
-    <!-- Controls (only visible if editable and parent says editing) -->
+  <section class="two-stage-list">
+    <header class="two-stage-list__header" v-if="editable && isEditing">
+      <h3 class="two-stage-list__title">{{ labelPrimary }}</h3>
+      <button class="two-stage-list__add" @click.prevent="addCombination" :disabled="!selectedPrimary">
+        {{ t('add') }}
+      </button>
+    </header>
+
     <div v-if="editable && isEditing" class="two-stage-list__controls">
       <div class="two-stage-list__group">
-        <label>{{ labelPrimary }}</label>
-        <select v-model="selectedPrimary" @change="onPrimaryChange">
+        <label class="two-stage-list__label" for="two-stage-primary">{{ labelPrimary }}</label>
+        <select
+          id="two-stage-primary"
+          class="two-stage-list__select"
+          v-model="selectedPrimary"
+          @change="onPrimaryChange"
+        >
           <option disabled :value="null">{{ placeholderPrimary }}</option>
           <option v-for="item in primaries" :key="item.id" :value="item">{{ item.name }}</option>
         </select>
       </div>
 
       <div class="two-stage-list__group" v-if="selectedPrimary && secondaryOptions.length">
-        <label>{{ labelSecondary }}</label>
-        <select v-model="selectedSecondary">
+        <label class="two-stage-list__label" for="two-stage-secondary">{{ labelSecondary }}</label>
+        <select
+          id="two-stage-secondary"
+          class="two-stage-list__select"
+          v-model="selectedSecondary"
+        >
           <option disabled :value="null">{{ placeholderSecondary }}</option>
           <option v-for="item in secondaryOptions" :key="item.id" :value="item">{{ item.name }}</option>
         </select>
       </div>
-
-      <button class="two-stage-list__add" @click.prevent="addCombination" :disabled="!selectedPrimary">
-        {{ t('add') }}
-      </button>
     </div>
 
-    <!-- Selected tags (always visible) -->
     <div class="two-stage-list__list">
       <ComboTagComponent
-          v-for="(item, index) in selectedList"
-          :key="item.primary.id + '-' + (item.secondary?.id ?? 0)"
-          :label="item.secondary ? `${item.primary.name} / ${item.secondary.name}` : item.primary.name"
-          theme="light"
-          :editable="editable && isEditing"
-          @remove="onRemove(index)"
+        v-for="(item, index) in selectedList"
+        :key="item.primary.id + '-' + (item.secondary?.id ?? 0)"
+        :label="item.secondary ? `${item.primary.name} / ${item.secondary.name}` : item.primary.name"
+        theme="light"
+        :editable="editable && isEditing"
+        @remove="onRemove(index)"
       />
       <p v-if="!selectedList.length" class="two-stage-list__empty">{{ t('none_selected') }}</p>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -183,19 +193,63 @@ onMounted(() => void loadPrimaries())
 
 <style scoped lang="scss">
 .two-stage-list {
+  background: var(--card-bg);
+  border-radius: 24px;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--card-bg);
-  border-radius: 1rem;
-  border: 1px solid var(--border-soft);
+  gap: clamp(1rem, 2.5vw, 1.4rem);
 
-  &__header { display: flex; justify-content: flex-end; }
-  &__controls { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
-  &__group { flex: 1 1 220px; }
-  &__add { padding: 0.5rem 1rem; }
-  &__list { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-  &__empty { color: var(--muted-text); font-size: 0.9rem; }
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  &__controls {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  &__label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-text);
+  }
+
+  &__select {
+    @include form-control();
+  }
+
+  &__add {
+    @include form-primary-button($padding-y: 0.55rem, $padding-x: 1.4rem);
+    margin-left: auto;
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  &__empty {
+    margin: 0;
+    color: var(--muted-text);
+    font-size: 0.9rem;
+  }
 }
 </style>

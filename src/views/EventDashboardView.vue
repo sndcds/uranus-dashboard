@@ -67,6 +67,7 @@ import { apiFetch } from '@/api'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
+
 const organizerId = Number(route.params.id)
 
 interface EventItem {
@@ -193,7 +194,6 @@ thead {
 
     th {
         font-weight: 600;
-        // text-transform: uppercase;
         letter-spacing: 0.06em;
         color: var(--muted-text);
     }

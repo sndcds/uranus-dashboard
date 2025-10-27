@@ -5,6 +5,8 @@ import { watch } from 'vue'
 // Define messages for different locales
 const messages = {
     de: {
+        add: 'Hinzufügen',
+        none_selected: 'Keine ausgewählt',
         venue_created: 'Spielstätte erfolgreich erstellt',
         location: 'Ort',
         login: 'Anmelden',
@@ -322,6 +324,8 @@ const messages = {
         user_permissions_flag_no: 'Nein',
     },
     en: {
+        add: 'Add',
+        none_selected: 'None selected',
         venue_created: 'Venue created successfully',
         location: 'Location',
         login: 'Log in',
@@ -641,6 +645,8 @@ const messages = {
         user_permissions_flag_no: 'No',
     },
     da: {
+        add: 'Tilføj',
+        none_selected: 'Intet valgt',
         venue_created: 'Spillested oprettet',
         location: 'Sted',
         login: 'Log ind',
