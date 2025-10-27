@@ -94,6 +94,14 @@
 
             <!-- Save Action -->
             <div class="event-image-upload__actions">
+                <button
+                    type="button"
+                    class="event-image-upload__cancel-btn"
+                    @click="showMetadata = false"
+                    :disabled="isSaving"
+                >
+                    {{ t('form_cancel') }}
+                </button>
                 <button type="button" class="event-image-upload__save-btn" @click="saveImage"
                     :disabled="isSaving || !canSave">
                     <span v-if="!isSaving">{{ t('event_image_save') }}</span>
@@ -663,11 +671,6 @@ const saveImage = async () => {
     opacity: 0.8;
 }
 
-// Metadata Section
-.event-image-upload__metadata {
-    margin-top: clamp(1rem, 4vw, 1.5rem);
-}
-
 // Metadata Grid - Mobile first
 .event-image-upload__metadata-grid {
     display: grid;
@@ -711,6 +714,11 @@ const saveImage = async () => {
     margin-top: clamp(1.25rem, 4vw, 2rem);
     display: flex;
     justify-content: flex-end;
+    gap: clamp(0.5rem, 2vw, 0.75rem);
+}
+
+.event-image-upload__cancel-btn {
+    @include form-secondary-button($padding-y: 0.65rem, $padding-x: 1.5rem);
 }
 
 .event-image-upload__save-btn {
