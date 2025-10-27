@@ -59,7 +59,6 @@ const emit = defineEmits<{
 
 const userStore = useUserStore()
 const tokenStore = useTokenStore()
-const apiBaseUrl = import.meta.env.VITE_API_URL || ''
 
 const currentAvatarUrl = ref<string | null>(null)
 const avatarPreviewUrl = ref<string | null>(null)
@@ -138,7 +137,7 @@ const loadAvatar = async () => {
     isLoadingAvatar.value = true
 
     try {
-        const response = await fetch(`${apiBaseUrl}/api/user/${userId}/avatar/256`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/${userId}/avatar/256`, {
             method: 'GET',
             headers: Object.keys(headers).length ? headers : undefined,
             cache: 'no-store',

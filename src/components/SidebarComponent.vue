@@ -52,7 +52,7 @@ const avatarSrc = computed(() => {
   if (avatarErrored.value || !userStore.userId) {
     return '/default-avatar.webp'
   }
-  const base = `/api/user/${userStore.userId}/avatar/64`
+  const base = `${import.meta.env.VITE_API_URL}/api/user/${userStore.userId}/avatar/64`
   return userStore.avatarVersion ? `${base}?v=${userStore.avatarVersion}` : base
 })
 

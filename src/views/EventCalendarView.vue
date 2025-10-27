@@ -90,7 +90,7 @@
                             <article v-for="event in group.events" :key="event.id" class="calendar-card">
                                 <img
                                     v-if="event.image_path"
-                                    :src="event.image_path.includes('?') 
+                                    :src="event.image_path.includes('?')
                                         ? `${event.image_path}&ratio=16by9&width=320`
                                         : `${event.image_path}?ratio=16by9&width=320`"
                                     alt=""
@@ -694,9 +694,9 @@ watch(
 
 .calendar-hero {
     background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(14, 165, 233, 0.12));
-    border-radius: clamp(1.25rem, 3vw, 2rem);
+    border-radius: 12px;
     padding: clamp(1.75rem, 4vw, 2.5rem);
-    border: 1px solid rgba(148, 163, 184, 0.25);
+    border: 0px solid rgba(148, 163, 184, 0.25);
 }
 
 .calendar-hero__content {
@@ -731,10 +731,10 @@ watch(
     flex-direction: column;
     gap: clamp(1.25rem, 2.5vw, 1.75rem);
     background: var(--card-bg, #fff);
-    border-radius: clamp(1rem, 2.5vw, 1.5rem);
+    border-radius: 12px;
     padding: clamp(1.25rem, 3vw, 1.75rem);
-    border: 1px solid var(--border-soft);
-    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    border: 0px solid var(--border-soft);
+    // box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
     position: sticky;
     top: clamp(1rem, 3vw, 1.5rem);
 }
@@ -797,7 +797,7 @@ watch(
 .calendar-sidebar__section select:focus {
     outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
+    // box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
 }
 
 .calendar-sidebar__section--dates input {
@@ -833,7 +833,7 @@ watch(
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    // transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .calendar-btn--ghost {
@@ -849,7 +849,7 @@ watch(
 
 .calendar-btn:not(:disabled):hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(79, 70, 229, 0.2);
+  // box-shadow: 0 8px 18px rgba(79, 70, 229, 0.2);
 }
 
 .calendar-content {
@@ -920,10 +920,10 @@ watch(
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
-    border-radius: 18px;
-    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    border: 0px solid var(--border-soft);
     background: var(--card-bg, #fff);
-    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+    // box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
     padding: clamp(1.15rem, 3vw, 1.5rem);
     min-height: 228px;
 }
@@ -998,12 +998,12 @@ watch(
 
 .calendar-card__tag-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.18);
+    // box-shadow: 0 6px 14px rgba(79, 70, 229, 0.18);
 }
 
 .calendar-card__tag-button:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.24);
+    // box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.24);
 }
 
 .calendar-card__tag-button.is-active {
