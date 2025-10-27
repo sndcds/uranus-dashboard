@@ -22,13 +22,27 @@
                 <div class="calendar-sidebar__section calendar-sidebar__section--dates">
                     <label class="calendar-sidebar__label" for="calendar-date">{{ dateLabel }}</label>
                     <div class="calendar-sidebar__date-controls">
-                        <input id="calendar-date" type="date" v-model="selectedDate"
-                            :max="lastAvailableDate" :disabled="isLoading" />
+                        <input
+                            id="calendar-date"
+                            type="date"
+                            :value="tempStartDate"
+                            :max="lastAvailableDate"
+                            :disabled="isLoading"
+                            @blur="onDateConfirm('start', $event)"
+                            @keyup.enter="onDateConfirm('start', $event)"
+                        />
                         <div class="calendar-sidebar__end-date">
                             <label class="calendar-sidebar__sublabel" for="calendar-end-date">{{ endDateLabel }}</label>
-                            <input id="calendar-end-date" type="date" v-model="selectedEndDate"
-                                :min="selectedDate ?? firstAvailableDate" :max="lastAvailableDate"
-                                :disabled="isLoading" />
+                            <input
+                                id="calendar-end-date"
+                                type="date"
+                                :value="tempEndDate"
+                                :min="selectedDate ?? firstAvailableDate"
+                                :max="lastAvailableDate"
+                                :disabled="isLoading"
+                                @blur="onDateConfirm('end', $event)"
+                                @keyup.enter="onDateConfirm('end', $event)"
+                            />
                         </div>
                         <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
                             :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
@@ -225,6 +239,28 @@ const typeLabel = computed(() => (te('events_calendar_type_label') ? t('events_c
 const endDateLabel = computed(() => (te('events_calendar_end_date_label') ? t('events_calendar_end_date_label') : 'End date'))
 
 const hasEvents = computed(() => events.value.length > 0)
+
+// Date field behaviour
+const tempStartDate = ref<string | null>(null)
+const tempEndDate = ref<string | null>(null)
+
+watch(selectedDate, (val) => { tempStartDate.value = val })
+watch(selectedEndDate, (val) => { tempEndDate.value = val })
+
+const onDateConfirm = async (which: 'start' | 'end', event: Event) => {
+  // When user presses Enter or finishes input (onchange)
+  const target = event.target as HTMLInputElement
+  const value = target.value || null
+
+  if (which === 'start') {
+    selectedDate.value = value
+  } else {
+    selectedEndDate.value = value
+  }
+
+  // Trigger reload explicitly
+  await loadEvents({ preserveSelection: true })
+}
 
 const deriveTypeNamesFromEvents = () => {
     const names = new Set<string>()
