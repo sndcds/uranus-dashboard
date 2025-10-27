@@ -1,35 +1,19 @@
-
 <template>
     <section class="event-meta">
         <header class="event-meta__header">
             <h3>{{ t('event_details_time') }}</h3>
-            <button
-                v-if="!isEditingSchedule"
-                type="button"
-                class="event-meta__edit"
-                @click="startEditingSchedule"
-            >
+            <button v-if="!isEditingSchedule" type="button" class="event-meta__edit" @click="startEditingSchedule">
                 {{ scheduleEntries.length ? t('event_edit_schedule') : t('event_add_schedule') }}
             </button>
-            <button
-                v-else
-                type="button"
-                class="event-meta__edit event-meta__edit--cancel"
-                @click="cancelEditingSchedule"
-            >
+            <button v-else type="button" class="event-meta__edit event-meta__edit--cancel"
+                @click="cancelEditingSchedule">
                 {{ t('form_cancel') }}
             </button>
         </header>
 
-        <EventDatesComponent
-            v-if="isEditingSchedule"
-            ref="scheduleEditorRef"
-            class="event-meta__editor"
-            :model-value="scheduleDraft"
-            :spaces="availableSpaces"
-            :organizer-id="organizerId"
-            @update:model-value="onScheduleDraftChange"
-        />
+        <EventDatesComponent v-if="isEditingSchedule" ref="scheduleEditorRef" class="event-meta__editor"
+            :model-value="scheduleDraft" :spaces="availableSpaces" :organizer-id="organizerId"
+            @update:model-value="onScheduleDraftChange" />
 
         <p v-if="scheduleSaveError" class="event-meta__error event-meta__error--global">
             {{ scheduleSaveError }}
@@ -71,12 +55,7 @@
             <button type="button" class="event-meta__button event-meta__button--cancel" @click="cancelEditingSchedule">
                 {{ t('form_cancel') }}
             </button>
-            <button
-                type="button"
-                class="event-meta__button"
-                :disabled="isSavingSchedule"
-                @click="saveSchedule"
-            >
+            <button type="button" class="event-meta__button" :disabled="isSavingSchedule" @click="saveSchedule">
                 <span v-if="isSavingSchedule">{{ t('form_saving') }}</span>
                 <span v-else>{{ t('form_save') }}</span>
             </button>
@@ -171,10 +150,16 @@ const scheduleEditorRef = ref<InstanceType<typeof EventDatesComponent> | null>(n
 const dateFormatter = computed(
     () =>
         new Intl.DateTimeFormat(locale.value, {
-            weekday: 'long',
             year: 'numeric',
-            month: 'long',
-            day: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        })
+)
+
+const dateFormatterWeekday = computed(
+    () =>
+        new Intl.DateTimeFormat(locale.value, {
+            weekday: 'long'
         })
 )
 
@@ -197,7 +182,13 @@ const formatDisplayDate = (value: string | null): string => {
 const formatDisplayTime = (date: string | null, time: string | null): string => {
     if (!date || !time) return ''
     const parsed = new Date(`${date}T${time}`)
-    return Number.isNaN(parsed.getTime()) ? time : timeFormatter.value.format(parsed)
+    if (Number.isNaN(parsed.getTime())) {
+        return time
+    }
+
+    const weekday = dateFormatterWeekday.value.format(parsed)
+    const timeLabel = timeFormatter.value.format(parsed)
+    return `${weekday} ${timeLabel}`
 }
 
 const spaceLookup = computed<Record<number, string>>(() => {
@@ -505,10 +496,6 @@ onMounted(() => {
     }
 
     &__display {
-        border: 1px solid var(--border-soft);
-        border-radius: 14px;
-        padding: 0.75rem 0.85rem;
-        background: var(--input-bg);
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
@@ -521,14 +508,14 @@ onMounted(() => {
     }
 
     &__label {
-        font-size: 0.85rem;
+        font-size: 1.85rem;
         font-weight: 600;
         color: var(--color-text);
     }
 
     &__value {
         margin: 0;
-        color: var(--muted-text);
+        color: var(--color-text);
         font-size: 0.9rem;
         line-height: 1.4;
     }
@@ -561,7 +548,7 @@ onMounted(() => {
     h3 {
         margin: 0;
         color: var(--color-text);
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 }
 
@@ -575,8 +562,12 @@ onMounted(() => {
         border-radius: 20px;
         padding: 1.25rem;
 
+        &__label {
+            font-size: 2rem;
+        }
+
         h3 {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
     }
 }
@@ -586,8 +577,12 @@ onMounted(() => {
         border-radius: 24px;
         padding: 1.4rem;
 
+        &__label {
+            font-size: 2.85rem;
+        }
+
         h3 {
-            font-size: 1.1rem;
+            font-size: 1.3rem;
         }
 
         p {

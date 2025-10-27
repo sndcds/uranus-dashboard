@@ -135,8 +135,8 @@ const saveHeader = async () => {
 
 .event-header-section__subtitle {
     margin: 0;
-    color: var(--muted-text);
-    font-size: 1.05rem;
+    color: var(--color-text);
+    font-size: 1.2rem;
 }
 
 .event-header-section__edit {

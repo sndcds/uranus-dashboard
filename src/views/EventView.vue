@@ -1,95 +1,52 @@
 <template>
     <div class="event-page" v-if="event">
         <header class="event-hero">
-            <div class="event-hero__meta">
-                <p class="event-hero__date">{{ formattedDate }}</p>
-                <p class="event-hero__time" v-if="hasStartTime">{{ formattedTime }}</p>
-            </div>
+            <EventHeaderSection :event-id="event.id" :title="event.title" :subtitle="event.subtitle"
+                @updated="loadEvent" />
 
-            <EventHeaderSection
-                :event-id="event.id"
-                :title="event.title"
-                :subtitle="event.subtitle"
-                @updated="loadEvent"
-            />
-
-            <p class="event-hero__organizer">{{ event.organizer_name }}</p>
+            <!--<p class="event-hero__organizer">{{ event.organizer_name }}</p>-->
         </header>
 
-        <section class="event-layout">
-            <div class="event-main">
-                <EventImageUploadComponent
-                    v-model="eventImage"
-                    v-model:alt-text="imageAltText"
-                    v-model:copyright="imageCopyright"
-                    v-model:license="imageLicense"
-                    v-model:created-by="imageCreatedBy"
-                    :event-id="eventId"
-                    :max-size="5 * 1024 * 1024"
-                    :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
-                    :existing-image-url="existingImagePreviewUrl"
-                    @updated="loadEvent"
-                />
+        <div class="event-content">
+            <section class="event-layout">
+                <div class="event-main">
+                    <EventImageUploadComponent v-model="eventImage" v-model:alt-text="imageAltText"
+                        v-model:copyright="imageCopyright" v-model:license="imageLicense"
+                        v-model:created-by="imageCreatedBy" :event-id="eventId" :max-size="5 * 1024 * 1024"
+                        :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
+                        :existing-image-url="existingImagePreviewUrl" @updated="loadEvent" />
 
-                <EventDescriptionSection
-                    :event-id="event.id"
-                    :description="event.description"
-                    :participation-info="event.participation_info"
-                    :meeting-point="event.meeting_point"
-                    :event-types="event.event_types"
-                    :locale="locale"
-                    @updated="loadEvent"
-                />
+                    <EventDescriptionSection :event-id="event.id" :description="event.description"
+                        :participation-info="event.participation_info" :meeting-point="event.meeting_point"
+                        :event-types="event.event_types" :locale="locale" @updated="loadEvent" />
 
-                <EventUrlSection :event-id="event.id" :links="eventLinks" @updated="loadEvent" />
-            </div>
+                    <EventUrlSection :event-id="event.id" :links="eventLinks" @updated="loadEvent" />
+                </div>
 
-            <EventTeaserSection
-                :event-id="event.id"
-                :teaser-text="event.teaser_text"
-                :has-main-image="Boolean(event.image_id)"
-                :image-id="event.image_id"
-                :image-focus-x="event.image_focus_x"
-                :image-focus-y="event.image_focus_y"
-                class="event-teaser"
-                @updated="loadEvent"
-            />
+                <EventTeaserSection :event-id="event.id" :teaser-text="event.teaser_text"
+                    :has-main-image="Boolean(event.image_id)" :image-id="event.image_id"
+                    :image-focus-x="event.image_focus_x" :image-focus-y="event.image_focus_y" class="event-teaser"
+                    @updated="loadEvent" />
+            </section>
 
-            <aside class="event-aside">
-                <LocationMapComponent
-                    :latitude="event.venue_lat"
-                    :longitude="event.venue_lon"
-                    :zoom="18"
-                    :selectable="false"
-                    class="event-map"
-                />
 
-                <EventVenueSection
-                    :event-id="event.id"
-                    :organizer-id="event.organizer_id"
-                    :venue-id="event.venue_id"
-                    :venue-name="event.venue_name"
-                    :venue-street="event.venue_street ?? ''"
+
+            <div class="event-sidebar">
+                <LocationMapComponent :latitude="event.venue_lat" :longitude="event.venue_lon" :zoom="18"
+                    :selectable="false" class="event-map" />
+
+                <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
+                    :event-dates="event.event_dates" :space-id="event.space_id" :space-name="event.space_name ?? ''"
+                    @updated="loadEvent" />
+
+                <EventVenueSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
+                    :venue-name="event.venue_name" :venue-street="event.venue_street ?? ''"
                     :venue-house-number="event.venue_house_number ?? ''"
-                    :venue-postal-code="event.venue_postal_code ?? ''"
-                    :venue-city="event.venue_city ?? ''"
-                    :space-id="event.space_id"
-                    :space-name="event.space_name ?? ''"
-                    :space-total-capacity="null"
-                    @updated="loadEvent"
-                />
-
-                <EventScheduleSection
-                    :event-id="event.id"
-                    :organizer-id="event.organizer_id"
-                    :venue-id="event.venue_id"
-                    :event-dates="event.event_dates"
-                    :space-id="event.space_id"
-                    :space-name="event.space_name ?? ''"
-                    @updated="loadEvent"
-                />
-            </aside>
-        </section>
+                    :venue-postal-code="event.venue_postal_code ?? ''" :venue-city="event.venue_city ?? ''"
+                    :space-id="event.space_id" :space-name="event.space_name ?? ''" :space-total-capacity="null"
+                    @updated="loadEvent" />
+            </div>
+        </div>
     </div>
     <div v-else class="event-loading">
         <p v-if="error">{{ error }}</p>
@@ -414,7 +371,6 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: clamp(1rem, 4vw, 1.5rem);
-    padding: 0 clamp(1rem, 5vw, 2rem);
 }
 
 .event-hero {
@@ -422,7 +378,6 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    padding: 1rem 0;
     text-align: center;
 }
 
@@ -443,40 +398,37 @@ onMounted(() => {
     font-size: 0.85rem;
 }
 
+.event-content {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 4vw, 1.5rem);
+}
+
 .event-layout {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: clamp(1rem, 4vw, 1.5rem);
 }
 
 .event-main {
-    grid-column: 1 / 2;
     border-radius: 16px;
     padding: clamp(1rem, 4vw, 1.5rem);
     background: var(--card-bg);
     display: flex;
     flex-direction: column;
     gap: clamp(1rem, 4vw, 1.25rem);
-    order: 1;
-}
-
-.event-teaser {
-    grid-column: 1 / 2;
 }
 
 .event-map {
-    grid-column: 2 / 3;
     width: 100%;
     height: 250px;
     border-radius: 12px;
     overflow: hidden;
 }
 
-.event-aside {
+.event-sidebar {
     display: flex;
     flex-direction: column;
-    grid-row: 1 / 3;
-    grid-column: 2 / 3;
     gap: 1rem;
 }
 
@@ -497,7 +449,6 @@ onMounted(() => {
     }
 
     .event-hero {
-        padding: 1.5rem 0;
         gap: 0.75rem;
     }
 
@@ -525,7 +476,7 @@ onMounted(() => {
         height: 280px;
     }
 
-    .event-aside {
+    .event-sidebar {
         gap: 1.25rem;
     }
 }
@@ -537,7 +488,6 @@ onMounted(() => {
     }
 
     .event-hero {
-        padding: 2rem 0;
         gap: 1rem;
     }
 
@@ -549,21 +499,30 @@ onMounted(() => {
         font-size: 1rem;
     }
 
-    .event-layout {
+    .event-content {
         display: grid;
         grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
         gap: clamp(1.5rem, 3vw, 2rem);
+        align-items: start;
     }
 
-    .event-main,
-    .event-teaser {
-        order: 0;
+    .event-layout {
+        gap: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    .event-sidebar {
+        align-self: stretch;
+    }
+
+    .event-map {
+        width: 100%;
+        height: 100%;
+        min-height: 320px;
     }
 }
 
 @media (min-width: 1280px) {
     .event-page {
-        max-width: 1200px;
         padding: 0 clamp(2rem, 4vw, 3rem);
     }
 
