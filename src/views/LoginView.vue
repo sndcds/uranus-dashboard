@@ -119,7 +119,6 @@ const login = async () => {
 
 <style scoped lang="scss">
 .auth-page {
-    height: 100dvh;
     @include form-page($justify: center, $padding: clamp(2rem, 6vw, 3rem));
 }
 

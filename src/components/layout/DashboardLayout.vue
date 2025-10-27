@@ -17,7 +17,7 @@ import type { SidebarOption } from '@/types/types'
 import { useTokenStore } from "@/store/token"
 import { useAppStore } from "@/store/appStore"
 
-import SidebarComponent from './SidebarComponent.vue'
+import SidebarComponent from '@/components/SidebarComponent.vue'
 
 const router = useRouter()
 const { t } = useI18n()

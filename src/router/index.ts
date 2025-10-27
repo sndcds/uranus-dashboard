@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useTokenStore } from '@/store/token'
 
-import DashboardLayoutComponent from '@/components/DashboardLayoutComponent.vue'
-import AuthLayoutComponent from '@/components/AuthLayoutComponent.vue'
+import DashboardLayout from '@/components/layout/DashboardLayout.vue'
+import DefaultVisitorLayout from '@/components/layout/DefaultVisitorLayout.vue'
+
 import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import OrganizerDashboardView from '@/views/OrganizerDashboardView.vue'
@@ -22,7 +23,7 @@ import EventCalendarView from '@/views/EventCalendarView.vue'
 const routes = [
     {
         path: '/',
-        component: DashboardLayoutComponent,
+        component: DashboardLayout,
         meta: { requiresAuth: true },
         children: [
             {
@@ -89,29 +90,27 @@ const routes = [
     },
     {
         path: '/events',
-        name: 'events',
-        component: EventCalendarView,
-    },
-    {
-        path: '/login',
-        component: AuthLayoutComponent,
-        meta: { guestOnly: true },
+        component: DefaultVisitorLayout,
         children: [
             {
                 path: '',
-                name: 'login',
-                component: LoginView,
-                meta: { guestOnly: true },
+                name: 'events',
+                component: EventCalendarView,
             },
         ],
     },
     {
-        path: '/signup',
-        component: AuthLayoutComponent,
+        component: DefaultVisitorLayout,
         meta: { guestOnly: true },
         children: [
             {
-                path: '',
+                path: '/login',
+                name: 'login',
+                component: LoginView,
+                meta: { guestOnly: true },
+            },
+            {
+                path: '/signup',
                 name: 'signup',
                 component: SignupView,
                 meta: { guestOnly: true },

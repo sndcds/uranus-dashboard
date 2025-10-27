@@ -123,7 +123,6 @@ const signup = async () => {
 
 <style scoped lang="scss">
 .signup-page {
-    height: 100dvh;
     @include form-page($justify: center, $padding: clamp(2rem, 6vw, 3rem));
 }
 

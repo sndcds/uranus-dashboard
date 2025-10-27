@@ -31,7 +31,7 @@
                         </div>
                         <div class="form-group">
                             <label for="email">{{ t('email') }}</label>
-                            <input v-model="email" id="email" type="email" required />
+                            <input v-model="email" id="email" type="email" />
                         </div>
                         <div class="form-group">
                             <label for="website">{{ t('website') }}</label>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="form-group">
                             <label for="phone">{{ t('phone') }}</label>
-                            <input v-model="phone" id="phone" type="tel" required />
+                            <input v-model="phone" id="phone" type="tel" />
                         </div>
                     </div>
 
@@ -106,15 +106,17 @@ const locationSummary = computed(() => {
 const submitForm = async () => {
     try {
         error.value = null
+        const trimmedEmail = email.value.trim()
+        const trimmedPhone = phone.value.trim()
         const payload: Record<string, unknown> = {
             name: organizerName.value,
             street: street.value,
             house_number: houseNumber.value,
             postal_code: postalCode.value,
             city: city.value,
-            contact_email: email.value,
+            contact_email: trimmedEmail.length ? trimmedEmail : null,
             website_url: website.value,
-            contact_phone: phone.value,
+            contact_phone: trimmedPhone.length ? trimmedPhone : null,
         }
 
         if (location.value) {
