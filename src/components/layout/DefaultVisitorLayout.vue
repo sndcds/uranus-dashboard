@@ -137,8 +137,8 @@ const selectedTheme = computed({
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--page-bg, #f8fafc);
-    color: var(--color-text, #0f172a);
+    background: var(--page-bg);
+    color: var(--color-text);
 }
 
 .visitor-layout__topbar {
@@ -150,7 +150,7 @@ const selectedTheme = computed({
     gap: clamp(1rem, 4vw, 2rem);
     justify-content: space-between;
     padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 4vw, 2rem);
-    background: var(--card-bg, #ffffff);
+    background: var(--card-bg);
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
     border-bottom: 1px solid var(--border-soft, rgba(148, 163, 184, 0.2));
 }
