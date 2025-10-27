@@ -3,50 +3,91 @@
         <header class="event-hero">
             <div class="event-hero__meta">
                 <p class="event-hero__date">{{ formattedDate }}</p>
-                <p class="event-hero__time" v-if="event.start_time">{{ formattedTime }}</p>
+                <p class="event-hero__time" v-if="hasStartTime">{{ formattedTime }}</p>
             </div>
 
-            <EventHeaderSection :event-id="event.id" :title="event.title" :subtitle="event.subtitle"
-                @updated="loadEvent" />
+            <EventHeaderSection
+                :event-id="event.id"
+                :title="event.title"
+                :subtitle="event.subtitle"
+                @updated="loadEvent"
+            />
 
             <p class="event-hero__organizer">{{ event.organizer_name }}</p>
         </header>
 
         <section class="event-layout">
             <div class="event-main">
-                <EventImageUploadComponent v-model="eventImage" v-model:alt-text="imageAltText"
-                    v-model:copyright="imageCopyright" v-model:license="imageLicense"
-                    v-model:created-by="imageCreatedBy" :event-id="eventId" :max-size="5 * 1024 * 1024"
-                    :accepted-types="['image/jpeg', 'image/png', 'image/webp']" :existing-image-url="existingImagePreviewUrl"
-                    @updated="loadEvent" />
+                <EventImageUploadComponent
+                    v-model="eventImage"
+                    v-model:alt-text="imageAltText"
+                    v-model:copyright="imageCopyright"
+                    v-model:license="imageLicense"
+                    v-model:created-by="imageCreatedBy"
+                    :event-id="eventId"
+                    :max-size="5 * 1024 * 1024"
+                    :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
+                    :existing-image-url="existingImagePreviewUrl"
+                    @updated="loadEvent"
+                />
 
-                <EventDescriptionSection :event-id="event.id" :description="event.description"
-                    :participation-info="event.participation_info" :meeting-point="event.meeting_point"
-                    :event-types="event.event_types" :genre-types="event.genre_types" :locale="locale"
-                    @updated="loadEvent" />
+                <EventDescriptionSection
+                    :event-id="event.id"
+                    :description="event.description"
+                    :participation-info="event.participation_info"
+                    :meeting-point="event.meeting_point"
+                    :event-types="event.event_types"
+                    :locale="locale"
+                    @updated="loadEvent"
+                />
 
                 <EventUrlSection :event-id="event.id" :links="eventLinks" @updated="loadEvent" />
             </div>
 
-            <EventTeaserSection :event-id="event.id" :teaser-text="event.teaser_text"
-                :has-main-image="event.has_main_image" :image-id="event.image_id" :image-focus-x="event.image_focus_x"
-                :image-focus-y="event.image_focus_y" @updated="loadEvent" class="event-teaser" />
+            <EventTeaserSection
+                :event-id="event.id"
+                :teaser-text="event.teaser_text"
+                :has-main-image="Boolean(event.image_id)"
+                :image-id="event.image_id"
+                :image-focus-x="event.image_focus_x"
+                :image-focus-y="event.image_focus_y"
+                class="event-teaser"
+                @updated="loadEvent"
+            />
 
             <aside class="event-aside">
-                <LocationMapComponent :latitude="event.venue_lat" :longitude="event.venue_lon" :zoom="18"
-                    :selectable="false" class="event-map" />
+                <LocationMapComponent
+                    :latitude="event.venue_lat"
+                    :longitude="event.venue_lon"
+                    :zoom="18"
+                    :selectable="false"
+                    class="event-map"
+                />
 
-                <EventVenueSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
-                    :venue-name="event.venue_name" :venue-street="event.venue_street"
-                    :venue-house-number="event.venue_house_number" :venue-postal-code="event.venue_postal_code"
-                    :venue-city="event.venue_city" :space-id="event.space_id" :space-name="event.space_name"
-                    :space-total-capacity="event.space_total_capacity" @updated="loadEvent" />
+                <EventVenueSection
+                    :event-id="event.id"
+                    :organizer-id="event.organizer_id"
+                    :venue-id="event.venue_id"
+                    :venue-name="event.venue_name"
+                    :venue-street="event.venue_street ?? ''"
+                    :venue-house-number="event.venue_house_number ?? ''"
+                    :venue-postal-code="event.venue_postal_code ?? ''"
+                    :venue-city="event.venue_city ?? ''"
+                    :space-id="event.space_id"
+                    :space-name="event.space_name ?? ''"
+                    :space-total-capacity="null"
+                    @updated="loadEvent"
+                />
 
-                <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
-                    :start-date="event.start_date" :start-time="event.start_time" :end-date="event.end_date"
-                    :end-time="event.end_time" :entry-time="event.entry_time" :dates="event.dates"
-                    :event-dates="event.event_dates" :space-id="event.space_id" :space-name="event.space_name"
-                    @updated="loadEvent" />
+                <EventScheduleSection
+                    :event-id="event.id"
+                    :organizer-id="event.organizer_id"
+                    :venue-id="event.venue_id"
+                    :event-dates="event.event_dates"
+                    :space-id="event.space_id"
+                    :space-name="event.space_name ?? ''"
+                    @updated="loadEvent"
+                />
             </aside>
         </section>
     </div>
@@ -82,11 +123,17 @@ interface EventType {
     genre_name: string | null
 }
 
-interface EventGenreType {
-    id: number
-    name: string
-    event_type_id?: number | null
-    type_id?: number | null
+interface EventDate {
+    event_date_id: number | null
+    start_date: string | null
+    start_time: string | null
+    end_date: string | null
+    end_time: string | null
+    entry_time: string | null
+    space_id: number | null
+    accessibility_flags: number | null
+    duration: number | null
+    visitor_info_flags: number | null
 }
 
 interface EventUrl {
@@ -96,72 +143,48 @@ interface EventUrl {
     url_type: string
 }
 
-interface EventDateApi {
-    id?: number | null
-    start_date?: string
-    end_date?: string | null
-    start_time?: string | null
-    end_time?: string | null
-    entry_time?: string | null
-    all_day?: boolean | null
-    space_id?: number | null
-}
-
-type EventDateSource = EventDateApi[] | Record<string, EventDateApi> | null | undefined
-
 interface EventDetail {
     id: number
     title: string
-    subtitle: string
+    subtitle: string | null
     description: string | null
-    organizer_name: string
     organizer_id: number | null
-    start_date: string
+    organizer_name: string
+    teaser_text: string | null
+    participation_info: string | null
+    meeting_point: string | null
+    event_types: EventType[]
+    event_dates: EventDate[]
+    event_urls: EventUrl[]
+    image_id: number | null
+    image_alt_text: string | null
+    image_copyright: string | null
+    image_created_by: string | null
+    image_focus_x: number | null
+    image_focus_y: number | null
+    image_license_id: string | null
+    venue_id: number | null
+    venue_name: string
+    venue_street: string | null
+    venue_house_number: string | null
+    venue_postal_code: string | null
+    venue_city: string | null
+    venue_lat: number | null
+    venue_lon: number | null
+    venue_country_code: string | null
+    venue_state_code: string | null
+    space_id: number | null
+    space_name: string | null
+    start_date: string | null
     start_time: string | null
     end_date: string | null
     end_time: string | null
     entry_time: string | null
-    event_types: EventType[]
-    genre_types: EventGenreType[]
-    participation_info: string | null
-    meeting_point: string | null
-    teaser_text: string | null
-    venue_name: string
-    venue_id: number | null
-    venue_street: string
-    venue_house_number: string
-    venue_postal_code: string
-    venue_city: string
-    venue_lat: number | null
-    venue_lon: number | null
-    venue_country?: string | null
-    venue_state?: string | null
-    venue_geometry?: string | null
-    space_name: string
-    space_id: number | null
-    space_total_capacity: number | null
-    space_seating_capacity?: number | null
-    space_building_level?: number | null
-    space_url?: string | null
-    has_main_image?: boolean | null
-    image_id?: number | null
-    image_focus_x?: number | null
-    image_focus_y?: number | null
-    image_path?: string | null
-    duration?: number | null
-    accessibility_flag_names?: string[] | null
-    accessibility_flags?: number | null
-    visitor_info_flag_names?: string[] | null
-    visitor_info_flags?: number | null
-    dates?: EventDateSource
-    event_dates?: EventDateSource
-    event_urls?: EventUrl[]
 }
-
-type QueryResponse = { events?: unknown }
 
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
+
 const event = ref<EventDetail | null>(null)
 const error = ref<string | null>(null)
 const eventLinks = ref<EventUrl[]>([])
@@ -172,6 +195,12 @@ const imageAltText = ref('')
 const imageCopyright = ref('')
 const imageLicense = ref('')
 const imageCreatedBy = ref('')
+
+const primaryEventDate = computed<EventDate | null>(() => {
+    const dates = event.value?.event_dates ?? []
+    return dates.find((entry) => entry.start_date || entry.start_time || entry.entry_time || entry.end_date || entry.end_time) ?? null
+})
+
 const dateFormatter = computed(
     () =>
         new Intl.DateTimeFormat(locale.value, {
@@ -185,49 +214,35 @@ const dateFormatter = computed(
 const timeFormatter = computed(() => new Intl.DateTimeFormat(locale.value, { hour: '2-digit', minute: '2-digit' }))
 
 const formattedDate = computed(() => {
-    const startDate = event.value?.start_date
+    const startDate = primaryEventDate.value?.start_date
     if (!startDate) return ''
-
     const parsed = new Date(startDate)
     return Number.isNaN(parsed.getTime()) ? '' : dateFormatter.value.format(parsed)
 })
 
 const formattedTime = computed(() => {
-    const startDate = event.value?.start_date
-    const startTime = event.value?.start_time
+    const startDate = primaryEventDate.value?.start_date
+    const startTime = primaryEventDate.value?.start_time
     if (!startDate || !startTime) return ''
-
     const parsed = new Date(`${startDate}T${startTime}`)
     return Number.isNaN(parsed.getTime()) ? '' : timeFormatter.value.format(parsed)
 })
 
+const hasStartTime = computed(() => Boolean(primaryEventDate.value?.start_time))
+
+const normalizeFocus = (value: number | null): string => {
+    const numeric = typeof value === 'number' && Number.isFinite(value) ? value : 0.5
+    const clamped = Math.min(Math.max(numeric, 0), 1)
+    return clamped.toFixed(3)
+}
+
 const existingImagePreviewUrl = computed(() => {
     const current = event.value
-    if (!current) return null
-
-    if (typeof current.image_path === 'string' && current.image_path.trim()) {
-        const absolute = withPreviewParams(ensureAbsoluteImageUrl(current.image_path))
-        if (absolute) {
-            return absolute
-        }
-    }
-
-    if (current.image_id != null) {
-        const focusX = normalizeFocusValue(current.image_focus_x).toFixed(3)
-        const focusY = normalizeFocusValue(current.image_focus_y).toFixed(3)
-        return `${apiBase}/api/image/${current.image_id}?mode=cover&width=800&ratio=16by9&focusx=${focusX}&focusy=${focusY}&type=webp&quality=90`
-    }
-
-    return null
+    if (!current || current.image_id == null) return null
+    const focusX = normalizeFocus(current.image_focus_x)
+    const focusY = normalizeFocus(current.image_focus_y)
+    return `${apiBase}/api/image/${current.image_id}?mode=cover&width=800&ratio=16by9&focusx=${focusX}&focusy=${focusY}&type=webp&quality=90`
 })
-
-const normalizeCollection = <T>(collection: T[] | Record<string, T> | null | undefined): T[] => {
-    if (Array.isArray(collection)) return collection
-    if (collection && typeof collection === 'object') {
-        return Object.values(collection as Record<string, T>)
-    }
-    return []
-}
 
 const toNumberOrNull = (value: unknown): number | null => {
     if (typeof value === 'number' && Number.isFinite(value)) return value
@@ -238,9 +253,9 @@ const toNumberOrNull = (value: unknown): number | null => {
     return null
 }
 
-const toStringOrEmpty = (value: unknown): string => {
+const toString = (value: unknown, fallback = ''): string => {
     if (typeof value === 'string') return value
-    if (value == null) return ''
+    if (value == null) return fallback
     return String(value)
 }
 
@@ -252,255 +267,140 @@ const toNullableString = (value: unknown): string | null => {
     return null
 }
 
-const normalizeFocusValue = (value?: number | null): number => {
-    if (typeof value !== 'number' || !Number.isFinite(value)) return 0.5
-    if (value > 1) {
-        if (value >= 0 && value <= 1000) {
-            return Math.min(Math.max(value / 1000, 0), 1)
-        }
-        return Math.min(Math.max(value, 0), 1)
-    }
-    if (value < 0) return 0
-    return Math.min(Math.max(value, 0), 1)
-}
-
-const ensureAbsoluteImageUrl = (path: string): string => {
-    const trimmed = path.trim()
-    if (!trimmed) return ''
-    if (/^(?:https?:|data:|blob:)/i.test(trimmed)) return trimmed
-    if (trimmed.startsWith('//')) {
-        const protocol = typeof window !== 'undefined' && window.location ? window.location.protocol : 'https:'
-        return `${protocol}${trimmed}`
-    }
-    if (trimmed.startsWith('/')) {
-        return `${apiBase}${trimmed}`
-    }
-    return `${apiBase}/${trimmed.replace(/^\/+/, '')}`
-}
-
-const withPreviewParams = (url: string): string => {
-    if (!url) return ''
-    if (/[?&]ratio=/.test(url) || /[?&]width=/.test(url)) {
-        return url
-    }
-    return url.includes('?') ? `${url}&ratio=16by9&width=800` : `${url}?ratio=16by9&width=800`
-}
-
-const toEventUrl = (raw: unknown): EventUrl | null => {
-    if (!raw || typeof raw !== 'object') return null
-    const record = raw as Record<string, unknown>
-
-    const url = toNullableString(record.url)
-    if (!url) return null
-
-    return {
-        id: toNumberOrNull(record.id),
-        title: toNullableString(record.title) ?? '',
-        url,
-        url_type: toNullableString(record.url_type) ?? '',
-    }
-}
-
-const toStringArrayOrNull = (value: unknown): string[] | null => {
-    if (!Array.isArray(value)) return null
-    const filtered = value.filter((entry): entry is string => typeof entry === 'string')
-    return filtered.length ? filtered : []
-}
-
 const mapEventType = (raw: unknown): EventType | null => {
     if (!raw || typeof raw !== 'object') return null
     const record = raw as Record<string, unknown>
-
-    const typeId =
-        toNumberOrNull(record.type_id) ??
-        toNumberOrNull(record.typeId) ??
-        toNumberOrNull(record.id) ??
-        toNumberOrNull(record.event_type_id) ??
-        toNumberOrNull(record.eventTypeId)
-
+    const typeId = toNumberOrNull(record.type_id)
     if (typeId === null) return null
-
-    const typeName =
-        toNullableString(record.type_name) ??
-        toNullableString(record.typeName) ??
-        toNullableString(record.name) ??
-        ''
-
-    const genreRecord = typeof record.genre === 'object' && record.genre ? (record.genre as Record<string, unknown>) : null
-
-    const genreId =
-        toNumberOrNull(record.genre_id) ??
-        toNumberOrNull(record.genreId) ??
-        toNumberOrNull(record.genre_type_id) ??
-        (genreRecord ? toNumberOrNull(genreRecord.id) : null)
-
-    const genreName =
-        toNullableString(record.genre_name) ||
-        toNullableString(record.genreName) ||
-        (genreRecord ? toNullableString(genreRecord.name) : null)
-
     return {
         type_id: typeId,
-        type_name: typeName,
-        genre_id: genreId,
-        genre_name: genreName,
+        type_name: toString(record.type_name),
+        genre_id: toNumberOrNull(record.genre_id),
+        genre_name: toNullableString(record.genre_name),
     }
 }
 
-const mapEventGenreType = (raw: unknown): EventGenreType | null => {
+const mapEventDate = (raw: unknown): EventDate | null => {
     if (!raw || typeof raw !== 'object') return null
     const record = raw as Record<string, unknown>
-
-    const id = toNumberOrNull(record.id) ?? toNumberOrNull(record.genre_id)
-    const name =
-        toNullableString(record.name) ??
-        toNullableString(record.genre_name) ??
-        null
-
-    if (id === null || name === null) return null
-
     return {
-        id,
-        name,
-        event_type_id: toNumberOrNull(record.event_type_id) ?? null,
-        type_id: toNumberOrNull(record.type_id) ?? null,
+        event_date_id: toNumberOrNull(record.event_date_id),
+        start_date: toNullableString(record.start_date),
+        start_time: toNullableString(record.start_time),
+        end_date: toNullableString(record.end_date),
+        end_time: toNullableString(record.end_time),
+        entry_time: toNullableString(record.entry_time),
+        space_id: toNumberOrNull(record.space_id),
+        accessibility_flags: toNumberOrNull(record.accessibility_flags),
+        duration: toNumberOrNull(record.duration),
+        visitor_info_flags: toNumberOrNull(record.visitor_info_flags),
+    }
+}
+
+const mapEventUrl = (raw: unknown): EventUrl | null => {
+    if (!raw || typeof raw !== 'object') return null
+    const record = raw as Record<string, unknown>
+    const url = toNullableString(record.url)
+    if (!url) return null
+    return {
+        id: toNumberOrNull(record.id),
+        title: toString(record.title),
+        url,
+        url_type: toString(record.url_type),
     }
 }
 
 const mapEventDetail = (raw: unknown): EventDetail | null => {
     if (!raw || typeof raw !== 'object') return null
     const record = raw as Record<string, unknown>
-
     const id = toNumberOrNull(record.id)
-    const startDate = toNullableString(record.start_date)
+    if (id === null) return null
 
-    if (id === null || !startDate) return null
+    const eventTypes = Array.isArray(record.event_types)
+        ? (record.event_types as unknown[]).map(mapEventType).filter(Boolean) as EventType[]
+        : []
 
-    const rawEventTypes = normalizeCollection<unknown>(record['event_types'] as
-        | Array<unknown>
-        | Record<string, unknown>
-        | null
-        | undefined)
-    const eventTypes = rawEventTypes.map(mapEventType).filter(Boolean) as EventType[]
+    const eventDates = Array.isArray(record.event_dates)
+        ? (record.event_dates as unknown[]).map(mapEventDate).filter(Boolean) as EventDate[]
+        : []
 
-    const rawGenreTypes = normalizeCollection<unknown>(record['genre_types'] as
-        | Array<unknown>
-        | Record<string, unknown>
-        | null
-        | undefined)
-    const genreTypes = rawGenreTypes
-        .map(mapEventGenreType)
-        .filter(Boolean) as EventGenreType[]
+    const eventUrls = Array.isArray(record.event_urls)
+        ? (record.event_urls as unknown[]).map(mapEventUrl).filter(Boolean) as EventUrl[]
+        : []
 
-    const eventUrlsSource = record['event_urls'] as unknown
-    let rawEventUrls: unknown[] = []
+    const primary = eventDates.find((entry) => entry.start_date || entry.start_time || entry.entry_time || entry.end_date || entry.end_time) ?? null
 
-    if (Array.isArray(eventUrlsSource)) {
-        rawEventUrls = eventUrlsSource
-    } else if (eventUrlsSource && typeof eventUrlsSource === 'object') {
-        const maybeLinks = (eventUrlsSource as { links?: unknown }).links
-        if (Array.isArray(maybeLinks)) {
-            rawEventUrls = maybeLinks
-        } else {
-            rawEventUrls = Object.values(eventUrlsSource as Record<string, unknown>)
-        }
-    }
-
-    const eventUrls = rawEventUrls.map(toEventUrl).filter(Boolean) as EventUrl[]
-
-    const detail: EventDetail = {
+    return {
         id,
-        title: toStringOrEmpty(record.title),
-        subtitle: toStringOrEmpty(record.subtitle),
+        title: toString(record.title),
+        subtitle: toNullableString(record.subtitle),
         description: toNullableString(record.description),
-        organizer_name: toStringOrEmpty(record.organizer_name),
         organizer_id: toNumberOrNull(record.organizer_id),
-        start_date: startDate,
-        start_time: toNullableString(record.start_time),
-        end_date: toNullableString(record.end_date),
-        end_time: toNullableString(record.end_time),
-        entry_time: toNullableString(record.entry_time),
-        event_types: eventTypes,
-        genre_types: genreTypes,
+        organizer_name: toString(record.organizer_name),
+        teaser_text: toNullableString(record.teaser_text),
         participation_info: toNullableString(record.participation_info),
         meeting_point: toNullableString(record.meeting_point),
-        teaser_text: toNullableString(record.teaser_text),
-        venue_name: toStringOrEmpty(record.venue_name),
+        event_types: eventTypes,
+        event_dates: eventDates,
+        event_urls: eventUrls,
+        image_id: toNumberOrNull(record.image_id),
+        image_alt_text: toNullableString(record.image_alt_text),
+        image_copyright: toNullableString(record.image_copyright),
+        image_created_by: toNullableString(record.image_created_by),
+        image_focus_x: toNumberOrNull(record.image_focus_x),
+        image_focus_y: toNumberOrNull(record.image_focus_y),
+        image_license_id: toNullableString(record.image_license_id),
         venue_id: toNumberOrNull(record.venue_id),
-        venue_street: toStringOrEmpty(record.venue_street),
-        venue_house_number: toStringOrEmpty(record.venue_house_number),
-        venue_postal_code: toStringOrEmpty(record.venue_postal_code),
-        venue_city: toStringOrEmpty(record.venue_city),
+        venue_name: toString(record.venue_name),
+        venue_street: toNullableString(record.venue_street),
+        venue_house_number: toNullableString(record.venue_house_number),
+        venue_postal_code: toNullableString(record.venue_postal_code),
+        venue_city: toNullableString(record.venue_city),
         venue_lat: toNumberOrNull(record.venue_lat),
         venue_lon: toNumberOrNull(record.venue_lon),
-        space_name: toStringOrEmpty(record.space_name),
+        venue_country_code: toNullableString(record.venue_country_code),
+        venue_state_code: toNullableString(record.venue_state_code),
         space_id: toNumberOrNull(record.space_id),
-        space_total_capacity: toNumberOrNull(record.space_total_capacity),
-        dates: record['dates'] as EventDateSource,
-        event_dates: record['event_dates'] as EventDateSource,
-        event_urls: eventUrls,
+        space_name: toNullableString(record.space_name),
+        start_date: primary?.start_date ?? null,
+        start_time: primary?.start_time ?? null,
+        end_date: primary?.end_date ?? null,
+        end_time: primary?.end_time ?? null,
+        entry_time: primary?.entry_time ?? null,
     }
-
-    if ('venue_country' in record) detail.venue_country = toNullableString(record.venue_country)
-    if ('venue_state' in record) detail.venue_state = toNullableString(record.venue_state)
-    if ('venue_geometry' in record) detail.venue_geometry = toNullableString(record.venue_geometry)
-    if ('space_seating_capacity' in record) detail.space_seating_capacity = toNumberOrNull(record.space_seating_capacity)
-    if ('space_building_level' in record) detail.space_building_level = toNumberOrNull(record.space_building_level)
-    if ('space_url' in record) detail.space_url = toNullableString(record.space_url)
-    if ('has_main_image' in record) {
-        const value = record.has_main_image
-        detail.has_main_image = value == null ? null : Boolean(value)
-    }
-    if ('image_id' in record) detail.image_id = toNumberOrNull(record.image_id)
-    if ('image_focus_x' in record) detail.image_focus_x = toNumberOrNull(record.image_focus_x)
-    if ('image_focus_y' in record) detail.image_focus_y = toNumberOrNull(record.image_focus_y)
-    if ('image_path' in record) detail.image_path = toNullableString(record.image_path)
-    if ('duration' in record) detail.duration = toNumberOrNull(record.duration)
-    if ('accessibility_flag_names' in record) detail.accessibility_flag_names = toStringArrayOrNull(record.accessibility_flag_names)
-    if ('accessibility_flags' in record) detail.accessibility_flags = toNumberOrNull(record.accessibility_flags)
-    if ('visitor_info_flag_names' in record) detail.visitor_info_flag_names = toStringArrayOrNull(record.visitor_info_flag_names)
-    if ('visitor_info_flags' in record) detail.visitor_info_flags = toNumberOrNull(record.visitor_info_flags)
-
-    return detail
 }
 
-const extractEvents = (payload: unknown): unknown[] => {
-    console.log(payload)
-    if (payload && typeof payload === 'object') {
-        const maybeEvents = (payload as QueryResponse).events
-        if (Array.isArray(maybeEvents)) {
-            return maybeEvents
-        }
-        if ('id' in payload) {
-            return [payload]
-        }
-    }
-    return []
+const resetState = () => {
+    event.value = null
+    eventLinks.value = []
+    imageAltText.value = ''
+    imageCopyright.value = ''
+    imageLicense.value = ''
+    imageCreatedBy.value = ''
 }
 
 const loadEvent = async () => {
     try {
-        const { data } = await apiFetch<unknown>(
-            `/api/admin/event/${eventId.value}?lang=${locale.value}`
-        )
+        const { data } = await apiFetch<unknown>(`/api/admin/event/${eventId.value}?lang=${locale.value}`)
+        const mapped = mapEventDetail(data)
 
-        const events = extractEvents(data)
-        const mapped = events.length ? mapEventDetail(events[0]) : null
-
-        if (mapped) {
-            event.value = mapped
-            error.value = null
-            eventLinks.value = mapped.event_urls ?? []
-        } else {
+        if (!mapped) {
             error.value = t('event_not_found')
-            event.value = null
-            eventLinks.value = []
+            resetState()
+            return
         }
+
+        event.value = mapped
+        error.value = null
+        eventLinks.value = mapped.event_urls ?? []
+        imageAltText.value = mapped.image_alt_text ?? ''
+        imageCopyright.value = mapped.image_copyright ?? ''
+        imageLicense.value = mapped.image_license_id ?? ''
+        imageCreatedBy.value = mapped.image_created_by ?? ''
     } catch (err) {
         console.error(err)
         error.value = t('event_load_error')
-        event.value = null
-        eventLinks.value = []
+        resetState()
     }
 }
 
@@ -511,19 +411,19 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .event-page {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     gap: clamp(1rem, 4vw, 1.5rem);
+    padding: 0 clamp(1rem, 5vw, 2rem);
 }
 
 .event-hero {
-    text-align: center;
-    color: var(--color-text);
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
     padding: 1rem 0;
+    text-align: center;
 }
 
 .event-hero__meta {
@@ -543,14 +443,14 @@ onMounted(() => {
     font-size: 0.85rem;
 }
 
-// Mobile: Single column, stacked layout
 .event-layout {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
     gap: clamp(1rem, 4vw, 1.5rem);
 }
 
 .event-main {
+    grid-column: 1 / 2;
     border-radius: 16px;
     padding: clamp(1rem, 4vw, 1.5rem);
     background: var(--card-bg);
@@ -561,10 +461,11 @@ onMounted(() => {
 }
 
 .event-teaser {
-    order: 2;
+    grid-column: 1 / 2;
 }
 
 .event-map {
+    grid-column: 2 / 3;
     width: 100%;
     height: 250px;
     border-radius: 12px;
@@ -574,10 +475,10 @@ onMounted(() => {
 .event-aside {
     display: flex;
     flex-direction: column;
+    grid-row: 1 / 3;
+    grid-column: 2 / 3;
     gap: 1rem;
-    order: 3;
 }
-
 
 .event-loading {
     min-height: 50vh;
@@ -589,7 +490,6 @@ onMounted(() => {
     padding: 2rem 1rem;
 }
 
-// Tablet: Enhanced spacing and sizing
 @media (min-width: 640px) {
     .event-page {
         gap: clamp(1.25rem, 3vw, 2rem);
@@ -628,10 +528,8 @@ onMounted(() => {
     .event-aside {
         gap: 1.25rem;
     }
-
 }
 
-// Desktop: Two-column layout
 @media (min-width: 1024px) {
     .event-page {
         gap: clamp(1.5rem, 3vw, 2.5rem);
@@ -651,55 +549,26 @@ onMounted(() => {
         font-size: 1rem;
     }
 
-    // Desktop: Two-column grid layout
     .event-layout {
         display: grid;
         grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
         gap: clamp(1.5rem, 3vw, 2rem);
     }
 
-    .event-main {
-        grid-row: 1 / 2;
-        grid-column: 1 / 2;
-        border-radius: 24px;
-        padding: clamp(1.75rem, 3vw, 2.4rem);
-        gap: clamp(1.5rem, 3vw, 2rem);
-    }
-
+    .event-main,
     .event-teaser {
-        grid-row: 2 / 3;
-        grid-column: 1 / 2;
+        order: 0;
     }
-
-    .event-map {
-        height: 300px;
-    }
-
-    .event-aside {
-        grid-row: 1 / 3;
-        grid-column: 2 / 3;
-        gap: 1.2rem;
-    }
-
 }
 
-// Large desktop: Enhanced spacing
 @media (min-width: 1280px) {
     .event-page {
-        padding: 0 clamp(3rem, 8vw, 6rem);
-    }
-
-    .event-layout {
-        gap: clamp(2rem, 4vw, 3rem);
-    }
-
-    .event-main {
-        padding: clamp(2rem, 4vw, 3rem);
+        max-width: 1200px;
+        padding: 0 clamp(2rem, 4vw, 3rem);
     }
 
     .event-map {
-        height: 350px;
+        height: 320px;
     }
-
 }
 </style>

@@ -145,11 +145,11 @@ const props = defineProps<{
     eventId: number
     organizerId: number | null
     venueId: number | null
-    startDate: string
-    startTime: string | null
-    endDate: string | null
-    endTime: string | null
-    entryTime: string | null
+    startDate?: string | null
+    startTime?: string | null
+    endDate?: string | null
+    endTime?: string | null
+    entryTime?: string | null
     dates?: EventDateSource
     eventDates?: EventDateSource
     spaceId: number | null
@@ -290,22 +290,17 @@ syncScheduleEntries(true)
 
 const loadSpaces = async (venueId: number | null) => {
     if (venueId === null || !Number.isFinite(venueId)) {
-        console.log("availableSpaces ...1")
-        console.log(venueId)
         availableSpaces.value = []
         return
     }
 
     try {
         const { data } = await apiFetch<SelectOption[]>(`/api/choosable-spaces/venue/${venueId}`)
-        console.log("availableSpaces ...2")
         availableSpaces.value = Array.isArray(data) ? data : []
     } catch (err) {
         console.error('Failed to load spaces', err)
         availableSpaces.value = []
     }
-    console.log("availableSpaces")
-    console.log(availableSpaces.value)
 }
 
 const onScheduleDraftChange = (value: Array<Partial<ScheduleDraftEntry>>) => {
