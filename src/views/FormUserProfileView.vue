@@ -203,17 +203,24 @@ const resolveProfileError = (err: unknown): string => {
 
 const mapResponseToState = (payload: UserProfilePayload | null | undefined) => {
     if (!payload || typeof payload !== 'object') {
-        profile.displayName = ''
-        profile.emailAddress = ''
-        profile.firstName = ''
-        profile.lastName = ''
         return
     }
 
-    profile.displayName = typeof payload.display_name === 'string' ? payload.display_name : ''
-    profile.emailAddress = typeof payload.email_address === 'string' ? payload.email_address : ''
-    profile.firstName = typeof payload.first_name === 'string' ? payload.first_name : ''
-    profile.lastName = typeof payload.last_name === 'string' ? payload.last_name : ''
+    if ('display_name' in payload) {
+        profile.displayName = typeof payload.display_name === 'string' ? payload.display_name : ''
+    }
+
+    if ('email_address' in payload) {
+        profile.emailAddress = typeof payload.email_address === 'string' ? payload.email_address : ''
+    }
+
+    if ('first_name' in payload) {
+        profile.firstName = typeof payload.first_name === 'string' ? payload.first_name : ''
+    }
+
+    if ('last_name' in payload) {
+        profile.lastName = typeof payload.last_name === 'string' ? payload.last_name : ''
+    }
 
     const userIdValue = payload.user_id
     if ((typeof userIdValue === 'string' || typeof userIdValue === 'number') && userIdValue !== '') {
@@ -284,6 +291,7 @@ const submitProfile = async () => {
         })
 
         mapResponseToState(data)
+        userStore.setDisplayName(payload.display_name)
         submitSuccess.value = successMessage.value
     } catch (err: unknown) {
         submitError.value = resolveProfileError(err)
