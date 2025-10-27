@@ -116,7 +116,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <footer class="calendar-card__footer">
+                                    <footer v-if="isLoggedIn" class="calendar-card__footer">
                                     <router-link :to="{ name: 'event-details', params: { id: event.id } }"
                                         class="calendar-card__cta">
                                         {{ viewDetailsLabel }}
@@ -135,6 +135,7 @@
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+import { useTokenStore } from '@/store/token'
 
 interface CalendarEventType {
     genre_id: number | null
@@ -181,6 +182,8 @@ interface AugmentedEvent extends CalendarEvent {
 }
 
 const { t, te, locale } = useI18n({ useScope: 'global' })
+const tokenStore = useTokenStore()
+const isLoggedIn = computed(() => Boolean(tokenStore.accessToken))
 
 const events = ref<AugmentedEvent[]>([])
 const isLoading = ref(true)

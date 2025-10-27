@@ -17,7 +17,8 @@
                 <EventImageUploadComponent v-model="eventImage" v-model:alt-text="imageAltText"
                     v-model:copyright="imageCopyright" v-model:license="imageLicense"
                     v-model:created-by="imageCreatedBy" :event-id="eventId" :max-size="5 * 1024 * 1024"
-                    :accepted-types="['image/jpeg', 'image/png', 'image/webp']" @updated="loadEvent" />
+                    :accepted-types="['image/jpeg', 'image/png', 'image/webp']" :existing-image-url="existingImagePreviewUrl"
+                    @updated="loadEvent" />
 
                 <EventDescriptionSection :event-id="event.id" :description="event.description"
                     :participation-info="event.participation_info" :meeting-point="event.meeting_point"
@@ -69,6 +70,10 @@ import EventTeaserSection from '@/components/event/EventTeaserSection.vue'
 import EventVenueSection from '@/components/event/EventVenueSection.vue'
 import EventUrlSection from '@/components/event/EventUrlSection.vue'
 import EventScheduleSection from '@/components/event/EventScheduleSection.vue'
+
+const envApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? ''
+const runtimeOrigin = typeof window !== 'undefined' && window.location ? window.location.origin : ''
+const apiBase = envApiUrl || runtimeOrigin || 'https://uranus2.oklabflensburg.de'
 
 interface EventType {
     type_id: number
@@ -142,6 +147,7 @@ interface EventDetail {
     image_id?: number | null
     image_focus_x?: number | null
     image_focus_y?: number | null
+    image_path?: string | null
     duration?: number | null
     accessibility_flag_names?: string[] | null
     accessibility_flags?: number | null
@@ -195,6 +201,26 @@ const formattedTime = computed(() => {
     return Number.isNaN(parsed.getTime()) ? '' : timeFormatter.value.format(parsed)
 })
 
+const existingImagePreviewUrl = computed(() => {
+    const current = event.value
+    if (!current) return null
+
+    if (typeof current.image_path === 'string' && current.image_path.trim()) {
+        const absolute = withPreviewParams(ensureAbsoluteImageUrl(current.image_path))
+        if (absolute) {
+            return absolute
+        }
+    }
+
+    if (current.image_id != null) {
+        const focusX = normalizeFocusValue(current.image_focus_x).toFixed(3)
+        const focusY = normalizeFocusValue(current.image_focus_y).toFixed(3)
+        return `${apiBase}/api/image/${current.image_id}?mode=cover&width=800&ratio=16by9&focusx=${focusX}&focusy=${focusY}&type=webp&quality=90`
+    }
+
+    return null
+})
+
 const normalizeCollection = <T>(collection: T[] | Record<string, T> | null | undefined): T[] => {
     if (Array.isArray(collection)) return collection
     if (collection && typeof collection === 'object') {
@@ -224,6 +250,40 @@ const toNullableString = (value: unknown): string | null => {
         return trimmed.length ? trimmed : null
     }
     return null
+}
+
+const normalizeFocusValue = (value?: number | null): number => {
+    if (typeof value !== 'number' || !Number.isFinite(value)) return 0.5
+    if (value > 1) {
+        if (value >= 0 && value <= 1000) {
+            return Math.min(Math.max(value / 1000, 0), 1)
+        }
+        return Math.min(Math.max(value, 0), 1)
+    }
+    if (value < 0) return 0
+    return Math.min(Math.max(value, 0), 1)
+}
+
+const ensureAbsoluteImageUrl = (path: string): string => {
+    const trimmed = path.trim()
+    if (!trimmed) return ''
+    if (/^(?:https?:|data:|blob:)/i.test(trimmed)) return trimmed
+    if (trimmed.startsWith('//')) {
+        const protocol = typeof window !== 'undefined' && window.location ? window.location.protocol : 'https:'
+        return `${protocol}${trimmed}`
+    }
+    if (trimmed.startsWith('/')) {
+        return `${apiBase}${trimmed}`
+    }
+    return `${apiBase}/${trimmed.replace(/^\/+/, '')}`
+}
+
+const withPreviewParams = (url: string): string => {
+    if (!url) return ''
+    if (/[?&]ratio=/.test(url) || /[?&]width=/.test(url)) {
+        return url
+    }
+    return url.includes('?') ? `${url}&ratio=16by9&width=800` : `${url}?ratio=16by9&width=800`
 }
 
 const toEventUrl = (raw: unknown): EventUrl | null => {
@@ -394,6 +454,7 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
     if ('image_id' in record) detail.image_id = toNumberOrNull(record.image_id)
     if ('image_focus_x' in record) detail.image_focus_x = toNumberOrNull(record.image_focus_x)
     if ('image_focus_y' in record) detail.image_focus_y = toNumberOrNull(record.image_focus_y)
+    if ('image_path' in record) detail.image_path = toNullableString(record.image_path)
     if ('duration' in record) detail.duration = toNumberOrNull(record.duration)
     if ('accessibility_flag_names' in record) detail.accessibility_flag_names = toStringArrayOrNull(record.accessibility_flag_names)
     if ('accessibility_flags' in record) detail.accessibility_flags = toNumberOrNull(record.accessibility_flags)

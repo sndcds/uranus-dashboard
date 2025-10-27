@@ -2,9 +2,6 @@
   <section class="two-stage-list">
     <header class="two-stage-list__header" v-if="editable && isEditing">
       <h3 class="two-stage-list__title">{{ labelPrimary }}</h3>
-      <button class="two-stage-list__add" @click.prevent="addCombination" :disabled="!selectedPrimary">
-        {{ t('add') }}
-      </button>
     </header>
 
     <div v-if="editable && isEditing" class="two-stage-list__controls">
@@ -31,6 +28,12 @@
           <option disabled :value="null">{{ placeholderSecondary }}</option>
           <option v-for="item in secondaryOptions" :key="item.id" :value="item">{{ item.name }}</option>
         </select>
+      </div>
+
+      <div class="two-stage-list__actions">
+        <button class="two-stage-list__add" @click.prevent="addCombination" :disabled="!selectedPrimary">
+          {{ t('add') }}
+        </button>
       </div>
     </div>
 
@@ -219,6 +222,13 @@ onMounted(() => void loadPrimaries())
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    grid-column: 1 / -1;
+    margin-top: 0.25rem;
+  }
+
   &__group {
     display: flex;
     flex-direction: column;
@@ -237,7 +247,6 @@ onMounted(() => void loadPrimaries())
 
   &__add {
     @include form-primary-button($padding-y: 0.55rem, $padding-x: 1.4rem);
-    margin-left: auto;
   }
 
   &__list {

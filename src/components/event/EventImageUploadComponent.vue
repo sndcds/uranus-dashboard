@@ -48,7 +48,7 @@
             <!-- Image Info -->
             <div v-if="hasImage" class="event-image-upload__info">
                 <span class="event-image-upload__file-name">{{ fileName }}</span>
-                <span class="event-image-upload__file-size">({{ formatFileSize(fileSize) }})</span>
+                <span v-if="fileSize" class="event-image-upload__file-size">({{ formatFileSize(fileSize) }})</span>
             </div>
         </div>
 
@@ -127,6 +127,7 @@ interface Props {
     eventId?: number
     maxSize?: number // in bytes, default 5MB
     acceptedTypes?: string[] // default ['image/jpeg', 'image/png', 'image/webp']
+    existingImageUrl?: string | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -136,7 +137,8 @@ const props = withDefaults(defineProps<Props>(), {
     license: '',
     createdBy: '',
     maxSize: 5 * 1024 * 1024, // 5MB
-    acceptedTypes: () => ['image/jpeg', 'image/png', 'image/webp']
+    acceptedTypes: () => ['image/jpeg', 'image/png', 'image/webp'],
+    existingImageUrl: null
 })
 
 const emit = defineEmits<{
@@ -150,13 +152,15 @@ const emit = defineEmits<{
 
 const { t, locale } = useI18n()
 
+const existingImageUrl = ref<string | null>(props.existingImageUrl ?? null)
+
 const fileInput = ref<HTMLInputElement>()
 const isDragOver = ref(false)
 const error = ref<string>('')
 const isSaving = ref(false)
 const showMetadata = ref(false)
 
-const hasImage = computed(() => !!props.modelValue)
+const hasImage = computed(() => !!props.modelValue || !!existingImageUrl.value)
 const previewUrl = ref<string>('')
 const fileName = ref<string>('')
 const fileSize = ref<number>(0)
@@ -176,10 +180,6 @@ const canSave = computed(() => {
         localCreatedBy.value.trim()
     )
 })
-
-watch(() => props.modelValue, (newFile) => {
-    showMetadata.value = !!newFile
-}, { immediate: true })
 
 // Watch for prop changes to sync local values
 watch(() => props.altText, (newVal) => { localAltText.value = newVal })
@@ -209,20 +209,55 @@ const createPreview = (file: File) => {
 }
 
 const clearPreview = () => {
-    if (previewUrl.value) {
+    if (previewUrl.value && previewUrl.value.startsWith('blob:')) {
         URL.revokeObjectURL(previewUrl.value)
-        previewUrl.value = ''
     }
+    previewUrl.value = ''
     fileName.value = ''
     fileSize.value = 0
 }
 
-// Watch for external changes to modelValue
+const deriveFileName = (source: string): string => {
+    if (!source) return t('event_image_existing_file')
+    const withoutQuery = source.split('?')[0] ?? ''
+    const segments = withoutQuery.split('/').filter(Boolean)
+    const candidate = segments.pop()?.trim()
+    return candidate && candidate.length ? candidate : t('event_image_existing_file')
+}
+
+const applyExistingImagePreview = (url: string) => {
+    previewUrl.value = url
+    fileName.value = deriveFileName(url)
+    fileSize.value = 0
+}
+
 watch(() => props.modelValue, (newFile) => {
+    showMetadata.value = !!newFile
+
     if (newFile && newFile instanceof File) {
+        existingImageUrl.value = null
         createPreview(newFile)
         fileName.value = newFile.name
         fileSize.value = newFile.size
+        return
+    }
+
+    if (existingImageUrl.value) {
+        applyExistingImagePreview(existingImageUrl.value)
+    } else {
+        clearPreview()
+    }
+}, { immediate: true })
+
+watch(() => props.existingImageUrl, (newUrl) => {
+    existingImageUrl.value = newUrl ?? null
+
+    if (props.modelValue) {
+        return
+    }
+
+    if (existingImageUrl.value) {
+        applyExistingImagePreview(existingImageUrl.value)
     } else {
         clearPreview()
     }
@@ -256,6 +291,7 @@ const handleFileSelect = (event: Event) => {
     if (file && file instanceof File) {
         if (validateFile(file)) {
             emit('update:modelValue', file)
+            existingImageUrl.value = null
         }
     } else {
         // User cancelled file selection or invalid file
@@ -269,14 +305,18 @@ const handleDrop = (event: DragEvent) => {
 
     if (file && file instanceof File && validateFile(file)) {
         emit('update:modelValue', file)
+        existingImageUrl.value = null
     }
 }
 
 const removeImage = () => {
+    existingImageUrl.value = null
+    showMetadata.value = false
     emit('update:modelValue', null)
     if (fileInput.value) {
         fileInput.value.value = ''
     }
+    clearPreview()
 }
 
 const formatFileSize = (bytes: number): string => {
