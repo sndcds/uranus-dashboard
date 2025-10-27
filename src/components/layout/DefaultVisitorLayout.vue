@@ -17,7 +17,22 @@
                 </slot>
             </nav>
             <div class="visitor-layout__actions">
-                <slot name="actions" />
+                <slot name="actions">
+                    <label class="sr-only" for="visitor-language-select">{{ t('select_language') }}</label>
+                    <select id="visitor-language-select" class="visitor-layout__select"
+                        v-model="selectedLocale">
+                        <option v-for="option in localeOptions" :key="option.value" :value="option.value">
+                            {{ option.label }}
+                        </option>
+                    </select>
+
+                    <label class="sr-only" for="visitor-theme-select">{{ t('settings_theme') }}</label>
+                    <select id="visitor-theme-select" class="visitor-layout__select" v-model="selectedTheme">
+                        <option v-for="option in themeOptions" :key="option.value" :value="option.value">
+                            {{ option.label }}
+                        </option>
+                    </select>
+                </slot>
             </div>
         </header>
 
@@ -44,6 +59,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useThemeStore } from '@/store/themeStore'
+import type { ThemeMode } from '@/utils/theme'
 
 interface NavLink {
     to: string
@@ -55,7 +72,8 @@ interface NavLinkConfig {
     labelKey: string
 }
 
-const { t } = useI18n({ useScope: 'global' })
+const { t, locale, te } = useI18n({ useScope: 'global' })
+const themeStore = useThemeStore()
 
 const navConfigs: NavLinkConfig[] = [
     { to: '/events', labelKey: 'visitor_nav_events' },
@@ -84,6 +102,34 @@ const legalLinks = computed<NavLink[]>(() =>
 )
 
 const currentYear = computed(() => new Date().getFullYear())
+
+const localeOptions: Array<{ value: string; label: string }> = [
+    { value: 'en', label: 'English' },
+    { value: 'da', label: 'Dansk' },
+    { value: 'de', label: 'Deutsch' },
+]
+
+const themeOptions = computed(() => {
+    const options: Array<{ value: ThemeMode; label: string }> = [
+        { value: 'light', label: te('settings_theme_light') ? t('settings_theme_light') : 'Light theme' },
+        { value: 'dark', label: te('settings_theme_dark') ? t('settings_theme_dark') : 'Dark theme' },
+    ]
+    return options
+})
+
+const selectedLocale = computed({
+    get: () => locale.value,
+    set: (value: string) => {
+        locale.value = value
+    },
+})
+
+const selectedTheme = computed({
+    get: () => themeStore.theme,
+    set: (value: ThemeMode) => {
+        themeStore.setTheme(value)
+    },
+})
 </script>
 
 <style scoped lang="scss">
@@ -161,6 +207,23 @@ const currentYear = computed(() => new Date().getFullYear())
     gap: 0.75rem;
 }
 
+.visitor-layout__select {
+    border-radius: 999px;
+    border: 1px solid var(--border-soft, rgba(148, 163, 184, 0.4));
+    background: var(--input-bg, #f1f5f9);
+    padding: 0.45rem 1.1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text, #0f172a);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.visitor-layout__select:focus {
+    outline: none;
+    border-color: var(--accent-primary, #4f46e5);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
 .visitor-layout__content {
     flex: 1;
     padding: clamp(2rem, 6vw, 3.5rem) clamp(1.25rem, 5vw, 3rem);
@@ -220,6 +283,8 @@ const currentYear = computed(() => new Date().getFullYear())
     .visitor-layout__actions {
         width: 100%;
         justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.65rem;
     }
 
     .visitor-layout__footer-content {
@@ -230,6 +295,17 @@ const currentYear = computed(() => new Date().getFullYear())
     .visitor-layout__footer-links {
         justify-content: center;
     }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
 }
 
 @media (max-width: 480px) {
