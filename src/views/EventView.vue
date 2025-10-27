@@ -420,7 +420,7 @@ const extractEvents = (payload: unknown): unknown[] => {
 const loadEvent = async () => {
     try {
         const { data } = await apiFetch<unknown>(
-            `/api/event/${eventId.value}?lang=${locale.value}`
+            `/api/admin/event/${eventId.value}?lang=${locale.value}`
         )
 
         const events = extractEvents(data)

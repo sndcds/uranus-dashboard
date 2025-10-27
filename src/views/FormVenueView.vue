@@ -102,7 +102,7 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { apiFetch } from '@/api'
+import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 
@@ -163,6 +163,87 @@ const isValidUrl = (value: string) => {
         return parsed.protocol === 'http:' || parsed.protocol === 'https:'
     } catch (error) {
         return false
+    }
+}
+
+const toNumberOrNull = (value: unknown): number | null => {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return value
+    }
+
+    if (typeof value === 'string') {
+        const trimmed = value.trim()
+        if (!trimmed.length) {
+            return null
+        }
+
+        const parsed = Number(trimmed)
+        return Number.isFinite(parsed) ? parsed : null
+    }
+
+    return null
+}
+
+const buildGeocodeQuery = (input: {
+    name: string
+    street: string
+    houseNumber: string
+    postalCode: string
+    city: string
+}): string => {
+    const parts: string[] = []
+
+    if (input.name.length) {
+        parts.push(input.name)
+    }
+
+    const streetLine = [input.street, input.houseNumber].filter((value) => value.length).join(' ')
+    if (streetLine.length) {
+        parts.push(streetLine)
+    }
+
+    const cityLine = [input.postalCode, input.city].filter((value) => value.length).join(' ')
+    if (cityLine.length) {
+        parts.push(cityLine)
+    }
+
+    return Array.from(new Set(parts.map((part) => part.trim()).filter((part) => part.length))).join(' ')
+}
+
+const resolveVenueCoordinates = async (input: {
+    name: string
+    street: string
+    houseNumber: string
+    postalCode: string
+    city: string
+}): Promise<LatLngLiteral | null> => {
+    if (location.value) {
+        return location.value
+    }
+
+    const query = buildGeocodeQuery(input)
+    if (!query.length) {
+        return null
+    }
+
+    try {
+        const result = await fetchCoordinatesForAddress(query)
+        if (!result) {
+            return null
+        }
+
+        const lat = toNumberOrNull(result.lat)
+        const lon = toNumberOrNull(result.lon)
+        if (lat == null || lon == null) {
+            return null
+        }
+
+        const coords: LatLngLiteral = { lat, lng: lon }
+        location.value = coords
+        return coords
+    } catch (error) {
+        console.error('Error fetching coordinates for venue:', error)
+        return null
     }
 }
 
@@ -235,9 +316,17 @@ const submitForm = async () => {
             organizer_id: organizerId,
         }
 
-        if (location.value) {
-            payload.latitude = location.value.lat
-            payload.longitude = location.value.lng
+        const coords = await resolveVenueCoordinates({
+            name: trimmedName,
+            street: trimmedStreet,
+            houseNumber: trimmedHouseNumber,
+            postalCode: trimmedPostalCode,
+            city: trimmedCity,
+        })
+
+        if (coords) {
+            payload.latitude = coords.lat
+            payload.longitude = coords.lng
         }
 
         const { status } = await apiFetch('/api/admin/venue/create', {

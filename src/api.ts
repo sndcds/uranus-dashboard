@@ -18,6 +18,11 @@ export interface ApiResponse<T> {
     status: number;
 }
 
+export interface NominatimResult {
+    lat: string;
+    lon: string;
+}
+
 /**
  * Custom Error type that includes HTTP status and response data
  */
@@ -31,6 +36,24 @@ class ApiError extends Error {
         this.data = data;
     }
 }
+
+const NOMINATIM_BASE_URL = 'https://nominatim.oklabflensburg.de';
+
+export const fetchCoordinatesForAddress = async (query: string, limit = 1): Promise<NominatimResult | null> => {
+    const params = new URLSearchParams({ q: query, limit: String(limit), format: 'jsonv2' });
+    const response = await fetch(`${NOMINATIM_BASE_URL}/search?${params.toString()}`);
+    if (!response.ok) {
+        throw new Error(`Nominatim request failed with status ${response.status}`);
+    }
+
+    const results = (await response.json()) as NominatimResult[];
+    if (!Array.isArray(results) || results.length === 0) {
+        return null;
+    }
+
+    const [first] = results;
+    return first ?? null;
+};
 
 /**
  * Fetch wrapper that automatically refreshes JWT access token on 401

@@ -101,7 +101,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 
@@ -234,6 +234,18 @@ const submitForm = async () => {
         if (location.value) {
             payload.latitude = location.value.lat
             payload.longitude = location.value.lng
+        } else {
+            const query = [trimmedStreet, trimmedHouseNumber, trimmedPostalCode, trimmedCity].filter(Boolean).join(' ')
+            const nominatimResult = query ? await fetchCoordinatesForAddress(query) : null
+            if (nominatimResult) {
+                const latNumber = Number(nominatimResult.lat)
+                const lonNumber = Number(nominatimResult.lon)
+                if (!Number.isNaN(latNumber) && !Number.isNaN(lonNumber)) {
+                    payload.latitude = latNumber
+                    payload.longitude = lonNumber
+                    location.value = { lat: latNumber, lng: lonNumber }
+                }
+            }
         }
 
         const { status } = await apiFetch('/api/admin/organizer/create', {
