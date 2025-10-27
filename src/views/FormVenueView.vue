@@ -152,20 +152,6 @@ const locationSummary = computed(() => {
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
 })
 
-const isValidEmail = (value: string) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailPattern.test(value)
-}
-
-const isValidUrl = (value: string) => {
-    try {
-        const parsed = new URL(value)
-        return parsed.protocol === 'http:' || parsed.protocol === 'https:'
-    } catch (error) {
-        return false
-    }
-}
-
 const toNumberOrNull = (value: unknown): number | null => {
     if (typeof value === 'number' && Number.isFinite(value)) {
         return value
@@ -184,66 +170,17 @@ const toNumberOrNull = (value: unknown): number | null => {
     return null
 }
 
-const buildGeocodeQuery = (input: {
-    name: string
-    street: string
-    houseNumber: string
-    postalCode: string
-    city: string
-}): string => {
-    const parts: string[] = []
-
-    if (input.name.length) {
-        parts.push(input.name)
-    }
-
-    const streetLine = [input.street, input.houseNumber].filter((value) => value.length).join(' ')
-    if (streetLine.length) {
-        parts.push(streetLine)
-    }
-
-    const cityLine = [input.postalCode, input.city].filter((value) => value.length).join(' ')
-    if (cityLine.length) {
-        parts.push(cityLine)
-    }
-
-    return Array.from(new Set(parts.map((part) => part.trim()).filter((part) => part.length))).join(' ')
+const isValidEmail = (value: string) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailPattern.test(value)
 }
 
-const resolveVenueCoordinates = async (input: {
-    name: string
-    street: string
-    houseNumber: string
-    postalCode: string
-    city: string
-}): Promise<LatLngLiteral | null> => {
-    if (location.value) {
-        return location.value
-    }
-
-    const query = buildGeocodeQuery(input)
-    if (!query.length) {
-        return null
-    }
-
+const isValidUrl = (value: string) => {
     try {
-        const result = await fetchCoordinatesForAddress(query)
-        if (!result) {
-            return null
-        }
-
-        const lat = toNumberOrNull(result.lat)
-        const lon = toNumberOrNull(result.lon)
-        if (lat == null || lon == null) {
-            return null
-        }
-
-        const coords: LatLngLiteral = { lat, lng: lon }
-        location.value = coords
-        return coords
+        const parsed = new URL(value)
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:'
     } catch (error) {
-        console.error('Error fetching coordinates for venue:', error)
-        return null
+        return false
     }
 }
 
@@ -316,13 +253,23 @@ const submitForm = async () => {
             organizer_id: organizerId,
         }
 
-        const coords = await resolveVenueCoordinates({
-            name: trimmedName,
-            street: trimmedStreet,
-            houseNumber: trimmedHouseNumber,
-            postalCode: trimmedPostalCode,
-            city: trimmedCity,
-        })
+        let coords: LatLngLiteral | null = location.value
+
+        if (!coords) {
+            const query = [trimmedStreet, trimmedHouseNumber, trimmedPostalCode, trimmedCity]
+                .filter((value) => value.length)
+                .join(' ')
+
+            const nominatimResult = query.length ? await fetchCoordinatesForAddress(query) : null
+            if (nominatimResult) {
+                const latNumber = toNumberOrNull(nominatimResult.lat)
+                const lonNumber = toNumberOrNull(nominatimResult.lon)
+                if (latNumber != null && lonNumber != null) {
+                    coords = { lat: latNumber, lng: lonNumber }
+                    location.value = coords
+                }
+            }
+        }
 
         if (coords) {
             payload.latitude = coords.lat
