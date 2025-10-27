@@ -404,7 +404,7 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
 }
 
 const extractEvents = (payload: unknown): unknown[] => {
-    if (Array.isArray(payload)) return payload
+    console.log(payload)
     if (payload && typeof payload === 'object') {
         const maybeEvents = (payload as QueryResponse).events
         if (Array.isArray(maybeEvents)) {
