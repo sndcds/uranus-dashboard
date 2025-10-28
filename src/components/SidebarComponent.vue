@@ -11,11 +11,32 @@
   <aside class="sidebar" :class="{ 'sidebar--open': isOpen }">
     <!-- Sidebar content -->
     <div class="sidebar__content">
-<div class="user-profile">
-        <img :src="avatarSrc" @error="onAvatarError" alt="User Profile"
-          class="profile-image" />
+      <div class="user-profile" role="button" tabindex="0" aria-haspopup="true" :aria-expanded="isUserMenuOpen"
+        @click="toggleUserMenu" @keydown.enter.prevent="toggleUserMenu" @keydown.space.prevent="toggleUserMenu">
+        <img :src="avatarSrc" @error="onAvatarError" alt="User Profile" class="profile-image" />
         <span class="user-name">{{ userStore.displayName }}</span>
+
+        <svg class="user-profile__chevron" viewBox="0 0 16 16" aria-hidden="true">
+          <path
+            d="M3.22 5.22a.75.75 0 011.06 0L8 8.94l3.72-3.72a.75.75 0 011.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0l-4.25-4.25a.75.75 0 010-1.06z"
+            fill="currentColor"
+          />
+        </svg>
       </div>
+
+      <transition name="fade">
+        <div v-if="isUserMenuOpen" class="user-menu">
+          <router-link to="/user/profile" class="user-menu__link" @click="handleProfileClick">
+            {{ t('user_profile') }}
+          </router-link>
+          <router-link to="/user/permissions" class="user-menu__link" @click="handlePermissionsClick">
+            {{ t('permissions') }}
+          </router-link>
+          <button type="button" class="user-menu__link user-menu__link--danger" @click="handleLogout">
+            {{ t('logout') }}
+          </button>
+        </div>
+      </transition>
 
       <nav class="sidebar__nav">
         <SidebarOptionComponent v-for="option in options" :key="option.id" :option="option"
@@ -27,7 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/store/userStore'
 import type { SidebarOption } from '@/types/types'
@@ -47,6 +69,7 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const avatarErrored = ref(false)
+const { t } = useI18n({ useScope: 'global' })
 
 const avatarSrc = computed(() => {
   if (avatarErrored.value || !userStore.userId) {
@@ -58,6 +81,7 @@ const avatarSrc = computed(() => {
 
 // Mobile sidebar state
 const isOpen = ref(false)
+const isUserMenuOpen = ref(false)
 
 // track the currently active route
 const activeRoute = ref(route.path)
@@ -68,6 +92,7 @@ watch(
     activeRoute.value = newPath
     // Close sidebar on route change (mobile)
     isOpen.value = false
+    isUserMenuOpen.value = false
   }
 )
 
@@ -89,7 +114,78 @@ const toggleSidebar = () => {
 
 const closeSidebar = () => {
   isOpen.value = false
+  isUserMenuOpen.value = false
 }
+
+const toggleUserMenu = () => {
+  isUserMenuOpen.value = !isUserMenuOpen.value
+}
+
+const closeUserMenu = () => {
+  isUserMenuOpen.value = false
+}
+
+const handleProfileClick = async () => {
+  closeUserMenu()
+  if (route.path !== '/user/profile') {
+    try {
+      await router.push('/user/profile')
+    } catch (err) {
+      console.warn('Navigation aborted for profile route', err)
+    }
+  }
+  isOpen.value = false
+}
+
+const handlePermissionsClick = async () => {
+  closeUserMenu()
+  if (route.path !== '/user/permissions') {
+    try {
+      await router.push('/user/permissions')
+    } catch (err) {
+      console.warn('Navigation aborted for permissions route', err)
+    }
+  }
+  isOpen.value = false
+}
+
+const handleLogout = () => {
+  emit('change', 'logout')
+  closeUserMenu()
+  isOpen.value = false
+}
+
+const onGlobalClick = (event: MouseEvent) => {
+  if (!isUserMenuOpen.value) {
+    return
+  }
+
+  const target = event.target as HTMLElement | null
+  if (!target) {
+    return
+  }
+
+  const profile = document.querySelector('.user-profile')
+  const menu = document.querySelector('.user-menu')
+
+  if (profile && profile.contains(target)) {
+    return
+  }
+
+  if (menu && menu.contains(target)) {
+    return
+  }
+
+  closeUserMenu()
+}
+
+onMounted(() => {
+  window.addEventListener('click', onGlobalClick)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('click', onGlobalClick)
+})
 
 const handleOptionChange = async (optionId: string) => {
   const selectedOption = props.options.find((option) => option.id === optionId)
@@ -115,6 +211,7 @@ const handleOptionChange = async (optionId: string) => {
   emit('change', optionId)
   // Close sidebar after navigation on mobile
   isOpen.value = false
+  isUserMenuOpen.value = false
 }
 </script>
 
@@ -201,8 +298,18 @@ const handleOptionChange = async (optionId: string) => {
 .user-profile {
   display: flex;
   align-items: center;
+  cursor: pointer;
   gap: 0.75rem;
   padding: 1rem;
+  position: relative;
+  border-radius: 12px;
+  transition: background 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--surface-muted);
+    outline: none;
+  }
 }
 
 .profile-image {
@@ -217,6 +324,65 @@ const handleOptionChange = async (optionId: string) => {
   font-weight: 600;
   color: var(--color-text);
   font-size: 0.95rem;
+}
+
+.user-profile__chevron {
+  margin-left: auto;
+  width: 1rem;
+  height: 1rem;
+  fill: var(--muted-text);
+  transition: transform 0.2s ease;
+  transform: rotate(0deg);
+}
+
+.user-profile[aria-expanded='true'] .user-profile__chevron {
+  transform: rotate(180deg);
+}
+
+.user-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0 1rem 1rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+}
+
+.user-menu__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  font: inherit;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--surface-muted);
+    color: var(--accent-primary);
+    outline: none;
+  }
+
+  &--danger {
+    color: #dc2626;
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(220, 38, 38, 0.1);
+      color: #b91c1c;
+    }
+  }
 }
 
 .sidebar__nav {

@@ -29,10 +29,7 @@ const sidebarOptions = computed<SidebarOption[]>(() => [
   { id: 'organizers', label: t('organizers'), icon: '', route: '/organizers' },
   { id: 'venues', label: t('venues'), icon: '', route: `/organizer/${appStore.organizerId ?? ''}/venues` },
   { id: 'events', label: t('events'), icon: '', route: `/organizer/${appStore.organizerId ?? ''}/events` },
-  { id: 'permissions', label: t('permissions'), icon: '', route: '/user/permissions' },
-  { id: 'profile', label: t('user_profile'), icon: '', route: '/user/profile' },
-  { id: 'settings', label: t('settings'), icon: '', route: '/settings' },
-  { id: 'logout', label: t('logout'), icon: '', route: '' },
+  { id: 'settings', label: t('settings'), icon: '', route: '/settings' }
 ])
 
 function onSidebarChange(id: string) {

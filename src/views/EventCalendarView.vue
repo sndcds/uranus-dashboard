@@ -676,7 +676,7 @@ watch(
     flex-direction: column;
     gap: clamp(1.5rem, 3vw, 2.25rem);
     padding: clamp(1.5rem, 4vw, 2.5rem);
-    max-width: 1200px;
+    max-width: 1920px;
     margin: 0 auto;
 }
 
