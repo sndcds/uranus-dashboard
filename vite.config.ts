@@ -35,5 +35,25 @@ export default defineConfig(({ mode }) => {
                 },
             },
         },
+        build: {
+            chunkSizeWarningLimit: 1200,
+            rollupOptions: {
+                output: {
+                    manualChunks(id) {
+                        if (id.includes('node_modules')) {
+                            if (id.includes('vue') || id.includes('pinia')) {
+                                return 'vendor-vue'
+                            }
+
+                            if (id.includes('@intlify')) {
+                                return 'vendor-i18n'
+                            }
+
+                            return 'vendor'
+                        }
+                    },
+                },
+            },
+        },
     }
 })
