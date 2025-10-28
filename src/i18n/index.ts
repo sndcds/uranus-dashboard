@@ -5,6 +5,11 @@ import { watch } from 'vue'
 // Define messages for different locales
 const messages = {
     de: {
+        edit_organizer: 'Organisation bearbeiten',
+        edit_venue: 'Spielstätte bearbeiten',
+        update_organizer: 'Organisation aktualisieren',
+        organizer_active: 'Aktiv',
+        organizer_activate: 'Aktivieren',
         add: 'Hinzufügen',
         none_selected: 'Keine ausgewählt',
         venue_created: 'Spielstätte erfolgreich erstellt',
@@ -325,6 +330,11 @@ const messages = {
         user_permissions_flag_no: 'Nein',
     },
     en: {
+        update_organizer: 'Update Organizer',
+        edit_organizer: 'Edit Organizer',
+        edit_venue: 'Edit Venue',
+        organizer_active: 'Active',
+        organizer_activate: 'Activate',
         add: 'Add',
         none_selected: 'None selected',
         venue_created: 'Venue created successfully',
@@ -647,6 +657,11 @@ const messages = {
         user_permissions_flag_no: 'No',
     },
     da: {
+        update_organizer: 'Opdater arrangør',
+        edit_organizer: 'Rediger arrangør',
+        edit_venue: 'Rediger spillested',
+        organizer_active: 'Aktiv',
+        organizer_activate: 'Aktiver',
         add: 'Tilføj',
         none_selected: 'Intet valgt',
         venue_created: 'Spillested oprettet',

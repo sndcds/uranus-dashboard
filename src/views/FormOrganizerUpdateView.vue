@@ -1,7 +1,7 @@
 <template>
     <div class="organizer-page">
         <section class="organizer-hero">
-            <h1>{{ t('create_organizer') }}</h1>
+            <h1>{{ t('edit_organizer') }}</h1>
             <p>{{ organizerDescription }}</p>
         </section>
 
@@ -17,6 +17,12 @@
                             </label>
                             <input v-model="organizerName" id="organizer_name" type="text" />
                             <p v-if="fieldErrors.organizerName" class="field-error">{{ fieldErrors.organizerName }}</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="address_addition">
+                                {{ labelMessage('organizer_address_addition', 'Address addition') }}
+                            </label>
+                            <input v-model="addressAddition" id="address_addition" type="text" />
                         </div>
                         <div class="form-group">
                             <label for="street">
@@ -55,6 +61,18 @@
                             <p v-if="fieldErrors.city" class="field-error">{{ fieldErrors.city }}</p>
                         </div>
                         <div class="form-group">
+                            <label for="state_code">
+                                {{ labelMessage('organizer_state_code', 'State / region code') }}
+                            </label>
+                            <input v-model="stateCode" id="state_code" type="text" />
+                        </div>
+                        <div class="form-group">
+                            <label for="country_code">
+                                {{ labelMessage('organizer_country_code', 'Country code') }}
+                            </label>
+                            <input v-model="countryCode" id="country_code" type="text" />
+                        </div>
+                        <div class="form-group">
                             <label for="email">{{ t('email') }}</label>
                             <input v-model="email" id="email" type="email" />
                             <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
@@ -68,10 +86,34 @@
                             <label for="phone">{{ t('phone') }}</label>
                             <input v-model="phone" id="phone" type="tel" />
                         </div>
+                        <div class="form-group form-group--full">
+                            <label :id="descriptionLabelId">
+                                {{ labelMessage('organizer_description', 'Description') }}
+                            </label>
+                            <MarkdownEditorComponent v-model="description" class="organizer-description-editor"
+                                :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
+                        </div>
+                        <div class="form-group">
+                            <label for="holding_organizer_id">
+                                {{ labelMessage('organizer_holding_id', 'Holding organizer ID') }}
+                            </label>
+                            <input v-model="holdingOrganizerId" id="holding_organizer_id" type="text"
+                                inputmode="numeric" />
+                        </div>
+                        <div class="form-group">
+                            <label for="legal_form_id">
+                                {{ labelMessage('organizer_legal_form_id', 'Legal form ID') }}
+                            </label>
+                            <input v-model="legalFormId" id="legal_form_id" type="text" inputmode="numeric" />
+                        </div>
+                        <div class="form-group nonprofit-checkbox">
+                            <input :id="nonprofitId" type="checkbox" v-model="nonprofit" />
+                            <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit', 'Nonprofit') }}</label>
+                        </div>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" :disabled="isSubmitting">{{ t('create_organizer') }}</button>
+                        <button type="submit" :disabled="isSubmitting">{{ submitButtonLabel }}</button>
                     </div>
                 </form>
 
@@ -101,9 +143,11 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
+import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 
 interface LatLngLiteral {
     lat: number
@@ -111,15 +155,23 @@ interface LatLngLiteral {
 }
 
 const { t, te } = useI18n()
+const route = useRoute()
 
 const organizerName = ref('')
+const addressAddition = ref('')
 const street = ref('')
 const houseNumber = ref('')
 const postalCode = ref('')
 const city = ref('')
+const stateCode = ref('')
+const countryCode = ref('')
 const email = ref('')
 const website = ref('')
 const phone = ref('')
+const description = ref('')
+const holdingOrganizerId = ref('')
+const legalFormId = ref('')
+const nonprofit = ref(false)
 const location = ref<LatLngLiteral | null>(null)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
@@ -134,13 +186,15 @@ const fieldErrors = reactive({
     website: null as string | null,
 })
 
-const organizerDescription = computed(() => (te('organizer_create_description') ? t('organizer_create_description') : 'Add the essential information for your organizer profile.'))
+const organizerDescription = computed(() => (te('organizer_edit_description') ? t('organizer_edit_description') : 'Review and update the organizer details.'))
 const mapHint = computed(() => (te('organizer_map_hint') ? t('organizer_map_hint') : 'Click the map to drop a pin where the organizer is located.'))
 const requiredA11yLabel = computed(() => (te('form_required_indicator') ? t('form_required_indicator') : 'Required field'))
 const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
 const missingRequiredMessage = computed(() => (te('organizer_form_missing_required') ? t('organizer_form_missing_required') : 'Please complete all required fields.'))
 const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
 const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL (including http/https).'))
+const organizerLoadErrorMessage = computed(() => (te('organizer_load_error') ? t('organizer_load_error') : 'Failed to load organizer details.'))
+const descriptionPlaceholder = computed(() => (te('organizer_description_placeholder') ? t('organizer_description_placeholder') : 'Describe the organizer, services, and mission (Markdown supported).'))
 const locationSummary = computed(() => {
     if (!location.value) {
         return te('organizer_map_no_selection') ? t('organizer_map_no_selection') : 'No location selected yet'
@@ -148,6 +202,144 @@ const locationSummary = computed(() => {
     const { lat, lng } = location.value
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
 })
+
+const labelMessage = (key: string, fallback: string) => (te(key) ? t(key) : fallback)
+const descriptionLabelId = 'organizer-description-label'
+
+interface OrganizerResponse {
+    organizer_id?: number
+    name?: string
+    organizer_name?: string
+    address_addition?: string | null
+    street?: string | null
+    house_number?: string | null
+    postal_code?: string | null
+    city?: string | null
+    state_code?: string | null
+    country_code?: string | null
+    description?: string | null
+    holding_organizer_id?: number | string | null
+    legal_form_id?: number | string | null
+    nonprofit?: boolean | null
+    contact_email?: string | null
+    website_url?: string | null
+    contact_phone?: string | null
+    latitude?: number | string | null
+    longitude?: number | string | null
+    lat?: number | string | null
+    lon?: number | string | null
+}
+
+const toOrganizerId = (value: unknown): number | null => {
+    if (Array.isArray(value)) {
+        const [first] = value
+        return toOrganizerId(first)
+    }
+    if (typeof value !== 'string') {
+        return null
+    }
+    const trimmed = value.trim()
+    if (!trimmed.length) {
+        return null
+    }
+    const parsed = Number(trimmed)
+    return Number.isFinite(parsed) ? parsed : null
+}
+
+const organizerId = computed(() => toOrganizerId(route.params.id))
+const submitButtonLabel = computed(() => t('update_organizer'))
+const isLoadingOrganizer = ref(false)
+
+const toNumberOrNull = (value: string): number | null => {
+    if (!value.trim().length) {
+        return null
+    }
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : null
+}
+
+const nonprofitId = 'organizer-nonprofit-checkbox'
+
+const loadOrganizerById = async (id: number) => {
+    if (isLoadingOrganizer.value) {
+        return
+    }
+
+    error.value = null
+    success.value = null
+    Object.keys(fieldErrors).forEach((key) => {
+        fieldErrors[key as keyof typeof fieldErrors] = null
+    })
+    isLoadingOrganizer.value = true
+
+    try {
+        const { data } = await apiFetch<OrganizerResponse>(`/api/admin/organizer/${id}`)
+        if (!data) {
+            throw new Error('Organizer not found')
+        }
+
+        const organizerNameValue = data.name ?? data.organizer_name ?? ''
+        organizerName.value = typeof organizerNameValue === 'string' ? organizerNameValue : ''
+
+        addressAddition.value = typeof data.address_addition === 'string' ? data.address_addition : ''
+        street.value = typeof data.street === 'string' ? data.street : ''
+        houseNumber.value = typeof data.house_number === 'string' ? data.house_number : ''
+        postalCode.value = typeof data.postal_code === 'string' ? data.postal_code : ''
+        city.value = typeof data.city === 'string' ? data.city : ''
+        stateCode.value = typeof data.state_code === 'string' ? data.state_code : ''
+        countryCode.value = typeof data.country_code === 'string' ? data.country_code : ''
+        description.value = typeof data.description === 'string' ? data.description : ''
+
+        if (typeof data.holding_organizer_id === 'number' || (typeof data.holding_organizer_id === 'string' && data.holding_organizer_id.trim().length)) {
+            holdingOrganizerId.value = String(data.holding_organizer_id).trim()
+        } else {
+            holdingOrganizerId.value = ''
+        }
+
+        if (typeof data.legal_form_id === 'number' || (typeof data.legal_form_id === 'string' && data.legal_form_id.trim().length)) {
+            legalFormId.value = String(data.legal_form_id).trim()
+        } else {
+            legalFormId.value = ''
+        }
+
+        nonprofit.value = Boolean(data.nonprofit)
+
+        email.value = typeof data.contact_email === 'string' ? data.contact_email : ''
+        website.value = typeof data.website_url === 'string' ? data.website_url : ''
+        phone.value = typeof data.contact_phone === 'string' ? data.contact_phone : ''
+
+        const rawLat = data.latitude ?? data.lat ?? null
+        const rawLng = data.longitude ?? data.lon ?? null
+        const latNumber = typeof rawLat === 'number' ? rawLat : typeof rawLat === 'string' ? Number(rawLat) : null
+        const lngNumber = typeof rawLng === 'number' ? rawLng : typeof rawLng === 'string' ? Number(rawLng) : null
+
+        if (latNumber != null && Number.isFinite(latNumber) && lngNumber != null && Number.isFinite(lngNumber)) {
+            location.value = { lat: latNumber, lng: lngNumber }
+        } else {
+            location.value = null
+        }
+    } catch (err: unknown) {
+        if (typeof err === 'object' && err && 'data' in err) {
+            const e = err as { data?: { error?: string } }
+            error.value = e.data?.error || organizerLoadErrorMessage.value
+        } else {
+            error.value = organizerLoadErrorMessage.value
+        }
+    } finally {
+        isLoadingOrganizer.value = false
+    }
+}
+
+watch(
+    organizerId,
+    (id) => {
+        if (id == null) {
+            return
+        }
+        loadOrganizerById(id)
+    },
+    { immediate: true }
+)
 
 const isValidEmail = (value: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -176,13 +368,19 @@ const submitForm = async () => {
     })
 
     const trimmedName = organizerName.value.trim()
+    const trimmedAddressAddition = addressAddition.value.trim()
     const trimmedStreet = street.value.trim()
     const trimmedHouseNumber = houseNumber.value.trim()
     const trimmedPostalCode = postalCode.value.trim()
     const trimmedCity = city.value.trim()
+    const trimmedStateCode = stateCode.value.trim()
+    const trimmedCountryCode = countryCode.value.trim()
     const trimmedEmail = email.value.trim()
     const trimmedPhone = phone.value.trim()
     const trimmedWebsite = website.value.trim()
+    const trimmedDescription = description.value.trim()
+    const trimmedHoldingOrganizerId = holdingOrganizerId.value.trim()
+    const trimmedLegalFormId = legalFormId.value.trim()
 
     fieldErrors.organizerName = trimmedName ? null : requiredFieldMessage.value
     fieldErrors.street = trimmedStreet ? null : requiredFieldMessage.value
@@ -231,6 +429,19 @@ const submitForm = async () => {
             contact_phone: trimmedPhone.length ? trimmedPhone : null,
         }
 
+        payload.address_addition = trimmedAddressAddition.length ? trimmedAddressAddition : null
+        payload.state_code = trimmedStateCode.length ? trimmedStateCode : null
+        payload.country_code = trimmedCountryCode.length ? trimmedCountryCode : null
+        payload.description = trimmedDescription.length ? trimmedDescription : null
+
+        const holdingIdValue = toNumberOrNull(trimmedHoldingOrganizerId)
+        payload.holding_organizer_id = holdingIdValue
+
+        const legalFormValue = toNumberOrNull(trimmedLegalFormId)
+        payload.legal_form_id = legalFormValue
+
+        payload.nonprofit = nonprofit.value
+
         if (location.value) {
             payload.latitude = location.value.lat
             payload.longitude = location.value.lng
@@ -248,12 +459,17 @@ const submitForm = async () => {
             }
         }
 
-        const { status } = await apiFetch('/api/admin/organizer/create', {
-            method: 'POST',
+        if (organizerId.value == null) {
+            throw new Error('Organizer ID missing for update')
+        }
+
+        const { status } = await apiFetch(`/api/admin/organizer/${organizerId.value}`, {
+            method: 'PUT',
             body: JSON.stringify(payload),
         })
+
         if (status >= 200 && status < 300) {
-            success.value = t('organizer_created')
+            success.value = te('organizer_updated') ? t('organizer_updated') : 'Organizer updated successfully'
         } else {
             throw new Error('Unexpected status code')
         }
@@ -261,7 +477,7 @@ const submitForm = async () => {
         success.value = null
         if (typeof err === 'object' && err && 'data' in err) {
             const e = err as { data?: { error?: string } }
-            error.value = e.data?.error || t('failed_to_create_organizer')
+            error.value = e.data?.error || (te('failed_to_update_organizer') ? t('failed_to_update_organizer') : t('unknown_error'))
         } else {
             error.value = t('unknown_error')
         }
@@ -353,7 +569,7 @@ watch(website, (value) => {
 }
 
 .organizer-card {
-    @include form-card(960px, clamp(1.75rem, 4vw, 2.75rem), clamp(1.25rem, 3vw, 1.75rem));
+    @include form-card(1080px, clamp(1.75rem, 4vw, 2.75rem), clamp(1.25rem, 3vw, 1.75rem));
 }
 
 .organizer-layout {
@@ -374,6 +590,37 @@ watch(website, (value) => {
 
 .form-group {
     @include form-group();
+}
+
+.form-group--full {
+    grid-column: 1 / -1;
+}
+
+.organizer-description-editor {
+    margin-top: 0.5rem;
+}
+
+.nonprofit-checkbox {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+}
+
+.nonprofit-checkbox input[type="checkbox"] {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin: 0;
+    cursor: pointer;
+}
+
+.nonprofit-checkbox label {
+    margin-bottom: 5px;
+    padding-bottom: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--color-text);
 }
 
 .form-actions {

@@ -43,21 +43,31 @@
     </div>
 
     <footer class="organizer-card__footer">
-      <button
-        class="organizer-card__button"
-        :class="{ 'organizer-card__button--active': appStore.organizerId === organizer.organizer_id }"
-        @click="assignOrganizer(organizer.organizer_id)"
-      >
-        {{ appStore.organizerId === organizer.organizer_id ? 'Active' : 'Activate' }}
-      </button>
+      <div class="organizer-card__button-group">
+        <button
+          class="organizer-card__button"
+          :class="{ 'organizer-card__button--active': appStore.organizerId === organizer.organizer_id }"
+          @click="assignOrganizer(organizer.organizer_id)"
+        >
+          {{ appStore.organizerId === organizer.organizer_id ? t('organizer_active') : t('organizer_activate') }}
+        </button>
+        <router-link
+          :to="`/organizer/${organizer.organizer_id}/edit`"
+          class="organizer-card__edit-btn"
+        >
+          {{ t('edit_organizer') }}
+        </router-link>
+      </div>
     </footer>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useAppStore } from '@/store/appStore'
+import { useI18n } from 'vue-i18n'
 
 const appStore = useAppStore()
+const { t } = useI18n()
 
 interface Space {
   space_id: number
@@ -209,9 +219,14 @@ function assignOrganizer(id: number) {
   border-top: 1px solid var(--border-soft);
 }
 
+.organizer-card__button-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .organizer-card__button {
   @include form-secondary-button();
-  width: 100%;
+  flex: 1;
   justify-content: center;
   font-size: 0.9rem;
   font-weight: 600;
@@ -227,6 +242,22 @@ function assignOrganizer(id: number) {
       background: var(--accent-secondary);
       border-color: var(--accent-secondary);
     }
+  }
+}
+
+.organizer-card__edit-btn {
+  @include form-primary-button();
+  flex: 1;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+
+  &:hover {
+    text-decoration: none;
   }
 }
 

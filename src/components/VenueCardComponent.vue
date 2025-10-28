@@ -1,7 +1,16 @@
 <template>
   <article class="venue-card">
     <header class="venue-card__header">
-      <h2 class="venue-card__title">{{ venue.venue_name }}</h2>
+      <div class="venue-card__header-content">
+        <h2 class="venue-card__title">{{ venue.venue_name }}</h2>
+        <router-link
+          v-if="venue.can_edit_venue"
+          :to="`/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
+          class="venue-card__edit-btn"
+        >
+          {{ t('edit_venue') }}
+        </router-link>
+      </div>
       <p class="venue-card__stat">
         <span class="venue-card__stat-value">{{ venue.upcoming_event_count }}</span>
         <span class="venue-card__stat-label">{{ t('events') }}</span>
@@ -87,10 +96,30 @@ interface Venue {
   gap: 0.5rem;
 }
 
+.venue-card__header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .venue-card__title {
   margin: 0;
   font-size: clamp(1.4rem, 5vw, 1.75rem);
   color: var(--color-text);
+  flex: 1;
+}
+
+.venue-card__edit-btn {
+  @include form-secondary-button($padding-y: 0.6rem, $padding-x: 1.2rem);
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .venue-card__stat {

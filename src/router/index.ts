@@ -8,7 +8,7 @@ import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import OrganizerDashboardView from '@/views/OrganizerDashboardView.vue'
 import SettingsView from '@/views/SettingsView.vue'
-import FormOrganizerView from '@/views/FormOrganizerView.vue'
+import FormOrganizerCreateView from '@/views/FormOrganizerCreateView.vue'
 import OrganizerVenueView from '@/views/OrganizerVenueView.vue'
 import SignupView from '@/views/SignupView.vue'
 import FormVenueView from '@/views/FormVenueView.vue'
@@ -19,6 +19,7 @@ import EventView from '@/views/EventView.vue'
 import UserPermissionView from '@/views/UserPermissionView.vue'
 import FormUserProfileView from '@/views/FormUserProfileView.vue'
 import EventCalendarView from '@/views/EventCalendarView.vue'
+import FormOrganizerUpdateView from '@/views/FormOrganizerUpdateView.vue'
 
 const routes = [
     {
@@ -44,7 +45,12 @@ const routes = [
             {
                 path: '/organizer/create',
                 name: 'create-organizer',
-                component: FormOrganizerView,
+                component: FormOrganizerCreateView,
+            },
+            {
+                path: '/organizer/:id/edit',
+                name: 'edit-organizer',
+                component: FormOrganizerUpdateView,
             },
             {
                 path: '/organizer/:id/venue/create',
@@ -52,8 +58,18 @@ const routes = [
                 component: FormVenueView,
             },
             {
+                path: '/organizer/:id/venue/:venueId/edit',
+                name: 'edit-venue',
+                component: FormVenueView,
+            },
+            {
                 path: '/organizer/:id/venue/:venueId/space/create',
                 name: 'create-space',
+                component: FormSpaceView,
+            },
+            {
+                path: '/organizer/:id/venue/:venueId/space/:spaceId/edit',
+                name: 'edit-space',
                 component: FormSpaceView,
             },
             {
