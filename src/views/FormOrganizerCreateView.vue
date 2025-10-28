@@ -412,6 +412,7 @@ button {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    height: 340px;
 }
 
 .location-meta {

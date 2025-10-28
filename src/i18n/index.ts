@@ -5,6 +5,12 @@ import { watch } from 'vue'
 // Define messages for different locales
 const messages = {
     de: {
+        organizer_address_addition: 'Adresszusatz',
+        organizer_state_code: 'Bundesland',
+        organizer_country_code: 'Land',
+        organizer_description: 'Beschreibung der Organisation',
+        organizer_nonprofit: 'Gemeinnützig',
+        organizer_legal_form_id: 'Rechtsform',
         edit_organizer: 'Organisation bearbeiten',
         edit_venue: 'Spielstätte bearbeiten',
         update_organizer: 'Organisation aktualisieren',
@@ -330,6 +336,12 @@ const messages = {
         user_permissions_flag_no: 'Nein',
     },
     en: {
+        organizer_address_addition: 'Address Addition',
+        organizer_state_code: 'State',
+        organizer_country_code: 'Country',
+        organizer_description: 'Organizer Description',
+        organizer_nonprofit: 'Non-profit',
+        organizer_legal_form_id: 'Legal Form',
         update_organizer: 'Update Organizer',
         edit_organizer: 'Edit Organizer',
         edit_venue: 'Edit Venue',
@@ -657,6 +669,12 @@ const messages = {
         user_permissions_flag_no: 'No',
     },
     da: {
+        organizer_address_addition: 'Adresse tilføjelse',
+        organizer_state_code: 'Stat',
+        organizer_country_code: 'Land',
+        organizer_description: 'Arrangørbeskrivelse',
+        organizer_nonprofit: 'Non-profit',
+        organizer_legal_form_id: 'Juridisk form',
         update_organizer: 'Opdater arrangør',
         edit_organizer: 'Rediger arrangør',
         edit_venue: 'Rediger spillested',

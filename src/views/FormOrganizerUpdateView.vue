@@ -20,7 +20,7 @@
                         </div>
                         <div class="form-group">
                             <label for="address_addition">
-                                {{ labelMessage('organizer_address_addition', 'Address addition') }}
+                                {{ labelMessage('organizer_address_addition') }}
                             </label>
                             <input v-model="addressAddition" id="address_addition" type="text" />
                         </div>
@@ -61,16 +61,31 @@
                             <p v-if="fieldErrors.city" class="field-error">{{ fieldErrors.city }}</p>
                         </div>
                         <div class="form-group">
-                            <label for="state_code">
-                                {{ labelMessage('organizer_state_code', 'State / region code') }}
+                            <label for="country_code">
+                                {{ labelMessage('organizer_country_code') }}
                             </label>
-                            <input v-model="stateCode" id="state_code" type="text" />
+                            <select
+                                v-model="countryCode"
+                                id="country_code"
+                                :disabled="countriesLoading"
+                            >
+                                <option value="">
+                                    {{ countryPlaceholder }}
+                                </option>
+                                <option
+                                    v-for="country in countries"
+                                    :key="country.code"
+                                    :value="country.code"
+                                >
+                                    {{ country.name }}
+                                </option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="country_code">
-                                {{ labelMessage('organizer_country_code', 'Country code') }}
+                            <label for="state_code">
+                                {{ labelMessage('organizer_state_code') }}
                             </label>
-                            <input v-model="countryCode" id="country_code" type="text" />
+                            <input v-model="stateCode" id="state_code" type="text" />
                         </div>
                         <div class="form-group">
                             <label for="email">{{ t('email') }}</label>
@@ -88,27 +103,34 @@
                         </div>
                         <div class="form-group form-group--full">
                             <label :id="descriptionLabelId">
-                                {{ labelMessage('organizer_description', 'Description') }}
+                                {{ labelMessage('organizer_description') }}
                             </label>
                             <MarkdownEditorComponent v-model="description" class="organizer-description-editor"
                                 :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
                         </div>
                         <div class="form-group">
                             <label for="holding_organizer_id">
-                                {{ labelMessage('organizer_holding_id', 'Holding organizer ID') }}
+                                {{ labelMessage('organizer_holding_id') }}
                             </label>
                             <input v-model="holdingOrganizerId" id="holding_organizer_id" type="text"
                                 inputmode="numeric" />
                         </div>
                         <div class="form-group">
                             <label for="legal_form_id">
-                                {{ labelMessage('organizer_legal_form_id', 'Legal form ID') }}
+                                {{ labelMessage('organizer_legal_form_id') }}
                             </label>
-                            <input v-model="legalFormId" id="legal_form_id" type="text" inputmode="numeric" />
+                            <select v-model="legalFormId" id="legal_form_id" :disabled="legalFormsLoading">
+                                <option value="" disabled>
+                                    {{ legalFormPlaceholder }}
+                                </option>
+                                <option v-for="form in legalForms" :key="form.id" :value="String(form.id)">
+                                    {{ form.name }}
+                                </option>
+                            </select>
                         </div>
                         <div class="form-group nonprofit-checkbox">
                             <input :id="nonprofitId" type="checkbox" v-model="nonprofit" />
-                            <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit', 'Nonprofit') }}</label>
+                            <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit') }}</label>
                         </div>
                     </div>
 
@@ -141,7 +163,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
@@ -154,7 +176,7 @@ interface LatLngLiteral {
     lng: number
 }
 
-const { t, te } = useI18n()
+const { t, te, locale } = useI18n()
 const route = useRoute()
 
 const organizerName = ref('')
@@ -192,9 +214,11 @@ const requiredA11yLabel = computed(() => (te('form_required_indicator') ? t('for
 const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
 const missingRequiredMessage = computed(() => (te('organizer_form_missing_required') ? t('organizer_form_missing_required') : 'Please complete all required fields.'))
 const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
-const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL (including http/https).'))
+const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL.'))
 const organizerLoadErrorMessage = computed(() => (te('organizer_load_error') ? t('organizer_load_error') : 'Failed to load organizer details.'))
 const descriptionPlaceholder = computed(() => (te('organizer_description_placeholder') ? t('organizer_description_placeholder') : 'Describe the organizer, services, and mission (Markdown supported).'))
+const legalFormPlaceholder = computed(() => (te('organizer_legal_form_placeholder') ? t('organizer_legal_form_placeholder') : 'Select legal form'))
+const countryPlaceholder = computed(() => (te('organizer_country_placeholder') ? t('organizer_country_placeholder') : 'Select country'))
 const locationSummary = computed(() => {
     if (!location.value) {
         return te('organizer_map_no_selection') ? t('organizer_map_no_selection') : 'No location selected yet'
@@ -203,7 +227,7 @@ const locationSummary = computed(() => {
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
 })
 
-const labelMessage = (key: string, fallback: string) => (te(key) ? t(key) : fallback)
+const labelMessage = (key: string) => t(key)
 const descriptionLabelId = 'organizer-description-label'
 
 interface OrganizerResponse {
@@ -230,6 +254,30 @@ interface OrganizerResponse {
     lon?: number | string | null
 }
 
+interface LegalFormResponse {
+    legal_form_id: number | string
+    legal_form_name?: string | null
+}
+
+const legalForms = ref<Array<{ id: number; name: string }>>([])
+const legalFormsLoading = ref(false)
+interface CountryResponse {
+    country_code: string
+    country_name?: string | null
+}
+
+const countries = ref<Array<{ code: string; name: string }>>([])
+const countriesLoading = ref(false)
+const ensureCountryOption = (code: string) => {
+    const trimmed = code.trim()
+    if (!trimmed.length) {
+        return
+    }
+    if (!countries.value.some((country) => country.code === trimmed)) {
+        countries.value.push({ code: trimmed, name: trimmed })
+    }
+}
+
 const toOrganizerId = (value: unknown): number | null => {
     if (Array.isArray(value)) {
         const [first] = value
@@ -250,6 +298,81 @@ const organizerId = computed(() => toOrganizerId(route.params.id))
 const submitButtonLabel = computed(() => t('update_organizer'))
 const isLoadingOrganizer = ref(false)
 
+const loadLegalForms = async () => {
+    if (legalFormsLoading.value) {
+        return
+    }
+
+    legalFormsLoading.value = true
+    try {
+        const { data } = await apiFetch<LegalFormResponse[]>(`/api/choosable-legal-forms?lang=${locale.value}`)
+        if (Array.isArray(data)) {
+            legalForms.value = data
+                .map((item) => {
+                    const rawId = item.legal_form_id
+                    const id = typeof rawId === 'number' ? rawId : Number(rawId)
+                    if (!Number.isFinite(id)) {
+                        return null
+                    }
+                    const rawLabel = item.legal_form_name ?? ''
+                    const label = typeof rawLabel === 'string' ? rawLabel.trim() : ''
+                    return { id, name: label.length ? label : String(id) }
+                })
+                .filter((value): value is { id: number; name: string } => Boolean(value))
+
+            const currentValue = legalFormId.value.trim()
+            if (currentValue.length) {
+                const numeric = Number(currentValue)
+                if (
+                    Number.isFinite(numeric) &&
+                    !legalForms.value.some((form) => form.id === numeric)
+                ) {
+                    legalForms.value.push({ id: numeric, name: String(currentValue) })
+                }
+            }
+        } else {
+            legalForms.value = []
+        }
+    } catch (err) {
+        legalForms.value = []
+        console.error('Failed to load legal forms', err)
+    } finally {
+        legalFormsLoading.value = false
+    }
+}
+
+const loadCountries = async () => {
+    if (countriesLoading.value) {
+        return
+    }
+
+    countriesLoading.value = true
+    try {
+        const { data } = await apiFetch<CountryResponse[]>(`/api/choosable-countries?lang=${locale.value}`)
+        if (Array.isArray(data)) {
+            countries.value = data
+                .map((item) => {
+                    const code = typeof item.country_code === 'string' ? item.country_code.trim() : ''
+                    if (!code.length) {
+                        return null
+                    }
+                    const rawLabel = item.country_name ?? ''
+                    const label = typeof rawLabel === 'string' ? rawLabel.trim() : ''
+                    return { code, name: label.length ? label : code }
+                })
+                .filter((value): value is { code: string; name: string } => Boolean(value))
+
+            ensureCountryOption(countryCode.value)
+        } else {
+            countries.value = []
+        }
+    } catch (err) {
+        countries.value = []
+        console.error('Failed to load countries', err)
+    } finally {
+        countriesLoading.value = false
+    }
+}
 const toNumberOrNull = (value: string): number | null => {
     if (!value.trim().length) {
         return null
@@ -287,7 +410,8 @@ const loadOrganizerById = async (id: number) => {
         postalCode.value = typeof data.postal_code === 'string' ? data.postal_code : ''
         city.value = typeof data.city === 'string' ? data.city : ''
         stateCode.value = typeof data.state_code === 'string' ? data.state_code : ''
-        countryCode.value = typeof data.country_code === 'string' ? data.country_code : ''
+        countryCode.value = typeof data.country_code === 'string' ? data.country_code.trim() : ''
+        ensureCountryOption(countryCode.value)
         description.value = typeof data.description === 'string' ? data.description : ''
 
         if (typeof data.holding_organizer_id === 'number' || (typeof data.holding_organizer_id === 'string' && data.holding_organizer_id.trim().length)) {
@@ -341,6 +465,11 @@ watch(
     { immediate: true }
 )
 
+onMounted(() => {
+    loadLegalForms()
+    loadCountries()
+})
+
 const isValidEmail = (value: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailPattern.test(value)
@@ -348,8 +477,12 @@ const isValidEmail = (value: string) => {
 
 const isValidUrl = (value: string) => {
     try {
-        const parsed = new URL(value)
-        return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+        const prefixed = value.startsWith('http://') || value.startsWith('https://')
+            ? value
+            : `https://${value}`
+
+        const parsed = new URL(prefixed)
+        return Boolean(parsed.hostname)
     } catch (err) {
         return false
     }
@@ -659,6 +792,7 @@ button {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    height: 340px;
 }
 
 .location-meta {
