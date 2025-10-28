@@ -2,39 +2,67 @@
     <div class="visitor-layout">
         <header class="visitor-layout__topbar">
             <div class="visitor-layout__brand">
+                <button
+                    type="button"
+                    class="visitor-layout__hamburger"
+                    :class="{ 'visitor-layout__hamburger--hidden': isMobileMenuOpen }"
+                    :aria-expanded="isMobileMenuOpen ? 'true' : 'false'"
+                    :aria-controls="mobileMenuId"
+                    :aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
+                    @click="toggleMobileMenu"
+                >
+                    <span class="visitor-layout__hamburger-line"></span>
+                    <span class="visitor-layout__hamburger-line"></span>
+                    <span class="visitor-layout__hamburger-line"></span>
+                </button>
                 <slot name="brand">
                     <router-link to="/" class="visitor-layout__logo-link">
                         <span class="visitor-layout__logo-text">Uranus</span>
                     </router-link>
                 </slot>
             </div>
-            <nav class="visitor-layout__nav" aria-label="Main navigation">
-                <slot name="navigation">
-                    <router-link v-for="link in defaultNav" :key="link.to" :to="link.to"
-                        class="visitor-layout__nav-link">
-                        {{ link.label }}
-                    </router-link>
-                </slot>
-            </nav>
-            <div class="visitor-layout__actions">
-                <slot name="actions">
-                    <label class="sr-only" for="visitor-language-select">{{ t('select_language') }}</label>
-                    <select id="visitor-language-select" class="visitor-layout__select"
-                        v-model="selectedLocale">
-                        <option v-for="option in localeOptions" :key="option.value" :value="option.value">
-                            {{ option.label }}
-                        </option>
-                    </select>
+            <div
+                :id="mobileMenuId"
+                class="visitor-layout__menu"
+                :class="{ 'visitor-layout__menu--open': isMobileMenuOpen }"
+            >
+                <nav class="visitor-layout__nav" aria-label="Main navigation" @click="handleNavClick">
+                    <slot name="navigation">
+                        <router-link
+                            v-for="link in defaultNav"
+                            :key="link.to"
+                            :to="link.to"
+                            class="visitor-layout__nav-link"
+                            @click="closeMobileMenu"
+                        >
+                            {{ link.label }}
+                        </router-link>
+                    </slot>
+                </nav>
+                <div class="visitor-layout__actions">
+                    <slot name="actions">
+                        <label class="sr-only" for="visitor-language-select">{{ t('select_language') }}</label>
+                        <select
+                            id="visitor-language-select"
+                            class="visitor-layout__select"
+                            v-model="selectedLocale"
+                        >
+                            <option v-for="option in localeOptions" :key="option.value" :value="option.value">
+                                {{ option.label }}
+                            </option>
+                        </select>
 
-                    <label class="sr-only" for="visitor-theme-select">{{ t('settings_theme') }}</label>
-                    <select id="visitor-theme-select" class="visitor-layout__select" v-model="selectedTheme">
-                        <option v-for="option in themeOptions" :key="option.value" :value="option.value">
-                            {{ option.label }}
-                        </option>
-                    </select>
-                </slot>
+                        <label class="sr-only" for="visitor-theme-select">{{ t('settings_theme') }}</label>
+                        <select id="visitor-theme-select" class="visitor-layout__select" v-model="selectedTheme">
+                            <option v-for="option in themeOptions" :key="option.value" :value="option.value">
+                                {{ option.label }}
+                            </option>
+                        </select>
+                    </slot>
+                </div>
             </div>
         </header>
+        <div v-if="isMobileMenuOpen" class="visitor-layout__overlay" @click="closeMobileMenu"></div>
 
         <main class="visitor-layout__content">
             <router-view />
@@ -57,9 +85,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import { useThemeStore } from '@/store/themeStore'
+import { useTokenStore } from '@/store/token'
 import type { ThemeMode } from '@/utils/theme'
 
 interface NavLink {
@@ -73,7 +103,11 @@ interface NavLinkConfig {
 }
 
 const { t, locale, te } = useI18n({ useScope: 'global' })
+const tokenStore = useTokenStore()
+const route = useRoute()
 const themeStore = useThemeStore()
+const isMobileMenuOpen = ref(false)
+const mobileMenuId = 'visitor-layout-mobile-menu'
 
 const navConfigs: NavLinkConfig[] = [
     { to: '/events', labelKey: 'visitor_nav_events' },
@@ -88,10 +122,17 @@ const legalConfigs: NavLinkConfig[] = [
 ]
 
 const defaultNav = computed<NavLink[]>(() =>
-    navConfigs.map(({ to, labelKey }) => ({
-        to,
-        label: t(labelKey),
-    }))
+    navConfigs
+        .filter(({ to }) => {
+            if (tokenStore.accessToken) {
+                return to !== '/login' && to !== '/signup'
+            }
+            return true
+        })
+        .map(({ to, labelKey }) => ({
+            to,
+            label: t(labelKey),
+        }))
 )
 
 const legalLinks = computed<NavLink[]>(() =>
@@ -130,6 +171,32 @@ const selectedTheme = computed({
         themeStore.setTheme(value)
     },
 })
+
+const toggleMobileMenu = () => {
+    isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+const closeMobileMenu = () => {
+    isMobileMenuOpen.value = false
+}
+
+const handleNavClick = (event: MouseEvent) => {
+    if (!isMobileMenuOpen.value) {
+        return
+    }
+
+    const target = event.target as HTMLElement | null
+    if (target?.closest('a')) {
+        closeMobileMenu()
+    }
+}
+
+watch(
+    () => route.fullPath,
+    () => {
+        isMobileMenuOpen.value = false
+    }
+)
 </script>
 
 <style scoped lang="scss">
@@ -144,7 +211,7 @@ const selectedTheme = computed({
 .visitor-layout__topbar {
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1200;
     display: flex;
     align-items: center;
     gap: clamp(1rem, 4vw, 2rem);
@@ -158,6 +225,7 @@ const selectedTheme = computed({
 .visitor-layout__brand {
     display: flex;
     align-items: center;
+    gap: 0.75rem;
 }
 
 .visitor-layout__logo-link {
@@ -173,6 +241,53 @@ const selectedTheme = computed({
 
 .visitor-layout__logo-text {
     font-family: var(--font-brand, 'Inter', sans-serif);
+}
+
+.visitor-layout__hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--border-soft, rgba(148, 163, 184, 0.4));
+    background: var(--card-bg);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.visitor-layout__hamburger:hover {
+    background: var(--surface-muted, rgba(148, 163, 184, 0.1));
+    border-color: var(--accent-primary, #4f46e5);
+}
+
+.visitor-layout__hamburger:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+}
+
+.visitor-layout__hamburger-line {
+    width: 20px;
+    height: 2px;
+    background: var(--color-text, #0f172a);
+    border-radius: 1px;
+    transition: all 0.3s ease;
+}
+
+.visitor-layout__hamburger--hidden {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.visitor-layout__menu {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2rem);
+    flex: 1;
+    justify-content: flex-end;
 }
 
 .visitor-layout__nav {
@@ -211,7 +326,7 @@ const selectedTheme = computed({
     border-radius: 999px;
     border: 1px solid var(--border-soft, rgba(148, 163, 184, 0.4));
     background: var(--input-bg, #f1f5f9);
-    padding: 0.45rem 1.1rem;
+    padding: 0.65rem 1.1rem;
     font-weight: 600;
     font-size: 0.9rem;
     color: var(--color-text, #0f172a);
@@ -226,7 +341,6 @@ const selectedTheme = computed({
 
 .visitor-layout__content {
     flex: 1;
-    padding: clamp(2rem, 6vw, 3.5rem) clamp(1.25rem, 5vw, 3rem);
 }
 
 .visitor-layout__footer {
@@ -266,27 +380,70 @@ const selectedTheme = computed({
     color: var(--muted-text, #64748b);
 }
 
-@media (max-width: 768px) {
-    .visitor-layout__topbar {
-        flex-wrap: wrap;
-        gap: 1rem;
-        justify-content: center;
-        text-align: center;
+.visitor-layout__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 1100;
+}
+
+@media (max-width: 960px) {
+    .visitor-layout__hamburger {
+        display: inline-flex;
+    }
+
+    .visitor-layout__menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: min(340px, 85vw);
+        background: var(--card-bg);
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 1.5rem;
+        padding: clamp(1.75rem, 6vw, 2.5rem);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        pointer-events: none;
+        z-index: 1095;
+        flex: none;
+        overflow-y: auto;
+    }
+
+    .visitor-layout__menu--open {
+        transform: translateX(0);
+        pointer-events: auto;
     }
 
     .visitor-layout__nav {
+        flex: initial;
         width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .visitor-layout__nav-link {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 0.75rem 1rem;
     }
 
     .visitor-layout__actions {
         width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 0.65rem;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
     }
 
+    .visitor-layout__select {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
     .visitor-layout__footer-content {
         align-items: center;
         text-align: center;
@@ -306,11 +463,5 @@ const selectedTheme = computed({
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
-}
-
-@media (max-width: 480px) {
-    .visitor-layout__content {
-        padding: clamp(1.25rem, 7vw, 2rem) clamp(1rem, 6vw, 1.5rem);
-    }
 }
 </style>

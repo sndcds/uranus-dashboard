@@ -15,34 +15,21 @@
 
                 <div class="calendar-sidebar__section calendar-sidebar__section--search">
                     <label class="calendar-sidebar__label" for="calendar-search">{{ searchLabel }}</label>
-                    <input id="calendar-search" type="search" :placeholder="searchPlaceholder" v-model.trim="searchQuery"
-                        :disabled="isLoading" />
+                    <input id="calendar-search" type="search" :placeholder="searchPlaceholder"
+                        v-model.trim="searchQuery" :disabled="isLoading" />
                 </div>
 
                 <div class="calendar-sidebar__section calendar-sidebar__section--dates">
                     <label class="calendar-sidebar__label" for="calendar-date">{{ dateLabel }}</label>
                     <div class="calendar-sidebar__date-controls">
-                        <input
-                            id="calendar-date"
-                            type="date"
-                            :value="tempStartDate"
-                            :max="lastAvailableDate"
-                            :disabled="isLoading"
-                            @blur="onDateConfirm('start', $event)"
-                            @keyup.enter="onDateConfirm('start', $event)"
-                        />
+                        <input id="calendar-date" type="date" :value="tempStartDate" :max="lastAvailableDate"
+                            :disabled="isLoading" @blur="onDateConfirm('start', $event)"
+                            @keyup.enter="onDateConfirm('start', $event)" />
                         <div class="calendar-sidebar__end-date">
                             <label class="calendar-sidebar__sublabel" for="calendar-end-date">{{ endDateLabel }}</label>
-                            <input
-                                id="calendar-end-date"
-                                type="date"
-                                :value="tempEndDate"
-                                :min="selectedDate ?? firstAvailableDate"
-                                :max="lastAvailableDate"
-                                :disabled="isLoading"
-                                @blur="onDateConfirm('end', $event)"
-                                @keyup.enter="onDateConfirm('end', $event)"
-                            />
+                            <input id="calendar-end-date" type="date" :value="tempEndDate"
+                                :min="selectedDate ?? firstAvailableDate" :max="lastAvailableDate" :disabled="isLoading"
+                                @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
                         </div>
                         <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
                             :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
@@ -88,23 +75,21 @@
                         </header>
                         <div class="calendar-group__events">
                             <article v-for="event in group.events" :key="event.id" class="calendar-card">
-                                <img
-                                    v-if="event.image_path"
-                                    :src="event.image_path.includes('?')
-                                        ? `${event.image_path}&ratio=16by9&width=320`
-                                        : `${event.image_path}?ratio=16by9&width=320`"
-                                    alt=""
-                                    class="calendar-card__image"
-                                />
+                                <img v-if="event.image_path" :src="event.image_path.includes('?')
+                                    ? `${event.image_path}&ratio=16by9&width=320`
+                                    : `${event.image_path}?ratio=16by9&width=320`" alt=""
+                                    class="calendar-card__image" />
                                 <div class="calendar-card__time">
                                     <span>{{ formatTime(event.start_date, event.start_time) }}</span>
                                 </div>
                                 <div class="calendar-card__body">
                                     <header class="calendar-card__header">
                                         <h3>{{ event.title }}</h3>
-                                        <p v-if="event.subtitle" class="calendar-card__subtitle">{{ event.subtitle }}</p>
+                                        <p v-if="event.subtitle" class="calendar-card__subtitle">{{ event.subtitle }}
+                                        </p>
                                     </header>
-                                    <p v-if="event.teaser_text" class="calendar-card__teaser">{{ event.teaser_text }}</p>
+                                    <p v-if="event.teaser_text" class="calendar-card__teaser">{{ event.teaser_text }}
+                                    </p>
                                     <p class="calendar-card__location">{{ formatLocation(event) }}</p>
                                     <ul v-if="event.typeLabels.length" class="calendar-card__tags">
                                         <li v-for="tag in event.typeLabels" :key="tag">
@@ -116,7 +101,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                    <footer v-if="isLoggedIn" class="calendar-card__footer">
+                                <footer v-if="isLoggedIn" class="calendar-card__footer">
                                     <router-link :to="{ name: 'event-details', params: { id: event.id } }"
                                         class="calendar-card__cta">
                                         {{ viewDetailsLabel }}
@@ -258,18 +243,18 @@ watch(selectedDate, (val) => { tempStartDate.value = val })
 watch(selectedEndDate, (val) => { tempEndDate.value = val })
 
 const onDateConfirm = async (which: 'start' | 'end', event: Event) => {
-  // When user presses Enter or finishes input (onchange)
-  const target = event.target as HTMLInputElement
-  const value = target.value || null
+    // When user presses Enter or finishes input (onchange)
+    const target = event.target as HTMLInputElement
+    const value = target.value || null
 
-  if (which === 'start') {
-    selectedDate.value = value
-  } else {
-    selectedEndDate.value = value
-  }
+    if (which === 'start') {
+        selectedDate.value = value
+    } else {
+        selectedEndDate.value = value
+    }
 
-  // Trigger reload explicitly
-  await loadEvents({ preserveSelection: true })
+    // Trigger reload explicitly
+    await loadEvents({ preserveSelection: true })
 }
 
 const deriveTypeNamesFromEvents = () => {
@@ -412,9 +397,9 @@ interface LoadEventsOptions {
 const filtersActive = computed(() => {
     return Boolean(
         searchQuery.value ||
-            selectedDate.value ||
-            selectedEndDate.value ||
-            (selectedType.value !== 'all')
+        selectedDate.value ||
+        selectedEndDate.value ||
+        (selectedType.value !== 'all')
     )
 })
 
@@ -700,6 +685,7 @@ watch(
     border-radius: 12px;
     padding: clamp(1.75rem, 4vw, 2.5rem);
     border: 0px solid rgba(148, 163, 184, 0.25);
+    word-wrap: break-word;
 }
 
 .calendar-hero__content {
@@ -852,7 +838,7 @@ watch(
 
 .calendar-btn:not(:disabled):hover {
     transform: translateY(-1px);
-  // box-shadow: 0 8px 18px rgba(79, 70, 229, 0.2);
+    // box-shadow: 0 8px 18px rgba(79, 70, 229, 0.2);
 }
 
 .calendar-content {
