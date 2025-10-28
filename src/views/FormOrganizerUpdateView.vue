@@ -64,19 +64,11 @@
                             <label for="country_code">
                                 {{ labelMessage('organizer_country_code') }}
                             </label>
-                            <select
-                                v-model="countryCode"
-                                id="country_code"
-                                :disabled="countriesLoading"
-                            >
-                                <option value="">
+                            <select v-model="countryCode" id="country_code" :disabled="countriesLoading">
+                                <option value="" disabled>
                                     {{ countryPlaceholder }}
                                 </option>
-                                <option
-                                    v-for="country in countries"
-                                    :key="country.code"
-                                    :value="country.code"
-                                >
+                                <option v-for="country in countries" :key="country.code" :value="country.code">
                                     {{ country.name }}
                                 </option>
                             </select>
@@ -85,7 +77,14 @@
                             <label for="state_code">
                                 {{ labelMessage('organizer_state_code') }}
                             </label>
-                            <input v-model="stateCode" id="state_code" type="text" />
+                            <select v-model="stateCode" id="state_code" :disabled="statesLoading || !countryCode">
+                                <option value="" disabled>
+                                    {{ statePlaceholder }}
+                                </option>
+                                <option v-for="state in states" :key="state.code" :value="state.code">
+                                    {{ state.name }}
+                                </option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="email">{{ t('email') }}</label>
@@ -219,6 +218,7 @@ const organizerLoadErrorMessage = computed(() => (te('organizer_load_error') ? t
 const descriptionPlaceholder = computed(() => (te('organizer_description_placeholder') ? t('organizer_description_placeholder') : 'Describe the organizer, services, and mission (Markdown supported).'))
 const legalFormPlaceholder = computed(() => (te('organizer_legal_form_placeholder') ? t('organizer_legal_form_placeholder') : 'Select legal form'))
 const countryPlaceholder = computed(() => (te('organizer_country_placeholder') ? t('organizer_country_placeholder') : 'Select country'))
+const statePlaceholder = computed(() => (te('organizer_state_placeholder') ? t('organizer_state_placeholder') : 'Select state'))
 const locationSummary = computed(() => {
     if (!location.value) {
         return te('organizer_map_no_selection') ? t('organizer_map_no_selection') : 'No location selected yet'
@@ -275,6 +275,23 @@ const ensureCountryOption = (code: string) => {
     }
     if (!countries.value.some((country) => country.code === trimmed)) {
         countries.value.push({ code: trimmed, name: trimmed })
+    }
+}
+interface StateResponse {
+    state_code: string
+    state_name?: string | null
+}
+
+const states = ref<Array<{ code: string; name: string }>>([])
+const statesLoading = ref(false)
+let pendingStateCountry: string | null = null
+const ensureStateOption = (code: string) => {
+    const trimmed = code.trim()
+    if (!trimmed.length) {
+        return
+    }
+    if (!states.value.some((state) => state.code === trimmed)) {
+        states.value.push({ code: trimmed, name: trimmed })
     }
 }
 
@@ -373,6 +390,55 @@ const loadCountries = async () => {
         countriesLoading.value = false
     }
 }
+
+const loadStates = async (country: string) => {
+    const trimmedCountry = country.trim()
+    if (!trimmedCountry.length) {
+        states.value = []
+        pendingStateCountry = null
+        return
+    }
+
+    if (statesLoading.value) {
+        pendingStateCountry = trimmedCountry
+        return
+    }
+
+    statesLoading.value = true
+    try {
+        const { data } = await apiFetch<StateResponse[]>(`/api/choosable-states?country_code=${encodeURIComponent(trimmedCountry)}&lang=${locale.value}`)
+        if (Array.isArray(data)) {
+            states.value = data
+                .map((item) => {
+                    const code = typeof item.state_code === 'string' ? item.state_code.trim() : ''
+                    if (!code.length) {
+                        return null
+                    }
+                    const rawLabel = item.state_name ?? ''
+                    const label = typeof rawLabel === 'string' ? rawLabel.trim() : ''
+                    return { code, name: label.length ? label : code }
+                })
+                .filter((value): value is { code: string; name: string } => Boolean(value))
+
+            ensureStateOption(stateCode.value)
+        } else {
+            states.value = []
+        }
+    } catch (err) {
+        states.value = []
+        console.error('Failed to load states', err)
+    } finally {
+        statesLoading.value = false
+        if (pendingStateCountry && pendingStateCountry !== trimmedCountry) {
+            const next = pendingStateCountry
+            pendingStateCountry = null
+            await loadStates(next)
+        } else {
+            pendingStateCountry = null
+        }
+    }
+}
+
 const toNumberOrNull = (value: string): number | null => {
     if (!value.trim().length) {
         return null
@@ -412,6 +478,19 @@ const loadOrganizerById = async (id: number) => {
         stateCode.value = typeof data.state_code === 'string' ? data.state_code : ''
         countryCode.value = typeof data.country_code === 'string' ? data.country_code.trim() : ''
         ensureCountryOption(countryCode.value)
+        ensureStateOption(stateCode.value)
+        const trimmedCountry = countryCode.value.trim()
+        if (trimmedCountry.length) {
+            await loadStates(trimmedCountry)
+            if (
+                stateCode.value &&
+                !states.value.some((state) => state.code === stateCode.value.trim())
+            ) {
+                stateCode.value = ''
+            }
+        } else {
+            states.value = []
+        }
         description.value = typeof data.description === 'string' ? data.description : ''
 
         if (typeof data.holding_organizer_id === 'number' || (typeof data.holding_organizer_id === 'string' && data.holding_organizer_id.trim().length)) {
@@ -463,6 +542,32 @@ watch(
         loadOrganizerById(id)
     },
     { immediate: true }
+)
+
+watch(
+    countryCode,
+    (code, previous) => {
+        const trimmed = code.trim()
+
+        if (!trimmed.length) {
+            states.value = []
+            stateCode.value = ''
+            pendingStateCountry = null
+            return
+        }
+
+        if (isLoadingOrganizer.value) {
+            return
+        }
+
+        const previousTrimmed = typeof previous === 'string' ? previous.trim() : ''
+        if (previousTrimmed && previousTrimmed !== trimmed) {
+            stateCode.value = ''
+        }
+
+        loadStates(trimmed)
+    },
+    { immediate: false }
 )
 
 onMounted(() => {
