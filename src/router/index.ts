@@ -11,7 +11,7 @@ import SettingsView from '@/views/SettingsView.vue'
 import FormOrganizerCreateView from '@/views/FormOrganizerCreateView.vue'
 import OrganizerVenueView from '@/views/OrganizerVenueView.vue'
 import SignupView from '@/views/SignupView.vue'
-import FormVenueView from '@/views/FormVenueView.vue'
+import FormVenueCreateView from '@/views/FormVenueCreateView.vue'
 import FormSpaceView from '@/views/FormSpaceView.vue'
 import EventDashboardView from '@/views/EventDashboardView.vue'
 import FormEventView from '@/views/FormEventView.vue'
@@ -20,6 +20,7 @@ import UserPermissionView from '@/views/UserPermissionView.vue'
 import FormUserProfileView from '@/views/FormUserProfileView.vue'
 import EventCalendarView from '@/views/EventCalendarView.vue'
 import FormOrganizerUpdateView from '@/views/FormOrganizerUpdateView.vue'
+import FormVenueUpdateView from '@/views/FormVenueUpdateView.vue'
 
 const routes = [
     {
@@ -55,12 +56,12 @@ const routes = [
             {
                 path: '/organizer/:id/venue/create',
                 name: 'create-venue',
-                component: FormVenueView,
+                component: FormVenueCreateView,
             },
             {
                 path: '/organizer/:id/venue/:venueId/edit',
                 name: 'edit-venue',
-                component: FormVenueView,
+                component: FormVenueUpdateView,
             },
             {
                 path: '/organizer/:id/venue/:venueId/space/create',

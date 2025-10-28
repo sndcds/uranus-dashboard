@@ -11,7 +11,7 @@
         :to="`/organizer/${organizerId}/venue/create`"
         class="organizer-venue-view__create-btn"
       >
-        Create New Venue
+        {{ t('add_new_venue') }}
       </router-link>
     </div>
 
@@ -197,45 +197,23 @@ watch(
   color: var(--color-text);
 }
 
-// Venue cards grid - mobile first
+// Venue cards grid
 .organizer-venue-view__grid {
-  @include form-grid(280px, clamp(1rem, 3vw, 1.5rem));
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 1.75rem);
   width: 100%;
 }
 
-// Tablet enhancements (640px+)
-@media (min-width: 640px) {
-  .organizer-venue-view__header {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-  }
-
-  .organizer-venue-view__title {
-    margin: 0;
-  }
-
-  .organizer-venue-view__actions {
-    justify-content: flex-end;
-  }
-}
-
-// Desktop enhancements (1024px+)
-@media (min-width: 1024px) {
-  .organizer-venue-view {
-    padding: clamp(2rem, 6vw, 4rem);
-  }
-
+@media (max-width: 768px) {
   .organizer-venue-view__grid {
-    @include form-grid(320px, clamp(1.5rem, 4vw, 2rem));
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-// Large desktop (1280px+)
 @media (min-width: 1280px) {
   .organizer-venue-view__grid {
-    @include form-grid(360px, clamp(2rem, 5vw, 2.5rem));
+    gap: clamp(1.5rem, 4vw, 2.5rem);
   }
 }
 </style>
