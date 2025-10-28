@@ -406,7 +406,7 @@ const loadStates = async (country: string) => {
 
     statesLoading.value = true
     try {
-        const { data } = await apiFetch<StateResponse[]>(`/api/choosable-states?country_code=${encodeURIComponent(trimmedCountry)}&lang=${locale.value}`)
+        const { data } = await apiFetch<StateResponse[]>(`/api/choosable-states?country-code=${encodeURIComponent(trimmedCountry)}`)
         if (Array.isArray(data)) {
             states.value = data
                 .map((item) => {
