@@ -48,6 +48,8 @@
                         <input v-model="city" id="city" type="text" />
                         <p v-if="fieldErrors.city" class="field-error">{{ fieldErrors.city }}</p>
                     </div>
+                    <RegionSelectorComponent v-if="showRegionSelector" v-model:country-code="countryCode"
+                        v-model:state-code="stateCode" />
                     <div class="form-group">
                         <label for="email">{{ t('email') }}</label>
                         <input v-model="email" id="email" type="email" />
@@ -64,12 +66,8 @@
                     </div>
                     <div v-if="showDescription" class="form-group form-group--full">
                         <label :id="descriptionLabelId">{{ t('description') }}</label>
-                        <MarkdownEditorComponent
-                            v-model="description"
-                            class="venue-description-editor"
-                            :aria-labelledby="descriptionLabelId"
-                            :placeholder="descriptionPlaceholder"
-                        />
+                        <MarkdownEditorComponent v-model="description" class="venue-description-editor"
+                            :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
                         <p v-if="fieldErrors.description" class="field-error">{{ fieldErrors.description }}</p>
                     </div>
                     <div v-if="showDateFields" class="form-group">
@@ -117,6 +115,7 @@ import { useI18n } from 'vue-i18n'
 
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
+import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
 
 interface LatLngLiteral {
     lat: number
@@ -135,6 +134,8 @@ export interface VenueFormInitialValues {
     description?: string | null
     openedAt?: string | null
     closedAt?: string | null
+    countryCode?: string | null
+    stateCode?: string | null
     location?: LatLngLiteral | null
 }
 
@@ -150,6 +151,8 @@ export interface VenueFormSubmitPayload {
     description: string | null
     openedAt: string | null
     closedAt: string | null
+    countryCode: string | null
+    stateCode: string | null
     location: LatLngLiteral | null
 }
 
@@ -161,9 +164,11 @@ const props = withDefaults(defineProps<{
     initialValues?: VenueFormInitialValues
     showDescription?: boolean
     showDateFields?: boolean
+    showRegionSelector?: boolean
 }>(), {
     showDescription: true,
     showDateFields: true,
+    showRegionSelector: true,
 })
 
 const emit = defineEmits<{
@@ -174,6 +179,7 @@ const emit = defineEmits<{
 const { t, te } = useI18n()
 const showDescription = toRef(props, 'showDescription')
 const showDateFields = toRef(props, 'showDateFields')
+const showRegionSelector = toRef(props, 'showRegionSelector')
 
 const venueName = ref('')
 const street = ref('')
@@ -184,6 +190,8 @@ const email = ref('')
 const website = ref('')
 const phone = ref('')
 const description = ref('')
+const countryCode = ref('')
+const stateCode = ref('')
 const openedAt = ref('')
 const closedAt = ref('')
 const location = ref<LatLngLiteral | null>(null)
@@ -253,6 +261,8 @@ const applyInitialValues = (values?: VenueFormInitialValues) => {
     website.value = values?.website ?? ''
     phone.value = values?.phone ?? ''
     description.value = values?.description ?? ''
+    countryCode.value = values?.countryCode?.trim() ?? ''
+    stateCode.value = values?.stateCode?.trim() ?? ''
     openedAt.value = normalizeDateInput(values?.openedAt ?? '')
     closedAt.value = normalizeDateInput(values?.closedAt ?? '')
     location.value = values?.location ?? null
@@ -323,6 +333,8 @@ const handleSubmit = () => {
     const trimmedDescription = showDescription.value ? description.value.trim() : ''
     const trimmedOpenedAt = showDateFields.value ? openedAt.value.trim() : ''
     const trimmedClosedAt = showDateFields.value ? closedAt.value.trim() : ''
+    const trimmedCountryCode = showRegionSelector.value ? countryCode.value.trim() : ''
+    const trimmedStateCode = showRegionSelector.value ? stateCode.value.trim() : ''
 
     fieldErrors.venueName = trimmedName ? null : requiredFieldMessage.value
     fieldErrors.street = trimmedStreet ? null : requiredFieldMessage.value
@@ -379,6 +391,8 @@ const handleSubmit = () => {
         description: showDescription.value && trimmedDescription.length ? trimmedDescription : null,
         openedAt: showDateFields.value && trimmedOpenedAt.length ? trimmedOpenedAt : null,
         closedAt: showDateFields.value && trimmedClosedAt.length ? trimmedClosedAt : null,
+        countryCode: showRegionSelector.value && trimmedCountryCode.length ? trimmedCountryCode : null,
+        stateCode: showRegionSelector.value && trimmedStateCode.length ? trimmedStateCode : null,
         location: location.value ? { ...location.value } : null,
     })
 }

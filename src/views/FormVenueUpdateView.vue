@@ -72,6 +72,8 @@ interface VenueResponse {
     description?: string | null
     opened_at?: string | null
     closed_at?: string | null
+    country_code?: string | null
+    state_code?: string | null
     lat?: number | string | null
     lon?: number | string | null
 }
@@ -121,7 +123,9 @@ const loadVenueById = async (id: number) => {
             phone: typeof data.contact_phone === 'string' ? data.contact_phone : '',
             description: typeof data.description === 'string' ? data.description : '',
             openedAt: typeof data.opened_at === 'string' ? data.opened_at : null,
-            closedAt: typeof data.closed_at === 'string' ? data.closed_at : null
+            closedAt: typeof data.closed_at === 'string' ? data.closed_at : null,
+            countryCode: typeof data.country_code === 'string' ? data.country_code : null,
+            stateCode: typeof data.state_code === 'string' ? data.state_code : null,
         }
 
         const rawLat = data.latitude ?? data.lat ?? null
@@ -178,6 +182,8 @@ const handleSubmit = async (formData: VenueFormSubmitPayload) => {
             description: formData.description,
             opened_at: formData.openedAt,
             closed_at: formData.closedAt,
+            country_code: formData.countryCode,
+            state_code: formData.stateCode,
             organizer_id: organizerId,
         }
 

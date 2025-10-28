@@ -60,32 +60,7 @@
                             <input v-model="city" id="city" type="text" />
                             <p v-if="fieldErrors.city" class="field-error">{{ fieldErrors.city }}</p>
                         </div>
-                        <div class="form-group">
-                            <label for="country_code">
-                                {{ labelMessage('organizer_country_code') }}
-                            </label>
-                            <select v-model="countryCode" id="country_code" :disabled="countriesLoading">
-                                <option value="" disabled>
-                                    {{ countryPlaceholder }}
-                                </option>
-                                <option v-for="country in countries" :key="country.code" :value="country.code">
-                                    {{ country.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="state_code">
-                                {{ labelMessage('organizer_state_code') }}
-                            </label>
-                            <select v-model="stateCode" id="state_code" :disabled="statesLoading || !countryCode">
-                                <option value="" disabled>
-                                    {{ statePlaceholder }}
-                                </option>
-                                <option v-for="state in states" :key="state.code" :value="state.code">
-                                    {{ state.name }}
-                                </option>
-                            </select>
-                        </div>
+                        <RegionSelectorComponent v-model:country-code="countryCode" v-model:state-code="stateCode" />
                         <div class="form-group">
                             <label for="email">{{ t('email') }}</label>
                             <input v-model="email" id="email" type="email" />
@@ -169,6 +144,7 @@ import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
+import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
 
 interface LatLngLiteral {
     lat: number
@@ -217,8 +193,6 @@ const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website
 const organizerLoadErrorMessage = computed(() => (te('organizer_load_error') ? t('organizer_load_error') : 'Failed to load organizer details.'))
 const descriptionPlaceholder = computed(() => (te('organizer_description_placeholder') ? t('organizer_description_placeholder') : 'Describe the organizer, services, and mission (Markdown supported).'))
 const legalFormPlaceholder = computed(() => (te('organizer_legal_form_placeholder') ? t('organizer_legal_form_placeholder') : 'Select legal form'))
-const countryPlaceholder = computed(() => (te('organizer_country_placeholder') ? t('organizer_country_placeholder') : 'Select country'))
-const statePlaceholder = computed(() => (te('organizer_state_placeholder') ? t('organizer_state_placeholder') : 'Select state'))
 const locationSummary = computed(() => {
     if (!location.value) {
         return te('organizer_map_no_selection') ? t('organizer_map_no_selection') : 'No location selected yet'
@@ -261,40 +235,6 @@ interface LegalFormResponse {
 
 const legalForms = ref<Array<{ id: number; name: string }>>([])
 const legalFormsLoading = ref(false)
-interface CountryResponse {
-    country_code: string
-    country_name?: string | null
-}
-
-const countries = ref<Array<{ code: string; name: string }>>([])
-const countriesLoading = ref(false)
-const ensureCountryOption = (code: string) => {
-    const trimmed = code.trim()
-    if (!trimmed.length) {
-        return
-    }
-    if (!countries.value.some((country) => country.code === trimmed)) {
-        countries.value.push({ code: trimmed, name: trimmed })
-    }
-}
-interface StateResponse {
-    state_code: string
-    state_name?: string | null
-}
-
-const states = ref<Array<{ code: string; name: string }>>([])
-const statesLoading = ref(false)
-let pendingStateCountry: string | null = null
-const ensureStateOption = (code: string) => {
-    const trimmed = code.trim()
-    if (!trimmed.length) {
-        return
-    }
-    if (!states.value.some((state) => state.code === trimmed)) {
-        states.value.push({ code: trimmed, name: trimmed })
-    }
-}
-
 const toOrganizerId = (value: unknown): number | null => {
     if (Array.isArray(value)) {
         const [first] = value
@@ -358,87 +298,6 @@ const loadLegalForms = async () => {
     }
 }
 
-const loadCountries = async () => {
-    if (countriesLoading.value) {
-        return
-    }
-
-    countriesLoading.value = true
-    try {
-        const { data } = await apiFetch<CountryResponse[]>(`/api/choosable-countries?lang=${locale.value}`)
-        if (Array.isArray(data)) {
-            countries.value = data
-                .map((item) => {
-                    const code = typeof item.country_code === 'string' ? item.country_code.trim() : ''
-                    if (!code.length) {
-                        return null
-                    }
-                    const rawLabel = item.country_name ?? ''
-                    const label = typeof rawLabel === 'string' ? rawLabel.trim() : ''
-                    return { code, name: label.length ? label : code }
-                })
-                .filter((value): value is { code: string; name: string } => Boolean(value))
-
-            ensureCountryOption(countryCode.value)
-        } else {
-            countries.value = []
-        }
-    } catch (err) {
-        countries.value = []
-        console.error('Failed to load countries', err)
-    } finally {
-        countriesLoading.value = false
-    }
-}
-
-const loadStates = async (country: string) => {
-    const trimmedCountry = country.trim()
-    if (!trimmedCountry.length) {
-        states.value = []
-        pendingStateCountry = null
-        return
-    }
-
-    if (statesLoading.value) {
-        pendingStateCountry = trimmedCountry
-        return
-    }
-
-    statesLoading.value = true
-    try {
-        const { data } = await apiFetch<StateResponse[]>(`/api/choosable-states?country_code=${encodeURIComponent(trimmedCountry)}`)
-        if (Array.isArray(data)) {
-            states.value = data
-                .map((item) => {
-                    const code = typeof item.state_code === 'string' ? item.state_code.trim() : ''
-                    if (!code.length) {
-                        return null
-                    }
-                    const rawLabel = item.state_name ?? ''
-                    const label = typeof rawLabel === 'string' ? rawLabel.trim() : ''
-                    return { code, name: label.length ? label : code }
-                })
-                .filter((value): value is { code: string; name: string } => Boolean(value))
-
-            ensureStateOption(stateCode.value)
-        } else {
-            states.value = []
-        }
-    } catch (err) {
-        states.value = []
-        console.error('Failed to load states', err)
-    } finally {
-        statesLoading.value = false
-        if (pendingStateCountry && pendingStateCountry !== trimmedCountry) {
-            const next = pendingStateCountry
-            pendingStateCountry = null
-            await loadStates(next)
-        } else {
-            pendingStateCountry = null
-        }
-    }
-}
-
 const toNumberOrNull = (value: string): number | null => {
     if (!value.trim().length) {
         return null
@@ -475,22 +334,12 @@ const loadOrganizerById = async (id: number) => {
         houseNumber.value = typeof data.house_number === 'string' ? data.house_number : ''
         postalCode.value = typeof data.postal_code === 'string' ? data.postal_code : ''
         city.value = typeof data.city === 'string' ? data.city : ''
-        stateCode.value = typeof data.state_code === 'string' ? data.state_code : ''
-        countryCode.value = typeof data.country_code === 'string' ? data.country_code.trim() : ''
-        ensureCountryOption(countryCode.value)
-        ensureStateOption(stateCode.value)
-        const trimmedCountry = countryCode.value.trim()
-        if (trimmedCountry.length) {
-            await loadStates(trimmedCountry)
-            if (
-                stateCode.value &&
-                !states.value.some((state) => state.code === stateCode.value.trim())
-            ) {
-                stateCode.value = ''
-            }
-        } else {
-            states.value = []
-        }
+
+        const incomingCountry = typeof data.country_code === 'string' ? data.country_code.trim() : ''
+        countryCode.value = incomingCountry
+
+        const incomingState = typeof data.state_code === 'string' ? data.state_code.trim() : ''
+        stateCode.value = incomingState
         description.value = typeof data.description === 'string' ? data.description : ''
 
         if (typeof data.holding_organizer_id === 'number' || (typeof data.holding_organizer_id === 'string' && data.holding_organizer_id.trim().length)) {
@@ -544,35 +393,8 @@ watch(
     { immediate: true }
 )
 
-watch(
-    countryCode,
-    (code, previous) => {
-        const trimmed = code.trim()
-
-        if (!trimmed.length) {
-            states.value = []
-            stateCode.value = ''
-            pendingStateCountry = null
-            return
-        }
-
-        if (isLoadingOrganizer.value) {
-            return
-        }
-
-        const previousTrimmed = typeof previous === 'string' ? previous.trim() : ''
-        if (previousTrimmed && previousTrimmed !== trimmed) {
-            stateCode.value = ''
-        }
-
-        loadStates(trimmed)
-    },
-    { immediate: false }
-)
-
 onMounted(() => {
     loadLegalForms()
-    loadCountries()
 })
 
 const isValidEmail = (value: string) => {

@@ -74,6 +74,8 @@ const handleSubmit = async (formData: VenueFormSubmitPayload) => {
             contact_email: formData.contactEmail,
             website_url: formData.websiteUrl,
             contact_phone: formData.contactPhone,
+            country_code: formData.countryCode,
+            state_code: formData.stateCode,
             organizer_id: organizerId,
         }
 
