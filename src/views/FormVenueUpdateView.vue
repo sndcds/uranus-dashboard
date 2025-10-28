@@ -8,7 +8,7 @@
         <section class="venue-card">
             <VenueForm ref="venueFormRef" :submit-label="t('update_venue')" :loading="isSubmitting || isLoadingVenue"
                 :error-message="error" :success-message="success" :initial-values="formInitialValues"
-                @submit="handleSubmit" @clear-error="clearError" />
+                @submit="handleSubmit" :show-description="true" :show-date-fields="true" @clear-error="clearError" />
         </section>
     </div>
 </template>
@@ -69,6 +69,9 @@ interface VenueResponse {
     contact_phone?: string | null
     latitude?: number | string | null
     longitude?: number | string | null
+    description?: string | null
+    opened_at?: string | null
+    closed_at?: string | null
     lat?: number | string | null
     lon?: number | string | null
 }
@@ -116,6 +119,9 @@ const loadVenueById = async (id: number) => {
             email: typeof data.contact_email === 'string' ? data.contact_email : '',
             website: typeof data.website_url === 'string' ? data.website_url : '',
             phone: typeof data.contact_phone === 'string' ? data.contact_phone : '',
+            description: typeof data.description === 'string' ? data.description : '',
+            openedAt: typeof data.opened_at === 'string' ? data.opened_at : null,
+            closedAt: typeof data.closed_at === 'string' ? data.closed_at : null
         }
 
         const rawLat = data.latitude ?? data.lat ?? null
@@ -169,6 +175,9 @@ const handleSubmit = async (formData: VenueFormSubmitPayload) => {
             contact_email: formData.contactEmail,
             website_url: formData.websiteUrl,
             contact_phone: formData.contactPhone,
+            description: formData.description,
+            opened_at: formData.openedAt,
+            closed_at: formData.closedAt,
             organizer_id: organizerId,
         }
 

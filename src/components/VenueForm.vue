@@ -62,6 +62,26 @@
                         <input v-model="website" id="website" type="url" />
                         <p v-if="fieldErrors.website" class="field-error">{{ fieldErrors.website }}</p>
                     </div>
+                    <div v-if="showDescription" class="form-group form-group--full">
+                        <label :id="descriptionLabelId">{{ t('description') }}</label>
+                        <MarkdownEditorComponent
+                            v-model="description"
+                            class="venue-description-editor"
+                            :aria-labelledby="descriptionLabelId"
+                            :placeholder="descriptionPlaceholder"
+                        />
+                        <p v-if="fieldErrors.description" class="field-error">{{ fieldErrors.description }}</p>
+                    </div>
+                    <div v-if="showDateFields" class="form-group">
+                        <label for="opened_at">{{ t('opened_at') }}</label>
+                        <input v-model="openedAt" id="opened_at" type="date" />
+                        <p v-if="fieldErrors.openedAt" class="field-error">{{ fieldErrors.openedAt }}</p>
+                    </div>
+                    <div v-if="showDateFields" class="form-group">
+                        <label for="closed_at">{{ t('closed_at') }}</label>
+                        <input v-model="closedAt" id="closed_at" type="date" />
+                        <p v-if="fieldErrors.closedAt" class="field-error">{{ fieldErrors.closedAt }}</p>
+                    </div>
                 </div>
 
                 <div class="form-actions">
@@ -92,10 +112,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
+import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 
 interface LatLngLiteral {
     lat: number
@@ -110,7 +131,10 @@ export interface VenueFormInitialValues {
     city?: string
     email?: string
     website?: string
-    phone?: string
+    phone?: string | null
+    description?: string | null
+    openedAt?: string | null
+    closedAt?: string | null
     location?: LatLngLiteral | null
 }
 
@@ -123,16 +147,24 @@ export interface VenueFormSubmitPayload {
     contactEmail: string | null
     websiteUrl: string | null
     contactPhone: string | null
+    description: string | null
+    openedAt: string | null
+    closedAt: string | null
     location: LatLngLiteral | null
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     submitLabel: string
     loading?: boolean
     errorMessage?: string | null
     successMessage?: string | null
     initialValues?: VenueFormInitialValues
-}>()
+    showDescription?: boolean
+    showDateFields?: boolean
+}>(), {
+    showDescription: true,
+    showDateFields: true,
+})
 
 const emit = defineEmits<{
     (e: 'submit', payload: VenueFormSubmitPayload): void
@@ -140,6 +172,8 @@ const emit = defineEmits<{
 }>()
 
 const { t, te } = useI18n()
+const showDescription = toRef(props, 'showDescription')
+const showDateFields = toRef(props, 'showDateFields')
 
 const venueName = ref('')
 const street = ref('')
@@ -149,6 +183,9 @@ const city = ref('')
 const email = ref('')
 const website = ref('')
 const phone = ref('')
+const description = ref('')
+const openedAt = ref('')
+const closedAt = ref('')
 const location = ref<LatLngLiteral | null>(null)
 
 const fieldErrors = reactive({
@@ -159,18 +196,24 @@ const fieldErrors = reactive({
     city: null as string | null,
     email: null as string | null,
     website: null as string | null,
+    description: null as string | null,
+    openedAt: null as string | null,
+    closedAt: null as string | null,
 })
 
 const localError = ref<string | null>(null)
 
 const mapHint = computed(() => (te('venue_map_hint') ? t('venue_map_hint') : 'Click the map to drop a pin where the venue is located.'))
+const descriptionPlaceholder = computed(() => (te('venue_description_placeholder') ? t('venue_description_placeholder') : 'Describe the venue, amenities, and unique features (Markdown supported).'))
 const requiredA11yLabel = computed(() => (te('form_required_indicator') ? t('form_required_indicator') : 'Required field'))
+const descriptionLabelId = 'venue-description-label'
 const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
 const missingRequiredMessage = computed(() => (te('organizer_form_missing_required') ? t('organizer_form_missing_required') : 'Please complete all required fields.'))
 const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
-const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL (including http/https).'))
+const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL.'))
 
 const displayError = computed(() => localError.value ?? props.errorMessage ?? null)
+const invalidDatesMessage = computed(() => (te('venue_invalid_dates') ? t('venue_invalid_dates') : 'Closing date cannot be before opening date.'))
 
 const locationSummary = computed(() => {
     if (!location.value) {
@@ -181,6 +224,26 @@ const locationSummary = computed(() => {
 })
 
 const applyInitialValues = (values?: VenueFormInitialValues) => {
+    const normalizeDateInput = (value?: string | null) => {
+        if (!value) {
+            return ''
+        }
+        const trimmed = value.trim()
+        if (!trimmed.length) {
+            return ''
+        }
+        // Accept already formatted dates
+        if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+            return trimmed
+        }
+        // Attempt to parse and reformat (e.g. ISO string -> YYYY-MM-DD)
+        const parsed = new Date(trimmed)
+        if (!Number.isNaN(parsed.getTime())) {
+            return parsed.toISOString().slice(0, 10)
+        }
+        return ''
+    }
+
     venueName.value = values?.venueName ?? ''
     street.value = values?.street ?? ''
     houseNumber.value = values?.houseNumber ?? ''
@@ -189,6 +252,9 @@ const applyInitialValues = (values?: VenueFormInitialValues) => {
     email.value = values?.email ?? ''
     website.value = values?.website ?? ''
     phone.value = values?.phone ?? ''
+    description.value = values?.description ?? ''
+    openedAt.value = normalizeDateInput(values?.openedAt ?? '')
+    closedAt.value = normalizeDateInput(values?.closedAt ?? '')
     location.value = values?.location ?? null
 
     Object.keys(fieldErrors).forEach((key) => {
@@ -254,6 +320,9 @@ const handleSubmit = () => {
     const trimmedEmail = email.value.trim()
     const trimmedWebsite = website.value.trim()
     const trimmedPhone = phone.value.trim()
+    const trimmedDescription = showDescription.value ? description.value.trim() : ''
+    const trimmedOpenedAt = showDateFields.value ? openedAt.value.trim() : ''
+    const trimmedClosedAt = showDateFields.value ? closedAt.value.trim() : ''
 
     fieldErrors.venueName = trimmedName ? null : requiredFieldMessage.value
     fieldErrors.street = trimmedStreet ? null : requiredFieldMessage.value
@@ -262,6 +331,16 @@ const handleSubmit = () => {
     fieldErrors.city = trimmedCity ? null : requiredFieldMessage.value
     fieldErrors.email = trimmedEmail ? (isValidEmail(trimmedEmail) ? null : invalidEmailMessage.value) : null
     fieldErrors.website = trimmedWebsite ? (isValidUrl(trimmedWebsite) ? null : invalidWebsiteMessage.value) : null
+
+    if (trimmedOpenedAt && trimmedClosedAt && new Date(trimmedClosedAt) < new Date(trimmedOpenedAt)) {
+        localError.value = te('venue_invalid_dates') ? t('venue_invalid_dates') : 'Closing date cannot be before opening date.'
+        fieldErrors.openedAt = localError.value
+        fieldErrors.closedAt = localError.value
+        return
+    } else {
+        fieldErrors.openedAt = null
+        fieldErrors.closedAt = null
+    }
 
     const hasMissingRequired = [
         fieldErrors.venueName,
@@ -297,6 +376,9 @@ const handleSubmit = () => {
         contactEmail: trimmedEmail.length ? trimmedEmail : null,
         websiteUrl: trimmedWebsite.length ? trimmedWebsite : null,
         contactPhone: trimmedPhone.length ? trimmedPhone : null,
+        description: showDescription.value && trimmedDescription.length ? trimmedDescription : null,
+        openedAt: showDateFields.value && trimmedOpenedAt.length ? trimmedOpenedAt : null,
+        closedAt: showDateFields.value && trimmedClosedAt.length ? trimmedClosedAt : null,
         location: location.value ? { ...location.value } : null,
     })
 }
@@ -370,6 +452,36 @@ watch(website, (value) => {
     }
 })
 
+watch(openedAt, (value) => {
+    if (!showDateFields.value) {
+        return
+    }
+    if (fieldErrors.openedAt) {
+        fieldErrors.openedAt = null
+        if (localError.value === invalidDatesMessage.value) {
+            localError.value = null
+        }
+        if (props.errorMessage) {
+            emit('clear-error')
+        }
+    }
+})
+
+watch(closedAt, (value) => {
+    if (!showDateFields.value) {
+        return
+    }
+    if (fieldErrors.closedAt) {
+        fieldErrors.closedAt = null
+        if (localError.value === invalidDatesMessage.value) {
+            localError.value = null
+        }
+        if (props.errorMessage) {
+            emit('clear-error')
+        }
+    }
+})
+
 const setLocation = (coords: LatLngLiteral | null) => {
     location.value = coords
 }
@@ -411,6 +523,11 @@ defineExpose({
     grid-column: 1 / -1;
 }
 
+.venue-description-editor {
+    margin-top: 0.5rem;
+    min-height: 160px;
+}
+
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -447,6 +564,7 @@ button {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    height: 340px;
 }
 
 .location-meta {

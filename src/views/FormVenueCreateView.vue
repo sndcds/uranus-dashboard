@@ -7,7 +7,8 @@
 
         <section class="venue-card">
             <VenueForm ref="venueFormRef" :submit-label="t('create_venue')" :loading="isSubmitting"
-                :error-message="error" :success-message="success" @submit="handleSubmit" @clear-error="clearError" />
+                :error-message="error" :success-message="success" :show-description="false" :show-date-fields="false"
+                @submit="handleSubmit" @clear-error="clearError" />
         </section>
     </div>
 </template>

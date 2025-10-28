@@ -9,7 +9,7 @@
             <div class="organizer-layout">
                 <form class="organizer-form" @submit.prevent="submitForm" novalidate>
                     <div class="form-grid">
-                        <div class="form-group">
+                        <div class="form-group form-group--full">
                             <label for="organizer_name">
                                 {{ t('organizer_name') }}
                                 <span class="required" aria-hidden="true">*</span>
@@ -18,7 +18,7 @@
                             <input v-model="organizerName" id="organizer_name" type="text" />
                             <p v-if="fieldErrors.organizerName" class="field-error">{{ fieldErrors.organizerName }}</p>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group form-group--full">
                             <label for="address_addition">
                                 {{ labelMessage('organizer_address_addition') }}
                             </label>
@@ -92,13 +92,13 @@
                             <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
                         </div>
                         <div class="form-group">
+                            <label for="phone">{{ t('phone') }}</label>
+                            <input v-model="phone" id="phone" type="tel" />
+                        </div>
+                        <div class="form-group">
                             <label for="website">{{ t('website') }}</label>
                             <input v-model="website" id="website" type="url" />
                             <p v-if="fieldErrors.website" class="field-error">{{ fieldErrors.website }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">{{ t('phone') }}</label>
-                            <input v-model="phone" id="phone" type="tel" />
                         </div>
                         <div class="form-group form-group--full">
                             <label :id="descriptionLabelId">
@@ -406,7 +406,7 @@ const loadStates = async (country: string) => {
 
     statesLoading.value = true
     try {
-        const { data } = await apiFetch<StateResponse[]>(`/api/choosable-states?country-code=${encodeURIComponent(trimmedCountry)}`)
+        const { data } = await apiFetch<StateResponse[]>(`/api/choosable-states?country_code=${encodeURIComponent(trimmedCountry)}`)
         if (Array.isArray(data)) {
             states.value = data
                 .map((item) => {
@@ -840,25 +840,24 @@ watch(website, (value) => {
 
 .nonprofit-checkbox {
     display: flex;
-    flex-direction: row;
-    align-items: start;
+    align-items: center;
     gap: 0.75rem;
-    padding: 0.5rem 0;
+    padding: 0.25rem 0;
 }
 
-.nonprofit-checkbox input[type="checkbox"] {
-    width: 1.2rem;
-    height: 1.2rem;
+.nonprofit-checkbox input[type='checkbox'] {
+    width: 1.15rem;
+    height: 1.15rem;
     margin: 0;
     cursor: pointer;
 }
 
 .nonprofit-checkbox label {
-    margin-bottom: 5px;
-    padding-bottom: 50px;
+    margin: 0;
     cursor: pointer;
     font-weight: 500;
     color: var(--color-text);
+    line-height: 1.4;
 }
 
 .form-actions {

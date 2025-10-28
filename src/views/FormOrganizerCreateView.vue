@@ -9,7 +9,7 @@
             <div class="organizer-layout">
                 <form class="organizer-form" @submit.prevent="submitForm" novalidate>
                     <div class="form-grid">
-                        <div class="form-group">
+                        <div class="form-group form-group--full">
                             <label for="organizer_name">
                                 {{ t('organizer_name') }}
                                 <span class="required" aria-hidden="true">*</span>
@@ -60,13 +60,13 @@
                             <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
                         </div>
                         <div class="form-group">
+                            <label for="phone">{{ t('phone') }}</label>
+                            <input v-model="phone" id="phone" type="tel" />
+                        </div>
+                        <div class="form-group">
                             <label for="website">{{ t('website') }}</label>
                             <input v-model="website" id="website" type="url" />
                             <p v-if="fieldErrors.website" class="field-error">{{ fieldErrors.website }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">{{ t('phone') }}</label>
-                            <input v-model="phone" id="phone" type="tel" />
                         </div>
                     </div>
 
@@ -140,7 +140,7 @@ const requiredA11yLabel = computed(() => (te('form_required_indicator') ? t('for
 const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
 const missingRequiredMessage = computed(() => (te('organizer_form_missing_required') ? t('organizer_form_missing_required') : 'Please complete all required fields.'))
 const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
-const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL (including http/https).'))
+const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL.'))
 const locationSummary = computed(() => {
     if (!location.value) {
         return te('organizer_map_no_selection') ? t('organizer_map_no_selection') : 'No location selected yet'
@@ -156,8 +156,9 @@ const isValidEmail = (value: string) => {
 
 const isValidUrl = (value: string) => {
     try {
-        const parsed = new URL(value)
-        return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+        const prefixed = value.startsWith('http://') || value.startsWith('https://') ? value : `https://${value}`
+        const parsed = new URL(prefixed)
+        return Boolean(parsed.hostname)
     } catch (err) {
         return false
     }
@@ -374,6 +375,10 @@ watch(website, (value) => {
 
 .form-group {
     @include form-group();
+}
+
+.form-group--full {
+    grid-column: 1 / -1;
 }
 
 .form-actions {
