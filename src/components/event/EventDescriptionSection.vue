@@ -237,21 +237,15 @@ const saveEventTypes = async () => {
     isSavingTags.value = true
     try {
         const selections = Array.isArray(tagInitialSelection.value) ? tagInitialSelection.value : []
-        const seen = new Set<string>()
-        const typesPayload = selections.reduce<Array<{ type_id: number; genre_id: number | null }>>((acc, selection) => {
-            const typeId = normalizeId(selection.primaryId)
-            if (typeId === null) {
-                return acc
-            }
-            const genreId = normalizeId(selection.secondaryId)
-            const key = `${typeId}:${genreId ?? 'null'}`
-            if (seen.has(key)) {
-                return acc
-            }
-            seen.add(key)
-            acc.push({ type_id: typeId, genre_id: genreId })
-            return acc
-        }, [])
+        const typesPayload = selections
+            .map((selection) => ({
+                type_id: normalizeId(selection.primaryId),
+                genre_id: normalizeId(selection.secondaryId),
+            }))
+            .filter(
+                (pair): pair is { type_id: number; genre_id: number | null } =>
+                    pair.type_id !== null
+            )
 
         await apiFetch(`/api/admin/event/${props.eventId}/types`, {
             method: 'PUT',
