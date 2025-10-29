@@ -68,7 +68,6 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
   background: var(--card-bg);
   border-radius: $uranus-form-card-radius;
   padding: clamp(1.75rem, 4vw, 2.5rem);
-  box-shadow: var(--card-shadow, 0 24px 50px rgba(31, 41, 55, 0.14));
   display: flex;
   flex-direction: column;
   gap: clamp(1.25rem, 3vw, 1.75rem);
