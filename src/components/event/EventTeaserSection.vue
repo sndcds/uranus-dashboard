@@ -27,24 +27,17 @@
             </template>
         </div>
 
-        <TagManagerComponent
-            class="event-teaser__tags"
-            :tags="savedTags"
-            :is-saving="isSavingTags"
-            :error="tagsError"
-            @save="handleTagsSave"
-            @cancel="handleTagsCancel"
-        />
+        <EventTagsSection class="event-teaser__tags" :event-id="eventId" @updated="emit('updated')" />
     </article>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
-import TagManagerComponent from '@/components/TagManagerComponent.vue'
+import EventTagsSection from '@/components/event/EventTagsSection.vue'
 
 const props = defineProps<{
     eventId: number
@@ -64,9 +57,6 @@ const { t } = useI18n({ useScope: 'global' })
 const isEditing = ref(false)
 const isSaving = ref(false)
 const editedTeaser = ref(props.teaserText ?? '')
-const isSavingTags = ref(false)
-const savedTags = ref<string[]>([])
-const tagsError = ref('')
 
 const fallbackImageUrl = 'https://uranus2.oklabflensburg.de/api/image/47?mode=cover&width=400&ratio=3by2&focusx=0.5&focusy=0.5&type=webp&quality=90'
 const apiBase = ((import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'https://uranus2.oklabflensburg.de')
@@ -121,75 +111,6 @@ const cancelEditing = () => {
     editedTeaser.value = props.teaserText ?? ''
     isEditing.value = false
 }
-
-const normalizeTag = (value: string): string => value.replace(/\s+/g, ' ').trim()
-
-const handleTagsSave = async (tags: string[]) => {
-    if (isSavingTags.value) return
-
-    isSavingTags.value = true
-    tagsError.value = ''
-
-    try {
-        const payload = Array.from(
-            new Set(
-                tags
-                    .map((tag) => normalizeTag(tag))
-                    .filter((tag) => tag.length > 0)
-            )
-        )
-
-        await apiFetch(`/api/admin/event/${props.eventId}/tags`, {
-            method: 'PUT',
-            body: JSON.stringify({ tags: payload })
-        })
-
-        savedTags.value = [...payload]
-        emit('updated')
-    } catch (err) {
-        console.error('Failed to save tags', err)
-        tagsError.value = t('event_links_save_error')
-    } finally {
-        isSavingTags.value = false
-    }
-}
-
-const handleTagsCancel = () => {
-    tagsError.value = ''
-}
-
-const loadTags = async () => {
-    try {
-        const { data } = await apiFetch<unknown>(`/api/admin/event/${props.eventId}/tags`)
-        let tags: unknown = data
-
-        if (!Array.isArray(tags)) {
-            if (tags && typeof tags === 'object' && 'tags' in (tags as Record<string, unknown>)) {
-                tags = (tags as { tags?: unknown }).tags ?? []
-            } else {
-                tags = []
-            }
-        }
-
-        savedTags.value = Array.from(
-            new Set(
-                (tags as unknown[])
-                    .map((tag) => (typeof tag === 'string' ? normalizeTag(tag) : normalizeTag(String(tag))))
-                    .filter((tag) => tag.length > 0)
-            )
-        )
-    } catch (err) {
-        console.error('Failed to load tags', err)
-        savedTags.value = []
-    }
-}
-
-watch(
-    () => props.eventId,
-    () => {
-        void loadTags()
-    }
-)
 
 const saveTeaser = async () => {
     isSaving.value = true
@@ -277,5 +198,4 @@ onMounted(() => {
 .event-teaser__button--cancel {
     @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
-
 </style>

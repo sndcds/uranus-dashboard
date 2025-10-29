@@ -99,6 +99,7 @@
 import { ref, watch, onMounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
 import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
@@ -130,6 +131,7 @@ const editedDescription = ref(props.description ?? '')
 const isEditingTags = ref(false)
 const isSavingTags = ref(false)
 const tagInitialSelection = ref<TagSelection[] | undefined>(undefined)
+
 // Language state
 const isEditingLanguage = ref(false)
 const isSavingLanguage = ref(false)
@@ -202,15 +204,16 @@ const onTagSelectionUpdate = (payload: TagSelection[]) => { tagInitialSelection.
 
 // Fetch options
 async function fetchEventTypes(): Promise<SelectOption[]> {
-    const { data } = await apiFetch<SelectOption[]>('/api/choosable-event-types?lang=de')
+    const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-types?lang=${props.locale}`)
     return Array.isArray(data) ? data : []
 }
+
 async function fetchEventGenres(typeId: number | string): Promise<SelectOption[]> {
     const numericId = normalizeId(typeId)
     if (numericId === null) {
         return []
     }
-    const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-genres/event-type/${numericId}?lang=de`)
+    const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-genres/event-type/${numericId}?lang=${props.locale}`)
     return Array.isArray(data) ? data : []
 }
 
@@ -229,7 +232,6 @@ const fetchLanguages = async (): Promise<SelectOption[]> => {
     return languageOptions.value
 }
 
-// Save tags
 const saveTags = async () => {
     if (!props.eventId || !tagInitialSelection.value) return
     isSavingTags.value = true
@@ -253,9 +255,11 @@ const saveTags = async () => {
         await apiFetch(`/api/admin/event/${props.eventId}/types`, {
             method: 'PUT',
             body: JSON.stringify({
-                event_type_ids: typeIds,
-                genre_type_ids: genreIds,
-            }),
+                types: {
+                    event_type_ids: typeIds,
+                    genre_type_ids: genreIds,
+                }
+            })
         })
         emit('updated')
         isEditingTags.value = false
