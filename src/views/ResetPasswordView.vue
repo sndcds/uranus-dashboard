@@ -146,7 +146,7 @@ const handleSubmit = async () => {
             method: 'POST',
             body: JSON.stringify({
                 token,
-                password: trimmedPassword,
+                new_password: trimmedPassword,
             }),
         })
 
