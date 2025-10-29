@@ -1,0 +1,44 @@
+name: Run codeql
+
+on:
+  push:
+    paths:
+     - 'src/**/*.ts'
+     - 'src/**/*.vue'
+  pull_request:
+    paths:
+     - 'src/**/*.ts'
+     - 'src/**/*.vue'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+         - 'javascript'
+         - 'python'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v2
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+      with:
+        category: "/language:${{matrix.language}}"
