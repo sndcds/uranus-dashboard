@@ -21,11 +21,11 @@
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-
 import TagManagerComponent from '@/components/TagManagerComponent.vue'
 
 const props = defineProps<{
     eventId: number
+    tags?: string[] | null
 }>()
 
 const emit = defineEmits<{
@@ -40,30 +40,39 @@ const error = ref('')
 
 const normalizeTag = (value: string): string => value.replace(/\s+/g, ' ').trim()
 
-const uniqueNormalized = (values: unknown[]): string[] =>
-    Array.from(
+const uniqueNormalized = (values: readonly unknown[] = []): string[] => {
+    return Array.from(
         new Set(
             values
-                .map((value) => (typeof value === 'string' ? normalizeTag(value) : normalizeTag(String(value ?? ''))))
+                .map((value) =>
+                    typeof value === 'string'
+                        ? normalizeTag(value)
+                        : normalizeTag(String(value ?? ''))
+                )
                 .filter((value) => value.length > 0)
         )
     )
+}
+
+const applyTags = (incoming: readonly unknown[] | null | undefined) => {
+    tags.value = uniqueNormalized(Array.isArray(incoming) ? incoming : [])
+}
 
 const handleSave = async (draft: string[]) => {
     if (isSaving.value) return
-
     isSaving.value = true
     error.value = ''
 
-    try {
-        const payload = uniqueNormalized(draft)
+    const payload = uniqueNormalized(draft)
 
-        await apiFetch(`/api/admin/event/${props.eventId}/tags`, {
+    try {
+        const response = await apiFetch<{ tags?: unknown[] }>(`/api/admin/event/${props.eventId}/tags`, {
             method: 'PUT',
             body: JSON.stringify({ tags: payload }),
         })
 
-        tags.value = [...payload]
+        const serverTags = Array.isArray(response.data?.tags) ? response.data?.tags : payload
+        applyTags(serverTags)
         emit('updated')
     } catch (err) {
         console.error('Failed to save tags', err)
@@ -75,22 +84,29 @@ const handleSave = async (draft: string[]) => {
 
 const handleCancel = () => {
     error.value = ''
+    applyTags(props.tags)
 }
 
 watch(
-    () => props.eventId,
-    () => {
-        tags.value = []
-    }
+    () => props.tags,
+    (value) => {
+        if (Array.isArray(value)) {
+            applyTags(value)
+        } else if (value == null) {
+            applyTags([])
+        }
+    },
+    { immediate: true }
 )
 
 onMounted(() => {
-    tags.value = []
+    applyTags(props.tags)
 })
 </script>
 
 <style scoped lang="scss">
 .event-tags-section {
+    align-self: stretch;
     width: 100%;
 }
 </style>

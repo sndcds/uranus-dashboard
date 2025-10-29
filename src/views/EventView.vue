@@ -24,8 +24,8 @@
 
                 <EventTeaserSection :event-id="event.id" :teaser-text="event.teaser_text"
                     :has-main-image="Boolean(event.image_id)" :image-id="event.image_id"
-                    :image-focus-x="event.image_focus_x" :image-focus-y="event.image_focus_y" class="event-teaser"
-                    @updated="loadEvent" />
+                    :image-focus-x="event.image_focus_x" :image-focus-y="event.image_focus_y"
+                    :tags="event.tags" class="event-teaser" @updated="loadEvent" />
             </section>
 
             <div class="event-sidebar">
@@ -33,7 +33,7 @@
                     :selectable="false" class="event-map" />
 
                 <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
-                    :event-dates="event.event_dates" :space-id="event.space_id" :space-name="event.space_name ?? ''"
+                    :event-dates="eventSchedulePayload" :space-id="event.space_id" :space-name="event.space_name ?? ''"
                     @updated="loadEvent" />
 
                 <EventVenueSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
@@ -96,6 +96,19 @@ interface EventUrl {
     url_type: string
 }
 
+type EventSchedulePayloadItem = {
+    id?: number | null
+    start_date?: string
+    end_date?: string | null
+    start_time?: string
+    end_time?: string | null
+    entry_time?: string | null
+    space_id?: number | null
+    accessibility_flags?: number | null
+    duration?: number | null
+    visitor_info_flags?: number | null
+}
+
 interface EventDetail {
     id: number
     title: string
@@ -108,6 +121,7 @@ interface EventDetail {
     meeting_point: string | null
     event_types: EventType[]
     languages: string[]
+    tags: string[]
     event_dates: EventDate[]
     event_urls: EventUrl[]
     image_id: number | null
@@ -134,6 +148,7 @@ interface EventDetail {
     end_date: string | null
     end_time: string | null
     entry_time: string | null
+    tags?: string[] | null
 }
 
 const route = useRoute()
@@ -196,6 +211,58 @@ const existingImagePreviewUrl = computed(() => {
     const focusX = normalizeFocus(current.image_focus_x)
     const focusY = normalizeFocus(current.image_focus_y)
     return `${apiBase}/api/image/${current.image_id}?mode=cover&width=800&ratio=16by9&focusx=${focusX}&focusy=${focusY}&type=webp&quality=90`
+})
+
+const eventSchedulePayload = computed<EventSchedulePayloadItem[]>(() => {
+    if (!event.value) {
+        return []
+    }
+
+    return event.value.event_dates.map<EventSchedulePayloadItem>((date) => {
+        const payload: EventSchedulePayloadItem = {}
+
+        if (date.event_date_id !== null) {
+            payload.id = date.event_date_id
+        }
+
+        if (date.start_date) {
+            payload.start_date = date.start_date
+        }
+
+        if (date.start_time) {
+            payload.start_time = date.start_time
+        }
+
+        if (date.end_date) {
+            payload.end_date = date.end_date
+        }
+
+        if (date.end_time) {
+            payload.end_time = date.end_time
+        }
+
+        if (date.entry_time) {
+            payload.entry_time = date.entry_time
+        }
+
+        if (date.space_id !== null) {
+            payload.space_id = date.space_id
+        }
+
+        if (date.accessibility_flags !== null) {
+            payload.accessibility_flags = date.accessibility_flags
+        }
+
+        if (date.duration !== null) {
+            payload.duration = date.duration
+        }
+
+        if (date.visitor_info_flags !== null) {
+            payload.visitor_info_flags = date.visitor_info_flags
+        }
+
+        return payload
+    })
 })
 
 const toNumberOrNull = (value: unknown): number | null => {
@@ -292,6 +359,37 @@ const mapLanguageCodes = (raw: unknown): string[] => {
         .filter((value): value is string => value !== null)
 }
 
+const mapTagList = (raw: unknown): string[] => {
+    if (!raw) return []
+    const source = Array.isArray(raw) ? raw : []
+    const normalize = (value: string) => value.replace(/\s+/g, ' ').trim()
+    return Array.from(
+        new Set(
+            source
+                .map((item) => {
+                    if (typeof item === 'string') {
+                        const trimmed = normalize(item)
+                        return trimmed.length ? trimmed : null
+                    }
+                    if (item && typeof item === 'object') {
+                        const record = item as Record<string, unknown>
+                        const candidates = [record.tag, record.name, record.label, record.id]
+                        for (const candidate of candidates) {
+                            if (typeof candidate === 'string') {
+                                const trimmed = normalize(candidate)
+                                if (trimmed.length) {
+                                    return trimmed
+                                }
+                            }
+                        }
+                    }
+                    return null
+                })
+                .filter((tag): tag is string => tag !== null)
+        )
+    )
+}
+
 const mapEventDetail = (raw: unknown): EventDetail | null => {
     if (!raw || typeof raw !== 'object') return null
     const record = raw as Record<string, unknown>
@@ -354,6 +452,7 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
         end_date: primary?.end_date ?? null,
         end_time: primary?.end_time ?? null,
         entry_time: primary?.entry_time ?? null,
+        tags: mapTagList(record.tags ?? record.event_tags ?? record.teaser_tags ?? []),
     }
 }
 

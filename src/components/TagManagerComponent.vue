@@ -238,7 +238,7 @@ const error = computed(() => props.error)
 }
 
 .tag-manager__chip-list--readonly {
-    justify-content: center;
+    justify-content: start;
 }
 
 .tag-manager__chip {

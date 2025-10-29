@@ -27,7 +27,12 @@
             </template>
         </div>
 
-        <EventTagsSection class="event-teaser__tags" :event-id="eventId" @updated="emit('updated')" />
+        <EventTagsSection
+            class="event-teaser__tags"
+            :event-id="eventId"
+            :tags="tags ?? undefined"
+            @updated="emit('updated')"
+        />
     </article>
 </template>
 
@@ -46,6 +51,7 @@ const props = defineProps<{
     imageId?: number | null
     imageFocusX?: number | null
     imageFocusY?: number | null
+    tags?: string[] | null
 }>()
 
 const emit = defineEmits<{
@@ -154,12 +160,12 @@ const saveTeaser = async () => {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    align-items: center;
+    align-items: stretch;
 }
 
 .event-teaser__text {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--color-text);
     font-size: 1.05rem;
     line-height: 1.6;
 }
@@ -169,6 +175,7 @@ const saveTeaser = async () => {
     opacity: 0;
     transform: translateY(-4px);
     transition: opacity 0.2s ease, transform 0.2s ease;
+    align-self: flex-end;
 }
 
 .event-teaser:hover .event-teaser__edit {
