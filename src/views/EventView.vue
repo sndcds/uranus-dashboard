@@ -3,8 +3,6 @@
         <header class="event-hero">
             <EventHeaderSection :event-id="event.id" :title="event.title" :subtitle="event.subtitle"
                 @updated="loadEvent" />
-
-            <!--<p class="event-hero__organizer">{{ event.organizer_name }}</p>-->
         </header>
 
         <div class="event-content">
@@ -18,7 +16,7 @@
 
                     <EventDescriptionSection :event-id="event.id" :description="event.description"
                         :participation-info="event.participation_info" :meeting-point="event.meeting_point"
-                        :event-types="event.event_types" :locale="locale" @updated="loadEvent" />
+                        :event-types="event.event_types" :languages="event.languages" :locale="locale" @updated="loadEvent" />
 
                     <EventUrlSection :event-id="event.id" :links="eventLinks" @updated="loadEvent" />
                 </div>
@@ -28,8 +26,6 @@
                     :image-focus-x="event.image_focus_x" :image-focus-y="event.image_focus_y" class="event-teaser"
                     @updated="loadEvent" />
             </section>
-
-
 
             <div class="event-sidebar">
                 <LocationMapComponent :latitude="event.venue_lat" :longitude="event.venue_lon" :zoom="18"
@@ -70,8 +66,7 @@ import EventUrlSection from '@/components/event/EventUrlSection.vue'
 import EventScheduleSection from '@/components/event/EventScheduleSection.vue'
 
 const envApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? ''
-const runtimeOrigin = typeof window !== 'undefined' && window.location ? window.location.origin : ''
-const apiBase = envApiUrl || runtimeOrigin || 'https://uranus2.oklabflensburg.de'
+const apiBase = envApiUrl
 
 interface EventType {
     type_id: number
@@ -111,6 +106,7 @@ interface EventDetail {
     participation_info: string | null
     meeting_point: string | null
     event_types: EventType[]
+    languages: string[]
     event_dates: EventDate[]
     event_urls: EventUrl[]
     image_id: number | null
@@ -267,6 +263,34 @@ const mapEventUrl = (raw: unknown): EventUrl | null => {
     }
 }
 
+const mapLanguageCodes = (raw: unknown): string[] => {
+    if (!raw) return []
+    const source = Array.isArray(raw) ? raw : []
+    return source
+        .map((item) => {
+            if (typeof item === 'string') {
+                const trimmed = item.trim()
+                return trimmed.length ? trimmed : null
+            }
+            if (item && typeof item === 'object') {
+                const record = item as Record<string, unknown>
+                const candidates = [
+                    record.code,
+                    record.id,
+                    record.language_code,
+                    record.language,
+                ]
+                for (const candidate of candidates) {
+                    if (typeof candidate === 'string' && candidate.trim().length) {
+                        return candidate.trim()
+                    }
+                }
+            }
+            return null
+        })
+        .filter((value): value is string => value !== null)
+}
+
 const mapEventDetail = (raw: unknown): EventDetail | null => {
     if (!raw || typeof raw !== 'object') return null
     const record = raw as Record<string, unknown>
@@ -285,6 +309,10 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
         ? (record.event_urls as unknown[]).map(mapEventUrl).filter(Boolean) as EventUrl[]
         : []
 
+    const languageCodes = mapLanguageCodes(
+        (record.languages ?? record.language_codes ?? record.event_languages) as unknown
+    )
+
     const primary = eventDates.find((entry) => entry.start_date || entry.start_time || entry.entry_time || entry.end_date || entry.end_time) ?? null
 
     return {
@@ -298,6 +326,7 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
         participation_info: toNullableString(record.participation_info),
         meeting_point: toNullableString(record.meeting_point),
         event_types: eventTypes,
+        languages: languageCodes,
         event_dates: eventDates,
         event_urls: eventUrls,
         image_id: toNumberOrNull(record.image_id),

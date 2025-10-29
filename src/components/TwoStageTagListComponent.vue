@@ -1,9 +1,5 @@
 <template>
   <section class="two-stage-list">
-    <header class="two-stage-list__header" v-if="editable && isEditing">
-      <h3 class="two-stage-list__title">{{ labelPrimary }}</h3>
-    </header>
-
     <div v-if="editable && isEditing" class="two-stage-list__controls">
       <div class="two-stage-list__group">
         <label class="two-stage-list__label" for="two-stage-primary">{{ labelPrimary }}</label>
