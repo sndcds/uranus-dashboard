@@ -49,7 +49,7 @@
                 <button type="button" class="event-tags__button event-tags__button--cancel" @click="cancelEditingTags">
                     {{ t('form_cancel') }}
                 </button>
-                <button type="button" class="event-tags__button" :disabled="isSavingTags" @click="saveTags">
+                <button type="button" class="event-tags__button" :disabled="isSavingTags" @click="saveEventTypes">
                     <span v-if="!isSavingTags">{{ t('form_save') }}</span>
                     <span v-else>{{ t('saving') }}</span>
                 </button>
@@ -106,7 +106,7 @@ import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
 import type { Selection as TagSelection } from '@/components/TwoStageTagListComponent.vue'
 
 interface EventType { type_id: number; type_name: string; genre_id: number | null; genre_name: string | null }
-interface SelectOption { id: number; name: string }
+interface SelectOption { id: number | string; name: string }
 
 const props = defineProps<{
     eventId: number
@@ -143,7 +143,7 @@ interface LanguageApiResponse {
     name?: string | null
 }
 
-const languageOptions = ref<SelectOption[]>([])
+const languageOptions = ref<Array<{ id: string; name: string }>>([])
 
 // Watch props for description
 watch(() => props.description, v => {
@@ -232,41 +232,41 @@ const fetchLanguages = async (): Promise<SelectOption[]> => {
     return languageOptions.value
 }
 
-const saveTags = async () => {
+const saveEventTypes = async () => {
     if (!props.eventId || !tagInitialSelection.value) return
     isSavingTags.value = true
     try {
-        const typeIds = Array.from(
-            new Set(
-                tagInitialSelection.value
-                    .map(s => normalizeId(s.primaryId))
-                    .filter((id): id is number => id !== null)
-            )
-        )
-
-        const genreIds = Array.from(
-            new Set(
-                tagInitialSelection.value
-                    .map(s => normalizeId(s.secondaryId))
-                    .filter((id): id is number => id !== null)
-            )
-        )
+        const selections = Array.isArray(tagInitialSelection.value) ? tagInitialSelection.value : []
+        const seen = new Set<string>()
+        const typesPayload = selections.reduce<Array<{ type_id: number; genre_id: number | null }>>((acc, selection) => {
+            const typeId = normalizeId(selection.primaryId)
+            if (typeId === null) {
+                return acc
+            }
+            const genreId = normalizeId(selection.secondaryId)
+            const key = `${typeId}:${genreId ?? 'null'}`
+            if (seen.has(key)) {
+                return acc
+            }
+            seen.add(key)
+            acc.push({ type_id: typeId, genre_id: genreId })
+            return acc
+        }, [])
 
         await apiFetch(`/api/admin/event/${props.eventId}/types`, {
             method: 'PUT',
             body: JSON.stringify({
-                types: {
-                    event_type_ids: typeIds,
-                    genre_type_ids: genreIds,
-                }
-            })
+                types: typesPayload,
+            }),
         })
         emit('updated')
         isEditingTags.value = false
     } catch (err) {
         console.error(err)
         isEditingTags.value = false
-    } finally { isSavingTags.value = false }
+    } finally {
+        isSavingTags.value = false
+    }
 }
 
 function normalizeId(value: number | string | null | undefined): number | null {
