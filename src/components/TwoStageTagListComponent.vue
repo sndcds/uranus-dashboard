@@ -40,7 +40,7 @@
     <div class="two-stage-list__list">
       <ComboTagComponent
         v-for="(item, index) in selectedList"
-        :key="item.primary.id + '-' + (item.secondary?.id ?? 0)"
+        :key="`${String(item.primary.id ?? '')}-${String(item.secondary?.id ?? '')}`"
         :label="item.secondary ? `${item.primary.name} / ${item.secondary.name}` : item.primary.name"
         theme="light"
         :editable="editable && isEditing"
@@ -56,7 +56,7 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ComboTagComponent from '@/components/ComboTagComponent.vue'
 
-interface Item { id: number | string; name: string }
+interface Item { id: number | string | null; name: string }
 export interface Selection { primaryId: number | string; secondaryId?: number | string | null }
 interface SelectedItem { primary: Item; secondary?: Item | null }
 
@@ -107,9 +107,12 @@ async function loadPrimaries() {
   }
 }
 
-async function loadSecondaries(primaryId: number | string) {
-  if (!props.fetchSecondaries) return []
-  const key = primaryId.toString()
+async function loadSecondaries(primaryId: number | string | null | undefined) {
+  if (!props.fetchSecondaries || primaryId == null) {
+    secondaryOptions.value = []
+    return []
+  }
+  const key = String(primaryId)
   if (secondaryCache[key]) {
     secondaryOptions.value = secondaryCache[key]
     return secondaryCache[key]
@@ -130,18 +133,18 @@ async function loadSecondaries(primaryId: number | string) {
 async function onPrimaryChange() {
   selectedSecondary.value = null
   if (selectedPrimary.value && props.fetchSecondaries) {
-    await loadSecondaries(selectedPrimary.value.id)
+    await loadSecondaries(selectedPrimary.value.id ?? null)
   } else {
     secondaryOptions.value = []
   }
 }
 
 function addCombination() {
-  if (!selectedPrimary.value) return
+  if (!selectedPrimary.value || selectedPrimary.value.id == null) return
   const exists = selectedList.value.some(
       item =>
-          item.primary.id.toString() === selectedPrimary.value!.id.toString() &&
-          (item.secondary?.id ?? 0).toString() === (selectedSecondary.value?.id ?? 0).toString()
+          String(item.primary.id ?? '') === String(selectedPrimary.value!.id ?? '') &&
+          String(item.secondary?.id ?? '') === String(selectedSecondary.value?.id ?? '')
   )
   if (exists) return
 
@@ -164,7 +167,7 @@ function onRemove(index: number) {
 
 function emitSelection() {
   const payload: Selection[] = selectedList.value.map(item => ({
-    primaryId: item.primary.id,
+    primaryId: item.primary.id ?? '',
     secondaryId: item.secondary?.id ?? null,
   }))
   emit('update-selection', payload)
@@ -177,12 +180,12 @@ async function applyInitialSelection() {
   const list: SelectedItem[] = []
   await Promise.all(
       props.initialSelection.map(async sel => {
-        const primary = primaries.value.find(p => p.id.toString() === sel.primaryId.toString())
+    const primary = primaries.value.find(p => String(p.id ?? '') === String(sel.primaryId ?? ''))
         if (!primary) return
         let secondary: Item | null | undefined = undefined
         if (sel.secondaryId !== undefined && props.fetchSecondaries) {
-          const options = secondaryCache[primary.id.toString()] ?? await loadSecondaries(primary.id)
-          secondary = options.find(s => s.id.toString() === sel.secondaryId?.toString()) ?? null
+          const options = secondaryCache[String(primary.id ?? '')] ?? await loadSecondaries(primary.id ?? '')
+          secondary = options.find(s => String(s.id ?? '') === String(sel.secondaryId ?? '')) ?? null
         }
         list.push({ primary, secondary })
       })
@@ -219,22 +222,22 @@ onMounted(() => void loadPrimaries())
   }
 
   &__controls {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.9rem;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    align-items: flex-end;
   }
 
   &__actions {
     display: flex;
-    justify-content: flex-end;
-    grid-column: 1 / -1;
-    margin-top: 0.25rem;
+    justify-content: flex-start;
   }
 
   &__group {
     display: flex;
     flex-direction: column;
     gap: 0.45rem;
+    min-width: 220px;
   }
 
   &__label {
@@ -249,6 +252,8 @@ onMounted(() => void loadPrimaries())
 
   &__add {
     @include form-primary-button($padding-y: 0.55rem, $padding-x: 1.4rem);
+    margin-left: auto;
+    margin-bottom: 6px;
   }
 
   &__list {
