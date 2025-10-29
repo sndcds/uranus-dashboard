@@ -22,6 +22,7 @@ import EventCalendarView from '@/views/EventCalendarView.vue'
 import FormOrganizerUpdateView from '@/views/FormOrganizerUpdateView.vue'
 import FormVenueUpdateView from '@/views/FormVenueUpdateView.vue'
 import ForgotPasswordView from '@/views/ForgotPasswordView.vue'
+import ResetPasswordView from '@/views/ResetPasswordView.vue'
 
 const routes = [
     {
@@ -138,7 +139,13 @@ const routes = [
                 name: 'forgot-password',
                 component: ForgotPasswordView,
                 meta: { guestOnly: true },
-            },  
+            },
+            {
+                path: '/reset-password',
+                name: 'reset-password',
+                component: ResetPasswordView,
+                meta: { guestOnly: true },
+            },
         ],
     },
 ]
