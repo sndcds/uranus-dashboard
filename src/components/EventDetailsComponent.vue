@@ -18,7 +18,7 @@
 
                 <div class="form-field form-field--wide">
                     <label for="teaser-text">{{ t('event_teaser_label') }}</label>
-                    <input id="teaser-text" v-model="details.teaserText" type="text"
+                    <MarkdownEditorComponent id="teaser-text" v-model="details.teaserText"
                         :placeholder="t('event_teaser_placeholder')" />
                 </div>
             </div>
