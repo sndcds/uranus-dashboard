@@ -161,11 +161,11 @@ const handleSubmit = async () => {
     isSubmitting.value = true
 
     try {
-        const { status } = await apiFetch('/api/reset-password', {
+        const { status } = await apiFetch('/api/admin/reset-password', {
             method: 'POST',
             body: JSON.stringify({
                 token,
-                password: trimmedPassword,
+                new_password: trimmedPassword,
             }),
         })
 

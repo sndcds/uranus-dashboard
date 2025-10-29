@@ -119,6 +119,7 @@ const routes = [
         ],
     },
     {
+        path: '/',
         component: DefaultVisitorLayout,
         meta: { guestOnly: true },
         children: [
@@ -126,25 +127,21 @@ const routes = [
                 path: '/login',
                 name: 'login',
                 component: LoginView,
-                meta: { guestOnly: true },
             },
             {
                 path: '/signup',
                 name: 'signup',
                 component: SignupView,
-                meta: { guestOnly: true },
             },
             {
                 path: '/forgot-password',
                 name: 'forgot-password',
                 component: ForgotPasswordView,
-                meta: { guestOnly: true },
             },
             {
                 path: '/reset-password',
                 name: 'reset-password',
                 component: ResetPasswordView,
-                meta: { guestOnly: true },
             },
         ],
     },
