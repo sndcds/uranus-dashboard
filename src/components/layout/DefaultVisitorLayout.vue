@@ -323,6 +323,7 @@ watch(
 }
 
 .visitor-layout__content {
+    display: flex;
     flex: 1;
 }
 

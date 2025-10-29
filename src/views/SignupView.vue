@@ -13,66 +13,31 @@
             <form class="signup-form" @submit.prevent="signup">
                 <div class="input-group">
                     <label for="signup-email">{{ t('email') }}</label>
-                    <input
-                        id="signup-email"
-                        v-model="email"
-                        type="email"
-                        autocomplete="email"
-                        :placeholder="t('email_placeholder')"
-                        required
-                    />
+                    <input id="signup-email" v-model="email" type="email" autocomplete="email"
+                        :placeholder="t('email_placeholder')" required />
                 </div>
                 <div class="input-group">
                     <label for="signup-repeat-email">{{ t('repeat_email') }}</label>
-                    <input
-                        id="signup-repeat-email"
-                        v-model="repeatEmail"
-                        type="email"
-                        autocomplete="email"
-                        :placeholder="t('repeat_email_placeholder')"
-                        required
-                    />
+                    <input id="signup-repeat-email" v-model="repeatEmail" type="email" autocomplete="email"
+                        :placeholder="t('repeat_email_placeholder')" required />
                 </div>
                 <div class="input-group">
                     <label for="signup-password">{{ t('password') }}</label>
                     <div class="input-with-toggle">
-                        <input
-                            id="signup-password"
-                            v-model="password"
-                            :type="passwordFieldType"
-                            autocomplete="new-password"
-                            :placeholder="t('password_placeholder')"
-                            required
-                        />
-                        <button
-                            type="button"
-                            class="password-toggle"
-                            :aria-label="passwordToggleLabel"
-                            :title="passwordToggleLabel"
-                            :aria-pressed="isPasswordVisible"
-                            @click="togglePasswordVisibility"
-                        >
-                            <svg
-                                v-if="isPasswordVisible"
-                                class="password-toggle__icon"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
+                        <input id="signup-password" v-model="password" :type="passwordFieldType"
+                            autocomplete="new-password" :placeholder="t('password_placeholder')" required />
+                        <button type="button" class="password-toggle" :aria-label="passwordToggleLabel"
+                            :title="passwordToggleLabel" :aria-pressed="isPasswordVisible"
+                            @click="togglePasswordVisibility">
+                            <svg v-if="isPasswordVisible" class="password-toggle__icon"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
                                 <path
-                                    d="M12 5c-5.5 0-9.6 4.2-10.9 6.6a1 1 0 000 .8C2.4 15.8 6.5 20 12 20a11 11 0 006.8-2.3l1.1 1.1a1 1 0 101.4-1.4l-18-18A1 1 0 001.9.9l3.2 3.2A11 11 0 0112 5zm0 12c-3.2 0-6.1-2.1-8.1-4.9A13.1 13.1 0 015 9.4l2.1 2.1a4 4 0 005.4 5.4l2 2A9 9 0 0112 17zm0-6a2 2 0 01.3 4l-2.3-2.3A2 2 0 0112 11zm9.6.6a15.5 15.5 0 01-3 3.6 1 1 0 01-1.4-1.4A13.4 13.4 0 0020.3 12a13.6 13.6 0 00-3.8-3.6 1 1 0 111.1-1.7 15.6 15.6 0 013 3.9 1 1 0 01.1.9z"
-                                />
+                                    d="M12 5c-5.5 0-9.6 4.2-10.9 6.6a1 1 0 000 .8C2.4 15.8 6.5 20 12 20a11 11 0 006.8-2.3l1.1 1.1a1 1 0 101.4-1.4l-18-18A1 1 0 001.9.9l3.2 3.2A11 11 0 0112 5zm0 12c-3.2 0-6.1-2.1-8.1-4.9A13.1 13.1 0 015 9.4l2.1 2.1a4 4 0 005.4 5.4l2 2A9 9 0 0112 17zm0-6a2 2 0 01.3 4l-2.3-2.3A2 2 0 0112 11zm9.6.6a15.5 15.5 0 01-3 3.6 1 1 0 01-1.4-1.4A13.4 13.4 0 0020.3 12a13.6 13.6 0 00-3.8-3.6 1 1 0 111.1-1.7 15.6 15.6 0 013 3.9 1 1 0 01.1.9z" />
                             </svg>
-                            <svg
-                                v-else
-                                class="password-toggle__icon"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
+                            <svg v-else class="password-toggle__icon" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24" aria-hidden="true">
                                 <path
-                                    d="M12 5c5.5 0 9.6 4.2 10.9 6.6a1 1 0 010 .8C21.6 15.8 17.5 20 12 20S2.4 15.8 1.1 12.4a1 1 0 010-.8C2.4 9.2 6.5 5 12 5zm0 12c4.1 0 7.5-3.2 8.9-5-1.4-1.8-4.8-5-8.9-5S4.5 10.2 3.1 12c1.4 1.8 4.8 5 8.9 5zm0-9a4 4 0 110 8 4 4 0 010-8zm0 2a2 2 0 100 4 2 2 0 000-4z"
-                                />
+                                    d="M12 5c5.5 0 9.6 4.2 10.9 6.6a1 1 0 010 .8C21.6 15.8 17.5 20 12 20S2.4 15.8 1.1 12.4a1 1 0 010-.8C2.4 9.2 6.5 5 12 5zm0 12c4.1 0 7.5-3.2 8.9-5-1.4-1.8-4.8-5-8.9-5S4.5 10.2 3.1 12c1.4 1.8 4.8 5 8.9 5zm0-9a4 4 0 110 8 4 4 0 010-8zm0 2a2 2 0 100 4 2 2 0 000-4z" />
                             </svg>
                         </button>
                     </div>
@@ -97,7 +62,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { apiFetch } from '../api'
 
-type SignupResponse = { message?: string; [key: string]: unknown }
+type SignupResponse = { message?: string;[key: string]: unknown }
 
 const { t, te } = useI18n()
 const router = useRouter()
@@ -168,6 +133,11 @@ const signup = async () => {
 <style scoped lang="scss">
 .signup-page {
     @include form-page($justify: center, $padding: clamp(2rem, 6vw, 3rem));
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .signup-card {
@@ -236,7 +206,7 @@ const signup = async () => {
     fill: var(--muted-text, #475569);
 }
 
-.signup-form > button {
+.signup-form>button {
     @include form-primary-button($padding-y: 0.9rem, $padding-x: 1.5rem);
 }
 
@@ -281,7 +251,7 @@ const signup = async () => {
         padding: clamp(1.5rem, 6vw, 2rem);
     }
 
-    .signup-form > button {
+    .signup-form>button {
         width: 100%;
     }
 }

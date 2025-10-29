@@ -85,11 +85,10 @@ const requestReset = async () => {
 .auth-page {
     @include form-page($justify: center, $padding: clamp(2rem, 6vw, 3rem));
     display: flex;
+    width: 100%;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    box-sizing: border-box;
 }
 
 .auth-card {
