@@ -129,10 +129,6 @@ const saveTeaser = async () => {
         isSaving.value = false
     }
 }
-
-onMounted(() => {
-    void loadTags()
-})
 </script>
 
 <style scoped lang="scss">
