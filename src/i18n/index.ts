@@ -124,6 +124,7 @@ const sharedAuthFor = (locale: LocaleKey) =>
 const messages = {
     de: {
         ...sharedAuthFor('de'),
+        dashboard_description: 'Behalte den Überblick über deine Veranstaltungen.',
         organizers_overview_subtitle: 'Verwalte deine Organisationen und Räume an einem Ort.',
         edit_space: 'Raum bearbeiten',
         create_space: 'Raum erstellen',
@@ -183,7 +184,7 @@ const messages = {
         visitor_footer_privacy: 'Datenschutz',
         select_language: 'Sprache wählen',
         details: 'Details',
-        dashboard: 'Übersicht',
+        dashboard: 'Dashboard',
         organizers: 'Organisationen',
         signup: 'Registrieren',
         venue: 'Spielstätte',
@@ -491,6 +492,7 @@ const messages = {
     },
     en: {
         ...sharedAuthFor('en'),
+        dashboard_description: 'Keep track of your events at a glance.',
         organizers_overview_subtitle: 'Manage your organizers and spaces in one place.',
         edit_space: 'Edit Space',
         create_space: 'Create Space',
@@ -860,6 +862,7 @@ const messages = {
     },
     da: {
         ...sharedAuthFor('da'),
+        dashboard_description: 'Få et overblik over dine arrangementer.',
         organizers_overview_subtitle: 'Administrer dine arrangører og lokaler på ét sted.',
         edit_space: 'Rediger lokale',
         create_space: 'Opret lokale',
