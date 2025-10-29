@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            <TwoStageTagListComponent :fetchPrimaries="fetchLanguages" :initialSelection="[]"
+            <TwoStageTagListComponent :fetchPrimaries="fetchLanguages" :initialSelection="initialLanguageSelection"
                 :labelPrimary="t('event_language_label')" :editable="true" :isEditing="true"
                 @update-selection="onSelectionUpdate" />
 
@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch, onMounted } from 'vue'
+import { reactive, ref, watch, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
@@ -79,7 +79,7 @@ const { t, locale } = useI18n({ useScope: 'global' })
 interface EventDetailsModel {
     description: string
     teaserText: string
-    languages: string | null
+    languages: string[] | null
     minAge: number | null
     maxAge: number | null
     participationInfo: string
@@ -136,12 +136,20 @@ const fetchLanguages = async () => {
 
 const selectedLanguageCodes = ref<string[]>([])
 
+const initialLanguageSelection = computed(() => {
+    if (!details.languages || !details.languages.length) {
+        return []
+    }
+    return details.languages.map(langCode => ({ primaryId: langCode }))
+})
+
 const onSelectionUpdate = (selection: Selection[]) => {
-    // selectedLanguageCodes is ref<string[]>
     selectedLanguageCodes.value = selection
         .map(pair => pair.primaryId)
         .filter((id): id is number | string => id !== undefined && id !== null)
-        .map(id => String(id)) // convert all IDs to strings
+        .map(id => String(id))
+
+    details.languages = selectedLanguageCodes.value.length > 0 ? selectedLanguageCodes.value : null
 
     if (!selectedLanguageCodes.value.length) {
         return
@@ -172,6 +180,7 @@ watch(
     () => props.modelValue,
     (value) => {
         Object.assign(details, emptyDetails(), value || {})
+        selectedLanguageCodes.value = details.languages || []
     },
     { deep: true, immediate: true }
 )
@@ -186,7 +195,7 @@ watch(
 
 const validate = () => {
     errors.description = details.description.trim() ? null : t('event_error_required')
-    errors.language = details.language ? null : t('event_error_required')
+    errors.language = null
     return Object.values(errors).every((msg) => !msg)
 }
 
@@ -194,7 +203,6 @@ watch(
     details,
     () => {
         if (errors.description && details.description.trim()) errors.description = null
-        if (errors.language && details.language) errors.language = null
     },
     { deep: true }
 )

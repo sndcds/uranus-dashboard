@@ -77,7 +77,7 @@ const eventDates = ref<EventDateModel[]>([])
 const eventDetails = reactive<EventDetailsModel>({
     description: '',
     teaserText: '',
-    language: null,
+    languages: null,
     minAge: null,
     maxAge: null,
     participationInfo: '',
@@ -173,7 +173,7 @@ const submitEvent = async () => {
         })),
         description: eventDetails.description,
         teaser_text: eventDetails.teaserText || null,
-        language: eventDetails.language,
+        languages: eventDetails.languages || [],
         min_age: eventDetails.minAge,
         max_age: eventDetails.maxAge,
         participation_info: eventDetails.participationInfo,

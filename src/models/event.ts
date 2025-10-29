@@ -27,7 +27,7 @@ export interface EventDateModel {
 export interface EventDetailsModel {
     description: string
     teaserText: string
-    language: string | null
+    languages: string[] | null
     minAge: number | null
     maxAge: number | null
     participationInfo: string
