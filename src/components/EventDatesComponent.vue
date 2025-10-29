@@ -91,7 +91,7 @@ interface EventDate {
     startDate: string
     endDate: string | null
     startTime: string
-    endTime: string
+    endTime: string | null
     entryTime: string | null
     spaceId: number | null
     allDayEvent: boolean
@@ -111,7 +111,7 @@ const emptyDate = (): EventDate => ({
     startDate: '',
     endDate: null,
     startTime: '',
-    endTime: '',
+    endTime: null,
     entryTime: null,
     spaceId: null,
     allDayEvent: false,
