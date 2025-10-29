@@ -21,6 +21,7 @@ import FormUserProfileView from '@/views/FormUserProfileView.vue'
 import EventCalendarView from '@/views/EventCalendarView.vue'
 import FormOrganizerUpdateView from '@/views/FormOrganizerUpdateView.vue'
 import FormVenueUpdateView from '@/views/FormVenueUpdateView.vue'
+import ForgotPasswordView from '@/views/ForgotPasswordView.vue'
 
 const routes = [
     {
@@ -132,6 +133,12 @@ const routes = [
                 component: SignupView,
                 meta: { guestOnly: true },
             },
+            {
+                path: '/forgot-password',
+                name: 'forgot-password',
+                component: ForgotPasswordView,
+                meta: { guestOnly: true },
+            },  
         ],
     },
 ]

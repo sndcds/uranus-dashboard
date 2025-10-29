@@ -2,15 +2,10 @@
     <div class="visitor-layout">
         <header class="visitor-layout__topbar">
             <div class="visitor-layout__brand">
-                <button
-                    type="button"
-                    class="visitor-layout__hamburger"
+                <button type="button" class="visitor-layout__hamburger"
                     :class="{ 'visitor-layout__hamburger--hidden': isMobileMenuOpen }"
-                    :aria-expanded="isMobileMenuOpen ? 'true' : 'false'"
-                    :aria-controls="mobileMenuId"
-                    :aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
-                    @click="toggleMobileMenu"
-                >
+                    :aria-expanded="isMobileMenuOpen ? 'true' : 'false'" :aria-controls="mobileMenuId"
+                    :aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'" @click="toggleMobileMenu">
                     <span class="visitor-layout__hamburger-line"></span>
                     <span class="visitor-layout__hamburger-line"></span>
                     <span class="visitor-layout__hamburger-line"></span>
@@ -21,20 +16,12 @@
                     </router-link>
                 </slot>
             </div>
-            <div
-                :id="mobileMenuId"
-                class="visitor-layout__menu"
-                :class="{ 'visitor-layout__menu--open': isMobileMenuOpen }"
-            >
+            <div :id="mobileMenuId" class="visitor-layout__menu"
+                :class="{ 'visitor-layout__menu--open': isMobileMenuOpen }">
                 <nav class="visitor-layout__nav" aria-label="Main navigation" @click="handleNavClick">
                     <slot name="navigation">
-                        <router-link
-                            v-for="link in defaultNav"
-                            :key="link.to"
-                            :to="link.to"
-                            class="visitor-layout__nav-link"
-                            @click="closeMobileMenu"
-                        >
+                        <router-link v-for="link in defaultNav" :key="link.to" :to="link.to"
+                            class="visitor-layout__nav-link" @click="closeMobileMenu">
                             {{ link.label }}
                         </router-link>
                     </slot>
@@ -42,11 +29,7 @@
                 <div class="visitor-layout__actions">
                     <slot name="actions">
                         <label class="sr-only" for="visitor-language-select">{{ t('select_language') }}</label>
-                        <select
-                            id="visitor-language-select"
-                            class="visitor-layout__select"
-                            v-model="selectedLocale"
-                        >
+                        <select id="visitor-language-select" class="visitor-layout__select" v-model="selectedLocale">
                             <option v-for="option in localeOptions" :key="option.value" :value="option.value">
                                 {{ option.label }}
                             </option>
