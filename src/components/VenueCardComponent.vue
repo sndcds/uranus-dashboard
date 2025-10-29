@@ -3,28 +3,23 @@
     <header class="venue-card__header">
       <div class="venue-card__header-content">
         <h2 class="venue-card__title">{{ venue.venue_name }}</h2>
-        <router-link
-          v-if="venue.can_edit_venue"
-          :to="`/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
-          class="venue-card__edit-btn"
-        >
-          {{ t('edit_venue') }}
-        </router-link>
       </div>
       <p class="venue-card__stat">
         <span class="venue-card__stat-value">{{ venue.upcoming_event_count }}</span>
-        <span class="venue-card__stat-label">{{ t('events') }}</span>
+        <span class="venue-card__stat-label">{{ t('events') }}
+          <router-link v-if="venue.can_edit_venue" :to="`/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
+            class="venue-card__edit-btn">
+            {{ t('edit_venue') }}
+          </router-link>
+        </span>
       </p>
     </header>
 
     <section class="venue-card__section">
       <div class="venue-card__section-header">
         <h3 class="venue-card__section-title">{{ t('spaces') }}</h3>
-        <router-link
-          v-if="venue.can_add_space"
-          :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
-          class="venue-card__action"
-        >
+        <router-link v-if="venue.can_add_space" :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
+          class="venue-card__action">
           {{ t('add_new_space') }}
         </router-link>
       </div>
@@ -36,7 +31,13 @@
               <span class="venue-card__space-name">{{ space.space_name }}</span>
               <span class="venue-card__space-events">
                 {{ space.upcoming_event_count }}
-                <span class="venue-card__space-events-label">{{ t('events') }}</span>
+                <span class="venue-card__space-events-label">{{ t('events') }}
+                  <router-link v-if="venue.can_edit_space"
+                    :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/${space.space_id}/edit`"
+                    class="venue-card__action">
+                    {{ t('edit_space') }}
+                  </router-link>
+                </span>
               </span>
             </div>
           </li>
@@ -189,6 +190,10 @@ interface Venue {
 }
 
 .venue-card__space-events-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
   font-size: 0.85em;
   color: var(--muted-text);
 }

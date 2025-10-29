@@ -48,9 +48,9 @@
                 </transition>
 
                 <div class="form-actions">
-                    <button :disabled="isSubmitting" type="submit">
-                        <span v-if="!isSubmitting">{{ t('save_space') }}</span>
-                        <span v-else>{{ t('saving') }}</span>
+                    <button :disabled="isSubmitting || isLoadingSpace" type="submit">
+                        <span v-if="!isSubmitting">{{ submitLabel }}</span>
+                        <span v-else>{{ t(isEditMode ? 'updating' : 'saving') }}</span>
                     </button>
                 </div>
             </form>
@@ -66,9 +66,25 @@ import { apiFetch } from '@/api'
 
 const route = useRoute()
 const router = useRouter()
-const { t, te } = useI18n()
+const { t } = useI18n()
 const venueId = Number(route.params.venueId)
 const organizerId = Number(route.params.id)
+const toSpaceId = (value: unknown): number | null => {
+    if (Array.isArray(value)) {
+        return toSpaceId(value[0])
+    }
+    if (typeof value !== 'string') {
+        return null
+    }
+    const trimmed = value.trim()
+    if (!trimmed.length) {
+        return null
+    }
+    const parsed = Number(trimmed)
+    return Number.isFinite(parsed) ? parsed : null
+}
+
+const spaceId = toSpaceId(route.params.spaceId)
 const space = reactive({
     name: '',
     total_capacity: 0,
@@ -81,13 +97,19 @@ const space = reactive({
 const spaceTypes = ref<Array<{ id: number; name: string }>>([])
 
 const isSubmitting = ref(false)
+const isLoadingSpace = ref(false)
 const errorMessage = ref<string | null>(null)
-const title = computed(() => (te('space_details_title') ? t('space_details_title') : 'Space Details'))
-const subtitle = computed(() => (te('space_details_subtitle') ? t('space_details_subtitle') : 'Add or update key information for your venue space.'))
+const isEditMode = computed(() => spaceId != null)
+const title = computed(() => t(isEditMode.value ? 'update_space' : 'create_space'))
+const subtitle = computed(() => t(isEditMode.value ? 'space_edit_subtitle' : 'space_details_subtitle'))
+const submitLabel = computed(() => t(isEditMode.value ? 'update_space' : 'save_space'))
+const spaceLoadErrorMessage = computed(() => t('space_load_error'))
 
-
-onMounted(() => {
-    fetchSpaceTypes()
+onMounted(async () => {
+    await fetchSpaceTypes()
+    if (spaceId != null) {
+        await loadSpaceById(spaceId)
+    }
 })
 
 async function fetchSpaceTypes() {
@@ -117,6 +139,53 @@ async function fetchSpaceTypes() {
     }
 }
 
+const toNumber = (value: unknown, fallback = 0): number => {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return value
+    }
+    if (typeof value === 'string') {
+        const parsed = Number(value.trim())
+        if (Number.isFinite(parsed)) {
+            return parsed
+        }
+    }
+    return fallback
+}
+
+const toNullableNumber = (value: unknown): number | null => {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return value
+    }
+    if (typeof value === 'string') {
+        const parsed = Number(value.trim())
+        return Number.isFinite(parsed) ? parsed : null
+    }
+    return null
+}
+
+async function loadSpaceById(id: number) {
+    isLoadingSpace.value = true
+    errorMessage.value = null
+    try {
+        const { data } = await apiFetch<SpaceResponse | null>(`/api/admin/space/${id}`)
+        if (!data) {
+            throw new Error('Space not found')
+        }
+
+        space.name = typeof data.name === 'string' ? data.name : ''
+        space.total_capacity = toNumber(data.total_capacity, 0)
+        space.seating_capacity = toNumber(data.seating_capacity, 0)
+        space.building_level = toNumber(data.building_level, 0)
+        space.space_type_id = toNullableNumber(data.space_type_id)
+        space.website_url = typeof data.website_url === 'string' ? data.website_url : ''
+    } catch (error) {
+        console.error('Failed to load space', error)
+        errorMessage.value = spaceLoadErrorMessage.value
+    } finally {
+        isLoadingSpace.value = false
+    }
+}
+
 async function submitForm() {
     const spaceTypeId = space.space_type_id
 
@@ -125,13 +194,20 @@ async function submitForm() {
         return
     }
 
+    const trimmedWebsite = space.website_url.trim()
+    const normalizedWebsite = trimmedWebsite.length
+        ? trimmedWebsite.startsWith('http://') || trimmedWebsite.startsWith('https://')
+            ? trimmedWebsite
+            : `https://${trimmedWebsite}`
+        : ''
+
     const payload: SpacePayload = {
         name: space.name,
         total_capacity: space.total_capacity,
         seating_capacity: space.seating_capacity,
         building_level: space.building_level,
         space_type_id: spaceTypeId,
-        website_url: space.website_url,
+        website_url: normalizedWebsite || null,
         venue_id: venueId
     }
 
@@ -139,8 +215,10 @@ async function submitForm() {
     errorMessage.value = null
 
     try {
-        const { status } = await apiFetch(`/api/admin/space/create`, {
-            method: 'POST',
+        const endpoint = isEditMode.value && spaceId != null ? `/api/admin/space/${spaceId}` : '/api/admin/space/create'
+        const method = isEditMode.value ? 'PUT' : 'POST'
+        const { status } = await apiFetch(endpoint, {
+            method,
             body: JSON.stringify(payload),
         })
 
@@ -148,17 +226,23 @@ async function submitForm() {
             if (Number.isFinite(organizerId)) {
                 router.push(`/organizer/${organizerId}/venues`)
             }
+
+            if (isEditMode.value) {
+                router.push(`/organizer/${organizerId}/venues`)
+            }
         } else {
-            errorMessage.value = `Failed to save space (status ${status}).`
+            const failureKey = isEditMode.value ? 'update_space_failed' : 'save_space_failed'
+            errorMessage.value = `${t(failureKey)} (status ${status}).`
         }
     } catch (error: unknown) {
+        const defaultError = t(isEditMode.value ? 'update_space_failed' : 'save_space_failed')
         if (typeof error === 'object' && error && 'data' in error) {
             const err = error as { data?: { error?: string } }
-            errorMessage.value = err.data?.error ?? 'Failed to save space.'
+            errorMessage.value = err.data?.error ?? defaultError
         } else if (error instanceof Error) {
-            errorMessage.value = error.message
+            errorMessage.value = error.message || defaultError
         } else {
-            errorMessage.value = 'Failed to save space.'
+            errorMessage.value = defaultError
         }
     } finally {
         isSubmitting.value = false
@@ -177,6 +261,15 @@ interface Space {
 }
 
 type SpacePayload = Omit<Space, 'space_type_id'> & { space_type_id: number }
+
+interface SpaceResponse {
+    name?: string | null
+    total_capacity?: number | string | null
+    seating_capacity?: number | string | null
+    building_level?: number | string | null
+    space_type_id?: number | string | null
+    website_url?: string | null
+}
 </script>
 
 <style scoped lang="scss">
