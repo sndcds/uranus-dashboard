@@ -56,13 +56,13 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ComboTagComponent from '@/components/ComboTagComponent.vue'
 
-interface Item { id: number; name: string }
-export interface Selection { primaryId: number; secondaryId?: number | null }
+interface Item { id: number | string; name: string }
+export interface Selection { primaryId: number | string; secondaryId?: number | string | null }
 interface SelectedItem { primary: Item; secondary?: Item | null }
 
 interface Props {
   fetchPrimaries: () => Promise<Item[]>
-  fetchSecondaries?: (primaryId: number) => Promise<Item[]>
+  fetchSecondaries?: (primaryId: number | string) => Promise<Item[]>
   initialSelection?: Selection[]
   labelPrimary?: string
   labelSecondary?: string
@@ -90,7 +90,7 @@ const { t } = useI18n({ useScope: 'global' })
 // --- State ---
 const primaries = ref<Item[]>([])
 const secondaryOptions = ref<Item[]>([])
-const secondaryCache: Record<number, Item[]> = {}
+const secondaryCache: Record<string, Item[]> = {}
 
 const selectedPrimary = ref<Item | null>(null)
 const selectedSecondary = ref<Item | null>(null)
@@ -107,17 +107,18 @@ async function loadPrimaries() {
   }
 }
 
-async function loadSecondaries(primaryId: number) {
+async function loadSecondaries(primaryId: number | string) {
   if (!props.fetchSecondaries) return []
-  if (secondaryCache[primaryId]) {
-    secondaryOptions.value = secondaryCache[primaryId]
-    return secondaryCache[primaryId]
+  const key = primaryId.toString()
+  if (secondaryCache[key]) {
+    secondaryOptions.value = secondaryCache[key]
+    return secondaryCache[key]
   }
   try {
     const data = await props.fetchSecondaries(primaryId)
-    secondaryCache[primaryId] = data ?? []
-    secondaryOptions.value = secondaryCache[primaryId]
-    return secondaryCache[primaryId]
+    secondaryCache[key] = data ?? []
+    secondaryOptions.value = secondaryCache[key]
+    return secondaryCache[key]
   } catch (err) {
     console.error('fetchSecondaries error:', err)
     secondaryOptions.value = []
@@ -138,8 +139,9 @@ async function onPrimaryChange() {
 function addCombination() {
   if (!selectedPrimary.value) return
   const exists = selectedList.value.some(
-      item => item.primary.id === selectedPrimary.value!.id &&
-          (item.secondary?.id ?? 0) === (selectedSecondary.value?.id ?? 0)
+      item =>
+          item.primary.id.toString() === selectedPrimary.value!.id.toString() &&
+          (item.secondary?.id ?? 0).toString() === (selectedSecondary.value?.id ?? 0).toString()
   )
   if (exists) return
 
@@ -175,12 +177,12 @@ async function applyInitialSelection() {
   const list: SelectedItem[] = []
   await Promise.all(
       props.initialSelection.map(async sel => {
-        const primary = primaries.value.find(p => p.id === sel.primaryId)
+        const primary = primaries.value.find(p => p.id.toString() === sel.primaryId.toString())
         if (!primary) return
         let secondary: Item | null | undefined = undefined
         if (sel.secondaryId !== undefined && props.fetchSecondaries) {
-          const options = secondaryCache[primary.id] ?? await loadSecondaries(primary.id)
-          secondary = options.find(s => s.id === sel.secondaryId) ?? null
+          const options = secondaryCache[primary.id.toString()] ?? await loadSecondaries(primary.id)
+          secondary = options.find(s => s.id.toString() === sel.secondaryId?.toString()) ?? null
         }
         list.push({ primary, secondary })
       })
