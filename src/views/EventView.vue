@@ -16,7 +16,8 @@
 
                     <EventDescriptionSection :event-id="event.id" :description="event.description"
                         :participation-info="event.participation_info" :meeting-point="event.meeting_point"
-                        :event-types="event.event_types" :languages="event.languages" :locale="locale" @updated="loadEvent" />
+                        :event-types="event.event_types" :languages="event.languages" :locale="locale"
+                        @updated="loadEvent" />
 
                     <EventUrlSection :event-id="event.id" :links="eventLinks" @updated="loadEvent" />
                 </div>

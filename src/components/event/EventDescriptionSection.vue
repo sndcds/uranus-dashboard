@@ -30,56 +30,11 @@
             </template>
         </div>
 
-        <!-- Tags Section -->
-        <div class="event-tags">
-            <div class="event-tags__header">
-                <h3>{{ t('event_tags_heading') }}</h3>
-                <button v-if="!isEditingTags" type="button" class="event-tags__edit" @click="startEditingTags">
-                    {{ t('event_tags_edit') }}
-                </button>
-            </div>
+        <EventTypeSection class="event-description__segment" :event-id="eventId" :locale="locale"
+            :event-types="eventTypes" @updated="emit('updated')" />
 
-            <TwoStageTagListComponent v-if="tagInitialSelection" :fetchPrimaries="fetchEventTypes"
-                :fetchSecondaries="fetchEventGenres" :initialSelection="tagInitialSelection" labelPrimary="Event Type"
-                labelSecondary="Genre" :editable="true" :isEditing="isEditingTags"
-                @update-selection="onTagSelectionUpdate" />
-
-            <!-- Edit actions -->
-            <div v-if="isEditingTags" class="event-tags__actions">
-                <button type="button" class="event-tags__button event-tags__button--cancel" @click="cancelEditingTags">
-                    {{ t('form_cancel') }}
-                </button>
-                <button type="button" class="event-tags__button" :disabled="isSavingTags" @click="saveEventTypes">
-                    <span v-if="!isSavingTags">{{ t('form_save') }}</span>
-                    <span v-else>{{ t('saving') }}</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Language selection Section -->
-        <div class="event-language">
-            <div class="event-language__header">
-                <h3>{{ t('event_language_heading') }}</h3>
-                <button v-if="!isEditingLanguage" type="button" class="event-language__edit" @click="startEditingLanguage">
-                    {{ t('event_language_edit') }}
-                </button>
-            </div>
-
-            <TwoStageTagListComponent v-if="languageInitialSelection" :fetchPrimaries="fetchLanguages"
-                :initialSelection="languageInitialSelection" :labelPrimary="t('event_language_label')" :editable="true"
-                :isEditing="isEditingLanguage" @update-selection="onLanguageSelectionUpdate" />
-
-            <!-- Edit actions -->
-            <div v-if="isEditingLanguage" class="event-language__actions">
-                <button type="button" class="event-language__button event-language__button--cancel" @click="cancelEditingLanguage">
-                    {{ t('form_cancel') }}
-                </button>
-                <button type="button" class="event-language__button" :disabled="isSavingLanguage" @click="saveLanguage">
-                    <span v-if="!isSavingLanguage">{{ t('form_save') }}</span>
-                    <span v-else>{{ t('saving') }}</span>
-                </button>
-            </div>
-        </div>
+        <EventLanguageSection class="event-description__segment" :event-id="eventId" :locale="locale"
+            :languages="languages" @updated="emit('updated')" />
 
         <!-- Additional Info -->
         <div class="event-additional">
@@ -96,17 +51,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick } from 'vue'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
-import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
-import type { Selection as TagSelection } from '@/components/TwoStageTagListComponent.vue'
+import EventTypeSection from '@/components/event/EventTypeSection.vue'
+import EventLanguageSection from '@/components/event/EventLanguageSection.vue'
 
 interface EventType { type_id: number; type_name: string; genre_id: number | null; genre_name: string | null }
-interface SelectOption { id: number | string; name: string }
 
 const props = defineProps<{
     eventId: number
@@ -127,45 +81,9 @@ const isEditingDescription = ref(false)
 const isSavingDescription = ref(false)
 const editedDescription = ref(props.description ?? '')
 
-// Tags state
-const isEditingTags = ref(false)
-const isSavingTags = ref(false)
-const tagInitialSelection = ref<TagSelection[] | undefined>(undefined)
-
-// Language state
-const isEditingLanguage = ref(false)
-const isSavingLanguage = ref(false)
-const languageInitialSelection = ref<TagSelection[] | undefined>(undefined)
-const selectedLanguageCodes = ref<string[]>([])
-
-interface LanguageApiResponse {
-    id?: string | null
-    name?: string | null
-}
-
-const languageOptions = ref<Array<{ id: string; name: string }>>([])
-
 // Watch props for description
 watch(() => props.description, v => {
     if (!isEditingDescription.value) editedDescription.value = v ?? ''
-})
-
-// Watch event types to rebuild initial selection
-watch(
-    () => props.eventTypes,
-    () => { if (!isEditingTags.value) buildTagSelection() },
-    { deep: true }
-)
-
-watch(
-    () => props.languages,
-    () => { if (!isEditingLanguage.value) void rebuildLanguageSelection() },
-    { deep: true }
-)
-
-onMounted(() => {
-    buildTagSelection()
-    void rebuildLanguageSelection()
 })
 
 // Description actions
@@ -184,161 +102,6 @@ const saveDescription = async () => {
     } catch (err) { console.error(err) }
     finally { isSavingDescription.value = false }
 }
-
-// Build initial tag selection
-const buildTagSelection = () => {
-    if (!props.eventTypes?.length) {
-        tagInitialSelection.value = []
-        return
-    }
-    tagInitialSelection.value = props.eventTypes.map<TagSelection>(t => ({
-        primaryId: t.type_id,
-        secondaryId: t.genre_id || null,
-    }))
-}
-
-// Tags actions
-const startEditingTags = () => { buildTagSelection(); isEditingTags.value = true }
-const cancelEditingTags = () => { buildTagSelection(); isEditingTags.value = false }
-const onTagSelectionUpdate = (payload: TagSelection[]) => { tagInitialSelection.value = payload }
-
-// Fetch options
-async function fetchEventTypes(): Promise<SelectOption[]> {
-    const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-types?lang=${props.locale}`)
-    return Array.isArray(data) ? data : []
-}
-
-async function fetchEventGenres(typeId: number | string): Promise<SelectOption[]> {
-    const numericId = normalizeId(typeId)
-    if (numericId === null) {
-        return []
-    }
-    const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-genres/event-type/${numericId}?lang=${props.locale}`)
-    return Array.isArray(data) ? data : []
-}
-
-const fetchLanguages = async (): Promise<SelectOption[]> => {
-    if (!languageOptions.value.length) {
-        try {
-            const { data } = await apiFetch<LanguageApiResponse[]>(`/api/choosable-languages?lang=${props.locale}`)
-            languageOptions.value = (Array.isArray(data) ? data : [])
-                .filter((item): item is Required<LanguageApiResponse> => Boolean(item?.id && item?.name))
-                .map((item) => ({ id: item.id!, name: item.name! }))
-        } catch (error) {
-            console.error('Failed to load languages', error)
-            languageOptions.value = []
-        }
-    }
-    return languageOptions.value
-}
-
-const saveEventTypes = async () => {
-    if (!props.eventId || !tagInitialSelection.value) return
-    isSavingTags.value = true
-    try {
-        const selections = Array.isArray(tagInitialSelection.value) ? tagInitialSelection.value : []
-        const typesPayload = selections
-            .map((selection) => ({
-                type_id: normalizeId(selection.primaryId),
-                genre_id: normalizeId(selection.secondaryId),
-            }))
-            .filter(
-                (pair): pair is { type_id: number; genre_id: number | null } =>
-                    pair.type_id !== null
-            )
-
-        await apiFetch(`/api/admin/event/${props.eventId}/types`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                types: typesPayload,
-            }),
-        })
-        emit('updated')
-        isEditingTags.value = false
-    } catch (err) {
-        console.error(err)
-        isEditingTags.value = false
-    } finally {
-        isSavingTags.value = false
-    }
-}
-
-function normalizeId(value: number | string | null | undefined): number | null {
-    if (value === null || value === undefined) {
-        return null
-    }
-    const numeric = typeof value === 'string' ? Number(value) : value
-    return Number.isFinite(numeric) ? numeric : null
-}
-
-const normalizeLanguageCode = (value: number | string | null | undefined): string | null => {
-    if (value === null || value === undefined) return null
-    const code = String(value).trim()
-    return code.length ? code : null
-}
-
-const rebuildLanguageSelection = async () => {
-    const codes = Array.isArray(props.languages)
-        ? props.languages
-            .map((code) => normalizeLanguageCode(code))
-            .filter((code): code is string => code !== null && code.length > 0)
-        : []
-    selectedLanguageCodes.value = codes
-    languageInitialSelection.value = undefined
-    await nextTick()
-    languageInitialSelection.value = codes.map<TagSelection>((code) => ({
-        primaryId: code,
-        secondaryId: null,
-    }))
-}
-
-const startEditingLanguage = async () => {
-    await rebuildLanguageSelection()
-    isEditingLanguage.value = true
-    void fetchLanguages()
-}
-
-const cancelEditingLanguage = async () => {
-    await rebuildLanguageSelection()
-    isEditingLanguage.value = false
-}
-
-const onLanguageSelectionUpdate = (payload: TagSelection[]) => {
-    languageInitialSelection.value = payload
-    selectedLanguageCodes.value = payload
-        .map((item) => normalizeLanguageCode(item.primaryId))
-        .filter((code): code is string => code !== null)
-}
-
-const saveLanguage = async () => {
-    if (!props.eventId) return
-    isSavingLanguage.value = true
-    try {
-        await apiFetch(`/api/admin/event/${props.eventId}/languages`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                languages: selectedLanguageCodes.value,
-            }),
-        })
-        emit('updated')
-        isEditingLanguage.value = false
-    } catch (error) {
-        console.error(error)
-        isEditingLanguage.value = false
-    } finally {
-        isSavingLanguage.value = false
-    }
-}
-
-watch(
-    () => props.locale,
-    () => {
-        languageOptions.value = []
-        if (isEditingLanguage.value) {
-            void fetchLanguages()
-        }
-    }
-)
 </script>
 
 <style scoped lang="scss">
@@ -388,107 +151,8 @@ watch(
     @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
-.event-tags__edit {
-    margin-left: auto;
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.event-description:hover .event-tags__edit,
-.event-tags:hover .event-tags__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.event-tags__actions {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-}
-
-.event-tags__button {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-tags__button--cancel {
-    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-tags {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.event-language {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.event-language__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-}
-
-.event-language__edit {
-    margin-left: auto;
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.event-description:hover .event-language__edit,
-.event-language:hover .event-language__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.event-language__actions {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-}
-
-.event-language__button {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-language__button--cancel {
-    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-tags__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-}
-
-.event-tags__lists {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    justify-content: center;
-}
-
-.event-tags__lists h3 {
-    margin: 0 0 0.35rem 0;
-    font-size: 1rem;
-    color: var(--color-text);
-}
-
-.event-tags__lists ul {
-    margin: 0;
-    padding-left: 1.1rem;
-    color: var(--muted-text);
+.event-description__segment {
+    margin-top: 1.25rem;
 }
 
 .event-additional {
