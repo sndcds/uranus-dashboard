@@ -56,13 +56,15 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ComboTagComponent from '@/components/ComboTagComponent.vue'
 
-interface Item { id: number | string | null; name: string }
+type ItemId = number | string
+
+interface Item { id: ItemId; name: string }
 export interface Selection { primaryId: number | string; secondaryId?: number | string | null }
 interface SelectedItem { primary: Item; secondary?: Item | null }
 
 interface Props {
   fetchPrimaries: () => Promise<Item[]>
-  fetchSecondaries?: (primaryId: number | string) => Promise<Item[]>
+  fetchSecondaries?: (primaryId: ItemId) => Promise<Item[]>
   initialSelection?: Selection[]
   labelPrimary?: string
   labelSecondary?: string
@@ -107,7 +109,7 @@ async function loadPrimaries() {
   }
 }
 
-async function loadSecondaries(primaryId: number | string | null | undefined) {
+async function loadSecondaries(primaryId: ItemId | null | undefined) {
   if (!props.fetchSecondaries || primaryId == null) {
     secondaryOptions.value = []
     return []
