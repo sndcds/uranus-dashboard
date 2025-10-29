@@ -1,8 +1,9 @@
 <template>
   <div class="organizer-dashboard-view">
     <!-- Page Header -->
-    <header class="organizer-dashboard-view__header">
-      <h1 class="organizer-dashboard-view__title">{{ t('organizers') }}</h1>
+    <header class="organizer-dashboard-view__hero">
+      <h1 class="organizer-title">{{ t('organizers') }}</h1>
+      <p>{{ t('organizers_overview_subtitle') }}</p>
     </header>
 
     <!-- Empty State Message -->
@@ -12,10 +13,7 @@
 
     <!-- Create Organizer Action -->
     <div class="organizer-dashboard-view__actions">
-      <router-link
-        to="/organizer/create"
-        class="organizer-dashboard-view__create-btn"
-      >
+      <router-link to="/organizer/create" class="organizer-dashboard-view__create-btn">
         {{ t('create_organizer') }}
       </router-link>
     </div>
@@ -27,11 +25,7 @@
 
     <!-- Organizer Cards Grid -->
     <div class="organizer-dashboard-view__grid">
-      <OrganizerCardComponent
-        v-for="organizer in organizers"
-        :key="organizer.organizer_id"
-        :organizer="organizer"
-      />
+      <OrganizerCardComponent v-for="organizer in organizers" :key="organizer.organizer_id" :organizer="organizer" />
     </div>
   </div>
 </template>
@@ -89,6 +83,14 @@ onMounted(async () => {
   @include form-page();
   padding: clamp(1rem, 4vw, 2rem);
   min-height: 100vh;
+}
+
+.organizer-dashboard-view__hero {
+    @include form-hero(540px);
+}
+
+.organizer-title {
+    margin: 0 0 clamp(0.5rem, 2vw, 1rem) 0;
 }
 
 // Header section
@@ -158,7 +160,7 @@ onMounted(async () => {
 // Tablet enhancements (640px+)
 @media (min-width: 640px) {
   .organizer-dashboard-view__actions {
-    justify-content: flex-end;
+    justify-content: center;
   }
 
   .organizer-dashboard-view__grid {
@@ -168,10 +170,6 @@ onMounted(async () => {
 
 // Desktop enhancements (1024px+)
 @media (min-width: 1024px) {
-  .organizer-dashboard-view {
-    padding: clamp(2rem, 6vw, 4rem);
-  }
-
   .organizer-dashboard-view__grid {
     @include form-grid(360px, clamp(1.5rem, 4vw, 2rem));
   }

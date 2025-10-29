@@ -1,8 +1,20 @@
 <template>
-  <div class="organizer-card" :class="{ 'organizer-card--active': appStore.organizerId === organizer.organizer_id }">
+  <div class="organizer-card" :class="{ 'organizer-card--active': appStore.organizerId === organizer.organizer_id }"
+    data-ribbon-label="⭐">
     <header class="organizer-card__header">
       <h2 class="organizer-card__title">{{ organizer.organizer_name }}</h2>
     </header>
+
+    <div class="organizer-card__button-group">
+      <router-link :to="`/organizer/${organizer.organizer_id}/edit`" class="organizer-card__edit-btn">
+        {{ t('edit_organizer') }}
+      </router-link>
+      <button class="organizer-card__button"
+        :class="{ 'organizer-card__button--active': appStore.organizerId === organizer.organizer_id }"
+        @click="assignOrganizer(organizer.organizer_id)">
+        {{ appStore.organizerId === organizer.organizer_id ? t('organizer_active') : t('organizer_activate') }}
+      </button>
+    </div>
 
     <div v-if="organizer.venues.length" class="organizer-card__content">
       <table class="organizer-card__table simple-table">
@@ -41,24 +53,6 @@
     <div v-else class="organizer-card__empty">
       <em class="organizer-card__empty-text">No venues found</em>
     </div>
-
-    <footer class="organizer-card__footer">
-      <div class="organizer-card__button-group">
-        <button
-          class="organizer-card__button"
-          :class="{ 'organizer-card__button--active': appStore.organizerId === organizer.organizer_id }"
-          @click="assignOrganizer(organizer.organizer_id)"
-        >
-          {{ appStore.organizerId === organizer.organizer_id ? t('organizer_active') : t('organizer_activate') }}
-        </button>
-        <router-link
-          :to="`/organizer/${organizer.organizer_id}/edit`"
-          class="organizer-card__edit-btn"
-        >
-          {{ t('edit_organizer') }}
-        </router-link>
-      </div>
-    </footer>
   </div>
 </template>
 
@@ -98,36 +92,35 @@ function assignOrganizer(id: number) {
 
 <style scoped lang="scss">
 // OrganizerCardComponent - Global style compliant
+
 .organizer-card {
+  @include form-card(100%, clamp(1.25rem, 3vw, 1.75rem), clamp(0.75rem, 2vw, 1.25rem));
   position: relative;
-  border-radius: 8px;
-  padding: 16px;
-  padding-bottom: 50px;
-  background-color: var(--card-bg);
-  color: var(--color-text);
   min-height: 280px;
   border: 4px solid transparent;
-  transition: background-color 0.4s, border 0.4s;
-  display: flex;
-  flex-direction: column;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 
   // Active state styling
   &.organizer-card--active {
-    border-color: var(--accent-primary);
-    background: var(--accent-muted);
-    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.15);
+    &::after {
+      content: attr(data-ribbon-label);
+      position: absolute;
+      font-size: 1.7rem;
+      top: 15px;
+      right: 15px;
+      pointer-events: none;
+    }
   }
 }
 
 // Header section
 .organizer-card__header {
-  margin-bottom: 1rem;
+  gap: 0;
 }
 
 .organizer-card__title {
-  color: #222;
   margin: 0;
-  font-size: 1.25rem;
+  font-size: clamp(1.1rem, 2.5vw, 1.25rem);
   font-weight: 700;
   color: var(--color-text);
   line-height: 1.3;
@@ -141,22 +134,16 @@ function assignOrganizer(id: number) {
 
 // Table styling
 .organizer-card__table {
-  width: 100%;
-  border-collapse: collapse;
   font-size: 0.9rem;
+  color: var(--color-text);
 }
 
 .organizer-card__table-header {
-  text-align: left;
-  padding: 6px 8px;
-  border-top: 1px solid #ddd;
-  font-size: 0.8em;
-  padding: 2px;
-  border-top: 0;
-  border-bottom: 1px solid #999;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--color-text);
   border-bottom: 2px solid var(--border-soft);
+  padding: 0.5rem 0.75rem;
 
   &--right {
     text-align: right;
@@ -175,11 +162,8 @@ function assignOrganizer(id: number) {
 }
 
 .organizer-card__table-cell {
-  text-align: left;
-  padding: 6px 8px;
-  border-top: 1px solid #ddd;
-  color: var(--color-text);
   padding: 0.5rem 0.75rem;
+  color: var(--color-text);
 
   &--right {
     text-align: right;
@@ -221,12 +205,12 @@ function assignOrganizer(id: number) {
 
 .organizer-card__button-group {
   display: flex;
+  justify-content: space-between;
   gap: 0.5rem;
 }
 
 .organizer-card__button {
   @include form-secondary-button();
-  flex: 1;
   justify-content: center;
   font-size: 0.9rem;
   font-weight: 600;
@@ -246,15 +230,7 @@ function assignOrganizer(id: number) {
 }
 
 .organizer-card__edit-btn {
-  @include form-primary-button();
-  flex: 1;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-align: center;
+  @include form-secondary-button();
 
   &:hover {
     text-decoration: none;

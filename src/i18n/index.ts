@@ -124,6 +124,7 @@ const sharedAuthFor = (locale: LocaleKey) =>
 const messages = {
     de: {
         ...sharedAuthFor('de'),
+        organizers_overview_subtitle: 'Verwalte deine Organisationen und Räume an einem Ort.',
         edit_space: 'Raum bearbeiten',
         create_space: 'Raum erstellen',
         description: 'Beschreibung',
@@ -490,6 +491,7 @@ const messages = {
     },
     en: {
         ...sharedAuthFor('en'),
+        organizers_overview_subtitle: 'Manage your organizers and spaces in one place.',
         edit_space: 'Edit Space',
         create_space: 'Create Space',
         description: 'Description',
@@ -858,6 +860,7 @@ const messages = {
     },
     da: {
         ...sharedAuthFor('da'),
+        organizers_overview_subtitle: 'Administrer dine arrangører og lokaler på ét sted.',
         edit_space: 'Rediger lokale',
         create_space: 'Opret lokale',
         description: 'Beskrivelse',

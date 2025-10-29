@@ -60,7 +60,7 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
 
 @mixin form-grid($min-width: 220px, $gap: clamp(1rem, 2vw, 1.5rem)) {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax($min-width, 2fr));
   gap: $gap;
 }
 
