@@ -7,17 +7,24 @@
             </header>
 
             <transition name="fade">
-                <p v-if="error" class="auth-feedback auth-feedback--error" role="alert">{{ error }}</p>
+                <p v-if="error" :id="errorMessageId" class="auth-feedback auth-feedback--error" role="alert"
+                    aria-live="assertive">
+                    {{ error }}
+                </p>
             </transition>
             <transition name="fade">
-                <p v-if="success" class="auth-feedback auth-feedback--success" role="status">{{ success }}</p>
+                <p v-if="success" :id="successMessageId" class="auth-feedback auth-feedback--success" role="status"
+                    aria-live="polite">
+                    {{ success }}
+                </p>
             </transition>
 
-            <form class="auth-form" @submit.prevent="requestReset">
+            <form class="auth-form" @submit.prevent="requestReset" :aria-busy="isSubmitting" novalidate>
                 <div class="input-group">
                     <label for="forgot-email">{{ t('email') }}</label>
                     <input id="forgot-email" v-model="email" type="email" autocomplete="email"
-                        :placeholder="t('email_placeholder')" required />
+                        :placeholder="t('email_placeholder')" required :aria-invalid="Boolean(error)"
+                        :aria-describedby="ariaDescription" />
                 </div>
                 <button :disabled="isSubmitting" type="submit">
                     <span v-if="!isSubmitting">{{ t('forgot_password_submit') }}</span>
@@ -33,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
@@ -43,6 +50,17 @@ const email = ref('')
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
 const isSubmitting = ref(false)
+const errorMessageId = 'forgot-password-error'
+const successMessageId = 'forgot-password-success'
+const ariaDescription = computed(() => {
+    if (error.value) {
+        return errorMessageId
+    }
+    if (success.value) {
+        return successMessageId
+    }
+    return undefined
+})
 
 const requestReset = async () => {
     if (isSubmitting.value) {

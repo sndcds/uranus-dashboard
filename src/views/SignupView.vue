@@ -7,25 +7,31 @@
             </header>
 
             <transition name="fade">
-                <p v-if="error" class="signup-feedback signup-feedback--error" role="alert">{{ error }}</p>
+                <p v-if="error" :id="errorMessageId" class="signup-feedback signup-feedback--error" role="alert"
+                    aria-live="assertive">
+                    {{ error }}
+                </p>
             </transition>
 
-            <form class="signup-form" @submit.prevent="signup">
+            <form class="signup-form" @submit.prevent="signup" :aria-busy="isSubmitting" novalidate>
                 <div class="input-group">
                     <label for="signup-email">{{ t('email') }}</label>
                     <input id="signup-email" v-model="email" type="email" autocomplete="email"
-                        :placeholder="t('email_placeholder')" required />
+                        :placeholder="t('email_placeholder')" required :aria-invalid="Boolean(error)"
+                        :aria-describedby="error ? errorMessageId : undefined" />
                 </div>
                 <div class="input-group">
                     <label for="signup-repeat-email">{{ t('repeat_email') }}</label>
                     <input id="signup-repeat-email" v-model="repeatEmail" type="email" autocomplete="email"
-                        :placeholder="t('repeat_email_placeholder')" required />
+                        :placeholder="t('repeat_email_placeholder')" required :aria-invalid="Boolean(error)"
+                        :aria-describedby="error ? errorMessageId : undefined" />
                 </div>
                 <div class="input-group">
                     <label for="signup-password">{{ t('password') }}</label>
                     <div class="input-with-toggle">
                         <input id="signup-password" v-model="password" :type="passwordFieldType"
-                            autocomplete="new-password" :placeholder="t('password_placeholder')" required />
+                            autocomplete="new-password" :placeholder="t('password_placeholder')" required
+                            :aria-invalid="Boolean(error)" :aria-describedby="error ? errorMessageId : undefined" />
                         <button type="button" class="password-toggle" :aria-label="passwordToggleLabel"
                             :title="passwordToggleLabel" :aria-pressed="isPasswordVisible"
                             @click="togglePasswordVisibility">
@@ -73,6 +79,7 @@ const password = ref('')
 const isPasswordVisible = ref(false)
 const error = ref<string | null>(null)
 const isSubmitting = ref(false)
+const errorMessageId = 'signup-error-message'
 
 const signupSubtitle = computed(() => (te('signup_subtitle') ? t('signup_subtitle') : 'Create a new organizer account to get started.'))
 const passwordFieldType = computed(() => (isPasswordVisible.value ? 'text' : 'password'))

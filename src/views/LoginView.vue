@@ -7,20 +7,25 @@
             </header>
 
             <transition name="fade">
-                <p v-if="error" class="auth-feedback auth-feedback--error" role="alert">{{ error }}</p>
+                <p v-if="error" :id="errorMessageId" class="auth-feedback auth-feedback--error" role="alert"
+                    aria-live="assertive">
+                    {{ error }}
+                </p>
             </transition>
 
-            <form class="auth-form" @submit.prevent="login">
+            <form class="auth-form" @submit.prevent="login" :aria-busy="isSubmitting" novalidate>
                 <div class="input-group">
                     <label for="login-email">{{ t('email') }}</label>
                     <input id="login-email" v-model="email" type="email" autocomplete="email"
-                        :placeholder="t('email_placeholder')" required />
+                        :placeholder="t('email_placeholder')" required :aria-invalid="Boolean(error)"
+                        :aria-describedby="error ? errorMessageId : undefined" />
                 </div>
                 <div class="input-group">
                     <label for="login-password">{{ t('password') }}</label>
                     <div class="input-with-toggle">
                         <input id="login-password" v-model="password" :type="passwordFieldType"
-                            autocomplete="current-password" :placeholder="t('password_placeholder_login')" required />
+                            autocomplete="current-password" :placeholder="t('password_placeholder_login')" required
+                            :aria-invalid="Boolean(error)" :aria-describedby="error ? errorMessageId : undefined" />
                         <button type="button" class="password-toggle" :aria-label="passwordToggleLabel"
                             :title="passwordToggleLabel" :aria-pressed="isPasswordVisible"
                             @click="togglePasswordVisibility">
@@ -84,6 +89,7 @@ const password = ref('')
 const isPasswordVisible = ref(false)
 const error = ref<string | null>(null)
 const isSubmitting = ref(false)
+const errorMessageId = 'login-error-message'
 
 const loginSubtitle = computed(() => (te('login_subtitle') ? t('login_subtitle') : 'Welcome back! Sign in to continue organizing your events.'))
 const passwordFieldType = computed(() => (isPasswordVisible.value ? 'text' : 'password'))
@@ -227,7 +233,7 @@ const login = async () => {
     display: flex;
     justify-content: flex-end;
     margin-top: -0.5rem;
-    
+
     a {
         font-size: 0.9rem;
         color: var(--accent-primary);

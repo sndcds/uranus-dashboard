@@ -207,7 +207,7 @@ async function submitForm() {
         seating_capacity: space.seating_capacity,
         building_level: space.building_level,
         space_type_id: spaceTypeId,
-        website_url: normalizedWebsite || null,
+        website_url: normalizedWebsite,
         venue_id: venueId
     }
 

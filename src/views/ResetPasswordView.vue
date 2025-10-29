@@ -7,18 +7,25 @@
             </header>
 
             <transition name="fade">
-                <p v-if="error" class="auth-feedback auth-feedback--error" role="alert">{{ error }}</p>
+                <p v-if="error" :id="errorMessageId" class="auth-feedback auth-feedback--error" role="alert"
+                    aria-live="assertive">
+                    {{ error }}
+                </p>
             </transition>
             <transition name="fade">
-                <p v-if="success" class="auth-feedback auth-feedback--success" role="status">{{ success }}</p>
+                <p v-if="success" :id="successMessageId" class="auth-feedback auth-feedback--success" role="status"
+                    aria-live="polite">
+                    {{ success }}
+                </p>
             </transition>
 
-            <form class="auth-form" @submit.prevent="handleSubmit">
+            <form class="auth-form" @submit.prevent="handleSubmit" :aria-busy="isSubmitting" novalidate>
                 <div class="input-group">
                     <label for="new-password">{{ t('new_password') }}</label>
                     <div class="input-with-toggle">
                         <input id="new-password" v-model="password" :type="passwordFieldType"
-                            autocomplete="new-password" :placeholder="t('password_placeholder')" required />
+                            autocomplete="new-password" :placeholder="t('password_placeholder')" required
+                            :aria-invalid="Boolean(error)" :aria-describedby="ariaDescription" />
                         <button type="button" class="password-toggle" :aria-label="passwordToggleLabel"
                             :title="passwordToggleLabel" :aria-pressed="isPasswordVisible"
                             @click="togglePasswordVisibility">
@@ -39,7 +46,8 @@
                     <label for="confirm-password">{{ t('confirm_password') }}</label>
                     <div class="input-with-toggle">
                         <input id="confirm-password" v-model="confirmPassword" :type="confirmPasswordFieldType"
-                            autocomplete="new-password" :placeholder="t('confirm_password_placeholder')" required />
+                            autocomplete="new-password" :placeholder="t('confirm_password_placeholder')" required
+                            :aria-invalid="Boolean(error)" :aria-describedby="ariaDescription" />
                         <button type="button" class="password-toggle" :aria-label="confirmPasswordToggleLabel"
                             :title="confirmPasswordToggleLabel" :aria-pressed="isConfirmPasswordVisible"
                             @click="toggleConfirmPasswordVisibility">
@@ -86,6 +94,17 @@ const isConfirmPasswordVisible = ref(false)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
 const isSubmitting = ref(false)
+const errorMessageId = 'reset-password-error'
+const successMessageId = 'reset-password-success'
+const ariaDescription = computed<string | undefined>(() => {
+    if (error.value) {
+        return errorMessageId
+    }
+    if (success.value) {
+        return successMessageId
+    }
+    return undefined
+})
 
 const passwordFieldType = computed(() => (isPasswordVisible.value ? 'text' : 'password'))
 const passwordToggleLabel = computed(() =>
@@ -142,11 +161,11 @@ const handleSubmit = async () => {
     isSubmitting.value = true
 
     try {
-        const { status } = await apiFetch('/api/admin/reset-password', {
+        const { status } = await apiFetch('/api/reset-password', {
             method: 'POST',
             body: JSON.stringify({
                 token,
-                new_password: trimmedPassword,
+                password: trimmedPassword,
             }),
         })
 
