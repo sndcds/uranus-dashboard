@@ -112,6 +112,16 @@ interface ScheduleDraftEntry {
     allDayEvent: boolean
 }
 
+type EventDateModelValue = {
+    startDate: string
+    endDate: string | null
+    startTime: string
+    endTime: string | null
+    entryTime: string | null
+    spaceId: number | null
+    allDayEvent: boolean
+}
+
 interface EventScheduleDisplay {
     key: string
     startDate: string
@@ -297,17 +307,23 @@ const loadSpaces = async (venueId: number | null) => {
     }
 }
 
-const onScheduleDraftChange = (value: Array<Partial<ScheduleDraftEntry>>) => {
-    scheduleDraft.value = value.map((entry) => ({
-        id: entry.id ?? null,
-        startDate: entry.startDate ?? '',
-        endDate: entry.endDate ?? null,
-        startTime: entry.startTime ?? '',
-        endTime: entry.endTime ?? '',
-        entryTime: entry.entryTime ?? null,
-        spaceId: entry.spaceId ?? null,
-        allDayEvent: entry.allDayEvent ?? false,
-    }))
+const onScheduleDraftChange = (value: EventDateModelValue[]) => {
+    const previousDraft = scheduleDraft.value
+    scheduleDraft.value = value.map((entry, index) => {
+        const entryWithId = entry as EventDateModelValue & { id?: number | null }
+        const preservedId = entryWithId.id ?? previousDraft[index]?.id ?? null
+
+        return {
+            id: preservedId,
+            startDate: entry.startDate ?? '',
+            endDate: entry.endDate ?? null,
+            startTime: entry.startTime ?? '',
+            endTime: entry.endTime ?? '',
+            entryTime: entry.entryTime ?? null,
+            spaceId: entry.spaceId ?? null,
+            allDayEvent: entry.allDayEvent ?? false,
+        }
+    })
 }
 
 const createDraftEntryFromSchedule = (entry: EventScheduleEntry): ScheduleDraftEntry => ({
