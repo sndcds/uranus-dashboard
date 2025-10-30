@@ -121,7 +121,6 @@ interface EventDetail {
     meeting_point: string | null
     event_types: EventType[]
     languages: string[]
-    tags: string[]
     event_dates: EventDate[]
     event_urls: EventUrl[]
     image_id: number | null
