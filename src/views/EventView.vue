@@ -6,16 +6,11 @@
                     <EventImageUploadComponent v-model="eventImage" v-model:alt-text="imageAltText"
                         v-model:copyright="imageCopyright" v-model:license="imageLicense"
                         v-model:created-by="imageCreatedBy" :event-id="eventId" :max-size="5 * 1024 * 1024"
-                        :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
-                        :existing-image-url="existingImagePreviewUrl" @updated="loadEvent"
-                    />
+                        :accepted-types="['image/jpeg', 'image/png', 'image/webp']" :existing-image-id="event.image_id"
+                        :existing-image-url="existingImagePreviewUrl" @updated="loadEvent" />
 
-                    <EventHeaderSection
-                        :event-id="event.id"
-                        :title="event.title"
-                        :subtitle="event.subtitle"
-                        @updated="loadEvent"
-                    />
+                    <EventHeaderSection :event-id="event.id" :title="event.title" :subtitle="event.subtitle"
+                        @updated="loadEvent" />
 
                     <EventDescriptionSection :event-id="event.id" :description="event.description"
                         :participation-info="event.participation_info" :meeting-point="event.meeting_point"
@@ -27,8 +22,8 @@
 
                 <EventTeaserSection :event-id="event.id" :teaser-text="event.teaser_text"
                     :has-main-image="Boolean(event.image_id)" :image-id="event.image_id"
-                    :image-focus-x="event.image_focus_x" :image-focus-y="event.image_focus_y"
-                    :tags="event.tags" class="event-teaser" @updated="loadEvent" />
+                    :image-focus-x="event.image_focus_x" :image-focus-y="event.image_focus_y" :tags="event.tags"
+                    class="event-teaser" @updated="loadEvent" />
             </section>
 
             <div class="event-sidebar">
@@ -133,6 +128,8 @@ interface EventDetail {
     image_focus_x: number | null
     image_focus_y: number | null
     image_license_id: string | null
+    image_url?: string | null
+    has_main_image?: boolean
     venue_id: number | null
     venue_name: string
     venue_street: string | null
@@ -209,7 +206,16 @@ const normalizeFocus = (value: number | null): string => {
 
 const existingImagePreviewUrl = computed(() => {
     const current = event.value
-    if (!current || current.image_id == null) return null
+    if (!current) return null
+
+    if (current.image_url) {
+        return current.image_url
+    }
+
+    if (current.image_id == null) {
+        return null
+    }
+
     const focusX = normalizeFocus(current.image_focus_x)
     const focusY = normalizeFocus(current.image_focus_y)
     return `${apiBase}/api/image/${current.image_id}?mode=cover&width=800&ratio=16by9&focusx=${focusX}&focusy=${focusY}&type=webp&quality=90`
@@ -290,6 +296,17 @@ const toNullableString = (value: unknown): string | null => {
     return null
 }
 
+const toBoolean = (value: unknown): boolean => {
+    if (typeof value === 'boolean') return value
+    if (typeof value === 'number') return value !== 0
+    if (typeof value === 'string') {
+        const normalized = value.trim().toLowerCase()
+        if (!normalized) return false
+        return normalized === 'true' || normalized === '1' || normalized === 'yes'
+    }
+    return false
+}
+
 const mapEventType = (raw: unknown): EventType | null => {
     if (!raw || typeof raw !== 'object') return null
     const record = raw as Record<string, unknown>
@@ -330,6 +347,42 @@ const mapEventUrl = (raw: unknown): EventUrl | null => {
         title: toString(record.title),
         url,
         url_type: toString(record.url_type),
+    }
+}
+
+interface EventImageDetail {
+    id: number | null
+    url: string | null
+    altText: string | null
+    copyright: string | null
+    createdBy: string | null
+    focusX: number | null
+    focusY: number | null
+    licenseId: string | null
+}
+
+const mapEventImage = (raw: unknown): EventImageDetail | null => {
+    if (!raw || typeof raw !== 'object') return null
+    const record = raw as Record<string, unknown>
+    const imageId = toNumberOrNull(record.image_id ?? record.id ?? record.imageId ?? record.main_image_id)
+    const urlCandidate =
+        toNullableString(
+            record.url ??
+                record.image_url ??
+                record.path ??
+                record.src ??
+                (typeof record.image === 'string' ? record.image : null)
+        ) ?? null
+
+    return {
+        id: imageId,
+        url: urlCandidate,
+        altText: toNullableString(record.alt_text ?? record.altText ?? record.description),
+        copyright: toNullableString(record.copyright),
+        createdBy: toNullableString(record.created_by ?? record.createdBy),
+        focusX: toNumberOrNull(record.focus_x ?? record.focusX),
+        focusY: toNumberOrNull(record.focus_y ?? record.focusY),
+        licenseId: toNullableString(record.license_id ?? record.licence_id ?? record.licenseId ?? record.licenceId),
     }
 }
 
@@ -437,6 +490,15 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
         image_focus_x: toNumberOrNull(record.image_focus_x),
         image_focus_y: toNumberOrNull(record.image_focus_y),
         image_license_id: toNullableString(record.image_license_id),
+        image_url: toNullableString(
+            record.image_url ??
+                record.main_image_url ??
+                (typeof record.image === 'string' ? record.image : null) ??
+                (record.image && typeof record.image === 'object'
+                    ? (record.image as Record<string, unknown>).url
+                    : null)
+        ),
+        has_main_image: toBoolean(record.has_main_image ?? record.hasMainImage ?? record.main_image_exists),
         venue_id: toNumberOrNull(record.venue_id),
         venue_name: toString(record.venue_name),
         venue_street: toNullableString(record.venue_street),
@@ -467,6 +529,54 @@ const resetState = () => {
     imageCreatedBy.value = ''
 }
 
+const ensureEventImageDetails = async (current: EventDetail) => {
+    if (!current.has_main_image || current.id == null) {
+        return
+    }
+
+    const hasPreviewData = current.image_id !== null || (current.image_url != null && current.image_url !== '')
+    if (hasPreviewData) {
+        return
+    }
+
+    try {
+        const { data } = await apiFetch<unknown>(`/api/admin/event/${current.id}/image`)
+        const imageDetails = mapEventImage(data)
+        if (!imageDetails) {
+            return
+        }
+
+        const updated: EventDetail = {
+            ...current,
+            image_id: imageDetails.id ?? current.image_id ?? null,
+            image_focus_x: imageDetails.focusX ?? current.image_focus_x,
+            image_focus_y: imageDetails.focusY ?? current.image_focus_y,
+            image_license_id: imageDetails.licenseId ?? current.image_license_id,
+            image_alt_text: imageDetails.altText ?? current.image_alt_text,
+            image_copyright: imageDetails.copyright ?? current.image_copyright,
+            image_created_by: imageDetails.createdBy ?? current.image_created_by,
+            image_url: imageDetails.url ?? current.image_url ?? null,
+        }
+
+        event.value = updated
+
+        if (imageDetails.altText != null) {
+            imageAltText.value = imageDetails.altText
+        }
+        if (imageDetails.copyright != null) {
+            imageCopyright.value = imageDetails.copyright
+        }
+        if (imageDetails.licenseId != null) {
+            imageLicense.value = imageDetails.licenseId
+        }
+        if (imageDetails.createdBy != null) {
+            imageCreatedBy.value = imageDetails.createdBy
+        }
+    } catch (err) {
+        console.error('Failed to load event image details', err)
+    }
+}
+
 const loadEvent = async () => {
     try {
         const { data } = await apiFetch<unknown>(`/api/admin/event/${eventId.value}?lang=${locale.value}`)
@@ -485,6 +595,8 @@ const loadEvent = async () => {
         imageCopyright.value = mapped.image_copyright ?? ''
         imageLicense.value = mapped.image_license_id ?? ''
         imageCreatedBy.value = mapped.image_created_by ?? ''
+
+        await ensureEventImageDetails(mapped)
     } catch (err) {
         console.error(err)
         error.value = t('event_load_error')

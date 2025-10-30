@@ -136,6 +136,7 @@ interface Props {
     maxSize?: number // in bytes, default 5MB
     acceptedTypes?: string[] // default ['image/jpeg', 'image/png', 'image/webp']
     existingImageUrl?: string | null
+    existingImageId?: number | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -146,7 +147,8 @@ const props = withDefaults(defineProps<Props>(), {
     createdBy: '',
     maxSize: 5 * 1024 * 1024, // 5MB
     acceptedTypes: () => ['image/jpeg', 'image/png', 'image/webp'],
-    existingImageUrl: null
+    existingImageUrl: null,
+    existingImageId: null,
 })
 
 const emit = defineEmits<{
@@ -161,11 +163,17 @@ const emit = defineEmits<{
 const { t, locale } = useI18n()
 
 const existingImageUrl = ref<string | null>(props.existingImageUrl ?? null)
+const existingImageId = ref<number | null>(
+    typeof props.existingImageId === 'number' && Number.isFinite(props.existingImageId)
+        ? props.existingImageId
+        : null
+)
 
 const fileInput = ref<HTMLInputElement>()
 const isDragOver = ref(false)
 const error = ref<string>('')
 const isSaving = ref(false)
+const isDeleting = ref(false)
 const showMetadata = ref(false)
 
 const hasImage = computed(() => !!props.modelValue || !!existingImageUrl.value)
@@ -244,6 +252,7 @@ watch(() => props.modelValue, (newFile) => {
 
     if (newFile && newFile instanceof File) {
         existingImageUrl.value = null
+        existingImageId.value = null
         createPreview(newFile)
         fileName.value = newFile.name
         fileSize.value = newFile.size
@@ -268,6 +277,14 @@ watch(() => props.existingImageUrl, (newUrl) => {
         applyExistingImagePreview(existingImageUrl.value)
     } else {
         clearPreview()
+    }
+}, { immediate: true })
+
+watch(() => props.existingImageId, (newId) => {
+    if (typeof newId === 'number' && Number.isFinite(newId)) {
+        existingImageId.value = newId
+    } else {
+        existingImageId.value = null
     }
 }, { immediate: true })
 
@@ -300,6 +317,7 @@ const handleFileSelect = (event: Event) => {
         if (validateFile(file)) {
             emit('update:modelValue', file)
             existingImageUrl.value = null
+            existingImageId.value = null
         }
     } else {
         // User cancelled file selection or invalid file
@@ -314,17 +332,38 @@ const handleDrop = (event: DragEvent) => {
     if (file && file instanceof File && validateFile(file)) {
         emit('update:modelValue', file)
         existingImageUrl.value = null
+        existingImageId.value = null
     }
 }
 
-const removeImage = () => {
-    existingImageUrl.value = null
-    showMetadata.value = false
-    emit('update:modelValue', null)
-    if (fileInput.value) {
-        fileInput.value.value = ''
+const removeImage = async () => {
+    if (isDeleting.value) return
+
+    error.value = ''
+    isDeleting.value = true
+
+    try {
+        if (existingImageId.value !== null) {
+            await apiFetch(`/api/admin/event/${props.eventId}/image`, {
+                method: 'DELETE',
+            })
+        }
+
+        existingImageUrl.value = null
+        existingImageId.value = null
+        showMetadata.value = false
+        emit('update:modelValue', null)
+        if (fileInput.value) {
+            fileInput.value.value = ''
+        }
+        clearPreview()
+        emit('updated')
+    } catch (err) {
+        console.error('Failed to remove image', err)
+        error.value = t('event_image_remove_error')
+    } finally {
+        isDeleting.value = false
     }
-    clearPreview()
 }
 
 const formatFileSize = (bytes: number): string => {
