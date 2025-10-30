@@ -46,7 +46,7 @@
                                     <span class="chip">{{ event.event_type || t('event_type_unknown') }}</span>
                                 </td>
                                 <td>
-                                    <router-link :to="`/event/${event.event_id}`" class="uranus-seondary-button">
+                                    <router-link :to="`/event/${event.event_id}`" class="uranus-secondary-button">
                                         {{ t('edit') }}
                                     </router-link>
                                 </td>

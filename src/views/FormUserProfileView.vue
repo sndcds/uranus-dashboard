@@ -54,7 +54,7 @@
                             </div>
                             <div class="profile-preferences__grid">
                                 <div class="form-group">
-                                    <label for="profile_language">{{ t('select_language') }}</label>
+                                    <label for="profile_language">{{ t('language') }}</label>
                                     <select id="profile_language" v-model="selectedLocale" :disabled="isSubmitting">
                                         <option v-for="option in localeOptions" :key="option.value"
                                             :value="option.value">

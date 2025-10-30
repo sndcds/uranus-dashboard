@@ -1,40 +1,47 @@
 <template>
     <article class="event-description">
-        <header class="event-description__header">
-            <h2>{{ t('event_details_heading') }}</h2>
-            <button v-if="!isEditingDescription" type="button" class="event-description__edit"
-                @click="startEditingDescription">
-                {{ t('event_description_edit') }}
-            </button>
-        </header>
+      <div class="uranus-hover-section">
+        <InlineEditorLabel
+            :label-text="t('description')"
+            :edit-button-text="t('edit')"
+            @edit-started="startEditingDescription"
+        />
 
         <div class="event-description__content">
-            <template v-if="isEditingDescription">
-                <MarkdownEditorComponent v-model="editedDescription"
-                    :placeholder="t('event_description_placeholder')" />
-                <div class="event-description__actions">
-                    <button type="button" class="event-description__button event-description__button--cancel"
-                        @click="cancelEditingDescription">
-                        {{ t('form_cancel') }}
-                    </button>
-                    <button type="button" class="event-description__button" :disabled="isSavingDescription"
-                        @click="saveDescription">
-                        <span v-if="!isSavingDescription">{{ t('form_save') }}</span>
-                        <span v-else>{{ t('saving') }}</span>
-                    </button>
-                </div>
-            </template>
-            <template v-else>
-                <MarkdownPreviewComponent v-if="description" :value="description" />
-                <p v-else class="empty">{{ t('event_details_empty') }}</p>
-            </template>
+          <template v-if="isEditingDescription">
+            <MarkdownEditorComponent v-model="editedDescription"
+                                     :placeholder="t('event_description_placeholder')" />
+            <div class="event-description__actions">
+              <button type="button" class="uranus-inline-cancel-button"
+                      @click="cancelEditingDescription">
+                {{ t('form_cancel') }}
+              </button>
+              <button type="button" class="uranus-inline-save-button" :disabled="isSavingDescription"
+                      @click="saveDescription">
+                <span v-if="!isSavingDescription">{{ t('form_save') }}</span>
+                <span v-else>{{ t('saving') }}</span>
+              </button>
+            </div>
+          </template>
+          <template v-else>
+            <MarkdownPreviewComponent v-if="description" :value="description" />
+            <p v-else class="empty">{{ t('event_details_empty') }}</p>
+          </template>
         </div>
 
-        <EventTypeSection class="event-description__segment" :event-id="eventId" :locale="locale"
-            :event-types="eventTypes" @updated="emit('updated')" />
+      </div>
+        <EventTypeSection
+            class="event-description__segment"
+            :event-id="eventId" :locale="locale"
+            :event-types="eventTypes"
+            @updated="emit('updated')" />
 
-        <EventLanguageSection class="event-description__segment" :event-id="eventId" :locale="locale"
-            :languages="languages" @updated="emit('updated')" />
+        <EventLanguageSection
+            class="event-description__segment"
+            :event-id="eventId"
+            :locale="locale"
+            :languages="languages"
+            @updated="emit('updated')" />
 
         <!-- Additional Info -->
         <div class="event-additional">
@@ -59,6 +66,7 @@ import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
 import EventTypeSection from '@/components/event/EventTypeSection.vue'
 import EventLanguageSection from '@/components/event/EventLanguageSection.vue'
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
 
 interface EventType { type_id: number; type_name: string; genre_id: number | null; genre_name: string | null }
 

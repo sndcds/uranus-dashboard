@@ -1,10 +1,5 @@
 <template>
     <div class="event-page" v-if="event">
-        <header class="event-hero">
-            <EventHeaderSection :event-id="event.id" :title="event.title" :subtitle="event.subtitle"
-                @updated="loadEvent" />
-        </header>
-
         <div class="event-content">
             <section class="event-layout">
                 <div class="event-main">
@@ -12,7 +7,15 @@
                         v-model:copyright="imageCopyright" v-model:license="imageLicense"
                         v-model:created-by="imageCreatedBy" :event-id="eventId" :max-size="5 * 1024 * 1024"
                         :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
-                        :existing-image-url="existingImagePreviewUrl" @updated="loadEvent" />
+                        :existing-image-url="existingImagePreviewUrl" @updated="loadEvent"
+                    />
+
+                    <EventHeaderSection
+                        :event-id="event.id"
+                        :title="event.title"
+                        :subtitle="event.subtitle"
+                        @updated="loadEvent"
+                    />
 
                     <EventDescriptionSection :event-id="event.id" :description="event.description"
                         :participation-info="event.participation_info" :meeting-point="event.meeting_point"
@@ -501,31 +504,6 @@ onMounted(() => {
     gap: clamp(1rem, 4vw, 1.5rem);
 }
 
-.event-hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    text-align: center;
-}
-
-.event-hero__meta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    color: var(--accent-primary);
-    font-size: 0.9rem;
-}
-
-.event-hero__organizer {
-    font-weight: 600;
-    color: var(--muted-text);
-    margin: 0;
-    font-size: 0.85rem;
-}
-
 .event-content {
     display: flex;
     flex-direction: column;
@@ -576,20 +554,6 @@ onMounted(() => {
         padding: 0 clamp(1.5rem, 5vw, 3rem);
     }
 
-    .event-hero {
-        gap: 0.75rem;
-    }
-
-    .event-hero__meta {
-        flex-direction: row;
-        gap: 1rem;
-        font-size: 1rem;
-    }
-
-    .event-hero__organizer {
-        font-size: 0.9rem;
-    }
-
     .event-layout {
         gap: clamp(1.25rem, 3vw, 2rem);
     }
@@ -613,18 +577,6 @@ onMounted(() => {
     .event-page {
         gap: clamp(1.5rem, 3vw, 2.5rem);
         margin: 0 auto;
-    }
-
-    .event-hero {
-        gap: 1rem;
-    }
-
-    .event-hero__meta {
-        font-size: 1.1rem;
-    }
-
-    .event-hero__organizer {
-        font-size: 1rem;
     }
 
     .event-content {

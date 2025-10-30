@@ -28,7 +28,7 @@
                 </nav>
                 <div class="visitor-layout__actions">
                     <slot name="actions">
-                        <label class="sr-only" for="visitor-language-select">{{ t('select_language') }}</label>
+                        <label class="sr-only" for="visitor-language-select">{{ t('language') }}</label>
                         <select id="visitor-language-select" class="visitor-layout__select" v-model="selectedLocale">
                             <option v-for="option in localeOptions" :key="option.value" :value="option.value">
                                 {{ option.label }}

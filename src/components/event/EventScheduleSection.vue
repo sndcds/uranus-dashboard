@@ -1,15 +1,17 @@
 <template>
-    <section class="event-meta">
-        <header class="event-meta__header">
-            <h3>{{ t('event_details_time') }}</h3>
-            <button v-if="!isEditingSchedule" type="button" class="event-meta__edit" @click="startEditingSchedule">
-                {{ scheduleEntries.length ? t('event_edit_schedule') : t('event_add_schedule') }}
-            </button>
-            <button v-else type="button" class="event-meta__edit event-meta__edit--cancel"
-                @click="cancelEditingSchedule">
-                {{ t('form_cancel') }}
-            </button>
-        </header>
+    <section class="uranus-card uranus-hover-section">
+      <InlineEditorLabel
+          :label-text="t('event_details_time')"
+          :edit-button-text="t('edit')"
+          @edit-started="startEditingSchedule"
+      />
+
+        <button
+          v-if="isEditingSchedule"
+          class="uranus-inline-cancel-button"
+          @click="cancelEditingSchedule">
+          {{ t('form_cancel') }}
+        </button>
 
         <EventDatesComponent v-if="isEditingSchedule" ref="scheduleEditorRef" class="event-meta__editor"
             :model-value="scheduleDraft" :spaces="availableSpaces" :organizer-id="organizerId"
@@ -52,10 +54,10 @@
         </div>
 
         <div v-if="isEditingSchedule" class="event-meta__actions">
-            <button type="button" class="event-meta__button event-meta__button--cancel" @click="cancelEditingSchedule">
+            <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingSchedule">
                 {{ t('form_cancel') }}
             </button>
-            <button type="button" class="event-meta__button" :disabled="isSavingSchedule" @click="saveSchedule">
+            <button type="button" class="uranus-inline-save-button" :disabled="isSavingSchedule" @click="saveSchedule">
                 <span v-if="isSavingSchedule">{{ t('form_saving') }}</span>
                 <span v-else>{{ t('form_save') }}</span>
             </button>
@@ -68,6 +70,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
 
 interface EventDateApi {
     id?: number | null

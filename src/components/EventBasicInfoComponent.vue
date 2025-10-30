@@ -55,10 +55,12 @@
                   :fetchPrimaries="fetchEventTypes"
                   :fetchSecondaries="fetchEventGenres"
                   :initialSelection="[]"
-                  labelPrimary="Event Type"
-                  labelSecondary="Genre"
                   :editable="true"
                   :isEditing="true"
+                  label_primary="Event Type"
+                  label_secondary="Genre"
+                  :placeholderPrimary="t('choose_event_type')"
+                  :placeholderSecondary="t('choose_genre')"
                   @update-selection="onSelectionUpdate"
               />
             </div>

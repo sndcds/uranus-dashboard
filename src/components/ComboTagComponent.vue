@@ -31,19 +31,18 @@ const emit = defineEmits<{
 <style scoped lang="scss">
 .combo-tag {
   display: inline-flex;
-  flex-wrap: wrap;
+//  flex-wrap: wrap;
   position: relative;
   justify-content: center;
   align-items: center;
   height: 1.8em;
   padding: 0 2em 0 1em;
-  border-radius: 25px;
-  background-color: lightcoral;
-  color: white;
+  border-radius: 100px;
+  color: #2a239c;
   font-size: 0.9rem;
 
-  &.light { background-color: lightcoral; }
-  &.dark { background-color: #444; }
+  &.light { background-color: rgba(79, 70, 229, 0.2); }
+  &.dark { background-color: #4f46e5; }
 
   .close-btn {
     position: absolute;

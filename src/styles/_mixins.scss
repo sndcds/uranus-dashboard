@@ -93,7 +93,7 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
   }
 }
 
-@mixin form-control($padding-y: 0.85rem, $padding-x: 1rem, $radius: 14px) {
+@mixin form-control($padding-y: 0.4rem, $padding-x: 0.8rem, $radius: 8px) {
   padding: $padding-y $padding-x;
   width: 100%;
   max-width: 100%;
@@ -101,9 +101,9 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
   display: block;
   border-radius: $radius;
   border: 1px solid $uranus-form-control-border;
+  color: $uranus-form-control-color;
   background-color: $uranus-form-control-background;
   font-size: 1rem;
-  color: $uranus-form-control-color;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 
   &::placeholder {
@@ -118,18 +118,18 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
   }
 }
 
-@mixin form-select($padding-y: 0.85rem, $padding-x: 1rem) {
+@mixin form-select($padding-y: 0.4rem, $padding-x: 1rem) {
   @include form-control($padding-y, $padding-x);
   padding-right: $padding-x + 1.5rem;
   background:
-    linear-gradient(180deg, transparent, transparent),
-    $uranus-form-select-icon no-repeat right ($padding-x * 0.85) center/0.9rem;
+          linear-gradient(180deg, transparent, transparent),
+          $uranus-form-select-icon no-repeat right ($padding-x * 0.85) center/0.9rem;
   appearance: none;
 
   &:focus {
     background:
-      linear-gradient(180deg, transparent, transparent),
-      $uranus-form-select-icon-active no-repeat right ($padding-x * 0.85) center/0.9rem;
+            linear-gradient(180deg, transparent, transparent),
+            $uranus-form-select-icon-active no-repeat right ($padding-x * 0.85) center/0.9rem;
   }
 }
 

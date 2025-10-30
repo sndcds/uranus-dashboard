@@ -1,31 +1,28 @@
 <template>
-    <section class="event-language-section">
-        <div class="event-language-section__header">
-            <h3>{{ t('event_language_heading') }}</h3>
-            <button
-                v-if="!isEditing"
-                type="button"
-                class="event-language-section__edit"
-                @click="startEditing"
-            >
-                {{ t('event_language_edit') }}
-            </button>
-        </div>
+    <section class="uranus-inline-section uranus-hover-section">
+      <InlineEditorLabel
+          :label-text="t('languages')"
+          :edit-button-text="t('edit')"
+          @edit-started="startEditing"
+      />
 
         <TwoStageTagListComponent
             v-if="selection"
             :fetchPrimaries="fetchLanguages"
             :initialSelection="selection"
-            :labelPrimary="t('event_language_label')"
+            :labelPrimary="t('language')"
+            :placeholderPrimary="t('choose_language')"
             :editable="true"
             :isEditing="isEditing"
             @update-selection="onSelectionUpdate"
         />
 
-        <div v-if="isEditing" class="event-language-section__actions">
+      <div
+            v-if="isEditing"
+            class="uranus-inline-section-button-area">
             <button
                 type="button"
-                class="event-language-section__button event-language-section__button--cancel"
+                class="uranus-inline-cancel-button"
                 @click="cancelEditing"
                 :disabled="isSaving"
             >
@@ -33,7 +30,7 @@
             </button>
             <button
                 type="button"
-                class="event-language-section__button"
+                class="uranus-inline-save-button"
                 @click="saveLanguages"
                 :disabled="isSaving"
             >
@@ -50,6 +47,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
 import type { Selection as TagSelection } from '@/components/TwoStageTagListComponent.vue'
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
 
 interface LanguageApiResponse {
     id?: string | null

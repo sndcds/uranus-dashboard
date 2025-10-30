@@ -1,16 +1,26 @@
 <template>
-    <div class="event-header-section" :class="{ 'event-header-section--editing': isEditing }">
-        <template v-if="isEditing">
+    <div :class="{ 'event-header-section--editing': isEditing }">
+      <InlineEditorLabel
+          :label-text="t('event_title')"
+          :edit-button-text="t('edit')"
+          @edit-started="startEditing"
+      />
+
+      <template v-if="isEditing">
             <EventTitleFieldsComponent :title="editedTitle" :subtitle="editedSubtitle"
                 @update:title="editedTitle = $event" @update:subtitle="editedSubtitle = $event" />
             <div class="event-header-section__actions">
-                <button type="button" class="event-header-section__button event-header-section__button--cancel"
-                    @click="cancelEditing">
-                    {{ t('form_cancel') }}
+                <button type="button"
+                        class="uranus-inline-cancel-button"
+                        @click="cancelEditing">
+                  {{ t('form_cancel') }}
                 </button>
-                <button type="button" class="event-header-section__button" @click="saveHeader" :disabled="isSaving">
-                    <span v-if="!isSaving">{{ t('form_save') }}</span>
-                    <span v-else>{{ t('saving') }}</span>
+                <button type="button"
+                        class="uranus-inline-save-button"
+                        @click="saveHeader"
+                        :disabled="isSaving">
+                  <span v-if="!isSaving">{{ t('form_save') }}</span>
+                  <span v-else>{{ t('saving') }}</span>
                 </button>
             </div>
         </template>
@@ -20,6 +30,7 @@
             <button type="button" class="event-header-section__edit" @click="startEditing">
                 {{ t('event_header_edit') }}
             </button>
+
         </template>
     </div>
 </template>
@@ -30,6 +41,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
 
 const props = defineProps<{
     eventId: number

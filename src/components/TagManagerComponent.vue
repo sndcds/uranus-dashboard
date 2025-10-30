@@ -1,16 +1,10 @@
 <template>
     <section :class="['tag-manager', { 'tag-manager--editing': isEditing }]">
-        <header class="tag-manager__header">
-            <h4 class="tag-manager__title">{{ labels.title }}</h4>
-            <button
-                v-if="!isEditing"
-                type="button"
-                class="tag-manager__edit"
-                @click="startEditing"
-            >
-                {{ labels.edit }}
-            </button>
-        </header>
+          <InlineEditorLabel
+              :label-text="labels.title"
+              :edit-button-text="t('edit')"
+              @edit-started="startEditing"
+          />
 
         <template v-if="isEditing">
             <div class="tag-manager__editor">
@@ -45,7 +39,7 @@
                 <div class="tag-manager__actions">
                     <button
                         type="button"
-                        class="tag-manager__button tag-manager__button--secondary"
+                        class="uranus-inline-cancel-button"
                         @click="cancelEditing"
                         :disabled="isSaving"
                     >
@@ -53,7 +47,7 @@
                     </button>
                     <button
                         type="button"
-                        class="tag-manager__button tag-manager__button--primary"
+                        class="uranus-inline-save-button"
                         :disabled="isSaving"
                         @click="handleSave"
                     >
@@ -77,6 +71,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
 
 const props = withDefaults(
     defineProps<{

@@ -8,11 +8,11 @@
     </header>
 
     <div class="organizer-card__button-group">
-      <router-link :to="`/organizer/${organizer.organizer_id}/edit`" class="uranus-seondary-button">
+      <router-link :to="`/organizer/${organizer.organizer_id}/edit`" class="uranus-secondary-button">
         {{ t('edit_organizer') }}
       </router-link>
-      <button class="uranus-seondary-button"
-        :class="{ 'uranus-seondary-button--active': appStore.organizerId === organizer.organizer_id }"
+      <button class="uranus-secondary-button"
+        :class="{ 'uranus-secondary-button--active': appStore.organizerId === organizer.organizer_id }"
         @click="assignOrganizer(organizer.organizer_id)">
         {{ appStore.organizerId === organizer.organizer_id ? t('organizer_active') : t('organizer_activate') }}
       </button>

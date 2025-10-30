@@ -1,25 +1,27 @@
 <template>
-    <section class="event-url-section" :class="{ 'event-url-section--editing': isEditingLinks }">
-        <header class="event-url-section__header">
-            <h3 class="event-links-title">{{ t('event_links_title') }}</h3>
-            <button
-                v-if="!isEditingLinks"
-                type="button"
-                class="event-url-section__edit"
-                @click="startEditingLinks"
-            >
-                {{ t('event_links_edit') }}
-            </button>
-        </header>
+    <section
+        class="uranus-inline-section uranus-hover-section"
+        :class="{ 'event-url-section--editing': isEditingLinks }">
+
+        <InlineEditorLabel
+            :label-text="t('event_links_title')"
+            :edit-button-text="t('edit')"
+            @edit-started="startEditingLinks"
+        />
 
         <div v-if="isEditingLinks" class="event-url-section__body">
             <div class="add-link-form">
                 <div class="form-grid">
                     <div class="form-field">
                         <label for="link-type">{{ t('event_link_type') }}</label>
-                        <select id="link-type" v-model="newLink.url_type">
+                        <select
+                            id="link-type"
+                            v-model="newLink.url_type">
                             <option value="">{{ t('event_link_type_select') }}</option>
-                            <option v-for="option in urlTypeOptions" :key="option.value" :value="option.value">
+                            <option
+                                v-for="option in urlTypeOptions"
+                                :key="option.value"
+                                :value="option.value">
                                 {{ option.label }}
                             </option>
                         </select>
@@ -86,14 +88,14 @@
             <div class="event-url-section__actions">
                 <button
                     type="button"
-                    class="event-url-section__button event-url-section__button--cancel"
+                    class="uranus-inline-cancel-button"
                     @click="cancelEditingLinks"
                 >
                     {{ t('form_cancel') }}
                 </button>
                 <button
                     type="button"
-                    class="event-url-section__button"
+                    class="uranus-inline-save-button"
                     @click="saveLinks"
                     :disabled="isSaving || !draftLinks.length"
                 >
@@ -126,6 +128,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
 
 interface Props {
     eventId: number

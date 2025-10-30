@@ -1,6 +1,6 @@
 <template>
-    <div class="markdown-editor">
-        <div class="markdown-editor__toolbar" role="toolbar">
+    <div class="uranus-markdown-editor">
+        <div class="uranus-markdown-editor-toolbar" role="toolbar">
             <button type="button" @click="applySyntax('**', '**')" @keydown="handleToolbarShortcut($event, 'bold')"
                 :title="t('markdown_toolbar_bold')" :aria-label="t('markdown_toolbar_bold')">
                 <strong>B</strong>
@@ -21,11 +21,16 @@
                 :title="t('markdown_toolbar_number')" :aria-label="t('markdown_toolbar_number')">
                 1.
             </button>
-            <button type="button" @click="insertTable" @keydown="handleToolbarShortcut($event, 'table')"
-                :title="t('markdown_insert_table')" :aria-label="t('markdown_insert_table')">
+            <button type="button"
+                    @click="insertTable"
+                    @keydown="handleToolbarShortcut($event, 'table')"
+                    :title="t('markdown_insert_table')" :aria-label="t('markdown_insert_table')"
+            >
                 {{ t('markdown_toolbar_table_label') }}
             </button>
-            <button type="button" class="markdown-editor__toggle" @click="togglePreview">
+            <button
+                type="button" class="markdown-editor-toggle"
+                @click="togglePreview">
                 {{ previewMode ? t('markdown_write') : t('markdown_preview') }}
             </button>
         </div>
@@ -319,32 +324,8 @@ onMounted(() => {
     gap: 0.6rem;
 }
 
-.markdown-editor__toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-}
 
-.markdown-editor__toolbar button {
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.7rem);
-    font-size: 0.85rem;
-    color: var(--color-text);
-    background: var(--accent-muted);
-    border-color: var(--accent-muted);
-    border-radius: 10px;
-    padding: 0.3rem 0.6rem;
-    cursor: pointer;
-
-    &:hover {
-        background: var(--accent-muted-hover);
-    }
-
-    &:focus-visible {
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
-    }
-}
-
-.markdown-editor__toolbar button.markdown-editor__toggle {
+.markdown-editor-toggle {
     margin-left: auto;
 }
 

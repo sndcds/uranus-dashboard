@@ -24,7 +24,7 @@
             </div>
 
             <TwoStageTagListComponent :fetchPrimaries="fetchLanguages" :initialSelection="initialLanguageSelection"
-                :labelPrimary="t('event_language_label')" :editable="true" :isEditing="true"
+                :labelPrimary="t('language')" :editable="true" :isEditing="true"
                 @update-selection="onSelectionUpdate" />
 
             <div class="event-section__grid event-section__grid--two">

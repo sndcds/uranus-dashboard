@@ -1,33 +1,30 @@
 <template>
-    <section class="event-type-section">
-        <div class="event-type-section__header">
-            <h3>{{ t('event_tags_heading') }}</h3>
-            <button
-                v-if="!isEditing"
-                type="button"
-                class="event-type-section__edit"
-                @click="startEditing"
-            >
-                {{ t('event_tags_edit') }}
-            </button>
-        </div>
+    <section class="uranus-inline-section uranus-hover-section">
+      <InlineEditorLabel
+          :label-text="t('event_tags_heading')"
+          :edit-button-text="t('edit')"
+          @edit-started="startEditing"
+      />
+      <TwoStageTagListComponent
+          v-if="selection"
+          :fetchPrimaries="fetchEventTypes"
+          :fetchSecondaries="fetchEventGenres"
+          :initialSelection="selection"
+          :labelPrimary="t('event_type')"
+          :labelSecondary="t('genre')"
+          :placeholderPrimary="t('choose_event_type')"
+          :placeholderSecondary="t('choose_genre')"
+          :editable="true"
+          :isEditing="isEditing"
+          @update-selection="onSelectionUpdate"
+      />
 
-        <TwoStageTagListComponent
-            v-if="selection"
-            :fetchPrimaries="fetchEventTypes"
-            :fetchSecondaries="fetchEventGenres"
-            :initialSelection="selection"
-            :labelPrimary="t('event_type_label')"
-            :labelSecondary="t('event_genre_label')"
-            :editable="true"
-            :isEditing="isEditing"
-            @update-selection="onSelectionUpdate"
-        />
-
-        <div v-if="isEditing" class="event-type-section__actions">
+        <div
+            v-if="isEditing"
+            class="uranus-inline-section-button-area">
             <button
                 type="button"
-                class="event-type-section__button event-type-section__button--cancel"
+                class="uranus-inline-cancel-button"
                 @click="cancelEditing"
                 :disabled="isSaving"
             >
@@ -35,7 +32,7 @@
             </button>
             <button
                 type="button"
-                class="event-type-section__button"
+                class="uranus-inline-save-button"
                 @click="saveTypes"
                 :disabled="isSaving"
             >
@@ -52,6 +49,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
 import type { Selection as TagSelection } from '@/components/TwoStageTagListComponent.vue'
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
 
 interface EventType {
     type_id: number
@@ -173,43 +171,4 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.event-type-section {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.event-type-section__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-}
-
-.event-type-section__edit {
-    margin-left: auto;
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.event-type-section:hover .event-type-section__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.event-type-section__actions {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-}
-
-.event-type-section__button {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-type-section__button--cancel {
-    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
 </style>

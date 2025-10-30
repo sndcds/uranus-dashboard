@@ -96,13 +96,13 @@
             <div class="event-image-upload__actions">
                 <button
                     type="button"
-                    class="event-image-upload__cancel-btn"
+                    class="uranus-inline-cancel-button"
                     @click="showMetadata = false"
                     :disabled="isSaving"
                 >
                     {{ t('form_cancel') }}
                 </button>
-                <button type="button" class="event-image-upload__save-btn" @click="saveImage"
+                <button type="button" class="uranus-inline-save-button" @click="saveImage"
                     :disabled="isSaving || !canSave">
                     <span v-if="!isSaving">{{ t('event_image_save') }}</span>
                     <span v-else>{{ t('saving') }}</span>

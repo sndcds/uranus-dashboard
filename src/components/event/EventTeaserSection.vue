@@ -7,23 +7,25 @@
                 <MarkdownEditorComponent v-model="editedTeaser" class="event-teaser__markdown"
                     :placeholder="t('event_teaser_placeholder')" />
                 <div class="event-teaser__actions">
-                    <button type="button" class="event-teaser__button event-teaser__button--cancel"
+                    <button type="button" class="uranus-inline-cancel-button"
                         @click="cancelEditing">
                         {{ t('form_cancel') }}
                     </button>
-                    <button type="button" class="event-teaser__button" :disabled="isSaving" @click="saveTeaser">
+                    <button type="button" class="uranus-inline-save-button" :disabled="isSaving" @click="saveTeaser">
                         <span v-if="!isSaving">{{ t('form_save') }}</span>
                         <span v-else>{{ t('saving') }}</span>
                     </button>
                 </div>
             </template>
             <template v-else>
+              <InlineEditorLabel
+                  :label-text="t('teaser_text')"
+                  :edit-button-text="t('edit')"
+                  @edit-started="startEditing"
+              />
                 <p class="event-teaser__text">
                     {{ teaserText || t('event_teaser_fallback') }}
                 </p>
-                <button type="button" class="event-teaser__edit" @click="startEditing">
-                    {{ t('event_teaser_edit') }}
-                </button>
             </template>
         </div>
 
@@ -43,6 +45,7 @@ import { apiFetch } from '@/api'
 
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import EventTagsSection from '@/components/event/EventTagsSection.vue'
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
 
 const props = defineProps<{
     eventId: number
@@ -145,8 +148,6 @@ const saveTeaser = async () => {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    align-items: center;
-    text-align: center;
 }
 
 .event-teaser__image {
@@ -164,10 +165,14 @@ const saveTeaser = async () => {
 }
 
 .event-teaser__text {
-    margin: 0;
-    color: var(--color-text);
-    font-size: 1.05rem;
-    line-height: 1.6;
+  text-align: left;
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.0rem;
+  line-height: 1.6;
+  border: 2px solid #eee;
+  border-radius: 6px;
+  padding: 0.25rem 1rem;
 }
 
 .event-teaser__edit {
