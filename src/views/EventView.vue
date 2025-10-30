@@ -63,6 +63,7 @@ import EventTeaserSection from '@/components/event/EventTeaserSection.vue'
 import EventVenueSection from '@/components/event/EventVenueSection.vue'
 import EventUrlSection from '@/components/event/EventUrlSection.vue'
 import EventScheduleSection from '@/components/event/EventScheduleSection.vue'
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
 
 const envApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 const apiBase = envApiUrl

@@ -1,5 +1,11 @@
 <template>
     <div class="event-image-upload">
+        <InlineEditorLabel
+            :label-text="t('event_image')"
+            :edit-button-text="t('edit')"
+            @edit-started="showMetadata = true"
+        />
+
         <!-- Image Upload Section -->
         <div class="event-image-upload__upload-section">
             <div class="event-image-upload__upload-area"
@@ -109,15 +115,6 @@
                 </button>
             </div>
         </div>
-
-        <button
-            v-if="hasImage && !showMetadata"
-            type="button"
-            class="event-image-upload__toggle-btn"
-            @click="showMetadata = true"
-        >
-            {{ t('edit') }}
-        </button>
     </div>
 </template>
 
@@ -376,6 +373,7 @@ const formatFileSize = (bytes: number): string => {
 
 // Cleanup on unmount
 import { onUnmounted } from 'vue'
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
 onUnmounted(() => {
     clearPreview()
 })
