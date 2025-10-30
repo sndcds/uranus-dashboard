@@ -137,29 +137,20 @@ const isAfter = (start: string, end: string | null): boolean => {
 const evaluateDateError = (date: EventDate): string => {
     if (!date.startDate) return t('event_error_required')
     if (!date.startTime) return t('event_error_required')
-    if (date.endTime) {
-        const startMinutes = toMinutes(date.startTime)
-        const endMinutes = toMinutes(date.endTime)
+    const startMinutes = toMinutes(date.startTime)
+    if (startMinutes === null) return t('event_error_required')
 
-        if (startMinutes === null || endMinutes === null || startMinutes > endMinutes) {
-            return t('event_error_time_order')
-        }
-
-        if (date.entryTime) {
-            const entryMinutes = toMinutes(date.entryTime)
-            if (
-                entryMinutes === null ||
-                entryMinutes < startMinutes ||
-                entryMinutes > endMinutes
-            ) {
-                return t('event_error_entry_range')
-            }
-        }
-    } else if (date.entryTime) {
-        const startMinutes = toMinutes(date.startTime)
+    if (date.entryTime) {
         const entryMinutes = toMinutes(date.entryTime)
-        if (startMinutes === null || entryMinutes === null || entryMinutes < startMinutes) {
+        if (entryMinutes === null || entryMinutes >= startMinutes) {
             return t('event_error_entry_range')
+        }
+    }
+
+    if (date.endTime) {
+        const endMinutes = toMinutes(date.endTime)
+        if (endMinutes === null || startMinutes > endMinutes) {
+            return t('event_error_time_order')
         }
     }
 
