@@ -1,5 +1,5 @@
 <template>
-  <article class="venue-card">
+  <article class="uranus-card">
     <header class="venue-card__header">
       <div class="venue-card__header-content">
         <h2 class="venue-card__title">{{ venue.venue_name }}</h2>
@@ -8,7 +8,7 @@
         <span class="venue-card__stat-value">{{ venue.upcoming_event_count }}</span>
         <span class="venue-card__stat-label">{{ t('events') }}
           <router-link v-if="venue.can_edit_venue" :to="`/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
-            class="venue-card__edit-btn">
+            class="uranus-seondary-button">
             {{ t('edit_venue') }}
           </router-link>
         </span>
@@ -19,7 +19,7 @@
       <div class="venue-card__section-header">
         <h3 class="venue-card__section-title">{{ t('spaces') }}</h3>
         <router-link v-if="venue.can_add_space" :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
-          class="venue-card__action">
+          class="uranus-seondary-button">
           {{ t('add_new_space') }}
         </router-link>
       </div>
@@ -34,7 +34,7 @@
                 <span class="venue-card__space-events-label">{{ t('events') }}
                   <router-link v-if="venue.can_edit_space"
                     :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/${space.space_id}/edit`"
-                    class="venue-card__action">
+                    class="uranus-seondary-button">
                     {{ t('edit_space') }}
                   </router-link>
                 </span>

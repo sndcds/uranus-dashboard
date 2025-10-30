@@ -12,8 +12,8 @@
     </div>
 
     <!-- Create Organizer Action -->
-    <div class="organizer-dashboard-view__actions">
-      <router-link to="/organizer/create" class="organizer-dashboard-view__create-btn">
+    <div class="_organizer-dashboard-view__actions">
+      <router-link to="/organizer/create" class="uranus-button _organizer-dashboard-view__create-btn">
         {{ t('create_organizer') }}
       </router-link>
     </div>

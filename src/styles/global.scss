@@ -1,3 +1,19 @@
+// Light theme colors
+$uranus-button-gradient-light: linear-gradient(135deg, #3c36ef 0%, #2575fc 100%);
+$uranus-secondary-button-color-light: #3c36ef;
+$uranus-secondary-button-border-color-light: rgba(60, 54, 239, 0.3);
+$uranus-secondary-button-background-color-light: rgba(60, 54, 239, 0.18);
+$uranus-card-background-color-light: #fff;
+$uranus-card-color-light: #333;
+
+// Dark theme colors
+$uranus-button-gradient-dark: linear-gradient(135deg, #6a11cb 0%, #3c36ef 100%);
+$uranus-secondary-button-color-dark: #3c36ef;
+$uranus-secondary-button-border-color-dark: rgba(60, 54, 239, 0.6);
+$uranus-secondary-button-background-color-dark: rgba(60, 54, 239, 0.18);
+$uranus-card-background-color-dark: #222;
+$uranus-card-color-dark: #ddd;
+
 :root {
   color-scheme: light;
   --color-text: #0f172a;
@@ -15,7 +31,15 @@
   --surface-muted: rgba(243, 244, 246, 0.7);
   --page-gradient: linear-gradient(135deg, rgba(72, 93, 255, 0.08), rgba(141, 233, 255, 0.12));
 
-  font-family: 'Inter', 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --uranus-button-gradient: #{$uranus-button-gradient-light};
+  --uranus-secondary-button-color: #{$uranus-secondary-button-color-light};
+  --uranus-secondary-button-background-color: #{$uranus-secondary-button-background-color-light};
+  --uranus-secondary-button-border-color: #{$uranus-secondary-button-border-color-light};
+  --uranus-card-color: #{$uranus-card-color-light};
+  --uranus-card-background-color: #{$uranus-card-background-color-light};
+
+
+  font-family: 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: var(--color-text);
@@ -42,6 +66,13 @@
   --border-soft: rgba(71, 85, 105, 0.35);
   --surface-muted: rgba(30, 41, 59, 0.75);
   --page-gradient: linear-gradient(135deg, rgba(30, 41, 59, 0.65), rgba(15, 23, 42, 0.75));
+
+  --uranus-button-gradient: #{$uranus-button-gradient-dark};
+  --uranus-secondary-button-color: #{$uranus-secondary-button-color-dark};
+  --uranus-secondary-button-border-color: #{$uranus-secondary-button-border-color-dark};
+  --uranus-secondary-button-background-color: #{$uranus-secondary-button-background-color-dark};
+  --uranus-card-color: #{$uranus-card-color-dark};
+  --uranus-card-background-color: #{$uranus-card-background-color-dark};
 }
 
 *,
@@ -62,15 +93,15 @@ a {
   text-decoration: none;
 }
 
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
   font-weight: 600;
   color: var(--color-text);
+}
+
+header {
+  margin-bottom: 1rem;
 }
 
 #app {
@@ -84,6 +115,84 @@ $text-color: #223;
 
 $button-color: #ddd;
 $button-text-color: #333;
+
+.uranus-card {
+  padding: 20px;
+  color: var(--uranus-card-color);
+  background-color: var(--uranus-card-background-color);
+  border-radius: 12px;
+}
+
+.uranus-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 2rem;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--uranus-button-gradient);
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.25);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.75;
+    transform: none;
+  }
+}
+
+.uranus-seondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  color: var(--uranus-secondary-button-color);
+  border: 1px solid var(--uranus-secondary-button-border-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled):not(&--active) {
+    background-color: var(--uranus-secondary-button-background-color);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.75;
+    transform: none;
+  }
+
+  // Active state for button
+  &--active {
+    background: var(--accent-primary);
+    color: white;
+    cursor: default;
+
+    &:hover {
+    }
+  }
+}
+
+
 
 .card {
   position: relative;
@@ -128,40 +237,8 @@ $button-text-color: #333;
   color: #222;
 }
 
-.small-button {
-  display: inline-block;
-  margin-top: 12px;
-  font-size: 0.9em;
-  color: $button-text-color;
-  background-color: transparent;
-  text-decoration: none;
-  padding: 6px 12px;
-  border: 1px solid $button-text-color;
-  border-radius: 5px;
-  transition: all 0.2s;
 
-  &:hover {
-    color: $button-color;
-    background-color: $button-text-color;
-  }
-}
 
-.table-func-button {
-  display: inline-block;
-  font-size: 0.8em;
-  color: $button-text-color;
-  background-color: transparent;
-  text-decoration: none;
-  padding: 4px 8px;
-  border: 1px solid #666;
-  border-radius: 3px;
-  transition: all 0.2s;
-
-  &:hover {
-    color: $button-color;
-    background-color: $button-text-color;
-  }
-}
 
 .simple-table {
   width: 100%;

@@ -1,16 +1,18 @@
 <template>
-  <div class="organizer-card" :class="{ 'organizer-card--active': appStore.organizerId === organizer.organizer_id }"
-    data-ribbon-label="⭐">
-    <header class="organizer-card__header">
-      <h2 class="organizer-card__title">{{ organizer.organizer_name }}</h2>
+  <div
+      class="uranus-card"
+      :class="{ 'organizer-card--active': appStore.organizerId === organizer.organizer_id }"
+      data-ribbon-label="⭐">
+    <header>
+      <h2>{{ organizer.organizer_name }}</h2>
     </header>
 
     <div class="organizer-card__button-group">
-      <router-link :to="`/organizer/${organizer.organizer_id}/edit`" class="organizer-card__edit-btn">
+      <router-link :to="`/organizer/${organizer.organizer_id}/edit`" class="uranus-seondary-button">
         {{ t('edit_organizer') }}
       </router-link>
-      <button class="organizer-card__button"
-        :class="{ 'organizer-card__button--active': appStore.organizerId === organizer.organizer_id }"
+      <button class="uranus-seondary-button"
+        :class="{ 'uranus-seondary-button--active': appStore.organizerId === organizer.organizer_id }"
         @click="assignOrganizer(organizer.organizer_id)">
         {{ appStore.organizerId === organizer.organizer_id ? t('organizer_active') : t('organizer_activate') }}
       </button>

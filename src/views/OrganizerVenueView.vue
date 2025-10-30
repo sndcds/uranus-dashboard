@@ -2,14 +2,14 @@
   <div class="organizer-venue-view">
     <!-- Page Header -->
     <header class="organizer-venue-view__header">
-      <h1 v-if="organizer" class="organizer-venue-view__title">{{ organizer.organizer_name }}</h1>
+      <h1 class="organizer-venue-view__title">{{ t('venues') }}</h1>
     </header>
 
     <!-- Create Venue Action -->
-    <div class="organizer-venue-view__actions">
+    <div class="_organizer-venue-view__actions">
       <router-link
         :to="`/organizer/${organizerId}/venue/create`"
-        class="organizer-venue-view__create-btn"
+        class="uranus-button _organizer-venue-view__create-btn"
       >
         {{ t('add_new_venue') }}
       </router-link>
@@ -23,8 +23,9 @@
     <!-- Organizer Content -->
     <div v-if="organizer" class="organizer-venue-view__content">
       <!-- Stats -->
-      <div class="organizer-venue-view__stats">
-        <p class="organizer-venue-view__stat">{{ t('total_events') }}: {{ organizer.total_upcoming_events }}</p>
+      <div class="uranus-card">
+        <h1 v-if="organizer">{{ organizer.organizer_name }}</h1>
+        <p>{{ t('total_events') }}: {{ organizer.total_upcoming_events }}</p>
       </div>
 
       <!-- Venue Cards Grid -->

@@ -5,11 +5,11 @@
             <p>{{ t('events_subtitle') }}</p>
         </section>
 
-        <router-link :to="`/organizer/${organizerId}/event/create`" class="events-hero__cta">
+        <router-link :to="`/organizer/${organizerId}/event/create`" class="uranus-button _events-hero__cta">
             {{ t('add_new_event') }}
         </router-link>
 
-        <section class="events-card">
+        <section class="uranus-card">
             <div v-if="error" class="feedback feedback--error" role="alert">
                 {{ error }}
             </div>
@@ -46,7 +46,7 @@
                                     <span class="chip">{{ event.event_type || t('event_type_unknown') }}</span>
                                 </td>
                                 <td>
-                                    <router-link :to="`/event/${event.event_id}`" class="btn btn--sm btn--secondary">
+                                    <router-link :to="`/event/${event.event_id}`" class="uranus-seondary-button">
                                         {{ t('edit') }}
                                     </router-link>
                                 </td>
