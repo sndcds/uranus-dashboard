@@ -52,7 +52,7 @@ function logout() {
 
 .sidebar-container {
   position: relative;
-  width: 280px;
+  width: 320px;
 }
 
 /* Mobile: Main content takes full width, with top padding for hamburger */

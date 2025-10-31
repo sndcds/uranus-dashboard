@@ -1,10 +1,7 @@
 <template>
     <div class="event-image-upload">
-        <InlineEditorLabel
-            :label-text="t('event_image')"
-            :edit-button-text="t('edit')"
-            @edit-started="showMetadata = true"
-        />
+        <InlineEditorLabel :label-text="t('event_image')" :edit-button-text="t('edit')"
+            @edit-started="showMetadata = true" />
 
         <!-- Image Upload Section -->
         <div class="event-image-upload__upload-section">
@@ -100,12 +97,8 @@
 
             <!-- Save Action -->
             <div class="event-image-upload__actions">
-                <button
-                    type="button"
-                    class="uranus-inline-cancel-button"
-                    @click="showMetadata = false"
-                    :disabled="isSaving"
-                >
+                <button type="button" class="uranus-inline-cancel-button" @click="showMetadata = false"
+                    :disabled="isSaving">
                     {{ t('form_cancel') }}
                 </button>
                 <button type="button" class="uranus-inline-save-button" @click="saveImage"
@@ -133,7 +126,6 @@ interface Props {
     maxSize?: number // in bytes, default 5MB
     acceptedTypes?: string[] // default ['image/jpeg', 'image/png', 'image/webp']
     existingImageUrl?: string | null
-    existingImageId?: number | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -145,7 +137,6 @@ const props = withDefaults(defineProps<Props>(), {
     maxSize: 5 * 1024 * 1024, // 5MB
     acceptedTypes: () => ['image/jpeg', 'image/png', 'image/webp'],
     existingImageUrl: null,
-    existingImageId: null,
 })
 
 const emit = defineEmits<{
@@ -160,11 +151,8 @@ const emit = defineEmits<{
 const { t, locale } = useI18n()
 
 const existingImageUrl = ref<string | null>(props.existingImageUrl ?? null)
-const existingImageId = ref<number | null>(
-    typeof props.existingImageId === 'number' && Number.isFinite(props.existingImageId)
-        ? props.existingImageId
-        : null
-)
+const currentImageId = ref<number | null>(null)
+let pendingImageDetails: Promise<number | null> | null = null
 
 const fileInput = ref<HTMLInputElement>()
 const isDragOver = ref(false)
@@ -244,12 +232,64 @@ const applyExistingImagePreview = (url: string) => {
     fileSize.value = 0
 }
 
+const toNumberOrNull = (value: unknown): number | null => {
+    if (typeof value === 'number' && Number.isFinite(value)) return value
+    if (typeof value === 'string' && value.trim() !== '') {
+        const parsed = Number(value)
+        return Number.isFinite(parsed) ? parsed : null
+    }
+    return null
+}
+
+const ensureImageIdLoaded = async (): Promise<number | null> => {
+    if (currentImageId.value !== null) {
+        return currentImageId.value
+    }
+
+    if (!props.eventId || !existingImageUrl.value) {
+        return null
+    }
+
+    if (pendingImageDetails) {
+        return pendingImageDetails
+    }
+
+    pendingImageDetails = (async () => {
+        try {
+            const { data } = await apiFetch(`/api/admin/event/${props.eventId}/image`)
+            if (data && typeof data === 'object') {
+                const record = data as Record<string, unknown>
+                const candidate =
+                    record.image_id ??
+                    record.id ??
+                    record.imageId ??
+                    record.main_image_id ??
+                    record.mainImageId ??
+                    null
+                const parsed = toNumberOrNull(candidate)
+                if (parsed !== null) {
+                    currentImageId.value = parsed
+                }
+            }
+        } catch (err) {
+            console.error('Failed to load image details', err)
+        } finally {
+            const result = currentImageId.value
+            pendingImageDetails = null
+            return result
+        }
+        return currentImageId.value
+    })()
+
+    return pendingImageDetails
+}
+
 watch(() => props.modelValue, (newFile) => {
     showMetadata.value = !!newFile
 
     if (newFile && newFile instanceof File) {
         existingImageUrl.value = null
-        existingImageId.value = null
+        currentImageId.value = null
         createPreview(newFile)
         fileName.value = newFile.name
         fileSize.value = newFile.size
@@ -272,16 +312,10 @@ watch(() => props.existingImageUrl, (newUrl) => {
 
     if (existingImageUrl.value) {
         applyExistingImagePreview(existingImageUrl.value)
+        void ensureImageIdLoaded()
     } else {
         clearPreview()
-    }
-}, { immediate: true })
-
-watch(() => props.existingImageId, (newId) => {
-    if (typeof newId === 'number' && Number.isFinite(newId)) {
-        existingImageId.value = newId
-    } else {
-        existingImageId.value = null
+        currentImageId.value = null
     }
 }, { immediate: true })
 
@@ -314,7 +348,6 @@ const handleFileSelect = (event: Event) => {
         if (validateFile(file)) {
             emit('update:modelValue', file)
             existingImageUrl.value = null
-            existingImageId.value = null
         }
     } else {
         // User cancelled file selection or invalid file
@@ -329,7 +362,6 @@ const handleDrop = (event: DragEvent) => {
     if (file && file instanceof File && validateFile(file)) {
         emit('update:modelValue', file)
         existingImageUrl.value = null
-        existingImageId.value = null
     }
 }
 
@@ -340,19 +372,18 @@ const removeImage = async () => {
     isDeleting.value = true
 
     try {
-        if (existingImageId.value !== null) {
-            await apiFetch(`/api/admin/event/${props.eventId}/image`, {
-                method: 'DELETE',
-            })
-        }
+        await apiFetch(`/api/admin/event/${props.eventId}/image`, {
+            method: 'DELETE',
+        })
 
         existingImageUrl.value = null
-        existingImageId.value = null
         showMetadata.value = false
         emit('update:modelValue', null)
+
         if (fileInput.value) {
             fileInput.value.value = ''
         }
+
         clearPreview()
         emit('updated')
     } catch (err) {
@@ -373,7 +404,7 @@ const formatFileSize = (bytes: number): string => {
 
 // Cleanup on unmount
 import { onUnmounted } from 'vue'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue"
 onUnmounted(() => {
     clearPreview()
 })
@@ -498,8 +529,8 @@ const saveImage = async () => {
             body: formData,
         })
 
-    showMetadata.value = false
-    emit('updated')
+        showMetadata.value = false
+        emit('updated')
     } catch (err) {
         console.error('Failed to save image', err)
         error.value = t('event_image_save_error')
