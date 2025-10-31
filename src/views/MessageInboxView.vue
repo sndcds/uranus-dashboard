@@ -22,6 +22,8 @@ const { t } = useI18n()
 <style scoped lang="scss">
 .events-page {
   @include form-page();
+  display: flex;
+  height: 100%
 }
 
 .dashboard-hero {
@@ -29,6 +31,7 @@ const { t } = useI18n()
 }
 
 .dashboard-inbox {
+  flex: 1;
   display: grid;
   width: 100%;
   gap: clamp(1.5rem, 3vw, 2.5rem);

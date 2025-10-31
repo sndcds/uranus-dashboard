@@ -1,4 +1,7 @@
 .uranus-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   padding: 20px;
   color: var(--uranus-card-color);
   background-color: var(--uranus-card-background-color);

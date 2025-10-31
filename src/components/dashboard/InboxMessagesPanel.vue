@@ -367,6 +367,7 @@ defineExpose({
 
 <style scoped lang="scss">
 .messages-panel {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: clamp(1rem, 2vw, 1.5rem);
@@ -432,6 +433,7 @@ defineExpose({
 }
 
 .messages-panel__body {
+  flex: 1;
   display: grid;
   gap: clamp(1rem, 2vw, 1.75rem);
   grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
@@ -442,16 +444,24 @@ defineExpose({
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
   }
-
-  .message-list-wrapper {
-    max-height: 20rem;
-  }
 }
 
 .message-list-wrapper {
-  max-height: 28rem;
-  overflow-y: auto;
+  position: sticky;
+  top: 1rem;
+  left: 0;
+  z-index: 1000;
+  align-self: flex-start;
+  max-height: calc(100vh - 8rem);
   padding-right: 0.25rem;
+  overflow-y: auto;
+}
+
+@media (max-width: 960px) {
+  .message-list-wrapper {
+    position: static;
+    max-height: 20rem;
+  }
 }
 
 .message-list {
@@ -627,8 +637,8 @@ defineExpose({
   font-size: 0.95rem;
   line-height: 1.6;
   white-space: pre-wrap;
-  max-height: 18rem;
   overflow-y: auto;
+  flex: 1;
 }
 
 .message-detail__placeholder {
