@@ -1,67 +1,71 @@
 <template>
-    <div class="events-page">
-        <section class="events-hero">
-            <h1>{{ t('events_title') }}</h1>
-            <p>{{ t('events_subtitle') }}</p>
-        </section>
+  <div class="events-page">
+    <section class="events-hero">
+      <h1>{{ t('events_title') }}</h1>
+      <p>{{ t('events_subtitle') }}</p>
+    </section>
 
-        <router-link :to="`/organizer/${organizerId}/event/create`" class="uranus-button _events-hero__cta">
-            {{ t('add_new_event') }}
-        </router-link>
+    <router-link
+        :to="`/organizer/${organizerId}/event/create`"
+        class="uranus-button _events-hero__cta">
+      {{ t('add_new_event') }}
+    </router-link>
 
-        <section class="uranus-card">
-            <div v-if="error" class="feedback feedback--error" role="alert">
-                {{ error }}
-            </div>
-            <div v-else>
-                <div v-if="isLoading" class="events-loading">
-                    {{ t('events_loading') }}
-                </div>
-                <div v-else-if="!events.length" class="events-empty">
-                    {{ t('events_empty') }}
-                </div>
-                <div v-else class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>{{ t('date') }}</th>
-                                <th>{{ t('begin') }}</th>
-                                <th>{{ t('event_title') }}</th>
-                                <th>{{ t('venue') }}</th>
-                                <th>{{ t('space') }}</th>
-                                <th>{{ t('event_organizer') }}</th>
-                                <th>{{ t('event_type') }}</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="event in events" :key="event.event_id">
-                                <td>{{ formatDate(event.start_date) }}
-                                  <img v-if="event.image_id"
-                                       :src="`${apiBase}/api/image/${event.image_id}?mode=cover&width=80&ratio=3by2&focusx=${event.focus_x}&focusy=${event.focus_y}&type=webp&quality=90`"
-                                       alt="Event image"
-                                       class="calendar-card__image" />
-                                </td>
-                                <td>{{ event.start_time }}</td>
-                                <td><strong>{{ event.event_title }}</strong></td>
-                                <td>{{ event.venue_name || '—' }}</td>
-                                <td>{{ event.space_name || '—' }}</td>
-                                <td>{{ event.event_organizer_name }}</td>
-                                <td>
-                                    <span class="chip">{{ event.event_type || t('event_type_unknown') }}</span>
-                                </td>
-                                <td>
-                                    <router-link :to="`/event/${event.event_id}`" class="uranus-secondary-button">
-                                        {{ t('edit') }}
-                                    </router-link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </div>
+    <section class="uranus-card">
+      <div v-if="error" class="feedback feedback--error" role="alert">
+        {{ error }}
+      </div>
+      <div v-else>
+        <div v-if="isLoading" class="events-loading">
+          {{ t('events_loading') }}
+        </div>
+        <div v-else-if="!events.length" class="events-empty">
+          {{ t('events_empty') }}
+        </div>
+        <div v-else class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ t('image') }}</th>
+                <th>{{ t('date') }}</th>
+                <th>{{ t('begin') }}</th>
+                <th>{{ t('event_title') }}</th>
+                <th>{{ t('venue') }}</th>
+                <th>{{ t('space') }}</th>
+                <th>{{ t('event_organizer') }}</th>
+                <th>{{ t('event_type') }}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="event in events" :key="event.event_id">
+                <td>
+                  <img v-if="event.image_id"
+                       :src="`${apiBase}/api/image/${event.image_id}?mode=cover&width=80&ratio=3by2&focusx=${event.focus_x}&focusy=${event.focus_y}&type=webp&quality=90`"
+                       alt="Event image"
+                       class="calendar-card__image" />
+                </td>
+                <td>{{ formatDate(event.start_date) }}</td>
+                <td>{{ event.start_time }}</td>
+                <td><strong>{{ event.event_title }}</strong></td>
+                <td>{{ event.venue_name || '—' }}</td>
+                <td>{{ event.space_name || '—' }}</td>
+                <td>{{ event.event_organizer_name }}</td>
+                <td>
+                    <span class="chip">{{ event.event_type || t('event_type_unknown') }}</span>
+                </td>
+                <td>
+                  <router-link :to="`/event/${event.event_id}`" class="uranus-secondary-button">
+                      {{ t('edit') }}
+                  </router-link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script setup lang="ts">

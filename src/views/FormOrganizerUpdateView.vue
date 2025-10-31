@@ -5,7 +5,7 @@
             <p>{{ organizerDescription }}</p>
         </section>
 
-        <section class="organizer-card">
+        <section class="uranus-card">
             <div class="organizer-layout">
                 <form class="organizer-form" @submit.prevent="submitForm" novalidate>
                     <div class="form-grid">
@@ -119,10 +119,9 @@
                             {{ mapHint }}
                         </template>
                     </LocationMapComponent>
-                    <div class="location-meta">
-                        <span class="meta-label">{{ t('location') }}</span>
-                        <span class="meta-value">{{ locationSummary }}</span>
-                    </div>
+                  <ValueInfoComponent
+                      :label="t('geo_location')"
+                      :value="locationSummary" />
                 </aside>
             </div>
 
@@ -145,6 +144,7 @@ import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
+import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
 
 interface LatLngLiteral {
     lat: number
@@ -726,7 +726,7 @@ button {
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 1rem;
     background: var(--input-bg);
     border-radius: 14px;
     padding: 0.75rem 1rem;
@@ -735,7 +735,6 @@ button {
 .meta-label {
     font-weight: 600;
     color: var(--color-text);
-    text-transform: uppercase;
     letter-spacing: 0.08em;
     font-size: 0.78rem;
 }

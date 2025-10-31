@@ -27,8 +27,13 @@
             </section>
 
             <div class="event-sidebar">
-                <LocationMapComponent :latitude="event.venue_lat" :longitude="event.venue_lon" :zoom="18"
+              <div class="event-map-wrapper">
+                <LocationMapComponent
+                    :latitude="event.venue_lat"
+                    :longitude="event.venue_lon"
+                    :zoom="18"
                     :selectable="false" class="event-map" />
+              </div>
 
                 <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
                     :event-dates="eventSchedulePayload" :space-id="event.space_id" :space-name="event.space_name ?? ''"
@@ -659,6 +664,16 @@ onMounted(() => {
     font-size: 1rem;
     color: var(--muted-text);
     padding: 2rem 1rem;
+}
+
+.event-map-wrapper {
+  width: 100%;          // or a fixed width
+  aspect-ratio: 1 / 1;  // ensures height equals width
+}
+
+.event-map {
+  width: 100%;
+  height: 100%;         // fill the wrapper
 }
 
 @media (min-width: 640px) {

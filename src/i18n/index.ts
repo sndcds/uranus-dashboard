@@ -124,6 +124,7 @@ const sharedAuthFor = (locale: LocaleKey) =>
 const messages = {
     de: {
         ...sharedAuthFor('de'),
+        geo_location: 'Standort',
         event_title: 'Veranstaltungstitel',
         teaser_text: 'Teaser Text',
         choose_language: 'Wähle eine Sprache',
@@ -496,6 +497,7 @@ const messages = {
     },
     en: {
         ...sharedAuthFor('en'),
+        geo_location: 'Location',
         event_title: 'Event Title',
         teaser_text: 'Teaser text',
         choose_language: 'Choose a language',
@@ -870,6 +872,7 @@ const messages = {
     },
     da: {
         ...sharedAuthFor('da'),
+        geo_location: 'Placering',
         event_title: 'Arrangement overskrift',
         teaser_text: 'Teaser tekst',
         choose_language: 'Vælg et sprog',

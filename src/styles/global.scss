@@ -1,3 +1,9 @@
+@use './_card.scss';
+@use './_button.scss';
+@use './_value_info.scss';
+@use './_markdown_editor.scss';
+@use './_inline_editor.scss';
+
 // Light theme colors
 $uranus-button-gradient-light: linear-gradient(135deg, #3c36ef 0%, #2575fc 100%);
 $uranus-secondary-button-color-light: #3c36ef;
@@ -116,203 +122,8 @@ $text-color: #223;
 $button-color: #ddd;
 $button-text-color: #333;
 
-.uranus-card {
-  padding: 20px;
-  color: var(--uranus-card-color);
-  background-color: var(--uranus-card-background-color);
-  border-radius: 12px;
-}
-
-.uranus-button,
-.uranus-inline-save-button,
-.uranus-inline-cancel-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.8rem 2rem;
-  border-radius: 999px;
-  color: #fff;
-  background: var(--uranus-button-gradient);
-  border: none;
-  font-size: 1rem;
-  font-weight: 500;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover:not(:disabled) {
-    filter: brightness(1.25);
-  }
-
-  &:focus-visible {
-    outline: none;
-  }
-
-  &:disabled {
-    cursor: wait;
-    opacity: 0.75;
-    transform: none;
-  }
-}
-
-.uranus-inline-save-button {
-  font-weight: 700;
-  background: #1ac168;
-  padding: 0.6em 1em;
-}
-
-.uranus-inline-cancel-button {
-  font-weight: 700;
-  background: #ed5c5c;
-  padding: 0.2em 1em;
-}
 
 
-.uranus-secondary-button,
-.uranus-inline-edit-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-  color: var(--uranus-secondary-button-color);
-  background-color: transparent;
-  border: 1px solid var(--uranus-secondary-button-border-color);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover:not(:disabled):not(&--active) {
-    background-color: var(--uranus-secondary-button-background-color);
-  }
-
-  &:focus-visible {
-    outline: none;
-  }
-
-  &:disabled {
-    cursor: wait;
-    opacity: 0.75;
-    transform: none;
-  }
-
-  // Active state for button
-  &--active {
-    background: var(--accent-primary);
-    color: white;
-    cursor: default;
-
-    &:hover {
-    }
-  }
-}
-
-.uranus-secondary-button,
-.uranus-inline-edit-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-  color: var(--uranus-secondary-button-color);
-  background-color: transparent;
-  border: 1px solid var(--uranus-secondary-button-border-color);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover:not(:disabled):not(&--active) {
-    background-color: var(--uranus-secondary-button-background-color);
-  }
-
-  &:focus-visible {
-    outline: none;
-  }
-
-  &:disabled {
-    cursor: wait;
-    opacity: 0.75;
-    transform: none;
-  }
-
-  // Active state for button
-  &--active {
-    background: var(--accent-primary);
-    color: white;
-    cursor: default;
-
-    &:hover {
-    }
-  }
-}
-
-.uranus-inline-label {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #333;
-}
-
-.uranus-hover-section {
-}
-
-.uranus-inline-edit-button {
-  padding: 0.2rem 0.5rem;
-  opacity: 0.0;
-}
-
-.uranus-hover-section:hover .uranus-inline-edit-button {
-  opacity: 1;
-}
-
-.uranus-inline-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 20px;
-  border: 1px solid #ddd;
-}
-
-.uranus-inline-section-button-area {
-  display: flex;
-  justify-content: right;
-  gap: 0.75rem;
-}
-
-
-.uranus-markdown-editor {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.uranus-markdown-editor-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.uranus-markdown-editor-toolbar button {
-  // @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.7rem);
-  font-size: 0.85rem;
-  color: var(--color-text);
-  background: var(--accent-muted);
-  border-color: var(--accent-muted);
-  border-radius: 99px;
-  border: none;
-  padding: 0.3rem 0.6rem;
-  cursor: pointer;
-
-  &:hover {
-    background: var(--accent-muted-hover);
-  }
-
-  &:focus-visible {
-  }
-}
 
 
 .card {
@@ -358,9 +169,7 @@ $button-text-color: #333;
   color: #222;
 }
 
-
-
-
+/* TODO ersetzen! */
 .simple-table {
   width: 100%;
   border-collapse: collapse;
@@ -562,10 +371,8 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
 }
 
 @media (max-width: 600px) {
-
   .uranus-inline-edit-button {
     padding: 0.2rem 0.5rem;
     opacity: 0.6;
   }
-
 }

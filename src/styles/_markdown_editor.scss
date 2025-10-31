@@ -1,0 +1,30 @@
+.uranus-markdown-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.uranus-markdown-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.uranus-markdown-editor-toolbar button {
+  // @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.7rem);
+  font-size: 0.85rem;
+  color: var(--color-text);
+  background: var(--accent-muted);
+  border-color: var(--accent-muted);
+  border-radius: 99px;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--accent-muted-hover);
+  }
+
+  &:focus-visible {
+  }
+}
