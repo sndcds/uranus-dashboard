@@ -5,7 +5,7 @@
     </div>
 
     <div class="dashboard-inbox">
-      <section class="inbox-content">
+      <section class="uranus-card">
         <InboxMessagesPanel />
       </section>
     </div>

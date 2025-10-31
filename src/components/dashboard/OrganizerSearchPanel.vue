@@ -1,5 +1,5 @@
 <template>
-  <section class="inbox-sidebar">
+  <section class="uranus-card">
     <h2 class="inbox-sidebar__title">{{ inboxTitle }}</h2>
 
     <form class="organizer-search" @submit.prevent="searchOrganizers" novalidate>

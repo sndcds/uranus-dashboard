@@ -5,7 +5,7 @@
             <p>{{ heroSubtitle }}</p>
         </section>
 
-        <section class="profile-card">
+        <section class="uranus-card">
             <transition name="fade">
                 <p v-if="loadError" class="feedback feedback--error" role="alert">
                     {{ loadError }}

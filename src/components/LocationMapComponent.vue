@@ -164,16 +164,17 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  height: 100%;
+  width: 100%; /* ensure it can shrink/grow */
 }
 
 .leaflet-map {
-  flex: 1;
-  width: 100%;
-  min-height: 280px;
+  width: 100%;         /* take full width of wrapper */
+  aspect-ratio: 1 / 1; /* keep it square */
   border-radius: 12px;
   overflow: hidden;
   cursor: grab;
+  min-width: 280px;    /* optional */
+  max-width: 100%;     /* prevent overflowing parent */
 
   &:active {
     cursor: grabbing;

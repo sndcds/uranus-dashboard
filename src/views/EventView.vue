@@ -27,13 +27,11 @@
             </section>
 
             <div class="event-sidebar">
-              <div class="event-map-wrapper">
                 <LocationMapComponent
                     :latitude="event.venue_lat"
                     :longitude="event.venue_lon"
                     :zoom="18"
                     :selectable="false" class="event-map" />
-              </div>
 
                 <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
                     :event-dates="eventSchedulePayload" :space-id="event.space_id" :space-name="event.space_name ?? ''"
@@ -668,7 +666,6 @@ onMounted(() => {
 
 .event-map-wrapper {
   width: 100%;          // or a fixed width
-  aspect-ratio: 1 / 1;  // ensures height equals width
 }
 
 .event-map {

@@ -12,7 +12,7 @@
         @state-change="handleSearchStateChange"
       />
 
-      <section class="inbox-content">
+      <section class="uranus-card">
         <OrganizerMessageComposer
           ref="composerRef"
           :selected-organizer="selectedOrganizer"
