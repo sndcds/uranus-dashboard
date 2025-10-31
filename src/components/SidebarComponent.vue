@@ -133,13 +133,6 @@ const closeUserMenu = () => {
 
 const handleProfileClick = async () => {
   closeUserMenu()
-  if (route.path !== '/user/profile') {
-    try {
-      await router.push('/user/profile')
-    } catch (err) {
-      console.warn('Navigation aborted for profile route', err)
-    }
-  }
   isOpen.value = false
 }
 

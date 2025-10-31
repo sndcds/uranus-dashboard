@@ -1,8 +1,8 @@
 <template>
-  <div class="events-page">
-    <div class="dashboard-hero">
+  <div class="message-page">
+    <header>
       <h1>{{ t('user_messages_send') }}</h1>
-    </div>
+    </header>
 
     <div class="dashboard-inbox">
       <OrganizerSearchPanel
