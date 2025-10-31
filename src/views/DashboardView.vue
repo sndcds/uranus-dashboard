@@ -445,6 +445,7 @@ const sendMessage = async () => {
     await apiFetch(`/api/admin/send-message`, {
       method: 'POST',
       body: JSON.stringify({
+        context: 'organizer',
         context_id: selectedOrganizer.value.id,
         subject: messageSubject.value.trim(),
         message: messageBody.value.trim(),
