@@ -36,7 +36,12 @@
                         </thead>
                         <tbody>
                             <tr v-for="event in events" :key="event.event_id">
-                                <td>{{ formatDate(event.start_date) }}</td>
+                                <td>{{ formatDate(event.start_date) }}
+                                  <img v-if="event.image_id"
+                                       :src="`${apiBase}/api/image/${event.image_id}?mode=cover&width=80&ratio=3by2&focusx=${event.focus_x}&focusy=${event.focus_y}&type=webp&quality=90`"
+                                       alt="Event image"
+                                       class="calendar-card__image" />
+                                </td>
                                 <td>{{ event.start_time }}</td>
                                 <td><strong>{{ event.event_title }}</strong></td>
                                 <td>{{ event.venue_name || '—' }}</td>
@@ -65,6 +70,9 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
+const apiBase = ((import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'https://uranus2.oklabflensburg.de')
+
+
 const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
 
@@ -79,6 +87,7 @@ interface EventItem {
     space_name: string
     event_organizer_name: string
     event_type: string
+    image_id: number
 }
 
 const events = ref<EventItem[]>([])
