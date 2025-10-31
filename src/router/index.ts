@@ -23,6 +23,8 @@ import FormOrganizerUpdateView from '@/views/FormOrganizerUpdateView.vue'
 import FormVenueUpdateView from '@/views/FormVenueUpdateView.vue'
 import ForgotPasswordView from '@/views/ForgotPasswordView.vue'
 import ResetPasswordView from '@/views/ResetPasswordView.vue'
+import MessageInboxView from '@/views/MessageInboxView.vue'
+import MessageSendView from '@/views/MessageSendView.vue'
 
 const routes = [
     {
@@ -104,7 +106,17 @@ const routes = [
                 path: '/user/profile',
                 name: 'user-profile',
                 component: FormUserProfileView,
-            }
+            },
+            {
+                path: '/user/messages/inbox',
+                name: 'user-messages-inbox',
+                component: MessageInboxView,
+            },
+            {
+                path: '/user/messages/send',
+                name: 'user-messages-send',
+                component: MessageSendView,
+            },
         ],
     },
     {

@@ -26,6 +26,12 @@
 
       <transition name="fade">
         <div v-if="isUserMenuOpen" class="user-menu">
+          <router-link to="/user/messages/inbox" class="user-menu__link" @click="handleProfileClick">
+            {{ t('user_messages_inbox') }}
+          </router-link>
+          <router-link to="/user/messages/send" class="user-menu__link" @click="handleProfileClick">
+            {{ t('user_messages_send') }}
+          </router-link>
           <router-link to="/user/profile" class="user-menu__link" @click="handleProfileClick">
             {{ t('user_profile') }}
           </router-link>
