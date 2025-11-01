@@ -95,7 +95,7 @@ import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/store/userStore'
-import type { SidebarOption } from '@../types/types'
+import type { SidebarOption } from '@/types/types'
 
 import SidebarOptionComponent from '@/components/SidebarOptionComponent.vue'
 import OrganizerChooserMenu from '@/components/OrganizerChooserMenu.vue'
