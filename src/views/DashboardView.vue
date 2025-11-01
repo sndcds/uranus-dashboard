@@ -15,12 +15,15 @@
       </router-link>
     </div-->
   </div>
+
+  <LibreMap />
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import LibreMap from "@/components/LibreMap.vue";
 
 const { t } = useI18n()
 
