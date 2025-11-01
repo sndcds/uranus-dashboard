@@ -60,6 +60,13 @@
             :venue-postal-code="event.venue_postal_code ?? ''" :venue-city="event.venue_city ?? ''"
             :space-id="event.space_id" :space-name="event.space_name ?? ''" :space-total-capacity="null"
             @updated="loadEvent" />
+
+        <EventReleaseSection
+            :event-id="event.id"
+            :release-status-id="event.release_status_id"
+            :release-date="event.release_date"
+            :locale="locale"
+            @updated="loadEvent" />
       </div>
     </div>
   </div>
@@ -83,7 +90,7 @@ import EventTeaserSection from '@/components/event/EventTeaserSection.vue'
 import EventVenueSection from '@/components/event/EventVenueSection.vue'
 import EventUrlSection from '@/components/event/EventUrlSection.vue'
 import EventScheduleSection from '@/components/event/EventScheduleSection.vue'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+import EventReleaseSection from '@/components/event/EventReleaseSection.vue'
 
 const envApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 const apiBase = envApiUrl
@@ -169,6 +176,8 @@ interface EventDetail {
   end_time: string | null
   entry_time: string | null
   tags?: string[] | null
+  release_status_id?: number | null
+  release_date?: string | null
 }
 
 const route = useRoute()
@@ -538,6 +547,8 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
     end_time: primary?.end_time ?? null,
     entry_time: primary?.entry_time ?? null,
     tags: mapTagList(record.tags ?? record.event_tags ?? record.teaser_tags ?? []),
+    release_status_id: toNumberOrNull(record.release_status_id ?? record.releaseStatusId),
+    release_date: toNullableString(record.release_date ?? record.releaseDate),
   }
 }
 
