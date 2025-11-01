@@ -42,6 +42,10 @@
                         <input v-model="space.website_url" id="website_url" type="url" />
                     </div>
                     <div class="form-group form-group--full">
+                        <label for="description">{{ t('space_description') }}</label>
+                        <textarea v-model="space.description" id="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group form-group--full">
                         <label for="accessibility_summary">{{ t('space_accessibility_summary') }}</label>
                         <textarea v-model="space.accessibility_summary" id="accessibility_summary" rows="3"></textarea>
                     </div>
@@ -154,6 +158,7 @@ const space = reactive({
     building_level: 0,
     space_type_id: null as number | null,
     website_url: '',
+    description: '',
     accessibility_summary: '',
     accessibility_flags: null as number | null
 })
@@ -393,6 +398,7 @@ async function loadSpaceById(id: number) {
         space.building_level = toNumber(data.building_level, 0)
         space.space_type_id = toNullableNumber(data.space_type_id)
         space.website_url = typeof data.website_url === 'string' ? data.website_url : ''
+        space.description = typeof data.description === 'string' ? data.description : ''
         space.accessibility_summary =
             typeof data.accessibility_summary === 'string' ? data.accessibility_summary : ''
         space.accessibility_flags = typeof data.accessibility_flags === 'number'
@@ -421,7 +427,9 @@ async function submitForm() {
             ? trimmedWebsite
             : `https://${trimmedWebsite}`
         : ''
+    const description = space.description.trim()
     const accessibilitySummary = space.accessibility_summary.trim()
+    space.description = description
     space.accessibility_summary = accessibilitySummary
 
     const accessibilityMask = computeAccessibilityFlagsMask()
@@ -434,6 +442,7 @@ async function submitForm() {
         building_level: space.building_level,
         space_type_id: spaceTypeId,
         website_url: normalizedWebsite,
+        description,
         accessibility_summary: accessibilitySummary,
         venue_id: venueId,
         accessibility_flags: space.accessibility_flags
@@ -652,6 +661,7 @@ interface Space {
     building_level: number
     space_type_id: number | null
     website_url: string
+    description: string
     accessibility_summary: string
     venue_id: number
     accessibility_flags?: number | null
@@ -666,6 +676,7 @@ interface SpaceResponse {
     building_level?: number | string | null
     space_type_id?: number | string | null
     website_url?: string | null
+    description?: string | null
     accessibility_summary?: string | null
     accessibility_flags?: number | string | Array<number | string> | null
 }
