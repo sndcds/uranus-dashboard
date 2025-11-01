@@ -1,9 +1,9 @@
 <template>
-    <div class="profile-page">
-        <section class="profile-hero">
-            <h1>{{ heroTitle }}</h1>
-            <p>{{ heroSubtitle }}</p>
-        </section>
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="heroTitle"
+        :subtitle="heroSubtitle"
+    />
 
         <section class="uranus-card">
             <transition name="fade">
@@ -106,6 +106,7 @@ import { useUserStore } from '@/store/userStore'
 import UserAvatarUpload from '@/components/UserAvatarUpload.vue'
 import type { ThemeMode } from '@/utils/theme'
 import { apiFetch } from '@/api'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 interface UserProfilePayload {
     user_id?: string | number | null

@@ -1,9 +1,9 @@
 <template>
-  <div class="events-page">
-    <div class="dashboard-hero">
-      <h1>{{ t('user_messages_inbox') }}</h1>
-    </div>
-
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('user_messages_inbox')"
+        :subtitle="t('dummy')"
+    />
     <div class="dashboard-inbox">
       <section class="uranus-card">
         <InboxMessagesPanel />
@@ -15,6 +15,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import InboxMessagesPanel from '@/components/dashboard/InboxMessagesPanel.vue'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 const { t } = useI18n()
 </script>

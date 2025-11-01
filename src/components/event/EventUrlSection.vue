@@ -1,6 +1,6 @@
 <template>
     <section
-        class="uranus-inline-section uranus-hover-section"
+        class="uranus-hover-section"
         :class="{ 'event-url-section--editing': isEditingLinks }">
 
         <InlineEditorLabel

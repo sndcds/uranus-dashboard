@@ -221,9 +221,10 @@ const handleOptionChange = async (optionId: string) => {
   top: 0;
   left: 0;
   height: 100vh;
-  width: 300px;
+  max-width: 260px;
   background: var(--card-bg);
-  border-right: 1px solid var(--border-soft);
+  background: transparent;
+  border-right: 0px solid var(--border-soft);
   transform: translateX(-100%);
   transition: transform 0.3s ease;
   z-index: 1000;
@@ -291,7 +292,9 @@ const handleOptionChange = async (optionId: string) => {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  background: white;
   flex: 1;
+  gap: 0;
 }
 
 .user-profile {
@@ -301,7 +304,6 @@ const handleOptionChange = async (optionId: string) => {
   gap: 0.75rem;
   padding: 1rem;
   position: relative;
-  border-radius: 12px;
   transition: background 0.2s ease;
 
   &:hover,
@@ -342,11 +344,9 @@ const handleOptionChange = async (optionId: string) => {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  margin: 0 1rem 1rem;
+  margin: 0;
   padding: 0.75rem;
-  border-radius: 12px;
   background: var(--card-bg);
-  border: 1px solid var(--border-soft);
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
 }
 
@@ -387,7 +387,6 @@ const handleOptionChange = async (optionId: string) => {
 .sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
 }
 
 // Mobile overlay

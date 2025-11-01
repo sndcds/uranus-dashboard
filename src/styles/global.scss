@@ -1,48 +1,46 @@
-@use './_card.scss';
-@use './_button.scss';
+@use 'uranus_app_menu';
+@use 'uranus_card';
+@use 'uranus_button';
+@use 'uranus_combo_tag';
 @use './_value_info.scss';
 @use './_markdown_editor.scss';
 @use './_inline_editor.scss';
 
-// Light theme colors
-$uranus-button-gradient-light: linear-gradient(135deg, #3c36ef 0%, #2575fc 100%);
-$uranus-secondary-button-color-light: #3c36ef;
-$uranus-secondary-button-border-color-light: rgba(60, 54, 239, 0.3);
-$uranus-secondary-button-background-color-light: rgba(60, 54, 239, 0.18);
-$uranus-card-background-color-light: #fff;
-$uranus-card-color-light: #333;
-
-// Dark theme colors
-$uranus-button-gradient-dark: linear-gradient(135deg, #6a11cb 0%, #3c36ef 100%);
-$uranus-secondary-button-color-dark: #3c36ef;
-$uranus-secondary-button-border-color-dark: rgba(60, 54, 239, 0.6);
-$uranus-secondary-button-background-color-dark: rgba(60, 54, 239, 0.18);
-$uranus-card-background-color-dark: #222;
-$uranus-card-color-dark: #ddd;
 
 :root {
   color-scheme: light;
-  --color-text: #0f172a;
-  --color-bg: #f8fafc;
-  --card-bg: #ffffff;
-  --card-shadow: 0 24px 50px rgba(31, 41, 55, 0.12);
-  --muted-text: rgba(55, 65, 81, 0.6);
-  --input-border: rgba(148, 163, 184, 0.45);
-  --input-bg: rgba(248, 250, 252, 0.85);
-  --accent-primary: #4f46e5;
-  --accent-secondary: #0ea5e9;
-  --accent-muted: rgba(79, 70, 229, 0.12);
-  --accent-muted-hover: rgba(79, 70, 229, 0.2);
-  --border-soft: rgba(148, 163, 184, 0.25);
-  --surface-muted: rgba(243, 244, 246, 0.7);
-  --page-gradient: linear-gradient(135deg, rgba(72, 93, 255, 0.08), rgba(141, 233, 255, 0.12));
 
-  --uranus-button-gradient: #{$uranus-button-gradient-light};
-  --uranus-secondary-button-color: #{$uranus-secondary-button-color-light};
-  --uranus-secondary-button-background-color: #{$uranus-secondary-button-background-color-light};
-  --uranus-secondary-button-border-color: #{$uranus-secondary-button-border-color-light};
-  --uranus-card-color: #{$uranus-card-color-light};
-  --uranus-card-background-color: #{$uranus-card-background-color-light};
+  // Basic colors, same in light and dark mode
+  --uranus-brand-color: #235df1;
+  --uranus-success-color: #18da8c;
+  --uranus-error-color: #f35749;
+  --uranus-ia-color: #005CE6;
+  --uranus-ia-color-light1: #246fea;
+  --uranus-ia-color-light2: #4382e6;
+  --uranus-ia-color-dark1: #0150c6;
+  --uranus-ia-color-dark2: #003a98;
+  --uranus-ia-inline-color: #9b20ff;
+  --uranus-ia-inline-color-light1: #c076fc;
+  --uranus-ia-inline-color-light2: #ddb5ff;
+  --uranus-ia-inline-color-dark1: #6e24aa;
+  --uranus-ia-inline-color-dark2: #582780;
+
+  // Light mode versions
+  --uranus-bg-color: #fcfcfc;
+  --uranus-color: #2b2b2b;
+  --uranus-disabled-color: #e1e1e1;
+  --uranus-low-contrast-color: #c6c6c6;
+  --uranus-medium-contrast-color: #666666;
+
+  --uranus-dashboard-bg-color: var(--uranus-bg-color);
+
+  --uranus-card-border-radius: 12px;
+  --uranus-inline-edit-border-radius: 12px;
+  --uranus-tiny-border-radius: 4px;
+
+  --uranus-grid-gap: 12px;
+
+
 
 
   font-family: 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -58,27 +56,13 @@ $uranus-card-color-dark: #ddd;
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-text: #e2e8f0;
-  --color-bg: #0b1220;
-  --card-bg: #111827;
-  --card-shadow: 0 24px 50px rgba(2, 6, 23, 0.65);
-  --muted-text: rgba(203, 213, 225, 0.75);
-  --input-border: rgba(94, 106, 135, 0.55);
-  --input-bg: rgba(30, 41, 59, 0.85);
-  --accent-primary: #6366f1;
-  --accent-secondary: #22d3ee;
-  --accent-muted: rgba(99, 102, 241, 0.18);
-  --accent-muted-hover: rgba(99, 102, 241, 0.28);
-  --border-soft: rgba(71, 85, 105, 0.35);
-  --surface-muted: rgba(30, 41, 59, 0.75);
-  --page-gradient: linear-gradient(135deg, rgba(30, 41, 59, 0.65), rgba(15, 23, 42, 0.75));
 
-  --uranus-button-gradient: #{$uranus-button-gradient-dark};
-  --uranus-secondary-button-color: #{$uranus-secondary-button-color-dark};
-  --uranus-secondary-button-border-color: #{$uranus-secondary-button-border-color-dark};
-  --uranus-secondary-button-background-color: #{$uranus-secondary-button-background-color-dark};
-  --uranus-card-color: #{$uranus-card-color-dark};
-  --uranus-card-background-color: #{$uranus-card-background-color-dark};
+  // Dark mode versions
+  --uranus-bg-color: #2b2b2b;
+  --uranus-color: #fcfcfc;
+  --uranus-disabled-color: #424242;
+  --uranus-low-contrast-color: #666666;
+  --uranus-medium-contrast-color: #c6c6c6;
 }
 
 *,
@@ -90,8 +74,8 @@ $uranus-card-color-dark: #ddd;
 body {
   margin: 0;
   min-height: 100dvh;
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--uranus-bg-color);
+  color: var(--uranus-color);
 }
 
 a {
@@ -123,7 +107,48 @@ $button-color: #ddd;
 $button-text-color: #333;
 
 
+.uranus-main-content {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--uranus-dashboard-bg-color);
+  padding: 32px;
+}
 
+.uranus-main-layout {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 100%;
+}
+
+.uranus-dahboard-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 100%;
+  padding: 18px;
+}
+
+
+/* Tablet and up: Sidebar layout */
+@media (min-width: 768px) {
+  .uranus-dashboard-layout {
+    display: flex;
+  }
+  .uranus-main-content {
+    flex: 1;
+    margin-left: 0;
+    padding: 32px;
+  }
+}
+
+/* Desktop: Enhanced spacing */
+@media (min-width: 1024px) {
+  .uranus-main-content {
+    padding: 32px;
+  }
+}
 
 
 .card {

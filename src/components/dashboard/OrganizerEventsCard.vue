@@ -1,5 +1,5 @@
 <template>
-  <section class="uranus-card organizer-events-card">
+  <section>
     <div v-if="error" class="feedback feedback--error" role="alert">
       {{ error }}
     </div>
@@ -13,11 +13,17 @@
 
       <div class="events-list">
         <article v-for="event in events" :key="event.event_id">
-          <router-link :to="`/event/${event.event_id}`"  class="event-card">
-            <header class="event-card__header">
-              <img v-if="event.image_id" :src="buildImageUrl(event)" :alt="event.event_title"
-                class="events-card__image" />
-            </header>
+          <router-link
+              :to="`/event/${event.event_id}`"
+              class="uranus-card">
+            <!--header class="event-card__header"-->
+              <img
+                  class="events-card__image"
+                  v-if="event.image_id"
+                  :src="buildImageUrl(event)"
+                  :alt="event.event_title"
+              />
+            <!--/header-->
             <ul class="event-card__details">
               <li class="event-card__title">
                 <h3>{{ event.event_title }}</h3>
@@ -100,7 +106,7 @@ const buildImageUrl = (event: OrganizerEventItem) => {
 
   const params = new URLSearchParams({
     mode: 'cover',
-    width: '80',
+    width: '480',
     ratio: '3by2',
     type: 'webp',
     quality: '90',
@@ -118,11 +124,11 @@ const buildImageUrl = (event: OrganizerEventItem) => {
 </script>
 
 <style scoped lang="scss">
-.organizer-events-card {
+
+.uranus-card {
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 2vw, 1.5rem);
-  padding: clamp(1.5rem, 3vw, 2rem);
+  height: 100%; /* Important: fill the grid cell */
 }
 
 .chip {
@@ -154,7 +160,8 @@ const buildImageUrl = (event: OrganizerEventItem) => {
 .events-list {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 8px;
+  align-items: stretch;
 }
 
 .event-card {
@@ -221,7 +228,7 @@ const buildImageUrl = (event: OrganizerEventItem) => {
 .events-card__image {
   width: 84px;
   height: 64px;
-  border-radius: 0.75rem;
+  border-radius: var(--uranus-tiny-border-radius);
   object-fit: cover;
   display: block;
 }
@@ -230,7 +237,6 @@ const buildImageUrl = (event: OrganizerEventItem) => {
   .events-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-    gap: clamp(1.5rem, 3vw, 2rem);
   }
 
   .event-card {
@@ -283,7 +289,6 @@ const buildImageUrl = (event: OrganizerEventItem) => {
   .events-card__image {
     width: 140px;
     height: 92px;
-    border-radius: 1rem;
   }
 }
 </style>

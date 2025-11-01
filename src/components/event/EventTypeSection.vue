@@ -1,5 +1,5 @@
 <template>
-    <section class="uranus-inline-section uranus-hover-section">
+    <section class="uranus-hover-section">
       <InlineEditorLabel
           :label-text="t('event_tags_heading')"
           :edit-button-text="t('edit')"
@@ -16,8 +16,7 @@
           :placeholderSecondary="t('choose_genre')"
           :editable="true"
           :isEditing="isEditing"
-          @update-selection="onSelectionUpdate"
-      />
+          @update-selection="onSelectionUpdate"/>
 
         <div
             v-if="isEditing"

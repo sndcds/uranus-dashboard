@@ -1,15 +1,16 @@
 <template>
-  <div class="events-page">
-    <section class="events-hero">
-      <h1>{{ t('events_title') }}</h1>
-      <p>{{ t('events_subtitle') }}</p>
-    </section>
-
-    <router-link
-        :to="`/organizer/${organizerId}/event/create`"
-        class="uranus-button _events-hero__cta">
-      {{ t('add_new_event') }}
-    </router-link>
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('events_title')"
+        :subtitle="t('events_subtitle')"
+    />
+    <div style="padding: 16px;">
+      <router-link
+          :to="`/organizer/${organizerId}/event/create`"
+          class="uranus-button">
+        {{ t('add_new_event') }}
+      </router-link>
+    </div>
 
     <OrganizerEventsCard
       :events="events"
@@ -26,6 +27,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import OrganizerEventsCard, { type OrganizerEventItem } from '@/components/dashboard/OrganizerEventsCard.vue'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 const apiBase = ((import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'https://uranus2.oklabflensburg.de')
 

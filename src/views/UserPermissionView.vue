@@ -1,9 +1,10 @@
 <template>
-    <section class="user-permissions">
-        <header class="user-permissions__header">
-            <h1>{{ t('user_permissions_title') }}</h1>
-            <p class="user-permissions__subtitle">{{ t('user_permissions_subtitle') }}</p>
-        </header>
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('user_permissions_title')"
+        :subtitle="t('user_permissions_subtitle')"
+    />
+
 
         <div v-if="isLoading" class="user-permissions__status">
             {{ t('user_permissions_loading') }}
@@ -63,13 +64,14 @@
                 </div>
             </article>
         </div>
-    </section>
+    </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 interface PermissionResponseEntity {
     add_event: boolean

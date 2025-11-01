@@ -1,9 +1,12 @@
 <template>
-  <div class="dashboard-layout">
-    <div class="sidebar-container">
+  <div class="uranus-dashboard-layout">
+    <!--div class="sidebar-container">
       <SidebarComponent :options="sidebarOptions" @change="onSidebarChange" />
-    </div>
-    <main class="main-content">
+    </div-->
+    <UranusAppMenu
+        :options="sidebarOptions"
+        @change="onSidebarChange" />
+    <main class="uranus-main-content">
       <router-view />
     </main>
   </div>
@@ -18,6 +21,7 @@ import { useTokenStore } from "@/store/token"
 import { useAppStore } from "@/store/appStore"
 
 import SidebarComponent from '@/components/SidebarComponent.vue'
+import UranusAppMenu from "@/components/uranus/UranusAppMenu.vue";
 
 const router = useRouter()
 const { t } = useI18n()
@@ -46,41 +50,29 @@ function logout() {
 
 <style scoped>
 /* Mobile-first: Full width layout, sidebar hidden by default */
-.dashboard-layout {
+.uranus-dashboard-layout {
   position: relative;
 }
 
-.sidebar-container {
-  position: relative;
-  width: 320px;
-}
-
-/* Mobile: Main content takes full width, with top padding for hamburger */
-.main-content {
-  width: 100%;
+.uranus-dashboard-layout {
+  display: flex;
+  flex-direction: row;
   min-height: 100vh;
-  background: var(--page-gradient);
-  padding: 5rem 1rem 2rem 1rem;
-  /* Top padding for hamburger button */
 }
 
-/* Tablet and up: Sidebar layout */
+/* Default (mobile) — sidebar overlays */
+.uranus-main-content {
+  flex: 1;
+  width: 100%;
+  transition: margin-left 0.3s ease;
+}
+
+/* Desktop and up — sidebar pushes content */
 @media (min-width: 768px) {
-  .dashboard-layout {
-    display: flex;
-  }
-
-  .main-content {
-    flex: 1;
-    padding: 2rem;
-    margin-left: 0;
+  .uranus-main-content {
+    margin-left: var(--uranus-app-menu-width);
   }
 }
 
-/* Desktop: Enhanced spacing */
-@media (min-width: 1024px) {
-  .main-content {
-    padding: 2.5rem;
-  }
-}
+
 </style>

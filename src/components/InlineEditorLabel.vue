@@ -1,11 +1,12 @@
 <template>
-  <div class="uranus-hover-section">
-    <span class="uranus-inline-label">{{ labelText }}</span>
+  <div class="uranus-inline-label">
+    <span>{{ labelText }}</span>
     <button
       v-if="!isEditing"
       type="button"
       class="uranus-inline-edit-button"
       @click="startEditing"
+      style="margin-left: 8px"
     >
       {{ editButtonText }}
     </button>

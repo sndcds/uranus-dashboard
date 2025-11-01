@@ -1,19 +1,18 @@
 <template>
-  <div class="organizer-venue-view">
-    <!-- Page Header -->
-    <header class="organizer-venue-view__header">
-      <h1 class="organizer-venue-view__title">{{ t('venues') }}</h1>
-    </header>
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('venues')"
+        subtitle="Test"
+    />
 
-    <!-- Create Venue Action -->
-    <div class="_organizer-venue-view__actions">
+    <div style="padding: 16px;">
       <router-link
-        :to="`/organizer/${organizerId}/venue/create`"
-        class="uranus-button _organizer-venue-view__create-btn"
-      >
+          :to = "`/organizer/${organizerId}/venue/create`"
+          class = "uranus-button">
         {{ t('add_new_venue') }}
       </router-link>
     </div>
+
 
     <!-- Error Message -->
     <div v-if="error" class="organizer-venue-view__error">
@@ -24,7 +23,7 @@
     <div v-if="organizer" class="organizer-venue-view__content">
       <!-- Stats -->
       <div class="uranus-card">
-        <h1 v-if="organizer">{{ organizer.organizer_name }}</h1>
+        <h2 v-if="organizer">{{ organizer.organizer_name }}</h2>
         <p>{{ t('total_events') }}: {{ organizer.total_upcoming_events }}</p>
       </div>
 
@@ -48,6 +47,7 @@ import { apiFetch } from '@/api'
 import { useAppStore } from '@/store/appStore'
 
 import VenueCardComponent from '@/components/VenueCardComponent.vue'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 const { t } = useI18n()
 const appStore = useAppStore()
@@ -136,7 +136,7 @@ watch(
   max-width: 1200px;
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 3vw, 1.5rem);
+  gap: var(--uranus-grid-gap);
   text-align: center;
 }
 
@@ -182,7 +182,7 @@ watch(
   max-width: 1200px;
   display: flex;
   flex-direction: column;
-  gap: clamp(1.5rem, 4vw, 2rem);
+  gap: var(--uranus-grid-gap);
 }
 
 // Stats section
@@ -202,7 +202,7 @@ watch(
 .organizer-venue-view__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1.25rem, 3vw, 1.75rem);
+  gap: var(--uranus-grid-gap);
   width: 100%;
 }
 
@@ -214,7 +214,7 @@ watch(
 
 @media (min-width: 1280px) {
   .organizer-venue-view__grid {
-    gap: clamp(1.5rem, 4vw, 2.5rem);
+    gap: var(--uranus-grid-gap);
   }
 }
 </style>

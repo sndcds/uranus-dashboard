@@ -435,7 +435,7 @@ defineExpose({
 .messages-panel__body {
   flex: 1;
   display: grid;
-  gap: clamp(1rem, 2vw, 1.75rem);
+  gap: 12px;
   grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
 }
 
@@ -470,7 +470,7 @@ defineExpose({
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 4px;
 }
 
 .message-card {
@@ -480,7 +480,7 @@ defineExpose({
   align-items: flex-start;
   gap: 0.5rem;
   padding: 0.9rem 1rem;
-  border-radius: 0.9rem;
+  border-radius: 4px;
   border: 1px solid transparent;
   background: var(--surface-muted);
   color: inherit;
@@ -490,23 +490,22 @@ defineExpose({
 }
 
 .message-card:hover {
-  transform: translateY(-1px);
-  border-color: var(--accent-primary);
+  // border-color: var(--accent-primary);
   background: rgba(79, 70, 229, 0.12);
 }
 
 .message-card:focus-visible {
-  outline: 2px solid var(--accent-primary);
+  // outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }
 
 .message-card--active {
-  border-color: var(--accent-primary);
+  // border-color: var(--accent-primary);
   background: rgba(79, 70, 229, 0.18);
 }
 
 .message-card--unread {
-  border-color: rgba(79, 70, 229, 0.35);
+  // border-color: rgba(79, 70, 229, 0.35);
 }
 
 .message-card--unread .message-card__subject {
@@ -558,7 +557,7 @@ defineExpose({
 
 .message-detail {
   background: var(--surface-muted);
-  border-radius: 1rem;
+  border-radius: 8px;
   padding: clamp(1rem, 2vw, 1.5rem);
   min-height: 260px;
   display: flex;

@@ -1,10 +1,9 @@
 <template>
-  <div class="settings-page">
-    <section class="settings-hero">
-      <h1>{{ t('settings') }}</h1>
-      <p>{{ heroSubtitle }}</p>
-    </section>
-
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('settings')"
+        :subtitle="heroSubtitle"
+    />
     <section class="settings-card">
       <div class="settings-notice">
         <p>{{ preferencesNotice }}</p>
@@ -19,6 +18,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 const { t, te } = useI18n({ useScope: 'global' })
 

@@ -4,8 +4,7 @@
         <InlineEditorLabel
             :label-text="t('description')"
             :edit-button-text="t('edit')"
-            @edit-started="startEditingDescription"
-        />
+            @edit-started="startEditingDescription" />
 
         <div class="event-description__content">
           <template v-if="isEditingDescription">
@@ -31,19 +30,17 @@
 
       </div>
         <EventTypeSection
-            class="event-description__segment"
             :event-id="eventId" :locale="locale"
             :event-types="eventTypes"
             @updated="emit('updated')" />
 
         <EventLanguageSection
-            class="event-description__segment"
             :event-id="eventId"
             :locale="locale"
             :languages="languages"
             @updated="emit('updated')" />
 
-        <!-- Additional Info -->
+      <!-- Additional Info -->
         <div class="event-additional">
             <p v-if="participationInfo">
                 <strong>{{ t('event_participation_label') }}:</strong>
@@ -67,6 +64,7 @@ import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
 import EventTypeSection from '@/components/event/EventTypeSection.vue'
 import EventLanguageSection from '@/components/event/EventLanguageSection.vue'
 import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+import EventUrlSection from "@/components/event/EventUrlSection.vue";
 
 interface EventType { type_id: number; type_name: string; genre_id: number | null; genre_name: string | null }
 
@@ -157,10 +155,6 @@ const saveDescription = async () => {
 
 .event-description__button--cancel {
     @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-description__segment {
-    margin-top: 1.25rem;
 }
 
 .event-additional {

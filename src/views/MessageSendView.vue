@@ -1,9 +1,9 @@
 <template>
-  <div class="message-page">
-    <header>
-      <h1>{{ t('user_messages_send') }}</h1>
-    </header>
-
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('user_messages_send')"
+        :subtitle="t('dummy')"
+    />
     <div class="dashboard-inbox">
       <OrganizerSearchPanel
         ref="searchPanelRef"
@@ -30,6 +30,7 @@ import { useI18n } from 'vue-i18n'
 
 import OrganizerMessageComposer from '@/components/dashboard/OrganizerMessageComposer.vue'
 import OrganizerSearchPanel from '@/components/dashboard/OrganizerSearchPanel.vue'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 interface Organizer {
   id: string | number;

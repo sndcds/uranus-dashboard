@@ -38,7 +38,6 @@ function handleClick() {
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1.1rem 0.75rem 1.5rem;
-    border-radius: 0 14px 14px 0;
     cursor: pointer;
     color: var(--muted-text);
     font-weight: 500;
@@ -61,8 +60,7 @@ function handleClick() {
     &.active {
         color: var(--color-text);
         background: linear-gradient(135deg, rgba(79, 70, 229, 0.18), rgba(14, 165, 233, 0.22));
-        box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.18);
-
+        // box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.18);
     }
 
     &.has-icon .label {

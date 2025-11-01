@@ -270,7 +270,7 @@ watch(organizerId, () => {
 .organizer-chooser-menu {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0;
     width: 100%;
 }
 
@@ -294,7 +294,6 @@ watch(organizerId, () => {
     justify-content: space-between;
     gap: 0.75rem;
     padding: 0.75rem 1.1rem 0.75rem 1.5rem;
-    border-radius: 0 14px 14px 0;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -311,7 +310,6 @@ watch(organizerId, () => {
 
     &:focus-visible {
         outline: none;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
         background: var(--accent-muted);
     }
 
@@ -363,6 +361,8 @@ watch(organizerId, () => {
 }
 
 .organizer-chooser-menu__dropdown {
+  display: flex;
+  flex-direction: column;
     margin: 0;
     padding: 0.35rem;
     list-style: none;
@@ -371,12 +371,10 @@ watch(organizerId, () => {
     left: 0;
     width: 100%;
     background: var(--card-bg);
-    border-radius: 14px;
-    box-shadow: var(--card-shadow, 0 18px 40px rgba(31, 41, 55, 0.1));
-    border: 1px solid var(--input-border);
     z-index: 20;
     max-height: 280px;
     overflow-y: auto;
+  gap: 4px;
 }
 
 .organizer-chooser-menu__item {
@@ -391,7 +389,7 @@ watch(organizerId, () => {
     align-items: center;
     text-align: left;
     padding: 0.65rem 1rem;
-    border-radius: 10px;
+  border-radius: 8px;
     font-size: 0.95rem;
     color: var(--muted-text);
     font-weight: 500;
@@ -410,8 +408,7 @@ watch(organizerId, () => {
 
     &[data-selected='true'] {
         color: var(--color-text);
-        background: linear-gradient(135deg, rgba(79, 70, 229, 0.18), rgba(14, 165, 233, 0.22));
-        box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.18);
+        background: linear-gradient(135deg, rgba(57, 47, 213, 0.13), rgba(36, 124, 211, 0.17));
         font-weight: 600;
     }
 }

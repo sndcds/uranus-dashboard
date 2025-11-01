@@ -1,18 +1,26 @@
 <template>
-  <div class="events-page">
-    <div class="dashboard-hero">
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('dashboard')"
+        :subtitle="t('dashboard_description')"
+        cta-label="Go to Inbox"
+        cta-to="/messages"
+    />
+
+    <!--div class="dashboard-hero">
       <h1>{{ t('dashboard') }}</h1>
       <p>{{ t('dashboard_description') }}</p>
       <router-link class="dashboard-cta" to="/messages">
         {{ inboxCtaLabel }}
       </router-link>
-    </div>
+    </div-->
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 const { t } = useI18n()
 
@@ -23,7 +31,9 @@ const inboxCtaLabel = computed(() =>
 
 <style scoped lang="scss">
 .events-page {
-  @include form-page();
+  display: flex;
+  justify-content: center;
+  background: #ed5c5c;
 }
 
 .dashboard-hero {

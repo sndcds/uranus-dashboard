@@ -1,10 +1,9 @@
 <template>
-  <div class="organizer-dashboard-view">
-    <!-- Page Header -->
-    <header class="organizer-dashboard-view__hero">
-      <h1 class="organizer-title">{{ t('organizers') }}</h1>
-      <p>{{ t('organizers_overview_subtitle') }}</p>
-    </header>
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('organizers')"
+        :subtitle="t('organizers_overview_subtitle')"
+    />
 
     <!-- Empty State Message -->
     <div v-if="!organizers.length" class="organizer-dashboard-view__empty">
@@ -12,8 +11,10 @@
     </div>
 
     <!-- Create Organizer Action -->
-    <div class="_organizer-dashboard-view__actions">
-      <router-link to="/organizer/create" class="uranus-button _organizer-dashboard-view__create-btn">
+    <div style="padding: 16px;">
+      <router-link
+          to="/organizer/create"
+          class="uranus-button">
         {{ t('create_organizer') }}
       </router-link>
     </div>
@@ -24,8 +25,11 @@
     </div>
 
     <!-- Organizer Cards Grid -->
-    <div class="organizer-dashboard-view__grid">
-      <OrganizerCardComponent v-for="organizer in organizers" :key="organizer.organizer_id" :organizer="organizer" />
+    <div class="organizer-grid">
+      <OrganizerCardComponent
+          v-for="organizer in organizers"
+          :key="organizer.organizer_id"
+          :organizer="organizer" />
     </div>
   </div>
 </template>
@@ -36,6 +40,8 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import OrganizerCardComponent from '@/components/OrganizerCardComponent.vue'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import LibreMap from "@/components/LibreMap.vue";
 
 const { t } = useI18n()
 
@@ -78,6 +84,20 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
+
+.organizer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: var(--uranus-grid-gap);
+}
+
+.organizer-grid > * {
+  flex: 1 1 400px;           /* grow/shrink with a base width */
+  min-width: 300px;          /* never smaller than this */
+  max-width: 700px;          /* never larger than this */
+}
+
 // Mobile-first responsive OrganizerDashboardView
 .organizer-dashboard-view {
   @include form-page();

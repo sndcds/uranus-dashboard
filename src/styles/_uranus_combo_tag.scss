@@ -1,0 +1,39 @@
+.uranus-combo-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  height: 1.8em;
+  padding: 0 1em;
+  font-size: 0.9rem;
+  color: var(--uranus-color);
+  border-radius: 100px;
+  border: 1px solid var(--uranus-low-contrast-color);
+  background: var(--uranus-bg-color);
+  white-space: nowrap;
+  transition: padding 0.2s ease;
+
+  &.has-close {
+    padding-right: 0.4em;
+  }
+
+  .close-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.2em;
+    height: 1.2em;
+    margin-left: 0.1em;
+    color: var(--uranus-color);
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      background-color: var(--uranus-error-color);
+      color: #fff;
+    }
+  }
+}

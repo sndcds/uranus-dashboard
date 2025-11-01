@@ -1,0 +1,88 @@
+.uranus-button,
+.uranus-inline-save-button,
+.uranus-inline-cancel-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 1.4rem;
+  border-radius: 999px;
+  color: var(--uranus-bg-color);
+  background: var(--uranus-ia-color);
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--uranus-ia-color-dark1);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.75;
+    transform: none;
+  }
+}
+
+.uranus-inline-save-button {
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--uranus-success-color);
+  padding: 0.6em 1em;
+}
+
+.uranus-inline-cancel-button {
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--uranus-error-color);
+  padding: 0.2em 1em;
+}
+
+.uranus-secondary-button,
+.uranus-inline-edit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  color: var(--uranus-ia-inline-color);
+  background-color: transparent;
+  border: 1px solid var(--uranus-ia-inline-color-light2);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled):not(&--active) {
+    color: var(--uranus-bg-color);
+    background-color: var(--uranus-ia-inline-color);
+    border: 1px solid var(--uranus-ia-inline-color);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.75;
+    transform: none;
+  }
+
+  // Active state for button
+  &--active {
+    background: var(--accent-primary);
+    color: white;
+    cursor: default;
+
+    &:hover {
+    }
+  }
+}

@@ -1,38 +1,43 @@
 <template>
-    <div :class="{ 'event-header-section--editing': isEditing }">
-      <InlineEditorLabel
-          :label-text="t('event_title')"
-          :edit-button-text="t('edit')"
-          @edit-started="startEditing"
-      />
+  <div :class="{ 'event-header-section--editing': isEditing }">
+    <InlineEditorLabel
+        :label-text="t('event_title')"
+        :edit-button-text="t('edit')"
+        @edit-started="startEditing" />
 
-      <template v-if="isEditing">
-            <EventTitleFieldsComponent :title="editedTitle" :subtitle="editedSubtitle"
-                @update:title="editedTitle = $event" @update:subtitle="editedSubtitle = $event" />
-            <div class="event-header-section__actions">
-                <button type="button"
-                        class="uranus-inline-cancel-button"
-                        @click="cancelEditing">
-                  {{ t('form_cancel') }}
-                </button>
-                <button type="button"
-                        class="uranus-inline-save-button"
-                        @click="saveHeader"
-                        :disabled="isSaving">
-                  <span v-if="!isSaving">{{ t('form_save') }}</span>
-                  <span v-else>{{ t('saving') }}</span>
-                </button>
-            </div>
-        </template>
-        <template v-else>
-            <h1 class="event-header-section__title">{{ title }}</h1>
-            <p v-if="subtitle" class="event-header-section__subtitle">{{ subtitle }}</p>
-            <button type="button" class="event-header-section__edit" @click="startEditing">
-                {{ t('event_header_edit') }}
-            </button>
+    <template v-if="isEditing">
+      <EventTitleFieldsComponent
+          :title="editedTitle"
+          :subtitle="editedSubtitle"
+          @update:title="editedTitle = $event"
+          @update:subtitle="editedSubtitle = $event" />
+      <div class="event-header-section__actions">
+        <button
+            type="button"
+            class="uranus-inline-cancel-button"
+            @click="cancelEditing">
+          {{ t('form_cancel') }}
+        </button>
+        <button
+            type="button"
+            class="uranus-inline-save-button"
+            @click="saveHeader"
+            :disabled="isSaving">
+          <span v-if="!isSaving">{{ t('form_save') }}</span>
+          <span v-else>{{ t('saving') }}</span>
+        </button>
+      </div>
+    </template>
 
-        </template>
-    </div>
+    <template v-else>
+      <h1 class="event-header-section__title">{{ title }}</h1>
+      <p v-if="subtitle" class="event-header-section__subtitle">{{ subtitle }}</p>
+      <button type="button" class="event-header-section__edit" @click="startEditing">
+        {{ t('event_header_edit') }}
+        </button>
+
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">

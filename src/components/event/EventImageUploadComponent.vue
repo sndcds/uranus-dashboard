@@ -1,113 +1,164 @@
 <template>
-    <div class="event-image-upload">
-        <InlineEditorLabel :label-text="t('event_image')" :edit-button-text="t('edit')"
-            @edit-started="showMetadata = true" />
+  <div class="event-image-upload">
+    <!-- Image Upload Section -->
+      <div class="event-image-upload__upload-section">
+        <div
+            class="event-image-upload__upload-area"
+            :class="{ 'event-image-upload__upload-area--has-image' : hasImage, 'event-image-upload__upload-area--drag-over': isDragOver }"
+            @dragover.prevent @dragleave.prevent @drop.prevent="handleDrop">
 
-        <!-- Image Upload Section -->
-        <div class="event-image-upload__upload-section">
-            <div class="event-image-upload__upload-area"
-                :class="{ 'event-image-upload__upload-area--has-image': hasImage, 'event-image-upload__upload-area--drag-over': isDragOver }"
-                @dragover.prevent @dragleave.prevent @drop.prevent="handleDrop">
-                <!-- Upload Placeholder -->
-                <div v-if="!hasImage" class="event-image-upload__placeholder">
-                    <div class="event-image-upload__icon">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M14,4L20,10H14V4Z"
-                                fill="currentColor" />
-                        </svg>
-                    </div>
-                    <div class="event-image-upload__text">
-                        <p class="event-image-upload__title">{{ t('event_image_upload_title') }}</p>
-                        <p class="event-image-upload__subtitle">{{ t('event_image_upload_subtitle') }}</p>
-                    </div>
-                    <input ref="fileInput" type="file" accept="image/*" @change="handleFileSelect"
-                        class="event-image-upload__file-input" />
-                    <button type="button" class="event-image-upload__upload-btn" @click="fileInput?.click()">
-                        {{ t('event_image_choose_file') }}
-                    </button>
-                </div>
-
-                <!-- Image Preview -->
-                <div v-else class="event-image-upload__preview">
-                    <img :src="previewUrl" :alt="t('event_image_preview')" class="event-image-upload__preview-image" />
-                    <div class="event-image-upload__preview-overlay">
-                        <button type="button" class="event-image-upload__change-btn" @click="fileInput?.click()">
-                            {{ t('event_image_change') }}
-                        </button>
-                        <button type="button" class="event-image-upload__remove-btn" @click="removeImage">
-                            {{ t('event_image_remove') }}
-                        </button>
-                    </div>
-                    <input ref="fileInput" type="file" accept="image/*" @change="handleFileSelect"
-                        class="event-image-upload__file-input" />
-                </div>
+          <!-- Upload Placeholder -->
+          <div
+              v-if="!hasImage"
+              class="event-image-upload__placeholder">
+            <div class="event-image-upload__icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M14,4L20,10H14V4Z"
+                    fill="currentColor" />
+              </svg>
             </div>
-
-            <!-- Upload Error -->
-            <div v-if="error" class="event-image-upload__error">
-                <p class="form-feedback-error">{{ error }}</p>
+            <div class="event-image-upload__text">
+              <p class="event-image-upload__title">{{ t('event_image_upload_title') }}</p>
+              <p class="event-image-upload__subtitle">{{ t('event_image_upload_subtitle') }}</p>
             </div>
+            <input
+                ref="fileInput"
+                type="file"
+                accept="image/*" @change="handleFileSelect"
+                class="event-image-upload__file-input" />
+            <button type="button" class="event-image-upload__upload-btn" @click="fileInput?.click()">
+              {{ t('event_image_choose_file') }}
+            </button>
+          </div>
 
-            <!-- Image Info -->
-            <div v-if="hasImage" class="event-image-upload__info">
-                <span class="event-image-upload__file-name">{{ fileName }}</span>
-                <span v-if="fileSize" class="event-image-upload__file-size">({{ formatFileSize(fileSize) }})</span>
+          <!-- Image Preview -->
+          <div
+              v-else
+              class="event-image-upload__preview">
+            <img
+                :src="previewUrl"
+                :alt="t('event_image_preview')"
+                class="event-image-upload__preview-image" />
+            <div class="event-image-upload__preview-overlay">
+              <button
+                  type="button"
+                  class="event-image-upload__change-btn"
+                  @click="fileInput?.click()">
+                  {{ t('event_image_change') }}
+              </button>
+              <button
+                  type="button"
+                  class="event-image-upload__remove-btn"
+                  @click="removeImage">
+                  {{ t('event_image_remove') }}
+              </button>
             </div>
+            <input
+              type="file"
+              ref="fileInput"
+              accept="image/*" @change="handleFileSelect"
+              class="event-image-upload__file-input" />
+          </div>
         </div>
 
-        <!-- Image Metadata Form -->
-        <div v-if="hasImage && showMetadata" class="event-image-upload__metadata">
-            <div class="event-image-upload__metadata-grid">
-                <div class="event-image-upload__field event-image-upload__field--full-width">
-                    <label for="image-alt-text" class="event-image-upload__label">
-                        {{ t('event_image_alt_text') }}
-                    </label>
-                    <input id="image-alt-text" v-model="localAltText" type="text" class="event-image-upload__input"
-                        :placeholder="t('event_image_alt_text_placeholder')" />
-                </div>
-
-                <div class="event-image-upload__field">
-                    <label for="image-created-by" class="event-image-upload__label">{{ t('event_image_created_by')
-                        }}</label>
-                    <input id="image-created-by" v-model="localCreatedBy" type="text" class="event-image-upload__input"
-                        :placeholder="t('event_image_created_by_placeholder')" />
-                </div>
-
-                <div class="event-image-upload__field">
-                    <label for="image-copyright" class="event-image-upload__label">{{ t('event_image_copyright')
-                        }}</label>
-                    <input id="image-copyright" v-model="localCopyright" type="text" class="event-image-upload__input"
-                        :placeholder="t('event_image_copyright_placeholder')" />
-                </div>
-
-                <div class="event-image-upload__field">
-                    <label for="image-license" class="event-image-upload__label">{{ t('event_image_license') }}</label>
-                    <select id="image-license" v-model="localLicense" class="event-image-upload__select"
-                        :disabled="licenseLoading">
-                        <option value="">{{ licenseLoading ? t('loading') : t('event_image_license_select') }}</option>
-                        <option v-for="option in licenseOptions" :key="option.value" :value="option.value">
-                            {{ option.label }}
-                        </option>
-                    </select>
-                    <div v-if="licenseError" class="event-image-upload__field-error">
-                        <p class="form-feedback-error">{{ licenseError }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Save Action -->
-            <div class="event-image-upload__actions">
-                <button type="button" class="uranus-inline-cancel-button" @click="showMetadata = false"
-                    :disabled="isSaving">
-                    {{ t('form_cancel') }}
-                </button>
-                <button type="button" class="uranus-inline-save-button" @click="saveImage"
-                    :disabled="isSaving || !canSave">
-                    <span v-if="!isSaving">{{ t('event_image_save') }}</span>
-                    <span v-else>{{ t('saving') }}</span>
-                </button>
-            </div>
+        <!-- Upload Error -->
+        <div v-if="error" class="event-image-upload__error">
+          <p class="form-feedback-error">{{ error }}</p>
         </div>
+
+        <!-- Image Info -->
+        <div
+            v-if="hasImage"
+            class="event-image-upload__info">
+          <span class="event-image-upload__file-name">{{ localAltText }}</span>
+        </div>
+      </div>
+
+      <InlineEditorLabel
+          :label-text="t('image_details')"
+          :edit-button-text="t('edit')"
+          @edit-started="showMetadata = true" />
+
+      <!-- Image Metadata Form -->
+      <div v-if="hasImage && showMetadata" class="event-image-upload__metadata">
+        <div class="event-image-upload__metadata-grid">
+          <div class="event-image-upload__field event-image-upload__field--full-width">
+            <label
+                for="image-alt-text"
+                class="event-image-upload__label">
+              {{ t('event_image_alt_text') }}
+            </label>
+            <input
+                id="image-alt-text"
+                v-model="localAltText"
+                type="text"
+                class="event-image-upload__input"
+                :placeholder="t('event_image_alt_text_placeholder')" />
+          </div>
+
+          <div class="event-image-upload__field">
+            <label
+                for="image-created-by"
+                class="event-image-upload__label">{{ t('event_image_created_by') }}
+            </label>
+            <input
+                id="image-created-by"
+                v-model="localCreatedBy"
+                type="text"
+                class="event-image-upload__input"
+                :placeholder="t('event_image_created_by_placeholder')" />
+          </div>
+
+          <div class="event-image-upload__field">
+            <label
+                for="image-copyright"
+                class="event-image-upload__label">{{ t('event_image_copyright') }}
+            </label>
+            <input
+                id="image-copyright"
+                v-model="localCopyright"
+                type="text"
+                class="event-image-upload__input"
+                :placeholder="t('event_image_copyright_placeholder')" />
+          </div>
+
+          <div class="event-image-upload__field">
+            <label for="image-license" class="event-image-upload__label">{{ t('event_image_license') }}</label>
+            <select
+                id="image-license"
+                v-model="localLicense"
+                class="event-image-upload__select"
+                :disabled="licenseLoading">
+              <option value="">{{ licenseLoading ? t('loading') : t('event_image_license_select') }}</option>
+              <option v-for="option in licenseOptions" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+            <div v-if="licenseError" class="event-image-upload__field-error">
+              <p class="form-feedback-error">{{ licenseError }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Action -->
+        <div class="event-image-upload__actions">
+          <button
+              type="button"
+              class="uranus-inline-cancel-button" @click="showMetadata = false"
+              :disabled="isSaving">
+            {{ t('form_cancel') }}
+          </button>
+          <button
+              type="button"
+              class="uranus-inline-save-button"
+              @click="saveImage"
+              :disabled="isSaving || !canSave">
+            <span v-if="!isSaving">{{ t('event_image_save') }}</span>
+            <span v-else>{{ t('saving') }}</span>
+          </button>
+        </div>
+      </div>
     </div>
 </template>
 
@@ -501,10 +552,10 @@ onMounted(() => {
 })
 
 const saveImage = async () => {
-    if (!props.modelValue || !props.eventId || isSaving.value) return
+  if (!props.modelValue || !props.eventId || isSaving.value) return
 
-    isSaving.value = true
-    error.value = ''
+  isSaving.value = true
+  error.value = ''
 
     try {
         const formData = new FormData()
@@ -550,26 +601,27 @@ const saveImage = async () => {
 
 // Upload Section
 .event-image-upload__upload-section {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(0.75rem, 4vw, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 4vw, 1rem);
+  max-width: 500px;
 }
 
 // Upload Area - Mobile first
 .event-image-upload__upload-area {
-    position: relative;
-    border: 2px dashed var(--input-border);
-    border-radius: 14px;
-    background: var(--card-bg);
-    transition: all 0.2s ease;
-    cursor: pointer;
-    aspect-ratio: 16/9;
-    min-height: 200px;
+  position: relative;
+  border: 2px dashed var(--input-border);
+  border-radius: var(--uranus-card-border-radius);
+  background: var(--card-bg);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  aspect-ratio: 4 / 3;
 
     &--has-image {
-        border-style: solid;
-        border-color: var(--accent-primary);
-        background: var(--surface-muted);
+      border-style: solid;
+      border-width: 0px;
+      background: var(--surface-muted);
     }
 
     &--drag-over {
@@ -632,18 +684,17 @@ const saveImage = async () => {
 
 // Image Preview
 .event-image-upload__preview {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 12px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .event-image-upload__preview-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.2s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
 
     .event-image-upload__upload-area:hover & {
         transform: scale(1.05);
@@ -721,17 +772,14 @@ const saveImage = async () => {
 
 .event-image-upload__info {
     display: flex;
-    align-items: center;
     gap: 0.5rem;
     font-size: clamp(0.85rem, 2vw, 0.95rem);
     color: var(--muted-text);
-    justify-content: center;
     flex-wrap: wrap;
 }
 
 .event-image-upload__file-name {
-    font-weight: 500;
-    color: var(--color-text);
+  font-weight: 500;
 }
 
 .event-image-upload__file-size {
@@ -803,7 +851,6 @@ const saveImage = async () => {
 
 @media (min-width: 640px) {
     .event-image-upload__upload-area {
-        min-height: 250px;
     }
 
     .event-image-upload__metadata-grid {
@@ -821,8 +868,6 @@ const saveImage = async () => {
 
 @media (min-width: 1024px) {
     .event-image-upload__upload-area {
-        min-height: 300px;
-        aspect-ratio: 21/9;
     }
 
     .event-image-upload__metadata-grid {

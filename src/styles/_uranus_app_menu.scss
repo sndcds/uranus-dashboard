@@ -1,0 +1,140 @@
+:root {
+  --uranus-app-menu-width: 260px;
+  --uranus-app-menu-bg: #fff;
+  --uranus-app-menu-fg: #333;
+}
+
+:root[data-theme="dark"] {
+  --uranus-app-menu-bg: #111;
+  --uranus-app-menu-fg: #eee;
+}
+
+
+// Mobile-first: Hidden app menu by default
+.uranus-app-menu {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: var(--uranus-app-menu-width); /* force sidebar to desired width */
+  max-width: var(--uranus-app-menu-width);
+  background: var(--uranus-app-menu-bg);
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+
+  // Mobile: Overlay mode
+  &.uranus-app-menu-open {
+    transform: translateX(0);
+  }
+}
+
+// Hamburger button - visible on mobile, positioned near edge
+.uranus-app-menu-hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  position: fixed;
+  top: 1rem;
+  left: 0.5rem; // Position near left edge but visible (8px from left)
+  width: 44px;
+  height: 44px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--surface-muted);
+    border-color: var(--accent-primary);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+  }
+}
+
+// Hide hamburger when sidebar is open on mobile
+.uranus-app-menu-hamburger-hidden {
+  display: none;
+}
+
+.uranus-app-menu-hamburger-line {
+  width: 20px;
+  height: 2px;
+  background: var(--color-text);
+  transition: all 0.3s ease;
+  border-radius: 1px;
+}
+
+// Sidebar content
+.uranus-app-menu-content {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: white;
+  flex: 1;
+  gap: 0;
+}
+
+.uranus-app-menu-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+// Mobile overlay
+.uranus-app-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+// Hide hamburger on tablet and up
+@media (min-width: 768px) {
+  .uranus-app-menu-hamburger {
+    display: none;
+  }
+}
+
+// Tablet and up: Show sidebar by default, hide hamburger
+@media (min-width: 768px) {
+  .uranus-app-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 320px;
+    transform: translateX(0);
+    border-radius: 0;
+
+    &.uranus-app-menu-open {
+      transform: translateX(0);
+    }
+  }
+
+  .uranus-app-menu-hamburger {
+    display: none;
+  }
+
+  .uranus-app-menu-overlay {
+    display: none;
+  }
+}
+
+// Desktop: Enhanced styling
+@media (min-width: 1024px) {
+  .uranus-app-menu-sidebar {
+    width: var(--uranus-app-menu-width);
+  }
+}

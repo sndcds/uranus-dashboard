@@ -1,10 +1,19 @@
 .uranus-inline-label {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #333;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--uranus-color);
+  margin-bottom: 0.6rem;
 }
 
 .uranus-hover-section {
+  border: 1px solid transparent;
+  border-radius: var(--uranus-inline-edit-border-radius);
+  padding: 12px;
+  transition: all 0.5s ease;
+}
+
+.uranus-hover-section:hover {
+  border-color: var(--uranus-low-contrast-color);
 }
 
 .uranus-inline-edit-button {
@@ -12,16 +21,17 @@
   opacity: 0.0;
 }
 
-.uranus-hover-section:hover .uranus-inline-edit-button {
+.uranus-hover-section:hover
+.uranus-inline-edit-button {
   opacity: 1;
+  transition: all 0.5s ease;
 }
 
 .uranus-inline-section {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 20px;
-  border: 1px solid #ddd;
+  border: 0px solid #ddd;
 }
 
 .uranus-inline-section-button-area {

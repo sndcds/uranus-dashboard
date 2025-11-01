@@ -1,37 +1,43 @@
 <template>
   <article class="uranus-card">
-    <header class="venue-card__header">
-      <div class="venue-card__header-content">
-        <h2 class="venue-card__title">{{ venue.venue_name }}</h2>
+    <header>
+      <div>
+        <h2>{{ venue.venue_name }}</h2>
       </div>
-      <p class="venue-card__stat">
-        <span class="venue-card__stat-value">{{ venue.upcoming_event_count }}</span>
-        <span class="venue-card__stat-label">{{ t('events') }}
-          <router-link v-if="venue.can_edit_venue" :to="`/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
-            class="uranus-secondary-button">
+      <p>
+        <span>{{ venue.upcoming_event_count }}</span>
+        <span>{{ t('events') }}
+          <router-link
+              v-if="venue.can_edit_venue"
+              :to="`/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
+              class="uranus-secondary-button">
             {{ t('edit_venue') }}
           </router-link>
         </span>
       </p>
     </header>
 
-    <section class="venue-card__section">
-      <div class="venue-card__section-header">
-        <h3 class="venue-card__section-title">{{ t('spaces') }}</h3>
-        <router-link v-if="venue.can_add_space" :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
-          class="uranus-secondary-button">
+    <section>
+      <div>
+        <h3>{{ t('spaces') }}</h3>
+        <router-link
+            v-if="venue.can_add_space"
+            :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
+            class="uranus-secondary-button">
           {{ t('add_new_space') }}
         </router-link>
       </div>
 
       <template v-if="venue.spaces.length">
-        <ul class="venue-card__space-list">
-          <li v-for="space in venue.spaces" :key="space.space_id" class="venue-card__space">
-            <div class="venue-card__space-info">
-              <span class="venue-card__space-name">{{ space.space_name }}</span>
-              <span class="venue-card__space-events">
+        <ul>
+          <li
+              v-for="space in venue.spaces"
+              :key="space.space_id">
+            <div>
+              <span>{{ space.space_name }}</span>
+              <span>
                 {{ space.upcoming_event_count }}
-                <span class="venue-card__space-events-label">{{ t('events') }}
+                <span>{{ t('events') }}
                   <router-link v-if="venue.can_edit_space"
                     :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/${space.space_id}/edit`"
                     class="uranus-secondary-button">
@@ -43,7 +49,7 @@
           </li>
         </ul>
       </template>
-      <p v-else class="venue-card__empty">{{ t('spaces_empty') }}</p>
+      <p v-else>{{ t('spaces_empty') }}</p>
     </section>
   </article>
 </template>

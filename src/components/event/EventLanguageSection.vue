@@ -1,5 +1,5 @@
 <template>
-    <section class="uranus-inline-section uranus-hover-section">
+    <section class="uranus-hover-section">
       <InlineEditorLabel
           :label-text="t('languages')"
           :edit-button-text="t('edit')"
