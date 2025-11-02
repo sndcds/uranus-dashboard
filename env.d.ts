@@ -28,6 +28,8 @@ interface ImportMetaEnv {
 	readonly VITE_PRIVACY_LAST_UPDATED: string
 	// Terms of use configuration
 	readonly VITE_TERMS_LAST_UPDATED: string
+	// App configuration
+	readonly VITE_APP_VERSION: string
 }
 
 interface ImportMeta {

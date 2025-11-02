@@ -29,6 +29,7 @@ import EventDetailView from '@/views/EventDetailView.vue'
 import ImprintView from '@/views/ImprintView.vue'
 import PrivacyView from '@/views/PrivacyView.vue'
 import TermsView from '@/views/TermsView.vue'
+import AboutView from '@/views/AboutView.vue'
 
 const routes = [
     {
@@ -155,6 +156,11 @@ const routes = [
                 path: 'terms',
                 name: 'terms',
                 component: TermsView,
+            },
+            {
+                path: 'about',
+                name: 'about',
+                component: AboutView,
             }
         ],
     },
