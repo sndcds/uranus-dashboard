@@ -186,7 +186,7 @@ const loadTodos = async (): Promise<void> => {
     todoLoading.value = true
 
     try {
-        const { data } = await apiFetch<unknown>('/api/admin/todo')
+        const { data } = await apiFetch<unknown>('/api/admin/todos')
         const normalizedTodos = normalizeTodos(data)
         todos.value = normalizedTodos
     } catch (err: unknown) {
