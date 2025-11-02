@@ -333,14 +333,11 @@ const saveTodo = async (): Promise<void> => {
                 throw new Error('Invalid todo identifier')
             }
 
-            console.log('Updating todo:', currentEditingTodo.value.todo_id)
-            // Update existing todo
             await apiFetch(`/api/admin/todo/${todoId}`, {
                 method: 'PUT',
                 body: JSON.stringify(payload),
             })
         } else {
-            // Create new todo
             await apiFetch('/api/admin/todo', {
                 method: 'POST',
                 body: JSON.stringify(payload),
