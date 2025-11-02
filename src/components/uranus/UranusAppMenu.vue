@@ -11,45 +11,53 @@
 
   <aside class="uranus-app-menu" :class="{ 'uranus-app-menu-open': isOpen }">
 
-    <!-- Sidebar content -->
-    <div class="uranus-app-menu-content">
-      <div class="user-profile" role="button" tabindex="0" aria-haspopup="true" :aria-expanded="isUserMenuOpen"
-        @click="toggleUserMenu" @keydown.enter.prevent="toggleUserMenu" @keydown.space.prevent="toggleUserMenu">
+    <div class="user-profile-wrapper">
+      <div
+          class="user-profile"
+          role="button"
+          tabindex="0"
+          aria-haspopup="true"
+          :aria-expanded="isUserMenuOpen"
+          @click="toggleUserMenu"
+          @keydown.enter.prevent="toggleUserMenu"
+          @keydown.space.prevent="toggleUserMenu">
         <img :src="avatarSrc" @error="onAvatarError" alt="User Profile" class="profile-image" />
         <span class="user-name">{{ userStore.displayName }}</span>
 
-        <svg class="user-profile__chevron" viewBox="0 0 16 16" aria-hidden="true">
+        <svg class="user-profile-chevron" viewBox="0 0 16 16" aria-hidden="true">
           <path
-            d="M3.22 5.22a.75.75 0 011.06 0L8 8.94l3.72-3.72a.75.75 0 011.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0l-4.25-4.25a.75.75 0 010-1.06z"
-            fill="currentColor" />
+              d="M3.22 5.22a.75.75 0 011.06 0L8 8.94l3.72-3.72a.75.75 0 011.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0l-4.25-4.25a.75.75 0 010-1.06z"
+              fill="currentColor" />
         </svg>
       </div>
 
-      <div name="fade">
+      <transition name="fade">
         <div v-if="isUserMenuOpen" class="user-menu">
-          <router-link to="/admin/user/messages/inbox" class="user-menu__link" @click="handleProfileClick">
+          <router-link to="/admin/user/messages/inbox" class="user-menu-link" @click="handleProfileClick">
             {{ t('user_messages_inbox') }}
           </router-link>
-          <router-link to="/admin/user/messages/send" class="user-menu__link" @click="handleProfileClick">
+          <router-link to="/admin/user/messages/send" class="user-menu-link" @click="handleProfileClick">
             {{ t('user_messages_send') }}
           </router-link>
-          <router-link to="/admin/user/profile" class="user-menu__link" @click="handleProfileClick">
+          <router-link to="/admin/user/profile" class="user-menu-link" @click="handleProfileClick">
             {{ t('user_profile') }}
           </router-link>
-          <router-link to="/admin/user/permissions" class="user-menu__link" @click="handlePermissionsClick">
+          <router-link to="/admin/user/permissions" class="user-menu-link" @click="handlePermissionsClick">
             {{ t('permissions') }}
           </router-link>
-          <button type="button" class="user-menu__link user-menu__link--danger" @click="handleLogout">
+          <button type="button" class="user-menu-link user-menu-link-danger" @click="handleLogout">
             {{ t('logout') }}
           </button>
         </div>
-      </div>
+      </transition>
 
-      <nav class="uranus-app-menu-nav">
-        <SidebarOptionComponent v-for="option in options" :key="option.id" :option="option"
-          :active="option.route === activeRoute" @change="handleOptionChange" />
-      </nav>
     </div>
+
+    <nav class="uranus-app-menu-nav">
+      <SidebarOptionComponent v-for="option in options" :key="option.id" :option="option"
+                              :active="option.route === activeRoute" @change="handleOptionChange" />
+    </nav>
+
   </aside>
 </template>
 
@@ -215,22 +223,97 @@ const handleOptionChange = async (optionId: string) => {
 
 <style scoped lang="scss">
 .user-profile {
+  position: relative;
   display: flex;
   align-items: center;
-  cursor: pointer;
-  gap: 0.5rem;
   padding: 0;
-  position: relative;
+  padding-right: 0.4rem;
+  gap: 0.5rem;
+  cursor: pointer;
+  background: var(--uranus-bg-color);;
   transition: background 0.2s ease;
 
   &:hover,
   &:focus-visible {
-    background: var(--surface-muted);
+    background: var(--uranus-low-contrast-color);
     outline: none;
   }
 }
 
-.user-name {
-  background: red;
+.user-profile[aria-expanded='true'] {
+  background: var(--uranus-low-contrast-color);
 }
+
+.user-profile-chevron {
+  margin-left: auto;
+  width: 20px;
+  height: 20px;
+  color: var(--uranus-color);
+  transition: transform 0.2s ease;
+  transform: rotate(0deg);
+}
+
+.user-profile[aria-expanded='true'] .user-profile-chevron {
+  transform: rotate(180deg);
+}
+
+.user-profile-wrapper {
+  position: relative; /* anchor for the absolute menu */
+}
+
+.user-menu {
+  position: absolute;
+  top: 100%; /* directly below the profile button */
+  left: 0;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--uranus-low-contrast-color);
+  border-radius: 4px;
+  min-width: 200px; /* optional: control menu width */
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.user-menu-link {
+  display: block;          /* ensure full width like links */
+  width: 100%;
+  padding: 0.4rem 1.4rem;
+  text-align: left;        /* align text like links */
+  color: var(--uranus-color);
+  background: transparent;
+  border: none;            /* remove button border */
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;   /* remove underline if any */
+  font: inherit;           /* match link font */
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--uranus-medium-contrast-color);
+  }
+}
+
+.user-menu-link.user-menu-link-danger {
+  color: var(--uranus-error-color);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 </style>
