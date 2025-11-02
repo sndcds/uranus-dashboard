@@ -27,7 +27,7 @@
                     <article class="todo-item">
                         <div class="todo-item__header">
                             <input type="checkbox" :id="`todo-${todo.id}`" class="todo-item__checkbox"
-                                :checked="todo.completed" @change="toggleTodo(todo)" :disabled="todoLoading" />
+                                :checked="Boolean(todo.completed)" @change="toggleTodo(todo)" :disabled="todoLoading" />
                             <label :for="`todo-${todo.id}`" class="todo-item__label">
                                 {{ todo.title }}
                             </label>
