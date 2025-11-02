@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "@georgedoescode/spline": "^1.0.1",
@@ -29,10 +32,16 @@
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",
     "@vitejs/plugin-vue": "^6.0.1",
+    "@vitest/coverage-v8": "^4.0.6",
+    "@vitest/ui": "^4.0.6",
+    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
+    "happy-dom": "^20.0.10",
+    "jsdom": "^27.1.0",
     "sass": "^1.93.2",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
+    "vitest": "^4.0.6",
     "vue-tsc": "^3.1.1"
   }
 }
