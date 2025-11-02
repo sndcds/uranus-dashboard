@@ -5,9 +5,9 @@
       :class="{ 'uranus-app-menu-hamburger-hidden': isOpen }"
       @click="toggleSidebar"
       :aria-label="isOpen ? 'Close menu' : 'Open menu'" aria-expanded="false">
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
+    <span class="uranus-app-menu-hamburger-line"></span>
+    <span class="uranus-app-menu-hamburger-line"></span>
+    <span class="uranus-app-menu-hamburger-line"></span>
   </button>
 
   <div v-if="isOpen"
@@ -252,4 +252,24 @@ const handleOptionChange = async (optionId: string) => {
 </script>
 
 <style scoped lang="scss">
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 0.5rem;
+  padding: 0;
+  position: relative;
+  transition: background 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--surface-muted);
+    outline: none;
+  }
+}
+
+.user-name {
+  background: red;
+}
 </style>

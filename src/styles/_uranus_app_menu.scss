@@ -1,12 +1,12 @@
 :root {
   --uranus-app-menu-width: 260px;
-  --uranus-app-menu-bg: #fff;
-  --uranus-app-menu-fg: #333;
+  --uranus-app-menu-background: #fff;
+  --uranus-app-menu-color: #333;
 }
 
 :root[data-theme="dark"] {
-  --uranus-app-menu-bg: #111;
-  --uranus-app-menu-fg: #eee;
+  --uranus-app-menu-background: #111;
+  --uranus-app-menu-color: #eee;
 }
 
 
@@ -20,7 +20,7 @@
   height: 100vh;
   width: var(--uranus-app-menu-width); /* force sidebar to desired width */
   max-width: var(--uranus-app-menu-width);
-  background: var(--uranus-app-menu-bg);
+  background: var(--uranus-app-menu-background-menu-bg);
   z-index: 1000;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
@@ -31,7 +31,6 @@
   }
 }
 
-// Hamburger button - visible on mobile, positioned near edge
 .uranus-app-menu-hamburger {
   display: flex;
   flex-direction: column;
@@ -39,20 +38,23 @@
   align-items: center;
   gap: 4px;
   position: fixed;
-  top: 1rem;
-  left: 0.5rem; // Position near left edge but visible (8px from left)
-  width: 44px;
-  height: 44px;
+  top: 8px;
+  left: 8px;
+  width: 48px;
+  height: 48px;
   background: var(--card-bg);
   border: 1px solid var(--border-soft);
-  border-radius: 8px;
   cursor: pointer;
   z-index: 1001;
   transition: all 0.2s ease;
+  color: var(--uranus-app-menu-color);
+  background: var(--uranus-app-menu-background);
 
   &:hover {
-    background: var(--surface-muted);
-    border-color: var(--accent-primary);
+    background: var(--uranus-app-menu-color);
+    .uranus-app-menu-hamburger-line {
+      background-color: var(--uranus-app-menu-background);
+    }
   }
 
   &:focus-visible {
@@ -61,15 +63,14 @@
   }
 }
 
-// Hide hamburger when sidebar is open on mobile
 .uranus-app-menu-hamburger-hidden {
   display: none;
 }
 
 .uranus-app-menu-hamburger-line {
-  width: 20px;
-  height: 2px;
-  background: var(--color-text);
+  width: 32px;
+  height: 3px;
+  background: var(--uranus-app-menu-color);
   transition: all 0.3s ease;
   border-radius: 1px;
 }
@@ -124,7 +125,7 @@
   }
 
   .uranus-app-menu-hamburger {
-    display: none;
+     display: none;
   }
 
   .uranus-app-menu-overlay {
