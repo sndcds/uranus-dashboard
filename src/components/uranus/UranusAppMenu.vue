@@ -137,9 +137,9 @@ const handleProfileClick = async () => {
 
 const handlePermissionsClick = async () => {
   closeUserMenu()
-  if (route.path !== '/user/permissions') {
+  if (route.path !== '/admin/user/permissions') {
     try {
-      await router.push('/user/permissions')
+      await router.push('/admin/user/permissions')
     } catch (err) {
       console.warn('Navigation aborted for permissions route', err)
     }

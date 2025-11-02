@@ -108,7 +108,7 @@ const defaultNav = computed<NavLink[]>(() =>
     navConfigs
         .filter(({ to }) => {
             if (tokenStore.accessToken) {
-                return to !== '/login' && to !== '/signup'
+                return to !== '/app/login' && to !== '/app/signup'
             }
             return true
         })
