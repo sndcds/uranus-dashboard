@@ -13,17 +13,9 @@
 
       <div class="events-list">
         <article v-for="event in events" :key="event.event_id">
-          <router-link
-              :to="`/event/${event.event_id}`"
-              class="uranus-card">
-            <!--header class="event-card__header"-->
-              <img
-                  class="events-card__image"
-                  v-if="event.image_id"
-                  :src="buildImageUrl(event)"
-                  :alt="event.event_title"
-              />
-            <!--/header-->
+          <router-link :to="`/admin/event/${event.event_id}`" class="uranus-card">
+            <img class="events-card__image" v-if="event.image_id" :src="buildImageUrl(event)"
+              :alt="event.event_title" />
             <ul class="event-card__details">
               <li class="event-card__title">
                 <h3>{{ event.event_title }}</h3>
@@ -124,11 +116,11 @@ const buildImageUrl = (event: OrganizerEventItem) => {
 </script>
 
 <style scoped lang="scss">
-
 .uranus-card {
   display: flex;
   flex-direction: column;
-  height: 100%; /* Important: fill the grid cell */
+  height: 100%;
+  /* Important: fill the grid cell */
 }
 
 .chip {

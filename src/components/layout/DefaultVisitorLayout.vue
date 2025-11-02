@@ -93,9 +93,9 @@ const isMobileMenuOpen = ref(false)
 const mobileMenuId = 'visitor-layout-mobile-menu'
 
 const navConfigs: NavLinkConfig[] = [
-    { to: '/events', labelKey: 'visitor_nav_events' },
-    { to: '/login', labelKey: 'visitor_nav_login' },
-    { to: '/signup', labelKey: 'visitor_nav_signup' },
+    { to: '/', labelKey: 'visitor_nav_events' },
+    { to: '/app/login', labelKey: 'visitor_nav_login' },
+    { to: '/app/signup', labelKey: 'visitor_nav_signup' },
 ]
 
 const legalConfigs: NavLinkConfig[] = [

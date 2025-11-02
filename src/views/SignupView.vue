@@ -56,7 +56,7 @@
 
             <footer class="signup-footer">
                 <span>{{ t('have_account') }}</span>
-                <router-link to="/login">{{ t('login') }}</router-link>
+                <router-link to="/app/login">{{ t('login') }}</router-link>
             </footer>
         </div>
     </div>
@@ -123,7 +123,7 @@ const signup = async () => {
         }
 
         resetForm()
-        router.push('/login')
+        router.push('/app/login')
     } catch (err: unknown) {
         if (typeof err === 'object' && err && 'data' in err) {
             const e = err as { data?: { error?: string } }

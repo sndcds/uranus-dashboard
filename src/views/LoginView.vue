@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <div class="forgot-password-link">
-                    <router-link to="/forgot-password">{{ t('forgot_password') }}</router-link>
+                    <router-link to="/app/forgot-password">{{ t('forgot_password') }}</router-link>
                 </div>
                 <button :disabled="isSubmitting" type="submit">
                     <span v-if="!isSubmitting">{{ t('login_cta') }}</span>
@@ -53,7 +53,7 @@
 
             <footer class="auth-footer">
                 <span>{{ t('need_account') }}</span>
-                <router-link to="/signup">{{ t('signup') }}</router-link>
+                <router-link to="/app/signup">{{ t('signup') }}</router-link>
             </footer>
         </div>
     </div>

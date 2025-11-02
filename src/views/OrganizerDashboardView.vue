@@ -1,9 +1,6 @@
 <template>
   <div class="uranus-main-layout">
-    <DashboardHeroComponent
-        :title="t('organizers')"
-        :subtitle="t('organizers_overview_subtitle')"
-    />
+    <DashboardHeroComponent :title="t('organizers')" :subtitle="t('organizers_overview_subtitle')" />
 
     <!-- Empty State Message -->
     <div v-if="!organizers.length" class="organizer-dashboard-view__empty">
@@ -12,9 +9,7 @@
 
     <!-- Create Organizer Action -->
     <div style="padding: 16px;">
-      <router-link
-          to="/organizer/create"
-          class="uranus-button">
+      <router-link to="/admin/organizer/create" class="uranus-button">
         {{ t('create_organizer') }}
       </router-link>
     </div>
@@ -26,10 +21,7 @@
 
     <!-- Organizer Cards Grid -->
     <div class="organizer-grid">
-      <OrganizerCardComponent
-          v-for="organizer in organizers"
-          :key="organizer.organizer_id"
-          :organizer="organizer" />
+      <OrganizerCardComponent v-for="organizer in organizers" :key="organizer.organizer_id" :organizer="organizer" />
     </div>
   </div>
 </template>
@@ -40,8 +32,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import OrganizerCardComponent from '@/components/OrganizerCardComponent.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
-import LibreMap from "@/components/LibreMap.vue";
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 
 const { t } = useI18n()
 
@@ -84,7 +75,6 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-
 .organizer-grid {
   display: flex;
   flex-wrap: wrap;
@@ -92,10 +82,13 @@ onMounted(async () => {
   gap: var(--uranus-grid-gap);
 }
 
-.organizer-grid > * {
-  flex: 1 1 400px;           /* grow/shrink with a base width */
-  min-width: 300px;          /* never smaller than this */
-  max-width: 700px;          /* never larger than this */
+.organizer-grid>* {
+  flex: 1 1 400px;
+  /* grow/shrink with a base width */
+  min-width: 300px;
+  /* never smaller than this */
+  max-width: 700px;
+  /* never larger than this */
 }
 
 // Mobile-first responsive OrganizerDashboardView
@@ -106,11 +99,11 @@ onMounted(async () => {
 }
 
 .organizer-dashboard-view__hero {
-    @include form-hero(540px);
+  @include form-hero(540px);
 }
 
 .organizer-title {
-    margin: 0 0 clamp(0.5rem, 2vw, 1rem) 0;
+  margin: 0 0 clamp(0.5rem, 2vw, 1rem) 0;
 }
 
 // Header section

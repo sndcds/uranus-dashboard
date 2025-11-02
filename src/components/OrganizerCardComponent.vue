@@ -8,7 +8,7 @@
     </header>
 
     <div class="organizer-card__button-group">
-      <router-link :to="`/organizer/${organizer.organizer_id}/edit`" class="uranus-secondary-button">
+      <router-link :to="`/admin/organizer/${organizer.organizer_id}/edit`" class="uranus-secondary-button">
         {{ t('edit_organizer') }}
       </router-link>
       <button class="uranus-secondary-button"

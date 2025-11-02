@@ -201,7 +201,7 @@ const submitEvent = async () => {
         })
         if (status >= 200 && status < 300) {
             submitSuccess.value = t('event_submit_success')
-            router.push(`/event/${(data as any).event_id}`)
+            router.push(`/admin/event/${(data as any).event_id}`)
         } else {
             submitError.value = t('event_submit_error', { status })
         }

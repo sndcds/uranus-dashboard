@@ -26,16 +26,16 @@
 
       <transition name="fade">
         <div v-if="isUserMenuOpen" class="user-menu">
-          <router-link to="/user/messages/inbox" class="user-menu__link" @click="handleProfileClick">
+          <router-link to="/admin/user/messages/inbox" class="user-menu__link" @click="handleProfileClick">
             {{ t('user_messages_inbox') }}
           </router-link>
-          <router-link to="/user/messages/send" class="user-menu__link" @click="handleProfileClick">
+          <router-link to="/admin/user/messages/send" class="user-menu__link" @click="handleProfileClick">
             {{ t('user_messages_send') }}
           </router-link>
-          <router-link to="/user/profile" class="user-menu__link" @click="handleProfileClick">
+          <router-link to="/admin/user/profile" class="user-menu__link" @click="handleProfileClick">
             {{ t('user_profile') }}
           </router-link>
-          <router-link to="/user/permissions" class="user-menu__link" @click="handlePermissionsClick">
+          <router-link to="/admin/user/permissions" class="user-menu__link" @click="handlePermissionsClick">
             {{ t('permissions') }}
           </router-link>
           <button type="button" class="user-menu__link user-menu__link--danger" @click="handleLogout">
@@ -138,9 +138,9 @@ const handleProfileClick = async () => {
 
 const handlePermissionsClick = async () => {
   closeUserMenu()
-  if (route.path !== '/user/permissions') {
+  if (route.path !== '/admin/user/permissions') {
     try {
-      await router.push('/user/permissions')
+      await router.push('/admin/user/permissions')
     } catch (err) {
       console.warn('Navigation aborted for permissions route', err)
     }

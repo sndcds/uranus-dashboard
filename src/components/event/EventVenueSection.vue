@@ -1,22 +1,14 @@
 <template>
     <section class="uranus-card uranus-hover-section">
-      <InlineEditorLabel
-          :label-text="t('venue')"
-          :edit-button-text="t('edit')"
-          @edit-started="startEditingVenue"
-      />
+        <InlineEditorLabel :label-text="t('venue')" :edit-button-text="t('edit')" @edit-started="startEditingVenue" />
 
-            <h2>{{ venueName }}</h2>
+        <h2>{{ venueName }}</h2>
 
         <template v-if="isEditingVenue">
             <div class="event-venue__controls">
                 <label class="event-venue__label" for="event-venue-select">{{ t('event_venue_select_label') }}</label>
-                <select
-                    id="event-venue-select"
-                    class="event-venue__select"
-                    v-model="selectedVenueId"
-                    :disabled="isLoadingVenues"
-                >
+                <select id="event-venue-select" class="event-venue__select" v-model="selectedVenueId"
+                    :disabled="isLoadingVenues">
                     <option :value="null" disabled>{{ t('event_venue_select_placeholder') }}</option>
                     <option v-for="venueOption in venueOptions" :key="venueOption.id" :value="venueOption.id">
                         {{ venueOption.name }}
@@ -26,19 +18,11 @@
                 <p v-else-if="!venueOptions.length" class="event-venue__empty">{{ t('event_venue_no_options') }}</p>
             </div>
             <div class="event-venue__actions">
-                <button
-                    type="button"
-                    class="uranus-inline-cancel-button"
-                    @click="cancelEditingVenue"
-                >
+                <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingVenue">
                     {{ t('form_cancel') }}
                 </button>
-                <button
-                    type="button"
-                    class="uranus-inline-save-button"
-                    :disabled="selectedVenueId === null || isLoadingVenues"
-                    @click="saveVenue"
-                >
+                <button type="button" class="uranus-inline-save-button"
+                    :disabled="selectedVenueId === null || isLoadingVenues" @click="saveVenue">
                     <span v-if="!isSavingVenue">{{ t('form_save') }}</span>
                     <span v-else>{{ t('saving') }}</span>
                 </button>
@@ -52,23 +36,17 @@
         </template>
 
         <div class="uranus-hover-section">
-              <InlineEditorLabel
-                  :label-text="t('space')"
-                  :edit-button-text="t('edit')"
-                  @edit-started="startEditingSpace"
-              />
+            <InlineEditorLabel :label-text="t('space')" :edit-button-text="t('edit')"
+                @edit-started="startEditingSpace" />
 
-          <p>{{ spaceName }} ({{ spaceCapacityDisplay }} {{ t('event_capacity_label') }})</p>
+            <p>{{ spaceName }} ({{ spaceCapacityDisplay }} {{ t('event_capacity_label') }})</p>
 
             <template v-if="isEditingSpace">
                 <div class="event-space__controls">
-                    <label class="event-space__label" for="event-space-select">{{ t('event_space_select_label') }}</label>
-                    <select
-                        id="event-space-select"
-                        class="event-space__select"
-                        v-model="selectedSpaceId"
-                        :disabled="isLoadingSpaces"
-                    >
+                    <label class="event-space__label" for="event-space-select">{{ t('event_space_select_label')
+                        }}</label>
+                    <select id="event-space-select" class="event-space__select" v-model="selectedSpaceId"
+                        :disabled="isLoadingSpaces">
                         <option :value="null" disabled>{{ t('event_space_select_placeholder') }}</option>
                         <option v-for="spaceOption in spaceOptions" :key="spaceOption.id" :value="spaceOption.id">
                             {{ spaceOption.name }}
@@ -81,12 +59,8 @@
                     <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingSpace">
                         {{ t('form_cancel') }}
                     </button>
-                    <button
-                        type="button"
-                        class="uranus-inline-save-button"
-                        :disabled="selectedSpaceId === null || isLoadingSpaces"
-                        @click="saveSpace"
-                    >
+                    <button type="button" class="uranus-inline-save-button"
+                        :disabled="selectedSpaceId === null || isLoadingSpaces" @click="saveSpace">
                         <span v-if="!isSavingSpace">{{ t('form_save') }}</span>
                         <span v-else>{{ t('saving') }}</span>
                     </button>
@@ -100,7 +74,8 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue"
 
 const props = defineProps<{
     eventId: number

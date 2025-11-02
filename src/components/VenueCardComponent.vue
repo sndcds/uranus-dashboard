@@ -7,10 +7,8 @@
       <p>
         <span>{{ venue.upcoming_event_count }}</span>
         <span>{{ t('events') }}
-          <router-link
-              v-if="venue.can_edit_venue"
-              :to="`/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
-              class="uranus-secondary-button">
+          <router-link v-if="venue.can_edit_venue" :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
+            class="uranus-secondary-button">
             {{ t('edit_venue') }}
           </router-link>
         </span>
@@ -20,26 +18,22 @@
     <section>
       <div>
         <h3>{{ t('spaces') }}</h3>
-        <router-link
-            v-if="venue.can_add_space"
-            :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
-            class="uranus-secondary-button">
+        <router-link v-if="venue.can_add_space"
+          :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/space/create`" class="uranus-secondary-button">
           {{ t('add_new_space') }}
         </router-link>
       </div>
 
       <template v-if="venue.spaces.length">
         <ul>
-          <li
-              v-for="space in venue.spaces"
-              :key="space.space_id">
+          <li v-for="space in venue.spaces" :key="space.space_id">
             <div>
               <span>{{ space.space_name }}</span>
               <span>
                 {{ space.upcoming_event_count }}
                 <span>{{ t('events') }}
                   <router-link v-if="venue.can_edit_space"
-                    :to="`/organizer/${organizerId}/venue/${venue.venue_id}/space/${space.space_id}/edit`"
+                    :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/space/${space.space_id}/edit`"
                     class="uranus-secondary-button">
                     {{ t('edit_space') }}
                   </router-link>

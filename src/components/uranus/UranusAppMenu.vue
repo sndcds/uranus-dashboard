@@ -1,74 +1,42 @@
 <template>
-  <button
-      type="button"
-      class="uranus-app-menu-hamburger"
-      :class="{ 'uranus-app-menu-hamburger-hidden': isOpen }"
-      @click="toggleSidebar"
-      :aria-label="isOpen ? 'Close menu' : 'Open menu'" aria-expanded="false">
+  <button type="button" class="uranus-app-menu-hamburger" :class="{ 'uranus-app-menu-hamburger-hidden': isOpen }"
+    @click="toggleSidebar" :aria-label="isOpen ? 'Close menu' : 'Open menu'" aria-expanded="false">
     <span class="uranus-app-menu-hamburger-line"></span>
     <span class="uranus-app-menu-hamburger-line"></span>
     <span class="uranus-app-menu-hamburger-line"></span>
   </button>
 
-  <div v-if="isOpen"
-       class="uranus-app-menu-overlay"
-       @click="closeSidebar">
+  <div v-if="isOpen" class="uranus-app-menu-overlay" @click="closeSidebar">
   </div>
 
-  <aside
-      class="uranus-app-menu"
-      :class="{ 'uranus-app-menu-open': isOpen }">
+  <aside class="uranus-app-menu" :class="{ 'uranus-app-menu-open': isOpen }">
 
     <!-- Sidebar content -->
     <div class="uranus-app-menu-content">
-      <div
-          class="user-profile"
-          role="button"
-          tabindex="0"
-          aria-haspopup="true"
-          :aria-expanded="isUserMenuOpen"
-           @click="toggleUserMenu"
-          @keydown.enter.prevent="toggleUserMenu"
-          @keydown.space.prevent="toggleUserMenu">
-        <img
-            :src="avatarSrc"
-            @error="onAvatarError"
-            alt="User Profile"
-            class="profile-image" />
+      <div class="user-profile" role="button" tabindex="0" aria-haspopup="true" :aria-expanded="isUserMenuOpen"
+        @click="toggleUserMenu" @keydown.enter.prevent="toggleUserMenu" @keydown.space.prevent="toggleUserMenu">
+        <img :src="avatarSrc" @error="onAvatarError" alt="User Profile" class="profile-image" />
         <span class="user-name">{{ userStore.displayName }}</span>
 
         <svg class="user-profile__chevron" viewBox="0 0 16 16" aria-hidden="true">
           <path
-              d="M3.22 5.22a.75.75 0 011.06 0L8 8.94l3.72-3.72a.75.75 0 011.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0l-4.25-4.25a.75.75 0 010-1.06z"
-              fill="currentColor"
-          />
+            d="M3.22 5.22a.75.75 0 011.06 0L8 8.94l3.72-3.72a.75.75 0 011.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0l-4.25-4.25a.75.75 0 010-1.06z"
+            fill="currentColor" />
         </svg>
       </div>
 
       <div name="fade">
         <div v-if="isUserMenuOpen" class="user-menu">
-          <router-link
-              to="/user/messages/inbox"
-              class="user-menu__link"
-              @click="handleProfileClick">
+          <router-link to="/admin/user/messages/inbox" class="user-menu__link" @click="handleProfileClick">
             {{ t('user_messages_inbox') }}
           </router-link>
-          <router-link
-              to="/user/messages/send"
-              class="user-menu__link"
-              @click="handleProfileClick">
+          <router-link to="/admin/user/messages/send" class="user-menu__link" @click="handleProfileClick">
             {{ t('user_messages_send') }}
           </router-link>
-          <router-link
-              to="/user/profile"
-              class="user-menu__link"
-              @click="handleProfileClick">
+          <router-link to="/admin/user/profile" class="user-menu__link" @click="handleProfileClick">
             {{ t('user_profile') }}
           </router-link>
-          <router-link
-              to="/user/permissions"
-              class="user-menu__link"
-              @click="handlePermissionsClick">
+          <router-link to="/admin/user/permissions" class="user-menu__link" @click="handlePermissionsClick">
             {{ t('permissions') }}
           </router-link>
           <button type="button" class="user-menu__link user-menu__link--danger" @click="handleLogout">
@@ -78,13 +46,8 @@
       </div>
 
       <nav class="uranus-app-menu-nav">
-        <SidebarOptionComponent
-            v-for="option in options"
-            :key="option.id"
-            :option="option"
-            :active="option.route === activeRoute"
-            @change="handleOptionChange" />
-        <!--OrganizerChooserMenu /-->
+        <SidebarOptionComponent v-for="option in options" :key="option.id" :option="option"
+          :active="option.route === activeRoute" @change="handleOptionChange" />
       </nav>
     </div>
   </aside>
@@ -98,7 +61,6 @@ import { useUserStore } from '@/store/userStore'
 import type { SidebarOption } from '@/types/types'
 
 import SidebarOptionComponent from '@/components/SidebarOptionComponent.vue'
-import OrganizerChooserMenu from '@/components/OrganizerChooserMenu.vue'
 
 const props = defineProps<{
   options: SidebarOption[]
@@ -130,20 +92,20 @@ const isUserMenuOpen = ref(false)
 const activeRoute = ref(route.path)
 
 watch(
-    () => route.path,
-    (newPath) => {
-      activeRoute.value = newPath
-      // Close sidebar on route change (mobile)
-      isOpen.value = false
-      isUserMenuOpen.value = false
-    }
+  () => route.path,
+  (newPath) => {
+    activeRoute.value = newPath
+    // Close sidebar on route change (mobile)
+    isOpen.value = false
+    isUserMenuOpen.value = false
+  }
 )
 
 watch(
-    () => [userStore.avatarVersion, userStore.userId],
-    () => {
-      avatarErrored.value = false
-    }
+  () => [userStore.avatarVersion, userStore.userId],
+  () => {
+    avatarErrored.value = false
+  }
 )
 
 function onAvatarError(event: Event) {
@@ -252,7 +214,6 @@ const handleOptionChange = async (optionId: string) => {
 </script>
 
 <style scoped lang="scss">
-
 .user-profile {
   display: flex;
   align-items: center;

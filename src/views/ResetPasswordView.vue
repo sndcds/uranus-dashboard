@@ -174,7 +174,7 @@ const handleSubmit = async () => {
             password.value = ''
             confirmPassword.value = ''
             setTimeout(() => {
-                router.push('/login')
+                router.push('/app/login')
             }, 2000)
         } else {
             error.value = t('reset_password_failed', { status })

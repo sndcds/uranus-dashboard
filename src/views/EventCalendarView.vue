@@ -73,7 +73,7 @@
                                     </ul>
                                 </div>
                                 <footer v-if="isLoggedIn" class="calendar-card__footer">
-                                    <router-link :to="{ name: 'event-details', params: { id: event.id } }"
+                                    <router-link :to="`/event/${event.id}`"
                                         class="calendar-card__cta">
                                     </router-link>
                                 </footer>
@@ -135,7 +135,7 @@
                             </div>
                         </div>
                         <div v-if="isLoggedIn" class="calendar-event-compact__actions">
-                            <router-link :to="{ name: 'event-details', params: { id: event.id } }"
+                            <router-link :to="`/event/${event.id}`"
                                 class="calendar-event-compact__cta">
                             </router-link>
                         </div>
@@ -184,7 +184,7 @@
                             </div>
                         </div>
                         <div v-if="isLoggedIn">
-                            <router-link :to="{ name: 'event-details', params: { id: event.id } }"
+                            <router-link :to="`/event/${event.id}`"
                                 class="calendar-tile__cta">
                             </router-link>
                         </div>

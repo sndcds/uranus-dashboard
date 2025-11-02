@@ -461,11 +461,11 @@ async function submitForm() {
 
         if (status >= 200 && status < 300) {
             if (Number.isFinite(organizerId)) {
-                router.push(`/organizer/${organizerId}/venues`)
+                router.push(`/admin/organizer/${organizerId}/venues`)
             }
 
             if (isEditMode.value) {
-                router.push(`/organizer/${organizerId}/venues`)
+                router.push(`/admin/organizer/${organizerId}/venues`)
             }
         } else {
             const failureKey = isEditMode.value ? 'update_space_failed' : 'save_space_failed'

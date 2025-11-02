@@ -25,102 +25,107 @@ import ForgotPasswordView from '@/views/ForgotPasswordView.vue'
 import ResetPasswordView from '@/views/ResetPasswordView.vue'
 import MessageInboxView from '@/views/MessageInboxView.vue'
 import MessageSendView from '@/views/MessageSendView.vue'
+import EventDetailView from '@/views/EventDetailView.vue'
 
 const routes = [
     {
-        path: '/',
+        path: '/admin',
         component: DashboardLayout,
         meta: { requiresAuth: true },
         children: [
             {
                 path: '',
-                name: 'dashboard',
+                redirect: { name: 'admin-dashboard' },
+            },
+            {
+                path: 'dashboard',
+                name: 'admin-dashboard',
                 component: DashboardView,
             },
             {
-                path: '/organizers',
-                name: 'organizers',
+                path: 'organizers',
+                name: 'admin-organizers',
                 component: OrganizerDashboardView,
             },
             {
-                path: '/settings',
-                name: 'settings',
+                path: 'settings',
+                name: 'admin-settings',
                 component: SettingsView,
             },
             {
-                path: '/organizer/create',
-                name: 'create-organizer',
+                path: 'organizer/create',
+                name: 'admin-create-organizer',
                 component: FormOrganizerCreateView,
             },
             {
-                path: '/organizer/:id/edit',
-                name: 'edit-organizer',
+                path: 'organizer/:id/edit',
+                name: 'admin-edit-organizer',
                 component: FormOrganizerUpdateView,
             },
             {
-                path: '/organizer/:id/venue/create',
-                name: 'create-venue',
+                path: 'organizer/:id/venue/create',
+                name: 'admin-create-venue',
                 component: FormVenueCreateView,
             },
             {
-                path: '/organizer/:id/venue/:venueId/edit',
-                name: 'edit-venue',
+                path: 'organizer/:id/venue/:venueId/edit',
+                name: 'admin-edit-venue',
                 component: FormVenueUpdateView,
             },
             {
-                path: '/organizer/:id/venue/:venueId/space/create',
-                name: 'create-space',
+                path: 'organizer/:id/venue/:venueId/space/create',
+                name: 'admin-create-space',
                 component: FormSpaceView,
             },
             {
-                path: '/organizer/:id/venue/:venueId/space/:spaceId/edit',
-                name: 'edit-space',
+                path: 'organizer/:id/venue/:venueId/space/:spaceId/edit',
+                name: 'admin-edit-space',
                 component: FormSpaceView,
             },
             {
-                path: '/organizer/:id/venues',
-                name: 'venues',
+                path: 'organizer/:id/venues',
+                name: 'admin-venues',
                 component: OrganizerVenueView,
             },
             {
-                path: '/organizer/:id/events',
-                name: 'organizer-events',
+                path: 'organizer/:id/events',
+                name: 'admin-organizer-events',
                 component: EventDashboardView,
             },
             {
-                path: '/organizer/:id/event/create',
-                name: 'create-event',
+                path: 'organizer/:id/event/create',
+                name: 'admin-create-event',
                 component: FormEventView,
             },
             {
-                path: '/event/:id',
-                name: 'event-details',
+                path: 'event/:id',
+                name: 'admin-event-details',
                 component: EventView,
             },
             {
-                path: '/user/permissions',
-                name: 'user-permissions',
+                path: 'user/permissions',
+                name: 'admin-user-permissions',
                 component: UserPermissionView,
             },
             {
-                path: '/user/profile',
-                name: 'user-profile',
+                path: 'user/profile',
+                name: 'admin-user-profile',
                 component: FormUserProfileView,
             },
             {
-                path: '/user/messages/inbox',
-                name: 'user-messages-inbox',
+                path: 'user/messages/inbox',
+                name: 'admin-user-messages-inbox',
                 component: MessageInboxView,
             },
             {
-                path: '/user/messages/send',
-                name: 'user-messages-send',
+                path: 'user/messages/send',
+                name: 'admin-user-messages-send',
                 component: MessageSendView,
             },
         ],
     },
     {
-        path: '/events',
+        path: '/',
         component: DefaultVisitorLayout,
         children: [
             {
@@ -128,31 +133,36 @@ const routes = [
                 name: 'events',
                 component: EventCalendarView,
             },
+            {
+                path: 'event/:id',
+                name: 'event-details',
+                component: EventDetailView,
+            }
         ],
     },
     {
-        path: '/',
+        path: '/app',
         component: DefaultVisitorLayout,
         meta: { guestOnly: true },
         children: [
             {
-                path: '/login',
-                name: 'login',
+                path: 'login',
+                name: 'app-login',
                 component: LoginView,
             },
             {
-                path: '/signup',
-                name: 'signup',
+                path: 'signup',
+                name: 'app-signup',
                 component: SignupView,
             },
             {
-                path: '/forgot-password',
-                name: 'forgot-password',
+                path: 'forgot-password',
+                name: 'app-forgot-password',
                 component: ForgotPasswordView,
             },
             {
-                path: '/reset-password',
-                name: 'reset-password',
+                path: 'reset-password',
+                name: 'app-reset-password',
                 component: ResetPasswordView,
             },
         ],
@@ -164,23 +174,27 @@ const router = createRouter({
     routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
     const tokenStore = useTokenStore()
     const isAuthenticated = Boolean(tokenStore.accessToken)
     const requiresAuth = to.matched.some((record) => record.meta?.requiresAuth)
     const guestOnly = to.matched.some((record) => record.meta?.guestOnly)
 
     if (requiresAuth && !isAuthenticated) {
-        next({ name: 'login', query: { redirect: to.fullPath } })
-        return
+        return {
+            name: 'app-login',
+            query: { redirect: to.fullPath },
+        }
     }
 
     if (guestOnly && isAuthenticated) {
-        next({ name: 'dashboard' })
-        return
+        if (to.name !== 'events') {
+            return { name: 'events' }
+        }
+        return true
     }
 
-    next()
+    return true
 })
 
 export default router
