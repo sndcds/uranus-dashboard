@@ -669,7 +669,8 @@ const messages = {
         about_contact_email: 'E-Mail senden',
         about_visit_website: 'Website besuchen',
         about_version: 'Version',
-        visitor_nav_about: 'Über uns'
+        visitor_nav_about: 'Über uns',
+        visitor_nav_map: 'Karte',
     },
     en: {
         ...event.en,
@@ -1213,6 +1214,7 @@ const messages = {
         about_visit_website: 'Visit Website',
         about_version: 'Version',
         visitor_nav_about: 'About Us',
+        visitor_nav_map: 'Event Map',
     },
     da: {
         ...event.da,
@@ -1749,6 +1751,7 @@ const messages = {
         about_visit_website: 'Besøg hjemmeside',
         about_version: 'Version',
         visitor_nav_about: 'Om os',
+        visitor_nav_map: 'Kort',
     },
 }
 

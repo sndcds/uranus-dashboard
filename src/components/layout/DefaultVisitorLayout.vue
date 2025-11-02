@@ -96,6 +96,7 @@ const navConfigs: NavLinkConfig[] = [
     { to: '/', labelKey: 'visitor_nav_events' },
     { to: '/app/login', labelKey: 'visitor_nav_login' },
     { to: '/app/signup', labelKey: 'visitor_nav_signup' },
+    { to: '/map', labelKey: 'visitor_nav_map' },
     { to: '/about', labelKey: 'visitor_nav_about' },
 ]
 
