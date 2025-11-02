@@ -7,6 +7,8 @@
         cta-to="/messages"
     />
 
+    <DashboardTodoListComponent />
+
     <!--div class="dashboard-hero">
       <h1>{{ t('dashboard') }}</h1>
       <p>{{ t('dashboard_description') }}</p>
@@ -22,6 +24,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import DashboardTodoListComponent from '@/components/dashboard/DashboardTodoListComponent.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 import LibreMap from "@/components/LibreMap.vue";
 
