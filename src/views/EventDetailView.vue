@@ -9,9 +9,11 @@
         <div v-else-if="event" class="event-detail-content">
             <!-- Hero Section -->
             <section class="event-detail-hero">
-                <div v-if="event.has_main_image" class="event-detail-hero__image">
+                <div v-if="event.has_main_image && event.image_path" class="event-detail-hero__image">
                     <img 
-                        :src="`/api/event/${event.id}/image?ratio=16by9&width=1200`" 
+                        :src="event.image_path.includes('?')
+                            ? `${event.image_path}&ratio=16by9&width=1200`
+                            : `${event.image_path}?ratio=16by9&width=1200`" 
                         :alt="event.title"
                         class="event-detail-hero__img"
                     />
@@ -19,6 +21,14 @@
                 <div class="event-detail-hero__content">
                     <h1 class="event-detail-hero__title">{{ event.title }}</h1>
                     <p v-if="event.subtitle" class="event-detail-hero__subtitle">{{ event.subtitle }}</p>
+                    <div v-if="event.languages && event.languages.length > 0" class="event-detail-hero__languages">
+                        <span class="event-detail-languages-label">{{ t('languages') }}:</span>
+                        <div class="event-detail-languages-tags">
+                            <span v-for="lang in event.languages" :key="lang" class="event-detail-language-tag">
+                                {{ lang.toUpperCase() }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -201,6 +211,8 @@ interface EventDetail {
     image_focus_x: number
     image_focus_y: number
     image_id: number | null
+    image_path: string | null
+    languages: string[] | null
     meeting_point: string | null
     organizer_id: number
     organizer_name: string
@@ -370,6 +382,39 @@ onMounted(() => {
     font-size: clamp(1.25rem, 3vw, 1.5rem);
     color: var(--muted-text);
     line-height: 1.4;
+}
+
+.event-detail-hero__languages {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.event-detail-languages-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--muted-text);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.event-detail-languages-tags {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.event-detail-language-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(14, 165, 233, 0.12);
+    color: var(--accent-secondary, #0ea5e9);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
 }
 
 .event-detail-grid {
