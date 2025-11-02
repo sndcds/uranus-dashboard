@@ -1,9 +1,6 @@
 <template>
-    <section class="event-section">
-        <header class="event-section__header">
-            <h2>{{ t('event_section_basic') }}</h2>
-            <p>{{ t('event_section_basic_subtitle') }}</p>
-        </header>
+  <section class="uranus-card">
+    <UranusCardHeader :title="t('event_section_basic')" />
 
         <div class="event-section__form">
             <EventTitleFieldsComponent
@@ -76,6 +73,7 @@ import type { EventBasicInfoModel } from '@/models/event'
 
 import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue"
 import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
+import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
 
 interface Selection {
   primaryId: number

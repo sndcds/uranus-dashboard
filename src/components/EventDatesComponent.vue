@@ -1,5 +1,7 @@
 <template>
-    <section class="event-section">
+  <section class="uranus-card">
+    <UranusCardHeader :title="t('event_section_dates')" :subtitle="t('event_section_dates_subtitle')" />
+
         <div class="event-section__form">
             <div class="event-dates">
                 <div v-for="(date, index) in localDates" :key="index" class="event-dates__card">
@@ -74,6 +76,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
 
 const props = defineProps<{
     organizerId: number | null

@@ -1,23 +1,28 @@
 <template>
-    <div class="event-form-page">
-        <section class="event-form-hero">
-            <h1>{{ t('event_form_title') }}</h1>
-            <p>{{ t('event_form_subtitle') }}</p>
-        </section>
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('event_form_title')"
+        :subtitle="t('event_form_subtitle')"
+    />
 
-        <form class="event-form-grid" @submit.prevent="submitEvent">
-            <EventBasicInfoComponent ref="basicInfoRef" :model-value="basicInfo"
-                :organizer-id="appStore.organizerId ?? null" @update:modelValue="onBasicInfoUpdate"
-                @spaces-change="onSpacesChange" />
-            <section class="event-dates-section">
-                <header class="event-dates-section__header">
-                    <h2>{{ t('event_section_dates') }}</h2>
-                    <p>{{ t('event_section_dates_subtitle') }}</p>
-                </header>
-                <EventDatesComponent ref="datesRef" :model-value="eventDates"
-                    :organizer-id="appStore.organizerId ?? null" :spaces="availableSpaces"
-                    @update:modelValue="onDatesUpdate" />
-            </section>
+    <form
+       class="event-form-grid"
+       @submit.prevent="submitEvent">
+
+      <EventBasicInfoComponent
+          ref="basicInfoRef"
+          :model-value="basicInfo"
+          :organizer-id="appStore.organizerId ?? null" @update:modelValue="onBasicInfoUpdate"
+          @spaces-change="onSpacesChange" />
+
+
+        <EventDatesComponent
+            ref="datesRef"
+            :model-value="eventDates"
+            :organizer-id="appStore.organizerId ?? null" :spaces="availableSpaces"
+            @update:modelValue="onDatesUpdate" />
+
+
             <EventDetailsComponent ref="detailsRef" :model-value="eventDetails"
                 :organizer-id="appStore.organizerId ?? null" @update:modelValue="onDetailsUpdate" />
 
@@ -51,6 +56,7 @@ import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import EventDetailsComponent from '@/components/EventDetailsComponent.vue'
 import router from '@/router'
 import type { EventBasicInfoModel, EventDateModel, EventDetailsModel, EventTypeGenrePair } from '@/models/event'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const appStore = useAppStore()
