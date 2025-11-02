@@ -23,12 +23,12 @@
                 <li v-if="todos.length === 0" class="todo-list__empty">
                     {{ todoEmptyLabel }}
                 </li>
-                <li v-for="todo in todos" :key="todo.id">
+                <li v-for="todo in todos" :key="todo.todo_id">
                     <article class="todo-item">
                         <div class="todo-item__header">
-                            <input type="checkbox" :id="`todo-${todo.id}`" class="todo-item__checkbox"
+                            <input type="checkbox" :id="`todo-${todo.todo_id}`" class="todo-item__checkbox"
                                 :checked="Boolean(todo.completed)" @change="toggleTodo(todo)" :disabled="todoLoading" />
-                            <label :for="`todo-${todo.id}`" class="todo-item__label">
+                            <label :for="`todo-${todo.todo_id}`" class="todo-item__label">
                                 {{ todo.title }}
                             </label>
                         </div>
@@ -115,7 +115,6 @@ interface TodoDraft {
 }
 
 const { t } = useI18n()
-
 const todos = ref<Todo[]>([])
 const todoLoading = ref(false)
 const todoError = ref<string | null>(null)
@@ -137,6 +136,39 @@ const todoDescriptionPlaceholder = computed(() => t('dashboard_todo_description_
 const todoDueDateLabel = computed(() => t('dashboard_todo_due_date'))
 const todoErrorFallback = computed(() => t('dashboard_todo_error'))
 
+const toNumberOrNull = (value: unknown): number | null => {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return value
+    }
+    if (typeof value === 'string') {
+        const trimmed = value.trim()
+        if (!trimmed.length) {
+            return null
+        }
+        const parsed = Number(trimmed)
+        return Number.isFinite(parsed) ? parsed : null
+    }
+    return null
+}
+
+const normalizeDateInput = (value: unknown): string => {
+    if (typeof value !== 'string') {
+        return ''
+    }
+    const trimmed = value.trim()
+    if (!trimmed.length) {
+        return ''
+    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+        return trimmed
+    }
+    const parsed = new Date(trimmed)
+    if (!Number.isNaN(parsed.getTime())) {
+        return parsed.toISOString().slice(0, 10)
+    }
+    return trimmed
+}
+
 const normalizeTodos = (payload: unknown): Todo[] => {
     const items: unknown[] = []
 
@@ -144,8 +176,8 @@ const normalizeTodos = (payload: unknown): Todo[] => {
         items.push(...payload)
     } else if (payload && typeof payload === 'object') {
         const obj = payload as Record<string, unknown>
-        if (Array.isArray(obj.todos)) {
-            items.push(...obj.todos)
+        if (Array.isArray(obj.messages)) {
+            items.push(...obj.messages)
         } else if (Array.isArray(obj.todos)) {
             items.push(...obj.todos)
         } else if (Array.isArray(obj.data)) {
@@ -160,7 +192,7 @@ const normalizeTodos = (payload: unknown): Todo[] => {
         }
 
         const raw = entry as Record<string, unknown>
-        const idCandidate = raw.todo_id
+        const idCandidate = raw.todo_id ?? raw.id
         const titleCandidate = raw.title
 
         if (typeof idCandidate !== 'number' || typeof titleCandidate !== 'string') {
@@ -248,18 +280,18 @@ const startAddingTodo = () => {
     todoDraft.value = { title: '', description: '', dueDate: '' }
     todoDraftError.value = null
     isAddingTodo.value = true
-    currentEditingTodo.value = null
     isEditingTodo.value = false
+    currentEditingTodo.value = null
 }
 
 const startEditingTodo = (todo: Todo) => {
+    currentEditingTodo.value = { ...todo }
     todoDraft.value = {
         title: todo.title,
-        description: todo.description || '',
-        dueDate: todo.dueDate || '',
+        description: todo.description ?? '',
+        dueDate: normalizeDateInput(todo.dueDate),
     }
     todoDraftError.value = null
-    currentEditingTodo.value = todo
     isEditingTodo.value = true
     isAddingTodo.value = false
 }
@@ -295,8 +327,15 @@ const saveTodo = async (): Promise<void> => {
         }
 
         if (isEditingTodo.value && currentEditingTodo.value) {
+            const todoId = toNumberOrNull(currentEditingTodo.value.todo_id)
+
+            if (todoId === null) {
+                throw new Error('Invalid todo identifier')
+            }
+
+            console.log('Updating todo:', currentEditingTodo.value.todo_id)
             // Update existing todo
-            await apiFetch(`/api/admin/todo/${currentEditingTodo.value.id}`, {
+            await apiFetch(`/api/admin/todo/${todoId}`, {
                 method: 'PUT',
                 body: JSON.stringify(payload),
             })

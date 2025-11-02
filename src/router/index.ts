@@ -117,6 +117,11 @@ const routes = [
                 name: 'user-messages-send',
                 component: MessageSendView,
             },
+            {
+                path: '/todo/:todoId/edit',
+                name: 'edit-todo',
+                component: DashboardView,
+            },
         ],
     },
     {
