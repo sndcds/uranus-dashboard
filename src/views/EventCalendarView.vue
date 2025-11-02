@@ -5,8 +5,24 @@
                 <h1>{{ pageTitle }}</h1>
                 <p>{{ pageSubtitle }}</p>
             </div>
+            <div class="calendar-view-toggle">
+                <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'detailed' }"
+                    @click="currentView = 'detailed'">
+                    {{ detailedViewLabel }}
+                </button>
+                <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'compact' }"
+                    @click="currentView = 'compact'">
+                    {{ compactViewLabel }}
+                </button>
+                <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'tiles' }"
+                    @click="currentView = 'tiles'">
+                    {{ tilesViewLabel }}
+                </button>
+            </div>
         </section>
-        <div class="calendar-body">
+
+        <!-- Detailed View -->
+        <div v-if="currentView === 'detailed'" class="calendar-body">
             <aside class="calendar-sidebar">
                 <div class="calendar-sidebar__header">
                     <h2>{{ filtersTitle }}</h2>
@@ -113,6 +129,200 @@
                 </div>
             </section>
         </div>
+
+        <!-- Compact View -->
+        <div v-else-if="currentView === 'compact'" class="calendar-body-compact">
+            <aside class="calendar-sidebar">
+                <div class="calendar-sidebar__header">
+                    <h2>{{ filtersTitle }}</h2>
+                    <p>{{ filtersSubtitle }}</p>
+                </div>
+
+                <div class="calendar-sidebar__section calendar-sidebar__section--search">
+                    <label class="calendar-sidebar__label" for="calendar-search-compact">{{ searchLabel }}</label>
+                    <input id="calendar-search-compact" type="search" :placeholder="searchPlaceholder"
+                        v-model.trim="searchQuery" :disabled="isLoading" />
+                </div>
+
+                <div class="calendar-sidebar__section calendar-sidebar__section--dates">
+                    <label class="calendar-sidebar__label" for="calendar-date-compact">{{ dateLabel }}</label>
+                    <div class="calendar-sidebar__date-controls">
+                        <input id="calendar-date-compact" type="date" :value="tempStartDate" :max="lastAvailableDate"
+                            :disabled="isLoading" @blur="onDateConfirm('start', $event)"
+                            @keyup.enter="onDateConfirm('start', $event)" />
+                        <div class="calendar-sidebar__end-date">
+                            <label class="calendar-sidebar__sublabel" for="calendar-end-date-compact">{{ endDateLabel
+                                }}</label>
+                            <input id="calendar-end-date-compact" type="date" :value="tempEndDate"
+                                :min="selectedDate ?? firstAvailableDate" :max="lastAvailableDate" :disabled="isLoading"
+                                @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
+                        </div>
+                        <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
+                            :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
+                            {{ showAllDatesLabel }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar-sidebar__section calendar-sidebar__section--types">
+                    <label class="calendar-sidebar__label" for="calendar-type-compact">{{ typeLabel }}</label>
+                    <select id="calendar-type-compact" v-model="selectedType"
+                        :disabled="isLoading || isTypesLoading || typeOptions.length === 0">
+                        <option value="all">{{ allCategoriesLabel }}</option>
+                        <option v-for="type in typeOptions" :key="type" :value="type">
+                            {{ type }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="calendar-sidebar__footer">
+                    <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__reset"
+                        :disabled="!filtersActive" @click="resetFilters">
+                        {{ resetFiltersLabel }}
+                    </button>
+                </div>
+            </aside>
+
+            <section class="calendar-content-compact" aria-live="polite">
+                <div v-if="isLoading" class="calendar-state calendar-state--loading">
+                    <span>{{ loadingLabel }}</span>
+                </div>
+                <div v-else-if="loadError" class="calendar-state calendar-state--error" role="alert">
+                    <span>{{ loadError }}</span>
+                </div>
+                <div v-else-if="filteredEvents.length === 0" class="calendar-state calendar-state--empty">
+                    <span>{{ emptyLabel }}</span>
+                </div>
+                <div v-else class="calendar-events-compact">
+                    <article v-for="event in filteredEvents" :key="event.id" class="calendar-event-compact">
+                        <div class="calendar-event-compact__time">
+                            <span>{{ formatTime(event.start_date, event.start_time) }}</span>
+                        </div>
+                        <div class="calendar-event-compact__content">
+                            <header class="calendar-event-compact__header">
+                                <h3>{{ event.title }}</h3>
+                                <p v-if="event.subtitle" class="calendar-event-compact__subtitle">{{ event.subtitle }}
+                                </p>
+                            </header>
+                            <div class="calendar-event-compact__meta">
+                                <span class="calendar-event-compact__date">{{ formatCompactDate(event.start_date)
+                                    }}</span>
+                                <span v-if="event.venue_name || event.venue_city"
+                                    class="calendar-event-compact__location">
+                                    {{ formatLocation(event) }}
+                                </span>
+                                <ul v-if="event.typeLabels.length" class="calendar-event-compact__tags">
+                                    <li v-for="tag in event.typeLabels" :key="tag">
+                                        <button type="button" class="calendar-event-compact__tag-button"
+                                            :class="{ 'is-active': selectedType === tag }" @click="filterByTag(tag)"
+                                            :aria-pressed="selectedType === tag">
+                                            {{ tag }}
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div v-if="isLoggedIn" class="calendar-event-compact__actions">
+                            <router-link :to="{ name: 'event-details', params: { id: event.id } }"
+                                class="calendar-event-compact__cta">
+                                {{ viewDetailsLabel }}
+                            </router-link>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tiles View -->
+        <div v-else-if="currentView === 'tiles'" class="calendar-body-tiles">
+            <aside class="calendar-sidebar">
+                <div class="calendar-sidebar__header">
+                    <h2>{{ filtersTitle }}</h2>
+                    <p>{{ filtersSubtitle }}</p>
+                </div>
+
+                <div class="calendar-sidebar__section calendar-sidebar__section--search">
+                    <label class="calendar-sidebar__label" for="calendar-search-tiles">{{ searchLabel }}</label>
+                    <input id="calendar-search-tiles" type="search" :placeholder="searchPlaceholder"
+                        v-model.trim="searchQuery" :disabled="isLoading" />
+                </div>
+
+                <div class="calendar-sidebar__section calendar-sidebar__section--dates">
+                    <label class="calendar-sidebar__label" for="calendar-date-tiles">{{ dateLabel }}</label>
+                    <div class="calendar-sidebar__date-controls">
+                        <input id="calendar-date-tiles" type="date" :value="tempStartDate" :max="lastAvailableDate"
+                            :disabled="isLoading" @blur="onDateConfirm('start', $event)"
+                            @keyup.enter="onDateConfirm('start', $event)" />
+                        <div class="calendar-sidebar__end-date">
+                            <label class="calendar-sidebar__sublabel" for="calendar-end-date-tiles">{{ endDateLabel
+                                }}</label>
+                            <input id="calendar-end-date-tiles" type="date" :value="tempEndDate"
+                                :min="selectedDate ?? firstAvailableDate" :max="lastAvailableDate" :disabled="isLoading"
+                                @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
+                        </div>
+                        <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
+                            :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
+                            {{ showAllDatesLabel }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar-sidebar__section calendar-sidebar__section--types">
+                    <label class="calendar-sidebar__label" for="calendar-type-tiles">{{ typeLabel }}</label>
+                    <select id="calendar-type-tiles" v-model="selectedType"
+                        :disabled="isLoading || isTypesLoading || typeOptions.length === 0">
+                        <option value="all">{{ allCategoriesLabel }}</option>
+                        <option v-for="type in typeOptions" :key="type" :value="type">
+                            {{ type }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="calendar-sidebar__footer">
+                    <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__reset"
+                        :disabled="!filtersActive" @click="resetFilters">
+                        {{ resetFiltersLabel }}
+                    </button>
+                </div>
+            </aside>
+
+            <section class="calendar-content-tiles" aria-live="polite">
+                <div v-if="isLoading" class="calendar-state calendar-state--loading">
+                    <span>{{ loadingLabel }}</span>
+                </div>
+                <div v-else-if="loadError" class="calendar-state calendar-state--error" role="alert">
+                    <span>{{ loadError }}</span>
+                </div>
+                <div v-else-if="filteredEvents.length === 0" class="calendar-state calendar-state--empty">
+                    <span>{{ emptyLabel }}</span>
+                </div>
+                <div v-else class="calendar-events-tiles">
+                    <article v-for="event in filteredEvents" :key="event.id" class="calendar-tile">
+                        <div class="calendar-tile__image-container">
+                            <img v-if="event.image_path" :src="event.image_path.includes('?')
+                                ? `${event.image_path}&ratio=4by3&width=300`
+                                : `${event.image_path}?ratio=4by3&width=300`" :alt="event.title"
+                                class="calendar-tile__image" />
+                        </div>
+                        <div>
+                            <div class="calendar-content__body">
+                                <h3 class="calendar-tile__title">{{ event.title }}</h3>
+                                <div class="calendar-tile__meta">
+                                    <span class="calendar-tile__time">{{ formatCompactDate(event.start_date) }} {{ formatTime(event.start_date, event.start_time)
+                                        }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="isLoggedIn" class="calendar-tile__actions">
+                            <router-link :to="{ name: 'event-details', params: { id: event.id } }"
+                                class="calendar-tile__cta">
+                                {{ viewDetailsLabel }}
+                            </router-link>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
     </div>
 </template>
 
@@ -166,7 +376,7 @@ interface AugmentedEvent extends CalendarEvent {
     typeLabels: string[]
 }
 
-const { t, te, locale } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 const tokenStore = useTokenStore()
 const isLoggedIn = computed(() => Boolean(tokenStore.accessToken))
 
@@ -182,6 +392,7 @@ const searchQuery = ref('')
 const selectedType = ref<'all' | string>('all')
 const selectedDate = ref<string | null>(null)
 const selectedEndDate = ref<string | null>(null)
+const currentView = ref<'detailed' | 'compact' | 'tiles'>('detailed')
 
 const normalizeDateValue = (value: string | null) => {
     if (value === null || value === undefined) {
@@ -209,29 +420,24 @@ const intlTime = new Intl.DateTimeFormat(undefined, {
     minute: '2-digit',
 })
 
-const pageTitle = computed(() => (te('events_calendar_title') ? t('events_calendar_title') : 'Event calendar'))
-const pageSubtitle = computed(() =>
-    te('events_calendar_subtitle')
-        ? t('events_calendar_subtitle')
-        : 'Discover upcoming happenings, exhibitions, concerts and more in your community.'
-)
-const searchPlaceholder = computed(() => (te('events_calendar_search_placeholder') ? t('events_calendar_search_placeholder') : 'Search by title, organizer or location…'))
-const loadingLabel = computed(() => (te('events_calendar_loading') ? t('events_calendar_loading') : 'Loading events…'))
-const emptyLabel = computed(() => (te('events_calendar_empty') ? t('events_calendar_empty') : 'No events match your filters. Try a different day or search term.'))
-const showAllDatesLabel = computed(() => (te('events_calendar_all_dates') ? t('events_calendar_all_dates') : 'All dates'))
-const allCategoriesLabel = computed(() => (te('events_calendar_all_categories') ? t('events_calendar_all_categories') : 'All categories'))
-const resetFiltersLabel = computed(() => (te('events_calendar_reset_filters') ? t('events_calendar_reset_filters') : 'Reset filters'))
-const viewDetailsLabel = computed(() => (te('events_calendar_view_details') ? t('events_calendar_view_details') : 'View details'))
-const filtersTitle = computed(() => (te('events_calendar_filters_title') ? t('events_calendar_filters_title') : 'Filter events'))
-const filtersSubtitle = computed(() =>
-    te('events_calendar_filters_subtitle')
-        ? t('events_calendar_filters_subtitle')
-        : 'Use search, date and categories to tailor the calendar.'
-)
-const searchLabel = computed(() => (te('events_calendar_search_label') ? t('events_calendar_search_label') : 'Search events'))
-const dateLabel = computed(() => (te('events_calendar_date_label') ? t('events_calendar_date_label') : 'Choose a date'))
-const typeLabel = computed(() => (te('events_calendar_type_label') ? t('events_calendar_type_label') : 'Event type'))
-const endDateLabel = computed(() => (te('events_calendar_end_date_label') ? t('events_calendar_end_date_label') : 'End date'))
+const pageTitle = computed(() => t('events_calendar_title'))
+const pageSubtitle = computed(() => t('events_calendar_subtitle'))
+const searchPlaceholder = computed(() => t('events_calendar_search_placeholder'))
+const loadingLabel = computed(() => t('events_calendar_loading'))
+const emptyLabel = computed(() => t('events_calendar_empty'))
+const showAllDatesLabel = computed(() => t('events_calendar_all_dates'))
+const allCategoriesLabel = computed(() => t('events_calendar_all_categories'))
+const resetFiltersLabel = computed(() => t('events_calendar_reset_filters'))
+const viewDetailsLabel = computed(() => t('events_calendar_view_details'))
+const filtersTitle = computed(() => t('events_calendar_filters_title'))
+const filtersSubtitle = computed(() => t('events_calendar_filters_subtitle'))
+const searchLabel = computed(() => t('events_calendar_search_label'))
+const dateLabel = computed(() => t('events_calendar_date_label'))
+const typeLabel = computed(() => t('events_calendar_type_label'))
+const endDateLabel = computed(() => t('events_calendar_end_date_label'))
+const detailedViewLabel = computed(() => t('events_calendar_detailed_view'))
+const compactViewLabel = computed(() => t('events_calendar_compact_view'))
+const tilesViewLabel = computed(() => t('events_calendar_tiles_view'))
 
 const hasEvents = computed(() => events.value.length > 0)
 
@@ -471,7 +677,7 @@ const parseISODate = (input: string | null) => {
     if (!input) return null
     const [year, month, day] = input.split('-').map(Number)
     if (!year || !month || !day) return null
-    return new Date(Date.UTC(year, month - 1, day))
+    return new Date(year, month - 1, day)
 }
 
 const buildStartDateTime = (date: string, time: string | null) => {
@@ -483,13 +689,13 @@ const buildStartDateTime = (date: string, time: string | null) => {
         const minutes = Number(minutesRaw)
         const safeHours = Number.isNaN(hours) ? 0 : hours
         const safeMinutes = Number.isNaN(minutes) ? 0 : minutes
-        parsedDate.setUTCHours(safeHours, safeMinutes, 0, 0)
+        parsedDate.setHours(safeHours, safeMinutes, 0, 0)
     }
     return parsedDate.getTime()
 }
 
 const formatTime = (date: string, time: string | null) => {
-    if (!time) return (te('events_calendar_time_all_day') ? t('events_calendar_time_all_day') : 'All day')
+    if (!time) return t('events_calendar_time_all_day')
     const parsedDate = parseISODate(date)
     if (!parsedDate) return time
     const [hoursRaw, minutesRaw] = time.split(':')
@@ -497,8 +703,34 @@ const formatTime = (date: string, time: string | null) => {
     const minutes = Number(minutesRaw)
     const safeHours = Number.isNaN(hours) ? 0 : hours
     const safeMinutes = Number.isNaN(minutes) ? 0 : minutes
-    parsedDate.setUTCHours(safeHours, safeMinutes, 0, 0)
+    parsedDate.setHours(safeHours, safeMinutes, 0, 0)
     return intlTime.format(parsedDate)
+}
+
+const formatCompactDate = (date: string) => {
+    const parsedDate = parseISODate(date)
+    if (!parsedDate) return date
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const eventDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate())
+
+    if (eventDate.getTime() === today.getTime()) {
+        return t('events_calendar_today')
+    }
+
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    if (eventDate.getTime() === tomorrow.getTime()) {
+        return t('events_calendar_tomorrow')
+    }
+
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+    if (eventDate.getTime() === yesterday.getTime()) {
+        return t('events_calendar_yesterday')
+    }
+
+    return intlDate.format(parsedDate)
 }
 
 const formatLocation = (event: CalendarEvent) => {
@@ -529,23 +761,7 @@ const hydrateEvents = (payload: CalendarEvent[]): AugmentedEvent[] => {
 }
 
 const setInitialDate = () => {
-    if (!events.value.length) {
-        clearDateFilters({ silent: true })
-        return
-    }
-
-    const todayISO = today.toISOString().slice(0, 10)
-    const upcoming = availableDates.value.find((date) => date >= todayISO)
-    if (upcoming) {
-        withDateWatcherSuspended(() => {
-            selectedDate.value = upcoming
-            if (!selectedEndDate.value || selectedEndDate.value < upcoming) {
-                selectedEndDate.value = upcoming
-            }
-        })
-    } else {
-        clearDateFilters({ silent: true })
-    }
+    clearDateFilters({ silent: true })
 }
 
 const loadEventTypes = async () => {
@@ -598,13 +814,10 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
             ensureSelectedTypeIsValid()
         }
     } catch (error: unknown) {
-        if (error instanceof Error && error.message) {
-            loadError.value = error.message
-        } else {
-            loadError.value = te('events_calendar_load_error')
-                ? t('events_calendar_load_error')
-                : 'We could not load the events calendar. Please try again later.'
-        }
+        loadError.value =
+            error instanceof Error && error.message
+                ? error.message
+                : t('events_calendar_load_error')
     } finally {
         isLoading.value = false
         if (!preserveSelection && !isInitialLoadComplete.value) {
@@ -709,11 +922,305 @@ watch(
     line-height: 1.6;
 }
 
+.calendar-view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.calendar-toggle-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--accent-primary);
+    background: transparent;
+    color: var(--accent-primary);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar-toggle-btn:hover {
+    background: rgba(79, 70, 229, 0.1);
+}
+
+.calendar-toggle-btn.is-active {
+    background: var(--accent-primary);
+    color: white;
+}
+
 .calendar-body {
     display: grid;
     grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
     gap: clamp(1.5rem, 3vw, 2.25rem);
     align-items: start;
+}
+
+.calendar-content__body {
+    display: flex;
+    overflow: hidden;
+    word-break: unset;
+    flex-direction: column;
+    padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+.calendar-body-compact {
+    display: grid;
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+    align-items: start;
+}
+
+.calendar-body-tiles {
+    display: grid;
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+    align-items: start;
+}
+
+.calendar-content-compact {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.calendar-events-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.calendar-event-compact {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border-soft);
+    transition: box-shadow 0.2s ease;
+}
+
+.calendar-event-compact:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-event-compact__time {
+    flex-shrink: 0;
+    min-width: 80px;
+}
+
+.calendar-event-compact__time span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    background: rgba(14, 165, 233, 0.12);
+    color: var(--accent-secondary, #0ea5e9);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.calendar-event-compact__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.calendar-event-compact__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.calendar-event-compact__header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.calendar-event-compact__subtitle {
+    margin: 0;
+    color: var(--muted-text);
+    font-size: 0.9rem;
+}
+
+.calendar-event-compact__meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.calendar-event-compact__date,
+.calendar-event-compact__location {
+    color: var(--color-text-secondary, #475569);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.calendar-event-compact__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.calendar-event-compact__tag-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    border: none;
+    background: rgba(79, 70, 229, 0.12);
+    color: var(--accent-primary);
+    font-weight: 500;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.calendar-event-compact__tag-button:hover {
+    background: rgba(79, 70, 229, 0.2);
+}
+
+.calendar-event-compact__tag-button.is-active {
+    background: rgba(79, 70, 229, 0.28);
+    color: #fff;
+}
+
+.calendar-event-compact__actions {
+    flex-shrink: 0;
+}
+
+.calendar-event-compact__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    background: rgba(79, 70, 229, 0.12);
+    color: var(--accent-primary);
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.calendar-event-compact__cta:hover {
+    background: rgba(79, 70, 229, 0.2);
+}
+
+.calendar-content-tiles {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.calendar-events-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.calendar-tile {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border-soft);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.calendar-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.calendar-tile__image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+}
+
+.calendar-tile__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.calendar-tile__placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(14, 165, 233, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.calendar-tile__placeholder span {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    text-align: center;
+    line-height: 1.3;
+}
+
+.calendar-tile__title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+.calendar-tile__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.calendar-tile__time,
+.calendar-tile__date {
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.calendar-tile__actions {
+    padding: 0.75rem;
+    background: var(--card-bg, #fff);
+}
+
+.calendar-tile__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    background: rgba(79, 70, 229, 0.12);
+    color: var(--accent-primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.calendar-tile__cta:hover {
+    background: rgba(79, 70, 229, 0.2);
 }
 
 .calendar-sidebar {
@@ -1020,7 +1527,10 @@ watch(
 }
 
 @media (max-width: 900px) {
-    .calendar-body {
+
+    .calendar-body,
+    .calendar-body-compact,
+    .calendar-body-tiles {
         grid-template-columns: minmax(0, 1fr);
     }
 
@@ -1030,6 +1540,24 @@ watch(
 
     .calendar-group__events {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+
+    .calendar-events-tiles {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .calendar-event-compact {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .calendar-event-compact__time {
+        min-width: auto;
+    }
+
+    .calendar-event-compact__actions {
+        align-self: flex-end;
     }
 }
 

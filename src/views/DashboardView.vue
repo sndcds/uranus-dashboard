@@ -1,28 +1,23 @@
 <template>
   <div class="uranus-main-layout">
-    <DashboardHeroComponent
-        :title="t('dashboard')"
-        :subtitle="t('dashboard_description')"
-        cta-label="Go to Inbox"
-        cta-to="/messages"
-    />
+    <router-link :to="'/events'" class="uranus-button">
+      {{ t('events') }}
+    </router-link>
+
+    <DashboardHeroComponent :title="t('dashboard')" :subtitle="t('dashboard_description')" cta-label="Go to Inbox"
+      cta-to="/messages" />
 
     <DashboardTodoListComponent />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import DashboardTodoListComponent from '@/components/dashboard/DashboardTodoListComponent.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 
 const { t } = useI18n()
-
-const inboxCtaLabel = computed(() =>
-  t('dashboard_inbox_cta')
-)
 </script>
 
 <style scoped lang="scss">
