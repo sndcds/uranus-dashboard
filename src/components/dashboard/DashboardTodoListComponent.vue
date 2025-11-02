@@ -144,8 +144,8 @@ const normalizeTodos = (payload: unknown): Todo[] => {
         items.push(...payload)
     } else if (payload && typeof payload === 'object') {
         const obj = payload as Record<string, unknown>
-        if (Array.isArray(obj.messages)) {
-            items.push(...obj.messages)
+        if (Array.isArray(obj.todos)) {
+            items.push(...obj.todos)
         } else if (Array.isArray(obj.todos)) {
             items.push(...obj.todos)
         } else if (Array.isArray(obj.data)) {
