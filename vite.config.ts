@@ -49,6 +49,10 @@ export default defineConfig(({ mode }) => {
                                 return 'vendor-i18n'
                             }
 
+                            if (id.includes('maplibre')) {
+                                return 'vendor-maplibre'
+                            }
+
                             return 'vendor'
                         }
                     },
