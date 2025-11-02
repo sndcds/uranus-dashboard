@@ -99,7 +99,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 interface Todo {
-    id: number
+    todo_id: number
     title: string
     description?: string | null
     completed: boolean
@@ -144,7 +144,9 @@ const normalizeTodos = (payload: unknown): Todo[] => {
         items.push(...payload)
     } else if (payload && typeof payload === 'object') {
         const obj = payload as Record<string, unknown>
-        if (Array.isArray(obj.todos)) {
+        if (Array.isArray(obj.messages)) {
+            items.push(...obj.messages)
+        } else if (Array.isArray(obj.todos)) {
             items.push(...obj.todos)
         } else if (Array.isArray(obj.data)) {
             items.push(...obj.data)
@@ -158,7 +160,7 @@ const normalizeTodos = (payload: unknown): Todo[] => {
         }
 
         const raw = entry as Record<string, unknown>
-        const idCandidate = raw.id
+        const idCandidate = raw.todo_id
         const titleCandidate = raw.title
 
         if (typeof idCandidate !== 'number' || typeof titleCandidate !== 'string') {
@@ -166,7 +168,7 @@ const normalizeTodos = (payload: unknown): Todo[] => {
         }
 
         const todo: Todo = {
-            id: idCandidate,
+            todo_id: idCandidate,
             title: titleCandidate,
             description: typeof raw.description === 'string' ? raw.description : null,
             completed: Boolean(raw.completed),
@@ -300,7 +302,7 @@ const saveTodo = async (): Promise<void> => {
             })
         } else {
             // Create new todo
-            await apiFetch('/api/admin/todo/create', {
+            await apiFetch('/api/admin/todo', {
                 method: 'POST',
                 body: JSON.stringify(payload),
             })
@@ -323,7 +325,7 @@ const toggleTodo = async (todo: Todo): Promise<void> => {
     todoError.value = null
 
     try {
-        await apiFetch(`/api/admin/todo/${todo.id}`, {
+        await apiFetch(`/api/admin/todo/${todo.todo_id}`, {
             method: 'PUT',
             body: JSON.stringify({
                 title: todo.title,
@@ -348,11 +350,11 @@ const deleteTodo = async (todo: Todo): Promise<void> => {
     todoLoading.value = true
 
     try {
-        await apiFetch(`/api/admin/todo/${todo.id}`, {
+        await apiFetch(`/api/admin/todo/${todo.todo_id}`, {
             method: 'DELETE',
         })
 
-        todos.value = todos.value.filter(t => t.id !== todo.id)
+        todos.value = todos.value.filter(t => t.todo_id !== todo.todo_id)
     } catch (err: unknown) {
         console.error('Failed to delete todo:', err)
         todoError.value = resolveTodoErrorMessage(err, t('dashboard_todo_delete_error'))

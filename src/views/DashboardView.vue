@@ -8,17 +8,7 @@
     />
 
     <DashboardTodoListComponent />
-
-    <!--div class="dashboard-hero">
-      <h1>{{ t('dashboard') }}</h1>
-      <p>{{ t('dashboard_description') }}</p>
-      <router-link class="dashboard-cta" to="/messages">
-        {{ inboxCtaLabel }}
-      </router-link>
-    </div-->
   </div>
-
-  <LibreMap />
 </template>
 
 <script setup lang="ts">
@@ -27,7 +17,6 @@ import { useI18n } from 'vue-i18n'
 
 import DashboardTodoListComponent from '@/components/dashboard/DashboardTodoListComponent.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
-import LibreMap from "@/components/LibreMap.vue";
 
 const { t } = useI18n()
 
