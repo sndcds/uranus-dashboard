@@ -13,6 +13,7 @@
     "@primeuix/themes": "^1.2.5",
     "leaflet": "^1.9.4",
     "maplibre-gl": "^5.10.0",
+    "marked": "^16.4.1",
     "pinia": "^3.0.3",
     "primeicons": "^7.0.0",
     "primevue": "^4.4.1",
