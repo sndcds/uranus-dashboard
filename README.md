@@ -2,6 +2,7 @@
 
 [![Lighthouse CI](https://github.com/sndcds/uranus-dashboard/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/sndcds/uranus-dashboard/actions/workflows/lighthouse.yml)
 [![Run codeql](https://github.com/sndcds/uranus-dashboard/actions/workflows/codeql.yml/badge.svg)](https://github.com/sndcds/uranus-dashboard/actions/workflows/codeql.yml)
+[![Frontend Tests](https://github.com/sndcds/uranus-dashboard/actions/workflows/tests.yml/badge.svg)](https://github.com/sndcds/uranus-dashboard/actions/workflows/tests.yml)
 
 Uranus Dashboard is a Vue 3 single-page application that helps cultural organisations run their events, venues, and spaces. The app offers a visitor-facing calendar as well as an authenticated workspace where editors can manage organisers, venues, event metadata, translations, and personal settings.
 

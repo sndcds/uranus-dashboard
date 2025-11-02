@@ -26,6 +26,9 @@ import ResetPasswordView from '@/views/ResetPasswordView.vue'
 import MessageInboxView from '@/views/MessageInboxView.vue'
 import MessageSendView from '@/views/MessageSendView.vue'
 import EventDetailView from '@/views/EventDetailView.vue'
+import ImprintView from '@/views/ImprintView.vue'
+import PrivacyView from '@/views/PrivacyView.vue'
+import TermsView from '@/views/TermsView.vue'
 
 const routes = [
     {
@@ -137,6 +140,21 @@ const routes = [
                 path: 'event/:id',
                 name: 'event-details',
                 component: EventDetailView,
+            },
+            {
+                path: 'imprint',
+                name: 'imprint',
+                component: ImprintView,
+            },
+            {
+                path: 'privacy',
+                name: 'privacy',
+                component: PrivacyView,
+            },
+            {
+                path: 'terms',
+                name: 'terms',
+                component: TermsView,
             }
         ],
     },
