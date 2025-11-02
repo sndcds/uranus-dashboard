@@ -16,6 +16,7 @@ import { useI18n } from 'vue-i18n'
 
 import DashboardTodoListComponent from '@/components/dashboard/DashboardTodoListComponent.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusBlob from "@/components/uranus/UranusBlob.vue";
 
 const { t } = useI18n()
 </script>

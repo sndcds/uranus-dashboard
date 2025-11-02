@@ -1,30 +1,42 @@
 <template>
     <div class="calendar-page">
         <section class="calendar-hero">
-            <div class="calendar-hero__content">
+            <!--div class="calendar-hero__content">
                 <h1>{{ pageTitle }}</h1>
                 <p>{{ pageSubtitle }}</p>
-            </div>
-            <div class="calendar-view-toggle">
-                <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'detailed' }"
-                    @click="currentView = 'detailed'">
-                    {{ detailedViewLabel }}
-                </button>
-                <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'compact' }"
-                    @click="currentView = 'compact'">
-                    {{ compactViewLabel }}
-                </button>
-                <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'tiles' }"
-                    @click="currentView = 'tiles'">
-                    {{ tilesViewLabel }}
-                </button>
-            </div>
+            </div-->
+
         </section>
 
         <!-- Detailed View -->
-        <div v-if="currentView === 'detailed'" class="calendar-body">
+      <div class="calendar-view-toggle">
+        <button
+            type="button"
+            class="calendar-toggle-btn"
+            :class="{ 'is-active': currentView === 'detailed' }"
+            @click="currentView = 'detailed'">
+          {{ detailedViewLabel }}
+        </button>
+        <button
+            type="button"
+            class="calendar-toggle-btn"
+            :class="{ 'is-active': currentView === 'compact' }"
+            @click="currentView = 'compact'">
+          {{ compactViewLabel }}
+        </button>
+        <button
+            type="button"
+            class="calendar-toggle-btn"
+            :class="{ 'is-active': currentView === 'tiles' }"
+            @click="currentView = 'tiles'">
+          {{ tilesViewLabel }}
+        </button>
+      </div>
+
+
+      <div v-if="currentView === 'detailed'" class="calendar-body">
             <aside class="calendar-sidebar">
-                <div class="calendar-sidebar__header">
+               <div class="calendar-sidebar__header">
                     <h2>{{ filtersTitle }}</h2>
                     <p>{{ filtersSubtitle }}</p>
                 </div>
@@ -120,7 +132,6 @@
                                 <footer v-if="isLoggedIn" class="calendar-card__footer">
                                     <router-link :to="{ name: 'event-details', params: { id: event.id } }"
                                         class="calendar-card__cta">
-                                        {{ viewDetailsLabel }}
                                     </router-link>
                                 </footer>
                             </article>
@@ -225,7 +236,6 @@
                         <div v-if="isLoggedIn" class="calendar-event-compact__actions">
                             <router-link :to="{ name: 'event-details', params: { id: event.id } }"
                                 class="calendar-event-compact__cta">
-                                {{ viewDetailsLabel }}
                             </router-link>
                         </div>
                     </article>
@@ -287,7 +297,7 @@
             </aside>
 
             <section class="calendar-content-tiles" aria-live="polite">
-                <div v-if="isLoading" class="calendar-state calendar-state--loading">
+               <div v-if="isLoading" class="calendar-state calendar-state--loading">
                     <span>{{ loadingLabel }}</span>
                 </div>
                 <div v-else-if="loadError" class="calendar-state calendar-state--error" role="alert">
@@ -300,8 +310,8 @@
                     <article v-for="event in filteredEvents" :key="event.id" class="calendar-tile">
                         <div class="calendar-tile__image-container">
                             <img v-if="event.image_path" :src="event.image_path.includes('?')
-                                ? `${event.image_path}&ratio=4by3&width=300`
-                                : `${event.image_path}?ratio=4by3&width=300`" :alt="event.title"
+                                ? `${event.image_path}&ratio=4by3&width=320`
+                                : `${event.image_path}?ratio=4by3&width=320`" :alt="event.title"
                                 class="calendar-tile__image" />
                         </div>
                         <div>
@@ -313,10 +323,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="isLoggedIn" class="calendar-tile__actions">
+                        <div v-if="isLoggedIn">
                             <router-link :to="{ name: 'event-details', params: { id: event.id } }"
                                 class="calendar-tile__cta">
-                                {{ viewDetailsLabel }}
                             </router-link>
                         </div>
                     </article>
@@ -331,6 +340,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useTokenStore } from '@/store/token'
+import UranusBlob from "@/components/uranus/UranusBlob.vue";
 
 interface CalendarEventType {
     genre_id: number | null
@@ -896,10 +906,8 @@ watch(
 
 .calendar-hero {
     background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(14, 165, 233, 0.12));
-    border-radius: 12px;
-    padding: clamp(1.75rem, 4vw, 2.5rem);
+    border-radius: var(--uranus-tiny-border-radius);
     border: 0px solid rgba(148, 163, 184, 0.25);
-    word-wrap: break-word;
 }
 
 .calendar-hero__content {
@@ -961,7 +969,7 @@ watch(
     overflow: hidden;
     word-break: unset;
     flex-direction: column;
-    padding: clamp(1rem, 2vw, 1.5rem);
+    padding: 8px;
 }
 
 .calendar-body-compact {
@@ -1125,22 +1133,21 @@ watch(
 .calendar-events-tiles {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: clamp(1rem, 2.5vw, 1.5rem);
+    gap: var(--uranus-grid-gap);
 }
 
 .calendar-tile {
     display: flex;
     flex-direction: column;
-    border-radius: 12px;
-    overflow: hidden;
-    background: var(--card-bg, #fff);
-    border: 1px solid var(--border-soft);
+    background: var(--uranus-bg-color);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative; /* make parent the positioning context */
+
 }
 
 .calendar-tile:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translate(-2px, -4px);
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .calendar-tile__image-container {
@@ -1176,7 +1183,6 @@ watch(
 }
 
 .calendar-tile__title {
-    margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
     font-weight: 700;
     line-height: 1.3;
@@ -1184,7 +1190,10 @@ watch(
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     line-clamp: 2;
-    overflow: hidden;
+  white-space: nowrap;       /* prevent line breaks */
+  overflow: hidden;          /* optional: hide overflow if too long */
+  text-overflow: ellipsis;   /* optional: show ... for overflowed text */
+  word-break: normal;        /* prevent breaking long words */
 }
 
 .calendar-tile__meta {
@@ -1200,27 +1209,45 @@ watch(
     opacity: 0.9;
 }
 
-.calendar-tile__actions {
-    padding: 0.75rem;
-    background: var(--card-bg, #fff);
+.calendar-tile__cta::before {
+  content: "✎";   /* your UTF-8 character */
+  display: inline-block;
+  font-size: 2rem;
+  line-height: 1;
 }
 
 .calendar-tile__cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    background: rgba(79, 70, 229, 0.12);
-    color: var(--accent-primary);
-    font-weight: 600;
-    text-decoration: none;
-    transition: background 0.2s ease;
+  position: absolute;
+  bottom: 0.5rem;  /* distance from bottom edge */
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--uranus-bg-color);
+  color: var(--uranus-color);
+  font-size: 1.2rem;
+  text-decoration: none;
+  opacity: 0;              /* initially hidden */
+  pointer-events: none;    /* don't block clicks when hidden */
+  z-index: 10;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
 }
 
+/* Show when parent is hovered */
+.calendar-tile:hover .calendar-tile__cta {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Hover effect */
 .calendar-tile__cta:hover {
-    background: rgba(79, 70, 229, 0.2);
+  color: var(--uranus-ia-color);        /* new text/icon color */
+  opacity: 1;                        /* optional: fully visible */
+  transition: all 0.2s ease;
 }
 
 .calendar-sidebar {
@@ -1233,7 +1260,7 @@ watch(
     border: 0px solid var(--border-soft);
     // box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
     position: sticky;
-    top: clamp(1rem, 3vw, 1.5rem);
+    top: 100px;
 }
 
 .calendar-sidebar__header {

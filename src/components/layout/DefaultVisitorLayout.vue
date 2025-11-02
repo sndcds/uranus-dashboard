@@ -187,22 +187,25 @@ watch(
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--page-bg);
+    background: white;
     color: var(--color-text);
 }
 
 .visitor-layout__topbar {
-    position: sticky;
-    top: 0;
-    z-index: 1200;
-    display: flex;
-    align-items: center;
-    gap: clamp(1rem, 4vw, 2rem);
-    justify-content: space-between;
-    padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 4vw, 2rem);
-    background: var(--card-bg);
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-    border-bottom: 1px solid var(--border-soft, rgba(148, 163, 184, 0.2));
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 4vw, 2rem);
+  justify-content: space-between;
+  padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 4vw, 2rem);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(100px);          /* blur what's behind */
+  -webkit-backdrop-filter: blur(100px);  /* Safari support */
+
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  border-bottom: 1px solid var(--border-soft, rgba(148, 163, 184, 0.2));
+  z-index: 2000;
 }
 
 .visitor-layout__brand {
