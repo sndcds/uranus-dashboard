@@ -1,89 +1,32 @@
 <template>
     <div class="calendar-page">
-        <section class="calendar-hero">
-            <!--div class="calendar-hero__content">
-                <h1>{{ pageTitle }}</h1>
-                <p>{{ pageSubtitle }}</p>
-            </div-->
-
-        </section>
 
         <!-- Detailed View -->
-      <div class="calendar-view-toggle">
-        <button
-            type="button"
-            class="calendar-toggle-btn"
-            :class="{ 'is-active': currentView === 'detailed' }"
-            @click="currentView = 'detailed'">
-          {{ detailedViewLabel }}
-        </button>
-        <button
-            type="button"
-            class="calendar-toggle-btn"
-            :class="{ 'is-active': currentView === 'compact' }"
-            @click="currentView = 'compact'">
-          {{ compactViewLabel }}
-        </button>
-        <button
-            type="button"
-            class="calendar-toggle-btn"
-            :class="{ 'is-active': currentView === 'tiles' }"
-            @click="currentView = 'tiles'">
-          {{ tilesViewLabel }}
-        </button>
-      </div>
+        <div class="calendar-view-toggle">
+            <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'detailed' }"
+                @click="currentView = 'detailed'">
+                {{ detailedViewLabel }}
+            </button>
+            <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'compact' }"
+                @click="currentView = 'compact'">
+                {{ compactViewLabel }}
+            </button>
+            <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'tiles' }"
+                @click="currentView = 'tiles'">
+                {{ tilesViewLabel }}
+            </button>
+        </div>
 
 
-      <div v-if="currentView === 'detailed'" class="calendar-body">
-            <aside class="calendar-sidebar">
-               <div class="calendar-sidebar__header">
-                    <h2>{{ filtersTitle }}</h2>
-                    <p>{{ filtersSubtitle }}</p>
-                </div>
-
-                <div class="calendar-sidebar__section calendar-sidebar__section--search">
-                    <label class="calendar-sidebar__label" for="calendar-search">{{ searchLabel }}</label>
-                    <input id="calendar-search" type="search" :placeholder="searchPlaceholder"
-                        v-model.trim="searchQuery" :disabled="isLoading" />
-                </div>
-
-                <div class="calendar-sidebar__section calendar-sidebar__section--dates">
-                    <label class="calendar-sidebar__label" for="calendar-date">{{ dateLabel }}</label>
-                    <div class="calendar-sidebar__date-controls">
-                        <input id="calendar-date" type="date" :value="tempStartDate" :max="lastAvailableDate"
-                            :disabled="isLoading" @blur="onDateConfirm('start', $event)"
-                            @keyup.enter="onDateConfirm('start', $event)" />
-                        <div class="calendar-sidebar__end-date">
-                            <label class="calendar-sidebar__sublabel" for="calendar-end-date">{{ endDateLabel }}</label>
-                            <input id="calendar-end-date" type="date" :value="tempEndDate"
-                                :min="selectedDate ?? firstAvailableDate" :max="lastAvailableDate" :disabled="isLoading"
-                                @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
-                        </div>
-                        <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
-                            :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
-                            {{ showAllDatesLabel }}
-                        </button>
-                    </div>
-                </div>
-
-                <div class="calendar-sidebar__section calendar-sidebar__section--types">
-                    <label class="calendar-sidebar__label" for="calendar-type">{{ typeLabel }}</label>
-                    <select id="calendar-type" v-model="selectedType"
-                        :disabled="isLoading || isTypesLoading || typeOptions.length === 0">
-                        <option value="all">{{ allCategoriesLabel }}</option>
-                        <option v-for="type in typeOptions" :key="type" :value="type">
-                            {{ type }}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="calendar-sidebar__footer">
-                    <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__reset"
-                        :disabled="!filtersActive" @click="resetFilters">
-                        {{ resetFiltersLabel }}
-                    </button>
-                </div>
-            </aside>
+        <div v-if="currentView === 'detailed'" class="calendar-body">
+            <EventCalendarSidebar search-id="calendar-search" date-id="calendar-date" end-date-id="calendar-end-date"
+                type-id="calendar-type" :search-query="searchQuery" :selected-type="selectedType"
+                :selected-date="selectedDate" :selected-end-date="selectedEndDate" :temp-start-date="tempStartDate"
+                :temp-end-date="tempEndDate" :is-loading="isLoading" :is-types-loading="isTypesLoading"
+                :type-options="typeOptions" :last-available-date="lastAvailableDate"
+                :first-available-date="firstAvailableDate" :filters-active="filtersActive"
+                @update:search-query="searchQuery = $event" @update:selected-type="selectedType = $event"
+                @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
 
             <section class="calendar-content" aria-live="polite">
                 <div v-if="isLoading" class="calendar-state calendar-state--loading">
@@ -143,56 +86,14 @@
 
         <!-- Compact View -->
         <div v-else-if="currentView === 'compact'" class="calendar-body-compact">
-            <aside class="calendar-sidebar">
-                <div class="calendar-sidebar__header">
-                    <h2>{{ filtersTitle }}</h2>
-                    <p>{{ filtersSubtitle }}</p>
-                </div>
-
-                <div class="calendar-sidebar__section calendar-sidebar__section--search">
-                    <label class="calendar-sidebar__label" for="calendar-search-compact">{{ searchLabel }}</label>
-                    <input id="calendar-search-compact" type="search" :placeholder="searchPlaceholder"
-                        v-model.trim="searchQuery" :disabled="isLoading" />
-                </div>
-
-                <div class="calendar-sidebar__section calendar-sidebar__section--dates">
-                    <label class="calendar-sidebar__label" for="calendar-date-compact">{{ dateLabel }}</label>
-                    <div class="calendar-sidebar__date-controls">
-                        <input id="calendar-date-compact" type="date" :value="tempStartDate" :max="lastAvailableDate"
-                            :disabled="isLoading" @blur="onDateConfirm('start', $event)"
-                            @keyup.enter="onDateConfirm('start', $event)" />
-                        <div class="calendar-sidebar__end-date">
-                            <label class="calendar-sidebar__sublabel" for="calendar-end-date-compact">{{ endDateLabel
-                                }}</label>
-                            <input id="calendar-end-date-compact" type="date" :value="tempEndDate"
-                                :min="selectedDate ?? firstAvailableDate" :max="lastAvailableDate" :disabled="isLoading"
-                                @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
-                        </div>
-                        <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
-                            :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
-                            {{ showAllDatesLabel }}
-                        </button>
-                    </div>
-                </div>
-
-                <div class="calendar-sidebar__section calendar-sidebar__section--types">
-                    <label class="calendar-sidebar__label" for="calendar-type-compact">{{ typeLabel }}</label>
-                    <select id="calendar-type-compact" v-model="selectedType"
-                        :disabled="isLoading || isTypesLoading || typeOptions.length === 0">
-                        <option value="all">{{ allCategoriesLabel }}</option>
-                        <option v-for="type in typeOptions" :key="type" :value="type">
-                            {{ type }}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="calendar-sidebar__footer">
-                    <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__reset"
-                        :disabled="!filtersActive" @click="resetFilters">
-                        {{ resetFiltersLabel }}
-                    </button>
-                </div>
-            </aside>
+            <EventCalendarSidebar search-id="calendar-search-compact" date-id="calendar-date-compact"
+                end-date-id="calendar-end-date-compact" type-id="calendar-type-compact" :search-query="searchQuery"
+                :selected-type="selectedType" :selected-date="selectedDate" :selected-end-date="selectedEndDate"
+                :temp-start-date="tempStartDate" :temp-end-date="tempEndDate" :is-loading="isLoading"
+                :is-types-loading="isTypesLoading" :type-options="typeOptions" :last-available-date="lastAvailableDate"
+                :first-available-date="firstAvailableDate" :filters-active="filtersActive"
+                @update:search-query="searchQuery = $event" @update:selected-type="selectedType = $event"
+                @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
 
             <section class="calendar-content-compact" aria-live="polite">
                 <div v-if="isLoading" class="calendar-state calendar-state--loading">
@@ -245,59 +146,17 @@
 
         <!-- Tiles View -->
         <div v-else-if="currentView === 'tiles'" class="calendar-body-tiles">
-            <aside class="calendar-sidebar">
-                <div class="calendar-sidebar__header">
-                    <h2>{{ filtersTitle }}</h2>
-                    <p>{{ filtersSubtitle }}</p>
-                </div>
-
-                <div class="calendar-sidebar__section calendar-sidebar__section--search">
-                    <label class="calendar-sidebar__label" for="calendar-search-tiles">{{ searchLabel }}</label>
-                    <input id="calendar-search-tiles" type="search" :placeholder="searchPlaceholder"
-                        v-model.trim="searchQuery" :disabled="isLoading" />
-                </div>
-
-                <div class="calendar-sidebar__section calendar-sidebar__section--dates">
-                    <label class="calendar-sidebar__label" for="calendar-date-tiles">{{ dateLabel }}</label>
-                    <div class="calendar-sidebar__date-controls">
-                        <input id="calendar-date-tiles" type="date" :value="tempStartDate" :max="lastAvailableDate"
-                            :disabled="isLoading" @blur="onDateConfirm('start', $event)"
-                            @keyup.enter="onDateConfirm('start', $event)" />
-                        <div class="calendar-sidebar__end-date">
-                            <label class="calendar-sidebar__sublabel" for="calendar-end-date-tiles">{{ endDateLabel
-                                }}</label>
-                            <input id="calendar-end-date-tiles" type="date" :value="tempEndDate"
-                                :min="selectedDate ?? firstAvailableDate" :max="lastAvailableDate" :disabled="isLoading"
-                                @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
-                        </div>
-                        <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
-                            :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
-                            {{ showAllDatesLabel }}
-                        </button>
-                    </div>
-                </div>
-
-                <div class="calendar-sidebar__section calendar-sidebar__section--types">
-                    <label class="calendar-sidebar__label" for="calendar-type-tiles">{{ typeLabel }}</label>
-                    <select id="calendar-type-tiles" v-model="selectedType"
-                        :disabled="isLoading || isTypesLoading || typeOptions.length === 0">
-                        <option value="all">{{ allCategoriesLabel }}</option>
-                        <option v-for="type in typeOptions" :key="type" :value="type">
-                            {{ type }}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="calendar-sidebar__footer">
-                    <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__reset"
-                        :disabled="!filtersActive" @click="resetFilters">
-                        {{ resetFiltersLabel }}
-                    </button>
-                </div>
-            </aside>
+            <EventCalendarSidebar search-id="calendar-search-tiles" date-id="calendar-date-tiles"
+                end-date-id="calendar-end-date-tiles" type-id="calendar-type-tiles" :search-query="searchQuery"
+                :selected-type="selectedType" :selected-date="selectedDate" :selected-end-date="selectedEndDate"
+                :temp-start-date="tempStartDate" :temp-end-date="tempEndDate" :is-loading="isLoading"
+                :is-types-loading="isTypesLoading" :type-options="typeOptions" :last-available-date="lastAvailableDate"
+                :first-available-date="firstAvailableDate" :filters-active="filtersActive"
+                @update:search-query="searchQuery = $event" @update:selected-type="selectedType = $event"
+                @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
 
             <section class="calendar-content-tiles" aria-live="polite">
-               <div v-if="isLoading" class="calendar-state calendar-state--loading">
+                <div v-if="isLoading" class="calendar-state calendar-state--loading">
                     <span>{{ loadingLabel }}</span>
                 </div>
                 <div v-else-if="loadError" class="calendar-state calendar-state--error" role="alert">
@@ -318,8 +177,9 @@
                             <div class="calendar-content__body">
                                 <h3 class="calendar-tile__title">{{ event.title }}</h3>
                                 <div class="calendar-tile__meta">
-                                    <span class="calendar-tile__time">{{ formatCompactDate(event.start_date) }} {{ formatTime(event.start_date, event.start_time)
-                                        }}</span>
+                                    <span class="calendar-tile__time">{{ formatCompactDate(event.start_date) }} {{
+                                        formatTime(event.start_date, event.start_time)
+                                    }}</span>
                                 </div>
                             </div>
                         </div>
@@ -340,7 +200,8 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useTokenStore } from '@/store/token'
-import UranusBlob from "@/components/uranus/UranusBlob.vue";
+import UranusBlob from "@/components/uranus/UranusBlob.vue"
+import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'
 
 interface CalendarEventType {
     genre_id: number | null
@@ -432,19 +293,9 @@ const intlTime = new Intl.DateTimeFormat(undefined, {
 
 const pageTitle = computed(() => t('events_calendar_title'))
 const pageSubtitle = computed(() => t('events_calendar_subtitle'))
-const searchPlaceholder = computed(() => t('events_calendar_search_placeholder'))
 const loadingLabel = computed(() => t('events_calendar_loading'))
 const emptyLabel = computed(() => t('events_calendar_empty'))
-const showAllDatesLabel = computed(() => t('events_calendar_all_dates'))
-const allCategoriesLabel = computed(() => t('events_calendar_all_categories'))
-const resetFiltersLabel = computed(() => t('events_calendar_reset_filters'))
 const viewDetailsLabel = computed(() => t('events_calendar_view_details'))
-const filtersTitle = computed(() => t('events_calendar_filters_title'))
-const filtersSubtitle = computed(() => t('events_calendar_filters_subtitle'))
-const searchLabel = computed(() => t('events_calendar_search_label'))
-const dateLabel = computed(() => t('events_calendar_date_label'))
-const typeLabel = computed(() => t('events_calendar_type_label'))
-const endDateLabel = computed(() => t('events_calendar_end_date_label'))
 const detailedViewLabel = computed(() => t('events_calendar_detailed_view'))
 const compactViewLabel = computed(() => t('events_calendar_compact_view'))
 const tilesViewLabel = computed(() => t('events_calendar_tiles_view'))
@@ -1141,7 +992,8 @@ watch(
     flex-direction: column;
     background: var(--uranus-bg-color);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative; /* make parent the positioning context */
+    position: relative;
+    /* make parent the positioning context */
 
 }
 
@@ -1190,10 +1042,14 @@ watch(
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     line-clamp: 2;
-  white-space: nowrap;       /* prevent line breaks */
-  overflow: hidden;          /* optional: hide overflow if too long */
-  text-overflow: ellipsis;   /* optional: show ... for overflowed text */
-  word-break: normal;        /* prevent breaking long words */
+    white-space: nowrap;
+    /* prevent line breaks */
+    overflow: hidden;
+    /* optional: hide overflow if too long */
+    text-overflow: ellipsis;
+    /* optional: show ... for overflowed text */
+    word-break: normal;
+    /* prevent breaking long words */
 }
 
 .calendar-tile__meta {
@@ -1210,57 +1066,59 @@ watch(
 }
 
 .calendar-tile__cta::before {
-  content: "✎";   /* your UTF-8 character */
-  display: inline-block;
-  font-size: 2rem;
-  line-height: 1;
+    content: "✎";
+    /* your UTF-8 character */
+    display: inline-block;
+    font-size: 2rem;
+    line-height: 1;
 }
 
 .calendar-tile__cta {
-  position: absolute;
-  bottom: 0.5rem;  /* distance from bottom edge */
-  right: 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--uranus-bg-color);
-  color: var(--uranus-color);
-  font-size: 1.2rem;
-  text-decoration: none;
-  opacity: 0;              /* initially hidden */
-  pointer-events: none;    /* don't block clicks when hidden */
-  z-index: 10;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
+    position: absolute;
+    bottom: 0.5rem;
+    /* distance from bottom edge */
+    right: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--uranus-bg-color);
+    color: var(--uranus-color);
+    font-size: 1.2rem;
+    text-decoration: none;
+    opacity: 0;
+    /* initially hidden */
+    pointer-events: none;
+    /* don't block clicks when hidden */
+    z-index: 10;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
 }
 
 /* Show when parent is hovered */
 .calendar-tile:hover .calendar-tile__cta {
-  opacity: 1;
-  pointer-events: auto;
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* Hover effect */
 .calendar-tile__cta:hover {
-  color: var(--uranus-ia-color);        /* new text/icon color */
-  opacity: 1;                        /* optional: fully visible */
-  transition: all 0.2s ease;
+    color: var(--uranus-ia-color);
+    /* new text/icon color */
+    opacity: 1;
+    /* optional: fully visible */
+    transition: all 0.2s ease;
 }
 
 .calendar-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.25rem, 2.5vw, 1.75rem);
-    background: var(--card-bg, #fff);
-    border-radius: 12px;
-    padding: clamp(1.25rem, 3vw, 1.75rem);
-    border: 0px solid var(--border-soft);
-    // box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
     position: sticky;
     top: 100px;
+}
+
+.calendar-sidebar {
+    position: static;
 }
 
 .calendar-sidebar__header {
