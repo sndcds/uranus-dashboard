@@ -30,18 +30,26 @@
   }
 }
 
-.uranus-inline-save-button {
-  font-size: 0.9rem;
-  font-weight: 700;
-  background: var(--uranus-success-color);
-  padding: 0.6em 1em;
-}
-
+.uranus-inline-save-button,
 .uranus-inline-cancel-button {
   font-size: 0.9rem;
   font-weight: 700;
+  padding: 0.6em 1em;
+}
+
+.uranus-inline-save-button {
+  background: var(--uranus-success-color);
+  &:hover:not(:disabled) {
+    background: #39d190;
+  }
+}
+
+
+.uranus-inline-cancel-button {
   background: var(--uranus-error-color);
-  padding: 0.2em 1em;
+  &:hover:not(:disabled) {
+    background: #ff6358;
+  }
 }
 
 .uranus-secondary-button,

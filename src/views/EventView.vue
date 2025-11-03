@@ -649,24 +649,18 @@ onMounted(() => {
 }
 
 .event-content {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 4vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  max-width: 1280px;
+  background: var(--uranus-bg-color);
 }
 
 .event-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: clamp(1rem, 4vw, 1.5rem);
-}
-
-.event-main {
-    border-radius: 16px;
-    padding: clamp(1rem, 4vw, 1.5rem);
-    background: var(--card-bg);
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 4vw, 1.25rem);
 }
 
 .event-map {
@@ -709,12 +703,6 @@ onMounted(() => {
 
     .event-layout {
         gap: clamp(1.25rem, 3vw, 2rem);
-    }
-
-    .event-main {
-        border-radius: 20px;
-        padding: clamp(1.25rem, 3vw, 2rem);
-        gap: clamp(1.25rem, 3vw, 1.75rem);
     }
 
     .event-map {

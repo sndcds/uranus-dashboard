@@ -1,8 +1,8 @@
 <template>
-    <article class="event-teaser">
+    <article>
         <img class="event-teaser__image" :src="imageSrc" alt="Event teaser image" width="1200" height="200"
             loading="lazy" />
-        <div class="event-teaser__content">
+        <div class="uranus-hover-section">
             <template v-if="isEditing">
                 <MarkdownEditorComponent v-model="editedTeaser" class="event-teaser__markdown"
                     :placeholder="t('event_teaser_placeholder')" />
@@ -144,7 +144,6 @@ const saveTeaser = async () => {
 .event-teaser {
     background: var(--card-bg);
     border-radius: 24px;
-    padding: clamp(1.75rem, 3vw, 2.4rem);
     display: flex;
     flex-direction: column;
     gap: 1rem;
