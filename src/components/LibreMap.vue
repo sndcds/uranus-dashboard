@@ -3,45 +3,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
-import type { FeatureCollection, Point } from 'geojson';
+import { ref, watch, onMounted } from 'vue'
+import type { FeatureCollection } from 'geojson'
 import markerIcon from '@/assets/marker.png'
 
-// Correct imports for Vue + TS
-import maplibregl from 'maplibre-gl'; // only for runtime
-import type { Map, Marker, LngLatLike, Popup } from 'maplibre-gl'; // type-only
-
-
-interface Venue {
-  venue_name: string;
-  venue_city: string;
-  venue_lat: number;
-  venue_lon: number;
-  venue_type_list: string | null;
-  venue_url: string | null;
-}
+import maplibregl from 'maplibre-gl'
+import 'maplibre-gl/dist/maplibre-gl.css'
+import type { LngLatLike, Popup } from 'maplibre-gl'
 
 // Props
-const props = defineProps({
-  venues: {
-    type: Array as () => Venue[],
-    default: () => [],
-  },
-});
+const props = defineProps<{
+  data: FeatureCollection
+  popupContent?: (properties: Record<string, any>) => string
+}>()
 
-const mapContainer = ref<HTMLElement | null>(null);
-const mapInstance = ref<maplibregl.Map | null>(null);
-let currentPopup: Popup | null = null;
+const mapContainer = ref<HTMLElement | null>(null)
+const mapInstance = ref<maplibregl.Map | null>(null)
 
-const GEOJSON_SOURCE_ID = 'events';
-const CLUSTER_LAYER_ID = 'clusters';
-const CLUSTER_COUNT_LAYER_ID = 'cluster-count';
-const UNCLUSTERED_LAYER_ID = 'unclustered-point';
+let currentPopup: Popup | null = null
+
+const GEOJSON_SOURCE_ID = 'events'
+const CLUSTER_LAYER_ID = 'clusters'
+const CLUSTER_COUNT_LAYER_ID = 'cluster-count'
+const UNCLUSTERED_LAYER_ID = 'unclustered-point'
 
 onMounted(() => {
-  if (!mapContainer.value) return;
+  if (!mapContainer.value) return
 
-  mapInstance.value = new maplibregl.Map({
+  const map = new maplibregl.Map({
     container: mapContainer.value,
     style: {
       version: 8,
@@ -65,25 +54,25 @@ onMounted(() => {
     },
     center: [9.5, 54.3] as LngLatLike,
     zoom: 8,
-  });
+  })
 
-  mapInstance.value.addControl(new maplibregl.NavigationControl());
+  map.addControl(new maplibregl.NavigationControl())
 
-  mapInstance.value.on('load', () => {
+  map.on('load', () => {
     // Initialize empty GeoJSON source
-    mapInstance.value!.addSource(GEOJSON_SOURCE_ID, {
+    map.addSource(GEOJSON_SOURCE_ID, {
       type: 'geojson',
       data: {
         type: 'FeatureCollection',
         features: [],
-      } as FeatureCollection<Point, Venue>,
+      },
       cluster: true,
       clusterRadius: 40,
       clusterMaxZoom: 17,
-    });
+    })
 
     // Cluster circle layer
-    mapInstance.value!.addLayer({
+    map.addLayer({
       id: CLUSTER_LAYER_ID,
       type: 'circle',
       source: GEOJSON_SOURCE_ID,
@@ -94,24 +83,24 @@ onMounted(() => {
         'circle-stroke-width': 3,
         'circle-stroke-color': '#A0D896',
       },
-    });
+    })
 
     // Cluster count labels
-    mapInstance.value!.addLayer({
+    map.addLayer({
       id: CLUSTER_COUNT_LAYER_ID,
       type: 'symbol',
       source: GEOJSON_SOURCE_ID,
       filter: ['has', 'point_count'],
       layout: { 'text-field': '{point_count_abbreviated}', 'text-size': 14 },
       paint: { 'text-color': '#000' },
-    });
+    })
 
-    const img = new Image();
-    img.src = markerIcon;
+    const img = new Image()
+    img.src = markerIcon
     img.onload = () => {
-      mapInstance.value!.addImage('custom-marker', img);
+      map.addImage('custom-marker', img)
 
-      mapInstance.value!.addLayer({
+      map.addLayer({
         id: 'unclustered-point',
         type: 'symbol',
         source: 'events',
@@ -123,94 +112,196 @@ onMounted(() => {
           'icon-allow-overlap': true,
           'icon-ignore-placement': true,
         },
-      });
-    };
+      })
+    }
 
     // Click popups
-    mapInstance.value!.on('click', UNCLUSTERED_LAYER_ID, (e) => {
-      const props = e.features![0].properties as Venue;
+    map.on('click', UNCLUSTERED_LAYER_ID, (e) => {
+      if (!e.features || e.features.length === 0) return
 
-      if (currentPopup) currentPopup.remove();
+      const properties = e.features[0]!.properties
 
-      const html = `
-        <div class="popup-wrapper">
-          <div class="popup-content">
-            <strong>${props.venue_url
-          ? `<a href="${props.venue_url}" target="_blank">${props.venue_name}</a>`
-          : props.venue_name}</strong>
-            <p>${props.venue_city}</p>
-            ${props.venue_type_list ? `<p>${props.venue_type_list}</p>` : ''}
-            ${props.venue_url ? `<button onclick="window.open('${props.venue_url}', '_blank')">Details</button>` : ''}
-          </div>
-        </div>
-      `;
+      if (currentPopup) {
+        currentPopup.remove()
+        currentPopup = null
+      }
 
-      currentPopup = new maplibregl.Popup({ closeButton: true })
-          .setLngLat(e.lngLat)
-          .setHTML(html)
-          .addTo(mapInstance.value!);
-    });
+      // Use custom popup content if provided, otherwise show basic info
+      const html = props.popupContent 
+        ? props.popupContent(properties || {})
+        : `<div style="padding: 8px;"><strong>${properties?.name || 'Feature'}</strong></div>`
+
+      currentPopup = new maplibregl.Popup({ 
+        closeButton: true,
+        closeOnClick: false,
+        maxWidth: '300px',
+        anchor: 'left',
+        offset: 15
+      })
+        .setLngLat(e.lngLat)
+        .setHTML(html)
+        .addTo(map)
+    })
 
     // Close popup on clicking outside
-    mapInstance.value!.on('click', (e) => {
-      const features = mapInstance.value!.queryRenderedFeatures(e.point, {
+    map.on('click', (e) => {
+      const features = map.queryRenderedFeatures(e.point, {
         layers: [UNCLUSTERED_LAYER_ID, CLUSTER_LAYER_ID],
-      });
+      })
       if (!features.length && currentPopup) {
-        currentPopup.remove();
-        currentPopup = null;
+        currentPopup.remove()
+        currentPopup = null
       }
-    });
+    })
 
     // Cluster click zoom
-    mapInstance.value!.on('click', CLUSTER_LAYER_ID, (e) => {
-      const features = mapInstance.value!.queryRenderedFeatures(e.point, { layers: [CLUSTER_LAYER_ID] });
-      const clusterId = (features[0].properties as any).cluster_id;
-      (mapInstance.value!.getSource(GEOJSON_SOURCE_ID) as any).getClusterExpansionZoom(
-          clusterId,
-          (err: any, zoom: number) => {
-            if (err) return;
-            mapInstance.value!.easeTo({ center: features[0].geometry.coordinates, zoom });
-          },
-      );
-    });
+    map.on('click', CLUSTER_LAYER_ID, (e) => {
+      const features = map.queryRenderedFeatures(e.point, { layers: [CLUSTER_LAYER_ID] })
+      if (!features.length || !features[0]) return
+      
+      const feature = features[0]
+      const clusterId = feature.properties?.cluster_id
+      if (!clusterId) return
+      
+      const geometry = feature.geometry
+      if (geometry.type !== 'Point') return
+      
+      const source = map.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
+      
+      // Type assertion for the callback - MapLibre's types are inconsistent here
+      ;(source as any).getClusterExpansionZoom(
+        clusterId,
+        (err: Error | null, zoom: number) => {
+          if (err) return
+          map.easeTo({ 
+            center: geometry.coordinates as [number, number], 
+            zoom 
+          })
+        }
+      )
+    })
 
     // Cursor pointer
-    [UNCLUSTERED_LAYER_ID, CLUSTER_LAYER_ID].forEach((layer) => {
-      mapInstance.value!.on('mouseenter', layer, () => mapInstance.value!.getCanvas().style.cursor = 'pointer');
-      mapInstance.value!.on('mouseleave', layer, () => mapInstance.value!.getCanvas().style.cursor = '');
-    });
-  });
-});
+    const layers = [UNCLUSTERED_LAYER_ID, CLUSTER_LAYER_ID] as const
+    layers.forEach((layer) => {
+      map.on('mouseenter', layer, () => {
+        map.getCanvas().style.cursor = 'pointer'
+      })
+      map.on('mouseleave', layer, () => {
+        map.getCanvas().style.cursor = ''
+      })
+    })
+  })
 
-// Watch venues and update source
+  // Assign to ref after all setup
+  mapInstance.value = map
+})
+
+// Watch data prop and update map
 watch(
-    () => props.venues,
-    (venues) => {
-      if (!mapInstance.value?.getSource(GEOJSON_SOURCE_ID)) return;
+  () => props.data,
+  (geojson) => {
+    if (!mapInstance.value?.getSource(GEOJSON_SOURCE_ID)) return
 
-      const geojson: FeatureCollection<Point, Venue> = {
-        type: 'FeatureCollection',
-        features: venues
-            .filter(v => v.venue_lat && v.venue_lon)
-            .map(v => ({
-              type: 'Feature',
-              geometry: { type: 'Point', coordinates: [v.venue_lon, v.venue_lat] },
-              properties: v,
-            })),
-      };
-
-      (mapInstance.value.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource).setData(geojson);
-    },
-    { immediate: true },
-);
+    const source = mapInstance.value.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
+    source.setData(geojson)
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>
-.map-container { width: 100%; height: 100%; }
-.popup-wrapper { background: rgba(255,255,255,0.2); padding:4px; max-width:260px; font-family:Arial,sans-serif; }
-.popup-content strong { font-size:1.4em; line-height:1.1em; color:#333; display:block; margin-bottom:4px; }
-.popup-content p { margin:4px 0; }
-.popup-content button { margin-top:8px; padding:6px 12px; background-color:#fff; color:#406E37; border:1px solid #A0D896; border-radius:5px; cursor:pointer; transition:0.3s; }
-.popup-content button:hover { border-color:#333; color:#333; }
+.map-container {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
+<style>
+/* Global styles for MapLibre popups (cannot be scoped) */
+.maplibregl-popup-content {
+  padding: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  background: white !important;
+  overflow: hidden;
+}
+
+.maplibregl-popup-close-button {
+  font-size: 20px !important;
+  padding: 4px 8px !important;
+  color: #666 !important;
+  right: 4px !important;
+  top: 4px !important;
+}
+
+.maplibregl-popup-close-button:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #333 !important;
+}
+
+.popup-wrapper {
+  background: white;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.popup-content {
+  padding: 16px;
+}
+
+.popup-title {
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #2d3748;
+  margin: 0 0 12px 0;
+}
+
+.popup-title a {
+  color: #667eea;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.popup-title a:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+.popup-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.popup-city,
+.popup-type {
+  margin: 0;
+  font-size: 0.9em;
+  color: #4a5568;
+  line-height: 1.4;
+}
+
+.popup-button {
+  display: inline-block;
+  width: 100%;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.popup-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
 </style>
