@@ -174,7 +174,7 @@ const renderedContent = computed(() => renderMarkdown(props.value))
 <style scoped>
 .markdown-preview {
     min-height: 180px;
-    padding: 1rem;
+    padding: 1rem 0;
     border-radius: 2px;
     border: 1px solid var(--border-soft);
     background: var(--card-bg);

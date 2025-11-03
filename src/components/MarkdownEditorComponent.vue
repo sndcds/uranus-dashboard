@@ -324,7 +324,6 @@ onMounted(() => {
     gap: 0.6rem;
 }
 
-
 .markdown-editor-toggle {
     margin-left: auto;
 }
