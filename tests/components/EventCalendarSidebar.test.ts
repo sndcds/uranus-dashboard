@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
-import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'
+
+import EventCalendarSidebar from '../../src/components/EventCalendarSidebar.vue'
 
 const i18n = createI18n({
   legacy: false,
