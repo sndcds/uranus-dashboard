@@ -62,10 +62,7 @@ onMounted(() => {
     // Initialize empty GeoJSON source
     map.addSource(GEOJSON_SOURCE_ID, {
       type: 'geojson',
-      data: {
-        type: 'FeatureCollection',
-        features: [],
-      },
+      data: props.data, // Use initial data from props
       cluster: true,
       clusterRadius: 40,
       clusterMaxZoom: 17,
@@ -201,12 +198,36 @@ onMounted(() => {
 watch(
   () => props.data,
   (geojson) => {
-    if (!mapInstance.value?.getSource(GEOJSON_SOURCE_ID)) return
-
-    const source = mapInstance.value.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
-    source.setData(geojson)
+    console.log('Data changed, features:', geojson.features.length)
+    
+    const map = mapInstance.value
+    if (!map) {
+      console.log('Map instance not ready yet')
+      return
+    }
+    
+    // Wait for map to be loaded
+    if (!map.isStyleLoaded()) {
+      console.log('Map style not loaded yet, waiting...')
+      map.once('load', () => {
+        const source = map.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
+        if (source) {
+          console.log('Setting data after load:', geojson.features.length)
+          source.setData(geojson)
+        }
+      })
+      return
+    }
+    
+    const source = map.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
+    if (source) {
+      console.log('Setting data immediately:', geojson.features.length)
+      source.setData(geojson)
+    } else {
+      console.log('Source not found yet')
+    }
   },
-  { immediate: true }
+  { deep: true }
 )
 </script>
 

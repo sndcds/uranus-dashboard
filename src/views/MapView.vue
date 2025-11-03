@@ -1,5 +1,8 @@
 <template>
-  <LibreMap :data="geojsonData" :popup-content="getPopupContent" class="map-container" />
+  <div v-if="loading" class="loading-state">
+    Loading venues...
+  </div>
+  <LibreMap v-else :data="geojsonData" :popup-content="getPopupContent" class="map-container" />
 </template>
 
 <script setup lang="ts">
@@ -19,40 +22,44 @@ interface Venue {
 }
 
 const venues = ref<Venue[]>([])
+const loading = ref(true)
 
-const geojsonData = computed<FeatureCollection<Point>>(() => ({
-  type: 'FeatureCollection',
-  features: venues.value.map(v => ({
-    type: 'Feature',
-    geometry: { 
-      type: 'Point', 
-      coordinates: [v.venue_lon, v.venue_lat] 
-    },
-    properties: {
-      venue_name: v.venue_name,
-      venue_city: v.venue_city,
-      venue_type_list: v.venue_type_list,
-      venue_url: v.venue_url,
-    },
-  })),
-}))
+const geojsonData = computed<FeatureCollection<Point>>(() => {
+  const data = {
+    type: 'FeatureCollection' as const,
+    features: venues.value.map(v => ({
+      type: 'Feature' as const,
+      geometry: {
+        type: 'Point' as const,
+        coordinates: [v.venue_lon, v.venue_lat]
+      },
+      properties: {
+        venue_name: v.venue_name,
+        venue_city: v.venue_city,
+        venue_type_list: v.venue_type_list,
+        venue_url: v.venue_url,
+      },
+    })),
+  }
+
+  return data
+})
 
 const getPopupContent = (properties: Record<string, any>): string => {
   return `
     <div class="popup-wrapper">
       <div class="popup-content">
-        <h3 class="popup-title">${
-          properties.venue_url
-            ? `<a href="${properties.venue_url}" target="_blank" rel="noopener noreferrer">${properties.venue_name}</a>`
-            : properties.venue_name || ''
-        }</h3>
+        <h3 class="popup-title">${properties.venue_url
+      ? `<a href="${properties.venue_url}" target="_blank" rel="noopener noreferrer">${properties.venue_name}</a>`
+      : properties.venue_name || ''
+    }</h3>
         <div class="popup-details">
           <p class="popup-city">📍 ${properties.venue_city || ''}</p>
           ${properties.venue_type_list ? `<p class="popup-type">🏛️ ${properties.venue_type_list}</p>` : ''}
         </div>
-        ${properties.venue_url 
-          ? `<a href="${properties.venue_url}" target="_blank" rel="noopener noreferrer" class="popup-button">View Details</a>` 
-          : ''}
+        ${properties.venue_url
+      ? `<a href="${properties.venue_url}" target="_blank" rel="noopener noreferrer" class="popup-button">View Details</a>`
+      : ''}
       </div>
     </div>
   `
@@ -61,20 +68,26 @@ const getPopupContent = (properties: Record<string, any>): string => {
 const loadVenues = async () => {
   try {
     const { data } = await apiFetch<Venue[]>('/api/geojson/venues')
+
     if (Array.isArray(data)) {
       // Filter out venues with invalid coordinates (null, 0, or outside valid ranges)
-      venues.value = data.filter(v => 
-        v.venue_lat != null && 
+      const filtered = data.filter(v =>
+        v.venue_lat != null &&
         v.venue_lon != null &&
-        v.venue_lat !== 0 && 
+        v.venue_lat !== 0 &&
         v.venue_lon !== 0 &&
-        Math.abs(v.venue_lat) <= 90 && 
+        Math.abs(v.venue_lat) <= 90 &&
         Math.abs(v.venue_lon) <= 180
       )
-      console.log(`Loaded ${venues.value.length} valid venues out of ${data.length} total`)
+
+      venues.value = filtered
+    } else {
+      console.error('Data is not an array:', data)
     }
   } catch (err) {
     console.error('Failed to load venues:', err)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -87,5 +100,14 @@ onMounted(() => {
 .map-container {
   width: 100%;
   height: 600px;
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
 }
 </style>
