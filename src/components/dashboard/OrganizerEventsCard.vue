@@ -14,7 +14,17 @@
       <div class="events-list">
         <article v-for="event in events" :key="event.event_id">
           <router-link :to="`/admin/event/${event.event_id}`" class="uranus-card">
-            <span v-if="event.release_status_name" class="release-status-chip">
+            <span 
+              v-if="event.release_status_name" 
+              class="release-status-chip"
+              :class="{
+                'release-status-chip--red': event.release_status_id === 1,
+                'release-status-chip--orange': event.release_status_id === 2,
+                'release-status-chip--green': event.release_status_id === 3,
+                'release-status-chip--blue': event.release_status_id === 4,
+                'release-status-chip--pink': event.release_status_id === 5
+              }"
+            >
               {{ event.release_status_name }}
             </span>
             <img class="events-card__image" v-if="event.image_id" :src="buildImageUrl(event)"
@@ -143,6 +153,31 @@ const buildImageUrl = (event: OrganizerEventItem) => {
   letter-spacing: 0.02em;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 10;
+
+  &--red {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  &--orange {
+    background: #ffedd5;
+    color: #9a3412;
+  }
+
+  &--green {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  &--blue {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  &--pink {
+    background: #fce7f3;
+    color: #9d174d;
+  }
 }
 
 .chip {
