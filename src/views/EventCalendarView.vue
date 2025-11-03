@@ -177,9 +177,10 @@
                             <div class="calendar-content__body">
                                 <h3 class="calendar-tile__title">{{ event.title }}</h3>
                                 <div class="calendar-tile__meta">
-                                    <span class="calendar-tile__time">{{ formatCompactDate(event.start_date) }} {{
+                                    <span>{{ formatNumberDate(event.start_date) }} {{
                                         formatTime(event.start_date, event.start_time)
                                     }}</span>
+                                    <span>{{ event.venue_name }}</span>
                                 </div>
                             </div>
                         </div>
@@ -592,6 +593,36 @@ const formatCompactDate = (date: string) => {
     }
 
     return intlDate.format(parsedDate)
+}
+
+const formatNumberDate = (date: string, locale = navigator.language) => {
+  const parsedDate = parseISODate(date)
+  if (!parsedDate) return date
+
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const eventDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate())
+
+  const tDate = (d: Date) => d.getTime()
+
+  if (tDate(eventDate) === tDate(today)) return t('events_calendar_today')
+
+  const tomorrow = new Date(today)
+  tomorrow.setDate(today.getDate() + 1)
+  if (tDate(eventDate) === tDate(tomorrow)) return t('events_calendar_tomorrow')
+
+  const yesterday = new Date(today)
+  yesterday.setDate(today.getDate() - 1)
+  if (tDate(eventDate) === tDate(yesterday)) return t('events_calendar_yesterday')
+
+  // Use Intl.DateTimeFormat with numeric month
+  const formatter = new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: '2-digit',  // numeric month with leading zero
+    day: '2-digit',
+  })
+
+  return formatter.format(parsedDate)
 }
 
 const formatLocation = (event: CalendarEvent) => {
@@ -1054,13 +1085,12 @@ watch(
 
 .calendar-tile__meta {
     display: flex;
+  font-size: 0.95rem;
     flex-direction: column;
-    gap: 0.25rem;
 }
 
 .calendar-tile__time,
 .calendar-tile__date {
-    font-size: 0.85rem;
     font-weight: 500;
     opacity: 0.9;
 }

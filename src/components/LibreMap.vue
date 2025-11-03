@@ -112,6 +112,16 @@ onMounted(() => {
       })
     }
 
+    watch(
+        () => props.data,
+        (geojson) => {
+          if (!mapInstance.value?.getSource(GEOJSON_SOURCE_ID)) return
+          const source = mapInstance.value.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
+          source.setData(geojson)
+        },
+        { immediate: true }
+    )
+
     // Click popups
     map.on('click', UNCLUSTERED_LAYER_ID, (e) => {
       if (!e.features || e.features.length === 0) return
@@ -124,11 +134,11 @@ onMounted(() => {
       }
 
       // Use custom popup content if provided, otherwise show basic info
-      const html = props.popupContent 
+      const html = props.popupContent
         ? props.popupContent(properties || {})
         : `<div style="padding: 8px;"><strong>${properties?.name || 'Feature'}</strong></div>`
 
-      currentPopup = new maplibregl.Popup({ 
+      currentPopup = new maplibregl.Popup({
         closeButton: true,
         closeOnClick: false,
         maxWidth: '300px',
@@ -155,24 +165,24 @@ onMounted(() => {
     map.on('click', CLUSTER_LAYER_ID, (e) => {
       const features = map.queryRenderedFeatures(e.point, { layers: [CLUSTER_LAYER_ID] })
       if (!features.length || !features[0]) return
-      
+
       const feature = features[0]
       const clusterId = feature.properties?.cluster_id
       if (!clusterId) return
-      
+
       const geometry = feature.geometry
       if (geometry.type !== 'Point') return
-      
+
       const source = map.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
-      
+
       // Type assertion for the callback - MapLibre's types are inconsistent here
       ;(source as any).getClusterExpansionZoom(
         clusterId,
         (err: Error | null, zoom: number) => {
           if (err) return
-          map.easeTo({ 
-            center: geometry.coordinates as [number, number], 
-            zoom 
+          map.easeTo({
+            center: geometry.coordinates as [number, number],
+            zoom
           })
         }
       )
@@ -199,13 +209,13 @@ watch(
   () => props.data,
   (geojson) => {
     console.log('Data changed, features:', geojson.features.length)
-    
+
     const map = mapInstance.value
     if (!map) {
       console.log('Map instance not ready yet')
       return
     }
-    
+
     // Wait for map to be loaded
     if (!map.isStyleLoaded()) {
       console.log('Map style not loaded yet, waiting...')
@@ -218,7 +228,7 @@ watch(
       })
       return
     }
-    
+
     const source = map.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
     if (source) {
       console.log('Setting data immediately:', geojson.features.length)
