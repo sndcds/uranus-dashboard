@@ -1,24 +1,15 @@
 <template>
-  <div class="uranus-main-layout">
-    <DashboardHeroComponent
-        :title="t('events_title')"
-        :subtitle="t('events_subtitle')"
-    />
-    <div style="padding: 16px;">
-      <router-link
-          :to="`/admin/organizer/${organizerId}/event/create`"
-          class="uranus-button">
-        {{ t('add_new_event') }}
-      </router-link>
-    </div>
+    <div class="uranus-main-layout">
+        <DashboardHeroComponent :title="t('events_title')" :subtitle="t('events_subtitle')" />
 
-    <OrganizerEventsCard
-      :events="events"
-      :is-loading="isLoading"
-      :error="error"
-      :api-base="apiBase"
-    />
-  </div>
+        <div style="padding: 16px;">
+            <router-link :to="`/admin/organizer/${organizerId}/event/create`" class="uranus-button">
+                {{ t('add_new_event') }}
+            </router-link>
+        </div>
+
+        <OrganizerEventsCard :events="events" :is-loading="isLoading" :error="error" :api-base="apiBase" />
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -26,11 +17,11 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+
 import OrganizerEventsCard, { type OrganizerEventItem } from '@/components/dashboard/OrganizerEventsCard.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 
 const apiBase = ((import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'https://uranus2.oklabflensburg.de')
-
 
 const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
@@ -114,5 +105,4 @@ onMounted(async () => {
         box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.22);
     }
 }
-
 </style>

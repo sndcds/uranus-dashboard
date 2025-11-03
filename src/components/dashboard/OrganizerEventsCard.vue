@@ -14,6 +14,9 @@
       <div class="events-list">
         <article v-for="event in events" :key="event.event_id">
           <router-link :to="`/admin/event/${event.event_id}`" class="uranus-card">
+            <span v-if="event.release_status_name" class="release-status-chip">
+              {{ event.release_status_name }}
+            </span>
             <img class="events-card__image" v-if="event.image_id" :src="buildImageUrl(event)"
               :alt="event.event_title" />
             <ul class="event-card__details">
@@ -58,6 +61,8 @@ export interface OrganizerEventItem {
   image_id: number | null
   focus_x?: number | null
   focus_y?: number | null
+  release_status_id?: number | null
+  release_status_name?: string | null
 }
 
 const props = withDefaults(
@@ -117,10 +122,27 @@ const buildImageUrl = (event: OrganizerEventItem) => {
 
 <style scoped lang="scss">
 .uranus-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
-  /* Important: fill the grid cell */
+}
+
+.release-status-chip {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .chip {
