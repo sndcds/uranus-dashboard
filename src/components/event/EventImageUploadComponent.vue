@@ -294,49 +294,6 @@ const toNumberOrNull = (value: unknown): number | null => {
     return null
 }
 
-const ensureImageIdLoaded = async (): Promise<number | null> => {
-    if (currentImageId.value !== null) {
-        return currentImageId.value
-    }
-
-    if (!props.eventId || !existingImageUrl.value) {
-        return null
-    }
-
-    if (pendingImageDetails) {
-        return pendingImageDetails
-    }
-
-    pendingImageDetails = (async () => {
-        try {
-            const { data } = await apiFetch(`/api/admin/event/${props.eventId}/image`)
-            if (data && typeof data === 'object') {
-                const record = data as Record<string, unknown>
-                const candidate =
-                    record.image_id ??
-                    record.id ??
-                    record.imageId ??
-                    record.main_image_id ??
-                    record.mainImageId ??
-                    null
-                const parsed = toNumberOrNull(candidate)
-                if (parsed !== null) {
-                    currentImageId.value = parsed
-                }
-            }
-        } catch (err) {
-            console.error('Failed to load image details', err)
-        } finally {
-            const result = currentImageId.value
-            pendingImageDetails = null
-            return result
-        }
-        return currentImageId.value
-    })()
-
-    return pendingImageDetails
-}
-
 watch(() => props.modelValue, (newFile) => {
     showMetadata.value = !!newFile
 
@@ -365,7 +322,6 @@ watch(() => props.existingImageUrl, (newUrl) => {
 
     if (existingImageUrl.value) {
         applyExistingImagePreview(existingImageUrl.value)
-        void ensureImageIdLoaded()
     } else {
         clearPreview()
         currentImageId.value = null

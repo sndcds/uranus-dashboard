@@ -32,10 +32,6 @@
     <template v-else>
       <h1 class="event-header-section__title">{{ title }}</h1>
       <p v-if="subtitle" class="event-header-section__subtitle">{{ subtitle }}</p>
-      <button type="button" class="event-header-section__edit" @click="startEditing">
-        {{ t('event_header_edit') }}
-        </button>
-
     </template>
   </div>
 </template>
@@ -156,12 +152,6 @@ const saveHeader = async () => {
     font-size: 1.2rem;
 }
 
-.event-header-section__edit {
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
 
 .event-header-section:hover .event-header-section__edit {
     opacity: 1;
