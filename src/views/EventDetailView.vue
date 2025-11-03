@@ -1,74 +1,74 @@
 <template>
-    <div class="event-detail-page">
-        <div v-if="isLoading" class="event-detail-state event-detail-state--loading">
-            <span>{{ loadingLabel }}</span>
-        </div>
-        <div v-else-if="loadError" class="event-detail-state event-detail-state--error" role="alert">
-            <span>{{ loadError }}</span>
-        </div>
-        <div v-else-if="event" class="event-detail-content">
-            <!-- Hero Section -->
-            <section class="event-detail-hero">
-                <div v-if="event.has_main_image && event.image_path" class="event-detail-hero__image">
-                    <img 
-                        :src="event.image_path.includes('?')
-                            ? `${event.image_path}&ratio=16by9&width=1200`
-                            : `${event.image_path}?ratio=16by9&width=1200`" 
-                        :alt="event.title"
-                        class="event-detail-hero__img"
-                    />
-                </div>
-                <div class="event-detail-hero__content">
-                    <h1 class="event-detail-hero__title">{{ event.title }}</h1>
-                    <p v-if="event.subtitle" class="event-detail-hero__subtitle">{{ event.subtitle }}</p>
-                    <div v-if="event.languages && event.languages.length > 0" class="event-detail-hero__languages">
-                        <span class="event-detail-languages-label">{{ t('languages') }}:</span>
-                        <div class="event-detail-languages-tags">
-                            <span v-for="lang in event.languages" :key="lang" class="event-detail-language-tag">
-                                {{ lang.toUpperCase() }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </section>
+  <div class="event-detail-page">
+    <div v-if="isLoading" class="event-detail-state event-detail-state--loading">
+      <span>{{ loadingLabel }}</span>
+    </div>
 
-            <!-- Main Content -->
-            <div class="event-detail-grid">
-                <!-- Left Column - Main Info -->
-                <section class="event-detail-main">
-                    <!-- Teaser -->
+    <div v-else-if="loadError" class="event-detail-state event-detail-state--error" role="alert">
+      <span>{{ loadError }}</span>
+    </div>
+
+    <div v-else-if="event" class="event-detail-content">
+      <div class="event-detail-grid">
+
+        <!-- Left Column - Main Info -->
+        <section class="event-detail-main">
+          <section>
+            <div v-if="event.has_main_image && event.image_path" class="event-image-frame">
+              <img
+                  :src="event.image_path.includes('?')
+                    ? `${event.image_path}&ratio=16by9&width=1200`
+                    : `${event.image_path}?ratio=16by9&width=1200`"
+                  :alt="event.title"
+                  class="event-image" />
+            </div>
+
+            <div class="event-detail-section">
+              <h1>{{ event.title }}</h1>
+              <p v-if="event.subtitle" class="event-detail-hero__subtitle">{{ event.subtitle }}</p>
+            </div>
+          </section>
+
+          <!-- Event Types -->
+          <div v-if="event.event_types && event.event_types.length > 0" class="event-detail-section">
+            <div class="event-detail-tags">
+              <span v-for="type in event.event_types" :key="type.type_id" class="event-detail-tag">
+                {{ type.type_name }}
+                <span v-if="type.genre_name">
+                  &nbsp;·&nbsp;{{ type.genre_name }}
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <div v-if="event.languages && event.languages.length > 0" class="event-detail-hero__languages">
+            <!--span class="event-detail-info-label">{{ t('languages') }}</span-->
+            <div class="event-detail-languages-tags">
+                  <span v-for="lang in event.languages" :key="lang" class="event-detail-language-tag">
+                    {{ lang.toUpperCase() }}
+                  </span>
+            </div>
+          </div>
+
+          <!-- Teaser -->
                     <div v-if="event.teaser_text" class="event-detail-section">
                         <p class="event-detail-teaser">{{ event.teaser_text }}</p>
                     </div>
 
                     <!-- Description -->
                     <div v-if="event.description" class="event-detail-section">
-                        <h2>{{ t('description') }}</h2>
                         <div class="event-detail-description" v-html="formatMarkdown(event.description)"></div>
                     </div>
 
-                    <!-- Event Types -->
-                    <div v-if="event.event_types && event.event_types.length > 0" class="event-detail-section">
-                        <h3>{{ t('choose_event_type') }}</h3>
-                        <div class="event-detail-tags">
-                            <span v-for="type in event.event_types" :key="type.type_id" class="event-detail-tag">
-                                {{ type.type_name }}
-                                <span v-if="type.genre_name" class="event-detail-tag__genre">
-                                    · {{ type.genre_name }}
-                                </span>
-                            </span>
-                        </div>
-                    </div>
 
                     <!-- URLs -->
                     <div v-if="event.event_urls && event.event_urls.length > 0" class="event-detail-section">
-                        <h3>{{ t('website') }}</h3>
                         <div class="event-detail-links">
-                            <a 
-                                v-for="link in event.event_urls" 
-                                :key="link.id" 
-                                :href="link.url" 
-                                target="_blank" 
+                            <a
+                                v-for="link in event.event_urls"
+                                :key="link.id"
+                                :href="link.url"
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 class="event-detail-link"
                             >
@@ -81,61 +81,52 @@
 
                 <!-- Right Column - Sidebar -->
                 <aside class="event-detail-sidebar">
+
                     <!-- Date & Time -->
-                    <div class="event-detail-card">
-                        <h3>{{ t('date') }} & {{ t('time') }}</h3>
-                        <div class="event-detail-card__content">
-                            <div class="event-detail-info-row">
-                                <span class="event-detail-info-label">{{ t('begin') }}:</span>
-                                <span class="event-detail-info-value">
-                                    {{ formatDate(event.start_date) }}
-                                    <span v-if="event.start_time"> · {{ formatTime(event.start_time) }}</span>
-                                </span>
-                            </div>
-                            <div v-if="event.end_date || event.end_time" class="event-detail-info-row">
-                                <span class="event-detail-info-label">{{ t('events_calendar_end_date_label') }}:</span>
-                                <span class="event-detail-info-value">
-                                    <span v-if="event.end_date">{{ formatDate(event.end_date) }}</span>
-                                    <span v-if="event.end_time"> · {{ formatTime(event.end_time) }}</span>
-                                </span>
-                            </div>
-                            <div v-if="event.duration" class="event-detail-info-row">
-                                <span class="event-detail-info-label">{{ t('dashboard_todo_due') }}:</span>
-                                <span class="event-detail-info-value">{{ event.duration }}</span>
-                            </div>
-                        </div>
+                    <div>
+                      <div>
+                        <p>{{ formatDate(event.start_date) }}</p>
+                        <p v-if="event.start_time" > · {{ formatTime(event.start_time) }}</p>
+                        <p class="event-detail-info-label">{{ t('event_entry_time') }}:</p>
+                      </div>
+
+                      <div v-if="event.end_date || event.end_time">
+                        <p>{{ t('events_calendar_end_date_label') }}:</p>
+                        <p v-if="event.end_date">{{ formatDate(event.end_date) }}</p>
+                        <p v-if="event.end_time"> · {{ formatTime(event.end_time) }}</p>
+                      </div>
+
+                      <div v-if="event.duration">
+                        <span class="event-detail-info-label">{{ t('dashboard_todo_due') }}:</span>
+                        <span class="event-detail-info-value">{{ event.duration }}</span>
+                      </div>
                     </div>
 
                     <!-- Venue -->
-                    <div v-if="event.venue_name" class="event-detail-card">
-                        <h3>{{ t('location') }}</h3>
-                        <div class="event-detail-card__content">
-                            <p class="event-detail-venue-name">{{ event.venue_name }}</p>
-                            <div v-if="event.venue_street || event.venue_house_number" class="event-detail-address">
-                                <p>{{ event.venue_street }} {{ event.venue_house_number }}</p>
-                                <p v-if="event.venue_postal_code || event.venue_city">
-                                    {{ event.venue_postal_code }} {{ event.venue_city }}
-                                </p>
-                            </div>
-                            <div v-if="event.space_name" class="event-detail-space">
-                                <span class="event-detail-info-label">{{ t('space') }}:</span>
-                                <span>{{ event.space_name }}</span>
-                            </div>
-                        </div>
+                    <div v-if="event.venue_name">
+                      <span class="event-detail-info-label">{{ t('location') }}:</span>
+                      <p>{{ event.venue_name }}</p>
+                      <div v-if="event.venue_street || event.venue_house_number">
+                        <p>{{ event.venue_street }} {{ event.venue_house_number }}</p>
+                        <p v-if="event.venue_postal_code || event.venue_city">
+                          {{ event.venue_postal_code }} {{ event.venue_city }}
+                        </p>
+                      </div>
+                      <div v-if="event.space_name">
+                        <p>{{ t('space') }}:</p>
+                        <p>{{ event.space_name }}</p>
+                      </div>
                     </div>
 
                     <!-- Organizer -->
-                    <div v-if="event.organizer_name" class="event-detail-card">
+                    <div v-if="event.organizer_name">
                         <h3>{{ t('organizers') }}</h3>
-                        <div class="event-detail-card__content">
                             <p class="event-detail-organizer">{{ event.organizer_name }}</p>
-                        </div>
                     </div>
 
                     <!-- Space Info -->
-                    <div v-if="event.space_total_capacity || event.space_seating_capacity" class="event-detail-card">
+                    <div v-if="event.space_total_capacity || event.space_seating_capacity">
                         <h3>{{ t('space_details_title') }}</h3>
-                        <div class="event-detail-card__content">
                             <div v-if="event.space_total_capacity" class="event-detail-info-row">
                                 <span class="event-detail-info-label">{{ t('space_total_capacity') }}:</span>
                                 <span class="event-detail-info-value">{{ event.space_total_capacity }}</span>
@@ -148,13 +139,12 @@
                                 <span class="event-detail-info-label">{{ t('space_building_level') }}:</span>
                                 <span class="event-detail-info-value">{{ event.space_building_level }}</span>
                             </div>
-                        </div>
                     </div>
 
                     <!-- Additional Info -->
-                    <div v-if="event.meeting_point || event.entry_time || event.participation_info" class="event-detail-card">
+                    <div v-if="event.meeting_point || event.entry_time || event.participation_info">
                         <h3>{{ t('details') }}</h3>
-                        <div class="event-detail-card__content">
+                        <div>
                             <div v-if="event.meeting_point" class="event-detail-info-row">
                                 <span class="event-detail-info-label">{{ t('geo_location') }}:</span>
                                 <span class="event-detail-info-value">{{ event.meeting_point }}</span>
@@ -317,6 +307,11 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+
+p {
+  margin: 0;
+}
+
 .event-detail-page {
     display: flex;
     flex-direction: column;
@@ -353,17 +348,19 @@ onMounted(() => {
     overflow: hidden;
 }
 
-.event-detail-hero__image {
-    width: 100%;
-    aspect-ratio: 16/9;
-    overflow: hidden;
+.event-image-frame {
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 16/9;
+  overflow: hidden;
 }
 
-.event-detail-hero__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+.event-image {
+  width: 100%;
+  height: 100%;
+  max-width: 800px;
+  object-fit: cover;
+  display: block;
 }
 
 .event-detail-hero__content {
@@ -388,7 +385,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin-top: 1.5rem;
+    margin: 16px;
 }
 
 .event-detail-languages-label {
@@ -401,39 +398,42 @@ onMounted(() => {
 
 .event-detail-languages-tags {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.3rem;
 }
 
 .event-detail-language-tag {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.35rem 0.75rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 999px;
-    background: rgba(14, 165, 233, 0.12);
-    color: var(--accent-secondary, #0ea5e9);
+    background: rgba(181, 222, 255, 0.65);
+    color: var(--accent-secondary, rgb(22, 149, 213));
     font-weight: 700;
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     letter-spacing: 0.5px;
 }
 
 .event-detail-grid {
     display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: clamp(2rem, 4vw, 3rem);
+    grid-template-columns: minmax(600px, 800px) 400px;
+    gap: 32px;
     align-items: start;
 }
 
 .event-detail-main {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(2rem, 4vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .event-detail-section {
-    background: var(--card-bg, #fff);
-    border-radius: 12px;
-    padding: clamp(1.5rem, 3vw, 2rem);
+  padding: 16px;
+  h1 {
+    margin-top: 32px;
+    font-size: 2.8rem;
+    font-weight: 600;
+  }
 }
 
 .event-detail-section h2 {
@@ -482,23 +482,18 @@ onMounted(() => {
 .event-detail-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.4rem;
 }
 
 .event-detail-tag {
     display: inline-flex;
     align-items: center;
-    padding: 0.5rem 1rem;
+    padding: 0.1rem 0.6rem;
     border-radius: 999px;
-    background: rgba(79, 70, 229, 0.12);
-    color: var(--accent-primary);
+    background: rgba(184, 178, 255, 0.33);
+    color: rgb(86, 80, 188);
     font-weight: 600;
     font-size: 0.95rem;
-}
-
-.event-detail-tag__genre {
-    margin-left: 0.25rem;
-    opacity: 0.8;
 }
 
 .event-detail-links {
@@ -526,46 +521,15 @@ onMounted(() => {
 }
 
 .event-detail-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    position: sticky;
-    top: 100px;
-}
-
-.event-detail-card {
-    background: var(--card-bg, #fff);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid var(--border-soft);
-}
-
-.event-detail-card h3 {
-    margin: 0 0 1rem 0;
-    font-size: 1.1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--muted-text);
-}
-
-.event-detail-card__content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.event-detail-info-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 100px;
 }
 
 .event-detail-info-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--muted-text);
-    text-transform: uppercase;
+    font-weight: 800;
     letter-spacing: 0.3px;
 }
 

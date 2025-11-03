@@ -1,11 +1,13 @@
 <template>
   <div class="uranus-main-layout">
-    <router-link :to="'/events'" class="uranus-button">
-      {{ t('events') }}
-    </router-link>
-
     <DashboardHeroComponent :title="t('dashboard')" :subtitle="t('dashboard_description')" cta-label="Go to Inbox"
       cta-to="/messages" />
+
+    <div style="padding: 16px;">
+      <router-link :to="'/'" class="uranus-button">
+        {{ t('event_portal') }}
+      </router-link>
+    </div>
 
     <DashboardTodoListComponent />
   </div>

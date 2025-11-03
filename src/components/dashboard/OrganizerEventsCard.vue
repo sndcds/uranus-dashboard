@@ -191,7 +191,7 @@ const buildImageUrl = (event: OrganizerEventItem) => {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  // gap: 0.5rem;
 }
 
 .event-card__details li {
@@ -254,7 +254,7 @@ const buildImageUrl = (event: OrganizerEventItem) => {
 
   .event-card__details {
     flex: 1;
-    gap: 0.75rem;
+    // gap: 0.75rem;
   }
 
   .event-card__details li {

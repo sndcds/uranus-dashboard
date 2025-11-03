@@ -75,6 +75,7 @@
         </div>
       </div>
 
+    <section class="uranus-card uranus-hover-section">
       <InlineEditorLabel
           :label-text="t('image_details')"
           :edit-button-text="t('edit')"
@@ -159,6 +160,7 @@
           </button>
         </div>
       </div>
+    </section>
     </div>
 </template>
 

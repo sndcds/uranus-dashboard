@@ -27,6 +27,7 @@
 
   // Light mode versions
   --uranus-bg-color: #fcfcfc;
+  --uranus-bg-color-d1: #ededed;
   --uranus-color: #2b2b2b;
   --uranus-disabled-color: #e1e1e1;
   --uranus-low-contrast-color: #c6c6c6;
@@ -34,11 +35,18 @@
 
   --uranus-dashboard-bg-color: rgba(175, 197, 230, 0.18);
 
+  --uranus-menu-active-color: #eeeeee;
+  --uranus-menu-active-bg: #333333;
+
+
+  // Mode indepentent settings
+
   --uranus-card-border-radius: 12px;
   --uranus-inline-edit-border-radius: 12px;
   --uranus-tiny-border-radius: 4px;
 
   --uranus-grid-gap: 12px;
+
 
 
 

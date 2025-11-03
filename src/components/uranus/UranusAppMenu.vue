@@ -50,12 +50,15 @@
           </button>
         </div>
       </transition>
-
     </div>
 
     <nav class="uranus-app-menu-nav">
-      <SidebarOptionComponent v-for="option in options" :key="option.id" :option="option"
-                              :active="option.route === activeRoute" @change="handleOptionChange" />
+      <SidebarOptionComponent
+          v-for="option in options"
+          :key="option.id"
+          :option="option"
+          :active="option.route === activeRoute"
+          @change="handleOptionChange" />
     </nav>
 
   </aside>
@@ -222,6 +225,13 @@ const handleOptionChange = async (optionId: string) => {
 </script>
 
 <style scoped lang="scss">
+
+.profile-image {
+  width: 48px;
+  border-radius: 50%;
+  margin: 8px;
+}
+
 .user-profile {
   position: relative;
   display: flex;
@@ -235,13 +245,13 @@ const handleOptionChange = async (optionId: string) => {
 
   &:hover,
   &:focus-visible {
-    background: var(--uranus-low-contrast-color);
+    background: var(--uranus-bg-color-d1);
     outline: none;
   }
 }
 
 .user-profile[aria-expanded='true'] {
-  background: var(--uranus-low-contrast-color);
+  background: var(--uranus-bg-color-d1);
 }
 
 .user-profile-chevron {
@@ -258,7 +268,8 @@ const handleOptionChange = async (optionId: string) => {
 }
 
 .user-profile-wrapper {
-  position: relative; /* anchor for the absolute menu */
+  position: relative;
+  margin-bottom: 20px;
 }
 
 .user-menu {
@@ -269,11 +280,10 @@ const handleOptionChange = async (optionId: string) => {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  background: var(--uranus-low-contrast-color);
-  border-radius: 4px;
+  background: var(--uranus-bg-color-d1);
   min-width: 200px; /* optional: control menu width */
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+  padding: 6px;
 }
 
 .user-menu-link {
@@ -288,10 +298,11 @@ const handleOptionChange = async (optionId: string) => {
   cursor: pointer;
   text-decoration: none;   /* remove underline if any */
   font: inherit;           /* match link font */
+  border-radius: 4px;
   transition: background 0.2s ease;
 
   &:hover {
-    background: var(--uranus-medium-contrast-color);
+    background: var(--uranus-bg-color);
   }
 }
 

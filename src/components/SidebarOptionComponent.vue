@@ -42,25 +42,23 @@ function handleClick() {
     color: var(--muted-text);
     font-weight: 500;
     letter-spacing: 0.01em;
-    transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+    transition: all 0.2s ease;
 
     &:hover {
-        background: var(--accent-muted);
-        color: var(--color-text);
-        transform: translateX(2px);
-
+      background: var(--uranus-bg-color-d1);
+      color: var(--color-text);
+      // transform: translateX(2px);
     }
 
     &:focus-visible {
         outline: none;
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
-        background: var(--accent-muted);
     }
 
     &.active {
-        color: var(--color-text);
-        background: linear-gradient(135deg, rgba(79, 70, 229, 0.18), rgba(14, 165, 233, 0.22));
-        // box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.18);
+      // color: var(--uranus-menu-active-color);
+      // background: var(--uranus-menu-active-bg);
+      border-left: 8px solid var(--uranus-ia-color);
     }
 
     &.has-icon .label {

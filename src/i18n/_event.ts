@@ -1,12 +1,13 @@
 export const event = {
     de: {
+        event_portal: 'Uranus Event Portal',
         event_genre_placeholder: 'Genre auswählen…',
         event_datetime: 'Datum & Uhrzeit',
         event_space: 'Raum',
         event_organizer: 'Veranstalter',
         event_type_unknown: 'Unbekannt',
         event_form_title: 'Neue Veranstaltung erstellen',
-        event_form_subtitle: 'Gebe hier die grundlegenden Daten ein.',
+        event_form_subtitle: 'Eingabe der Grunddaten. Details können nachträglich ergänzt werden.',
         event_section_basic: 'Grunddaten',
         event_section_basic_subtitle: 'Titel, Zuordnung und Kategorien deines Events',
         event_title_label: 'Titel',
@@ -133,6 +134,7 @@ export const event = {
         event_links_save_error: 'Fehler beim Speichern der Links.',
     },
     en: {
+        event_portal: 'Uranus Event Portal',
         event_title: 'Event Title',
         event_type: 'Event type',
         event_tags_heading: 'Event Types',
@@ -140,7 +142,7 @@ export const event = {
         event_teaser_tags: 'Hashtags',
         event_teaser: 'Event-Teaser',
         event_form_title: 'Create an event',
-        event_form_subtitle: 'Capture every detail needed to launch and promote your experience.',
+        event_form_subtitle: 'Enter the basic data. Details can be added later.',
         event_datetime: 'Date & time',
         event_space: 'Space',
         event_organizer: 'Organizer',
@@ -273,6 +275,7 @@ export const event = {
         event_links_save_error: 'Failed to save links.',
     },
     da: {
+        event_portal: 'Uranus Event Portal',
         event_title: 'Arrangement overskrift',
         event_type: 'Arrangement type',
         event_tags_heading: 'Arrangementstyper',
@@ -280,7 +283,7 @@ export const event = {
         event_teaser_tags: 'Hashtags',
         event_teaser: 'Arrangementsteaser',
         event_form_title: 'Opret arrangement',
-        event_form_subtitle: 'Saml alle nødvendige oplysninger for at offentliggøre dit arrangement.',
+        event_form_subtitle: 'Indtastning af grunddata. Detaljer kan tilføjes senere.',
         event_datetime: 'Dato og tidspunkt',
         event_space: 'Område',
         event_organizer: 'Arrangør',

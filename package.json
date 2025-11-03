@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.21",
+    "@types/maplibre-gl": "^1.13.2",
     "@types/node": "^24.8.1",
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",

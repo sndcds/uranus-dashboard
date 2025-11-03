@@ -189,8 +189,8 @@ watch(
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: white;
-    color: var(--color-text);
+    background: var(--uranus-bg-color);
+    color: var(--uranus-color);
 }
 
 .visitor-layout__topbar {
@@ -201,7 +201,7 @@ watch(
   gap: clamp(1rem, 4vw, 2rem);
   justify-content: space-between;
   padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 4vw, 2rem);
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--uranus-bg-color);
   backdrop-filter: blur(100px);          /* blur what's behind */
   -webkit-backdrop-filter: blur(100px);  /* Safari support */
 
@@ -330,10 +330,11 @@ watch(
 .visitor-layout__content {
     display: flex;
     flex: 1;
+  background: var(--uranus-bg-color);
 }
 
 .visitor-layout__footer {
-    background: var(--card-bg, #ffffff);
+    background: var(--uranus-bg-color);
     border-top: 1px solid var(--border-soft, rgba(148, 163, 184, 0.2));
     padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 3rem);
 }

@@ -855,7 +855,7 @@ watch(
     gap: 1rem;
     padding: 1rem;
     border-radius: 8px;
-    background: var(--card-bg, #fff);
+    background: var(--uranus-bg-color);
     border: 1px solid var(--border-soft);
     transition: box-shadow 0.2s ease;
 }
@@ -1115,6 +1115,7 @@ watch(
 .calendar-sidebar {
     position: sticky;
     top: 100px;
+  background: var(--uranus-bg-color);
 }
 
 .calendar-sidebar {

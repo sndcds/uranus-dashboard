@@ -6,7 +6,7 @@
     />
     <div style="padding: 16px;">
       <router-link
-          :to="`/organizer/${organizerId}/event/create`"
+          :to="`/admin/organizer/${organizerId}/event/create`"
           class="uranus-button">
         {{ t('add_new_event') }}
       </router-link>

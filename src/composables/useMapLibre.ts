@@ -1,78 +1,59 @@
 // composables/useMapLibre.ts
-import { ref, watch, onBeforeUnmount } from 'vue';
-import maplibregl, { Map, Marker, LngLatLike } from 'maplibre-gl';
+import { ref, watch, onBeforeUnmount, type Ref } from 'vue';
+import maplibregl, { Map, Marker, type LngLatLike } from 'maplibre-gl';
+import type { StyleSpecification } from 'maplibre-gl';
 
 interface UseMapLibreOptions {
-    container: HTMLElement | null | undefined;
-    style?: any; // MapLibre style object or URL
+    container: Ref<HTMLElement | null>;
+    style?: string | StyleSpecification;
     center?: LngLatLike;
     zoom?: number;
-    markers?: LngLatLike[];
 }
 
-export function useMapLibre(options: { container: Ref<HTMLElement | null>, style?: any, center?: LngLatLike, zoom?: number, markers?: LngLatLike[] }) {
+export function useMapLibre(options: UseMapLibreOptions) {
+    const { container, style, center, zoom } = options;
     const mapInstance = ref<Map | null>(null);
-    const markersInstance = ref<Marker[]>([]);
 
-    const { container, style, center, zoom, markers } = options;
-
-    const stopWatch = watch(container, (el) => {
-        if (!el || mapInstance.value) return;
-
-        mapInstance.value = new maplibregl.Map({
-            container: el,
-            style: style ?? {
-                version: 8,
-                sources: {
-                    osm: {
-                        type: 'raster',
-                        tiles: ['https://tiles.oklabflensburg.de/sgm/{z}/{x}/{y}.png'],
-                        tileSize: 256,
-                        attribution: 'Map data © OpenStreetMap contributors',
-                    },
-                },
-                layers: [
-                    {
-                        id: 'osm-layer',
-                        type: 'raster',
-                        source: 'osm',
-                    },
-                ],
+    const defaultStyle: StyleSpecification = {
+        version: 8,
+        sources: {
+            osm: {
+                type: 'raster',
+                tiles: ['https://tiles.oklabflensburg.de/sgm/{z}/{x}/{y}.png'],
+                tileSize: 256,
+                attribution: 'Map data © OpenStreetMap contributors',
             },
-            center: center ?? [13.405, 52.52],
-            zoom: zoom ?? 12,
-        });
+        },
+        layers: [
+            {
+                id: 'osm-layer',
+                type: 'raster',
+                source: 'osm',
+            },
+        ],
+    };
 
-        if (markers?.length) {
-            markers.forEach(addMarker);
-        }
-    }, { immediate: true });
+    const stopWatch = watch(
+        container,
+        (el) => {
+            if (!el || mapInstance.value) return;
+
+            mapInstance.value = new maplibregl.Map({
+                container: el,
+                style: style ?? defaultStyle,
+                center: center ?? [13.405, 52.52],
+                zoom: zoom ?? 12,
+            });
+
+            mapInstance.value.addControl(new maplibregl.NavigationControl());
+        },
+        { immediate: true }
+    );
 
     onBeforeUnmount(() => {
-        markersInstance.value.forEach((m) => m.remove());
         mapInstance.value?.remove();
-        stopWatch(); // stop the watcher
+        stopWatch();
     });
 
-    function addMarker(lngLat: LngLatLike) {
-        if (!mapInstance.value) return null;
-        const marker = new maplibregl.Marker().setLngLat(lngLat).addTo(mapInstance.value);
-        markersInstance.value.push(marker);
-        return marker;
-    }
-
-    function clearMarkers() {
-        markersInstance.value.forEach((m) => m.remove());
-        markersInstance.value = [];
-    }
-
-    function setCenter(lngLat: LngLatLike) {
-        mapInstance.value?.setCenter(lngLat);
-    }
-
-    function setZoom(zoomLevel: number) {
-        mapInstance.value?.setZoom(zoomLevel);
-    }
-
-    return { mapInstance, markersInstance, addMarker, clearMarkers, setCenter, setZoom };
+    return { mapInstance };
 }
