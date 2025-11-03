@@ -1,10 +1,7 @@
 <template>
     <section class="uranus-card uranus-hover-section">
-        <InlineEditorLabel
-            :label-text="t('event_release_date')"
-            :edit-button-text="t('edit')"
-            @edit-started="startEditingRelease"
-        />
+        <InlineEditorLabel :label-text="t('event_release_date')" :edit-button-text="t('edit')"
+            @edit-started="startEditingRelease" />
 
         <p v-if="releaseSaveError" class="event-meta__error event-meta__error--global">
             {{ releaseSaveError }}
@@ -13,9 +10,15 @@
         <div v-if="!isEditingRelease && releaseDisplay" class="event-meta__display">
             <div class="event-meta__row">
                 <span class="event-meta__label">{{ releaseDisplay.date }}</span>
-                <p class="event-meta__value">
+                <span v-if="releaseDisplay.label" class="release-status-chip" :class="{
+                    'release-status-chip--red': releaseDisplay.id === 1,
+                    'release-status-chip--orange': releaseDisplay.id === 2,
+                    'release-status-chip--green': releaseDisplay.id === 3,
+                    'release-status-chip--blue': releaseDisplay.id === 4,
+                    'release-status-chip--pink': releaseDisplay.id === 5
+                }">
                     {{ releaseDisplay.label }}
-                </p>
+                </span>
             </div>
         </div>
 
@@ -41,19 +44,15 @@
 
             <div class="form-group">
                 <label for="release-date">{{ t('event_release_date_input') }}</label>
-                <input
-                    v-model="releaseDateDraft"
-                    id="release-date"
-                    type="date"
-                    class="event-release__date-input"
-                />
+                <input v-model="releaseDateDraft" id="release-date" type="date" class="event-release__date-input" />
             </div>
 
             <div class="event-meta__actions">
                 <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingRelease">
                     {{ t('form_cancel') }}
                 </button>
-                <button type="button" class="uranus-inline-save-button" :disabled="isSavingRelease || releaseDraft === null" @click="saveRelease">
+                <button type="button" class="uranus-inline-save-button"
+                    :disabled="isSavingRelease || releaseDraft === null" @click="saveRelease">
                     <span v-if="!isSavingRelease">{{ t('form_save') }}</span>
                     <span v-else>{{ t('form_saving') }}</span>
                 </button>
@@ -79,6 +78,7 @@ interface Release {
 interface ReleaseDisplay {
     date: string
     label: string
+    id: number
 }
 
 const props = defineProps<{
@@ -136,7 +136,8 @@ const releaseDisplay = computed<ReleaseDisplay | null>(() => {
 
     return {
         date: dateDisplay || '—',
-        label: label || '—'
+        label: label || '—',
+        id: statusId || 0
     }
 })
 
@@ -146,7 +147,7 @@ const loadReleaseStates = async () => {
 
     try {
         const { data } = await apiFetch<unknown>(`/api/choosable-release-states?lang=${props.locale}`)
-        
+
         const releases = normalizeReleases(data)
         availableReleases.value = releases
 
@@ -224,7 +225,7 @@ const startEditingRelease = async () => {
     releaseDateDraft.value = resolveReleaseDate(statusId, props.releaseDate)
     releaseSaveError.value = null
     isEditingRelease.value = true
-    
+
     if (availableReleases.value.length === 0) {
         await loadReleaseStates()
     }
@@ -436,6 +437,43 @@ function formatReleaseDate(value: string | null | undefined): string {
             align-self: flex-start;
         }
     }
+}
+
+.release-status-chip {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+
+  &--red {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  &--orange {
+    background: #ffedd5;
+    color: #9a3412;
+  }
+
+  &--green {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  &--blue {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  &--pink {
+    background: #fce7f3;
+    color: #9d174d;
+  }
 }
 
 .event-release {
