@@ -23,11 +23,15 @@
             <span class="notification-date">
               {{ t('release_date') }}: {{ formatDate(notification.release_date) }}
             </span>
-            <span class="days-until-release" :class="{
-              'is-urgent': notification.days_until_release <= 3,
-              'is-soon': notification.days_until_release > 3 && notification.days_until_release <= 7,
-              'is-past': notification.days_until_release < 0
-            }">
+            <span 
+              v-if="notification.days_until_release !== null"
+              class="days-until-release" 
+              :class="{
+                'is-urgent': notification.days_until_release <= 3,
+                'is-soon': notification.days_until_release > 3 && notification.days_until_release <= 7,
+                'is-past': notification.days_until_release < 0
+              }"
+            >
               <template v-if="notification.days_until_release === 0">
                 {{ t('today') }}
               </template>
@@ -78,7 +82,7 @@ interface Notification {
   release_date: string
   release_status_id: number
   earliest_event_date: string
-  days_until_release: number
+  days_until_release: number | null
   days_until_event: number
 }
 
