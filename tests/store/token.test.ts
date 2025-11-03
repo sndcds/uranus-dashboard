@@ -65,10 +65,12 @@ describe('Token Store', () => {
     const store = useTokenStore()
     
     expect(store.accessToken).toBeNull()
+    expect(store.isAuthenticated).toBe(false)
     
     store.setAccessToken('test-token')
     
     expect(store.accessToken).toBe('test-token')
+    expect(store.isAuthenticated).toBe(true)
   })
 
   it('returns false when access token is null', () => {
@@ -77,5 +79,6 @@ describe('Token Store', () => {
     store.clearTokens()
     
     expect(store.accessToken).toBeNull()
+    expect(store.isAuthenticated).toBe(false)
   })
 })

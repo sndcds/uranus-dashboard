@@ -15,6 +15,9 @@ export const useTokenStore = defineStore('token', {
     accessToken: getStoredToken('access_token') as TokenValue,
     refreshToken: getStoredToken('refresh_token') as TokenValue,
   }),
+  getters: {
+    isAuthenticated: (state): boolean => Boolean(state.accessToken),
+  },
   actions: {
     setTokens(access: string, refresh?: string | null) {
       this.setAccessToken(access)
