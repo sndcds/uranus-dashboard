@@ -1,56 +1,54 @@
 <template>
-  <div class="event-detail-page">
-    <div v-if="isLoading" class="event-detail-state event-detail-state--loading">
-      <span>{{ loadingLabel }}</span>
-    </div>
+    <div class="event-detail-page">
+        <div v-if="isLoading" class="event-detail-state event-detail-state--loading">
+            <span>{{ loadingLabel }}</span>
+        </div>
 
-    <div v-else-if="loadError" class="event-detail-state event-detail-state--error" role="alert">
-      <span>{{ loadError }}</span>
-    </div>
+        <div v-else-if="loadError" class="event-detail-state event-detail-state--error" role="alert">
+            <span>{{ loadError }}</span>
+        </div>
 
-    <div v-else-if="event" class="event-detail-content">
-      <div class="event-detail-grid">
+        <div v-else-if="event" class="event-detail-content">
+            <div class="event-detail-grid">
 
-        <!-- Left Column - Main Info -->
-        <section class="event-detail-main">
-          <section>
-            <div v-if="event.has_main_image && event.image_path" class="event-image-frame">
-              <img
-                  :src="event.image_path.includes('?')
-                    ? `${event.image_path}&ratio=16by9&width=1200`
-                    : `${event.image_path}?ratio=16by9&width=1200`"
-                  :alt="event.title"
-                  class="event-image" />
-            </div>
+                <!-- Left Column - Main Info -->
+                <section class="event-detail-main">
+                    <section>
+                        <div v-if="event.has_main_image && event.image_path" class="event-image-frame">
+                            <img :src="event.image_path.includes('?')
+                                ? `${event.image_path}&ratio=16by9&width=1200`
+                                : `${event.image_path}?ratio=16by9&width=1200`" :alt="event.title"
+                                class="event-image" />
+                        </div>
 
-            <div class="event-detail-section">
-              <h1>{{ event.title }}</h1>
-              <p v-if="event.subtitle" class="event-detail-hero__subtitle">{{ event.subtitle }}</p>
-            </div>
-          </section>
+                        <div class="event-detail-section">
+                            <h1>{{ event.title }}</h1>
+                            <p v-if="event.subtitle" class="event-detail-hero__subtitle">{{ event.subtitle }}</p>
+                        </div>
+                    </section>
 
-          <!-- Event Types -->
-          <div v-if="event.event_types && event.event_types.length > 0" class="event-detail-section">
-            <div class="event-detail-tags">
-              <span v-for="type in event.event_types" :key="type.type_id" class="event-detail-tag">
-                {{ type.type_name }}
-                <span v-if="type.genre_name">
-                  &nbsp;·&nbsp;{{ type.genre_name }}
-                </span>
-              </span>
-            </div>
-          </div>
+                    <!-- Event Types -->
+                    <div v-if="event.event_types && event.event_types.length > 0" class="event-detail-section">
+                        <div class="event-detail-tags">
+                            <span v-for="type in event.event_types" :key="type.type_id" class="event-detail-tag">
+                                {{ type.type_name }}
+                                <span v-if="type.genre_name">
+                                    &nbsp;·&nbsp;{{ type.genre_name }}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
 
-          <div v-if="event.languages && event.languages.length > 0" class="event-detail-hero__languages">
-            <!--span class="event-detail-info-label">{{ t('languages') }}</span-->
-            <div class="event-detail-languages-tags">
-                  <span v-for="lang in event.languages" :key="lang" class="event-detail-language-tag">
-                    {{ lang.toUpperCase() }}
-                  </span>
-            </div>
-          </div>
+                    <div v-if="event.languages && event.languages.length > 0" class="event-detail-hero__languages">
+                        <!--span class="event-detail-info-label">{{ t('languages') }}</span-->
+                        <div class="event-detail-languages-tags">
+                            <span v-for="lang in event.languages" :key="lang" class="event-detail-language-tag">
+                                {{ lang.toUpperCase() }}
+                            </span>
+                        </div>
+                    </div>
 
-          <!-- Teaser -->
+                    <!-- Teaser -->
                     <div v-if="event.teaser_text" class="event-detail-section">
                         <p class="event-detail-teaser">{{ event.teaser_text }}</p>
                     </div>
@@ -64,14 +62,8 @@
                     <!-- URLs -->
                     <div v-if="event.event_urls && event.event_urls.length > 0" class="event-detail-section">
                         <div class="event-detail-links">
-                            <a
-                                v-for="link in event.event_urls"
-                                :key="link.id"
-                                :href="link.url"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="event-detail-link"
-                            >
+                            <a v-for="link in event.event_urls" :key="link.id" :href="link.url" target="_blank"
+                                rel="noopener noreferrer" class="event-detail-link">
                                 {{ link.title || link.url }}
                                 <span class="event-detail-link__icon">↗</span>
                             </a>
@@ -84,74 +76,82 @@
 
                     <!-- Date & Time -->
                     <div>
-                      <div>
-                        <p>{{ formatDate(event.start_date) }}</p>
-                        <p v-if="event.start_time" > · {{ formatTime(event.start_time) }}</p>
-                        <p class="event-detail-info-label">{{ t('event_entry_time') }}:</p>
-                      </div>
+                        <div v-if="formatEventDateTime && 'date' in formatEventDateTime">
+                            <!-- Single day event -->
+                            <p class="event-date">{{ formatEventDateTime.date }}</p>
+                            <p v-if="formatEventDateTime.time" class="event-time">{{ formatEventDateTime.time }}</p>
+                            <div v-if="event.entry_time" class="event-detail-section-spacing">
+                                <p class="event-detail-info-label">{{ t('event_entry_time') }}:</p>
+                                <p class="event-detail-info-value">{{ formatTime(event.entry_time) }}</p>
+                            </div>
+                        </div>
+                        
+                        <div v-else-if="formatEventDateTime && 'startDate' in formatEventDateTime">
+                            <!-- Multi-day event -->
+                            <div>
+                                <p class="event-detail-info-label">{{ t('event_start') }}:</p>
+                                <p class="event-date">{{ formatEventDateTime.startDate }}</p>
+                                <p v-if="formatEventDateTime.startTime" class="event-time">{{ formatEventDateTime.startTime }}</p>
+                            </div>
+                            <div class="event-detail-section-spacing">
+                                <p class="event-detail-info-label">{{ t('event_end') }}:</p>
+                                <p class="event-date">{{ formatEventDateTime.endDate }}</p>
+                                <p v-if="formatEventDateTime.endTime" class="event-time">{{ formatEventDateTime.endTime }}</p>
+                            </div>
+                            <div v-if="event.entry_time" class="event-detail-section-spacing">
+                                <p class="event-detail-info-label">{{ t('event_entry_time') }}:</p>
+                                <p class="event-detail-info-value">{{ formatTime(event.entry_time) }}</p>
+                            </div>
+                        </div>
 
-                      <div v-if="event.end_date || event.end_time">
-                        <p>{{ t('events_calendar_end_date_label') }}:</p>
-                        <p v-if="event.end_date">{{ formatDate(event.end_date) }}</p>
-                        <p v-if="event.end_time"> · {{ formatTime(event.end_time) }}</p>
-                      </div>
-
-                      <div v-if="event.duration">
-                        <span class="event-detail-info-label">{{ t('dashboard_todo_due') }}:</span>
-                        <span class="event-detail-info-value">{{ event.duration }}</span>
-                      </div>
+                        <div v-if="event.duration">
+                            <span class="event-detail-info-label">{{ t('dashboard_todo_due') }}:</span>
+                            <span class="event-detail-info-value">{{ event.duration }}</span>
+                        </div>
                     </div>
 
                     <!-- Venue -->
                     <div v-if="event.venue_name">
-                      <span class="event-detail-info-label">{{ t('location') }}:</span>
-                      <p>{{ event.venue_name }}</p>
-                      <div v-if="event.venue_street || event.venue_house_number">
-                        <p>{{ event.venue_street }} {{ event.venue_house_number }}</p>
-                        <p v-if="event.venue_postal_code || event.venue_city">
-                          {{ event.venue_postal_code }} {{ event.venue_city }}
-                        </p>
-                      </div>
-                      <div v-if="event.space_name">
-                        <p>{{ t('space') }}:</p>
-                        <p>{{ event.space_name }}</p>
-                      </div>
+                        <span class="event-detail-info-label">{{ t('location') }}:</span>
+                        <p>{{ event.venue_name }}</p>
+                        <div v-if="event.venue_street || event.venue_house_number">
+                            <p>{{ event.venue_street }} {{ event.venue_house_number }}</p>
+                            <p v-if="event.venue_postal_code || event.venue_city">
+                                {{ event.venue_postal_code }} {{ event.venue_city }}
+                            </p>
+                        </div>
                     </div>
 
                     <!-- Organizer -->
                     <div v-if="event.organizer_name">
-                        <h3>{{ t('organizers') }}</h3>
-                            <p class="event-detail-organizer">{{ event.organizer_name }}</p>
+                        <h3>{{ t('organizer') }}</h3>
+                        <p class="event-detail-organizer">{{ event.organizer_name }}</p>
                     </div>
 
                     <!-- Space Info -->
+                    <div v-if="event.space_name">
+                        <p class="space">{{ t('space') }}:</p>
+                        <p>{{ event.space_name }}</p>
+                    </div>
                     <div v-if="event.space_total_capacity || event.space_seating_capacity">
-                        <h3>{{ t('space_details_title') }}</h3>
-                            <div v-if="event.space_total_capacity" class="event-detail-info-row">
-                                <span class="event-detail-info-label">{{ t('space_total_capacity') }}:</span>
-                                <span class="event-detail-info-value">{{ event.space_total_capacity }}</span>
-                            </div>
-                            <div v-if="event.space_seating_capacity" class="event-detail-info-row">
-                                <span class="event-detail-info-label">{{ t('space_seating_capacity') }}:</span>
-                                <span class="event-detail-info-value">{{ event.space_seating_capacity }}</span>
-                            </div>
-                            <div v-if="event.space_building_level" class="event-detail-info-row">
-                                <span class="event-detail-info-label">{{ t('space_building_level') }}:</span>
-                                <span class="event-detail-info-value">{{ event.space_building_level }}</span>
-                            </div>
+                        <div v-if="event.space_total_capacity" class="event-detail-info-row">
+                            <span class="event-detail-info-label">{{ t('space_total_capacity') }}: {{ event.space_total_capacity }}</span>
+                        </div>
+                        <div v-if="event.space_seating_capacity" class="event-detail-info-row">
+                            <span class="event-detail-info-label">{{ t('space_seating_capacity') }}: {{ event.space_seating_capacity }}</span>
+                        </div>
+                        <div v-if="event.space_building_level" class="event-detail-info-row">
+                            <span class="event-detail-info-label">{{ t('space_building_level') }}: {{ event.space_building_level }}</span>
+                        </div>
                     </div>
 
                     <!-- Additional Info -->
-                    <div v-if="event.meeting_point || event.entry_time || event.participation_info">
+                    <div v-if="event.meeting_point || event.participation_info">
                         <h3>{{ t('details') }}</h3>
                         <div>
                             <div v-if="event.meeting_point" class="event-detail-info-row">
                                 <span class="event-detail-info-label">{{ t('geo_location') }}:</span>
                                 <span class="event-detail-info-value">{{ event.meeting_point }}</span>
-                            </div>
-                            <div v-if="event.entry_time" class="event-detail-info-row">
-                                <span class="event-detail-info-label">{{ t('begin') }}:</span>
-                                <span class="event-detail-info-value">{{ formatTime(event.entry_time) }}</span>
                             </div>
                             <div v-if="event.participation_info" class="event-detail-info-row">
                                 <span class="event-detail-info-label">{{ t('user_permissions_title') }}:</span>
@@ -242,12 +242,6 @@ const loadError = ref<string | null>(null)
 
 const loadingLabel = computed(() => t('loading'))
 
-const intlDate = new Intl.DateTimeFormat(locale.value || 'de', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-})
-
 const intlTime = new Intl.DateTimeFormat(locale.value || 'de', {
     hour: '2-digit',
     minute: '2-digit',
@@ -256,8 +250,12 @@ const intlTime = new Intl.DateTimeFormat(locale.value || 'de', {
 const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-').map(Number)
     if (!year || !month || !day) return dateStr
-    const date = new Date(year, month - 1, day)
-    return intlDate.format(date)
+
+    // Format as DD.MM.YYYY
+    const paddedDay = String(day).padStart(2, '0')
+    const paddedMonth = String(month).padStart(2, '0')
+
+    return `${paddedDay}.${paddedMonth}.${year}`
 }
 
 const formatTime = (timeStr: string) => {
@@ -266,6 +264,40 @@ const formatTime = (timeStr: string) => {
     date.setHours(hours ?? 0, minutes ?? 0, 0, 0)
     return intlTime.format(date)
 }
+
+const formatEventDateTime = computed(() => {
+    if (!event.value) return null
+
+    const { start_date, start_time, end_date, end_time } = event.value
+
+    // Check if it's a single-day event (same start and end date or no end date)
+    const isSingleDay = !end_date || start_date === end_date
+
+    if (isSingleDay) {
+        // Single day event: show date and time on separate lines
+        const dateStr = formatDate(start_date)
+        let timeStr = ''
+        
+        if (start_time && end_time) {
+            timeStr = `${formatTime(start_time)} - ${formatTime(end_time)}`
+        } else if (start_time) {
+            timeStr = formatTime(start_time)
+        }
+        
+        return {
+            date: dateStr,
+            time: timeStr
+        }
+    } else {
+        // Multi-day event: show separate start and end dates with times on separate lines
+        return {
+            startDate: formatDate(start_date),
+            startTime: start_time ? formatTime(start_time) : '',
+            endDate: formatDate(end_date),
+            endTime: end_time ? formatTime(end_time) : ''
+        }
+    }
+})
 
 const formatMarkdown = (markdown: string) => {
     try {
@@ -307,9 +339,24 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-
 p {
-  margin: 0;
+    margin: 0;
+}
+
+.space {
+    font-weight: 900;
+    margin: 0;
+}
+
+.event-date {
+    font-weight: 600;
+    font-size: 2rem;
+}
+
+.event-time {
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
 }
 
 .event-detail-page {
@@ -349,18 +396,18 @@ p {
 }
 
 .event-image-frame {
-  width: 100%;
-  max-width: 800px;
-  aspect-ratio: 16/9;
-  overflow: hidden;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16/9;
+    overflow: hidden;
 }
 
 .event-image {
-  width: 100%;
-  height: 100%;
-  max-width: 800px;
-  object-fit: cover;
-  display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 800px;
+    object-fit: cover;
+    display: block;
 }
 
 .event-detail-hero__content {
@@ -422,18 +469,19 @@ p {
 }
 
 .event-detail-main {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .event-detail-section {
-  padding: 16px;
-  h1 {
-    margin-top: 32px;
-    font-size: 2.8rem;
-    font-weight: 600;
-  }
+    padding: 16px;
+
+    h1 {
+        margin-top: 32px;
+        font-size: 2.8rem;
+        font-weight: 600;
+    }
 }
 
 .event-detail-section h2 {
@@ -463,12 +511,18 @@ p {
         margin: 0 0 1rem 0;
     }
 
-    :deep(h1), :deep(h2), :deep(h3), :deep(h4), :deep(h5), :deep(h6) {
+    :deep(h1),
+    :deep(h2),
+    :deep(h3),
+    :deep(h4),
+    :deep(h5),
+    :deep(h6) {
         margin: 1.5rem 0 1rem 0;
         font-weight: 600;
     }
 
-    :deep(ul), :deep(ol) {
+    :deep(ul),
+    :deep(ol) {
         margin: 0 0 1rem 0;
         padding-left: 2rem;
     }
@@ -521,11 +575,15 @@ p {
 }
 
 .event-detail-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  position: sticky;
-  top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 100px;
+}
+
+.event-detail-section-spacing {
+    margin-top: 1rem;
 }
 
 .event-detail-info-label {

@@ -126,6 +126,7 @@ const messages = {
     de: {
         ...event.de,
         ...sharedAuthFor('de'),
+        organizer: 'Veranstalter',
         visitor_nav_admin_dashboard: 'Dashboard',
         delete_organizer: 'Organisation löschen',
         user_messages_inbox: 'Posteingang',
@@ -699,6 +700,7 @@ const messages = {
     en: {
         ...event.en,
         ...sharedAuthFor('en'),
+        organizer: 'Organizer',
         visitor_nav_admin_dashboard: 'Dashboard',
         delete_organizer: 'Delete Organizer',
         user_messages_inbox: 'Inbox',
@@ -1267,6 +1269,7 @@ const messages = {
     da: {
         ...event.da,
         ...sharedAuthFor('da'),
+        organizer: 'Arrangør',
         visitor_nav_admin_dashboard: 'Dashboard',
         delete_organizer: 'Slet arrangør',
         user_messages_inbox: 'Indbakke',
