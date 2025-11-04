@@ -11,7 +11,7 @@
                          :error="fieldErrors.organizerName"/>
 
         <UranusFormRow>
-          <UranusTextInput id="street" required style="flex: 2"
+          <UranusTextInput id="street" required :flex=2
                            v-model="street"
                            :label="t('street')"
                            :error="fieldErrors.street"/>
@@ -22,67 +22,58 @@
         </UranusFormRow>
 
         <UranusFormRow>
-          <UranusTextInput id="street" required
+          <UranusTextInput id="postal_code" required
                            v-model="postalCode"
                            :label="t('postal_code')"
                            :error="fieldErrors.postalCode"/>
-          <UranusTextInput id="house_number" required style="flex: 2"
-                           v-model="postalCode"
-                           :label="t('house_number')"
-                           :error="fieldErrors.postalCode"/>
+          <UranusTextInput id="city" required :flex=2
+                           v-model="city"
+                           :label="t('city')"
+                           :error="fieldErrors.city"/>
         </UranusFormRow>
-
 
         <UranusFormRow>
-          <UranusTextInput id="street"
-                           v-model="postalCode"
-                           :label="t('postal_code')"
-                           :error="fieldErrors.postalCode"/>
-          <UranusTextInput id="house_number"
-                           v-model="postalCode"
-                           :label="t('house_number')"
-                           :error="fieldErrors.postalCode"/>
+          <UranusTextInput id="email"
+                           v-model="email"
+                           :label="t('email')"
+                           :error="fieldErrors.email"/>
+          <UranusTextInput id="phone"
+                           v-model="phone"
+                           :label="t('phone')"
+                           :error="fieldErrors.phone"/>
         </UranusFormRow>
-                        <div class="form-group">
-                            <label for="email">{{ t('email') }}</label>
-                            <input v-model="email" id="email" type="email" />
-                            <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">{{ t('phone') }}</label>
-                            <input v-model="phone" id="phone" type="tel" />
-                        </div>
-                        <div class="form-group">
-                            <label for="website">{{ t('website') }}</label>
-                            <input v-model="website" id="website" type="url" />
-                            <p v-if="fieldErrors.website" class="field-error">{{ fieldErrors.website }}</p>
-                        </div>
-                    <!--/div-->
 
-                    <div class="form-actions">
-                        <button type="submit" :disabled="isSubmitting">{{ t('create_organizer') }}</button>
-                    </div>
-                </form>
+        <UranusTextInput id="website"
+                         v-model="website"
+                         :label="t('website')"
+                         :error="fieldErrors.website"/>
 
-                <aside class="organizer-map-panel">
-                    <LocationMapComponent v-model="location" :zoom="13" :selectable="true">
-                        <template #footer>
-                            {{ mapHint }}
-                        </template>
-                    </LocationMapComponent>
-                  <ValueInfoComponent
-                      :label="t('geo_location')"
-                      :value="locationSummary" />
-                </aside>
+        <div>
+          <LocationMapComponent v-model="location" :zoom="13" :selectable="true" class="venue-map-panel">
+            <template #footer>
+              {{ mapHint }}
+            </template>
+          </LocationMapComponent>
+          <ValueInfoComponent
+              :label="t('geo_location')"
+              :value="locationSummary" />
+        </div>
 
-            <transition name="fade">
-                <p v-if="error" class="feedback feedback--error">{{ error }}</p>
-            </transition>
-            <transition name="fade">
-                <p v-if="success" class="feedback feedback--success">{{ success }}</p>
-            </transition>
-        </section>
-    </div>
+        <div class="form-actions" style="text-align: right">
+          <button class="uranus-button" type="submit" :disabled="isSubmitting">{{ t('create_organizer') }}</button>
+        </div>
+
+      </form>
+
+
+      <transition name="fade">
+        <p v-if="error" class="feedback feedback--error">{{ error }}</p>
+      </transition>
+      <transition name="fade">
+       <p v-if="success" class="feedback feedback--success">{{ success }}</p>
+      </transition>
+    </section>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -338,139 +329,8 @@ watch(website, (value) => {
 </script>
 
 <style scoped lang="scss">
-.organizer-page {
-    @include form-page();
-}
-
-.organizer-hero {
-    @include form-hero(540px);
-}
-
-.organizer-card {
-    @include form-card(1080px, clamp(1.75rem, 4vw, 2.75rem), clamp(1.25rem, 3vw, 1.75rem));
-}
-
-.organizer-layout {
-    display: grid;
-    gap: clamp(1.5rem, 3vw, 2.25rem);
-    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-}
-
-.organizer-form {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.5rem, 3vw, 2rem);
-}
-
-.form-grid {
-    @include form-grid();
-}
-
-.form-group {
-    @include form-group();
-}
-
-.form-group--full {
-    grid-column: 1 / -1;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-}
-
-button {
-    @include form-primary-button($padding-y: 0.85rem, $padding-x: 2rem);
-}
-
-.required {
-    color: #dc2626;
-    font-weight: 700;
-}
-
-.field-error {
-    margin: 0.35rem 0 0;
-    font-size: 0.85rem;
-    color: #b91c1c;
-    font-weight: 600;
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-}
-
-.organizer-map-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    height: 340px;
-}
-
-.location-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    background: var(--input-bg);
-    border-radius: 14px;
-    padding: 0.75rem 1rem;
-}
-
-.meta-label {
-    font-weight: 600;
-    color: var(--color-text);
-    letter-spacing: 0.08em;
-    font-size: 0.78rem;
-}
-
-.meta-value {
-    font-variant-numeric: tabular-nums;
-    color: var(--muted-text);
-}
-
-.feedback {
-    @include form-feedback();
-
-    &--error {
-        @include form-feedback-error();
-    }
-
-    &--success {
-        @include form-feedback-success();
-    }
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.25s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-
-@media (max-width: 900px) {
-    .organizer-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .form-actions {
-        justify-content: center;
-    }
-}
-
-@media (max-width: 540px) {
-    .organizer-card {
-        padding: clamp(1.25rem, 6vw, 1.8rem);
-    }
+.venue-map-panel {
+ max-width: 400px;
+ aspect-ratio: 1/1;
 }
 </style>

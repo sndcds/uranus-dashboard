@@ -413,7 +413,7 @@ const mapEventImage = (raw: unknown): EventImageDetail | null => {
     createdBy: toNullableString(record.created_by ?? record.createdBy),
     focusX: toNumberOrNull(record.focus_x ?? record.focusX),
     focusY: toNumberOrNull(record.focus_y ?? record.focusY),
-    licenseId: toNullableString(record.license_id ?? record.licence_id ?? record.licenseId ?? record.licenceId),
+    licenseId: toNullableString(record.license_id ?? record.license_id ?? record.licenseId ?? record.licenseId),
   }
 }
 

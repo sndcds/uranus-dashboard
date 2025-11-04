@@ -128,11 +128,18 @@
             <label for="image-license" class="event-image-upload__label">{{ t('event_image_license') }}</label>
             <select
                 id="image-license"
-                v-model="localLicense"
+                v-model.number="localLicense"
                 class="event-image-upload__select"
-                :disabled="licenseLoading">
-              <option value="">{{ licenseLoading ? t('loading') : t('event_image_license_select') }}</option>
-              <option v-for="option in licenseOptions" :key="option.value" :value="option.value">
+                :disabled="licenseLoading"
+            >
+              <option :value="null">
+                {{ licenseLoading ? t('loading') : t('event_image_license_select') }}
+              </option>
+              <option
+                  v-for="option in licenseOptions"
+                  :key="option.value"
+                  :value="option.value"
+              >
                 {{ option.label }}
               </option>
             </select>
@@ -227,7 +234,9 @@ const fileSize = ref<number>(0)
 // Local reactive variables for form fields
 const localAltText = ref(props.altText)
 const localCopyright = ref(props.copyright)
-const localLicense = ref(props.license)
+const localLicense = ref<number | null>(
+    props.license ? Number(props.license) : null
+)
 const localCreatedBy = ref(props.createdBy)
 
 // Computed property to check if we can save
@@ -518,8 +527,8 @@ const fetchLicenses = async () => {
 
         if (Array.isArray(data)) {
             licenseOptions.value = data.map((license: any) => ({
-                value: license.license_id,
-                label: resolveLicenseLabel(license)
+                value: Number(license.license_id), // ensure number type
+                label: resolveLicenseLabel(license),
             }))
         } else {
             licenseOptions.value = []
@@ -558,13 +567,12 @@ const saveImage = async () => {
         if (localCopyright.value) {
             formData.append('copyright', localCopyright.value)
         }
-        if (localLicense.value) {
-            formData.append('licence_id', localLicense.value) // must match Go struct
+      if (localLicense.value !== null) {
+            formData.append('license_id', String(localLicense.value))
         }
         if (localCreatedBy.value.trim()) {
             formData.append('created_by', localCreatedBy.value.trim())
         }
-        console.log(formData.values())
 
         await apiFetch(computedUploadUrl.value, {
             method: 'POST',

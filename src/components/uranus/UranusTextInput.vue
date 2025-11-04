@@ -1,5 +1,5 @@
 <template>
-  <div class="uranus-textfield-wrapper">
+  <div class="uranus-textfield-wrapper" :style="{ flex: flexValue }">
     <UranusFieldLabel
         :id="id"
         :label="label"
@@ -30,7 +30,13 @@ const props = defineProps({
   type: { type: String, default: 'text' },
   required: { type: Boolean, default: false },
   size: { type: String, default: 'normal' }, // tiny / normal / big
+  flex: { type: [Number, String], default: 1 },
   error: { type: String, default: '' },
+})
+
+const flexValue = computed(() => {
+  // Support both numeric and string values
+  return typeof props.flex === 'number' ? `${props.flex}` : props.flex
 })
 
 const emit = defineEmits(['update:modelValue'])

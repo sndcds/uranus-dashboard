@@ -8,7 +8,7 @@
     />
 
     <UranusFormRow>
-      <UranusTextInput id="street" required style="flex: 2"
+      <UranusTextInput id="street" required :flex=2
           v-model="street"
           :label="t('street')"
           :error="fieldErrors.street"
@@ -26,7 +26,7 @@
           :label="t('postal_code')"
           :error="fieldErrors.postalCode"
       />
-      <UranusTextInput id="city" required style="flex: 2"
+      <UranusTextInput id="city" required :flex=2
           v-model="city"
           :label="t('city')"
           :error="fieldErrors.city"
