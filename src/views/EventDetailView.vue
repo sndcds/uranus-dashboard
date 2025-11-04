@@ -17,8 +17,23 @@
                         <div v-if="event.has_main_image && event.image_path" class="event-image-frame">
                             <img :src="event.image_path.includes('?')
                                 ? `${event.image_path}&ratio=16by9&width=1200`
-                                : `${event.image_path}?ratio=16by9&width=1200`" :alt="event.title"
+                                : `${event.image_path}?ratio=16by9&width=1200`" :alt="event.image_alt_text ? event.image_alt_text : event.title"
                                 class="event-image" />
+                            <div v-if="event.image_copyright || event.image_created_by || event.image_license" class="event-image-caption"> 
+                                <small>
+                                    <template v-if="event.image_created_by">
+                                        {{ t('image_created_by', { creator: event.image_created_by }) }}
+                                    </template>
+                                    <template v-if="event.image_copyright">
+                                        <span v-if="event.image_created_by"> | </span>
+                                        {{ t('image_copyright', { copyright: event.image_copyright }) }}
+                                    </template>
+                                    <template v-if="event.image_license">
+                                        <span v-if="event.image_created_by || event.image_copyright"> | </span>
+                                        {{ t('image_license', { license: event.image_license }) }}
+                                    </template>
+                                </small>
+                            </div>
                         </div>
 
                         <div class="event-detail-section">
@@ -197,6 +212,10 @@ interface EventDetail {
     event_types: EventType[] | null
     event_urls: EventUrl[] | null
     has_main_image: boolean
+    image_license: string | null
+    image_alt_text: string | null
+    image_copyright: string | null
+    image_created_by: string | null
     id: number
     image_focus_x: number
     image_focus_y: number

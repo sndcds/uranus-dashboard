@@ -14,9 +14,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-
-// Props for dynamic text
 defineProps({
   labelText: {
     type: String,
@@ -25,6 +22,10 @@ defineProps({
   editButtonText: {
     type: String,
     required: true
+  },
+  isEditing: {
+    type: Boolean,
+    default: false
   }
 })
 
