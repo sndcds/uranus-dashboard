@@ -1,48 +1,93 @@
 <template>
-  <label :for="id">
-    <span class="uranus-label-text">
-      {{ label }}
-      <span v-if="required" class="uranus-form-required" aria-hidden="true">*</span>
-      <span v-if="required" class="uranus-sr-only">{{ requiredA11yLabel }}</span>
-    </span>
+  <div class="uranus-textfield-wrapper">
+    <label :for="id" class="uranus-label">
+      <span class="uranus-label-text">
+        {{ label }}
+        <span v-if="required" class="uranus-form-required">*</span>
+      </span>
 
-    <input
-        :id="id"
-        :type="type"
-        :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
-        :class="['uranus-text-input', inputClasses]"
-    />
+      <input
+          :id="id"
+          :type="type"
+          :value="modelValue"
+          @input="$emit('update:modelValue', $event.target.value)"
+          :class="sizeClass"
+      />
 
-    <p v-if="error" class="uranus-field-error">{{ error }}</p>
-  </label>
+      <p v-if="error" class="uranus-field-error">{{ error }}</p>
+    </label>
+  </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 
 const props = defineProps({
+  id: { type: String, required: true },
   label: { type: String, required: true },
   modelValue: { type: [String, Number], default: '' },
-  required: { type: Boolean, default: false },
   type: { type: String, default: 'text' },
-  id: { type: String, required: true },
+  required: { type: Boolean, default: false },
+  size: { type: String, default: 'normal' }, // tiny / normal / big
   error: { type: String, default: '' },
-  requiredA11yLabel: { type: String, default: '(required)' },
-  size: { type: String, default: 'normal', validator: (val) => ['tiny', 'normal', 'big'].includes(val) }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
-// Compute the input class based on the size prop
-const inputClasses = computed(() => {
+const sizeClass = computed(() => {
   switch (props.size) {
-    case 'tiny':
-      return 'uranus-tiny-text'
-    case 'big':
-      return 'uranus-big-text'
-    default:
-      return '' // normal size uses default styling
+    case 'tiny': return 'uranus-tiny-text'
+    case 'big': return 'uranus-big-text'
+    default: return ''
   }
 })
 </script>
+
+<style scoped>
+.uranus-textfield-wrapper {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.uranus-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.uranus-label-text {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.uranus-text-input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.uranus-tiny-text {
+  font-size: 0.85rem;
+}
+
+.uranus-big-text {
+  font-size: 1.3rem;
+}
+
+.uranus-field-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.uranus-form-required {
+  color: #dc2626;
+  font-weight: 700;
+}
+</style>

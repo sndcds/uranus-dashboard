@@ -1,109 +1,109 @@
 <template>
-    <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
-        <div class="uranus-form-full-width">
-          <UranusTextInput type="text" size="big" v-model="venueName"
-                           :label="t('venue_name')" :required="true"
-                           :error="fieldErrors.venueName" />
-        </div>
+  <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
+    <!-- Single field -->
+    <UranusTextInput id="venue_name" size="big" required
+        v-model="venueName"
+        :label="t('venue_name')"
+        :error="fieldErrors.venueName"
+    />
 
-        <div class="uranus-form-wide">
+    <!-- Grouped fields -->
+    <UranusFormRow>
+      <UranusTextInput id="street" required style="flex: 2"
+          v-model="street"
+          :label="t('street')"
+          :error="fieldErrors.street"
+      />
 
-      <UranusTextInput type="text" v-model="street"
-                       :label="t('street')" :required="true"
-                       :error="fieldErrors.street" />
-        </div>
+      <UranusTextInput id="house_number" required
+          v-model="houseNumber"
+          :label="t('house_number')"
+          :error="fieldErrors.houseNumber"
+      />
+    </UranusFormRow>
 
-      <div class="form-group">
-                        <label for="street">
-                            {{ t('street') }}
-                            <span class="required" aria-hidden="true">*</span>
-                            <span class="uranus-sr-only">{{ requiredA11yLabel }}</span>
-                        </label>
-                        <input v-model="street" id="street" type="text" />
-                        <p v-if="fieldErrors.street" class="uranus-field-error">{{ fieldErrors.street }}</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="house_number">
-                            {{ t('house_number') }}
-                            <span class="required" aria-hidden="true">*</span>
-                            <span class="uranus-sr-only">{{ requiredA11yLabel }}</span>
-                        </label>
-                        <input v-model="houseNumber" id="house_number" type="text" />
-                        <p v-if="fieldErrors.houseNumber" class="uranus-field-error">{{ fieldErrors.houseNumber }}</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="postal_code">
-                            {{ t('postal_code') }}
-                            <span class="required" aria-hidden="true">*</span>
-                            <span class="uranus-sr-only">{{ requiredA11yLabel }}</span>
-                        </label>
-                        <input v-model="postalCode" id="postal_code" type="text" />
-                        <p v-if="fieldErrors.postalCode" class="uranus-field-error">{{ fieldErrors.postalCode }}</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="city">
-                            {{ t('city') }}
-                            <span class="required" aria-hidden="true">*</span>
-                            <span class="uranus-sr-only">{{ requiredA11yLabel }}</span>
-                        </label>
-                        <input v-model="city" id="city" type="text" />
-                        <p v-if="fieldErrors.city" class="uranus-field-error">{{ fieldErrors.city }}</p>
-                    </div>
-                    <RegionSelectorComponent v-if="showRegionSelector" v-model:country-code="countryCode"
-                        v-model:state-code="stateCode" />
-                    <div class="form-group">
-                        <label for="email">{{ t('email') }}</label>
-                        <input v-model="email" id="email" type="email" />
-                        <p v-if="fieldErrors.email" class="uranus-field-error">{{ fieldErrors.email }}</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">{{ t('phone') }}</label>
-                        <input v-model="phone" id="phone" type="tel" />
-                    </div>
-                    <div class="form-group">
-                        <label for="website">{{ t('website') }}</label>
-                        <input v-model="website" id="website" type="url" />
-                        <p v-if="fieldErrors.website" class="uranus-field-error">{{ fieldErrors.website }}</p>
-                    </div>
-                    <div v-if="showDescription" class="form-group form-group--full">
-                        <label :id="descriptionLabelId">{{ t('description') }}</label>
-                        <MarkdownEditorComponent v-model="description" class="venue-description-editor"
-                            :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
-                        <p v-if="fieldErrors.description" class="uranus-field-error">{{ fieldErrors.description }}</p>
-                    </div>
-                    <div v-if="showDateFields" class="form-group">
-                        <label for="opened_at">{{ t('opened_at') }}</label>
-                        <input v-model="openedAt" id="opened_at" type="date" />
-                        <p v-if="fieldErrors.openedAt" class="uranus-field-error">{{ fieldErrors.openedAt }}</p>
-                    </div>
-                    <div v-if="showDateFields" class="form-group">
-                        <label for="closed_at">{{ t('closed_at') }}</label>
-                        <input v-model="closedAt" id="closed_at" type="date" />
-                        <p v-if="fieldErrors.closedAt" class="uranus-field-error">{{ fieldErrors.closedAt }}</p>
-                    </div>
+    <UranusFormRow>
+      <UranusTextInput id="postal_code" required
+          v-model="postalCode"
+          :label="t('postal_code')"
+          :error="fieldErrors.postalCode"
+      />
+      <UranusTextInput id="city" required style="flex: 2"
+          v-model="city"
+          :label="t('city')"
+          :error="fieldErrors.city"
+      />
+    </UranusFormRow>
 
-                <div class="form-actions">
-                    <button type="submit" :disabled="loading">{{ submitLabel }}</button>
-                </div>
-            </form>
+    <UranusFormRow>
+      <RegionSelectorComponent v-if="showRegionSelector" v-model:country-code="countryCode"
+                               v-model:state-code="stateCode" />
+    </UranusFormRow>
 
-            <aside class="venue-map-panel">
-                <LocationMapComponent v-model="location" :zoom="13" :selectable="true">
-                    <template #footer>
-                        {{ mapHint }}
-                    </template>
-                </LocationMapComponent>
-                <ValueInfoComponent
-                    :label="t('geo_location')"
-                    :value="locationSummary" />
-            </aside>
+    <UranusFormRow>
+      <UranusTextInput id="email"
+                       v-model="email"
+                       :label="t('email')"
+                       :error="fieldErrors.email"
+      />
 
-        <transition name="fade">
-            <p v-if="displayError" class="feedback feedback--error">{{ displayError }}</p>
-        </transition>
-        <transition name="fade">
-            <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
-        </transition>
+      <UranusTextInput id="phone"
+                       v-model="phone"
+                       :label="t('phone')"
+                       :error="fieldErrors.phone"
+      />
+    </UranusFormRow>
+
+    <UranusTextInput id="website"
+                     v-model="website"
+                     :label="t('website')"
+                     :error="fieldErrors.website"
+    />
+
+    <div v-if="showDescription" class="form-group form-group--full">
+      <label :id="descriptionLabelId">{{ t('description') }}</label>
+      <MarkdownEditorComponent v-model="description" class="venue-description-editor"
+                               :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
+      <p v-if="fieldErrors.description" class="uranus-field-error">{{ fieldErrors.description }}</p>
+    </div>
+
+    <UranusFormRow>
+    <div v-if="showDateFields" class="form-group">
+      <label for="opened_at">{{ t('opened_at') }}</label>
+      <input v-model="openedAt" id="opened_at" type="date" />
+      <p v-if="fieldErrors.openedAt" class="uranus-field-error">{{ fieldErrors.openedAt }}</p>
+    </div>
+
+    <div v-if="showDateFields" class="form-group">
+      <label for="closed_at">{{ t('closed_at') }}</label>
+      <input v-model="closedAt" id="closed_at" type="date" />
+      <p v-if="fieldErrors.closedAt" class="uranus-field-error">{{ fieldErrors.closedAt }}</p>
+    </div>
+    </UranusFormRow>
+
+    <div>
+      <LocationMapComponent v-model="location" :zoom="13" :selectable="true" class="venue-map-panel">
+        <template #footer>
+          {{ mapHint }}
+        </template>
+      </LocationMapComponent>
+      <ValueInfoComponent
+          :label="t('geo_location')"
+          :value="locationSummary" />
+    </div>
+
+
+    <div class="form-actions" style="text-align: right">
+        <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
+    </div>
+  </form>
+
+  <transition name="fade">
+      <p v-if="displayError" class="feedback feedback--error">{{ displayError }}</p>
+  </transition>
+  <transition name="fade">
+      <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
+  </transition>
 </template>
 
 <script setup lang="ts">
@@ -115,6 +115,7 @@ import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
 import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
+import UranusFormRow from "@/components/uranus/UranusFormRow.vue";
 
 interface LatLngLiteral {
     lat: number
@@ -507,6 +508,12 @@ defineExpose({
 
 <style scoped lang="scss">
 
+.venue-map-panel {
+  max-width: 400px;
+  aspect-ratio: 1/1;
+}
+/*
+
 .venue-layout {
   background-color: var(--uranus-low-contrast-color);
 }
@@ -569,20 +576,6 @@ button {
     @include form-feedback-success();
 }
 
-@media (max-width: 768px) {
-    .venue-layout {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
-    .form-actions {
-        justify-content: stretch;
-    }
-
-    button {
-        width: 100%;
-    }
-}
-
 .fade-enter-active,
 .fade-leave-active {
     transition: opacity 0.25s ease;
@@ -591,5 +584,5 @@ button {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
-}
+}*/
 </style>

@@ -1,20 +1,19 @@
 .uranus-form {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--uranus-grid-gap);
-  /* Default: 1 column */
-  grid-template-columns: 1fr 1fr 1fr;
 
   label {
     display: flex;
     flex-direction: column;
-    font-weight: 600;
-    color: var(--uranus-color);
-    letter-spacing: 0.01em;
-    gap: 0.25rem;
+    gap: 6px;
     margin: 0;
 
     /* new inner span for label text + required */
     .uranus-label-text {
+      padding-left: 10px;
+      margin: 0;
+      font-weight: 400;
       font-size: 0.9rem;
       color: var(--uranus-medium-contrast-color);
       display: flex;
@@ -32,9 +31,14 @@
   textarea {
     font-size: 1rem;
     background: var(--uranus-bg-color);
-    padding: 0.25rem;
-    border: 1px solid var(--uranus-bg-color-d2);
+    padding: 0.6rem 1.0rem;
+    border: 0;
+    border-bottom: 1px solid var(--uranus-low-contrast-color);
     border-radius: var(--uranus-form-field-border-radius);
+    background: #fafafa;
+  }
+  input {
+    font-size: 1.2rem;
   }
 
   .uranus-tiny-text {
@@ -49,9 +53,28 @@
   }
 }
 
+.uranus-form-row {
+  display: flex;
+  gap: 12px;
+}
+
+/* Make each textfield inside the row grow */
+
+.uranus-form-row > .uranus-textfield-wrapper {
+  flex: 1;           /* grow to fill row */
+  min-width: 150px;  /* optional: prevent too small inputs */
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .uranus-form-row {
+    flex-direction: column; /* stack vertically on narrow screens */
+  }
+}
+
+
 .uranus-form-wide {
   grid-column: span 2;
-  background: yellow;
 }
 
 .uranus-form-full-width {
@@ -83,15 +106,7 @@
 }
 
 @media (min-width: 600px) {
-  .form-grid {
-    /* 2 columns on medium screens */
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 @media (min-width: 1000px) {
-  .form-grid {
-    /* 3 columns on wide screens */
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
