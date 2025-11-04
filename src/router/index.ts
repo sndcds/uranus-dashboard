@@ -31,6 +31,8 @@ import PrivacyView from '@/views/PrivacyView.vue'
 import TermsView from '@/views/TermsView.vue'
 import AboutView from '@/views/AboutView.vue'
 import MapView from '@/views/MapView.vue'
+import EmptyVenuesView from '@/views/EmptyVenuesView.vue'
+import EmptyEventsView from '@/views/EmptyEventsView.vue'
 
 const routes = [
     {
@@ -93,9 +95,19 @@ const routes = [
                 component: OrganizerVenueView,
             },
             {
+                path: 'organizer/venues/empty',
+                name: 'admin-venues-empty',
+                component: EmptyVenuesView,
+            },
+            {
                 path: 'organizer/:id/events',
                 name: 'admin-organizer-events',
                 component: EventDashboardView,
+            },
+            {
+                path: 'organizer/events/empty',
+                name: 'admin-events-empty',
+                component: EmptyEventsView,
             },
             {
                 path: 'organizer/:id/event/create',

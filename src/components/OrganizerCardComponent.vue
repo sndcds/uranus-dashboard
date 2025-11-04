@@ -144,7 +144,10 @@ const confirmDelete = async (password: string) => {
       appStore.setOrganizerId(null)
     }
 
+    // Emit the deleted event
     emit('deleted', pendingDeleteId.value)
+    
+    // Close the modal
     cancelDelete()
   } catch (error: any) {
     console.error('Failed to delete organizer:', error)

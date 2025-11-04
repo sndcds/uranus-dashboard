@@ -26,8 +26,22 @@ const appStore = useAppStore()
 const sidebarOptions = computed<SidebarOption[]>(() => [
   { id: 'dashboard', label: t('dashboard'), icon: '', route: '/admin/dashboard' },
   { id: 'organizers', label: t('organizers'), icon: '', route: '/admin/organizers' },
-  { id: 'venues', label: t('venues'), icon: '', route: `/admin/organizer/${appStore.organizerId ?? ''}/venues` },
-  { id: 'events', label: t('events'), icon: '', route: `/admin/organizer/${appStore.organizerId ?? ''}/events` },
+  { 
+    id: 'venues', 
+    label: t('venues'), 
+    icon: '', 
+    route: appStore.organizerId 
+      ? `/admin/organizer/${appStore.organizerId}/venues` 
+      : '/admin/organizer/venues/empty' 
+  },
+  { 
+    id: 'events', 
+    label: t('events'), 
+    icon: '', 
+    route: appStore.organizerId 
+      ? `/admin/organizer/${appStore.organizerId}/events` 
+      : '/admin/organizer/events/empty' 
+  },
   { id: 'settings', label: t('settings'), icon: '', route: '/admin/settings' }
 ])
 

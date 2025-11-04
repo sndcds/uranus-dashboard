@@ -5,36 +5,51 @@
         subtitle="Test"
     />
 
-    <div style="padding: 16px;">
-      <router-link
-          :to = "`/admin/organizer/${organizerId}/venue/create`"
-          class = "uranus-button">
-        {{ t('add_new_venue') }}
-      </router-link>
-    </div>
-
-
-    <!-- Error Message -->
-    <div v-if="error" class="organizer-venue-view__error">
-      <p class="form-feedback-error">{{ error }}</p>
-    </div>
-
-    <!-- Organizer Content -->
-    <div v-if="organizer" class="organizer-venue-view__content">
-      <!-- Stats -->
+    <!-- No Organizer Selected Message -->
+    <div v-if="!organizerId" class="organizer-venue-view__no-organizer">
       <div class="uranus-card">
-        <h2 v-if="organizer">{{ organizer.organizer_name }}</h2>
-        <p>{{ t('total_events') }}: {{ organizer.total_upcoming_events }}</p>
+        <div class="no-organizer-content">
+          <h3>{{ t('no_organizer_selected') }}</h3>
+          <p>{{ t('no_organizer_selected_description') }}</p>
+          <router-link to="/admin/organizer" class="uranus-button">
+            {{ t('go_to_organizers') }}
+          </router-link>
+        </div>
+      </div>
+    </div>
+
+    <div v-else>
+      <div>
+        <router-link
+            :to = "`/admin/organizer/${organizerId}/venue/create`"
+            class = "uranus-button">
+          {{ t('add_new_venue') }}
+        </router-link>
       </div>
 
-      <!-- Venue Cards Grid -->
-      <div class="organizer-venue-view__grid">
-        <VenueCardComponent
-          v-for="venue in organizer.venues"
-          :key="venue.venue_id"
-          :venue="venue"
-          :organizerId="organizerId || 0"
-        />
+
+      <!-- Error Message -->
+      <div v-if="error" class="organizer-venue-view__error">
+        <p class="form-feedback-error">{{ error }}</p>
+      </div>
+
+      <!-- Organizer Content -->
+      <div v-if="organizer" class="organizer-venue-view__content">
+        <!-- Stats -->
+        <div class="uranus-card">
+          <h2 v-if="organizer">{{ organizer.organizer_name }}</h2>
+          <p>{{ t('total_events') }}: {{ organizer.total_upcoming_events }}</p>
+        </div>
+
+        <!-- Venue Cards Grid -->
+        <div class="organizer-venue-view__grid">
+          <VenueCardComponent
+            v-for="venue in organizer.venues"
+            :key="venue.venue_id"
+            :venue="venue"
+            :organizerId="organizerId || 0"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -215,6 +230,41 @@ watch(
 @media (min-width: 1280px) {
   .organizer-venue-view__grid {
     gap: var(--uranus-grid-gap);
+  }
+}
+
+// No organizer selected message
+.organizer-venue-view__no-organizer {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.no-organizer-content {
+  text-align: center;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted-text);
+    line-height: 1.6;
+  }
+
+  .uranus-button {
+    margin-top: 0.5rem;
+    text-decoration: none;
   }
 }
 </style>
