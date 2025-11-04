@@ -1,23 +1,19 @@
 <template>
-  <div class="uranus-form">
-    <form @submit.prevent="handleSubmit" novalidate>
+    <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
         <div class="uranus-form-full-width">
-
-          <UranusTextInput
-              label="t('venue_name')"
-              v-model="venueName"
-              :required="true"
-              :error="fieldErrors.venueName"
-              type="text"
-          />
-
-          <label>
-            <input v-model="venueName" id="venue_name" type="text" class="big" />
-            <p v-if="fieldErrors.venueName" class="uranus-field-error">{{ fieldErrors.venueName }}</p>
-          </label>
+          <UranusTextInput type="text" size="big" v-model="venueName"
+                           :label="t('venue_name')" :required="true"
+                           :error="fieldErrors.venueName" />
         </div>
 
-        <div class="form-group">
+        <div class="uranus-form-wide">
+
+      <UranusTextInput type="text" v-model="street"
+                       :label="t('street')" :required="true"
+                       :error="fieldErrors.street" />
+        </div>
+
+      <div class="form-group">
                         <label for="street">
                             {{ t('street') }}
                             <span class="required" aria-hidden="true">*</span>
@@ -101,7 +97,6 @@
                     :label="t('geo_location')"
                     :value="locationSummary" />
             </aside>
-        </div>
 
         <transition name="fade">
             <p v-if="displayError" class="feedback feedback--error">{{ displayError }}</p>

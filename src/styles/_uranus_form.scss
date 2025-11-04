@@ -2,7 +2,7 @@
   display: grid;
   gap: var(--uranus-grid-gap);
   /* Default: 1 column */
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
 
   label {
     display: flex;
@@ -37,7 +37,11 @@
     border-radius: var(--uranus-form-field-border-radius);
   }
 
-  .big {
+  .uranus-tiny-text {
+    font-size: 0.85rem;
+  }
+
+  .uranus-big-text {
     font-size: 1.4rem;
   }
 
