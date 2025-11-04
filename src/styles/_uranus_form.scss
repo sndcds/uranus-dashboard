@@ -35,7 +35,9 @@
     border: 0;
     border-bottom: 1px solid var(--uranus-low-contrast-color);
     border-radius: var(--uranus-form-field-border-radius);
-    background: #fafafa;
+    border-radius: 12px;
+    background: lightpink;
+    color: blueviolet;
   }
   input {
     font-size: 1.2rem;
@@ -50,6 +52,9 @@
   }
 
   select {
+    padding: 0.6rem 1.0rem;
+    font-size: 1.0rem;
+    border: 1px solid var(--uranus-low-contrast-color);
   }
 }
 
@@ -71,6 +76,8 @@
     flex-direction: column; /* stack vertically on narrow screens */
   }
 }
+
+
 
 
 .uranus-form-wide {

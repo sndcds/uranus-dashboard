@@ -1,5 +1,5 @@
 <template>
-    <div class="organizer-region-selector">
+    <div>
         <div class="form-group">
             <label :for="countrySelectId">
                 {{ countryLabel }}
@@ -234,11 +234,4 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.organizer-region-selector {
-    display: contents;
-
-    .form-group {
-        @include form-group();
-    }
-}
 </style>

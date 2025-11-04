@@ -1,20 +1,18 @@
 <template>
   <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
-    <!-- Single field -->
+
     <UranusTextInput id="venue_name" size="big" required
         v-model="venueName"
         :label="t('venue_name')"
         :error="fieldErrors.venueName"
     />
 
-    <!-- Grouped fields -->
     <UranusFormRow>
       <UranusTextInput id="street" required style="flex: 2"
           v-model="street"
           :label="t('street')"
           :error="fieldErrors.street"
       />
-
       <UranusTextInput id="house_number" required
           v-model="houseNumber"
           :label="t('house_number')"
@@ -35,10 +33,10 @@
       />
     </UranusFormRow>
 
-    <UranusFormRow>
-      <RegionSelectorComponent v-if="showRegionSelector" v-model:country-code="countryCode"
-                               v-model:state-code="stateCode" />
-    </UranusFormRow>
+    <RegionSelectorComponent
+        v-if="showRegionSelector"
+        v-model:country-code="countryCode"
+        v-model:state-code="stateCode" />
 
     <UranusFormRow>
       <UranusTextInput id="email"
