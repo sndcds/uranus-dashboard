@@ -1,6 +1,5 @@
 <template>
-  <div class="uranus-card" :class="{ 'organizer-card--active': appStore.organizerId === organizer.organizer_id }"
-    data-ribbon-label="⭐">
+  <div class="uranus-card" :class="{ 'organizer-card--active': appStore.organizerId === organizer.organizer_id }">
     <header>
       <h2>{{ organizer.organizer_name }}</h2>
     </header>
@@ -58,18 +57,28 @@
     <div v-else class="organizer-card__empty">
       <em class="organizer-card__empty-text">No venues found</em>
     </div>
+
+    <PasswordConfirmModal :show="showDeleteModal" :title="t('confirm_delete_organizer')"
+      :description="t('confirm_delete_organizer_description', { name: organizer.organizer_name })"
+      :confirm-text="t('delete_organizer')" :loading-text="t('deleting')" :error="deleteError"
+      :is-submitting="isDeleting" @confirm="confirmDelete" @cancel="cancelDelete" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useAppStore } from '@/store/appStore'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import { apiFetch } from '@/api'
+import PasswordConfirmModal from './PasswordConfirmModal.vue'
 
 const appStore = useAppStore()
 const { t } = useI18n()
-const router = useRouter()
+
+const showDeleteModal = ref(false)
+const deleteError = ref('')
+const isDeleting = ref(false)
+const pendingDeleteId = ref<number | null>(null)
 
 interface Space {
   space_id: number
@@ -101,30 +110,59 @@ function assignOrganizer(id: number) {
   appStore.setOrganizerId(id)
 }
 
-const deleteOrganizer = async (organizerId: number) => {
-  if (!confirm(t('confirm_delete_organizer'))) {
-    return
-  }
+const deleteOrganizer = (organizerId: number) => {
+  pendingDeleteId.value = organizerId
+  showDeleteModal.value = true
+  deleteError.value = ''
+}
+
+const cancelDelete = () => {
+  showDeleteModal.value = false
+  deleteError.value = ''
+  pendingDeleteId.value = null
+}
+
+const confirmDelete = async (password: string) => {
+  if (!pendingDeleteId.value) return
+
+  deleteError.value = ''
+  isDeleting.value = true
 
   try {
-    await apiFetch(`/api/admin/organizer/${organizerId}`, {
+    await apiFetch(`/api/admin/organizer/${pendingDeleteId.value}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        password,
+      }),
     })
-    
+
     // If the deleted organizer was active, clear it from the store
-    if (appStore.organizerId === organizerId) {
+    if (appStore.organizerId === pendingDeleteId.value) {
       appStore.setOrganizerId(null)
     }
-    
-    emit('deleted', organizerId)
-  } catch (error) {
+
+    emit('deleted', pendingDeleteId.value)
+    cancelDelete()
+  } catch (error: any) {
     console.error('Failed to delete organizer:', error)
+
+    // Check if it's a password error
+    if (error.status === 401 || error.status === 403) {
+      deleteError.value = t('incorrect_password')
+    } else {
+      deleteError.value = t('failed_to_delete_organizer')
+    }
+  } finally {
+    isDeleting.value = false
   }
 }
 </script>
 
 <style scoped lang="scss">
-.organizer-actions{
+.organizer-actions {
   display: flex;
   gap: 0.5rem;
 }
