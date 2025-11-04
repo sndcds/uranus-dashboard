@@ -27,9 +27,10 @@
     background: var(--uranus-input-bg-color);
     color: var(--uranus-color);
   }
-  input {
+  input[type="text"] {
     font-size: 1.2rem;
   }
+
   .uranus-tiny-text {
     font-size: 0.85rem;
   }
