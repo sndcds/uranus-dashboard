@@ -7,9 +7,9 @@
     <section class="settings-card">
       <div class="settings-notice">
         <p>{{ preferencesNotice }}</p>
-        <RouterLink class="settings-notice__link" :to="{ name: 'user-profile' }">
+        <router-link class="settings-notice__link" :to="{ name: 'admin-user-profile' }">
           {{ openProfileLabel }}
-        </RouterLink>
+        </router-link>
       </div>
     </section>
   </div>
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 const { t, te } = useI18n({ useScope: 'global' })
