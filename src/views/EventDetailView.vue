@@ -33,9 +33,15 @@
                                     <span v-if="event.image_created_by"> | </span>
                                     {{ t('image_copyright', { copyright: event.image_copyright }) }}
                                 </template>
-                                <template v-if="event.image_license_id">
+                                <template v-if="event.image_license_short_name">
                                     <span v-if="event.image_created_by || event.image_copyright"> | </span>
-                                    {{ t('image_license', { license: event.image_license_id }) }}
+                                    <router-link v-if="event.image_license_url" :to="event.image_license_url" target="_blank"
+                                        rel="noopener noreferrer">
+                                        {{ t('image_license', { license: event.image_license_short_name }) }}
+                                    </router-link>
+                                    <span v-else>
+                                        {{ t('image_license', { license: event.image_license_short_name }) }}
+                                    </span>
                                 </template>
                             </small>
                         </div>
@@ -225,6 +231,9 @@ interface EventDetail {
     event_urls: EventUrl[] | null
     has_main_image: boolean
     image_license_id: string | null
+    image_license_short_name: string | null
+    image_license_name: string | null
+    image_license_url: string | null
     image_alt_text: string | null
     image_copyright: string | null
     image_created_by: string | null
