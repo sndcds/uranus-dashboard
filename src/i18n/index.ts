@@ -126,6 +126,7 @@ const messages = {
     de: {
         ...event.de,
         ...sharedAuthFor('de'),
+        delete_organizer: 'Organisation löschen',
         user_messages_inbox: 'Posteingang',
         user_messages_send: 'Nachricht senden',
         geo_location: 'Standort',
@@ -693,6 +694,7 @@ const messages = {
     en: {
         ...event.en,
         ...sharedAuthFor('en'),
+        delete_organizer: 'Delete Organizer',
         user_messages_inbox: 'Inbox',
         user_messages_send: 'Send Message',
         geo_location: 'Location',
@@ -1255,6 +1257,7 @@ const messages = {
     da: {
         ...event.da,
         ...sharedAuthFor('da'),
+        delete_organizer: 'Slet arrangør',
         user_messages_inbox: 'Indbakke',
         user_messages_send: 'Send besked',
         geo_location: 'Placering',
