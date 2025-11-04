@@ -241,7 +241,7 @@ watch(
     height: 44px;
     border-radius: 10px;
     border: 1px solid var(--border-soft, rgba(148, 163, 184, 0.4));
-    background: var(--card-bg);
+    background: var(--uranus-bg-color);
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
@@ -388,7 +388,7 @@ watch(
         left: 0;
         height: 100vh;
         width: min(340px, 85vw);
-        background: var(--card-bg);
+        background: var(--uranus-bg-color);
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
