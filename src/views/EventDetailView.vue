@@ -15,25 +15,29 @@
                 <section class="event-detail-main">
                     <section>
                         <div v-if="event.has_main_image && event.image_path" class="event-image-frame">
-                            <img :src="event.image_path.includes('?')
-                                ? `${event.image_path}&ratio=16by9&width=1200`
-                                : `${event.image_path}?ratio=16by9&width=1200`" :alt="event.image_alt_text ? event.image_alt_text : event.title"
-                                class="event-image" />
-                            <div v-if="event.image_copyright || event.image_created_by || event.image_license" class="event-image-caption"> 
-                                <small>
-                                    <template v-if="event.image_created_by">
-                                        {{ t('image_created_by', { creator: event.image_created_by }) }}
-                                    </template>
-                                    <template v-if="event.image_copyright">
-                                        <span v-if="event.image_created_by"> | </span>
-                                        {{ t('image_copyright', { copyright: event.image_copyright }) }}
-                                    </template>
-                                    <template v-if="event.image_license">
-                                        <span v-if="event.image_created_by || event.image_copyright"> | </span>
-                                        {{ t('image_license', { license: event.image_license }) }}
-                                    </template>
-                                </small>
+                            <div>
+                                <img :src="event.image_path.includes('?')
+                                    ? `${event.image_path}&ratio=16by9&width=1200`
+                                    : `${event.image_path}?ratio=16by9&width=1200`"
+                                    :alt="event.image_alt_text ? event.image_alt_text : event.title"
+                                    class="event-image" />
                             </div>
+                        </div>
+                        <div v-if="event.image_copyright || event.image_created_by || event.image_license_id"
+                            class="event-image-caption">
+                            <small>
+                                <template v-if="event.image_created_by">
+                                    {{ t('image_created_by', { creator: event.image_created_by }) }}
+                                </template>
+                                <template v-if="event.image_copyright">
+                                    <span v-if="event.image_created_by"> | </span>
+                                    {{ t('image_copyright', { copyright: event.image_copyright }) }}
+                                </template>
+                                <template v-if="event.image_license_id">
+                                    <span v-if="event.image_created_by || event.image_copyright"> | </span>
+                                    {{ t('image_license', { license: event.image_license_id }) }}
+                                </template>
+                            </small>
                         </div>
 
                         <div class="event-detail-section">
@@ -100,18 +104,20 @@
                                 <p class="event-detail-info-value">{{ formatTime(event.entry_time) }}</p>
                             </div>
                         </div>
-                        
+
                         <div v-else-if="formatEventDateTime && 'startDate' in formatEventDateTime">
                             <!-- Multi-day event -->
                             <div>
                                 <p class="event-detail-info-label">{{ t('event_start') }}:</p>
                                 <p class="event-date">{{ formatEventDateTime.startDate }}</p>
-                                <p v-if="formatEventDateTime.startTime" class="event-time">{{ formatEventDateTime.startTime }}</p>
+                                <p v-if="formatEventDateTime.startTime" class="event-time">{{
+                                    formatEventDateTime.startTime }}</p>
                             </div>
                             <div class="event-detail-section-spacing">
                                 <p class="event-detail-info-label">{{ t('event_end') }}:</p>
                                 <p class="event-date">{{ formatEventDateTime.endDate }}</p>
-                                <p v-if="formatEventDateTime.endTime" class="event-time">{{ formatEventDateTime.endTime }}</p>
+                                <p v-if="formatEventDateTime.endTime" class="event-time">{{ formatEventDateTime.endTime
+                                }}</p>
                             </div>
                             <div v-if="event.entry_time" class="event-detail-section-spacing">
                                 <p class="event-detail-info-label">{{ t('event_entry_time') }}:</p>
@@ -150,13 +156,19 @@
                     </div>
                     <div v-if="event.space_total_capacity || event.space_seating_capacity">
                         <div v-if="event.space_total_capacity" class="event-detail-info-row">
-                            <span class="event-detail-info-label">{{ t('space_total_capacity') }}: {{ event.space_total_capacity }}</span>
+                            <span class="event-detail-info-label">{{ t('space_total_capacity') }}: {{
+                                event.space_total_capacity
+                            }}</span>
                         </div>
                         <div v-if="event.space_seating_capacity" class="event-detail-info-row">
-                            <span class="event-detail-info-label">{{ t('space_seating_capacity') }}: {{ event.space_seating_capacity }}</span>
+                            <span class="event-detail-info-label">{{ t('space_seating_capacity') }}: {{
+                                event.space_seating_capacity
+                            }}</span>
                         </div>
                         <div v-if="event.space_building_level" class="event-detail-info-row">
-                            <span class="event-detail-info-label">{{ t('space_building_level') }}: {{ event.space_building_level }}</span>
+                            <span class="event-detail-info-label">{{ t('space_building_level') }}: {{
+                                event.space_building_level
+                            }}</span>
                         </div>
                     </div>
 
@@ -212,7 +224,7 @@ interface EventDetail {
     event_types: EventType[] | null
     event_urls: EventUrl[] | null
     has_main_image: boolean
-    image_license: string | null
+    image_license_id: string | null
     image_alt_text: string | null
     image_copyright: string | null
     image_created_by: string | null
@@ -296,13 +308,13 @@ const formatEventDateTime = computed(() => {
         // Single day event: show date and time on separate lines
         const dateStr = formatDate(start_date)
         let timeStr = ''
-        
+
         if (start_time && end_time) {
             timeStr = `${formatTime(start_time)} - ${formatTime(end_time)}`
         } else if (start_time) {
             timeStr = formatTime(start_time)
         }
-        
+
         return {
             date: dateStr,
             time: timeStr
