@@ -1,57 +1,34 @@
 <template>
-    <section
-        class="uranus-hover-section"
-        :class="{ 'event-url-section--editing': isEditingLinks }">
+    <section class="uranus-hover-section" :class="{ 'event-url-section--editing': isEditingLinks }">
 
-        <InlineEditorLabel
-            :label-text="t('event_links_title')"
-            :edit-button-text="t('edit')"
-            @edit-started="startEditingLinks"
-        />
+        <InlineEditorLabel :label-text="t('event_links_title')" :edit-button-text="t('edit')"
+            @edit-started="startEditingLinks" />
 
         <div v-if="isEditingLinks" class="event-url-section__body">
             <div class="add-link-form">
                 <div class="form-grid">
                     <div class="form-field">
                         <label for="link-type">{{ t('event_link_type') }}</label>
-                        <select
-                            id="link-type"
-                            v-model="newLink.url_type">
+                        <select id="link-type" v-model="newLink.url_type">
                             <option value="">{{ t('event_link_type_select') }}</option>
-                            <option
-                                v-for="option in urlTypeOptions"
-                                :key="option.value"
-                                :value="option.value">
+                            <option v-for="option in urlTypeOptions" :key="option.value" :value="option.value">
                                 {{ option.label }}
                             </option>
                         </select>
                     </div>
                     <div class="form-field">
                         <label for="link-title">{{ t('event_link_title') }}</label>
-                        <input
-                            id="link-title"
-                            v-model="newLink.title"
-                            type="text"
-                            :placeholder="t('event_link_title_placeholder')"
-                        />
+                        <input id="link-title" v-model="newLink.title" type="text"
+                            :placeholder="t('event_link_title_placeholder')" />
                     </div>
                     <div class="form-field">
                         <label for="link-url">{{ t('event_link_url') }}</label>
-                        <input
-                            id="link-url"
-                            v-model="newLink.url"
-                            type="url"
-                            :placeholder="t('event_link_url_placeholder')"
-                        />
+                        <input id="link-url" v-model="newLink.url" type="url"
+                            :placeholder="t('event_link_url_placeholder')" />
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button
-                        v-if="isEditingExistingLink"
-                        type="button"
-                        class="cancel-edit-button"
-                        @click="cancelEdit"
-                    >
+                    <button v-if="isEditingExistingLink" type="button" class="cancel-edit-button" @click="cancelEdit">
                         {{ t('event_link_cancel_edit') }}
                     </button>
                     <button type="button" class="add-link-button" @click="addLink" :disabled="!canAddLink">
@@ -69,12 +46,8 @@
                         </a>
                     </div>
                     <div class="link-actions">
-                        <button
-                            type="button"
-                            class="edit-link-button"
-                            @click="startEdit(index)"
-                            :disabled="isEditingExistingLink"
-                        >
+                        <button type="button" class="edit-link-button" @click="startEdit(index)"
+                            :disabled="isEditingExistingLink">
                             {{ t('event_link_edit') }}
                         </button>
                         <button type="button" class="remove-link-button" @click="removeLink(index)">
@@ -86,19 +59,11 @@
             <p v-else class="event-url-section__empty">{{ t('event_links_empty') }}</p>
 
             <div class="event-url-section__actions">
-                <button
-                    type="button"
-                    class="uranus-inline-cancel-button"
-                    @click="cancelEditingLinks"
-                >
+                <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingLinks">
                     {{ t('form_cancel') }}
                 </button>
-                <button
-                    type="button"
-                    class="uranus-inline-save-button"
-                    @click="saveLinks"
-                    :disabled="isSaving || !draftLinks.length"
-                >
+                <button type="button" class="uranus-inline-save-button" @click="saveLinks"
+                    :disabled="isSaving || !draftLinks.length">
                     <span v-if="!isSaving">{{ t('event_links_save') }}</span>
                     <span v-else>{{ t('saving') }}</span>
                 </button>
@@ -125,10 +90,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue"
 
 interface Props {
     eventId: number
@@ -146,7 +111,7 @@ const emit = defineEmits<{
     (e: 'updated'): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 
 const savedLinks = ref<EventLink[]>([])
 const draftLinks = ref<EventLink[]>([])
@@ -155,20 +120,11 @@ const isEditingLinks = ref(false)
 const editingIndex = ref<number | null>(null)
 const isSaving = ref(false)
 const error = ref<string>('')
+const urlTypeOptions = ref<Array<{ value: string; label: string }>>([])
 
 const canAddLink = computed(() => newLink.value.url.trim().length > 0)
 const isEditingExistingLink = computed(() => editingIndex.value !== null)
 const addButtonText = computed(() => (isEditingExistingLink.value ? t('event_link_update') : t('event_link_add')))
-
-const urlTypeOptions = computed(() => [
-    { value: 'website', label: t('event_link_type_website') },
-    { value: 'facebook', label: t('event_link_type_facebook') },
-    { value: 'instagram', label: t('event_link_type_instagram') },
-    { value: 'twitter', label: t('event_link_type_twitter') },
-    { value: 'youtube', label: t('event_link_type_youtube') },
-    { value: 'ticket', label: t('event_link_type_ticket') },
-    { value: 'other', label: t('event_link_type_other') }
-])
 
 const urlTypeLookup = computed<Record<string, string>>(() => {
     const map: Record<string, string> = {}
@@ -177,6 +133,22 @@ const urlTypeLookup = computed<Record<string, string>>(() => {
     })
     return map
 })
+
+const loadUrlTypes = async () => {
+    try {
+        const response = await apiFetch<Array<{ id: string; name: string }>>(`/api/choosable-url-types/event?lang=${locale.value}`)
+
+        if (Array.isArray(response.data)) {
+            urlTypeOptions.value = response.data.map((item) => ({
+                value: item.id,
+                label: item.name
+            }))
+        }
+    } catch (err) {
+        console.error('Failed to load URL types:', err)
+        urlTypeOptions.value = []
+    }
+}
 
 const resetNewLink = () => {
     newLink.value = { url: '', title: '', url_type: '' }
@@ -292,6 +264,10 @@ watch(
     },
     { immediate: true, deep: true }
 )
+
+onMounted(() => {
+    loadUrlTypes()
+})
 </script>
 
 <style scoped lang="scss">
