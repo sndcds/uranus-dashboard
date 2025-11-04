@@ -335,7 +335,7 @@ const loadEvent = async () => {
     } catch (error: unknown) {
         loadError.value = error instanceof Error && error.message
             ? error.message
-            : t('events_calendar_load_error')
+            : t('event_load_error')
     } finally {
         isLoading.value = false
     }
