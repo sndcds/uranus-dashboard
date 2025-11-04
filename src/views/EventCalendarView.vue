@@ -73,7 +73,7 @@
                                     </ul>
                                 </div>
                                 <footer v-if="isLoggedIn" class="calendar-card__footer">
-                                    <router-link :to="`/event/${event.id}`"
+                                    <router-link :to="`/event/${event.id}/date/${event.event_date_id}`"
                                         class="calendar-card__cta">
                                     </router-link>
                                 </footer>
@@ -135,7 +135,7 @@
                             </div>
                         </div>
                         <div v-if="isLoggedIn" class="calendar-event-compact__actions">
-                            <router-link :to="`/event/${event.id}`"
+                            <router-link :to="`/event/${event.id}/date/${event.event_date_id}`"
                                 class="calendar-event-compact__cta">
                             </router-link>
                         </div>
@@ -185,7 +185,7 @@
                             </div>
                         </div>
                         <div v-if="isLoggedIn">
-                            <router-link :to="`/event/${event.id}`"
+                            <router-link :to="`/event/${event.id}/date/${event.event_date_id}`"
                                 class="calendar-tile__cta">
                             </router-link>
                         </div>
@@ -201,7 +201,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useTokenStore } from '@/store/token'
-import UranusBlob from "@/components/uranus/UranusBlob.vue"
+
 import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'
 
 interface CalendarEventType {
@@ -218,6 +218,7 @@ interface EventTypeOption {
 
 interface CalendarEvent {
     id: number
+    event_date_id: number
     title: string
     subtitle: string | null
     image_path: string | null
@@ -292,16 +293,11 @@ const intlTime = new Intl.DateTimeFormat(undefined, {
     minute: '2-digit',
 })
 
-const pageTitle = computed(() => t('events_calendar_title'))
-const pageSubtitle = computed(() => t('events_calendar_subtitle'))
 const loadingLabel = computed(() => t('events_calendar_loading'))
 const emptyLabel = computed(() => t('events_calendar_empty'))
-const viewDetailsLabel = computed(() => t('events_calendar_view_details'))
 const detailedViewLabel = computed(() => t('events_calendar_detailed_view'))
 const compactViewLabel = computed(() => t('events_calendar_compact_view'))
 const tilesViewLabel = computed(() => t('events_calendar_tiles_view'))
-
-const hasEvents = computed(() => events.value.length > 0)
 
 // Date field behaviour
 const tempStartDate = ref<string | null>(null)

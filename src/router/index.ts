@@ -151,7 +151,7 @@ const routes = [
                 component: EventCalendarView,
             },
             {
-                path: 'event/:id',
+                path: 'event/:id/date/:eventDateId',
                 name: 'event-details',
                 component: EventDetailView,
             },

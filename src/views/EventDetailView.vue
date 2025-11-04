@@ -310,8 +310,16 @@ const formatMarkdown = (markdown: string) => {
 
 const loadEvent = async () => {
     const eventId = route.params.id
+    const eventDateId = route.params.eventDateId
+
     if (!eventId) {
         loadError.value = 'No event ID provided'
+        isLoading.value = false
+        return
+    }
+
+    if (!eventDateId) {
+        loadError.value = 'No event date ID provided'
         isLoading.value = false
         return
     }
@@ -321,7 +329,7 @@ const loadEvent = async () => {
 
     try {
         const lang = locale.value || 'de'
-        const endpoint = `/api/event/${eventId}?lang=${lang}`
+        const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
         const { data } = await apiFetch<EventDetail>(endpoint)
         event.value = data
     } catch (error: unknown) {
@@ -344,7 +352,7 @@ p {
 }
 
 .space {
-    font-weight: 900;
+    font-weight: 600;
     margin: 0;
 }
 
