@@ -179,6 +179,9 @@ interface Props {
     maxSize?: number // in bytes, default 5MB
     acceptedTypes?: string[] // default ['image/jpeg', 'image/png', 'image/webp']
     existingImageUrl?: string | null
+    uploadUrl?: string // URL for POST/PUT operations
+    deleteUrl?: string // URL for DELETE operation
+    getUrl?: string // URL for GET operation (if needed)
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -190,6 +193,9 @@ const props = withDefaults(defineProps<Props>(), {
     maxSize: 5 * 1024 * 1024, // 5MB
     acceptedTypes: () => ['image/jpeg', 'image/png', 'image/webp'],
     existingImageUrl: null,
+    uploadUrl: '',
+    deleteUrl: '',
+    getUrl: '',
 })
 
 const emit = defineEmits<{
@@ -205,7 +211,6 @@ const { t, locale } = useI18n()
 
 const existingImageUrl = ref<string | null>(props.existingImageUrl ?? null)
 const currentImageId = ref<number | null>(null)
-let pendingImageDetails: Promise<number | null> | null = null
 
 const fileInput = ref<HTMLInputElement>()
 const isDragOver = ref(false)
@@ -233,6 +238,24 @@ const canSave = computed(() => {
         localLicense.value ||
         localCreatedBy.value.trim()
     )
+})
+
+const computedUploadUrl = computed(() => {
+    if (props.uploadUrl) {
+        return props.uploadUrl
+    }
+})
+
+const computedDeleteUrl = computed(() => {
+    if (props.deleteUrl) {
+        return props.deleteUrl
+    }
+})
+
+const computedGetUrl = computed(() => {
+    if (props.getUrl) {
+        return props.getUrl
+    }
 })
 
 // Watch for prop changes to sync local values
@@ -377,11 +400,16 @@ const handleDrop = (event: DragEvent) => {
 const removeImage = async () => {
     if (isDeleting.value) return
 
+    if (!computedDeleteUrl.value) {
+        error.value = t('event_image_delete_url_missing')
+        return
+    }
+
     error.value = ''
     isDeleting.value = true
 
     try {
-        await apiFetch(`/api/admin/event/${props.eventId}/image`, {
+        await apiFetch(computedDeleteUrl.value, {
             method: 'DELETE',
         })
 
@@ -512,6 +540,11 @@ onMounted(() => {
 const saveImage = async () => {
   if (!props.modelValue || !props.eventId || isSaving.value) return
 
+  if (!computedUploadUrl.value) {
+    error.value = t('event_image_upload_url_missing')
+    return
+  }
+
   isSaving.value = true
   error.value = ''
 
@@ -533,7 +566,7 @@ const saveImage = async () => {
         }
         console.log(formData.values())
 
-        await apiFetch(`/api/admin/event/${props.eventId}/image`, {
+        await apiFetch(computedUploadUrl.value, {
             method: 'POST',
             body: formData,
         })
@@ -808,9 +841,6 @@ const saveImage = async () => {
 }
 
 @media (min-width: 640px) {
-    .event-image-upload__upload-area {
-    }
-
     .event-image-upload__metadata-grid {
         gap: clamp(1.25rem, 3vw, 1.75rem);
     }
@@ -825,9 +855,6 @@ const saveImage = async () => {
 }
 
 @media (min-width: 1024px) {
-    .event-image-upload__upload-area {
-    }
-
     .event-image-upload__metadata-grid {
         gap: clamp(1.5rem, 3vw, 2rem);
     }

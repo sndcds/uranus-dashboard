@@ -13,6 +13,9 @@
             :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
             :existing-image-id="event.image_id"
             :existing-image-url="existingImagePreviewUrl"
+            :upload-url="`/api/admin/event/${eventId}/image`"
+            :delete-url="`/api/admin/event/${eventId}/image`"
+            :get-url="`/api/admin/event/${eventId}/image`"
             @updated="loadEvent" />
 
         <EventHeaderSection
@@ -38,9 +41,7 @@
             @updated="loadEvent" />
 
         <EventTeaserSection :event-id="event.id" :teaser-text="event.teaser_text"
-            :has-main-image="Boolean(event.image_id)" :image-id="event.image_id"
-            :image-focus-x="event.image_focus_x" :image-focus-y="event.image_focus_y" :tags="event.tags"
-            class="event-teaser" @updated="loadEvent" />
+            :tags="event.tags" class="event-teaser" @updated="loadEvent" />
       </section>
 
       <div class="event-sidebar">

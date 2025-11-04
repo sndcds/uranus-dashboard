@@ -1,14 +1,17 @@
 <template>
     <article>
-        <img class="event-teaser__image" :src="imageSrc" alt="Event teaser image" width="1200" height="200"
-            loading="lazy" />
+        <EventImageUploadComponent v-model="eventImage" v-model:alt-text="imageAltText"
+            v-model:copyright="imageCopyright" v-model:license="imageLicense" v-model:created-by="imageCreatedBy"
+            :event-id="eventId" :max-size="5 * 1024 * 1024" :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
+            :existing-image-url="existingImagePreviewUrl" :upload-url="`/api/admin/event/${eventId}/image`"
+            :delete-url="`/api/admin/event/${eventId}/image`" :get-url="`/api/admin/event/${eventId}/image`"
+            @updated="emit('updated')" />
         <div class="uranus-hover-section">
             <template v-if="isEditing">
                 <MarkdownEditorComponent v-model="editedTeaser" class="event-teaser__markdown"
                     :placeholder="t('event_teaser_placeholder')" />
                 <div class="event-teaser__actions">
-                    <button type="button" class="uranus-inline-cancel-button"
-                        @click="cancelEditing">
+                    <button type="button" class="uranus-inline-cancel-button" @click="cancelEditing">
                         {{ t('form_cancel') }}
                     </button>
                     <button type="button" class="uranus-inline-save-button" :disabled="isSaving" @click="saveTeaser">
@@ -18,23 +21,16 @@
                 </div>
             </template>
             <template v-else>
-              <InlineEditorLabel
-                  :label-text="t('teaser_text')"
-                  :edit-button-text="t('edit')"
-                  @edit-started="startEditing"
-              />
+                <InlineEditorLabel :label-text="t('teaser_text')" :edit-button-text="t('edit')"
+                    @edit-started="startEditing" />
                 <p class="event-teaser__text">
                     {{ teaserText || t('event_teaser_fallback') }}
                 </p>
             </template>
         </div>
 
-        <EventTagsSection
-            class="event-teaser__tags"
-            :event-id="eventId"
-            :tags="tags ?? undefined"
-            @updated="emit('updated')"
-        />
+        <EventTagsSection class="event-teaser__tags" :event-id="eventId" :tags="tags ?? undefined"
+            @updated="emit('updated')" />
     </article>
 </template>
 
@@ -43,17 +39,14 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
+import EventImageUploadComponent from '@/components/event/EventImageUploadComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import EventTagsSection from '@/components/event/EventTagsSection.vue'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+import InlineEditorLabel from "@/components/InlineEditorLabel.vue"
 
 const props = defineProps<{
     eventId: number
     teaserText: string | null
-    hasMainImage?: boolean | null
-    imageId?: number | null
-    imageFocusX?: number | null
-    imageFocusY?: number | null
     tags?: string[] | null
 }>()
 
@@ -66,41 +59,11 @@ const { t } = useI18n({ useScope: 'global' })
 const isEditing = ref(false)
 const isSaving = ref(false)
 const editedTeaser = ref(props.teaserText ?? '')
-
-const fallbackImageUrl = 'https://uranus2.oklabflensburg.de/api/image/47?mode=cover&width=400&ratio=3by2&focusx=0.5&focusy=0.5&type=webp&quality=90'
-const apiBase = ((import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'https://uranus2.oklabflensburg.de')
-
-const normalizeFocus = (value?: number | null): number => {
-    if (typeof value !== 'number' || !Number.isFinite(value)) {
-        return 0.5
-    }
-
-    if (value > 1) {
-        if (value >= 0 && value <= 1000) {
-            return Math.min(Math.max(value / 1000, 0), 1)
-        }
-        return Math.min(Math.max(value, 0), 1)
-    }
-
-    if (value < 0) {
-        return 0
-    }
-
-    return Math.min(Math.max(value, 0), 1)
-}
-
-const hasTeaserImage = computed(() => Boolean(props.hasMainImage && props.imageId != null))
-
-const imageSrc = computed(() => {
-    if (!hasTeaserImage.value) {
-        return fallbackImageUrl
-    }
-
-    const focusX = normalizeFocus(props.imageFocusX).toFixed(3)
-    const focusY = normalizeFocus(props.imageFocusY).toFixed(3)
-
-    return `${apiBase}/api/image/${props.imageId}?mode=cover&width=400&ratio=3by2&focusx=${focusX}&focusy=${focusY}&type=webp&quality=90`
-})
+const eventImage = ref<File | null>(null)
+const imageAltText = ref('')
+const imageCopyright = ref('')
+const imageLicense = ref('')
+const imageCreatedBy = ref('')
 
 watch(
     () => props.teaserText,
@@ -110,6 +73,13 @@ watch(
         }
     }
 )
+
+const existingImagePreviewUrl = computed(() => {
+    if (props.eventId && !eventImage.value) {
+        return `/api/image/event/${props.eventId}?mode=cover&width=400&ratio=3by2&focusx=0.5&focusy=0.5&type=webp&quality=90`
+    }
+    return null
+})
 
 const startEditing = () => {
     editedTeaser.value = props.teaserText ?? ''
@@ -164,14 +134,14 @@ const saveTeaser = async () => {
 }
 
 .event-teaser__text {
-  text-align: left;
-  margin: 0;
-  color: var(--color-text);
-  font-size: 1.0rem;
-  line-height: 1.6;
-  border: 2px solid #eee;
-  border-radius: 6px;
-  padding: 0.25rem 1rem;
+    text-align: left;
+    margin: 0;
+    color: var(--color-text);
+    font-size: 1.0rem;
+    line-height: 1.6;
+    border: 2px solid #eee;
+    border-radius: 6px;
+    padding: 0.25rem 1rem;
 }
 
 .event-teaser__edit {
