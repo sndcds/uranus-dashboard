@@ -30,6 +30,9 @@
   input[type="text"] {
     font-size: 1.2rem;
   }
+  input[type="date"] {
+    font-weight: 900;
+  }
 
   .uranus-tiny-text {
     font-size: 0.85rem;
@@ -58,6 +61,7 @@
     background: var(--uranus-input-bg-color);
     border-radius: var(--uranus-form-field-border-radius);
     color: var(--uranus-color);
+    box-sizing: border-box; // include padding/border in width
     // background: var(--uranus-bg-color-d1) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><polygon points="0,2 12,2 6,8" fill="%237f12e3"/></svg>') no-repeat right 0.8rem center;
     // appearance: none; /* remove default arrow */
     // -webkit-appearance: none;
@@ -68,13 +72,21 @@
 .uranus-form-row {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;  // allow items to move to next line if needed
+  overflow: hidden;  /* hide overflow if needed */
+  text-overflow: ellipsis; /* optional: show ... */
 
   hr {
     width: 100%;
     border-bottom: 1px solid var(--uranus-bg-color-d2);
     margin: 20px 0;
   }
-}
+
+  // children (selects, inputs) shrink if space is limited
+  > * {
+    flex: 1 1 auto;   // flex-grow:1, flex-shrink:1, flex-basis:auto
+    min-width: 120px; // optional: don't shrink below 120px
+  }}
 
 /* Make each textfield inside the row grow */
 

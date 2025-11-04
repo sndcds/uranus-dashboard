@@ -44,7 +44,6 @@
       <hr>
     </UranusFormRow>
 
-
     <UranusFormRow>
       <UranusTextInput id="email"
                        v-model="email"
@@ -65,25 +64,19 @@
                      :error="fieldErrors.website"
     />
 
-    <div v-if="showDescription" class="form-group form-group--full">
-      <label :id="descriptionLabelId">{{ t('description') }}</label>
+    <UranusFieldLabel v-if="showDescription" :label="t('description')" :error="fieldErrors.description">
       <MarkdownEditorComponent v-model="description" class="venue-description-editor"
                                :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
-      <p v-if="fieldErrors.description" class="uranus-field-error">{{ fieldErrors.description }}</p>
-    </div>
+    </UranusFieldLabel>
 
     <UranusFormRow>
-    <div v-if="showDateFields" class="form-group">
-      <label for="opened_at">{{ t('opened_at') }}</label>
-      <input v-model="openedAt" id="opened_at" type="date" />
-      <p v-if="fieldErrors.openedAt" class="uranus-field-error">{{ fieldErrors.openedAt }}</p>
-    </div>
+      <UranusFieldLabel :label="t('opened_at')" :error="fieldErrors.openedAt">
+        <input v-model="openedAt" id="opened_at" type="date" />
+      </UranusFieldLabel>
 
-    <div v-if="showDateFields" class="form-group">
-      <label for="closed_at">{{ t('closed_at') }}</label>
-      <input v-model="closedAt" id="closed_at" type="date" />
-      <p v-if="fieldErrors.closedAt" class="uranus-field-error">{{ fieldErrors.closedAt }}</p>
-    </div>
+      <UranusFieldLabel :label="t('closed_at')" :error="fieldErrors.openedAt">
+        <input v-model="closedAt" id="closed_at" type="date" />
+      </UranusFieldLabel>
     </UranusFormRow>
 
     <div>
@@ -121,6 +114,7 @@ import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
 import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
 import UranusFormRow from "@/components/uranus/UranusFormRow.vue";
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
 
 interface LatLngLiteral {
     lat: number
@@ -512,82 +506,8 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-
 .venue-map-panel {
   max-width: 400px;
   aspect-ratio: 1/1;
 }
-/*
-
-.venue-layout {
-  background-color: var(--uranus-low-contrast-color);
-}
-
-.venue-description-editor {
-    margin-top: 0.5rem;
-    min-height: 160px;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-}
-
-button {
-    @include form-primary-button($padding-y: 0.85rem, $padding-x: 2rem);
-}
-
-
-
-.venue-map-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    height: 340px;
-}
-
-.location-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    background: var(--input-bg);
-    border-radius: 14px;
-    padding: 0.75rem 1rem;
-}
-
-.meta-label {
-    font-weight: 600;
-    color: var(--color-text);
-    letter-spacing: 0.08em;
-    font-size: 0.78rem;
-}
-
-.meta-value {
-    font-variant-numeric: tabular-nums;
-    color: var(--muted-text);
-}
-
-.feedback {
-    @include form-feedback();
-}
-
-.feedback--error {
-    @include form-feedback-error();
-}
-
-.feedback--success {
-    @include form-feedback-success();
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.25s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}*/
 </style>
