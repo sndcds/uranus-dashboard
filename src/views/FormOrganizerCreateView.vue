@@ -1,59 +1,48 @@
 <template>
-    <div class="organizer-page">
-        <section class="organizer-hero">
-            <h1>{{ t('create_organizer') }}</h1>
-            <p>{{ organizerDescription }}</p>
-        </section>
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent :title="t('create_organizer')" :subtitle="organizerDescription" />
 
-        <section class="uranus-card">
-            <div class="organizer-layout">
-                <form class="organizer-form" @submit.prevent="submitForm" novalidate>
-                    <div class="form-grid">
-                        <div class="form-group form-group--full">
-                            <label for="organizer_name">
-                                {{ t('organizer_name') }}
-                                <span class="required" aria-hidden="true">*</span>
-                                <span class="sr-only">{{ requiredA11yLabel }}</span>
-                            </label>
-                            <input v-model="organizerName" id="organizer_name" type="text" />
-                            <p v-if="fieldErrors.organizerName" class="field-error">{{ fieldErrors.organizerName }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="street">
-                                {{ t('street') }}
-                                <span class="required" aria-hidden="true">*</span>
-                                <span class="sr-only">{{ requiredA11yLabel }}</span>
-                            </label>
-                            <input v-model="street" id="street" type="text" />
-                            <p v-if="fieldErrors.street" class="field-error">{{ fieldErrors.street }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="house_number">
-                                {{ t('house_number') }}
-                                <span class="required" aria-hidden="true">*</span>
-                                <span class="sr-only">{{ requiredA11yLabel }}</span>
-                            </label>
-                            <input v-model="houseNumber" id="house_number" type="text" />
-                            <p v-if="fieldErrors.houseNumber" class="field-error">{{ fieldErrors.houseNumber }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="postal_code">
-                                {{ t('postal_code') }}
-                                <span class="required" aria-hidden="true">*</span>
-                                <span class="sr-only">{{ requiredA11yLabel }}</span>
-                            </label>
-                            <input v-model="postalCode" id="postal_code" type="text" />
-                            <p v-if="fieldErrors.postalCode" class="field-error">{{ fieldErrors.postalCode }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="city">
-                                {{ t('city') }}
-                                <span class="required" aria-hidden="true">*</span>
-                                <span class="sr-only">{{ requiredA11yLabel }}</span>
-                            </label>
-                            <input v-model="city" id="city" type="text" />
-                            <p v-if="fieldErrors.city" class="field-error">{{ fieldErrors.city }}</p>
-                        </div>
+    <section class="uranus-card">
+      <form class="uranus-form" @submit.prevent="submitForm" novalidate>
+
+        <UranusTextInput id="organizer_name" size="big" required
+                         v-model="organizerName"
+                         :label="t('organizer_name')"
+                         :error="fieldErrors.organizerName"/>
+
+        <UranusFormRow>
+          <UranusTextInput id="street" required style="flex: 2"
+                           v-model="street"
+                           :label="t('street')"
+                           :error="fieldErrors.street"/>
+          <UranusTextInput id="house_number" required
+                           v-model="houseNumber"
+                           :label="t('house_number')"
+                           :error="fieldErrors.houseNumber"/>
+        </UranusFormRow>
+
+        <UranusFormRow>
+          <UranusTextInput id="street" required
+                           v-model="postalCode"
+                           :label="t('postal_code')"
+                           :error="fieldErrors.postalCode"/>
+          <UranusTextInput id="house_number" required style="flex: 2"
+                           v-model="postalCode"
+                           :label="t('house_number')"
+                           :error="fieldErrors.postalCode"/>
+        </UranusFormRow>
+
+
+        <UranusFormRow>
+          <UranusTextInput id="street"
+                           v-model="postalCode"
+                           :label="t('postal_code')"
+                           :error="fieldErrors.postalCode"/>
+          <UranusTextInput id="house_number"
+                           v-model="postalCode"
+                           :label="t('house_number')"
+                           :error="fieldErrors.postalCode"/>
+        </UranusFormRow>
                         <div class="form-group">
                             <label for="email">{{ t('email') }}</label>
                             <input v-model="email" id="email" type="email" />
@@ -68,7 +57,7 @@
                             <input v-model="website" id="website" type="url" />
                             <p v-if="fieldErrors.website" class="field-error">{{ fieldErrors.website }}</p>
                         </div>
-                    </div>
+                    <!--/div-->
 
                     <div class="form-actions">
                         <button type="submit" :disabled="isSubmitting">{{ t('create_organizer') }}</button>
@@ -85,7 +74,6 @@
                       :label="t('geo_location')"
                       :value="locationSummary" />
                 </aside>
-            </div>
 
             <transition name="fade">
                 <p v-if="error" class="feedback feedback--error">{{ error }}</p>
@@ -105,6 +93,9 @@ import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
 import router from '@/router'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
+import UranusFormRow from "@/components/uranus/UranusFormRow.vue";
 
 interface LatLngLiteral {
     lat: number

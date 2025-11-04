@@ -1,16 +1,13 @@
 <template>
-    <div class="venue-page">
-        <section class="venue-hero">
-            <h1>{{ t('create_venue') }}</h1>
-            <p>{{ venueDescription }}</p>
-        </section>
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent :title="t('create_venue')" :subtitle="venueDescription" />
 
-        <section class="venue-card">
-            <VenueForm ref="venueFormRef" :submit-label="t('create_venue')" :loading="isSubmitting"
-                :error-message="error" :success-message="success" :show-description="false" :show-date-fields="false"
-                @submit="handleSubmit" @clear-error="clearError" />
-        </section>
-    </div>
+    <section class="uranus-card">
+      <VenueForm ref="venueFormRef" :submit-label="t('create_venue')" :loading="isSubmitting"
+          :error-message="error" :success-message="success" :show-description="false" :show-date-fields="false"
+          @submit="handleSubmit" @clear-error="clearError" />
+    </section>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -20,6 +17,7 @@ import { useRoute } from 'vue-router'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
 import VenueForm, { type VenueFormSubmitPayload } from '@/components/VenueForm.vue'
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 
 interface LatLngLiteral {
     lat: number
