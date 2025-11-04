@@ -3,12 +3,15 @@
     <form @submit.prevent="handleSubmit" novalidate>
         <div class="uranus-form-full-width">
 
+          <UranusTextInput
+              label="t('venue_name')"
+              v-model="venueName"
+              :required="true"
+              :error="fieldErrors.venueName"
+              type="text"
+          />
+
           <label>
-            <span class="uranus-label-text">
-                {{ t('venue_name') }}
-                <span class="uranus-form-required" aria-hidden="true">*</span>
-                <span class="uranus-sr-only">{{ requiredA11yLabel }}</span>
-            </span>
             <input v-model="venueName" id="venue_name" type="text" class="big" />
             <p v-if="fieldErrors.venueName" class="uranus-field-error">{{ fieldErrors.venueName }}</p>
           </label>
@@ -116,6 +119,7 @@ import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
 
 interface LatLngLiteral {
     lat: number
