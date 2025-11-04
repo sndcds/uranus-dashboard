@@ -7,7 +7,7 @@
 
     <div style="padding: 16px;">
       <router-link
-          :to = "`/organizer/${organizerId}/venue/create`"
+          :to = "`/admin/organizer/${organizerId}/venue/create`"
           class = "uranus-button">
         {{ t('add_new_venue') }}
       </router-link>

@@ -255,7 +255,6 @@ onMounted(loadPrimaries)
   }
 
   &__select {
-    @include form-control();
   }
 
   &__actions {

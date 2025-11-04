@@ -329,7 +329,6 @@ onMounted(() => {
 }
 
 textarea {
-    @include form-control($padding-y: 0.9rem, $padding-x: 1rem);
     min-height: 180px;
     resize: vertical;
 }

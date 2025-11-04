@@ -268,7 +268,6 @@ const error = computed(() => props.error)
 }
 
 .tag-manager__input {
-    @include form-control();
     flex: 1;
 }
 

@@ -1,59 +1,61 @@
 <template>
-    <div class="venue-form-wrapper">
-        <div class="venue-layout">
-            <form class="venue-form" @submit.prevent="handleSubmit" novalidate>
-                <div class="form-grid">
-                    <div class="form-group form-group--full">
-                        <label for="venue_name">
-                            {{ t('venue_name') }}
-                            <span class="required" aria-hidden="true">*</span>
-                            <span class="sr-only">{{ requiredA11yLabel }}</span>
-                        </label>
-                        <input v-model="venueName" id="venue_name" type="text" />
-                        <p v-if="fieldErrors.venueName" class="field-error">{{ fieldErrors.venueName }}</p>
-                    </div>
-                    <div class="form-group">
+  <div class="uranus-form">
+    <form @submit.prevent="handleSubmit" novalidate>
+        <div class="uranus-form-full-width">
+
+          <label>
+            <span class="uranus-label-text">
+                {{ t('venue_name') }}
+                <span class="uranus-form-required" aria-hidden="true">*</span>
+                <span class="uranus-sr-only">{{ requiredA11yLabel }}</span>
+            </span>
+            <input v-model="venueName" id="venue_name" type="text" class="big" />
+            <p v-if="fieldErrors.venueName" class="uranus-field-error">{{ fieldErrors.venueName }}</p>
+          </label>
+        </div>
+
+        <div class="form-group">
                         <label for="street">
                             {{ t('street') }}
                             <span class="required" aria-hidden="true">*</span>
-                            <span class="sr-only">{{ requiredA11yLabel }}</span>
+                            <span class="uranus-sr-only">{{ requiredA11yLabel }}</span>
                         </label>
                         <input v-model="street" id="street" type="text" />
-                        <p v-if="fieldErrors.street" class="field-error">{{ fieldErrors.street }}</p>
+                        <p v-if="fieldErrors.street" class="uranus-field-error">{{ fieldErrors.street }}</p>
                     </div>
                     <div class="form-group">
                         <label for="house_number">
                             {{ t('house_number') }}
                             <span class="required" aria-hidden="true">*</span>
-                            <span class="sr-only">{{ requiredA11yLabel }}</span>
+                            <span class="uranus-sr-only">{{ requiredA11yLabel }}</span>
                         </label>
                         <input v-model="houseNumber" id="house_number" type="text" />
-                        <p v-if="fieldErrors.houseNumber" class="field-error">{{ fieldErrors.houseNumber }}</p>
+                        <p v-if="fieldErrors.houseNumber" class="uranus-field-error">{{ fieldErrors.houseNumber }}</p>
                     </div>
                     <div class="form-group">
                         <label for="postal_code">
                             {{ t('postal_code') }}
                             <span class="required" aria-hidden="true">*</span>
-                            <span class="sr-only">{{ requiredA11yLabel }}</span>
+                            <span class="uranus-sr-only">{{ requiredA11yLabel }}</span>
                         </label>
                         <input v-model="postalCode" id="postal_code" type="text" />
-                        <p v-if="fieldErrors.postalCode" class="field-error">{{ fieldErrors.postalCode }}</p>
+                        <p v-if="fieldErrors.postalCode" class="uranus-field-error">{{ fieldErrors.postalCode }}</p>
                     </div>
                     <div class="form-group">
                         <label for="city">
                             {{ t('city') }}
                             <span class="required" aria-hidden="true">*</span>
-                            <span class="sr-only">{{ requiredA11yLabel }}</span>
+                            <span class="uranus-sr-only">{{ requiredA11yLabel }}</span>
                         </label>
                         <input v-model="city" id="city" type="text" />
-                        <p v-if="fieldErrors.city" class="field-error">{{ fieldErrors.city }}</p>
+                        <p v-if="fieldErrors.city" class="uranus-field-error">{{ fieldErrors.city }}</p>
                     </div>
                     <RegionSelectorComponent v-if="showRegionSelector" v-model:country-code="countryCode"
                         v-model:state-code="stateCode" />
                     <div class="form-group">
                         <label for="email">{{ t('email') }}</label>
                         <input v-model="email" id="email" type="email" />
-                        <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
+                        <p v-if="fieldErrors.email" class="uranus-field-error">{{ fieldErrors.email }}</p>
                     </div>
                     <div class="form-group">
                         <label for="phone">{{ t('phone') }}</label>
@@ -62,25 +64,24 @@
                     <div class="form-group">
                         <label for="website">{{ t('website') }}</label>
                         <input v-model="website" id="website" type="url" />
-                        <p v-if="fieldErrors.website" class="field-error">{{ fieldErrors.website }}</p>
+                        <p v-if="fieldErrors.website" class="uranus-field-error">{{ fieldErrors.website }}</p>
                     </div>
                     <div v-if="showDescription" class="form-group form-group--full">
                         <label :id="descriptionLabelId">{{ t('description') }}</label>
                         <MarkdownEditorComponent v-model="description" class="venue-description-editor"
                             :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
-                        <p v-if="fieldErrors.description" class="field-error">{{ fieldErrors.description }}</p>
+                        <p v-if="fieldErrors.description" class="uranus-field-error">{{ fieldErrors.description }}</p>
                     </div>
                     <div v-if="showDateFields" class="form-group">
                         <label for="opened_at">{{ t('opened_at') }}</label>
                         <input v-model="openedAt" id="opened_at" type="date" />
-                        <p v-if="fieldErrors.openedAt" class="field-error">{{ fieldErrors.openedAt }}</p>
+                        <p v-if="fieldErrors.openedAt" class="uranus-field-error">{{ fieldErrors.openedAt }}</p>
                     </div>
                     <div v-if="showDateFields" class="form-group">
                         <label for="closed_at">{{ t('closed_at') }}</label>
                         <input v-model="closedAt" id="closed_at" type="date" />
-                        <p v-if="fieldErrors.closedAt" class="field-error">{{ fieldErrors.closedAt }}</p>
+                        <p v-if="fieldErrors.closedAt" class="uranus-field-error">{{ fieldErrors.closedAt }}</p>
                     </div>
-                </div>
 
                 <div class="form-actions">
                     <button type="submit" :disabled="loading">{{ submitLabel }}</button>
@@ -105,7 +106,6 @@
         <transition name="fade">
             <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
         </transition>
-    </div>
 </template>
 
 <script setup lang="ts">
@@ -507,34 +507,9 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-.venue-form-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.5rem, 3vw, 2rem);
-}
 
 .venue-layout {
-    display: grid;
-    gap: clamp(1.5rem, 3vw, 2.25rem);
-    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-}
-
-.venue-form {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.5rem, 3vw, 2rem);
-}
-
-.form-grid {
-    @include form-grid();
-}
-
-.form-group {
-    @include form-group();
-}
-
-.form-group--full {
-    grid-column: 1 / -1;
+  background-color: var(--uranus-low-contrast-color);
 }
 
 .venue-description-editor {
@@ -551,28 +526,7 @@ button {
     @include form-primary-button($padding-y: 0.85rem, $padding-x: 2rem);
 }
 
-.required {
-    color: #dc2626;
-    font-weight: 700;
-}
 
-.field-error {
-    margin: 0.35rem 0 0;
-    font-size: 0.85rem;
-    color: #b91c1c;
-    font-weight: 600;
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-}
 
 .venue-map-panel {
     display: flex;

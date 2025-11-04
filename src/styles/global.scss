@@ -1,5 +1,6 @@
 @use 'uranus_app_menu';
 @use 'uranus_card';
+@use 'uranus_form';
 @use 'uranus_button';
 @use 'uranus_combo_tag';
 @use './_value_info.scss';
@@ -28,6 +29,7 @@
   // Light mode versions
   --uranus-bg-color: #fcfcfc;
   --uranus-bg-color-d1: #ededed;
+  --uranus-bg-color-d2: #dedede;
   --uranus-color: #2b2b2b;
   --uranus-disabled-color: #e1e1e1;
   --uranus-low-contrast-color: #c6c6c6;
@@ -44,6 +46,7 @@
   --uranus-card-border-radius: 12px;
   --uranus-inline-edit-border-radius: 12px;
   --uranus-tiny-border-radius: 4px;
+  --uranus-form-field-border-radius: 4px;
 
   --uranus-grid-gap: 12px;
 
@@ -119,7 +122,6 @@ $button-text-color: #333;
   width: 100%;
   min-height: 100vh;
   background: var(--uranus-dashboard-bg-color);
-  background: linear-gradient();
   padding: 32px;
 }
 
