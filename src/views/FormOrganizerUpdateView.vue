@@ -1,23 +1,18 @@
 <template>
-    <div class="organizer-page">
-        <section class="organizer-hero">
-            <h1>{{ t('edit_organizer') }}</h1>
-            <p>{{ organizerDescription }}</p>
-        </section>
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent :title="t('edit_organizer')" :subtitle="organizerDescription" />
+    <section class="uranus-card">
+      <form class="uranus-form" @submit.prevent="submitForm" novalidate>
+        <UranusTextInput id="organizer_name" size="big" required
+                         v-model="organizerName"
+                         :label="t('organizer_name')"
+                         :error="fieldErrors.organizerName"/>
 
-        <section class="uranus-card">
-            <div class="organizer-layout">
-                <form class="organizer-form" @submit.prevent="submitForm" novalidate>
-                    <div class="form-grid">
-                        <div class="form-group form-group--full">
-                            <label for="organizer_name">
-                                {{ t('organizer_name') }}
-                                <span class="required" aria-hidden="true">*</span>
-                                <span class="sr-only">{{ requiredA11yLabel }}</span>
-                            </label>
-                            <input v-model="organizerName" id="organizer_name" type="text" />
-                            <p v-if="fieldErrors.organizerName" class="field-error">{{ fieldErrors.organizerName }}</p>
-                        </div>
+        <UranusTextInput id="organizer_name" size="big" required
+                         v-model="organizerName"
+                         :label="t('organizer_name')"
+                         :error="fieldErrors.organizerName"/>
+
                         <div class="form-group form-group--full">
                             <label for="address_addition">
                                 {{ labelMessage('organizer_address_addition') }}
@@ -106,7 +101,7 @@
                             <input :id="nonprofitId" type="checkbox" v-model="nonprofit" />
                             <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit') }}</label>
                         </div>
-                    </div>
+
 
                     <div class="form-actions">
                         <button type="submit" :disabled="isSubmitting">{{ submitButtonLabel }}</button>
@@ -123,7 +118,6 @@
                       :label="t('geo_location')"
                       :value="locationSummary" />
                 </aside>
-            </div>
 
             <transition name="fade">
                 <p v-if="error" class="feedback feedback--error">{{ error }}</p>
@@ -145,6 +139,8 @@ import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
 
 interface LatLngLiteral {
     lat: number
