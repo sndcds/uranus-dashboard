@@ -3,7 +3,7 @@
     <label :for="id" class="uranus-label">
       <span class="uranus-label-text">
         {{ label }}
-        <span v-if="required" class="uranus-form-required">*</span>
+        <span v-if="required" class="uranus-form-required" aria-hidden="true">*</span>
       </span>
 
       <input
@@ -12,6 +12,8 @@
           :value="modelValue"
           @input="$emit('update:modelValue', $event.target.value)"
           :class="sizeClass"
+          :aria-required="required ? 'true' : 'false'"
+          :aria-invalid="error ? 'true' : 'false'"
       />
 
       <p v-if="error" class="uranus-field-error">{{ error }}</p>

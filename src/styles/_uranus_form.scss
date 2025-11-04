@@ -36,8 +36,9 @@
     border-bottom: 1px solid var(--uranus-low-contrast-color);
     border-radius: var(--uranus-form-field-border-radius);
     border-radius: 12px;
-    background: lightpink;
-    color: blueviolet;
+    background: rgb(255, 201, 209);
+    color: #7f12e3;
+    border: 0;
   }
   input {
     font-size: 1.2rem;
@@ -55,6 +56,15 @@
     padding: 0.6rem 1.0rem;
     font-size: 1.0rem;
     border: 1px solid var(--uranus-low-contrast-color);
+    background: #ffeef1;
+    color: #7f12e3;
+    border: 0;
+    border-radius: 12px;
+    background: #ffc9d1 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><polygon points="0,2 12,2 6,8" fill="%237f12e3"/></svg>') no-repeat right 0.8rem center;
+    color: #7f12e3;
+    appearance: none; /* remove default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
   }
 }
 
