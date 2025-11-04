@@ -1,8 +1,6 @@
 <template>
-  <div
-      class="uranus-card"
-      :class="{ 'organizer-card--active': appStore.organizerId === organizer.organizer_id }"
-      data-ribbon-label="⭐">
+  <div class="uranus-card" :class="{ 'organizer-card--active': appStore.organizerId === organizer.organizer_id }"
+    data-ribbon-label="⭐">
     <header>
       <h2>{{ organizer.organizer_name }}</h2>
     </header>
@@ -50,6 +48,12 @@
           </tr>
         </tbody>
       </table>
+
+      <div class="organizer-card__actions">
+        <button class="uranus-danger-button" @click="deleteOrganizer(organizer.organizer_id)">
+          {{ t('delete_organizer') }}
+        </button>
+      </div>
     </div>
 
     <div v-else class="organizer-card__empty">
