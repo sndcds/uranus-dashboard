@@ -8,18 +8,6 @@
     flex-direction: column;
     gap: 6px;
     margin: 0;
-
-    /* new inner span for label text + required */
-    .uranus-label-text {
-      padding-left: 10px;
-      margin: 0;
-      font-weight: 400;
-      font-size: 0.9rem;
-      color: var(--uranus-medium-contrast-color);
-      display: flex;
-      align-items: center; /* vertically align text and star */
-      gap: 0.25rem; /* small gap between label and star */
-    }
   }
 
   .required {
@@ -31,46 +19,60 @@
   textarea {
     font-size: 1rem;
     background: var(--uranus-bg-color);
-    padding: 0.6rem 1.0rem;
-    border: 0;
-    border-bottom: 1px solid var(--uranus-low-contrast-color);
+    padding: 0.7rem 1.0rem 0.5rem 1.0rem;
+    border: 1px solid var(--uranus-bg-color-d2);
+//    border: 0;
+//    border-bottom: 1px solid var(--uranus-low-contrast-color);
     border-radius: var(--uranus-form-field-border-radius);
-    border-radius: 12px;
-    background: rgb(255, 201, 209);
-    color: #7f12e3;
-    border: 0;
+    background: var(--uranus-input-bg-color);
+    color: var(--uranus-color);
   }
   input {
     font-size: 1.2rem;
   }
-
   .uranus-tiny-text {
     font-size: 0.85rem;
   }
 
   .uranus-big-text {
     font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .uranus-label-text {
+    padding-left: 10px;
+    margin: 0;
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--uranus-medium-contrast-color);
+    display: flex;
+    align-items: center; /* vertically align text and star */
+    gap: 0.25rem; /* small gap between label and star */
   }
 
   select {
     padding: 0.6rem 1.0rem;
     font-size: 1.0rem;
-    border: 1px solid var(--uranus-low-contrast-color);
-    background: #ffeef1;
-    color: #7f12e3;
-    border: 0;
-    border-radius: 12px;
-    background: #ffc9d1 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><polygon points="0,2 12,2 6,8" fill="%237f12e3"/></svg>') no-repeat right 0.8rem center;
-    color: #7f12e3;
-    appearance: none; /* remove default arrow */
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    border: 1px solid var(--uranus-bg-color-d2);
+    background: var(--uranus-input-bg-color);
+    border-radius: var(--uranus-form-field-border-radius);
+    color: var(--uranus-color);
+    // background: var(--uranus-bg-color-d1) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><polygon points="0,2 12,2 6,8" fill="%237f12e3"/></svg>') no-repeat right 0.8rem center;
+    // appearance: none; /* remove default arrow */
+    // -webkit-appearance: none;
+    // -moz-appearance: none;
   }
 }
 
 .uranus-form-row {
   display: flex;
   gap: 12px;
+
+  hr {
+    width: 100%;
+    border-bottom: 1px solid var(--uranus-bg-color-d2);
+    margin: 20px 0;
+  }
 }
 
 /* Make each textfield inside the row grow */

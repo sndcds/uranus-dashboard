@@ -1,28 +1,27 @@
 <template>
   <div class="uranus-textfield-wrapper">
-    <label :for="id" class="uranus-label">
-      <span class="uranus-label-text">
-        {{ label }}
-        <span v-if="required" class="uranus-form-required" aria-hidden="true">*</span>
-      </span>
-
+    <UranusFieldLabel
+        :id="id"
+        :label="label"
+        :required="required"
+        :error="error"
+    >
       <input
           :id="id"
           :type="type"
           :value="modelValue"
           @input="$emit('update:modelValue', $event.target.value)"
-          :class="sizeClass"
+          :class="['uranus-text-input', sizeClass]"
           :aria-required="required ? 'true' : 'false'"
           :aria-invalid="error ? 'true' : 'false'"
       />
-
-      <p v-if="error" class="uranus-field-error">{{ error }}</p>
-    </label>
+    </UranusFieldLabel>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import UranusFieldLabel from './UranusFieldLabel.vue'
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -48,21 +47,6 @@ const sizeClass = computed(() => {
 <style scoped>
 .uranus-textfield-wrapper {
   width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
-.uranus-label {
-  display: flex;
-  flex-direction: column;
-}
-
-.uranus-label-text {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
 }
 
 .uranus-text-input {
@@ -80,16 +64,5 @@ const sizeClass = computed(() => {
 
 .uranus-big-text {
   font-size: 1.3rem;
-}
-
-.uranus-field-error {
-  color: #dc2626;
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
-}
-
-.uranus-form-required {
-  color: #dc2626;
-  font-weight: 700;
 }
 </style>

@@ -33,10 +33,17 @@
       />
     </UranusFormRow>
 
+    <UranusFormRow>
     <RegionSelectorComponent
         v-if="showRegionSelector"
         v-model:country-code="countryCode"
         v-model:state-code="stateCode" />
+    </UranusFormRow>
+
+    <UranusFormRow>
+      <hr>
+    </UranusFormRow>
+
 
     <UranusFormRow>
       <UranusTextInput id="email"
