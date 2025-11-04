@@ -104,6 +104,7 @@ import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
+import router from '@/router'
 
 interface LatLngLiteral {
     lat: number
@@ -255,6 +256,7 @@ const submitForm = async () => {
         })
         if (status >= 200 && status < 300) {
             success.value = t('organizer_created')
+            router.push('/admin/organizers')
         } else {
             throw new Error('Unexpected status code')
         }

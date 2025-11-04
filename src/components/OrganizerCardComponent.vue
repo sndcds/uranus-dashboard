@@ -6,9 +6,14 @@
     </header>
 
     <div class="organizer-card__button-group">
-      <router-link :to="`/admin/organizer/${organizer.organizer_id}/edit`" class="uranus-secondary-button">
-        {{ t('edit_organizer') }}
-      </router-link>
+      <div class="organizer-actions">
+        <router-link :to="`/admin/organizer/${organizer.organizer_id}/edit`" class="uranus-secondary-button">
+          {{ t('edit_organizer') }}
+        </router-link>
+        <button class="uranus-secondary-button" @click="deleteOrganizer(organizer.organizer_id)">
+          {{ t('delete_organizer') }}
+        </button>
+      </div>
       <button class="uranus-secondary-button"
         :class="{ 'uranus-secondary-button--active': appStore.organizerId === organizer.organizer_id }"
         @click="assignOrganizer(organizer.organizer_id)">
@@ -48,12 +53,6 @@
           </tr>
         </tbody>
       </table>
-
-      <div class="organizer-card__actions">
-        <button class="uranus-danger-button" @click="deleteOrganizer(organizer.organizer_id)">
-          {{ t('delete_organizer') }}
-        </button>
-      </div>
     </div>
 
     <div v-else class="organizer-card__empty">
@@ -65,9 +64,12 @@
 <script setup lang="ts">
 import { useAppStore } from '@/store/appStore'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import { apiFetch } from '@/api'
 
 const appStore = useAppStore()
 const { t } = useI18n()
+const router = useRouter()
 
 interface Space {
   space_id: number
@@ -91,13 +93,41 @@ interface Organizer {
 
 defineProps<{ organizer: Organizer }>()
 
+const emit = defineEmits<{
+  deleted: [organizerId: number]
+}>()
+
 function assignOrganizer(id: number) {
   appStore.setOrganizerId(id)
+}
+
+const deleteOrganizer = async (organizerId: number) => {
+  if (!confirm(t('confirm_delete_organizer'))) {
+    return
+  }
+
+  try {
+    await apiFetch(`/api/admin/organizer/${organizerId}`, {
+      method: 'DELETE',
+    })
+    
+    // If the deleted organizer was active, clear it from the store
+    if (appStore.organizerId === organizerId) {
+      appStore.setOrganizerId(null)
+    }
+    
+    emit('deleted', organizerId)
+  } catch (error) {
+    console.error('Failed to delete organizer:', error)
+  }
 }
 </script>
 
 <style scoped lang="scss">
-// OrganizerCardComponent - Global style compliant
+.organizer-actions{
+  display: flex;
+  gap: 0.5rem;
+}
 
 .organizer-card {
   @include form-card(100%, clamp(1.25rem, 3vw, 1.75rem), clamp(0.75rem, 2vw, 1.25rem));

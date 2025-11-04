@@ -21,7 +21,7 @@
 
     <!-- Organizer Cards Grid -->
     <div class="organizer-grid">
-      <OrganizerCardComponent v-for="organizer in organizers" :key="organizer.organizer_id" :organizer="organizer" />
+      <OrganizerCardComponent v-for="organizer in organizers" :key="organizer.organizer_id" :organizer="organizer" @deleted="handleOrganizerDeleted" />
     </div>
   </div>
 </template>
@@ -58,6 +58,10 @@ interface Organizer {
 
 const organizers = ref<Organizer[]>([])
 const error = ref<string | null>(null)
+
+const handleOrganizerDeleted = (organizerId: number) => {
+  organizers.value = organizers.value.filter(org => org.organizer_id !== organizerId)
+}
 
 onMounted(async () => {
   try {
