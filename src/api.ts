@@ -1,4 +1,5 @@
 import { useTokenStore } from '@/store/token'
+import { useRouter } from 'vue-router'
 import type { ThemeMode } from '@/utils/theme'
 
 let refreshPromise: Promise<boolean> | null = null;
@@ -65,6 +66,7 @@ export async function apiFetch<T = unknown>(
 ): Promise<ApiResponse<T>> {
     const url = `${import.meta.env.VITE_API_URL}${path}`;
     const tokenStore = useTokenStore();
+    const router = useRouter();
 
     const doFetch = async (): Promise<ApiResponse<T>> => {
         const headers = new Headers(options.headers ?? undefined);
@@ -120,13 +122,14 @@ export async function apiFetch<T = unknown>(
         if (
             err instanceof ApiError &&
             err.status === 401 &&
-            !url.includes('/refresh')
+            !url.includes('/refresh') &&
+            !url.includes('/login')
         ) {
             if (!refreshPromise) {
                 refreshPromise = (async () => {
                     if (!tokenStore.refreshToken) {
                         tokenStore.clearTokens();
-                        window.location.href = '/login';
+                        router.push('/app/login');
                         throw new Error('Missing refresh token');
                     }
 
@@ -139,7 +142,7 @@ export async function apiFetch<T = unknown>(
 
                     if (!res.ok) {
                         tokenStore.clearTokens();
-                        window.location.href = '/login';
+                        router.push('/app/login');
                         throw new Error('Refresh failed');
                     }
 
@@ -147,7 +150,7 @@ export async function apiFetch<T = unknown>(
 
                     if (!data.access_token) {
                         tokenStore.clearTokens();
-                        window.location.href = '/login';
+                        router.push('/app/login');
                         throw new Error('Refresh response missing access token');
                     }
 

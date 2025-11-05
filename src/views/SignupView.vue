@@ -309,7 +309,7 @@ const signup = async () => {
 
 .form-actions {
     display: flex;
-    justify-content: stretch;
+    justify-content: flex-end;
     margin-top: 0.5rem;
 }
 

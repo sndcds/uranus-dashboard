@@ -424,7 +424,6 @@ $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' heigh
 .auth-page {
   position: relative;
   overflow: hidden;
-  min-height: 100vh;
 
   &::before {
     content: '';

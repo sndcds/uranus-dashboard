@@ -195,20 +195,22 @@ watch(
 }
 
 .visitor-layout__topbar {
-  position: sticky;
-  top: 0;
-  display: flex;
-  align-items: center;
-  gap: clamp(1rem, 4vw, 2rem);
-  justify-content: space-between;
-  padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 4vw, 2rem);
-  background: var(--uranus-bg-color);
-  backdrop-filter: blur(100px);          /* blur what's behind */
-  -webkit-backdrop-filter: blur(100px);  /* Safari support */
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 4vw, 2rem);
+    justify-content: space-between;
+    padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 4vw, 2rem);
+    background: var(--uranus-bg-color);
+    backdrop-filter: blur(100px);
+    /* blur what's behind */
+    -webkit-backdrop-filter: blur(100px);
+    /* Safari support */
 
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-  border-bottom: 1px solid var(--border-soft, rgba(148, 163, 184, 0.2));
-  z-index: 2000;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    border-bottom: 1px solid var(--border-soft, rgba(148, 163, 184, 0.2));
+    z-index: 2000;
 }
 
 .visitor-layout__brand {
@@ -331,7 +333,7 @@ watch(
 .visitor-layout__content {
     display: flex;
     flex: 1;
-  background: var(--uranus-bg-color);
+    background: var(--uranus-bg-color);
 }
 
 .visitor-layout__footer {

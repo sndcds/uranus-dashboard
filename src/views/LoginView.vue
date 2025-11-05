@@ -63,7 +63,6 @@ import { useUserStore } from '@/store/userStore'
 import { useThemeStore } from '@/store/themeStore'
 
 import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
-import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
 import UranusPasswordInput from "@/components/uranus/UranusPasswordInput.vue";
 
 const { t, te } = useI18n()
@@ -93,22 +92,12 @@ const fieldErrors = reactive({
 })
 
 const loginSubtitle = computed(() => (te('login_subtitle') ? t('login_subtitle') : 'Welcome back! Sign in to continue organizing your events.'))
-const passwordFieldType = computed(() => (isPasswordVisible.value ? 'text' : 'password'))
-const passwordToggleLabel = computed(() =>
-    isPasswordVisible.value
-        ? (te('password_hide_label') ? t('password_hide_label') : 'Hide password')
-        : (te('password_show_label') ? t('password_show_label') : 'Show password')
-)
 
 const displayError = computed(() => {
     if (fieldErrors.email) return fieldErrors.email
     if (fieldErrors.password) return fieldErrors.password
     return error.value
 })
-
-const togglePasswordVisibility = () => {
-    isPasswordVisible.value = !isPasswordVisible.value
-}
 
 const isValidEmail = (value: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -220,102 +209,28 @@ const login = async () => {
     justify-content: center;
 }
 
-/*
-.auth-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-
-    h1 {
-        font-size: clamp(1.75rem, 4vw, 2.25rem);
-        font-weight: 700;
-        margin: 0;
-        color: var(--text-primary);
-    }
-
-    p {
-        margin: 0;
-        font-size: 0.95rem;
-        color: var(--muted-text);
-    }
-}
-
-.input-with-toggle {
-    position: relative;
-
-    input {
-        width: 100%;
-        padding-right: 2.75rem;
-    }
-}
-
-.password-toggle {
-    position: absolute;
-    top: 50%;
-    right: 0.75rem;
-    transform: translateY(-50%);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 999px;
-    border: 1px solid transparent;
-    background: transparent;
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
-    padding: 0;
-
-    &:hover {
-        background: rgba(79, 70, 229, 0.08);
-        border-color: rgba(79, 70, 229, 0.25);
-    }
-
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
-        border-color: var(--accent-primary, #4f46e5);
-        background: rgba(79, 70, 229, 0.08);
-    }
-}
-
-.password-toggle__icon {
-    width: 1.1rem;
-    height: 1.1rem;
-    fill: var(--muted-text, #475569);
-}
-
 .forgot-password-link {
-    display: flex;
-    justify-content: flex-end;
     margin-top: -0.5rem;
+    margin-bottom: 1rem;
+    text-align: right;
 
     a {
-        font-size: 0.9rem;
-        color: var(--accent-primary);
+        font-size: 0.875rem;
+        color: var(--color-link);
         text-decoration: none;
-        font-weight: 500;
-        transition: color 0.2s ease;
 
-        &:hover {
-            color: var(--accent-secondary);
+        &:hover,
+        &:focus {
             text-decoration: underline;
-        }
-
-        &:focus-visible {
-            outline: 2px solid var(--accent-primary);
-            outline-offset: 2px;
-            border-radius: 4px;
         }
     }
 }
 
 .form-actions {
     display: flex;
-    justify-content: stretch;
-    margin-top: 0.5rem;
+    justify-content: flex-end;
 }
+
 
 .feedback {
     margin: 0.5rem 0;
@@ -348,21 +263,4 @@ const login = async () => {
         }
     }
 }
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.25s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-
-@media (max-width: 480px) {
-    .auth-card {
-        padding: clamp(1.5rem, 6vw, 2rem);
-    }
-}
- */
 </style>
