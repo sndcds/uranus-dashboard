@@ -58,19 +58,16 @@
   }
 }
 
-.uranus-text-input {
-  font-size: 2.85rem;
-  color: red;
+input.uranus-text-input {
 }
 
-.uranus-tiny-text {
-  font-size: 0.85rem;
+input.uranus-tiny-text {
+  font-size: 0.85rem !important;
 }
 
 .uranus-big-text {
-  color: green;
-  font-weight: 700;
-  background: yellow;
+  font-size: 1.4rem !important;
+  font-weight: 700 !important;
 }
 
 .uranus-main-layout {
