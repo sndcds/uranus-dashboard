@@ -1,7 +1,8 @@
 <template>
-  <div class="event-image-upload">
+  <div class="uranus-event-image-upload-layout">
+
     <!-- Image Upload Section -->
-      <div class="event-image-upload__upload-section">
+    <div class="event-image-upload__upload-section">
         <div
             class="event-image-upload__upload-area"
             :class="{ 'event-image-upload__upload-area--has-image' : hasImage, 'event-image-upload__upload-area--drag-over': isDragOver }"
@@ -75,11 +76,32 @@
         </div>
       </div>
 
-    <section class="uranus-card uranus-hover-section">
+    <section class="uranus-hover-section">
       <InlineEditorLabel
           :label-text="t('image_details')"
           :edit-button-text="t('edit')"
           @edit-started="showMetadata = true" />
+
+        <div class="uranus-event-image-upload__meta-display">
+          <p v-if="localAltText" class="event-image-upload__meta-line">
+            <strong>{{ t('event_image_alt_text') }}:</strong> {{ localAltText }}
+          </p>
+          <p v-if="localCopyright">
+            <strong>{{ t('event_image_copyright') }}:</strong> {{ localCopyright }}
+          </p>
+          <p v-if="localLicense">
+            <strong>{{ t('event_image_license') }}:</strong>
+            {{
+              licenseOptions.find((l) => l.value === localLicense)?.label ||
+              t('event_image_license_unknown')
+            }}
+          </p>
+          <p v-if="localCreatedBy">
+            <strong>{{ t('event_image_created_by') }}:</strong> {{ localCreatedBy }}
+          </p>
+        </div>
+
+
 
       <!-- Image Metadata Form -->
       <div v-if="hasImage && showMetadata" class="event-image-upload__metadata">
@@ -592,10 +614,16 @@ const saveImage = async () => {
 
 <style scoped lang="scss">
 // Mobile-first responsive EventImageUploadComponent
-.event-image-upload {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 4vw, 1.5rem);
+.uranus-event-image-upload-layout {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 4vw, 1.5rem);
+}
+
+.uranus-event-image-upload__meta-display {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 // Upload Section

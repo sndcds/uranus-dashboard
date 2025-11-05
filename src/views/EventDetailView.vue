@@ -1,19 +1,18 @@
 <template>
-    <div class="event-detail-page">
-        <div v-if="isLoading" class="event-detail-state event-detail-state--loading">
-            <span>{{ loadingLabel }}</span>
-        </div>
+  <div class="event-detail-page">
+    <div v-if="isLoading" class="event-detail-state event-detail-state--loading">
+      <span>{{ loadingLabel }}</span>
+    </div>
 
-        <div v-else-if="loadError" class="event-detail-state event-detail-state--error" role="alert">
-            <span>{{ loadError }}</span>
-        </div>
+    <div v-else-if="loadError" class="event-detail-state event-detail-state--error" role="alert">
+      <span>{{ loadError }}</span>
+    </div>
 
-        <div v-else-if="event" class="event-detail-content">
-            <div class="event-detail-grid">
+    <div v-else-if="event" class="event-detail-content">
+      <div class="event-detail-grid">
 
-                <!-- Left Column - Main Info -->
-                <section class="event-detail-main">
-                    <section>
+      <!-- Left Column - Main Info -->
+      <section class="event-detail-main">
                         <div v-if="event.has_main_image && event.image_path" class="event-image-frame">
                             <div>
                                 <img :src="event.image_path.includes('?')
@@ -35,10 +34,10 @@
                                 </template>
                                 <template v-if="event.image_license_short_name">
                                     <span v-if="event.image_created_by || event.image_copyright"> | </span>
-                                    <router-link v-if="event.image_license_url" :to="event.image_license_url" target="_blank"
+                                    <a v-if="event.image_license_url" :href="event.image_license_url" target="_blank"
                                         rel="noopener noreferrer">
                                         {{ t('image_license', { license: event.image_license_short_name }) }}
-                                    </router-link>
+                                    </a>
                                     <span v-else>
                                         {{ t('image_license', { license: event.image_license_short_name }) }}
                                     </span>
@@ -50,7 +49,6 @@
                             <h1>{{ event.title }}</h1>
                             <p v-if="event.subtitle" class="event-detail-hero__subtitle">{{ event.subtitle }}</p>
                         </div>
-                    </section>
 
                     <!-- Event Types -->
                     <div v-if="event.event_types && event.event_types.length > 0" class="event-detail-section">

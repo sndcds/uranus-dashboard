@@ -55,15 +55,6 @@ const sizeClass = computed(() => {
   width: 100%;
 }
 
-.uranus-text-input {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
-
 .uranus-tiny-text {
   font-size: 0.85rem;
 }

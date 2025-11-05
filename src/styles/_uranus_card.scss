@@ -3,11 +3,11 @@
   flex-direction: column;
   gap: var(--uranus-grid-gap);
   color: var(--uranus-card-color);
-  background-color: var(--uranus-bg-color);
+  background-color: var(--uranus-card-background-color);
   border-radius: 8px;
   border: 0px solid var(--uranus-low-contrast-color);
   padding: 20px;
-  max-width: 1280px;
+  max-width: 1024px;
 }
 
 .uranus-card-hero {

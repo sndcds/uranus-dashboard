@@ -7,126 +7,113 @@
                          v-model="organizerName"
                          :label="t('organizer_name')"
                          :error="fieldErrors.organizerName"/>
+        <UranusTextInput id="address_addition"
+                         v-model="addressAddition"
+                         :label="t('organizer_address_addition')" />
 
-        <UranusTextInput id="organizer_name" size="big" required
-                         v-model="organizerName"
-                         :label="t('organizer_name')"
-                         :error="fieldErrors.organizerName"/>
+        <UranusFormRow>
+          <UranusTextInput id="street" required :flex=3
+                           v-model="street"
+                           :label="t('street')"
+                           :error="fieldErrors.street"/>
+          <UranusTextInput id="house_number" required
+                           v-model="houseNumber"
+                           :label="t('house_number')"
+                           :error="fieldErrors.houseNumber"/>
+        </UranusFormRow>
 
-                        <div class="form-group form-group--full">
-                            <label for="address_addition">
-                                {{ labelMessage('organizer_address_addition') }}
-                            </label>
-                            <input v-model="addressAddition" id="address_addition" type="text" />
-                        </div>
-                        <div class="form-group">
-                            <label for="street">
-                                {{ t('street') }}
-                                <span class="required" aria-hidden="true">*</span>
-                                <span class="sr-only">{{ requiredA11yLabel }}</span>
-                            </label>
-                            <input v-model="street" id="street" type="text" />
-                            <p v-if="fieldErrors.street" class="field-error">{{ fieldErrors.street }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="house_number">
-                                {{ t('house_number') }}
-                                <span class="required" aria-hidden="true">*</span>
-                                <span class="sr-only">{{ requiredA11yLabel }}</span>
-                            </label>
-                            <input v-model="houseNumber" id="house_number" type="text" />
-                            <p v-if="fieldErrors.houseNumber" class="field-error">{{ fieldErrors.houseNumber }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="postal_code">
-                                {{ t('postal_code') }}
-                                <span class="required" aria-hidden="true">*</span>
-                                <span class="sr-only">{{ requiredA11yLabel }}</span>
-                            </label>
-                            <input v-model="postalCode" id="postal_code" type="text" />
-                            <p v-if="fieldErrors.postalCode" class="field-error">{{ fieldErrors.postalCode }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="city">
-                                {{ t('city') }}
-                                <span class="required" aria-hidden="true">*</span>
-                                <span class="sr-only">{{ requiredA11yLabel }}</span>
-                            </label>
-                            <input v-model="city" id="city" type="text" />
-                            <p v-if="fieldErrors.city" class="field-error">{{ fieldErrors.city }}</p>
-                        </div>
-                        <RegionSelectorComponent v-model:country-code="countryCode" v-model:state-code="stateCode" />
-                        <div class="form-group">
-                            <label for="email">{{ t('email') }}</label>
-                            <input v-model="email" id="email" type="email" />
-                            <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">{{ t('phone') }}</label>
-                            <input v-model="phone" id="phone" type="tel" />
-                        </div>
-                        <div class="form-group">
-                            <label for="website">{{ t('website') }}</label>
-                            <input v-model="website" id="website" type="url" />
-                            <p v-if="fieldErrors.website" class="field-error">{{ fieldErrors.website }}</p>
-                        </div>
-                        <div class="form-group form-group--full">
-                            <label :id="descriptionLabelId">
-                                {{ labelMessage('organizer_description') }}
-                            </label>
-                            <MarkdownEditorComponent v-model="description" class="organizer-description-editor"
-                                :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
-                        </div>
-                        <div class="form-group">
-                            <label for="holding_organizer_id">
-                                {{ labelMessage('organizer_holding_id') }}
-                            </label>
-                            <input v-model="holdingOrganizerId" id="holding_organizer_id" type="text"
-                                inputmode="numeric" />
-                        </div>
-                        <div class="form-group">
-                            <label for="legal_form_id">
-                                {{ labelMessage('organizer_legal_form_id') }}
-                            </label>
-                            <select v-model="legalFormId" id="legal_form_id" :disabled="legalFormsLoading">
-                                <option value="" disabled>
-                                    {{ legalFormPlaceholder }}
-                                </option>
-                                <option v-for="form in legalForms" :key="form.id" :value="String(form.id)">
-                                    {{ form.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="form-group nonprofit-checkbox">
-                            <input :id="nonprofitId" type="checkbox" v-model="nonprofit" />
-                            <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit') }}</label>
-                        </div>
+        <UranusFormRow>
+          <UranusTextInput id="postal_code" required
+                           v-model="postalCode"
+                           :label="t('postal_code')"
+                           :error="fieldErrors.postalCode"/>
+          <UranusTextInput id="city" required :flex=3
+                           v-model="city"
+                           :label="t('city')"
+                           :error="fieldErrors.city"/>
+        </UranusFormRow>
+
+        <UranusFormRow>
+          <RegionSelectorComponent v-model:country-code="countryCode" v-model:state-code="stateCode" />
+        </UranusFormRow>
+
+        <UranusFormRow>
+          <UranusTextInput id="email"
+                           v-model="email"
+                           :label="t('email')"
+                           :error="fieldErrors.email"/>
+          <UranusTextInput id="phone"
+                           v-model="phone"
+                           :label="t('phone')"
+                           :error="fieldErrors.phone"/>
+        </UranusFormRow>
+
+        <UranusTextInput id="website"
+                         v-model="website"
+                         :label="t('website')"
+                         :error="fieldErrors.website"/>
+
+        <UranusFieldLabel :label="t('description')" :error="fieldErrors.description">
+          <MarkdownEditorComponent
+              v-model="description"
+              class="organizer-description-editor"
+              :aria-labelledby="descriptionLabelId"
+              :placeholder="descriptionPlaceholder" />
+        </UranusFieldLabel>
 
 
-                    <div class="form-actions">
-                        <button type="submit" :disabled="isSubmitting">{{ submitButtonLabel }}</button>
-                    </div>
-                </form>
+        <div class="form-group">
+            <label for="holding_organizer_id">
+                {{ labelMessage('organizer_holding_id') }}
+            </label>
+            <input v-model="holdingOrganizerId" id="holding_organizer_id" type="text"
+                inputmode="numeric" />
+        </div>
 
-                <aside class="organizer-map-panel">
-                    <LocationMapComponent v-model="location" :zoom="13" :selectable="true">
-                        <template #footer>
-                            {{ mapHint }}
-                        </template>
-                    </LocationMapComponent>
-                  <ValueInfoComponent
-                      :label="t('geo_location')"
-                      :value="locationSummary" />
-                </aside>
+        <div class="form-group">
+            <label for="legal_form_id">
+                {{ labelMessage('organizer_legal_form_id') }}
+            </label>
+            <select v-model="legalFormId" id="legal_form_id" :disabled="legalFormsLoading">
+                <option value="" disabled>
+                    {{ legalFormPlaceholder }}
+                </option>
+                <option v-for="form in legalForms" :key="form.id" :value="String(form.id)">
+                    {{ form.name }}
+                </option>
+            </select>
+        </div>
 
-            <transition name="fade">
-                <p v-if="error" class="feedback feedback--error">{{ error }}</p>
-            </transition>
-            <transition name="fade">
-                <p v-if="success" class="feedback feedback--success">{{ success }}</p>
-            </transition>
-        </section>
-    </div>
+        <div class="form-group nonprofit-checkbox">
+            <input :id="nonprofitId" type="checkbox" v-model="nonprofit" />
+            <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit') }}</label>
+        </div>
+
+
+        <div class="form-actions">
+            <button type="button" class="uranus-button" :disabled="isSubmitting">{{ submitButtonLabel }}</button>
+        </div>
+      </form>
+
+      <aside class="">
+          <LocationMapComponent v-model="location" :zoom="13" :selectable="true">
+              <template #footer>
+                  {{ mapHint }}
+              </template>
+          </LocationMapComponent>
+        <ValueInfoComponent
+            :label="t('geo_location')"
+            :value="locationSummary" />
+      </aside>
+
+      <transition name="fade">
+          <p v-if="error" class="feedback feedback--error">{{ error }}</p>
+      </transition>
+      <transition name="fade">
+          <p v-if="success" class="feedback feedback--success">{{ success }}</p>
+      </transition>
+    </section>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -141,6 +128,8 @@ import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
 import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
+import UranusFormRow from "@/components/uranus/UranusFormRow.vue";
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
 
 interface LatLngLiteral {
     lat: number
@@ -616,45 +605,8 @@ watch(website, (value) => {
 </script>
 
 <style scoped lang="scss">
-.organizer-page {
-    @include form-page();
-}
 
-.organizer-hero {
-    @include form-hero(540px);
-}
 
-.organizer-card {
-    @include form-card(1080px, clamp(1.75rem, 4vw, 2.75rem), clamp(1.25rem, 3vw, 1.75rem));
-}
-
-.organizer-layout {
-    display: grid;
-    gap: clamp(1.5rem, 3vw, 2.25rem);
-    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-}
-
-.organizer-form {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.5rem, 3vw, 2rem);
-}
-
-.form-grid {
-    @include form-grid();
-}
-
-.form-group {
-    @include form-group();
-}
-
-.form-group--full {
-    grid-column: 1 / -1;
-}
-
-.organizer-description-editor {
-    margin-top: 0.5rem;
-}
 
 .nonprofit-checkbox {
     display: flex;
@@ -683,62 +635,8 @@ watch(website, (value) => {
     justify-content: flex-end;
 }
 
-button {
-    @include form-primary-button($padding-y: 0.85rem, $padding-x: 2rem);
-}
 
-.required {
-    color: #dc2626;
-    font-weight: 700;
-}
 
-.field-error {
-    margin: 0.35rem 0 0;
-    font-size: 0.85rem;
-    color: #b91c1c;
-    font-weight: 600;
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-}
-
-.organizer-map-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    height: 340px;
-}
-
-.location-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    font-size: 1rem;
-    background: var(--input-bg);
-    border-radius: 14px;
-    padding: 0.75rem 1rem;
-}
-
-.meta-label {
-    font-weight: 600;
-    color: var(--color-text);
-    letter-spacing: 0.08em;
-    font-size: 0.78rem;
-}
-
-.meta-value {
-    font-variant-numeric: tabular-nums;
-    color: var(--muted-text);
-}
 
 .feedback {
     @include form-feedback();
@@ -760,21 +658,5 @@ button {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
-}
-
-@media (max-width: 900px) {
-    .organizer-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .form-actions {
-        justify-content: center;
-    }
-}
-
-@media (max-width: 540px) {
-    .organizer-card {
-        padding: clamp(1.25rem, 6vw, 1.8rem);
-    }
 }
 </style>

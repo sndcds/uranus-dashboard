@@ -16,22 +16,20 @@
   }
 
   input,
+  input[type="text"],
   textarea {
     font-size: 1rem;
-    background: var(--uranus-bg-color);
     padding: 0.7rem 1.0rem 0.5rem 1.0rem;
-    border: 1px solid var(--uranus-bg-color-d2);
-//    border: 0;
-//    border-bottom: 1px solid var(--uranus-low-contrast-color);
-    border-radius: var(--uranus-form-field-border-radius);
-    background: var(--uranus-input-bg-color);
+    border-radius: 999px;
+    background: white;
     color: var(--uranus-color);
-  }
-  input[type="text"] {
-    font-size: 1.2rem;
+    border: 2px solid var(--uranus-input-border-color);
   }
   input[type="date"] {
     font-weight: 900;
+  }
+  textarea {
+    border-radius: var(--uranus-form-field-border-radius);
   }
 
   .uranus-tiny-text {
@@ -57,7 +55,7 @@
   select {
     padding: 0.6rem 1.0rem;
     font-size: 1.0rem;
-    border: 1px solid var(--uranus-bg-color-d2);
+    border: 2px solid var(--uranus-bg-color-d2);
     background: var(--uranus-input-bg-color);
     border-radius: var(--uranus-form-field-border-radius);
     color: var(--uranus-color);
@@ -95,6 +93,17 @@
   min-width: 150px;  /* optional: prevent too small inputs */
   margin: 0;
 }
+/*
+.uranus-text-input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 0px solid #ccc;
+  box-sizing: border-box;
+}
+*/
+
 
 @media (max-width: 600px) {
   .uranus-form-row {

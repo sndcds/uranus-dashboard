@@ -23,7 +23,9 @@
             @update:modelValue="onDatesUpdate" />
 
 
-            <EventDetailsComponent ref="detailsRef" :model-value="eventDetails"
+            <EventDetailsComponent
+                ref="detailsRef"
+                :model-value="eventDetails"
                 :organizer-id="appStore.organizerId ?? null" @update:modelValue="onDetailsUpdate" />
 
             <div class="event-form-actions">
