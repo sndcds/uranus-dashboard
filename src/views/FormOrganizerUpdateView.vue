@@ -1,119 +1,94 @@
 <template>
-  <div class="uranus-main-layout">
-    <DashboardHeroComponent :title="t('edit_organizer')" :subtitle="organizerDescription" />
-    <section class="uranus-card">
-      <form class="uranus-form" @submit.prevent="submitForm" novalidate>
-        <UranusTextInput id="organizer_name" size="big" required
-                         v-model="organizerName"
-                         :label="t('organizer_name')"
-                         :error="fieldErrors.organizerName"/>
-        <UranusTextInput id="address_addition"
-                         v-model="addressAddition"
-                         :label="t('organizer_address_addition')" />
+    <div class="uranus-main-layout">
+        <DashboardHeroComponent :title="t('edit_organizer')" :subtitle="organizerDescription" />
+        <section class="uranus-card">
+            <form class="uranus-form" @submit.prevent="submitForm" novalidate>
+                <UranusTextInput id="organizer_name" size="big" required v-model="organizerName"
+                    :label="t('organizer_name')" :error="fieldErrors.organizerName" />
+                <UranusTextInput id="address_addition" v-model="addressAddition"
+                    :label="t('organizer_address_addition')" />
 
-        <UranusFormRow>
-          <UranusTextInput id="street" required :flex=3
-                           v-model="street"
-                           :label="t('street')"
-                           :error="fieldErrors.street"/>
-          <UranusTextInput id="house_number" required
-                           v-model="houseNumber"
-                           :label="t('house_number')"
-                           :error="fieldErrors.houseNumber"/>
-        </UranusFormRow>
+                <UranusFormRow>
+                    <UranusTextInput id="street" required :flex=3 v-model="street" :label="t('street')"
+                        :error="fieldErrors.street" />
+                    <UranusTextInput id="house_number" required v-model="houseNumber" :label="t('house_number')"
+                        :error="fieldErrors.houseNumber" />
+                </UranusFormRow>
 
-        <UranusFormRow>
-          <UranusTextInput id="postal_code" required
-                           v-model="postalCode"
-                           :label="t('postal_code')"
-                           :error="fieldErrors.postalCode"/>
-          <UranusTextInput id="city" required :flex=3
-                           v-model="city"
-                           :label="t('city')"
-                           :error="fieldErrors.city"/>
-        </UranusFormRow>
+                <UranusFormRow>
+                    <UranusTextInput id="postal_code" required v-model="postalCode" :label="t('postal_code')"
+                        :error="fieldErrors.postalCode" />
+                    <UranusTextInput id="city" required :flex=3 v-model="city" :label="t('city')"
+                        :error="fieldErrors.city" />
+                </UranusFormRow>
 
-        <UranusFormRow>
-          <RegionSelectorComponent v-model:country-code="countryCode" v-model:state-code="stateCode" />
-        </UranusFormRow>
+                <UranusFormRow>
+                    <RegionSelectorComponent v-model:country-code="countryCode" v-model:state-code="stateCode" />
+                </UranusFormRow>
 
-        <UranusFormRow>
-          <UranusTextInput id="email"
-                           v-model="email"
-                           :label="t('email')"
-                           :error="fieldErrors.email"/>
-          <UranusTextInput id="phone"
-                           v-model="phone"
-                           :label="t('phone')"
-                           :error="fieldErrors.phone"/>
-        </UranusFormRow>
+                <UranusFormRow>
+                    <UranusTextInput id="email" v-model="email" :label="t('email')" :error="fieldErrors.email" />
+                    <UranusTextInput id="phone" v-model="phone" :label="t('phone')" :error="fieldErrors.phone" />
+                </UranusFormRow>
 
-        <UranusTextInput id="website"
-                         v-model="website"
-                         :label="t('website')"
-                         :error="fieldErrors.website"/>
+                <UranusTextInput id="website" v-model="website" :label="t('website')" :error="fieldErrors.website" />
 
-        <UranusFieldLabel :label="t('description')" :error="fieldErrors.description">
-          <MarkdownEditorComponent
-              v-model="description"
-              class="organizer-description-editor"
-              :aria-labelledby="descriptionLabelId"
-              :placeholder="descriptionPlaceholder" />
-        </UranusFieldLabel>
+                <UranusFieldLabel :label="t('description')" :error="fieldErrors.description">
+                    <MarkdownEditorComponent v-model="description" class="organizer-description-editor"
+                        :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
+                </UranusFieldLabel>
 
 
-        <div class="form-group">
-            <label for="holding_organizer_id">
-                {{ labelMessage('organizer_holding_id') }}
-            </label>
-            <input v-model="holdingOrganizerId" id="holding_organizer_id" type="text"
-                inputmode="numeric" />
-        </div>
+                <div class="form-group">
+                    <label for="holding_organizer_id">
+                        {{ labelMessage('organizer_holding_id') }}
+                    </label>
+                    <input v-model="holdingOrganizerId" id="holding_organizer_id" type="text" inputmode="numeric" />
+                </div>
 
-        <div class="form-group">
-            <label for="legal_form_id">
-                {{ labelMessage('organizer_legal_form_id') }}
-            </label>
-            <select v-model="legalFormId" id="legal_form_id" :disabled="legalFormsLoading">
-                <option value="" disabled>
-                    {{ legalFormPlaceholder }}
-                </option>
-                <option v-for="form in legalForms" :key="form.id" :value="String(form.id)">
-                    {{ form.name }}
-                </option>
-            </select>
-        </div>
+                <div class="form-group">
+                    <label for="legal_form_id">
+                        {{ labelMessage('organizer_legal_form_id') }}
+                    </label>
+                    <select v-model="legalFormId" id="legal_form_id" :disabled="legalFormsLoading">
+                        <option value="" disabled>
+                            {{ legalFormPlaceholder }}
+                        </option>
+                        <option v-for="form in legalForms" :key="form.id" :value="String(form.id)">
+                            {{ form.name }}
+                        </option>
+                    </select>
+                </div>
 
-        <div class="form-group nonprofit-checkbox">
-            <input :id="nonprofitId" type="checkbox" v-model="nonprofit" />
-            <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit') }}</label>
-        </div>
+                <div class="form-group nonprofit-checkbox">
+                    <input :id="nonprofitId" type="checkbox" v-model="nonprofit" />
+                    <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit') }}</label>
+                </div>
 
 
-        <div class="form-actions">
-            <button type="button" class="uranus-button" :disabled="isSubmitting">{{ submitButtonLabel }}</button>
-        </div>
-      </form>
+                <div class="form-actions">
+                    <button type="button" class="uranus-button" :disabled="isSubmitting">{{ submitButtonLabel
+                        }}</button>
+                </div>
+            </form>
 
-      <aside class="">
-          <LocationMapComponent v-model="location" :zoom="13" :selectable="true">
-              <template #footer>
-                  {{ mapHint }}
-              </template>
-          </LocationMapComponent>
-        <ValueInfoComponent
-            :label="t('geo_location')"
-            :value="locationSummary" />
-      </aside>
+            <aside class="">
+                <LocationMapComponent v-model="location" :zoom="13" :selectable="true">
+                    <template #footer>
+                        {{ mapHint }}
+                    </template>
+                </LocationMapComponent>
+                <ValueInfoComponent :label="t('geo_location')" :value="locationSummary" />
+            </aside>
 
-      <transition name="fade">
-          <p v-if="error" class="feedback feedback--error">{{ error }}</p>
-      </transition>
-      <transition name="fade">
-          <p v-if="success" class="feedback feedback--success">{{ success }}</p>
-      </transition>
-    </section>
-  </div>
+            <transition name="fade">
+                <p v-if="error" class="feedback feedback--error">{{ error }}</p>
+            </transition>
+            <transition name="fade">
+                <p v-if="success" class="feedback feedback--success">{{ success }}</p>
+            </transition>
+        </section>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -125,18 +100,18 @@ import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
-import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
-import UranusFormRow from "@/components/uranus/UranusFormRow.vue";
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
+import ValueInfoComponent from "@/components/ValueInfoComponent.vue"
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
+import UranusFormRow from "@/components/uranus/UranusFormRow.vue"
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
 
 interface LatLngLiteral {
     lat: number
     lng: number
 }
 
-const { t, te, locale } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 
 const organizerName = ref('')
@@ -165,22 +140,23 @@ const fieldErrors = reactive({
     postalCode: null as string | null,
     city: null as string | null,
     email: null as string | null,
+    phone: null as string | null,
     website: null as string | null,
+    description: null as string | null,
 })
 
-const organizerDescription = computed(() => (te('organizer_edit_description') ? t('organizer_edit_description') : 'Review and update the organizer details.'))
-const mapHint = computed(() => (te('organizer_map_hint') ? t('organizer_map_hint') : 'Click the map to drop a pin where the organizer is located.'))
-const requiredA11yLabel = computed(() => (te('form_required_indicator') ? t('form_required_indicator') : 'Required field'))
-const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
-const missingRequiredMessage = computed(() => (te('organizer_form_missing_required') ? t('organizer_form_missing_required') : 'Please complete all required fields.'))
-const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
-const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL.'))
-const organizerLoadErrorMessage = computed(() => (te('organizer_load_error') ? t('organizer_load_error') : 'Failed to load organizer details.'))
-const descriptionPlaceholder = computed(() => (te('organizer_description_placeholder') ? t('organizer_description_placeholder') : 'Describe the organizer, services, and mission (Markdown supported).'))
-const legalFormPlaceholder = computed(() => (te('organizer_legal_form_placeholder') ? t('organizer_legal_form_placeholder') : 'Select legal form'))
+const organizerDescription = computed(() => t('organizer_edit_description'))
+const mapHint = computed(() => t('organizer_map_hint'))
+const requiredFieldMessage = computed(() => t('event_error_required'))
+const missingRequiredMessage = computed(() => t('organizer_form_missing_required'))
+const invalidEmailMessage = computed(() => t('organizer_form_invalid_email'))
+const invalidWebsiteMessage = computed(() => t('organizer_form_invalid_website'))
+const organizerLoadErrorMessage = computed(() => t('organizer_load_error'))
+const descriptionPlaceholder = computed(() => t('organizer_description_placeholder'))
+const legalFormPlaceholder = computed(() => t('organizer_legal_form_placeholder'))
 const locationSummary = computed(() => {
     if (!location.value) {
-        return te('organizer_map_no_selection') ? t('organizer_map_no_selection') : 'No location selected yet'
+        return t('organizer_map_no_selection')
     }
     const { lat, lng } = location.value
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
@@ -514,7 +490,7 @@ const submitForm = async () => {
         })
 
         if (status >= 200 && status < 300) {
-            success.value = te('organizer_updated') ? t('organizer_updated') : 'Organizer updated successfully'
+            success.value = t('organizer_updated')
         } else {
             throw new Error('Unexpected status code')
         }
@@ -522,7 +498,7 @@ const submitForm = async () => {
         success.value = null
         if (typeof err === 'object' && err && 'data' in err) {
             const e = err as { data?: { error?: string } }
-            error.value = e.data?.error || (te('failed_to_update_organizer') ? t('failed_to_update_organizer') : t('unknown_error'))
+            error.value = e.data?.error || t('failed_to_update_organizer')
         } else {
             error.value = t('unknown_error')
         }
@@ -605,9 +581,6 @@ watch(website, (value) => {
 </script>
 
 <style scoped lang="scss">
-
-
-
 .nonprofit-checkbox {
     display: flex;
     align-items: center;

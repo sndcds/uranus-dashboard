@@ -1,99 +1,78 @@
 <template>
-  <div class="uranus-main-layout">
-    <DashboardHeroComponent :title="t('create_organizer')" :subtitle="organizerDescription" />
+    <div class="uranus-main-layout">
+        <DashboardHeroComponent :title="t('create_organizer')" :subtitle="organizerDescription" />
 
-    <section class="uranus-card">
-      <form class="uranus-form" @submit.prevent="submitForm" novalidate>
+        <section class="uranus-card">
+            <form class="uranus-form" @submit.prevent="submitForm" novalidate>
+                <UranusTextInput id="organizer_name" size="big" required v-model="organizerName"
+                    :label="t('organizer_name')" :error="fieldErrors.organizerName" />
 
-        <UranusTextInput id="organizer_name" size="big" required
-                         v-model="organizerName"
-                         :label="t('organizer_name')"
-                         :error="fieldErrors.organizerName"/>
+                <UranusFormRow>
+                    <UranusTextInput id="street" required :flex=2 v-model="street" :label="t('street')"
+                        :error="fieldErrors.street" />
+                    <UranusTextInput id="house_number" required v-model="houseNumber" :label="t('house_number')"
+                        :error="fieldErrors.houseNumber" />
+                </UranusFormRow>
 
-        <UranusFormRow>
-          <UranusTextInput id="street" required :flex=2
-                           v-model="street"
-                           :label="t('street')"
-                           :error="fieldErrors.street"/>
-          <UranusTextInput id="house_number" required
-                           v-model="houseNumber"
-                           :label="t('house_number')"
-                           :error="fieldErrors.houseNumber"/>
-        </UranusFormRow>
+                <UranusFormRow>
+                    <UranusTextInput id="postal_code" required v-model="postalCode" :label="t('postal_code')"
+                        :error="fieldErrors.postalCode" />
+                    <UranusTextInput id="city" required :flex=2 v-model="city" :label="t('city')"
+                        :error="fieldErrors.city" />
+                </UranusFormRow>
 
-        <UranusFormRow>
-          <UranusTextInput id="postal_code" required
-                           v-model="postalCode"
-                           :label="t('postal_code')"
-                           :error="fieldErrors.postalCode"/>
-          <UranusTextInput id="city" required :flex=2
-                           v-model="city"
-                           :label="t('city')"
-                           :error="fieldErrors.city"/>
-        </UranusFormRow>
+                <UranusFormRow>
+                    <UranusTextInput id="email" v-model="email" :label="t('email')" :error="fieldErrors.email" />
+                    <UranusTextInput id="phone" v-model="phone" :label="t('phone')" :error="fieldErrors.phone" />
+                </UranusFormRow>
 
-        <UranusFormRow>
-          <UranusTextInput id="email"
-                           v-model="email"
-                           :label="t('email')"
-                           :error="fieldErrors.email"/>
-          <UranusTextInput id="phone"
-                           v-model="phone"
-                           :label="t('phone')"
-                           :error="fieldErrors.phone"/>
-        </UranusFormRow>
+                <UranusTextInput id="website" v-model="website" :label="t('website')" :error="fieldErrors.website" />
 
-        <UranusTextInput id="website"
-                         v-model="website"
-                         :label="t('website')"
-                         :error="fieldErrors.website"/>
+                <div>
+                    <LocationMapComponent v-model="location" :zoom="13" :selectable="true" class="venue-map-panel">
+                        <template #footer>
+                            {{ mapHint }}
+                        </template>
+                    </LocationMapComponent>
+                    <ValueInfoComponent :label="t('geo_location')" :value="locationSummary" />
+                </div>
 
-        <div>
-          <LocationMapComponent v-model="location" :zoom="13" :selectable="true" class="venue-map-panel">
-            <template #footer>
-              {{ mapHint }}
-            </template>
-          </LocationMapComponent>
-          <ValueInfoComponent
-              :label="t('geo_location')"
-              :value="locationSummary" />
-        </div>
+                <div class="form-actions" style="text-align: right">
+                    <button class="uranus-button" type="submit" :disabled="isSubmitting">{{ t('create_organizer')
+                        }}</button>
+                </div>
 
-        <div class="form-actions" style="text-align: right">
-          <button class="uranus-button" type="submit" :disabled="isSubmitting">{{ t('create_organizer') }}</button>
-        </div>
-
-      </form>
+            </form>
 
 
-      <transition name="fade">
-        <p v-if="error" class="feedback feedback--error">{{ error }}</p>
-      </transition>
-      <transition name="fade">
-       <p v-if="success" class="feedback feedback--success">{{ success }}</p>
-      </transition>
-    </section>
-  </div>
+            <transition name="fade">
+                <p v-if="error" class="feedback feedback--error">{{ error }}</p>
+            </transition>
+            <transition name="fade">
+                <p v-if="success" class="feedback feedback--success">{{ success }}</p>
+            </transition>
+        </section>
+    </div>
 </template>
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
+import router from '@/router'
 
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
-import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
-import router from '@/router'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
-import UranusFormRow from "@/components/uranus/UranusFormRow.vue";
+import ValueInfoComponent from "@/components/ValueInfoComponent.vue"
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
+import UranusFormRow from "@/components/uranus/UranusFormRow.vue"
 
 interface LatLngLiteral {
     lat: number
     lng: number
 }
 
-const { t, te } = useI18n()
+const { t } = useI18n()
 
 const organizerName = ref('')
 const street = ref('')
@@ -114,19 +93,19 @@ const fieldErrors = reactive({
     postalCode: null as string | null,
     city: null as string | null,
     email: null as string | null,
+    phone: null as string | null,
     website: null as string | null,
 })
 
-const organizerDescription = computed(() => (te('organizer_create_description') ? t('organizer_create_description') : 'Add the essential information for your organizer profile.'))
-const mapHint = computed(() => (te('organizer_map_hint') ? t('organizer_map_hint') : 'Click the map to drop a pin where the organizer is located.'))
-const requiredA11yLabel = computed(() => (te('form_required_indicator') ? t('form_required_indicator') : 'Required field'))
-const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
-const missingRequiredMessage = computed(() => (te('organizer_form_missing_required') ? t('organizer_form_missing_required') : 'Please complete all required fields.'))
-const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
-const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL.'))
+const organizerDescription = computed(() => t('organizer_create_description'))
+const mapHint = computed(() => t('organizer_map_hint'))
+const requiredFieldMessage = computed(() => t('event_error_required'))
+const missingRequiredMessage = computed(() => t('organizer_form_missing_required'))
+const invalidEmailMessage = computed(() => t('organizer_form_invalid_email'))
+const invalidWebsiteMessage = computed(() => t('organizer_form_invalid_website'))
 const locationSummary = computed(() => {
     if (!location.value) {
-        return te('organizer_map_no_selection') ? t('organizer_map_no_selection') : 'No location selected yet'
+        return t('organizer_map_no_selection')
     }
     const { lat, lng } = location.value
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
@@ -330,7 +309,7 @@ watch(website, (value) => {
 
 <style scoped lang="scss">
 .venue-map-panel {
- max-width: 400px;
- aspect-ratio: 1/1;
+    max-width: 400px;
+    aspect-ratio: 1/1;
 }
 </style>
