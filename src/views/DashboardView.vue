@@ -26,10 +26,4 @@ const { t } = useI18n()
 </script>
 
 <style scoped lang="scss">
-.uranus-main-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding-bottom: 32px;
-}
 </style>

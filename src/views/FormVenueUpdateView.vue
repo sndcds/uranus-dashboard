@@ -1,11 +1,9 @@
 <template>
     <div class="uranus-main-layout">
         <DashboardHeroComponent :title="t('update_venue')" :subtitle="venueDescription" />
-        <section class="uranus-card">
-            <VenueForm ref="venueFormRef" :submit-label="t('update_venue')" :loading="isSubmitting || isLoadingVenue"
-                :error-message="error" :success-message="success" :initial-values="formInitialValues"
-                @submit="handleSubmit" :show-description="true" :show-date-fields="true" @clear-error="clearError" />
-        </section>
+        <VenueForm ref="venueFormRef" :submit-label="t('update_venue')" :loading="isSubmitting || isLoadingVenue"
+            :error-message="error" :success-message="success" :initial-values="formInitialValues"
+            @submit="handleSubmit" :show-description="true" :show-date-fields="true" @clear-error="clearError" />
     </div>
 </template>
 

@@ -38,8 +38,8 @@
   --uranus-input-bg-color: rgb(255, 255, 255);
   --uranus-input-border-color: rgb(121, 213, 179);
 
-  --uranus-dashboard-bg-color: rgb(192, 215, 244);
-  --uranus-card-background-color: yellow;
+  --uranus-dashboard-bg-color: rgb(222, 228, 237);
+  --uranus-card-background-color: #ffffff;
 
   --uranus-menu-active-color: #eeeeee;
   --uranus-menu-active-bg: #333333;
@@ -48,9 +48,13 @@
   // Mode indepentent settings
 
   --uranus-card-border-radius: 12px;
-  --uranus-inline-edit-border-radius: 12px;
+  --uranus-form-field-border-radius: 12px;
   --uranus-tiny-border-radius: 4px;
-  --uranus-form-field-border-radius: 4px;
+
+
+  --uranus-inline-edit-border-radius: 12px;
+
+
 
   --uranus-grid-gap: 12px;
   --uranus-app-menu-background-menu-bg: #fcfcfc;

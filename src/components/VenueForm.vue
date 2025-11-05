@@ -1,99 +1,99 @@
 <template>
   <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
-
-    <UranusTextInput id="venue_name" size="big" required
-        v-model="venueName"
-        :label="t('venue_name')"
-        :error="fieldErrors.venueName"
-    />
-
-    <UranusFormRow>
-      <UranusTextInput id="street" required :flex=2
-          v-model="street"
-          :label="t('street')"
-          :error="fieldErrors.street"
-      />
-      <UranusTextInput id="house_number" required
-          v-model="houseNumber"
-          :label="t('house_number')"
-          :error="fieldErrors.houseNumber"
-      />
-    </UranusFormRow>
-
-    <UranusFormRow>
-      <UranusTextInput id="postal_code" required
-          v-model="postalCode"
-          :label="t('postal_code')"
-          :error="fieldErrors.postalCode"
-      />
-      <UranusTextInput id="city" required :flex=2
-          v-model="city"
-          :label="t('city')"
-          :error="fieldErrors.city"
-      />
-    </UranusFormRow>
-
-    <UranusFormRow>
-    <RegionSelectorComponent
-        v-if="showRegionSelector"
-        v-model:country-code="countryCode"
-        v-model:state-code="stateCode" />
-    </UranusFormRow>
-
-    <UranusFormRow>
-      <hr>
-    </UranusFormRow>
-
-    <UranusFormRow>
-      <UranusTextInput id="email"
-                       v-model="email"
-                       :label="t('email')"
-                       :error="fieldErrors.email"
+    <section class="uranus-card">
+      <UranusTextInput id="venue_name" size="big" required
+          v-model="venueName"
+          :label="t('venue_name')"
+          :error="fieldErrors.venueName"
       />
 
-      <UranusTextInput id="phone"
-                       v-model="phone"
-                       :label="t('phone')"
-                       :error="fieldErrors.phone"
-      />
-    </UranusFormRow>
+      <UranusFormRow>
+        <UranusTextInput id="street" required :flex=2
+            v-model="street"
+            :label="t('street')"
+            :error="fieldErrors.street"
+        />
+        <UranusTextInput id="house_number" required
+            v-model="houseNumber"
+            :label="t('house_number')"
+            :error="fieldErrors.houseNumber"
+        />
+      </UranusFormRow>
 
-    <UranusTextInput id="website"
-                     v-model="website"
-                     :label="t('website')"
-                     :error="fieldErrors.website"
-    />
+      <UranusFormRow>
+        <UranusTextInput id="postal_code" required
+            v-model="postalCode"
+            :label="t('postal_code')"
+            :error="fieldErrors.postalCode"
+        />
+        <UranusTextInput id="city" required :flex=2
+            v-model="city"
+            :label="t('city')"
+            :error="fieldErrors.city"
+        />
+      </UranusFormRow>
 
-    <UranusFieldLabel v-if="showDescription" :label="t('description')" :error="fieldErrors.description">
-      <MarkdownEditorComponent v-model="description" class="venue-description-editor"
-                               :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
-    </UranusFieldLabel>
+      <UranusFormRow>
+      <RegionSelectorComponent
+          v-if="showRegionSelector"
+          v-model:country-code="countryCode"
+          v-model:state-code="stateCode" />
+      </UranusFormRow>
+    </section>
 
-    <UranusFormRow>
-      <UranusFieldLabel :label="t('opened_at')" :error="fieldErrors.openedAt">
-        <input v-model="openedAt" id="opened_at" type="date" />
+    <section class="uranus-card">
+      <UranusFormRow>
+        <UranusTextInput id="email"
+                         v-model="email"
+                         :label="t('email')"
+                         :error="fieldErrors.email"
+        />
+
+        <UranusTextInput id="phone"
+                         v-model="phone"
+                         :label="t('phone')"
+                         :error="fieldErrors.phone"
+        />
+      </UranusFormRow>
+
+      <UranusTextInput id="website"
+                       v-model="website"
+                       :label="t('website')"
+                       :error="fieldErrors.website"/>
+
+      <UranusFieldLabel v-if="showDescription" :label="t('description')" :error="fieldErrors.description">
+        <MarkdownEditorComponent v-model="description" class="venue-description-editor"
+                                 :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
       </UranusFieldLabel>
 
-      <UranusFieldLabel :label="t('closed_at')" :error="fieldErrors.openedAt">
-        <input v-model="closedAt" id="closed_at" type="date" />
-      </UranusFieldLabel>
-    </UranusFormRow>
+      <UranusFormRow>
+        <UranusFieldLabel :label="t('opened_at')" :error="fieldErrors.openedAt">
+          <input v-model="openedAt" id="opened_at" type="date" />
+        </UranusFieldLabel>
 
-    <div>
-      <LocationMapComponent v-model="location" :zoom="13" :selectable="true" class="venue-map-panel">
-        <template #footer>
-          {{ mapHint }}
-        </template>
-      </LocationMapComponent>
-      <ValueInfoComponent
-          :label="t('geo_location')"
-          :value="locationSummary" />
-    </div>
+        <UranusFieldLabel :label="t('closed_at')" :error="fieldErrors.openedAt">
+          <input v-model="closedAt" id="closed_at" type="date" />
+        </UranusFieldLabel>
+      </UranusFormRow>
+    </section>
 
+    <section class="uranus-card">
+      <div>
+        <LocationMapComponent v-model="location" :zoom="13" :selectable="true" class="venue-map-panel">
+          <template #footer>
+            {{ mapHint }}
+          </template>
+        </LocationMapComponent>
+        <ValueInfoComponent
+            :label="t('geo_location')"
+            :value="locationSummary" />
+      </div>
+    </section>
 
-    <div class="form-actions" style="text-align: right">
+    <section class="uranus-form-action-footer">
         <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
-    </div>
+    </section>
+
   </form>
 
   <transition name="fade">
@@ -507,7 +507,7 @@ defineExpose({
 
 <style scoped lang="scss">
 .venue-map-panel {
-  max-width: 400px;
-  aspect-ratio: 1/1;
+  max-width: 100%;
+  height: 300px;
 }
 </style>
