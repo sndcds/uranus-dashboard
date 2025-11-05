@@ -11,7 +11,7 @@
           :type="type"
           :value="modelValue"
           @input="$emit('update:modelValue', $event.target.value)"
-          :class="['uranus-text-input', sizeClass]"
+          :class="['uranus-text-input']"
           :aria-required="required ? 'true' : 'false'"
           :aria-invalid="error ? 'true' : 'false'"
       />
@@ -55,11 +55,4 @@ const sizeClass = computed(() => {
   width: 100%;
 }
 
-.uranus-tiny-text {
-  font-size: 0.85rem;
-}
-
-.uranus-big-text {
-  font-size: 1.3rem;
-}
 </style>

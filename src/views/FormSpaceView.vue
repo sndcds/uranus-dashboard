@@ -1,18 +1,16 @@
 <template>
-    <div class="space-page">
+    <div class="uranus-main-layout">
         <DashboardHeroComponent :title="title" :subtitle="subtitle" />
 
-        <section class="uranus-card">
-            <SpaceForm
-                :submit-label="submitLabel"
-                :loading="isSubmitting"
-                :error-message="errorMessage"
-                :success-message="successMessage"
-                :initial-values="initialValues"
-                @submit="handleSubmit"
-                @clear-error="clearError"
-            />
-        </section>
+        <SpaceForm
+            :submit-label="submitLabel"
+            :loading="isSubmitting"
+            :error-message="errorMessage"
+            :success-message="successMessage"
+            :initial-values="initialValues"
+            @submit="handleSubmit"
+            @clear-error="clearError"
+        />
     </div>
 </template>
 
@@ -106,7 +104,7 @@ async function loadSpace() {
 
     try {
         const { data } = await apiFetch<SpaceResponse | null>(`/api/admin/space/${spaceId}`)
-        
+
         if (!data) {
             throw new Error('Space not found')
         }
@@ -143,8 +141,8 @@ async function handleSubmit(payload: SpaceFormSubmitPayload) {
     }
 
     try {
-        const endpoint = isEditMode.value && spaceId != null 
-            ? `/api/admin/space/${spaceId}` 
+        const endpoint = isEditMode.value && spaceId != null
+            ? `/api/admin/space/${spaceId}`
             : '/api/admin/space/create'
         const method = isEditMode.value ? 'PUT' : 'POST'
 
@@ -155,7 +153,7 @@ async function handleSubmit(payload: SpaceFormSubmitPayload) {
 
         if (status >= 200 && status < 300) {
             successMessage.value = t(isEditMode.value ? 'space_updated_success' : 'space_created_success')
-            
+
             // Navigate back to the venues list
             if (Number.isFinite(organizerId)) {
                 setTimeout(() => {

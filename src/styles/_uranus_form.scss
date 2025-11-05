@@ -32,15 +32,6 @@
     border-radius: var(--uranus-form-field-border-radius);
   }
 
-  .uranus-tiny-text {
-    font-size: 0.85rem;
-  }
-
-  .uranus-big-text {
-    font-size: 1.4rem;
-    font-weight: 700;
-  }
-
   .uranus-label-text {
     padding-left: 10px;
     margin: 0;
@@ -65,6 +56,21 @@
     // -webkit-appearance: none;
     // -moz-appearance: none;
   }
+}
+
+.uranus-text-input {
+  font-size: 2.85rem;
+  color: red;
+}
+
+.uranus-tiny-text {
+  font-size: 0.85rem;
+}
+
+.uranus-big-text {
+  color: green;
+  font-weight: 700;
+  background: yellow;
 }
 
 .uranus-main-layout {

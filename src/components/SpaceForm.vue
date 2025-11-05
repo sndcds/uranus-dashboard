@@ -1,35 +1,35 @@
 <template>
   <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
 
-    <UranusTextInput id="space_name" size="big" required
-        v-model="spaceName"
-        :label="t('space_name')"
-        :error="fieldErrors.spaceName"
-    />
+      <section class="uranus-card">
 
-    <UranusFormRow>
-      <UranusFieldLabel :label="t('space_total_capacity')" id="total_capacity" required :error="fieldErrors.totalCapacity">
-        <input
-            id="total_capacity"
-            type="number"
-            v-model.number="totalCapacity"
-            min="0"
-            class="uranus-text-input"
-            :aria-required="true"
-            :aria-invalid="fieldErrors.totalCapacity ? 'true' : 'false'"
-        />
-      </UranusFieldLabel>
+      <UranusTextInput id="space_name" size="big" required
+                       v-model="spaceName"
+                       :label="t('space_name')"
+                       :error="fieldErrors.spaceName" />
+      <UranusFormRow>
+          <UranusFieldLabel :label="t('space_total_capacity')" id="total_capacity" required :error="fieldErrors.totalCapacity">
+              <input
+                  id="total_capacity"
+                  type="number"
+                  v-model.number="totalCapacity"
+                  min="0"
+                  class="uranus-text-input"
+                  :aria-required="true"
+                  :aria-invalid="fieldErrors.totalCapacity ? 'true' : 'false'"
+            />
+          </UranusFieldLabel>
 
-      <UranusFieldLabel :label="t('space_seating_capacity')" id="seating_capacity" required :error="fieldErrors.seatingCapacity">
-        <input
-            id="seating_capacity"
-            type="number"
-            v-model.number="seatingCapacity"
-            min="0"
-            class="uranus-text-input"
-            :aria-required="true"
-            :aria-invalid="fieldErrors.seatingCapacity ? 'true' : 'false'"
-        />
+          <UranusFieldLabel :label="t('space_seating_capacity')" id="seating_capacity" required :error="fieldErrors.seatingCapacity">
+            <input
+                id="seating_capacity"
+                type="number"
+                v-model.number="seatingCapacity"
+                min="0"
+                class="uranus-text-input"
+                :aria-required="true"
+                :aria-invalid="fieldErrors.seatingCapacity ? 'true' : 'false'"
+            />
       </UranusFieldLabel>
     </UranusFormRow>
 
@@ -63,7 +63,11 @@
       </UranusFieldLabel>
     </UranusFormRow>
 
-    <UranusTextInput id="website_url"
+      </section>
+
+      <section class="uranus-card">
+
+      <UranusTextInput id="website_url"
                      v-model="websiteUrl"
                      :label="t('website')"
                      :error="fieldErrors.websiteUrl"
@@ -78,6 +82,9 @@
       ></textarea>
     </UranusFieldLabel>
 
+      </section>
+
+      <section class="uranus-card">
     <UranusFieldLabel :label="t('space_accessibility_summary')" id="accessibility_summary" :error="fieldErrors.accessibilitySummary">
       <textarea
           id="accessibility_summary"
@@ -125,7 +132,9 @@
       </fieldset>
     </div>
 
-    <div class="form-actions" style="text-align: right">
+      </section>
+
+    <div class="uranus-form-action-footer">
       <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
     </div>
   </form>
