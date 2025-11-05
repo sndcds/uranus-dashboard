@@ -15,6 +15,17 @@
             </button>
         </div>
 
+        <div v-if="currentView === 'detailed'" class="calendar-grouping-toggle">
+            <button type="button" class="calendar-grouping-btn" :class="{ 'is-active': groupingMode === 'daily' }"
+                @click="groupingMode = 'daily'">
+                {{ dailyGroupingLabel }}
+            </button>
+            <button type="button" class="calendar-grouping-btn" :class="{ 'is-active': groupingMode === 'monthly' }"
+                @click="groupingMode = 'monthly'">
+                {{ monthlyGroupingLabel }}
+            </button>
+        </div>
+
         <div class="calendar-body" :class="{
             'calendar-body--detailed': currentView === 'detailed',
             'calendar-body--compact': currentView === 'compact',
@@ -49,8 +60,10 @@
                 :load-error="loadError" 
                 :grouped-events="groupedEvents"
                 :selected-type="selectedType"
+                :is-monthly-grouping="groupingMode === 'monthly'"
                 :format-time="formatTime"
                 :format-location="formatLocation"
+                :format-event-date="formatEventDate"
                 @filter-by-tag="filterByTag" />
 
             <EventCalendarCompactView 
@@ -80,6 +93,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useTokenStore } from '@/store/token'
+import { useAppStore } from '@/store/appStore'
 
 import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'
 import EventCalendarDetailedView from '@/components/EventCalendarDetailedView.vue'
@@ -132,8 +146,7 @@ interface AugmentedEvent extends CalendarEvent {
 }
 
 const { t, locale } = useI18n({ useScope: 'global' })
-const tokenStore = useTokenStore()
-const isLoggedIn = computed(() => Boolean(tokenStore.accessToken))
+const appStore = useAppStore()
 
 const events = ref<AugmentedEvent[]>([])
 const isLoading = ref(true)
@@ -147,7 +160,17 @@ const searchQuery = ref('')
 const selectedType = ref<'all' | string>('all')
 const selectedDate = ref<string | null>(null)
 const selectedEndDate = ref<string | null>(null)
-const currentView = ref<'detailed' | 'compact' | 'tiles'>('detailed')
+
+// Use appStore for persisted state
+const currentView = computed({
+    get: () => appStore.eventViewMode,
+    set: (value) => appStore.setViewMode(value)
+})
+
+const groupingMode = computed({
+    get: () => appStore.eventGroupingMode,
+    set: (value) => appStore.setGroupingMode(value)
+})
 
 const normalizeDateValue = (value: string | null) => {
     if (value === null || value === undefined) {
@@ -180,6 +203,8 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
 const detailedViewLabel = computed(() => t('events_calendar_detailed_view'))
 const compactViewLabel = computed(() => t('events_calendar_compact_view'))
 const tilesViewLabel = computed(() => t('events_calendar_tiles_view'))
+const dailyGroupingLabel = computed(() => t('events_calendar_daily_grouping'))
+const monthlyGroupingLabel = computed(() => t('events_calendar_monthly_grouping'))
 
 // Date field behaviour
 const tempStartDate = ref<string | null>(null)
@@ -389,6 +414,10 @@ const filteredEvents = computed(() => {
 })
 
 const groupedEvents = computed<GroupedEvents[]>(() => {
+    if (groupingMode.value === 'monthly') {
+        return groupedEventsByMonth.value
+    }
+    
     const map = new Map<string, AugmentedEvent[]>()
 
     for (const event of filteredEvents.value) {
@@ -406,6 +435,40 @@ const groupedEvents = computed<GroupedEvents[]>(() => {
             date,
             formattedDate: parsedDate ? intlDate.format(parsedDate) : date,
             weekday: parsedDate ? capitalize(intlWeekday.format(parsedDate)) : '',
+            events: groupEvents,
+        })
+    }
+
+    return groups.sort((a, b) => a.date.localeCompare(b.date))
+})
+
+const groupedEventsByMonth = computed<GroupedEvents[]>(() => {
+    const map = new Map<string, AugmentedEvent[]>()
+
+    for (const event of filteredEvents.value) {
+        const parsedDate = parseISODate(event.start_date)
+        if (!parsedDate) continue
+        
+        // Group by year-month (e.g., "2025-11")
+        const key = `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, '0')}`
+        if (!map.has(key)) {
+            map.set(key, [])
+        }
+        map.get(key)!.push(event)
+    }
+
+    const intlMonth = new Intl.DateTimeFormat(locale.value, { year: 'numeric', month: 'long' })
+    const groups: GroupedEvents[] = []
+    
+    for (const [monthKey, groupEvents] of map.entries()) {
+        const [year, month] = monthKey.split('-').map(Number)
+        if (!year || !month) continue
+        const firstDayOfMonth = new Date(year, month - 1, 1)
+        
+        groups.push({
+            date: monthKey,
+            formattedDate: intlMonth.format(firstDayOfMonth),
+            weekday: '', // Not applicable for monthly grouping
             events: groupEvents,
         })
     }
@@ -501,6 +564,18 @@ const formatNumberDate = (date: string, locale = navigator.language) => {
   })
 
   return formatter.format(parsedDate)
+}
+
+const formatEventDate = (date: string) => {
+    const parsedDate = parseISODate(date)
+    if (!parsedDate) return date
+    
+    const formatter = new Intl.DateTimeFormat(locale.value, {
+        day: 'numeric',
+        month: 'short'
+    })
+    
+    return formatter.format(parsedDate)
 }
 
 const formatLocation = (event: CalendarEvent) => {
@@ -715,6 +790,36 @@ watch(
 .calendar-toggle-btn.is-active {
     background: var(--uranus-brand-color);
     color: white;
+}
+
+.calendar-grouping-toggle {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.calendar-grouping-btn {
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--border-soft);
+    background: var(--card-bg, #fff);
+    color: var(--muted-text);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar-grouping-btn:hover {
+    background: var(--input-bg);
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+}
+
+.calendar-grouping-btn.is-active {
+    background: var(--accent-primary);
+    color: white;
+    border-color: var(--accent-primary);
 }
 
 .calendar-body {

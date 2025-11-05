@@ -1,37 +1,36 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-const ORGANIZER_STORAGE_KEY = 'active_organizer_id'
+export const useAppStore = defineStore('app', () => {
+    // State
+    const organizerId = ref<number | null>(null)
+    const eventViewMode = ref<'detailed' | 'compact' | 'tiles'>('detailed')
+    const eventGroupingMode = ref<'daily' | 'monthly'>('daily')
 
-const getStoredOrganizerId = (): number | null => {
-    if (typeof window === 'undefined') {
-        return null
+    // Actions
+    function setOrganizerId(id: number | null) {
+        organizerId.value = id
     }
-    const raw = window.localStorage.getItem(ORGANIZER_STORAGE_KEY)
-    if (!raw) return null
-    const parsed = Number(raw)
-    return Number.isFinite(parsed) ? parsed : null
-}
 
-export const useAppStore = defineStore('app', {
-    state: () => ({
-        organizerId: null as number | null,
-    }),
+    function setViewMode(mode: 'detailed' | 'compact' | 'tiles') {
+        eventViewMode.value = mode
+    }
 
-    actions: {
-        setOrganizerId(id: number | null) {
-            this.organizerId = id
-            if (typeof window === 'undefined') return // SSR safety
-            if (id === null) {
-                window.localStorage.removeItem(ORGANIZER_STORAGE_KEY)
-            } else {
-                window.localStorage.setItem(ORGANIZER_STORAGE_KEY, String(id))
-            }
-        },
+    function setGroupingMode(mode: 'daily' | 'monthly') {
+        eventGroupingMode.value = mode
+    }
 
-        loadOrganizerIdFromStorage() {
-            if (typeof window === 'undefined') return
-            const stored = window.localStorage.getItem(ORGANIZER_STORAGE_KEY)
-            this.organizerId = stored ? Number(stored) : null
-        }
-    },
+    return {
+        organizerId,
+        eventViewMode,
+        eventGroupingMode,
+        setOrganizerId,
+        setViewMode,
+        setGroupingMode
+    }
+}, {
+    persist: {
+        key: 'appStore',
+        storage: localStorage
+    }
 })

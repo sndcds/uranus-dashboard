@@ -1,15 +1,18 @@
-import { createApp } from 'vue';
-import App from './App.vue';
+import { createApp } from 'vue'
+import App from './App.vue'
 import { createPinia } from 'pinia'
 import i18n from './i18n' // import the i18n instance
 import router from './router'
-import { useAppStore } from '@/store/appStore'
+
 import { useThemeStore } from '@/store/themeStore'
 import { useUserStore } from '@/store/userStore'
 import '@/styles/global.scss' // Import global styles
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
-const app = createApp(App);
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+
+const app = createApp(App)
 
 app.use(pinia)
 app.use(i18n)
@@ -18,11 +21,8 @@ app.use(i18n)
 const themeStore = useThemeStore()
 themeStore.initTheme() // apply persisted theme before mount
 
-app.use(router);
-app.mount('#app');
-
-const appStore = useAppStore()
-appStore.loadOrganizerIdFromStorage() // sync with localStorage
+app.use(router)
+app.mount('#app')
 
 const userStore = useUserStore()
 userStore.loadDisplayNameFromStorage() // sync with localStorage

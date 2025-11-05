@@ -17,6 +17,7 @@
     "maplibre-gl": "^5.10.0",
     "marked": "^16.4.1",
     "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.7.1",
     "quill": "^2.0.3",
     "simplex-noise": "^4.0.3",
     "vue": "^3.5.22",

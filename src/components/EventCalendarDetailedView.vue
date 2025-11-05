@@ -32,6 +32,7 @@
                             </div>
                             <div class="calendar-card__content">
                                 <div class="calendar-card__time">
+                                    <span v-if="isMonthlyGrouping && formatEventDate" class="calendar-card__date">{{ formatEventDate(event.start_date) }}</span>
                                     <span>{{ formatTime(event.start_date, event.start_time) }}</span>
                                 </div>
                                 <header class="calendar-card__header">
@@ -116,8 +117,10 @@ interface Props {
     loadError: string | null
     groupedEvents: GroupedEvents[]
     selectedType: 'all' | string
+    isMonthlyGrouping?: boolean
     formatTime: (date: string, time: string | null) => string
     formatLocation: (event: CalendarEvent) => string
+    formatEventDate?: (date: string) => string
 }
 
 const props = defineProps<Props>()
@@ -281,9 +284,23 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
 .calendar-card__time {
     display: flex;
     align-items: center;
+    gap: 0.5rem;
 }
 
-.calendar-card__time span {
+.calendar-card__date {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    background: rgba(79, 70, 229, 0.12);
+    color: var(--accent-primary);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+}
+
+.calendar-card__time > span:not(.calendar-card__date) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
