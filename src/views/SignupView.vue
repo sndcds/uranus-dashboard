@@ -1,5 +1,5 @@
 <template>
-    <div class="signup-page">
+    <div class="auth-page">
         <div class="uranus-card">
             <header class="signup-header">
                 <h1>{{ t('signup') }}</h1>
@@ -64,7 +64,6 @@ import { useRouter } from 'vue-router'
 import { apiFetch } from '../api'
 
 import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
-import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
 import UranusPasswordInput from "@/components/uranus/UranusPasswordInput.vue";
 
 type SignupResponse = { message?: string;[key: string]: unknown }
@@ -231,8 +230,7 @@ const signup = async () => {
 </script>
 
 <style scoped lang="scss">
-.signup-page {
-    @include form-page($justify: center, $padding: clamp(2rem, 6vw, 3rem));
+.auth-page {
     display: flex;
     width: 100%;
     flex-direction: column;
