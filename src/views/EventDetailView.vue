@@ -148,7 +148,7 @@
 
                     <!-- Organizer -->
                     <div v-if="event.organizer_name">
-                        <h3>{{ t('organizer') }}</h3>
+                        <hp class="event-detail-info-label">{{ t('organizer') }}</hp>
                         <p class="event-detail-organizer">{{ event.organizer_name }}</p>
                     </div>
 
@@ -159,17 +159,17 @@
                     </div>
                     <div v-if="event.space_total_capacity || event.space_seating_capacity">
                         <div v-if="event.space_total_capacity" class="event-detail-info-row">
-                            <span class="event-detail-info-label">{{ t('space_total_capacity') }}: {{
+                            <span>{{ t('space_total_capacity') }}: {{
                                 event.space_total_capacity
                             }}</span>
                         </div>
                         <div v-if="event.space_seating_capacity" class="event-detail-info-row">
-                            <span class="event-detail-info-label">{{ t('space_seating_capacity') }}: {{
+                            <span class>{{ t('space_seating_capacity') }}: {{
                                 event.space_seating_capacity
                             }}</span>
                         </div>
                         <div v-if="event.space_building_level" class="event-detail-info-row">
-                            <span class="event-detail-info-label">{{ t('space_building_level') }}: {{
+                            <span>{{ t('space_building_level') }}: {{
                                 event.space_building_level
                             }}</span>
                         </div>

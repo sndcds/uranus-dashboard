@@ -822,7 +822,7 @@ watch(
 }
 
 .calendar-toggle-btn.is-active {
-    background: var(--accent-primary);
+    background: var(--uranus-brand-color);
     color: white;
 }
 
