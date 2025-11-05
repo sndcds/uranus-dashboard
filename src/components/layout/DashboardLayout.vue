@@ -53,12 +53,11 @@ function onSidebarChange(id: string) {
 
 function logout() {
   tokenStore.clearTokens()
-  router.push('/login')
+  router.push('/app/login')
 }
 </script>
 
 <style scoped>
-/* Mobile-first: Full width layout, sidebar hidden by default */
 .uranus-dashboard-layout {
   position: relative;
 }

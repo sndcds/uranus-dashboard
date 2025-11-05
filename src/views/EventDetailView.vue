@@ -65,7 +65,6 @@
                     </div>
 
                     <div v-if="event.languages && event.languages.length > 0" class="event-detail-hero__languages">
-                        <!--span class="event-detail-info-label">{{ t('languages') }}</span-->
                         <div class="event-detail-languages-tags">
                             <span v-for="lang in event.languages" :key="lang" class="event-detail-language-tag">
                                 {{ lang.toUpperCase() }}
