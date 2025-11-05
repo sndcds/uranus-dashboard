@@ -21,6 +21,13 @@
   opacity: 0.0;
 }
 
+/* Show edit buttons on mobile without hover */
+@media (max-width: 768px) {
+  .uranus-inline-edit-button {
+    opacity: 1;
+  }
+}
+
 .uranus-hover-section:hover
 .uranus-inline-edit-button {
   opacity: 1;
