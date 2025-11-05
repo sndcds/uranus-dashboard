@@ -103,7 +103,7 @@
             </form>
 
             <footer class="auth-footer">
-                <router-link to="/login">{{ t('back_to_login') }}</router-link>
+                <router-link to="/app/login">{{ t('back_to_login') }}</router-link>
             </footer>
         </div>
     </div>

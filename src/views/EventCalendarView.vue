@@ -46,37 +46,34 @@
                         </header>
                         <div class="calendar-group__events">
                             <article v-for="event in group.events" :key="event.id" class="calendar-card">
-                                <img v-if="event.image_path" :src="event.image_path.includes('?')
-                                    ? `${event.image_path}&ratio=16by9&width=320`
-                                    : `${event.image_path}?ratio=16by9&width=320`" alt=""
-                                    class="calendar-card__image" />
-                                <div class="calendar-card__time">
-                                    <span>{{ formatTime(event.start_date, event.start_time) }}</span>
-                                </div>
-                                <div class="calendar-card__body">
-                                    <header class="calendar-card__header">
-                                        <h3>{{ event.title }}</h3>
-                                        <p v-if="event.subtitle" class="calendar-card__subtitle">{{ event.subtitle }}
+                                <router-link :to="`/event/${event.id}/date/${event.event_date_id}`">
+                                    <img v-if="event.image_path" :src="event.image_path.includes('?')
+                                        ? `${event.image_path}&ratio=16by9&width=320`
+                                        : `${event.image_path}?ratio=16by9&width=320`" alt=""
+                                        class="calendar-card__image" />
+                                    <div class="calendar-card__time">
+                                        <span>{{ formatTime(event.start_date, event.start_time) }}</span>
+                                    </div>
+                                    <div class="calendar-card__body">
+                                        <header class="calendar-card__header">
+                                            <h3>{{ event.title }}</h3>
+                                            <p v-if="event.subtitle" class="calendar-card__subtitle">{{ event.subtitle }}
+                                            </p>
+                                        </header>
+                                        <p v-if="event.teaser_text" class="calendar-card__teaser">{{ event.teaser_text }}
                                         </p>
-                                    </header>
-                                    <p v-if="event.teaser_text" class="calendar-card__teaser">{{ event.teaser_text }}
-                                    </p>
-                                    <p class="calendar-card__location">{{ formatLocation(event) }}</p>
-                                    <ul v-if="event.typeLabels.length" class="calendar-card__tags">
-                                        <li v-for="tag in event.typeLabels" :key="tag">
-                                            <button type="button" class="calendar-card__tag-button"
-                                                :class="{ 'is-active': selectedType === tag }" @click="filterByTag(tag)"
-                                                :aria-pressed="selectedType === tag">
-                                                {{ tag }}
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <footer v-if="isLoggedIn" class="calendar-card__footer">
-                                    <router-link :to="`/event/${event.id}/date/${event.event_date_id}`"
-                                        class="calendar-card__cta">
-                                    </router-link>
-                                </footer>
+                                        <p class="calendar-card__location">{{ formatLocation(event) }}</p>
+                                        <ul v-if="event.typeLabels.length" class="calendar-card__tags">
+                                            <li v-for="tag in event.typeLabels" :key="tag">
+                                                <button type="button" class="calendar-card__tag-button"
+                                                    :class="{ 'is-active': selectedType === tag }" @click="filterByTag(tag)"
+                                                    :aria-pressed="selectedType === tag">
+                                                    {{ tag }}
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </router-link>
                             </article>
                         </div>
                     </section>
@@ -107,38 +104,35 @@
                 </div>
                 <div v-else class="calendar-events-compact">
                     <article v-for="event in filteredEvents" :key="event.id" class="calendar-event-compact">
-                        <div class="calendar-event-compact__time">
-                            <span>{{ formatTime(event.start_date, event.start_time) }}</span>
-                        </div>
-                        <div class="calendar-event-compact__content">
-                            <header class="calendar-event-compact__header">
-                                <h3>{{ event.title }}</h3>
-                                <p v-if="event.subtitle" class="calendar-event-compact__subtitle">{{ event.subtitle }}
-                                </p>
-                            </header>
-                            <div class="calendar-event-compact__meta">
-                                <span class="calendar-event-compact__date">{{ formatCompactDate(event.start_date)
-                                    }}</span>
-                                <span v-if="event.venue_name || event.venue_city"
-                                    class="calendar-event-compact__location">
-                                    {{ formatLocation(event) }}
-                                </span>
-                                <ul v-if="event.typeLabels.length" class="calendar-event-compact__tags">
-                                    <li v-for="tag in event.typeLabels" :key="tag">
-                                        <button type="button" class="calendar-event-compact__tag-button"
-                                            :class="{ 'is-active': selectedType === tag }" @click="filterByTag(tag)"
-                                            :aria-pressed="selectedType === tag">
-                                            {{ tag }}
-                                        </button>
-                                    </li>
-                                </ul>
+                        <router-link :to="`/event/${event.id}/date/${event.event_date_id}`">
+                            <div class="calendar-event-compact__time">
+                                <span>{{ formatTime(event.start_date, event.start_time) }}</span>
                             </div>
-                        </div>
-                        <div v-if="isLoggedIn" class="calendar-event-compact__actions">
-                            <router-link :to="`/event/${event.id}/date/${event.event_date_id}`"
-                                class="calendar-event-compact__cta">
-                            </router-link>
-                        </div>
+                            <div class="calendar-event-compact__content">
+                                <header class="calendar-event-compact__header">
+                                    <h3>{{ event.title }}</h3>
+                                    <p v-if="event.subtitle" class="calendar-event-compact__subtitle">{{ event.subtitle }}
+                                    </p>
+                                </header>
+                                <div class="calendar-event-compact__meta">
+                                    <span class="calendar-event-compact__date">{{ formatCompactDate(event.start_date)
+                                        }}</span>
+                                    <span v-if="event.venue_name || event.venue_city"
+                                        class="calendar-event-compact__location">
+                                        {{ formatLocation(event) }}
+                                    </span>
+                                    <ul v-if="event.typeLabels.length" class="calendar-event-compact__tags">
+                                        <li v-for="tag in event.typeLabels" :key="tag">
+                                            <button type="button" class="calendar-event-compact__tag-button"
+                                                :class="{ 'is-active': selectedType === tag }" @click="filterByTag(tag)"
+                                                :aria-pressed="selectedType === tag">
+                                                {{ tag }}
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </router-link>
                     </article>
                 </div>
             </section>
@@ -167,28 +161,25 @@
                 </div>
                 <div v-else class="calendar-events-tiles">
                     <article v-for="event in filteredEvents" :key="event.id" class="calendar-tile">
-                        <div class="calendar-tile__image-container">
-                            <img v-if="event.image_path" :src="event.image_path.includes('?')
-                                ? `${event.image_path}&ratio=4by3&width=320`
-                                : `${event.image_path}?ratio=4by3&width=320`" :alt="event.title"
-                                class="calendar-tile__image" />
-                        </div>
-                        <div>
-                            <div class="calendar-content__body">
-                                <h3 class="calendar-tile__title">{{ event.title }}</h3>
-                                <div class="calendar-tile__meta">
-                                    <span>{{ formatNumberDate(event.start_date) }} {{
-                                        formatTime(event.start_date, event.start_time)
-                                    }}</span>
-                                    <span>{{ event.venue_name }}</span>
+                        <router-link :to="`/event/${event.id}/date/${event.event_date_id}`">
+                            <div class="calendar-tile__image-container">
+                                <img v-if="event.image_path" :src="event.image_path.includes('?')
+                                    ? `${event.image_path}&ratio=4by3&width=320`
+                                    : `${event.image_path}?ratio=4by3&width=320`" :alt="event.title"
+                                    class="calendar-tile__image" />
+                            </div>
+                            <div>
+                                <div class="calendar-content__body">
+                                    <h3 class="calendar-tile__title">{{ event.title }}</h3>
+                                    <div class="calendar-tile__meta">
+                                        <span>{{ formatNumberDate(event.start_date) }} {{
+                                            formatTime(event.start_date, event.start_time)
+                                        }}</span>
+                                        <span>{{ event.venue_name }}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div v-if="isLoggedIn">
-                            <router-link :to="`/event/${event.id}/date/${event.event_date_id}`"
-                                class="calendar-tile__cta">
-                            </router-link>
-                        </div>
+                        </router-link>
                     </article>
                 </div>
             </section>
