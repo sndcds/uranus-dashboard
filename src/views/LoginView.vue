@@ -6,29 +6,40 @@
                 <p>{{ loginSubtitle }}</p>
             </header>
 
-            <transition name="fade">
-                <p v-if="error" :id="errorMessageId" class="auth-feedback auth-feedback--error" role="alert"
-                    aria-live="assertive">
-                    {{ error }}
-                </p>
-            </transition>
+            <form class="uranus-form" @submit.prevent="login" :aria-busy="isSubmitting" novalidate>
+                <UranusTextInput
+                    id="login-email"
+                    v-model="email"
+                    type="email"
+                    :label="t('email')"
+                    :error="fieldErrors.email"
+                    required
+                />
 
-            <form class="auth-form" @submit.prevent="login" :aria-busy="isSubmitting" novalidate>
-                <div class="input-group">
-                    <label for="login-email">{{ t('email') }}</label>
-                    <input id="login-email" v-model="email" type="email" autocomplete="email"
-                        :placeholder="t('email_placeholder')" required :aria-invalid="Boolean(error)"
-                        :aria-describedby="error ? errorMessageId : undefined" />
-                </div>
-                <div class="input-group">
-                    <label for="login-password">{{ t('password') }}</label>
+                <UranusFieldLabel
+                    id="login-password"
+                    :label="t('password')"
+                    :error="fieldErrors.password"
+                    required
+                >
                     <div class="input-with-toggle">
-                        <input id="login-password" v-model="password" :type="passwordFieldType"
-                            autocomplete="current-password" :placeholder="t('password_placeholder_login')" required
-                            :aria-invalid="Boolean(error)" :aria-describedby="error ? errorMessageId : undefined" />
-                        <button type="button" class="password-toggle" :aria-label="passwordToggleLabel"
-                            :title="passwordToggleLabel" :aria-pressed="isPasswordVisible"
-                            @click="togglePasswordVisibility">
+                        <input
+                            id="login-password"
+                            v-model="password"
+                            :type="passwordFieldType"
+                            autocomplete="current-password"
+                            class="uranus-text-input"
+                            :aria-required="true"
+                            :aria-invalid="fieldErrors.password ? 'true' : 'false'"
+                        />
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            :aria-label="passwordToggleLabel"
+                            :title="passwordToggleLabel"
+                            :aria-pressed="isPasswordVisible"
+                            @click="togglePasswordVisibility"
+                        >
                             <svg v-if="isPasswordVisible" class="password-toggle__icon"
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
                                 <path
@@ -41,14 +52,24 @@
                             </svg>
                         </button>
                     </div>
-                </div>
+                </UranusFieldLabel>
+
                 <div class="forgot-password-link">
                     <router-link to="/app/forgot-password">{{ t('forgot_password') }}</router-link>
                 </div>
-                <button :disabled="isSubmitting" type="submit">
-                    <span v-if="!isSubmitting">{{ t('login_cta') }}</span>
-                    <span v-else>{{ t('login_loading') }}</span>
-                </button>
+
+                <transition name="fade">
+                    <p v-if="displayError" class="feedback feedback--error" role="alert" aria-live="assertive">
+                        {{ displayError }}
+                    </p>
+                </transition>
+
+                <div class="form-actions">
+                    <button class="uranus-button" type="submit" :disabled="isSubmitting">
+                        <span v-if="!isSubmitting">{{ t('login_cta') }}</span>
+                        <span v-else>{{ t('login_loading') }}</span>
+                    </button>
+                </div>
             </form>
 
             <footer class="auth-footer">
@@ -60,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api'
@@ -68,6 +89,9 @@ import type { LoginResponse } from '@/api'
 import { useTokenStore } from '@/store/token'
 import { useUserStore } from '@/store/userStore'
 import { useThemeStore } from '@/store/themeStore'
+
+import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
+import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
 
 const { t, te } = useI18n()
 const router = useRouter()
@@ -89,7 +113,11 @@ const password = ref('')
 const isPasswordVisible = ref(false)
 const error = ref<string | null>(null)
 const isSubmitting = ref(false)
-const errorMessageId = 'login-error-message'
+
+const fieldErrors = reactive({
+    email: null as string | null,
+    password: null as string | null,
+})
 
 const loginSubtitle = computed(() => (te('login_subtitle') ? t('login_subtitle') : 'Welcome back! Sign in to continue organizing your events.'))
 const passwordFieldType = computed(() => (isPasswordVisible.value ? 'text' : 'password'))
@@ -99,20 +127,77 @@ const passwordToggleLabel = computed(() =>
         : (te('password_show_label') ? t('password_show_label') : 'Show password')
 )
 
+const displayError = computed(() => {
+    if (fieldErrors.email) return fieldErrors.email
+    if (fieldErrors.password) return fieldErrors.password
+    return error.value
+})
+
 const togglePasswordVisibility = () => {
     isPasswordVisible.value = !isPasswordVisible.value
 }
 
+const isValidEmail = (value: string) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailPattern.test(value)
+}
+
+const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
+const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
+
+watch(email, (value) => {
+    if (fieldErrors.email && value.trim()) {
+        const trimmed = value.trim()
+        if (isValidEmail(trimmed)) {
+            fieldErrors.email = null
+            if (error.value === fieldErrors.email) {
+                error.value = null
+            }
+        }
+    }
+})
+
+watch(password, (value) => {
+    if (fieldErrors.password && value.trim()) {
+        fieldErrors.password = null
+        if (error.value === fieldErrors.password) {
+            error.value = null
+        }
+    }
+})
+
 const login = async () => {
     error.value = null
+    fieldErrors.email = null
+    fieldErrors.password = null
+
+    const trimmedEmail = email.value.trim()
+    const trimmedPassword = password.value.trim()
+
+    // Validate email
+    if (!trimmedEmail) {
+        fieldErrors.email = requiredFieldMessage.value
+        return
+    }
+    if (!isValidEmail(trimmedEmail)) {
+        fieldErrors.email = invalidEmailMessage.value
+        return
+    }
+
+    // Validate password
+    if (!trimmedPassword) {
+        fieldErrors.password = requiredFieldMessage.value
+        return
+    }
+
     isSubmitting.value = true
 
     try {
         const { data, status } = await apiFetch<LoginResponse>('/api/admin/login', {
             method: 'POST',
             body: JSON.stringify({
-                email: email.value.trim(),
-                password: password.value,
+                email: trimmedEmail,
+                password: trimmedPassword,
             }),
         })
 
@@ -168,29 +253,32 @@ const login = async () => {
 }
 
 .auth-header {
-    @include form-hero(420px);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-}
+    margin-bottom: 1.5rem;
 
-.auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 2vw, 1.35rem);
-}
+    h1 {
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-primary);
+    }
 
-.input-group {
-    @include form-group();
+    p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: var(--muted-text);
+    }
 }
 
 .input-with-toggle {
     position: relative;
-}
 
-.input-with-toggle input {
-    width: 100%;
-    padding-right: 2.75rem;
+    input {
+        width: 100%;
+        padding-right: 2.75rem;
+    }
 }
 
 .password-toggle {
@@ -209,18 +297,18 @@ const login = async () => {
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease;
     padding: 0;
-}
 
-.password-toggle:hover {
-    background: rgba(79, 70, 229, 0.08);
-    border-color: rgba(79, 70, 229, 0.25);
-}
+    &:hover {
+        background: rgba(79, 70, 229, 0.08);
+        border-color: rgba(79, 70, 229, 0.25);
+    }
 
-.password-toggle:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
-    border-color: var(--accent-primary, #4f46e5);
-    background: rgba(79, 70, 229, 0.08);
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+        border-color: var(--accent-primary, #4f46e5);
+        background: rgba(79, 70, 229, 0.08);
+    }
 }
 
 .password-toggle__icon {
@@ -254,15 +342,22 @@ const login = async () => {
     }
 }
 
-.auth-form>button {
-    @include form-primary-button($padding-y: 0.9rem, $padding-x: 1.5rem);
+.form-actions {
+    display: flex;
+    justify-content: stretch;
+    margin-top: 0.5rem;
 }
 
-.auth-feedback {
-    @include form-feedback();
+.feedback {
+    margin: 0.5rem 0;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
 
     &--error {
-        @include form-feedback-error();
+        background-color: #fee;
+        color: #c00;
+        border: 1px solid #fcc;
     }
 }
 
@@ -272,6 +367,7 @@ const login = async () => {
     gap: 0.5rem;
     font-size: 0.95rem;
     color: var(--muted-text);
+    margin-top: 1.5rem;
 
     a {
         font-weight: 600;
@@ -297,10 +393,6 @@ const login = async () => {
 @media (max-width: 480px) {
     .auth-card {
         padding: clamp(1.5rem, 6vw, 2rem);
-    }
-
-    .auth-form>button {
-        width: 100%;
     }
 }
 </style>

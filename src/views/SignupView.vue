@@ -6,35 +6,49 @@
                 <p>{{ signupSubtitle }}</p>
             </header>
 
-            <transition name="fade">
-                <p v-if="error" :id="errorMessageId" class="signup-feedback signup-feedback--error" role="alert"
-                    aria-live="assertive">
-                    {{ error }}
-                </p>
-            </transition>
+            <form class="uranus-form" @submit.prevent="signup" :aria-busy="isSubmitting" novalidate>
+                <UranusTextInput
+                    id="signup-email"
+                    v-model="email"
+                    type="email"
+                    :label="t('email')"
+                    :error="fieldErrors.email"
+                    required
+                />
 
-            <form class="signup-form" @submit.prevent="signup" :aria-busy="isSubmitting" novalidate>
-                <div class="input-group">
-                    <label for="signup-email">{{ t('email') }}</label>
-                    <input id="signup-email" v-model="email" type="email" autocomplete="email"
-                        :placeholder="t('email_placeholder')" required :aria-invalid="Boolean(error)"
-                        :aria-describedby="error ? errorMessageId : undefined" />
-                </div>
-                <div class="input-group">
-                    <label for="signup-repeat-email">{{ t('repeat_email') }}</label>
-                    <input id="signup-repeat-email" v-model="repeatEmail" type="email" autocomplete="email"
-                        :placeholder="t('repeat_email_placeholder')" required :aria-invalid="Boolean(error)"
-                        :aria-describedby="error ? errorMessageId : undefined" />
-                </div>
-                <div class="input-group">
-                    <label for="signup-password">{{ t('password') }}</label>
+                <UranusTextInput
+                    id="signup-repeat-email"
+                    v-model="repeatEmail"
+                    type="email"
+                    :label="t('repeat_email')"
+                    :error="fieldErrors.repeatEmail"
+                    required
+                />
+
+                <UranusFieldLabel
+                    id="signup-password"
+                    :label="t('password')"
+                    :error="fieldErrors.password"
+                    required
+                >
                     <div class="input-with-toggle">
-                        <input id="signup-password" v-model="password" :type="passwordFieldType"
-                            autocomplete="new-password" :placeholder="t('password_placeholder')" required
-                            :aria-invalid="Boolean(error)" :aria-describedby="error ? errorMessageId : undefined" />
-                        <button type="button" class="password-toggle" :aria-label="passwordToggleLabel"
-                            :title="passwordToggleLabel" :aria-pressed="isPasswordVisible"
-                            @click="togglePasswordVisibility">
+                        <input
+                            id="signup-password"
+                            v-model="password"
+                            :type="passwordFieldType"
+                            autocomplete="new-password"
+                            class="uranus-text-input"
+                            :aria-required="true"
+                            :aria-invalid="fieldErrors.password ? 'true' : 'false'"
+                        />
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            :aria-label="passwordToggleLabel"
+                            :title="passwordToggleLabel"
+                            :aria-pressed="isPasswordVisible"
+                            @click="togglePasswordVisibility"
+                        >
                             <svg v-if="isPasswordVisible" class="password-toggle__icon"
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
                                 <path
@@ -47,11 +61,20 @@
                             </svg>
                         </button>
                     </div>
+                </UranusFieldLabel>
+
+                <transition name="fade">
+                    <p v-if="displayError" class="feedback feedback--error" role="alert" aria-live="assertive">
+                        {{ displayError }}
+                    </p>
+                </transition>
+
+                <div class="form-actions">
+                    <button class="uranus-button" type="submit" :disabled="isSubmitting">
+                        <span v-if="!isSubmitting">{{ t('signup_cta') }}</span>
+                        <span v-else>{{ t('signup_loading') }}</span>
+                    </button>
                 </div>
-                <button :disabled="isSubmitting" type="submit">
-                    <span v-if="!isSubmitting">{{ t('signup_cta') }}</span>
-                    <span v-else>{{ t('signup_loading') }}</span>
-                </button>
             </form>
 
             <footer class="signup-footer">
@@ -63,10 +86,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { apiFetch } from '../api'
+
+import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
+import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
 
 type SignupResponse = { message?: string;[key: string]: unknown }
 
@@ -79,7 +105,12 @@ const password = ref('')
 const isPasswordVisible = ref(false)
 const error = ref<string | null>(null)
 const isSubmitting = ref(false)
-const errorMessageId = 'signup-error-message'
+
+const fieldErrors = reactive({
+    email: null as string | null,
+    repeatEmail: null as string | null,
+    password: null as string | null,
+})
 
 const signupSubtitle = computed(() => (te('signup_subtitle') ? t('signup_subtitle') : 'Create a new organizer account to get started.'))
 const passwordFieldType = computed(() => (isPasswordVisible.value ? 'text' : 'password'))
@@ -89,6 +120,13 @@ const passwordToggleLabel = computed(() =>
         : (te('password_show_label') ? t('password_show_label') : 'Show password')
 )
 
+const displayError = computed(() => {
+    if (fieldErrors.email) return fieldErrors.email
+    if (fieldErrors.repeatEmail) return fieldErrors.repeatEmail
+    if (fieldErrors.password) return fieldErrors.password
+    return error.value
+})
+
 const togglePasswordVisibility = () => {
     isPasswordVisible.value = !isPasswordVisible.value
 }
@@ -97,23 +135,105 @@ const resetForm = () => {
     email.value = ''
     repeatEmail.value = ''
     password.value = ''
+    fieldErrors.email = null
+    fieldErrors.repeatEmail = null
+    fieldErrors.password = null
+    error.value = null
 }
 
+const isValidEmail = (value: string) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailPattern.test(value)
+}
+
+const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
+const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
+const emailsDoNotMatchMessage = computed(() => (te('emails_do_not_match') ? t('emails_do_not_match') : 'Email addresses do not match'))
+
+watch(email, (value) => {
+    if (fieldErrors.email && value.trim()) {
+        const trimmed = value.trim()
+        if (isValidEmail(trimmed)) {
+            fieldErrors.email = null
+            if (error.value === fieldErrors.email) {
+                error.value = null
+            }
+        }
+    }
+})
+
+watch(repeatEmail, (value) => {
+    if (fieldErrors.repeatEmail && value.trim()) {
+        const trimmedEmail = email.value.trim().toLowerCase()
+        const trimmedRepeatEmail = value.trim().toLowerCase()
+        if (trimmedRepeatEmail && trimmedEmail === trimmedRepeatEmail) {
+            fieldErrors.repeatEmail = null
+            if (error.value === fieldErrors.repeatEmail) {
+                error.value = null
+            }
+        }
+    }
+})
+
+watch(password, (value) => {
+    if (fieldErrors.password && value.trim()) {
+        fieldErrors.password = null
+        if (error.value === fieldErrors.password) {
+            error.value = null
+        }
+    }
+})
+
 const signup = async () => {
-    if (email.value.trim().toLowerCase() !== repeatEmail.value.trim().toLowerCase()) {
-        error.value = te('emails_do_not_match') ? t('emails_do_not_match') : 'Email addresses do not match'
+    error.value = null
+    fieldErrors.email = null
+    fieldErrors.repeatEmail = null
+    fieldErrors.password = null
+
+    const trimmedEmail = email.value.trim()
+    const trimmedRepeatEmail = repeatEmail.value.trim()
+    const trimmedPassword = password.value.trim()
+
+    // Validate email
+    if (!trimmedEmail) {
+        fieldErrors.email = requiredFieldMessage.value
+        return
+    }
+    if (!isValidEmail(trimmedEmail)) {
+        fieldErrors.email = invalidEmailMessage.value
         return
     }
 
-    error.value = null
+    // Validate repeat email
+    if (!trimmedRepeatEmail) {
+        fieldErrors.repeatEmail = requiredFieldMessage.value
+        return
+    }
+    if (!isValidEmail(trimmedRepeatEmail)) {
+        fieldErrors.repeatEmail = invalidEmailMessage.value
+        return
+    }
+
+    // Check if emails match
+    if (trimmedEmail.toLowerCase() !== trimmedRepeatEmail.toLowerCase()) {
+        fieldErrors.repeatEmail = emailsDoNotMatchMessage.value
+        return
+    }
+
+    // Validate password
+    if (!trimmedPassword) {
+        fieldErrors.password = requiredFieldMessage.value
+        return
+    }
+
     isSubmitting.value = true
 
     try {
         const { data, status } = await apiFetch<SignupResponse | null>('/api/admin/signup', {
             method: 'POST',
             body: JSON.stringify({
-                email: email.value.trim(),
-                password: password.value,
+                email: trimmedEmail,
+                password: trimmedPassword,
             }),
         })
 
@@ -152,29 +272,32 @@ const signup = async () => {
 }
 
 .signup-header {
-    @include form-hero(420px);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-}
+    margin-bottom: 1.5rem;
 
-.signup-form {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 2vw, 1.35rem);
-}
+    h1 {
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-primary);
+    }
 
-.input-group {
-    @include form-group();
+    p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: var(--muted-text);
+    }
 }
 
 .input-with-toggle {
     position: relative;
-}
 
-.input-with-toggle input {
-    width: 100%;
-    padding-right: 2.75rem;
+    input {
+        width: 100%;
+        padding-right: 2.75rem;
+    }
 }
 
 .password-toggle {
@@ -193,18 +316,18 @@ const signup = async () => {
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease;
     padding: 0;
-}
 
-.password-toggle:hover {
-    background: rgba(79, 70, 229, 0.08);
-    border-color: rgba(79, 70, 229, 0.25);
-}
+    &:hover {
+        background: rgba(79, 70, 229, 0.08);
+        border-color: rgba(79, 70, 229, 0.25);
+    }
 
-.password-toggle:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
-    border-color: var(--accent-primary, #4f46e5);
-    background: rgba(79, 70, 229, 0.08);
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+        border-color: var(--accent-primary, #4f46e5);
+        background: rgba(79, 70, 229, 0.08);
+    }
 }
 
 .password-toggle__icon {
@@ -213,15 +336,22 @@ const signup = async () => {
     fill: var(--muted-text, #475569);
 }
 
-.signup-form>button {
-    @include form-primary-button($padding-y: 0.9rem, $padding-x: 1.5rem);
+.form-actions {
+    display: flex;
+    justify-content: stretch;
+    margin-top: 0.5rem;
 }
 
-.signup-feedback {
-    @include form-feedback();
+.feedback {
+    margin: 0.5rem 0;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
 
     &--error {
-        @include form-feedback-error();
+        background-color: #fee;
+        color: #c00;
+        border: 1px solid #fcc;
     }
 }
 
@@ -231,6 +361,7 @@ const signup = async () => {
     gap: 0.5rem;
     font-size: 0.95rem;
     color: var(--muted-text);
+    margin-top: 1.5rem;
 
     a {
         font-weight: 600;
@@ -256,10 +387,6 @@ const signup = async () => {
 @media (max-width: 480px) {
     .signup-card {
         padding: clamp(1.5rem, 6vw, 2rem);
-    }
-
-    .signup-form>button {
-        width: 100%;
     }
 }
 </style>

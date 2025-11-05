@@ -6,30 +6,30 @@
                 <p>{{ t('forgot_password_subtitle') }}</p>
             </header>
 
-            <transition name="fade">
-                <p v-if="error" :id="errorMessageId" class="auth-feedback auth-feedback--error" role="alert"
-                    aria-live="assertive">
-                    {{ error }}
-                </p>
-            </transition>
-            <transition name="fade">
-                <p v-if="success" :id="successMessageId" class="auth-feedback auth-feedback--success" role="status"
-                    aria-live="polite">
-                    {{ success }}
-                </p>
-            </transition>
+            <form class="uranus-form" @submit.prevent="requestReset" :aria-busy="isSubmitting" novalidate>
+                <UranusTextInput id="forgot-email" v-model="email" type="email" :label="t('email')"
+                    :placeholder="t('email_placeholder')" autocomplete="email" required
+                    :error="displayError('email')" @input="handleInput" />
 
-            <form class="auth-form" @submit.prevent="requestReset" :aria-busy="isSubmitting" novalidate>
-                <div class="input-group">
-                    <label for="forgot-email">{{ t('email') }}</label>
-                    <input id="forgot-email" v-model="email" type="email" autocomplete="email"
-                        :placeholder="t('email_placeholder')" required :aria-invalid="Boolean(error)"
-                        :aria-describedby="ariaDescription" />
+                <transition name="fade">
+                    <p v-if="error" :id="errorMessageId" class="feedback feedback--error" role="alert"
+                        aria-live="assertive">
+                        {{ error }}
+                    </p>
+                </transition>
+                <transition name="fade">
+                    <p v-if="success" :id="successMessageId" class="feedback feedback--success" role="status"
+                        aria-live="polite">
+                        {{ success }}
+                    </p>
+                </transition>
+
+                <div class="form-actions">
+                    <button class="uranus-button" :disabled="isSubmitting" type="submit">
+                        <span v-if="!isSubmitting">{{ t('forgot_password_submit') }}</span>
+                        <span v-else>{{ t('forgot_password_sending') }}</span>
+                    </button>
                 </div>
-                <button :disabled="isSubmitting" type="submit">
-                    <span v-if="!isSubmitting">{{ t('forgot_password_submit') }}</span>
-                    <span v-else>{{ t('forgot_password_sending') }}</span>
-                </button>
             </form>
 
             <footer class="auth-footer">
@@ -40,9 +40,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
 
 const { t } = useI18n()
 
@@ -52,23 +53,53 @@ const success = ref<string | null>(null)
 const isSubmitting = ref(false)
 const errorMessageId = 'forgot-password-error'
 const successMessageId = 'forgot-password-success'
-const ariaDescription = computed(() => {
-    if (error.value) {
-        return errorMessageId
-    }
-    if (success.value) {
-        return successMessageId
-    }
-    return undefined
+
+const fieldErrors = reactive({
+    email: null as string | null,
 })
+
+const displayError = (field: 'email') => {
+    return fieldErrors[field] || null
+}
+
+// Email validation regex
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// Watch email for validation
+watch(email, (newEmail) => {
+    if (newEmail.trim() && emailRegex.test(newEmail.trim())) {
+        fieldErrors.email = null
+    }
+})
+
+const handleInput = () => {
+    // Clear global error when user starts typing
+    if (error.value) {
+        error.value = null
+    }
+}
 
 const requestReset = async () => {
     if (isSubmitting.value) {
         return
     }
 
+    // Clear previous errors
     error.value = null
     success.value = null
+    fieldErrors.email = null
+
+    // Validate email
+    if (!email.value.trim()) {
+        fieldErrors.email = t('email_required', 'Email is required')
+        return
+    }
+
+    if (!emailRegex.test(email.value.trim())) {
+        fieldErrors.email = t('email_invalid', 'Please enter a valid email address')
+        return
+    }
+
     isSubmitting.value = true
 
     try {
@@ -81,6 +112,7 @@ const requestReset = async () => {
 
         if (status >= 200 && status < 300) {
             success.value = t('forgot_password_success')
+            fieldErrors.email = null
         } else {
             error.value = t('forgot_password_error', { status })
         }
@@ -114,35 +146,47 @@ const requestReset = async () => {
 }
 
 .auth-header {
-    @include form-hero(420px);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    margin-bottom: 1.5rem;
+
+    h1 {
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: var(--muted-text);
+    }
 }
 
-.auth-form {
+.form-actions {
     display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 2vw, 1.35rem);
+    justify-content: stretch;
+    margin-top: 0.5rem;
 }
 
-.input-group {
-    @include form-group();
-}
-
-.auth-form>button {
-    @include form-primary-button($padding-y: 0.9rem, $padding-x: 1.5rem);
-}
-
-.auth-feedback {
-    @include form-feedback();
+.feedback {
+    margin: 0.5rem 0;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
 
     &--error {
-        @include form-feedback-error();
+        background-color: #fee;
+        color: #c00;
+        border: 1px solid #fcc;
     }
 
     &--success {
-        @include form-feedback-success();
+        background-color: #efe;
+        color: #060;
+        border: 1px solid #cfc;
     }
 }
 
@@ -152,6 +196,7 @@ const requestReset = async () => {
     gap: 0.5rem;
     font-size: 0.95rem;
     color: var(--muted-text);
+    margin-top: 1.5rem;
 
     a {
         font-weight: 600;
@@ -177,10 +222,6 @@ const requestReset = async () => {
 @media (max-width: 480px) {
     .auth-card {
         padding: clamp(1.5rem, 6vw, 2rem);
-    }
-
-    .auth-form>button {
-        width: 100%;
     }
 }
 </style>

@@ -126,6 +126,7 @@ const messages = {
     de: {
         ...event.de,
         ...sharedAuthFor('de'),
+        email_required: 'E-Mail ist erforderlich',
         organizer: 'Veranstalter',
         visitor_nav_admin_dashboard: 'Dashboard',
         delete_organizer: 'Organisation löschen',
@@ -703,6 +704,7 @@ const messages = {
     en: {
         ...event.en,
         ...sharedAuthFor('en'),
+        email_required: 'Email is required',
         organizer: 'Organizer',
         visitor_nav_admin_dashboard: 'Dashboard',
         delete_organizer: 'Delete Organizer',
@@ -1275,6 +1277,7 @@ const messages = {
     da: {
         ...event.da,
         ...sharedAuthFor('da'),
+        email_required: 'E-mail er påkrævet',
         organizer: 'Arrangør',
         visitor_nav_admin_dashboard: 'Dashboard',
         delete_organizer: 'Slet arrangør',

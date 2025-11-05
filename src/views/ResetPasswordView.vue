@@ -6,29 +6,31 @@
                 <p>{{ t('reset_password_subtitle') }}</p>
             </header>
 
-            <transition name="fade">
-                <p v-if="error" :id="errorMessageId" class="auth-feedback auth-feedback--error" role="alert"
-                    aria-live="assertive">
-                    {{ error }}
-                </p>
-            </transition>
-            <transition name="fade">
-                <p v-if="success" :id="successMessageId" class="auth-feedback auth-feedback--success" role="status"
-                    aria-live="polite">
-                    {{ success }}
-                </p>
-            </transition>
-
-            <form class="auth-form" @submit.prevent="handleSubmit" :aria-busy="isSubmitting" novalidate>
-                <div class="input-group">
-                    <label for="new-password">{{ t('new_password') }}</label>
+            <form class="uranus-form" @submit.prevent="handleSubmit" :aria-busy="isSubmitting" novalidate>
+                <UranusFieldLabel
+                    id="new-password"
+                    :label="t('new_password')"
+                    :error="fieldErrors.password"
+                    required
+                >
                     <div class="input-with-toggle">
-                        <input id="new-password" v-model="password" :type="passwordFieldType"
-                            autocomplete="new-password" :placeholder="t('password_placeholder')" required
-                            :aria-invalid="Boolean(error)" :aria-describedby="ariaDescription" />
-                        <button type="button" class="password-toggle" :aria-label="passwordToggleLabel"
-                            :title="passwordToggleLabel" :aria-pressed="isPasswordVisible"
-                            @click="togglePasswordVisibility">
+                        <input
+                            id="new-password"
+                            v-model="password"
+                            :type="passwordFieldType"
+                            autocomplete="new-password"
+                            class="uranus-text-input"
+                            :aria-required="true"
+                            :aria-invalid="fieldErrors.password ? 'true' : 'false'"
+                        />
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            :aria-label="passwordToggleLabel"
+                            :title="passwordToggleLabel"
+                            :aria-pressed="isPasswordVisible"
+                            @click="togglePasswordVisibility"
+                        >
                             <svg v-if="isPasswordVisible" class="password-toggle__icon"
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
                                 <path
@@ -41,16 +43,32 @@
                             </svg>
                         </button>
                     </div>
-                </div>
-                <div class="input-group">
-                    <label for="confirm-password">{{ t('confirm_password') }}</label>
+                </UranusFieldLabel>
+
+                <UranusFieldLabel
+                    id="confirm-password"
+                    :label="t('confirm_password')"
+                    :error="fieldErrors.confirmPassword"
+                    required
+                >
                     <div class="input-with-toggle">
-                        <input id="confirm-password" v-model="confirmPassword" :type="confirmPasswordFieldType"
-                            autocomplete="new-password" :placeholder="t('confirm_password_placeholder')" required
-                            :aria-invalid="Boolean(error)" :aria-describedby="ariaDescription" />
-                        <button type="button" class="password-toggle" :aria-label="confirmPasswordToggleLabel"
-                            :title="confirmPasswordToggleLabel" :aria-pressed="isConfirmPasswordVisible"
-                            @click="toggleConfirmPasswordVisibility">
+                        <input
+                            id="confirm-password"
+                            v-model="confirmPassword"
+                            :type="confirmPasswordFieldType"
+                            autocomplete="new-password"
+                            class="uranus-text-input"
+                            :aria-required="true"
+                            :aria-invalid="fieldErrors.confirmPassword ? 'true' : 'false'"
+                        />
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            :aria-label="confirmPasswordToggleLabel"
+                            :title="confirmPasswordToggleLabel"
+                            :aria-pressed="isConfirmPasswordVisible"
+                            @click="toggleConfirmPasswordVisibility"
+                        >
                             <svg v-if="isConfirmPasswordVisible" class="password-toggle__icon"
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
                                 <path
@@ -63,11 +81,25 @@
                             </svg>
                         </button>
                     </div>
+                </UranusFieldLabel>
+
+                <transition name="fade">
+                    <p v-if="displayError" class="feedback feedback--error" role="alert" aria-live="assertive">
+                        {{ displayError }}
+                    </p>
+                </transition>
+                <transition name="fade">
+                    <p v-if="success" class="feedback feedback--success" role="status" aria-live="polite">
+                        {{ success }}
+                    </p>
+                </transition>
+
+                <div class="form-actions">
+                    <button class="uranus-button" type="submit" :disabled="isSubmitting">
+                        <span v-if="!isSubmitting">{{ t('reset_password_submit') }}</span>
+                        <span v-else>{{ t('reset_password_submitting') }}</span>
+                    </button>
                 </div>
-                <button :disabled="isSubmitting" type="submit">
-                    <span v-if="!isSubmitting">{{ t('reset_password_submit') }}</span>
-                    <span v-else>{{ t('reset_password_submitting') }}</span>
-                </button>
             </form>
 
             <footer class="auth-footer">
@@ -78,10 +110,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api'
+
+import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -94,16 +128,10 @@ const isConfirmPasswordVisible = ref(false)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
 const isSubmitting = ref(false)
-const errorMessageId = 'reset-password-error'
-const successMessageId = 'reset-password-success'
-const ariaDescription = computed<string | undefined>(() => {
-    if (error.value) {
-        return errorMessageId
-    }
-    if (success.value) {
-        return successMessageId
-    }
-    return undefined
+
+const fieldErrors = reactive({
+    password: null as string | null,
+    confirmPassword: null as string | null,
 })
 
 const passwordFieldType = computed(() => (isPasswordVisible.value ? 'text' : 'password'))
@@ -114,6 +142,12 @@ const confirmPasswordFieldType = computed(() => (isConfirmPasswordVisible.value 
 const confirmPasswordToggleLabel = computed(() =>
     isConfirmPasswordVisible.value ? t('password_hide_label') : t('password_show_label')
 )
+
+const displayError = computed(() => {
+    if (fieldErrors.password) return fieldErrors.password
+    if (fieldErrors.confirmPassword) return fieldErrors.confirmPassword
+    return error.value
+})
 
 const togglePasswordVisibility = () => {
     isPasswordVisible.value = !isPasswordVisible.value
@@ -131,6 +165,31 @@ const getTokenFromRoute = () => {
     return typeof tokenParam === 'string' ? tokenParam.trim() : ''
 }
 
+const requiredFieldMessage = computed(() => t('event_error_required') || 'This field is required')
+const passwordMismatchMessage = computed(() => t('reset_password_mismatch') || 'Passwords do not match')
+
+watch(password, (value) => {
+    if (fieldErrors.password && value.trim()) {
+        fieldErrors.password = null
+        if (error.value === fieldErrors.password) {
+            error.value = null
+        }
+    }
+})
+
+watch(confirmPassword, (value) => {
+    if (fieldErrors.confirmPassword && value.trim()) {
+        const trimmedPassword = password.value.trim()
+        const trimmedConfirm = value.trim()
+        if (trimmedConfirm && trimmedPassword === trimmedConfirm) {
+            fieldErrors.confirmPassword = null
+            if (error.value === fieldErrors.confirmPassword) {
+                error.value = null
+            }
+        }
+    }
+})
+
 const handleSubmit = async () => {
     if (isSubmitting.value) {
         return
@@ -138,17 +197,27 @@ const handleSubmit = async () => {
 
     error.value = null
     success.value = null
+    fieldErrors.password = null
+    fieldErrors.confirmPassword = null
 
     const trimmedPassword = password.value.trim()
     const trimmedConfirm = confirmPassword.value.trim()
 
-    if (!trimmedPassword || !trimmedConfirm) {
-        error.value = t('reset_password_missing')
+    // Validate password
+    if (!trimmedPassword) {
+        fieldErrors.password = requiredFieldMessage.value
         return
     }
 
+    // Validate confirm password
+    if (!trimmedConfirm) {
+        fieldErrors.confirmPassword = requiredFieldMessage.value
+        return
+    }
+
+    // Check if passwords match
     if (trimmedPassword !== trimmedConfirm) {
-        error.value = t('reset_password_mismatch')
+        fieldErrors.confirmPassword = passwordMismatchMessage.value
         return
     }
 
@@ -173,6 +242,8 @@ const handleSubmit = async () => {
             success.value = t('reset_password_success')
             password.value = ''
             confirmPassword.value = ''
+            fieldErrors.password = null
+            fieldErrors.confirmPassword = null
             setTimeout(() => {
                 router.push('/app/login')
             }, 2000)
@@ -209,29 +280,32 @@ const handleSubmit = async () => {
 }
 
 .auth-header {
-    @include form-hero(420px);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-}
+    margin-bottom: 1.5rem;
 
-.auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 2vw, 1.35rem);
-}
+    h1 {
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-primary);
+    }
 
-.input-group {
-    @include form-group();
+    p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: var(--muted-text);
+    }
 }
 
 .input-with-toggle {
     position: relative;
-}
 
-.input-with-toggle input {
-    width: 100%;
-    padding-right: 2.75rem;
+    input {
+        width: 100%;
+        padding-right: 2.75rem;
+    }
 }
 
 .password-toggle {
@@ -250,18 +324,18 @@ const handleSubmit = async () => {
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease;
     padding: 0;
-}
 
-.password-toggle:hover {
-    background: rgba(79, 70, 229, 0.08);
-    border-color: rgba(79, 70, 229, 0.25);
-}
+    &:hover {
+        background: rgba(79, 70, 229, 0.08);
+        border-color: rgba(79, 70, 229, 0.25);
+    }
 
-.password-toggle:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
-    border-color: var(--accent-primary, #4f46e5);
-    background: rgba(79, 70, 229, 0.08);
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+        border-color: var(--accent-primary, #4f46e5);
+        background: rgba(79, 70, 229, 0.08);
+    }
 }
 
 .password-toggle__icon {
@@ -270,19 +344,28 @@ const handleSubmit = async () => {
     fill: var(--muted-text, #475569);
 }
 
-.auth-form>button {
-    @include form-primary-button($padding-y: 0.9rem, $padding-x: 1.5rem);
+.form-actions {
+    display: flex;
+    justify-content: stretch;
+    margin-top: 0.5rem;
 }
 
-.auth-feedback {
-    @include form-feedback();
+.feedback {
+    margin: 0.5rem 0;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
 
     &--error {
-        @include form-feedback-error();
+        background-color: #fee;
+        color: #c00;
+        border: 1px solid #fcc;
     }
 
     &--success {
-        @include form-feedback-success();
+        background-color: #efe;
+        color: #060;
+        border: 1px solid #cfc;
     }
 }
 
@@ -292,6 +375,7 @@ const handleSubmit = async () => {
     gap: 0.5rem;
     font-size: 0.95rem;
     color: var(--muted-text);
+    margin-top: 1.5rem;
 
     a {
         font-weight: 600;
@@ -317,10 +401,6 @@ const handleSubmit = async () => {
 @media (max-width: 480px) {
     .auth-card {
         padding: clamp(1.5rem, 6vw, 2rem);
-    }
-
-    .auth-form>button {
-        width: 100%;
     }
 }
 </style>
