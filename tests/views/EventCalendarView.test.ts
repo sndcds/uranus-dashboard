@@ -23,6 +23,16 @@ const i18n = createI18n({
       events_calendar_yesterday: 'Yesterday',
       events_calendar_time_all_day: 'All day',
       events_calendar_load_error: 'Could not load events',
+      events_calendar_filters_title: 'Filters',
+      events_calendar_filters_subtitle: 'Refine your search',
+      events_calendar_search_label: 'Search',
+      events_calendar_search_placeholder: 'Search events...',
+      events_calendar_date_label: 'Start Date',
+      events_calendar_end_date_label: 'End Date',
+      events_calendar_all_dates: 'All dates',
+      events_calendar_type_label: 'Event Type',
+      events_calendar_all_categories: 'All categories',
+      events_calendar_reset_filters: 'Reset filters',
     },
     de: {
       events_calendar_title: 'Veranstaltungskalender',
@@ -38,6 +48,16 @@ const i18n = createI18n({
       events_calendar_yesterday: 'Gestern',
       events_calendar_time_all_day: 'Ganztägig',
       events_calendar_load_error: 'Veranstaltungen konnten nicht geladen werden',
+      events_calendar_filters_title: 'Filter',
+      events_calendar_filters_subtitle: 'Verfeinere deine Suche',
+      events_calendar_search_label: 'Suchen',
+      events_calendar_search_placeholder: 'Veranstaltungen suchen...',
+      events_calendar_date_label: 'Startdatum',
+      events_calendar_end_date_label: 'Enddatum',
+      events_calendar_all_dates: 'Alle Daten',
+      events_calendar_type_label: 'Veranstaltungstyp',
+      events_calendar_all_categories: 'Alle Kategorien',
+      events_calendar_reset_filters: 'Filter zurücksetzen',
     },
     da: {
       events_calendar_title: 'Begivenhedskalender',
@@ -53,6 +73,16 @@ const i18n = createI18n({
       events_calendar_yesterday: 'I går',
       events_calendar_time_all_day: 'Hele dagen',
       events_calendar_load_error: 'Kunne ikke indlæse begivenheder',
+      events_calendar_filters_title: 'Filtre',
+      events_calendar_filters_subtitle: 'Forfin din søgning',
+      events_calendar_search_label: 'Søg',
+      events_calendar_search_placeholder: 'Søg begivenheder...',
+      events_calendar_date_label: 'Startdato',
+      events_calendar_end_date_label: 'Slutdato',
+      events_calendar_all_dates: 'Alle datoer',
+      events_calendar_type_label: 'Begivenhedstype',
+      events_calendar_all_categories: 'Alle kategorier',
+      events_calendar_reset_filters: 'Nulstil filtre',
     },
   },
 })
@@ -119,7 +149,12 @@ describe('EventCalendarView', () => {
 
   it('renders loading state initially', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
+    vi.mocked(apiFetch).mockImplementation((endpoint: string) => {
+      if (endpoint.includes('choosable-event-types')) {
+        return Promise.resolve({ data: [], status: 200 })
+      }
+      return new Promise(() => {})
+    })
 
     const wrapper = mount(EventCalendarView, {
       global: {
@@ -133,7 +168,12 @@ describe('EventCalendarView', () => {
 
   it('displays events after successful load', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ data: mockEvents, status: 200 })
+    vi.mocked(apiFetch).mockImplementation((endpoint: string) => {
+      if (endpoint.includes('choosable-event-types')) {
+        return Promise.resolve({ data: [], status: 200 })
+      }
+      return Promise.resolve({ data: mockEvents, status: 200 })
+    })
 
     const wrapper = mount(EventCalendarView, {
       global: {
@@ -150,7 +190,12 @@ describe('EventCalendarView', () => {
 
   it('displays error state when API fails', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockRejectedValue(new Error('API Error'))
+    vi.mocked(apiFetch).mockImplementation((endpoint: string) => {
+      if (endpoint.includes('choosable-event-types')) {
+        return Promise.resolve({ data: [], status: 200 })
+      }
+      return Promise.reject(new Error('API Error'))
+    })
 
     const wrapper = mount(EventCalendarView, {
       global: {
@@ -165,7 +210,12 @@ describe('EventCalendarView', () => {
 
   it('switches between view modes', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ data: mockEvents, status: 200 })
+    vi.mocked(apiFetch).mockImplementation((endpoint: string) => {
+      if (endpoint.includes('choosable-event-types')) {
+        return Promise.resolve({ data: [], status: 200 })
+      }
+      return Promise.resolve({ data: mockEvents, status: 200 })
+    })
 
     const wrapper = mount(EventCalendarView, {
       global: {
@@ -191,7 +241,12 @@ describe('EventCalendarView', () => {
 
   it('filters events by search query', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ data: mockEvents, status: 200 })
+    vi.mocked(apiFetch).mockImplementation((endpoint: string) => {
+      if (endpoint.includes('choosable-event-types')) {
+        return Promise.resolve({ data: [], status: 200 })
+      }
+      return Promise.resolve({ data: mockEvents, status: 200 })
+    })
 
     const wrapper = mount(EventCalendarView, {
       global: {
@@ -217,7 +272,12 @@ describe('EventCalendarView', () => {
 
   it('displays event types correctly', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ data: mockEvents, status: 200 })
+    vi.mocked(apiFetch).mockImplementation((endpoint: string) => {
+      if (endpoint.includes('choosable-event-types')) {
+        return Promise.resolve({ data: [], status: 200 })
+      }
+      return Promise.resolve({ data: mockEvents, status: 200 })
+    })
 
     const wrapper = mount(EventCalendarView, {
       global: {
@@ -233,7 +293,12 @@ describe('EventCalendarView', () => {
 
   it('formats dates correctly', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ data: mockEvents, status: 200 })
+    vi.mocked(apiFetch).mockImplementation((endpoint: string) => {
+      if (endpoint.includes('choosable-event-types')) {
+        return Promise.resolve({ data: [], status: 200 })
+      }
+      return Promise.resolve({ data: mockEvents, status: 200 })
+    })
 
     const wrapper = mount(EventCalendarView, {
       global: {
@@ -250,7 +315,12 @@ describe('EventCalendarView', () => {
 
   it('displays venue information', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ data: mockEvents, status: 200 })
+    vi.mocked(apiFetch).mockImplementation((endpoint: string) => {
+      if (endpoint.includes('choosable-event-types')) {
+        return Promise.resolve({ data: [], status: 200 })
+      }
+      return Promise.resolve({ data: mockEvents, status: 200 })
+    })
 
     const wrapper = mount(EventCalendarView, {
       global: {
@@ -266,7 +336,12 @@ describe('EventCalendarView', () => {
 
   it('shows empty state when no events match filters', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ data: mockEvents, status: 200 })
+    vi.mocked(apiFetch).mockImplementation((endpoint: string) => {
+      if (endpoint.includes('choosable-event-types')) {
+        return Promise.resolve({ data: [], status: 200 })
+      }
+      return Promise.resolve({ data: mockEvents, status: 200 })
+    })
 
     const wrapper = mount(EventCalendarView, {
       global: {

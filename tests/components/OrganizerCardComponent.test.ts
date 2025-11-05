@@ -12,8 +12,12 @@ const i18n = createI18n({
   messages: {
     en: {
       edit_organizer: 'Edit Organizer',
+      delete_organizer: 'Delete Organizer',
       organizer_active: 'Active',
       organizer_activate: 'Activate',
+      confirm_delete_organizer: 'Delete Organizer?',
+      confirm_delete_organizer_description: 'Are you sure you want to delete this organizer?',
+      deleting: 'Deleting...',
     },
   },
 })
@@ -100,9 +104,11 @@ describe('OrganizerCardComponent', () => {
 
     it('renders activate button', () => {
       const wrapper = createWrapper()
-      const button = wrapper.find('button')
-      expect(button.exists()).toBe(true)
-      expect(button.text()).toBe('Activate')
+      const buttons = wrapper.findAll('button')
+      // There are 2 buttons: delete and activate
+      expect(buttons.length).toBe(2)
+      const activateButton = buttons[1] // Second button is the activate button
+      expect(activateButton.text()).toBe('Activate')
     })
   })
 
@@ -112,8 +118,9 @@ describe('OrganizerCardComponent', () => {
       appStore.setOrganizerId(1)
       
       const wrapper = createWrapper()
-      const button = wrapper.find('button')
-      expect(button.text()).toBe('Active')
+      const buttons = wrapper.findAll('button')
+      const activateButton = buttons[1] // Second button is the activate button
+      expect(activateButton.text()).toBe('Active')
     })
 
     it('shows "Activate" when organizer is not active', () => {
@@ -121,8 +128,9 @@ describe('OrganizerCardComponent', () => {
       appStore.setOrganizerId(999) // Different organizer
       
       const wrapper = createWrapper()
-      const button = wrapper.find('button')
-      expect(button.text()).toBe('Activate')
+      const buttons = wrapper.findAll('button')
+      const activateButton = buttons[1] // Second button is the activate button
+      expect(activateButton.text()).toBe('Activate')
     })
 
     it('applies active class to card when organizer is active', () => {
@@ -146,8 +154,51 @@ describe('OrganizerCardComponent', () => {
       appStore.setOrganizerId(1)
       
       const wrapper = createWrapper()
-      const button = wrapper.find('button')
-      expect(button.classes()).toContain('uranus-secondary-button--active')
+      const buttons = wrapper.findAll('button')
+      const activateButton = buttons[1] // Second button is the activate button
+      expect(activateButton.classes()).toContain('uranus-secondary-button--active')
+    })
+  })
+
+  describe('Activate Functionality', () => {
+    it('activates organizer on button click', async () => {
+      const appStore = useAppStore()
+      const wrapper = createWrapper()
+      const buttons = wrapper.findAll('button')
+      const activateButton = buttons[1] // Second button is the activate button
+      
+      await activateButton.trigger('click')
+      
+      expect(appStore.organizerId).toBe(1)
+    })
+
+    it('updates button text after activation', async () => {
+      const wrapper = createWrapper()
+      const buttons = wrapper.findAll('button')
+      const activateButton = buttons[1] // Second button is the activate button
+      
+      expect(activateButton.text()).toBe('Activate')
+      
+      await activateButton.trigger('click')
+      await wrapper.vm.$nextTick()
+      
+      expect(activateButton.text()).toBe('Active')
+    })
+
+    it('can activate different organizer', async () => {
+      const appStore = useAppStore()
+      // First activate organizer 1
+      appStore.setOrganizerId(1)
+      
+      // Create wrapper for organizer 2
+      const organizer2 = { ...mockOrganizer, organizer_id: 2, organizer_name: 'Organizer 2' }
+      const wrapper = createWrapper(organizer2)
+      const buttons = wrapper.findAll('button')
+      const activateButton = buttons[1] // Second button is the activate button
+      
+      await activateButton.trigger('click')
+      
+      expect(appStore.organizerId).toBe(2)
     })
   })
 
@@ -157,7 +208,7 @@ describe('OrganizerCardComponent', () => {
       appStore.setOrganizerId(999)
       
       const wrapper = createWrapper()
-      const button = wrapper.find('button')
+      const button = wrapper.findAll('button')[1]
       
       await button.trigger('click')
       
@@ -169,7 +220,7 @@ describe('OrganizerCardComponent', () => {
       appStore.setOrganizerId(999)
       
       const wrapper = createWrapper()
-      const button = wrapper.find('button')
+      const button = wrapper.findAll('button')[1]
       
       expect(button.text()).toBe('Activate')
       
@@ -190,7 +241,7 @@ describe('OrganizerCardComponent', () => {
       }
       
       const wrapper = createWrapper(organizer2)
-      const button = wrapper.find('button')
+      const button = wrapper.findAll('button')[1]
       
       await button.trigger('click')
       
@@ -406,7 +457,8 @@ describe('OrganizerCardComponent', () => {
       appStore.setOrganizerId(1)
       
       const wrapper = createWrapper()
-      expect(wrapper.attributes('data-ribbon-label')).toBe('⭐')
+      // The component applies the active class which adds the ribbon via CSS
+      expect(wrapper.classes()).toContain('organizer-card--active')
     })
 
     it('has header element', () => {

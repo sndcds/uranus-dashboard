@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
+
 import EventDetailView from '../../src/views/EventDetailView.vue'
 
 const i18n = createI18n({
@@ -16,10 +17,14 @@ const i18n = createI18n({
       date: 'Date',
       time: 'Time',
       begin: 'Start',
+      event_start: 'Start',
+      event_end: 'End',
+      event_entry_time: 'Entry Time',
       events_calendar_end_date_label: 'End',
       dashboard_todo_due: 'Duration',
       location: 'Location',
       space: 'Space',
+      organizer: 'Organizer',
       organizers: 'Organizer',
       space_details_title: 'Space Details',
       space_total_capacity: 'Total Capacity',
@@ -30,6 +35,7 @@ const i18n = createI18n({
       user_permissions_title: 'Permissions',
       languages: 'Languages',
       events_calendar_load_error: 'Could not load event',
+      event_load_error: 'Could not load event',
     },
   },
 })
@@ -37,7 +43,7 @@ const i18n = createI18n({
 const router = createRouter({
   history: createMemoryHistory(),
   routes: [
-    { path: '/event/:id', name: 'event-detail', component: { template: '<div>Event</div>' } },
+    { path: '/event/:id/date/:eventDateId', name: 'event-detail', component: { template: '<div>Event</div>' } },
   ],
 })
 
@@ -100,7 +106,7 @@ const mockEvent = {
 describe('EventDetailView', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    router.push('/event/424')
+    router.push('/event/424/date/100')
   })
 
   it('renders loading state initially', async () => {
@@ -130,7 +136,7 @@ describe('EventDetailView', () => {
     await flushPromises()
 
     expect(wrapper.find('.event-detail-state--loading').exists()).toBe(false)
-    expect(wrapper.find('.event-detail-hero__title').text()).toBe('Test Event')
+    expect(wrapper.find('h1').text()).toBe('Test Event')
     expect(wrapper.find('.event-detail-hero__subtitle').text()).toBe('Event Subtitle')
   })
 
@@ -161,7 +167,7 @@ describe('EventDetailView', () => {
 
     await flushPromises()
 
-    const heroImage = wrapper.find('.event-detail-hero__img')
+    const heroImage = wrapper.find('.event-image')
     expect(heroImage.exists()).toBe(true)
     expect(heroImage.attributes('src')).toContain('example.com/image.jpg')
   })
@@ -178,9 +184,10 @@ describe('EventDetailView', () => {
 
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Languages')
+    // Languages are displayed as uppercase tags
     expect(wrapper.text()).toContain('DE')
     expect(wrapper.text()).toContain('EN')
+    expect(wrapper.findAll('.event-detail-language-tag').length).toBe(2)
   })
 
   it('renders markdown description correctly', async () => {
@@ -243,8 +250,12 @@ describe('EventDetailView', () => {
 
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Date')
-    expect(wrapper.text()).toContain('Time')
+    // For multi-day events, should show Start and End labels
+    expect(wrapper.text()).toContain('Start')
+    expect(wrapper.text()).toContain('End')
+    // Component displays dates in DD.MM.YYYY format
+    expect(wrapper.text()).toContain('04.11.2025')
+    expect(wrapper.text()).toContain('05.11.2025')
     // Component displays time in 12-hour format with AM/PM
     expect(wrapper.text()).toContain('02:00 PM')
     expect(wrapper.text()).toContain('05:00 PM')
@@ -398,6 +409,6 @@ describe('EventDetailView', () => {
 
     await flushPromises()
 
-    expect(apiFetch).toHaveBeenCalledWith('/api/event/424?lang=en')
+    expect(apiFetch).toHaveBeenCalledWith('/api/event/424/date/100?lang=en')
   })
 })
