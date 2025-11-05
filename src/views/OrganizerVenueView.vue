@@ -2,7 +2,7 @@
   <div class="uranus-main-layout">
     <DashboardHeroComponent
         :title="t('venues')"
-        subtitle="Test"
+        :subtitle="t('venues_description')"
     />
 
     <!-- No Organizer Selected Message -->
@@ -18,15 +18,14 @@
       </div>
     </div>
 
-    <div v-else>
-      <div>
-        <router-link
-            :to = "`/admin/organizer/${organizerId}/venue/create`"
-            class = "uranus-button">
-          {{ t('add_new_venue') }}
-        </router-link>
-      </div>
-
+    <div v-else class="uranus-main-layout">
+        <UranusDashboardActionBar>
+            <router-link
+                :to = "`/admin/organizer/${organizerId}/venue/create`"
+                class = "uranus-button">
+                {{ t('add_new_venue') }}
+            </router-link>
+        </UranusDashboardActionBar>
 
       <!-- Error Message -->
       <div v-if="error" class="organizer-venue-view__error">
@@ -63,6 +62,7 @@ import { useAppStore } from '@/store/appStore'
 
 import VenueCardComponent from '@/components/VenueCardComponent.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
 
 const { t } = useI18n()
 const appStore = useAppStore()

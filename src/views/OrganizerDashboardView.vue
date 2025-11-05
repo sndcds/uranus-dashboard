@@ -1,18 +1,18 @@
 <template>
-  <div class="uranus-main-layout">
-    <DashboardHeroComponent :title="t('organizers')" :subtitle="t('organizers_overview_subtitle')" />
+    <div class="uranus-main-layout" style="max-width: 1600px;">
+        <DashboardHeroComponent :title="t('organizers')" :subtitle="t('organizers_overview_subtitle')" />
 
-    <!-- Empty State Message -->
-    <div v-if="!organizers.length" class="organizer-dashboard-view__empty">
-      <p class="organizer-dashboard-view__empty-text">{{ t('no_organizers_help') }}</p>
-    </div>
+        <UranusDashboardActionBar>
+            <router-link to="/admin/organizer/create" class="uranus-button">
+                {{ t('create_organizer') }}
+            </router-link>
+        </UranusDashboardActionBar>
 
-    <!-- Create Organizer Action -->
-    <div style="padding: 16px;">
-      <router-link to="/admin/organizer/create" class="uranus-button">
-        {{ t('create_organizer') }}
-      </router-link>
-    </div>
+        <!-- Empty State Message -->
+        <div v-if="!organizers.length" class="organizer-dashboard-view__empty">
+            <p class="organizer-dashboard-view__empty-text">{{ t('no_organizers_help') }}</p>
+        </div>
+
 
     <!-- Error Message -->
     <div v-if="error" class="organizer-dashboard-view__error">
@@ -21,7 +21,12 @@
 
     <!-- Organizer Cards Grid -->
     <div class="organizer-grid">
-      <OrganizerCardComponent v-for="organizer in organizers" :key="organizer.organizer_id" :organizer="organizer" @deleted="handleOrganizerDeleted" />
+      <OrganizerCardComponent
+          v-for="organizer in organizers"
+          :key="organizer.organizer_id"
+          :organizer="organizer"
+          @deleted="handleOrganizerDeleted"
+      />
     </div>
   </div>
 </template>
@@ -33,6 +38,7 @@ import { apiFetch } from '@/api'
 
 import OrganizerCardComponent from '@/components/OrganizerCardComponent.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
 
 const { t } = useI18n()
 
@@ -80,20 +86,12 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .organizer-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: var(--uranus-grid-gap);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 500px));
+    grid-auto-rows: auto;
+    gap: var(--uranus-grid-gap);
 }
 
-.organizer-grid>* {
-  flex: 1 1 400px;
-  /* grow/shrink with a base width */
-  min-width: 300px;
-  /* never smaller than this */
-  max-width: 700px;
-  /* never larger than this */
-}
 
 // Mobile-first responsive OrganizerDashboardView
 .organizer-dashboard-view {

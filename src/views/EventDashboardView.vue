@@ -1,12 +1,14 @@
 <template>
     <div class="uranus-main-layout">
-        <DashboardHeroComponent :title="t('events_title')" :subtitle="t('events_subtitle')" />
+        <DashboardHeroComponent
+            :title="t('events_title')"
+            :subtitle="t('events_subtitle')" />
 
-        <div style="padding: 16px;">
+        <UranusDashboardActionBar>
             <router-link :to="`/admin/organizer/${organizerId}/event/create`" class="uranus-button">
                 {{ t('add_new_event') }}
             </router-link>
-        </div>
+        </UranusDashboardActionBar>
 
         <OrganizerEventsCard :events="events" :is-loading="isLoading" :error="error" :api-base="apiBase" />
     </div>
@@ -20,6 +22,7 @@ import { apiFetch } from '@/api'
 
 import OrganizerEventsCard, { type OrganizerEventItem } from '@/components/dashboard/OrganizerEventsCard.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
 
 const apiBase = ((import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'https://uranus2.oklabflensburg.de')
 
