@@ -247,4 +247,10 @@ const resetFilters = () => {
 .calendar-btn:not(:disabled):hover {
     transform: translateY(-1px);
 }
+
+@media (max-width: 900px) {
+    .calendar-sidebar {
+        position: static;
+    }
+}
 </style>

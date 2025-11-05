@@ -1,7 +1,5 @@
 <template>
     <div class="calendar-page">
-
-        <!-- Detailed View -->
         <div class="calendar-view-toggle">
             <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'detailed' }"
                 @click="currentView = 'detailed'">
@@ -17,172 +15,62 @@
             </button>
         </div>
 
+        <div class="calendar-body" :class="{
+            'calendar-body--detailed': currentView === 'detailed',
+            'calendar-body--compact': currentView === 'compact',
+            'calendar-body--tiles': currentView === 'tiles'
+        }">
+            <EventCalendarSidebar 
+                :search-id="`calendar-search-${currentView}`" 
+                :date-id="`calendar-date-${currentView}`"
+                :end-date-id="`calendar-end-date-${currentView}`" 
+                :type-id="`calendar-type-${currentView}`"
+                :search-query="searchQuery" 
+                :selected-type="selectedType" 
+                :selected-date="selectedDate"
+                :selected-end-date="selectedEndDate" 
+                :temp-start-date="tempStartDate" 
+                :temp-end-date="tempEndDate"
+                :is-loading="isLoading" 
+                :is-types-loading="isTypesLoading" 
+                :type-options="typeOptions"
+                :last-available-date="lastAvailableDate" 
+                :first-available-date="firstAvailableDate"
+                :filters-active="filtersActive" 
+                @update:search-query="searchQuery = $event"
+                @update:selected-type="selectedType = $event" 
+                @date-confirm="onDateConfirm"
+                @clear-date-filters="clearDateFilters" 
+                @reset-filters="resetFilters" />
 
-        <div v-if="currentView === 'detailed'" class="calendar-body">
-            <EventCalendarSidebar search-id="calendar-search" date-id="calendar-date" end-date-id="calendar-end-date"
-                type-id="calendar-type" :search-query="searchQuery" :selected-type="selectedType"
-                :selected-date="selectedDate" :selected-end-date="selectedEndDate" :temp-start-date="tempStartDate"
-                :temp-end-date="tempEndDate" :is-loading="isLoading" :is-types-loading="isTypesLoading"
-                :type-options="typeOptions" :last-available-date="lastAvailableDate"
-                :first-available-date="firstAvailableDate" :filters-active="filtersActive"
-                @update:search-query="searchQuery = $event" @update:selected-type="selectedType = $event"
-                @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
+            <EventCalendarDetailedView 
+                v-if="currentView === 'detailed'"
+                :is-loading="isLoading" 
+                :load-error="loadError" 
+                :grouped-events="groupedEvents"
+                :selected-type="selectedType"
+                :format-time="formatTime"
+                :format-location="formatLocation"
+                @filter-by-tag="filterByTag" />
 
-            <section class="calendar-content" aria-live="polite">
-                <div v-if="isLoading" class="calendar-state calendar-state--loading">
-                    <span>{{ loadingLabel }}</span>
-                </div>
-                <div v-else-if="loadError" class="calendar-state calendar-state--error" role="alert">
-                    <span>{{ loadError }}</span>
-                </div>
-                <div v-else-if="groupedEvents.length === 0" class="calendar-state calendar-state--empty">
-                    <span>{{ emptyLabel }}</span>
-                </div>
-                <div v-else class="calendar-groups">
-                    <section v-for="group in groupedEvents" :key="group.date" class="calendar-group">
-                        <header class="calendar-group__header">
-                            <h2>{{ group.formattedDate }}</h2>
-                            <p>{{ group.weekday }}</p>
-                        </header>
-                        <div class="calendar-group__events">
-                            <article v-for="event in group.events" :key="event.id" class="calendar-card">
-                                <router-link :to="`/event/${event.id}/date/${event.event_date_id}`">
-                                    <img v-if="event.image_path" :src="event.image_path.includes('?')
-                                        ? `${event.image_path}&ratio=16by9&width=320`
-                                        : `${event.image_path}?ratio=16by9&width=320`" alt=""
-                                        class="calendar-card__image" />
-                                    <div class="calendar-card__time">
-                                        <span>{{ formatTime(event.start_date, event.start_time) }}</span>
-                                    </div>
-                                    <div class="calendar-card__body">
-                                        <header class="calendar-card__header">
-                                            <h3>{{ event.title }}</h3>
-                                            <p v-if="event.subtitle" class="calendar-card__subtitle">{{ event.subtitle }}
-                                            </p>
-                                        </header>
-                                        <p v-if="event.teaser_text" class="calendar-card__teaser">{{ event.teaser_text }}
-                                        </p>
-                                        <p class="calendar-card__location">{{ formatLocation(event) }}</p>
-                                        <ul v-if="event.typeLabels.length" class="calendar-card__tags">
-                                            <li v-for="tag in event.typeLabels" :key="tag">
-                                                <button type="button" class="calendar-card__tag-button"
-                                                    :class="{ 'is-active': selectedType === tag }" @click="filterByTag(tag)"
-                                                    :aria-pressed="selectedType === tag">
-                                                    {{ tag }}
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </router-link>
-                            </article>
-                        </div>
-                    </section>
-                </div>
-            </section>
-        </div>
+            <EventCalendarCompactView 
+                v-else-if="currentView === 'compact'"
+                :is-loading="isLoading" 
+                :load-error="loadError" 
+                :filtered-events="filteredEvents"
+                :selected-type="selectedType"
+                :format-time="formatTime"
+                :format-compact-date="formatCompactDate"
+                :format-location="formatLocation"
+                @filter-by-tag="filterByTag" />
 
-        <!-- Compact View -->
-        <div v-else-if="currentView === 'compact'" class="calendar-body-compact">
-            <EventCalendarSidebar search-id="calendar-search-compact" date-id="calendar-date-compact"
-                end-date-id="calendar-end-date-compact" type-id="calendar-type-compact" :search-query="searchQuery"
-                :selected-type="selectedType" :selected-date="selectedDate" :selected-end-date="selectedEndDate"
-                :temp-start-date="tempStartDate" :temp-end-date="tempEndDate" :is-loading="isLoading"
-                :is-types-loading="isTypesLoading" :type-options="typeOptions" :last-available-date="lastAvailableDate"
-                :first-available-date="firstAvailableDate" :filters-active="filtersActive"
-                @update:search-query="searchQuery = $event" @update:selected-type="selectedType = $event"
-                @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
-
-            <section class="calendar-content-compact" aria-live="polite">
-                <div v-if="isLoading" class="calendar-state calendar-state--loading">
-                    <span>{{ loadingLabel }}</span>
-                </div>
-                <div v-else-if="loadError" class="calendar-state calendar-state--error" role="alert">
-                    <span>{{ loadError }}</span>
-                </div>
-                <div v-else-if="filteredEvents.length === 0" class="calendar-state calendar-state--empty">
-                    <span>{{ emptyLabel }}</span>
-                </div>
-                <div v-else class="calendar-events-compact">
-                    <article v-for="event in filteredEvents" :key="event.id" class="calendar-event-compact">
-                        <router-link :to="`/event/${event.id}/date/${event.event_date_id}`">
-                            <div class="calendar-event-compact__time">
-                                <span>{{ formatTime(event.start_date, event.start_time) }}</span>
-                            </div>
-                            <div class="calendar-event-compact__content">
-                                <header class="calendar-event-compact__header">
-                                    <h3>{{ event.title }}</h3>
-                                    <p v-if="event.subtitle" class="calendar-event-compact__subtitle">{{ event.subtitle }}
-                                    </p>
-                                </header>
-                                <div class="calendar-event-compact__meta">
-                                    <span class="calendar-event-compact__date">{{ formatCompactDate(event.start_date)
-                                        }}</span>
-                                    <span v-if="event.venue_name || event.venue_city"
-                                        class="calendar-event-compact__location">
-                                        {{ formatLocation(event) }}
-                                    </span>
-                                    <ul v-if="event.typeLabels.length" class="calendar-event-compact__tags">
-                                        <li v-for="tag in event.typeLabels" :key="tag">
-                                            <button type="button" class="calendar-event-compact__tag-button"
-                                                :class="{ 'is-active': selectedType === tag }" @click="filterByTag(tag)"
-                                                :aria-pressed="selectedType === tag">
-                                                {{ tag }}
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </router-link>
-                    </article>
-                </div>
-            </section>
-        </div>
-
-        <!-- Tiles View -->
-        <div v-else-if="currentView === 'tiles'" class="calendar-body-tiles">
-            <EventCalendarSidebar search-id="calendar-search-tiles" date-id="calendar-date-tiles"
-                end-date-id="calendar-end-date-tiles" type-id="calendar-type-tiles" :search-query="searchQuery"
-                :selected-type="selectedType" :selected-date="selectedDate" :selected-end-date="selectedEndDate"
-                :temp-start-date="tempStartDate" :temp-end-date="tempEndDate" :is-loading="isLoading"
-                :is-types-loading="isTypesLoading" :type-options="typeOptions" :last-available-date="lastAvailableDate"
-                :first-available-date="firstAvailableDate" :filters-active="filtersActive"
-                @update:search-query="searchQuery = $event" @update:selected-type="selectedType = $event"
-                @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
-
-            <section class="calendar-content-tiles" aria-live="polite">
-                <div v-if="isLoading" class="calendar-state calendar-state--loading">
-                    <span>{{ loadingLabel }}</span>
-                </div>
-                <div v-else-if="loadError" class="calendar-state calendar-state--error" role="alert">
-                    <span>{{ loadError }}</span>
-                </div>
-                <div v-else-if="filteredEvents.length === 0" class="calendar-state calendar-state--empty">
-                    <span>{{ emptyLabel }}</span>
-                </div>
-                <div v-else class="calendar-events-tiles">
-                    <article v-for="event in filteredEvents" :key="event.id" class="calendar-tile">
-                        <router-link :to="`/event/${event.id}/date/${event.event_date_id}`">
-                            <div class="calendar-tile__image-container">
-                                <img v-if="event.image_path" :src="event.image_path.includes('?')
-                                    ? `${event.image_path}&ratio=4by3&width=320`
-                                    : `${event.image_path}?ratio=4by3&width=320`" :alt="event.title"
-                                    class="calendar-tile__image" />
-                            </div>
-                            <div>
-                                <div class="calendar-content__body">
-                                    <h3 class="calendar-tile__title">{{ event.title }}</h3>
-                                    <div class="calendar-tile__meta">
-                                        <span>{{ formatNumberDate(event.start_date) }} {{
-                                            formatTime(event.start_date, event.start_time)
-                                        }}</span>
-                                        <span>{{ event.venue_name }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </router-link>
-                    </article>
-                </div>
-            </section>
+            <EventCalendarTilesView 
+                v-else-if="currentView === 'tiles'"
+                :is-loading="isLoading" 
+                :load-error="loadError" 
+                :filtered-events="filteredEvents"
+                :format-time="formatTime"
+                :format-number-date="formatNumberDate" />
         </div>
     </div>
 </template>
@@ -194,6 +82,9 @@ import { apiFetch } from '@/api'
 import { useTokenStore } from '@/store/token'
 
 import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'
+import EventCalendarDetailedView from '@/components/EventCalendarDetailedView.vue'
+import EventCalendarCompactView from '@/components/EventCalendarCompactView.vue'
+import EventCalendarTilesView from '@/components/EventCalendarTilesView.vue'
 
 interface CalendarEventType {
     genre_id: number | null
@@ -833,634 +724,9 @@ watch(
     align-items: start;
 }
 
-.calendar-content__body {
-    display: flex;
-    overflow: hidden;
-    word-break: unset;
-    flex-direction: column;
-    padding: 8px;
-}
-
-.calendar-body-compact {
-    display: grid;
-    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-    gap: clamp(1.5rem, 3vw, 2.25rem);
-    align-items: start;
-}
-
-.calendar-body-tiles {
-    display: grid;
-    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-    gap: clamp(1.5rem, 3vw, 2.25rem);
-    align-items: start;
-}
-
-.calendar-content-compact {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 2vw, 1.5rem);
-}
-
-.calendar-events-compact {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.calendar-event-compact {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 8px;
-    background: var(--uranus-bg-color);
-    border: 1px solid var(--border-soft);
-    transition: box-shadow 0.2s ease;
-}
-
-.calendar-event-compact:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.calendar-event-compact__time {
-    flex-shrink: 0;
-    min-width: 80px;
-}
-
-.calendar-event-compact__time span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.25rem 0.5rem;
-    border-radius: 6px;
-    background: rgba(14, 165, 233, 0.12);
-    color: var(--accent-secondary, #0ea5e9);
-    font-weight: 600;
-    font-size: 0.85rem;
-}
-
-.calendar-event-compact__content {
-    flex: 1;
-    min-width: 0;
-}
-
-.calendar-event-compact__header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    margin-bottom: 0.5rem;
-}
-
-.calendar-event-compact__header h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.3;
-}
-
-.calendar-event-compact__subtitle {
-    margin: 0;
-    color: var(--muted-text);
-    font-size: 0.9rem;
-}
-
-.calendar-event-compact__meta {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.calendar-event-compact__date,
-.calendar-event-compact__location {
-    color: var(--color-text-secondary, #475569);
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-.calendar-event-compact__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.calendar-event-compact__tag-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    border: none;
-    background: rgba(79, 70, 229, 0.12);
-    color: var(--accent-primary);
-    font-weight: 500;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.calendar-event-compact__tag-button:hover {
-    background: rgba(79, 70, 229, 0.2);
-}
-
-.calendar-event-compact__tag-button.is-active {
-    background: rgba(79, 70, 229, 0.28);
-    color: #fff;
-}
-
-.calendar-event-compact__actions {
-    flex-shrink: 0;
-}
-
-.calendar-event-compact__cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
-    background: rgba(79, 70, 229, 0.12);
-    color: var(--accent-primary);
-    font-weight: 500;
-    font-size: 0.85rem;
-    text-decoration: none;
-    transition: background 0.2s ease;
-}
-
-.calendar-event-compact__cta:hover {
-    background: rgba(79, 70, 229, 0.2);
-}
-
-.calendar-content-tiles {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 2vw, 1.5rem);
-}
-
-.calendar-events-tiles {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--uranus-grid-gap);
-}
-
-.calendar-tile {
-    display: flex;
-    flex-direction: column;
-    background: var(--uranus-bg-color);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    position: relative;
-    /* make parent the positioning context */
-
-}
-
-.calendar-tile:hover {
-    transform: translate(-2px, -4px);
-    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.calendar-tile__image-container {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4/3;
-    overflow: hidden;
-}
-
-.calendar-tile__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.calendar-tile__placeholder {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(14, 165, 233, 0.1));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-}
-
-.calendar-tile__placeholder span {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--accent-primary);
-    text-align: center;
-    line-height: 1.3;
-}
-
-.calendar-tile__title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    line-clamp: 2;
-    white-space: nowrap;
-    /* prevent line breaks */
-    overflow: hidden;
-    /* optional: hide overflow if too long */
-    text-overflow: ellipsis;
-    /* optional: show ... for overflowed text */
-    word-break: normal;
-    /* prevent breaking long words */
-}
-
-.calendar-tile__meta {
-    display: flex;
-  font-size: 0.95rem;
-    flex-direction: column;
-}
-
-.calendar-tile__time,
-.calendar-tile__date {
-    font-weight: 500;
-    opacity: 0.9;
-}
-
-.calendar-tile__cta::before {
-    content: "✎";
-    /* your UTF-8 character */
-    display: inline-block;
-    font-size: 2rem;
-    line-height: 1;
-}
-
-.calendar-tile__cta {
-    position: absolute;
-    bottom: 0.5rem;
-    /* distance from bottom edge */
-    right: 0.5rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--uranus-bg-color);
-    color: var(--uranus-color);
-    font-size: 1.2rem;
-    text-decoration: none;
-    opacity: 0;
-    /* initially hidden */
-    pointer-events: none;
-    /* don't block clicks when hidden */
-    z-index: 10;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-}
-
-/* Show when parent is hovered */
-.calendar-tile:hover .calendar-tile__cta {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* Hover effect */
-.calendar-tile__cta:hover {
-    color: var(--uranus-ia-color);
-    /* new text/icon color */
-    opacity: 1;
-    /* optional: fully visible */
-    transition: all 0.2s ease;
-}
-
-.calendar-sidebar {
-    position: sticky;
-    top: 100px;
-  background: var(--uranus-bg-color);
-}
-
-.calendar-sidebar {
-    position: static;
-}
-
-.calendar-sidebar__header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.calendar-sidebar__header h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 700;
-}
-
-.calendar-sidebar__header p {
-    margin: 0;
-    color: var(--muted-text);
-    font-size: 0.95rem;
-    line-height: 1.5;
-}
-
-.calendar-sidebar__section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-}
-
-.calendar-sidebar__label {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--muted-text);
-}
-
-.calendar-sidebar__sublabel {
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: var(--muted-text);
-}
-
-.calendar-sidebar__end-date {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-}
-
-.calendar-sidebar__section input,
-.calendar-sidebar__section select {
-    width: 100%;
-    border-radius: 999px;
-    border: 1px solid var(--border-soft);
-    padding: 0.65rem 1rem;
-    background: var(--input-bg);
-    font-size: 0.95rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.calendar-sidebar__section input:focus,
-.calendar-sidebar__section select:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-    // box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
-}
-
-.calendar-sidebar__section--dates input {
-    padding: 0.55rem 0.85rem;
-}
-
-.calendar-sidebar__date-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.calendar-sidebar__all-dates {
-    width: 100%;
-    justify-content: center;
-}
-
-.calendar-sidebar__footer {
-    margin-top: auto;
-}
-
-.calendar-sidebar__reset {
-    width: 100%;
-    justify-content: center;
-}
-
-.calendar-btn {
-    border: none;
-    background: var(--accent-primary);
-    color: #fff;
-    padding: 0.55rem 0.85rem;
-    border-radius: 999px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    // transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-}
-
-.calendar-btn--ghost {
-    background: rgba(79, 70, 229, 0.08);
-    color: var(--accent-primary);
-}
-
-.calendar-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-.calendar-btn:not(:disabled):hover {
-    transform: translateY(-1px);
-    // box-shadow: 0 8px 18px rgba(79, 70, 229, 0.2);
-}
-
-.calendar-content {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.5rem, 3vw, 2rem);
-}
-
-.calendar-state {
-    border-radius: 18px;
-    padding: clamp(2rem, 5vw, 3rem);
-    text-align: center;
-    font-weight: 600;
-    background: var(--input-bg);
-    border: 1px solid var(--border-soft);
-}
-
-.calendar-state--loading {
-    color: var(--muted-text);
-}
-
-.calendar-state--error {
-    color: #b91c1c;
-}
-
-.calendar-state--empty {
-    color: var(--muted-text);
-}
-
-.calendar-groups {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.75rem, 4vw, 2.5rem);
-}
-
-.calendar-group {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 3vw, 1.75rem);
-}
-
-.calendar-group__header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-}
-
-.calendar-group__header h2 {
-    margin: 0;
-    font-size: clamp(1.5rem, 3.2vw, 1.9rem);
-    font-weight: 700;
-}
-
-.calendar-group__header p {
-    margin: 0;
-    color: var(--muted-text);
-    font-weight: 600;
-    text-transform: capitalize;
-}
-
-.calendar-group__events {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: clamp(1rem, 2.5vw, 1.5rem);
-}
-
-.calendar-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-    border-radius: 12px;
-    border: 0px solid var(--border-soft);
-    background: var(--card-bg, #fff);
-    // box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
-    padding: clamp(1.15rem, 3vw, 1.5rem);
-    min-height: 228px;
-}
-
-.calendar-card__time span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.4rem 0.8rem;
-    border-radius: 999px;
-    background: rgba(14, 165, 233, 0.12);
-    color: var(--accent-secondary, #0ea5e9);
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.calendar-card__header h3 {
-    margin: 0;
-    font-size: 1.15rem;
-    font-weight: 700;
-    line-height: 1.4;
-}
-
-.calendar-card__subtitle {
-    margin: 0.25rem 0 0;
-    color: var(--muted-text);
-    font-size: 0.95rem;
-}
-
-.calendar-card__teaser {
-    margin: 0;
-    color: var(--muted-text);
-    font-size: 0.95rem;
-    line-height: 1.5;
-    flex-grow: 1;
-}
-
-.calendar-card__location {
-    margin: 0;
-    color: var(--color-text-secondary, #475569);
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-
-.calendar-card__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.calendar-card__tags li {
-    margin: 0;
-}
-
-.calendar-card__tag-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.35rem 0.65rem;
-    border-radius: 999px;
-    border: none;
-    background: rgba(79, 70, 229, 0.12);
-    color: var(--accent-primary);
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-}
-
-.calendar-card__tag-button:hover {
-    transform: translateY(-1px);
-    // box-shadow: 0 6px 14px rgba(79, 70, 229, 0.18);
-}
-
-.calendar-card__tag-button:focus-visible {
-    outline: none;
-    // box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.24);
-}
-
-.calendar-card__tag-button.is-active {
-    background: rgba(79, 70, 229, 0.28);
-    color: #fff;
-}
-
-.calendar-card__cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.6rem 1rem;
-    border-radius: 999px;
-    background: rgba(79, 70, 229, 0.12);
-    color: var(--accent-primary);
-    font-weight: 600;
-    text-decoration: none;
-    transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.calendar-card__cta:hover {
-    background: rgba(79, 70, 229, 0.2);
-    transform: translateY(-1px);
-}
-
 @media (max-width: 900px) {
-
-    .calendar-body,
-    .calendar-body-compact,
-    .calendar-body-tiles {
+    .calendar-body {
         grid-template-columns: minmax(0, 1fr);
-    }
-
-    .calendar-sidebar {
-        position: static;
-    }
-
-    .calendar-group__events {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    }
-
-    .calendar-events-tiles {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-
-    .calendar-event-compact {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-    }
-
-    .calendar-event-compact__time {
-        min-width: auto;
-    }
-
-    .calendar-event-compact__actions {
-        align-self: flex-end;
     }
 }
 
@@ -1468,10 +734,5 @@ watch(
     .calendar-page {
         padding: clamp(1.25rem, 6vw, 1.75rem);
     }
-
-    .calendar-sidebar {
-        gap: clamp(1rem, 5vw, 1.5rem);
-    }
-
 }
 </style>
