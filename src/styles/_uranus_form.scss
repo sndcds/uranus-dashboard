@@ -17,6 +17,7 @@
 
   input,
   input[type="text"],
+  input[type="email"],
   textarea {
     font-size: 1rem;
     padding: 0.7rem 1.0rem 0.5rem 1.0rem;
@@ -61,7 +62,7 @@
 input.uranus-text-input {
 }
 
-input.uranus-tiny-text {
+.uranus-tiny-text {
   font-size: 0.85rem !important;
 }
 

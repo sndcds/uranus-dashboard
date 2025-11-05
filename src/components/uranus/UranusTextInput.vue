@@ -51,8 +51,5 @@ const sizeClass = computed(() => {
 </script>
 
 <style scoped>
-:deep(.uranus-text-input) {
-    font-size: 2.85rem;
-    color: red;
-}
+
 </style>
