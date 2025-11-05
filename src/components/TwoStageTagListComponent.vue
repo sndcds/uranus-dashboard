@@ -5,29 +5,36 @@
       <!-- Primary select -->
       <div class="two-stage-list__select">
         <label class="uranus-label-text" for="two-stage-primary">{{ labelPrimary }}</label>
-        <select
+        <input
             id="two-stage-primary"
-            v-model="selectedPrimaryId"
+            v-model="selectedPrimaryName"
+            list="primary-options"
+            type="text"
+            :placeholder="placeholderPrimary"
+            @input="onPrimaryInput"
             @change="onPrimaryChange">
-          <option disabled :value="null">{{ placeholderPrimary }}</option>
-          <option v-for="item in primaries" :key="item.id" :value="item.id">
+        <datalist id="primary-options">
+          <option v-for="item in primaries" :key="item.id" :value="item.name">
             {{ item.name }}
           </option>
-        </select>
+        </datalist>
       </div>
 
       <!-- Secondary select (shown only if primary is chosen) -->
       <div v-if="selectedPrimaryId && secondaryOptions.length" class="two-stage-list__select">
         <label class="uranus-label-text" for="two-stage-secondary">{{ labelSecondary }}</label>
-        <select
+        <input
             id="two-stage-secondary"
-            v-model="selectedSecondaryId"
-        >
-          <option disabled :value="null">{{ placeholderSecondary }}</option>
-          <option v-for="item in secondaryOptions" :key="item.id" :value="item.id">
+            v-model="selectedSecondaryName"
+            list="secondary-options"
+            type="text"
+            :placeholder="placeholderSecondary"
+            @input="onSecondaryInput">
+        <datalist id="secondary-options">
+          <option v-for="item in secondaryOptions" :key="item.id" :value="item.name">
             {{ item.name }}
           </option>
-        </select>
+        </datalist>
       </div>
 
         <div style="display: flex; align-items: flex-end; padding-bottom: 8px;" >
@@ -111,7 +118,9 @@ const secondaryOptions = ref<Item[]>([])
 const secondaryCache: Record<string, Item[]> = {}
 
 const selectedPrimaryId = ref<ItemId | null>(null)
+const selectedPrimaryName = ref<string>('')
 const selectedSecondaryId = ref<ItemId | null>(null)
+const selectedSecondaryName = ref<string>('')
 const selectedList = ref<SelectedItem[]>([])
 
 // --- Fetch ---
@@ -150,12 +159,33 @@ async function loadSecondaries(primaryId: ItemId | null | undefined) {
 }
 
 // --- Handlers ---
+function onPrimaryInput() {
+  // Find matching primary by name
+  const primary = primaries.value.find(p => p.name === selectedPrimaryName.value)
+  if (primary) {
+    selectedPrimaryId.value = primary.id
+  } else {
+    selectedPrimaryId.value = null
+  }
+}
+
 async function onPrimaryChange() {
   selectedSecondaryId.value = null
+  selectedSecondaryName.value = ''
   if (selectedPrimaryId.value && props.fetchSecondaries) {
     await loadSecondaries(selectedPrimaryId.value)
   } else {
     secondaryOptions.value = []
+  }
+}
+
+function onSecondaryInput() {
+  // Find matching secondary by name
+  const secondary = secondaryOptions.value.find(s => s.name === selectedSecondaryName.value)
+  if (secondary) {
+    selectedSecondaryId.value = secondary.id
+  } else {
+    selectedSecondaryId.value = null
   }
 }
 
@@ -175,6 +205,7 @@ function addCombination() {
 
   selectedList.value.push({ primary, secondary })
   selectedSecondaryId.value = null
+  selectedSecondaryName.value = ''
   emitSelection()
 }
 
