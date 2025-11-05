@@ -3,11 +3,10 @@
     <!-- Editing controls -->
     <div v-if="editable && isEditing" class="two-stage-list__controls">
       <!-- Primary select -->
-      <div class="two-stage-list__group">
-        <label class="two-stage-list__label" for="two-stage-primary">{{ labelPrimary }}</label>
+      <div class="two-stage-list__select">
+        <label class="uranus-label-text" for="two-stage-primary">{{ labelPrimary }}</label>
         <select
             id="two-stage-primary"
-            class="two-stage-list__select"
             v-model="selectedPrimaryId"
             @change="onPrimaryChange">
           <option disabled :value="null">{{ placeholderPrimary }}</option>
@@ -18,14 +17,10 @@
       </div>
 
       <!-- Secondary select (shown only if primary is chosen) -->
-      <div
-          v-if="selectedPrimaryId && secondaryOptions.length"
-          class="two-stage-list__group"
-      >
-        <label class="two-stage-list__label" for="two-stage-secondary">{{ labelSecondary }}</label>
+      <div v-if="selectedPrimaryId && secondaryOptions.length" class="two-stage-list__select">
+        <label class="uranus-label-text" for="two-stage-secondary">{{ labelSecondary }}</label>
         <select
             id="two-stage-secondary"
-            class="two-stage-list__select"
             v-model="selectedSecondaryId"
         >
           <option disabled :value="null">{{ placeholderSecondary }}</option>
@@ -35,17 +30,16 @@
         </select>
       </div>
 
-      <!-- Add button -->
-      <div class="two-stage-list__actions">
-        <button
-            v-show="selectedPrimaryId"
-            class="uranus-secondary-button"
-            @click.prevent="addCombination"
-            :disabled="!selectedPrimaryId"
-        >
-          {{ t('add') }}
-        </button>
-      </div>
+        <div style="display: flex; align-items: flex-end; padding-bottom: 8px;" >
+            <button
+                v-show="selectedPrimaryId"
+                class="uranus-button"
+                @click.prevent="addCombination"
+                :disabled="!selectedPrimaryId"
+            >
+              {{ t('add') }}
+            </button>
+        </div>
     </div>
 
     <!-- Selected combinations list -->
@@ -230,48 +224,34 @@ onMounted(loadPrimaries)
 
 <style scoped lang="scss">
 .two-stage-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  &__controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.9rem;
-    align-items: flex-end;
-  }
-
-  &__group {
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
-    min-width: 220px;
-  }
+    gap: 16px;
 
-  &__label {
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--color-text);
-  }
+    &__controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+    }
 
-  &__select {
-  }
+    &__select {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        justify-content: flex-end;
+    }
 
-  &__actions {
-    display: flex;
-    justify-content: flex-start;
-  }
 
-  &__list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-  }
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+    }
 
-  &__empty {
-    margin: 0;
-    color: var(--muted-text);
-    font-size: 0.9rem;
-  }
+    &__empty {
+        margin: 0;
+        color: var(--muted-text);
+        font-size: 0.9rem;
+    }
 }
 </style>

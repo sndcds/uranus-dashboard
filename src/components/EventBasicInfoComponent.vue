@@ -1,5 +1,5 @@
 <template>
-  <section class="uranus-card">
+    <UranusCard>
     <UranusCardHeader :title="t('event_section_basic')" />
 
         <div class="event-section__form">
@@ -12,57 +12,48 @@
             />
 
             <div class="event-section__grid">
-                <div class="form-field">
-                    <label for="organizer">
-                        {{ t('event_organizer_label') }}<span class="required">*</span>
-                    </label>
+                <UranusFieldLabel :label="t('event_organizer_label')" required :error="errors.organizerId">
                     <select id="organizer" v-model="basicInfo.organizerId">
                         <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                         <option v-for="org in organizers" :key="org.id" :value="org.id">
                             {{ org.name }}
                         </option>
                     </select>
-                    <p v-if="errors.organizerId" class="field-error">{{ errors.organizerId }}</p>
-                </div>
+                </UranusFieldLabel>
 
-                <div class="form-field">
-                    <label for="event-venue">
-                        {{ t('venue') }}<span class="required">*</span>
-                    </label>
+                <UranusFieldLabel :label="t('venue')" required :error="errors.venueId">
                     <select id="event-venue" v-model="basicInfo.venueId">
                         <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                         <option v-for="ven in venues" :key="ven.id" :value="ven.id">
                             {{ ven.name }}
                         </option>
                     </select>
-                </div>
+                </UranusFieldLabel>
 
-                <div class="form-field">
-                    <label for="event-space">{{ t('event_space_label') }}</label>
+                <UranusFieldLabel :label="t('event_space_label')">
                     <select id="event-space" v-model="basicInfo.spaceId">
                         <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                         <option v-for="sp in spaces" :key="sp.id" :value="sp.id">
                             {{ sp.name }}
                         </option>
                     </select>
-                </div>
+                </UranusFieldLabel>
             </div>
-            <div class="form-field">
+
               <TwoStageTagListComponent
                   :fetchPrimaries="fetchEventTypes"
                   :fetchSecondaries="fetchEventGenres"
                   :initialSelection="[]"
                   :editable="true"
                   :isEditing="true"
-                  label_primary="Event Type"
-                  label_secondary="Genre"
+                  :labelPrimary="t('event_type')"
+                  :labelSecondary="t('genre')"
                   :placeholderPrimary="t('choose_event_type')"
                   :placeholderSecondary="t('choose_genre')"
                   @update-selection="onSelectionUpdate"
               />
-            </div>
         </div>
-    </section>
+    </UranusCard>
 </template>
 
 <script setup lang="ts">
@@ -74,6 +65,8 @@ import type { EventBasicInfoModel } from '@/models/event'
 import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue"
 import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
 import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
+import UranusCard from "@/components/uranus/UranusCard.vue";
 
 interface Selection {
   primaryId: number

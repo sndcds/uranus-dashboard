@@ -1,6 +1,6 @@
 <template>
-  <section class="uranus-card">
-    <UranusCardHeader :title="t('event_section_dates')" :subtitle="t('event_section_dates_subtitle')" />
+    <UranusCard>
+        <UranusCardHeader :title="t('event_section_dates')" :subtitle="t('event_section_dates_subtitle')" />
 
         <div class="event-section__form">
             <div class="event-dates">
@@ -13,46 +13,46 @@
                     </div>
                     <p v-if="errors[index]" class="field-error">{{ errors[index] }}</p>
                     <div class="event-dates__grid">
-                        <div class="form-field">
-                            <label :for="`start-date-${index}`">
-                                {{ t('event_start_date') }}<span class="required">*</span>
-                            </label>
-                            <input :id="`start-date-${index}`" v-model="date.startDate" type="date" />
-                        </div>
+                        <UranusDateInput
+                            id="`start-date-${index}`"
+                            v-model="date.startDate"
+                            :label="t('event_start_date')"
+                            required
+                        />
 
-                        <div class="form-field">
-                            <label :for="`start-time-${index}`">
-                                {{ t('event_start_time') }}<span class="required">*</span>
-                            </label>
-                            <input :id="`start-time-${index}`" v-model="date.startTime" type="time" />
-                        </div>
+                        <UranusTimeInput
+                            id="`start-time-${index}`"
+                            v-model="date.startTime"
+                            :label="t('event_start_time')"
+                            required
+                        />
 
-                        <div class="form-field">
-                            <label :for="`end-date-${index}`">{{ t('event_end_date') }}</label>
-                            <input :id="`end-date-${index}`" v-model="date.endDate" type="date" />
-                        </div>
+                        <UranusDateInput
+                            id="`end-date-${index}`"
+                            v-model="date.endDate"
+                            :label="t('event_end_date')"
+                        />
 
-                        <div class="form-field">
-                            <label :for="`end-time-${index}`">
-                                {{ t('event_end_time') }}
-                            </label>
-                            <input :id="`end-time-${index}`" v-model="date.endTime" type="time" />
-                        </div>
+                        <UranusTimeInput
+                            id="`end-time-${index}`"
+                            v-model="date.endTime"
+                            :label="t('event_end_time')"
+                        />
 
-                        <div class="form-field">
-                            <label :for="`entry-time-${index}`">{{ t('event_entry_time') }}</label>
-                            <input :id="`entry-time-${index}`" v-model="date.entryTime" type="time" />
-                        </div>
+                        <UranusTimeInput
+                            id="`entry-time-${index}`"
+                            v-model="date.entryTime"
+                            :label="t('event_entry_time')"
+                        />
 
-                        <div class="form-field">
-                            <label :for="`space-${index}`">{{ t('event_space_label') }}</label>
+                        <UranusFieldLabel :id="`space-${index}`" :label="t('event_space_label')">
                             <select :id="`space-${index}`" v-model="date.spaceId">
                                 <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                                 <option v-for="sp in spaces" :key="sp.id" :value="sp.id">
                                     {{ sp.name }}
                                 </option>
                             </select>
-                        </div>
+                        </UranusFieldLabel>
 
                         <div class="form-field form-field--checkbox">
                             <label :for="`all-day-${index}`">
@@ -65,18 +65,22 @@
             </div>
 
             <div class="event-section__actions">
-                <button type="button" class="secondary" @click="addDate">
+                <button type="button" class="uranus-secondary-button" @click="addDate">
                     {{ t('event_add_date') }}
                 </button>
             </div>
         </div>
-    </section>
+    </UranusCard>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
+import UranusCard from "@/components/uranus/UranusCard.vue";
+import UranusDateInput from "@/components/uranus/UranusDateInput.vue";
+import UranusTimeInput from "@/components/uranus/UranusTimeInput.vue";
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
 
 const props = defineProps<{
     organizerId: number | null

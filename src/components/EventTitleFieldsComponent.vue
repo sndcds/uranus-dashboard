@@ -1,26 +1,24 @@
 <template>
-    <div class="title-fields">
-        <div class="form-field event-title-field">
-            <label :for="titleId">
-                {{ t('event_title_label') }}
-                <span class="required">*</span>
-            </label>
-            <input :id="titleId" v-model="localTitle" type="text" :placeholder="t('event_title_placeholder')"
-                autocomplete="off" />
-            <p v-if="titleError" class="field-error">{{ titleError }}</p>
-        </div>
+    <UranusTextInput :id="titleId"
+                     v-model="localTitle"
+                     :label="t('event_title_label')"
+                     :error="titleError"
+                     :placeholder="t('event_title_placeholder')"
+                     size="big"
+                     required
+    />
 
-        <div class="form-field">
-            <label :for="subtitleId">{{ t('event_subtitle_label') }}</label>
-            <input :id="subtitleId" v-model="localSubtitle" type="text" :placeholder="t('event_subtitle_placeholder')"
-                autocomplete="off" />
-        </div>
-    </div>
+    <UranusTextInput :id="subtitleId"
+                     v-model="localSubtitle"
+                     :label="t('event_subtitle_label')"
+                     :placeholder="t('event_subtitle_placeholder')"
+    />
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
 
 const props = defineProps<{
     title: string
@@ -52,29 +50,3 @@ const subtitleId = computed(() => props.subtitleId ?? 'event-subtitle')
 
 const titleError = computed(() => props.titleError ?? null)
 </script>
-
-<style scoped lang="scss">
-.title-fields {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 2.5vw, 1.5rem);
-}
-
-.form-field {
-    @include form-group();
-}
-
-.event-title-field {
-    input {
-        font-size: clamp(1.25rem, 3vw, 1.5rem);
-        font-weight: 600;
-    }
-}
-
-.field-error {
-    margin: 0;
-    font-size: 0.85rem;
-    color: #b91c1c;
-    font-weight: 600;
-}
-</style>

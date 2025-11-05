@@ -8,7 +8,7 @@
     <!-- slot for the actual field (input, select, textarea, etc.) -->
     <slot />
 
-    <p v-if="error" class="uranus-field-error">{{ error }}</p>
+    <span v-if="error" class="uranus-field-error">{{ error }}</span>
   </label>
 </template>
 
@@ -25,14 +25,6 @@ const props = defineProps({
 .uranus-label {
   display: flex;
   flex-direction: column;
-}
-
-.uranus-label-text {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
 }
 
 .uranus-field-error {

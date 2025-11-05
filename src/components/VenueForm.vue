@@ -67,13 +67,20 @@
       </UranusFieldLabel>
 
       <UranusFormRow>
-        <UranusFieldLabel :label="t('opened_at')" :error="fieldErrors.openedAt">
-          <input v-model="openedAt" id="opened_at" type="date" />
-        </UranusFieldLabel>
+          <UranusDateInput
+              id="opened_at"
+              v-model="openedAt"
+              :label="t('opened_at')"
+              :error="fieldErrors.openedAt"
+          />
 
-        <UranusFieldLabel :label="t('closed_at')" :error="fieldErrors.openedAt">
-          <input v-model="closedAt" id="closed_at" type="date" />
-        </UranusFieldLabel>
+          <UranusDateInput
+              id="closed_at"
+              v-model="closedAt"
+              :label="t('closed_at')"
+              :error="fieldErrors.closedAt"
+          />
+
       </UranusFormRow>
     </section>
 
@@ -115,6 +122,7 @@ import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
 import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
 import UranusFormRow from "@/components/uranus/UranusFormRow.vue";
 import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
+import UranusDateInput from "@/components/uranus/UranusDateInput.vue";
 
 interface LatLngLiteral {
     lat: number

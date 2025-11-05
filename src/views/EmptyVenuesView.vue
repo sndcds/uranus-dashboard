@@ -55,10 +55,5 @@ const { t } = useI18n()
     color: var(--muted-text);
     line-height: 1.6;
   }
-
-  .uranus-button {
-    margin-top: 0.5rem;
-    text-decoration: none;
-  }
 }
 </style>

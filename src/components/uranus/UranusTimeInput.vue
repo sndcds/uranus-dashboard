@@ -8,14 +8,14 @@
         >
             <input
                 :id="id"
-                :type="type"
+                type="time"
                 :value="modelValue"
                 @input="$emit('update:modelValue', $event.target.value)"
                 :class="['uranus-text-input', sizeClass]"
-                :aria-required="required ? 'true' : 'false'"
-                :aria-invalid="error ? 'true' : 'false'"
                 :placeholder="placeholder"
                 :autocomplete="autocomplete"
+                :aria-required="required ? 'true' : 'false'"
+                :aria-invalid="error ? 'true' : 'false'"
             />
         </UranusFieldLabel>
     </div>
@@ -28,21 +28,20 @@ import UranusFieldLabel from './UranusFieldLabel.vue'
 const props = defineProps({
     id: { type: String, required: true },
     label: { type: String, required: true },
-    modelValue: { type: [String, Number], default: '' },
-    type: { type: String, default: 'text' },
+    modelValue: { type: String, default: '' },
     required: { type: Boolean, default: false },
     size: { type: String, default: 'normal' }, // tiny / normal / big
     flex: { type: [Number, String], default: 1 },
     error: { type: String, default: '' },
-    placeholder: { type: String, default: '' },       // added
-    autocomplete: { type: String, default: 'off' },  // added
+    placeholder: { type: String, default: '' },
+    autocomplete: { type: String, default: 'off' },
 })
+
+const emit = defineEmits(['update:modelValue'])
 
 const flexValue = computed(() => {
     return typeof props.flex === 'number' ? `${props.flex}` : props.flex
 })
-
-const emit = defineEmits(['update:modelValue'])
 
 const sizeClass = computed(() => {
     switch (props.size) {
@@ -54,5 +53,8 @@ const sizeClass = computed(() => {
 </script>
 
 <style scoped>
-/* optional: add custom styles here */
+:deep(.uranus-text-input) {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+}
 </style>

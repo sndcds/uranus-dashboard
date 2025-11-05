@@ -1,9 +1,6 @@
 <template>
-    <section class="event-section">
-        <header class="event-section__header">
-            <h2>{{ t('event_section_details') }}</h2>
-            <p>{{ t('event_section_details_subtitle') }}</p>
-        </header>
+    <UranusCard>
+        <UranusCardHeader :title="t('event_section_details')" :subtitle="t('event_section_details_subtitle')" />
 
         <div class="event-section__form">
             <div class="event-section__grid event-section__grid--two">
@@ -54,7 +51,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </UranusCard>
 </template>
 
 <script setup lang="ts">
@@ -64,6 +61,8 @@ import { apiFetch } from '@/api'
 
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue"
+import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
+import UranusCard from "@/components/uranus/UranusCard.vue";
 
 const props = defineProps<{
     organizerId: number | null

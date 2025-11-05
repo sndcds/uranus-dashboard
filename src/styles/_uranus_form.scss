@@ -82,8 +82,8 @@ input.uranus-text-input {
 .uranus-form-row {
   display: flex;
   gap: 12px;
-  flex-wrap: wrap;  // allow items to move to next line if needed
-  overflow: hidden;  /* hide overflow if needed */
+  flex-wrap: wrap; // allow items to move to next line if needed
+  overflow: hidden; /* hide overflow if needed */
   text-overflow: ellipsis; /* optional: show ... */
 
   hr {
@@ -96,7 +96,8 @@ input.uranus-text-input {
   > * {
     flex: 1 1 auto;   // flex-grow:1, flex-shrink:1, flex-basis:auto
     min-width: 120px; // optional: don't shrink below 120px
-  }}
+  }
+}
 
 /* Make each textfield inside the row grow */
 
