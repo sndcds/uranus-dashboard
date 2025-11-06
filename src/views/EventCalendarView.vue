@@ -90,6 +90,13 @@ interface EventTypesCount {
     count: number
 }
 
+interface EventTypesCountResponse {
+    result: {
+        total: number
+        types: EventTypesCount[]
+    }
+}
+
 interface CalendarEvent {
     id: number
     event_date_id: number
@@ -636,12 +643,22 @@ const filterByType = async (typeId: number | string) => {
 const loadTypesCount = async () => {
     try {
         const endpoint = `/api/events/types-count?lang=${locale.value}`
-        const { data } = await apiFetch<EventTypesCount>(endpoint)
-        const options = Array.isArray(data) ? data : []
-
-        typeCountOptions.value = options
+        const { data } = await apiFetch<EventTypesCountResponse[]>(endpoint)
+        
+        // Handle the nested response structure
+        if (Array.isArray(data) && data.length > 0) {
+            const firstResult = data[0]
+            if (firstResult?.result?.types) {
+                typeCountOptions.value = firstResult.result.types
+            } else {
+                typeCountOptions.value = []
+            }
+        } else {
+            typeCountOptions.value = []
+        }
     } catch (error) {
         console.error('Failed to load event types count', error)
+        typeCountOptions.value = []
     }
 }
 
