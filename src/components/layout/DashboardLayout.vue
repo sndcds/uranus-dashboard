@@ -13,7 +13,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import type { SidebarOption } from '@/types/types'
-import { useTokenStore } from "@/store/token"
+import { useTokenStore } from "@/store/tokenStore"
 import { useAppStore } from "@/store/appStore"
 
 import UranusAppMenu from "@/components/uranus/UranusAppMenu.vue"

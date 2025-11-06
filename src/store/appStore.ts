@@ -29,8 +29,5 @@ export const useAppStore = defineStore('app', () => {
         setGroupingMode
     }
 }, {
-    persist: {
-        key: 'appStore',
-        storage: localStorage
-    }
+    persist: true
 })

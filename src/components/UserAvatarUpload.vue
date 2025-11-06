@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useUserStore } from '@/store/userStore'
-import { useTokenStore } from '@/store/token'
+import { useTokenStore } from '@/store/tokenStore'
 import { apiFetch } from '@/api'
 
 const props = withDefaults(

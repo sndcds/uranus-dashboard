@@ -58,7 +58,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api'
 import type { LoginResponse } from '@/api'
-import { useTokenStore } from '@/store/token'
+import { useTokenStore } from '@/store/tokenStore'
 import { useUserStore } from '@/store/userStore'
 import { useThemeStore } from '@/store/themeStore'
 

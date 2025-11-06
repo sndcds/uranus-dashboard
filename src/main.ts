@@ -5,7 +5,6 @@ import i18n from './i18n' // import the i18n instance
 import router from './router'
 
 import { useThemeStore } from '@/store/themeStore'
-import { useUserStore } from '@/store/userStore'
 import '@/styles/global.scss' // Import global styles
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
@@ -23,6 +22,3 @@ themeStore.initTheme() // apply persisted theme before mount
 
 app.use(router)
 app.mount('#app')
-
-const userStore = useUserStore()
-userStore.loadDisplayNameFromStorage() // sync with localStorage

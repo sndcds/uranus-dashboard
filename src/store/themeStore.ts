@@ -1,21 +1,27 @@
 import { defineStore } from 'pinia'
-import { applyTheme, getStoredTheme, storeTheme, type ThemeMode } from '@/utils/theme'
+import { ref } from 'vue'
+import { applyTheme, type ThemeMode } from '@/utils/theme'
 
-export const useThemeStore = defineStore('theme', {
-    state: () => ({
-        theme: getStoredTheme() as ThemeMode,
-    }),
+export const useThemeStore = defineStore('theme', () => {
+    // State
+    const theme = ref<ThemeMode>('light')
 
-    actions: {
-        setTheme(theme: ThemeMode) {
-            this.theme = theme
-            storeTheme(theme)
-            applyTheme(theme)
-        },
+    // Actions
+    function setTheme(newTheme: ThemeMode) {
+        theme.value = newTheme
+        applyTheme(newTheme)
+    }
 
-        initTheme() {
-            // Apply the stored theme on initialization
-            applyTheme(this.theme)
-        },
-    },
+    function initTheme() {
+        // Apply the stored theme on initialization
+        applyTheme(theme.value)
+    }
+
+    return {
+        theme,
+        setTheme,
+        initTheme
+    }
+}, {
+    persist: true
 })

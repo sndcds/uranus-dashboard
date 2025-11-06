@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useTokenStore } from '@/store/token'
+import { useTokenStore } from '@/store/tokenStore'
 
 import DashboardLayout from '@/components/layout/DashboardLayout.vue'
 import DefaultVisitorLayout from '@/components/layout/DefaultVisitorLayout.vue'

@@ -92,7 +92,7 @@
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import { useTokenStore } from '@/store/token'
+import { useTokenStore } from '@/store/tokenStore'
 import { useAppStore } from '@/store/appStore'
 
 import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'

@@ -1,4 +1,4 @@
-import { useTokenStore } from '@/store/token'
+import { useTokenStore } from '@/store/tokenStore'
 import { useRouter } from 'vue-router'
 import type { ThemeMode } from '@/utils/theme'
 

@@ -4,7 +4,7 @@ import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 import { createPinia, setActivePinia } from 'pinia'
 import { apiFetch } from '../../src/api'
-import { useTokenStore } from '../../src/store/token'
+import { useTokenStore } from '../../src/store/tokenStore'
 
 vi.mock('../../src/api', () => ({
   apiFetch: vi.fn(),
