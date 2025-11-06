@@ -199,7 +199,7 @@ watch(
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--uranus-bg-color);
+    background: rgb(177, 211, 235);
     color: var(--uranus-color);
 }
 
@@ -342,7 +342,6 @@ watch(
 .visitor-layout__content {
     display: flex;
     flex: 1;
-    background: var(--uranus-bg-color);
 }
 
 .visitor-layout__footer {

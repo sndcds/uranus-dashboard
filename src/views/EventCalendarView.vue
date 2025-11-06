@@ -15,6 +15,13 @@
             </button>
         </div>
 
+        <ul class="calendar-event-types-list">
+            <li v-for="type in typeCountOptions" :key="type.id">
+                <button @click="filterByType(type.id)" :class="{ 'is-active': activeSelectedType === type.id }">{{
+                    type.name }} ({{ type.count }})</button>
+            </li>
+        </ul>
+
         <div v-if="currentView === 'detailed'" class="calendar-grouping-toggle">
             <button type="button" class="calendar-grouping-btn" :class="{ 'is-active': groupingMode === 'daily' }"
                 @click="groupingMode = 'daily'">
@@ -31,59 +38,26 @@
             'calendar-body--compact': currentView === 'compact',
             'calendar-body--tiles': currentView === 'tiles'
         }">
-            <EventCalendarSidebar 
-                :search-id="`calendar-search-${currentView}`" 
-                :date-id="`calendar-date-${currentView}`"
-                :end-date-id="`calendar-end-date-${currentView}`" 
-                :type-id="`calendar-type-${currentView}`"
-                :search-query="searchQuery" 
-                :selected-type="selectedType" 
-                :selected-date="selectedDate"
-                :selected-end-date="selectedEndDate" 
-                :temp-start-date="tempStartDate" 
-                :temp-end-date="tempEndDate"
-                :is-loading="isLoading" 
-                :is-types-loading="isTypesLoading" 
-                :type-options="typeOptions"
-                :last-available-date="lastAvailableDate" 
-                :first-available-date="firstAvailableDate"
-                :filters-active="filtersActive" 
-                @update:search-query="searchQuery = $event"
-                @update:selected-type="selectedType = $event" 
-                @date-confirm="onDateConfirm"
-                @clear-date-filters="clearDateFilters" 
-                @reset-filters="resetFilters" />
+            <EventCalendarSidebar :search-id="`calendar-search-${currentView}`"
+                :date-id="`calendar-date-${currentView}`" :end-date-id="`calendar-end-date-${currentView}`"
+                :search-query="searchQuery" :selected-date="selectedDate" :selected-end-date="selectedEndDate"
+                :temp-start-date="tempStartDate" :temp-end-date="tempEndDate" :is-loading="isLoading"
+                :last-available-date="lastAvailableDate" :first-available-date="firstAvailableDate"
+                :filters-active="filtersActive" @update:search-query="searchQuery = $event"
+                @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
 
-            <EventCalendarDetailedView 
-                v-if="currentView === 'detailed'"
-                :is-loading="isLoading" 
-                :load-error="loadError" 
-                :grouped-events="groupedEvents"
-                :selected-type="selectedType"
-                :is-monthly-grouping="groupingMode === 'monthly'"
-                :format-time="formatTime"
-                :format-location="formatLocation"
-                :format-event-date="formatEventDate"
+            <EventCalendarDetailedView v-if="currentView === 'detailed'" :is-loading="isLoading" :load-error="loadError"
+                :grouped-events="groupedEvents" :selected-type="selectedType"
+                :is-monthly-grouping="groupingMode === 'monthly'" :format-time="formatTime"
+                :format-location="formatLocation" :format-event-date="formatEventDate" @filter-by-tag="filterByTag" />
+
+            <EventCalendarCompactView v-else-if="currentView === 'compact'" :is-loading="isLoading"
+                :load-error="loadError" :filtered-events="filteredEvents" :selected-type="selectedType"
+                :format-time="formatTime" :format-compact-date="formatCompactDate" :format-location="formatLocation"
                 @filter-by-tag="filterByTag" />
 
-            <EventCalendarCompactView 
-                v-else-if="currentView === 'compact'"
-                :is-loading="isLoading" 
-                :load-error="loadError" 
-                :filtered-events="filteredEvents"
-                :selected-type="selectedType"
-                :format-time="formatTime"
-                :format-compact-date="formatCompactDate"
-                :format-location="formatLocation"
-                @filter-by-tag="filterByTag" />
-
-            <EventCalendarTilesView 
-                v-else-if="currentView === 'tiles'"
-                :is-loading="isLoading" 
-                :load-error="loadError" 
-                :filtered-events="filteredEvents"
-                :format-time="formatTime"
-                :format-number-date="formatNumberDate" />
+            <EventCalendarTilesView v-else-if="currentView === 'tiles'" :is-loading="isLoading" :load-error="loadError"
+                :filtered-events="filteredEvents" :format-time="formatTime" :format-number-date="formatNumberDate" />
         </div>
     </div>
 </template>
@@ -92,7 +66,6 @@
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import { useTokenStore } from '@/store/tokenStore'
 import { useAppStore } from '@/store/appStore'
 
 import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'
@@ -110,6 +83,12 @@ interface CalendarEventType {
 interface EventTypeOption {
     id: number
     name: string
+}
+
+interface EventTypesCount {
+    id: number
+    name: string
+    count: number
 }
 
 interface CalendarEvent {
@@ -152,9 +131,11 @@ const events = ref<AugmentedEvent[]>([])
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
 const typeOptions = ref<string[]>([])
+const typeCountOptions = ref<EventTypesCount[]>([])
 const isTypesLoading = ref(false)
 const isInitialLoadComplete = ref(false)
 const suspendDateWatcher = ref(false)
+const activeSelectedType = ref<number | null>(null)
 
 const searchQuery = ref('')
 const selectedType = ref<'all' | string>('all')
@@ -204,8 +185,6 @@ const intlTime = new Intl.DateTimeFormat(undefined, {
     minute: '2-digit',
 })
 
-const loadingLabel = computed(() => t('events_calendar_loading'))
-const emptyLabel = computed(() => t('events_calendar_empty'))
 const detailedViewLabel = computed(() => t('events_calendar_detailed_view'))
 const compactViewLabel = computed(() => t('events_calendar_compact_view'))
 const tilesViewLabel = computed(() => t('events_calendar_tiles_view'))
@@ -423,7 +402,7 @@ const groupedEvents = computed<GroupedEvents[]>(() => {
     if (groupingMode.value === 'monthly') {
         return groupedEventsByMonth.value
     }
-    
+
     const map = new Map<string, AugmentedEvent[]>()
 
     for (const event of filteredEvents.value) {
@@ -454,7 +433,7 @@ const groupedEventsByMonth = computed<GroupedEvents[]>(() => {
     for (const event of filteredEvents.value) {
         const parsedDate = parseISODate(event.start_date)
         if (!parsedDate) continue
-        
+
         // Group by year-month (e.g., "2025-11")
         const key = `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, '0')}`
         if (!map.has(key)) {
@@ -465,12 +444,12 @@ const groupedEventsByMonth = computed<GroupedEvents[]>(() => {
 
     const intlMonth = new Intl.DateTimeFormat(locale.value, { year: 'numeric', month: 'long' })
     const groups: GroupedEvents[] = []
-    
+
     for (const [monthKey, groupEvents] of map.entries()) {
         const [year, month] = monthKey.split('-').map(Number)
         if (!year || !month) continue
         const firstDayOfMonth = new Date(year, month - 1, 1)
-        
+
         groups.push({
             date: monthKey,
             formattedDate: intlMonth.format(firstDayOfMonth),
@@ -543,44 +522,44 @@ const formatCompactDate = (date: string) => {
 }
 
 const formatNumberDate = (date: string, locale = navigator.language) => {
-  const parsedDate = parseISODate(date)
-  if (!parsedDate) return date
+    const parsedDate = parseISODate(date)
+    if (!parsedDate) return date
 
-  const now = new Date()
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  const eventDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate())
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const eventDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate())
 
-  const tDate = (d: Date) => d.getTime()
+    const tDate = (d: Date) => d.getTime()
 
-  if (tDate(eventDate) === tDate(today)) return t('events_calendar_today')
+    if (tDate(eventDate) === tDate(today)) return t('events_calendar_today')
 
-  const tomorrow = new Date(today)
-  tomorrow.setDate(today.getDate() + 1)
-  if (tDate(eventDate) === tDate(tomorrow)) return t('events_calendar_tomorrow')
+    const tomorrow = new Date(today)
+    tomorrow.setDate(today.getDate() + 1)
+    if (tDate(eventDate) === tDate(tomorrow)) return t('events_calendar_tomorrow')
 
-  const yesterday = new Date(today)
-  yesterday.setDate(today.getDate() - 1)
-  if (tDate(eventDate) === tDate(yesterday)) return t('events_calendar_yesterday')
+    const yesterday = new Date(today)
+    yesterday.setDate(today.getDate() - 1)
+    if (tDate(eventDate) === tDate(yesterday)) return t('events_calendar_yesterday')
 
-  // Use Intl.DateTimeFormat with numeric month
-  const formatter = new Intl.DateTimeFormat(locale, {
-    year: 'numeric',
-    month: '2-digit',  // numeric month with leading zero
-    day: '2-digit',
-  })
+    // Use Intl.DateTimeFormat with numeric month
+    const formatter = new Intl.DateTimeFormat(locale, {
+        year: 'numeric',
+        month: '2-digit',  // numeric month with leading zero
+        day: '2-digit',
+    })
 
-  return formatter.format(parsedDate)
+    return formatter.format(parsedDate)
 }
 
 const formatEventDate = (date: string) => {
     const parsedDate = parseISODate(date)
     if (!parsedDate) return date
-    
+
     const formatter = new Intl.DateTimeFormat(locale.value, {
         day: 'numeric',
         month: 'short'
     })
-    
+
     return formatter.format(parsedDate)
 }
 
@@ -615,16 +594,62 @@ const setInitialDate = () => {
     clearDateFilters({ silent: true })
 }
 
+const setActiveSelectedType = (typeId: number) => {
+    activeSelectedType.value = typeId
+}
+
+const filterByType = async (typeId: number) => {
+    const typeOption = typeCountOptions.value.find((type) => type.id === typeId)
+    if (!typeOption) return
+
+    setActiveSelectedType(typeId)
+
+    isLoading.value = true
+    loadError.value = null
+
+    try {
+        const params = new URLSearchParams()
+        params.set('lang', locale.value)
+        params.set('event_type', String(typeId))
+
+        const endpoint = `/api/events?${params.toString()}`
+        const { data } = await apiFetch<CalendarEvent[]>(endpoint)
+        events.value = hydrateEvents(Array.isArray(data) ? data : [])
+
+        // Update selected type
+        const typeName = typeOption.name
+        ensureTypeOptionPresent(typeName)
+        selectedType.value = typeName
+
+        ensureDatesWithinRange()
+    } catch (error: unknown) {
+        loadError.value =
+            error instanceof Error && error.message
+                ? error.message
+                : t('events_calendar_load_error')
+    } finally {
+        isLoading.value = false
+    }
+}
+
+const loadTypesCount = async () => {
+    try {
+        const endpoint = `/api/events/types-count?lang=${locale.value}`
+        const { data } = await apiFetch<EventTypesCount>(endpoint)
+        const options = Array.isArray(data) ? data : []
+
+        typeCountOptions.value = options
+    } catch (error) {
+        console.error('Failed to load event types count', error)
+    }
+}
+
 const loadEventTypes = async () => {
     isTypesLoading.value = true
 
     try {
         const params = new URLSearchParams()
-        if (locale.value) {
-            params.set('lang', locale.value)
-        }
-        const query = params.toString()
-        const endpoint = query ? `/api/choosable-event-types?${query}` : '/api/choosable-event-types'
+        const endpoint = `/api/choosable-event-types?lang=${locale.value}`
         const { data } = await apiFetch<EventTypeOption[]>(endpoint)
         const options = Array.isArray(data) ? data : []
         const names = options
@@ -680,6 +705,7 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
 onMounted(() => {
     void loadEvents()
     void loadEventTypes()
+    void loadTypesCount()
 })
 
 watch(locale, () => {
@@ -735,6 +761,33 @@ watch(
 </script>
 
 <style scoped lang="scss">
+.calendar-event-types-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 clamp(1rem, 2.5vw, 1.5rem) 0;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    li button {
+        padding: 0.4rem 0.75rem;
+        border: 1px solid var(--border-soft);
+        background: var(--card-bg, #fff);
+        color: var(--muted-text);
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .is-active {
+        background: #285ff6;
+        color: white;
+        border-color: #285ff6;
+    }
+}
+
 .calendar-page {
     display: flex;
     flex-direction: column;

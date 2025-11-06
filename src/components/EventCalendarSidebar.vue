@@ -30,17 +30,6 @@
             </div>
         </div>
 
-        <div class="calendar-sidebar__section calendar-sidebar__section--types">
-            <label class="calendar-sidebar__label" :for="typeId">{{ typeLabel }}</label>
-            <select :id="typeId" v-model="selectedTypeModel"
-                :disabled="isLoading || isTypesLoading || typeOptions.length === 0">
-                <option value="all">{{ allCategoriesLabel }}</option>
-                <option v-for="type in typeOptions" :key="type" :value="type">
-                    {{ type }}
-                </option>
-            </select>
-        </div>
-
         <div class="calendar-sidebar__footer">
             <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__reset"
                 :disabled="!filtersActive" @click="resetFilters">
@@ -58,16 +47,12 @@ interface Props {
     searchId: string
     dateId: string
     endDateId: string
-    typeId: string
     searchQuery: string
-    selectedType: 'all' | string
     selectedDate: string | null
     selectedEndDate: string | null
     tempStartDate: string | null
     tempEndDate: string | null
     isLoading: boolean
-    isTypesLoading: boolean
-    typeOptions: string[]
     lastAvailableDate: string | undefined
     firstAvailableDate: string | undefined
     filtersActive: boolean
@@ -75,7 +60,6 @@ interface Props {
 
 interface Emits {
     (e: 'update:searchQuery', value: string): void
-    (e: 'update:selectedType', value: 'all' | string): void
     (e: 'update:selectedDate', value: string | null): void
     (e: 'update:selectedEndDate', value: string | null): void
     (e: 'update:tempStartDate', value: string | null): void
@@ -96,20 +80,13 @@ const searchQueryModel = computed({
     set: (value: string) => emit('update:searchQuery', value.trim())
 })
 
-const selectedTypeModel = computed({
-    get: () => props.selectedType,
-    set: (value: 'all' | string) => emit('update:selectedType', value)
-})
-
 const filtersTitle = computed(() => t('events_calendar_filters_title'))
 const filtersSubtitle = computed(() => t('events_calendar_filters_subtitle'))
 const searchLabel = computed(() => t('events_calendar_search_label'))
 const searchPlaceholder = computed(() => t('events_calendar_search_placeholder'))
 const dateLabel = computed(() => t('events_calendar_date_label'))
 const endDateLabel = computed(() => t('events_calendar_end_date_label'))
-const typeLabel = computed(() => t('events_calendar_type_label'))
 const showAllDatesLabel = computed(() => t('events_calendar_all_dates'))
-const allCategoriesLabel = computed(() => t('events_calendar_all_categories'))
 const resetFiltersLabel = computed(() => t('events_calendar_reset_filters'))
 
 const onDateConfirm = (which: 'start' | 'end', event: Event) => {
