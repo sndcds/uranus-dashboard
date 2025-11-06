@@ -17,12 +17,14 @@
 
         <ul class="calendar-event-types-list">
             <li>
-                <button @click="filterByType('all')" :class="{ 'is-active': activeSelectedType === 'all' }">{{
-                    allEventsLabel }} ({{ allEventsCount }})</button>
+                <button @click="filterByType('all')" :class="{ 'is-active': activeSelectedType === 'all' }">
+                    {{ allEventsLabel }} ({{ allEventsCount }})
+                </button>
             </li>
             <li v-for="type in typeCountOptions" :key="type.id">
-                <button @click="filterByType(type.id)" :class="{ 'is-active': activeSelectedType === type.id }">{{
-                    type.name }} ({{ type.count }})</button>
+                <button @click="filterByType(type.id)" :class="{ 'is-active': activeSelectedType === type.id }">
+                    {{ type.name }} ({{ type.count }})
+                </button>
             </li>
         </ul>
 
@@ -139,7 +141,8 @@ const loadError = ref<string | null>(null)
 const typeCountOptions = ref<EventTypesCount[]>([])
 const isInitialLoadComplete = ref(false)
 const suspendDateWatcher = ref(false)
-const activeSelectedType = ref<number | string | null>(null)
+const activeSelectedType = ref<number | string | null>('all')
+const allEventsCount = ref(0)
 
 const searchQuery = ref('')
 const selectedType = ref<'all' | string>('all')
@@ -195,10 +198,6 @@ const tilesViewLabel = computed(() => t('events_calendar_tiles_view'))
 const dailyGroupingLabel = computed(() => t('events_calendar_daily_grouping'))
 const monthlyGroupingLabel = computed(() => t('events_calendar_monthly_grouping'))
 const allEventsLabel = computed(() => t('events_calendar_all_events'))
-
-const allEventsCount = computed(() => {
-    return typeCountOptions.value.reduce((sum, type) => sum + type.count, 0)
-})
 
 // Date field behaviour
 const tempStartDate = ref<string | null>(null)
@@ -644,11 +643,12 @@ const loadTypesCount = async () => {
     try {
         const endpoint = `/api/events/types-count?lang=${locale.value}`
         const { data } = await apiFetch<EventTypesCountResponse[]>(endpoint)
-        
+
         // Handle the nested response structure
         if (Array.isArray(data) && data.length > 0) {
             const firstResult = data[0]
             if (firstResult?.result?.types) {
+                allEventsCount.value = firstResult.result.total
                 typeCountOptions.value = firstResult.result.types
             } else {
                 typeCountOptions.value = []
