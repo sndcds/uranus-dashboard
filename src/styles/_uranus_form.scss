@@ -1,4 +1,5 @@
-.uranus-form {
+.uranus-form,
+.uranus-inline-edit-section {
   display: flex;
   flex-direction: column;
   gap: var(--uranus-grid-gap);
@@ -59,7 +60,19 @@
   }
 }
 
+.uranus-inline-edit-section {
+    input,
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+        border: 2px solid var(--uranus-ia-inline-color-light2);
+    }
+}
+
+
 input.uranus-text-input {
+    color: red;
 }
 
 .uranus-tiny-text {

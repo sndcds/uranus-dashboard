@@ -1,6 +1,6 @@
 <template>
     <section class="uranus-hover-section">
-      <InlineEditorLabel
+      <UranusInlineEditLabel
           :label-text="t('event_tags_heading')"
           :edit-button-text="t('edit')"
           @edit-started="startEditing"
@@ -19,8 +19,7 @@
           @update-selection="onSelectionUpdate"/>
 
         <div
-            v-if="isEditing"
-            class="uranus-inline-section-button-area">
+            v-if="isEditing">
             <button
                 type="button"
                 class="uranus-inline-cancel-button"
@@ -48,7 +47,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
 import type { Selection as TagSelection } from '@/components/TwoStageTagListComponent.vue'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
 
 interface EventType {
     type_id: number

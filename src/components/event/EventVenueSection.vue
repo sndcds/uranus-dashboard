@@ -1,6 +1,6 @@
 <template>
     <section class="uranus-card uranus-hover-section">
-        <InlineEditorLabel :label-text="t('venue')" :edit-button-text="t('edit')" @edit-started="startEditingVenue" />
+        <UranusInlineEditLabel :label-text="t('venue')" :edit-button-text="t('edit')" @edit-started="startEditingVenue" />
 
         <h2>{{ venueName }}</h2>
 
@@ -36,7 +36,7 @@
         </template>
 
         <div class="uranus-hover-section">
-            <InlineEditorLabel :label-text="t('space')" :edit-button-text="t('edit')"
+            <UranusInlineEditLabel :label-text="t('space')" :edit-button-text="t('edit')"
                 @edit-started="startEditingSpace" />
 
             <p>{{ spaceName }} ({{ spaceCapacityDisplay }} {{ t('event_capacity_label') }})</p>
@@ -75,7 +75,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue"
+import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
 
 const props = defineProps<{
     eventId: number

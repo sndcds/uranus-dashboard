@@ -1,7 +1,7 @@
 <template>
     <section class="uranus-hover-section" :class="{ 'event-url-section--editing': isEditingLinks }">
 
-        <InlineEditorLabel :label-text="t('event_links_title')" :edit-button-text="t('edit')"
+        <UranusInlineEditLabel :label-text="t('event_links_title')" :edit-button-text="t('edit')"
             @edit-started="startEditingLinks" />
 
         <div v-if="isEditingLinks" class="event-url-section__body">
@@ -93,7 +93,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue"
+import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
 
 interface Props {
     eventId: number

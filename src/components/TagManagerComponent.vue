@@ -1,6 +1,6 @@
 <template>
     <section :class="['tag-manager', { 'tag-manager--editing': isEditing }]">
-          <InlineEditorLabel
+          <UranusInlineEditLabel
               :label-text="labels.title"
               :edit-button-text="t('edit')"
               @edit-started="startEditing"
@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
 
 const props = withDefaults(
     defineProps<{

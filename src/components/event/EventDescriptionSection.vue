@@ -1,7 +1,7 @@
 <template>
     <article class="event-description">
       <div class="uranus-hover-section">
-        <InlineEditorLabel
+        <UranusInlineEditLabel
             :label-text="t('description')"
             :edit-button-text="t('edit')"
             @edit-started="startEditingDescription" />
@@ -63,7 +63,7 @@ import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import MarkdownPreviewComponent from '@/components/MarkdownPreviewComponent.vue'
 import EventTypeSection from '@/components/event/EventTypeSection.vue'
 import EventLanguageSection from '@/components/event/EventLanguageSection.vue'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
 import EventUrlSection from "@/components/event/EventUrlSection.vue";
 
 interface EventType { type_id: number; type_name: string; genre_id: number | null; genre_name: string | null }

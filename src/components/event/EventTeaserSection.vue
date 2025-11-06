@@ -21,7 +21,7 @@
                 </div>
             </template>
             <template v-else>
-                <InlineEditorLabel :label-text="t('teaser_text')" :edit-button-text="t('edit')"
+                <UranusInlineEditLabel :label-text="t('teaser_text')" :edit-button-text="t('edit')"
                     @edit-started="startEditing" />
                 <p class="event-teaser__text">
                     {{ teaserText || t('event_teaser_fallback') }}
@@ -42,7 +42,7 @@ import { apiFetch } from '@/api'
 import EventImageUploadComponent from '@/components/event/EventImageUploadComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import EventTagsSection from '@/components/event/EventTagsSection.vue'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue"
+import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
 
 const props = defineProps<{
     eventId: number

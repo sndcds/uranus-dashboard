@@ -6,7 +6,7 @@
 @use 'uranus_dashboard';
 @use './_value_info.scss';
 @use './_markdown_editor.scss';
-@use './_inline_editor.scss';
+@use 'uranus_inline_editor';
 
 
 :root {

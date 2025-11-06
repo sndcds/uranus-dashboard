@@ -1,6 +1,6 @@
 <template>
     <section class="uranus-card uranus-hover-section">
-      <InlineEditorLabel
+      <UranusInlineEditLabel
           :label-text="t('event_details_time')"
           :edit-button-text="t('edit')"
           @edit-started="startEditingSchedule"
@@ -70,7 +70,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
 
 interface EventDateApi {
     id?: number | null

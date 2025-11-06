@@ -1,6 +1,6 @@
 <template>
   <div :class="{ 'event-header-section--editing': isEditing }">
-    <InlineEditorLabel
+    <UranusInlineEditLabel
         :label-text="t('event_title')"
         :edit-button-text="t('edit')"
         @edit-started="startEditing" />
@@ -42,7 +42,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
-import InlineEditorLabel from "@/components/InlineEditorLabel.vue";
+import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
 
 const props = defineProps<{
     eventId: number

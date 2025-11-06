@@ -24,14 +24,14 @@
                     <div v-if="event.image_copyright || event.image_created_by || event.image_license_id"
                         class="event-image-caption">
                         <small>
-                            <template v-if="event.image_created_by">
+                            <span v-if="event.image_created_by">
                                 {{ t('image_created_by', { creator: event.image_created_by }) }}
-                            </template>
-                            <template v-if="event.image_copyright">
+                            </span>
+                            <span v-if="event.image_copyright">
                                 <span v-if="event.image_created_by"> | </span>
                                 {{ t('image_copyright', { copyright: event.image_copyright }) }}
-                            </template>
-                            <template v-if="event.image_license_short_name">
+                            </span>
+                            <span v-if="event.image_license_short_name">
                                 <span v-if="event.image_created_by || event.image_copyright"> | </span>
                                 <a v-if="event.image_license_url" :href="event.image_license_url" target="_blank"
                                     rel="noopener noreferrer">
@@ -40,7 +40,7 @@
                                 <span v-else>
                                     {{ t('image_license', { license: event.image_license_short_name }) }}
                                 </span>
-                            </template>
+                            </span>
                         </small>
                     </div>
 

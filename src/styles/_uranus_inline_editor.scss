@@ -1,0 +1,38 @@
+.uranus-inline-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--uranus-color);
+  margin-bottom: 0.6rem;
+}
+
+.uranus-inline-edit-section {
+    border: 2px solid transparent;
+    border-radius: var(--uranus-inline-edit-border-radius);
+    padding: 12px;
+    transition: all 0.5s ease;
+}
+
+/* Hover effect */
+.uranus-inline-edit-section:hover,
+.uranus-inline-edit-section.uranus-inline-edit--active {
+    border-color: var(--uranus-ia-inline-color);
+}
+
+
+.uranus-inline-edit-button {
+  padding: 0.2rem 0.5rem;
+  opacity: 0.0;
+}
+
+.uranus-inline-edit-section:hover
+.uranus-inline-edit-button {
+  opacity: 1;
+  transition: all 0.5s ease;
+}
+
+/* Show edit buttons on mobile without hover */
+@media (max-width: 768px) {
+    .uranus-inline-edit-button {
+        opacity: 1;
+    }
+}
