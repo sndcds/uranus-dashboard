@@ -1,26 +1,26 @@
 <template>
-    <section :class="['tag-manager', { 'tag-manager--editing': isEditing }]">
-          <UranusInlineEditLabel
-              :label-text="labels.title"
-              :edit-button-text="t('edit')"
-              @edit-started="startEditing"
-          />
+    <section :class="['tag-manager', { 'tag-manager--editing': effectiveEditing }]">
 
-        <template v-if="isEditing">
+        <template v-if="effectiveEditing">
             <div class="tag-manager__editor">
                 <div class="tag-manager__chip-list">
-                    <span
-                        v-for="(tag, index) in draftTags"
-                        :key="`${tag}-${index}`"
-                        class="tag-manager__chip"
-                    >
-                        {{ tag }}
-                        <button type="button" class="tag-manager__chip-remove" @click="removeDraftTag(index)">
-                            ×
-                        </button>
-                    </span>
+          <span
+              v-for="(tag, index) in draftTags"
+              :key="`${tag}-${index}`"
+              class="tag-manager__chip"
+          >
+            {{ tag }}
+            <button
+                type="button"
+                class="tag-manager__chip-remove"
+                @click="removeDraftTag(index)"
+            >
+              ×
+            </button>
+          </span>
                     <span v-if="!draftTags.length" class="tag-manager__empty">{{ labels.empty }}</span>
                 </div>
+
                 <div class="tag-manager__add">
                     <input
                         v-model="newTagName"
@@ -33,9 +33,9 @@
                         {{ labels.add }}
                     </button>
                 </div>
-                <p v-if="error" class="tag-manager__error">
-                    {{ error }}
-                </p>
+
+                <p v-if="error" class="tag-manager__error">{{ error }}</p>
+
                 <div class="tag-manager__actions">
                     <button
                         type="button"
@@ -57,21 +57,22 @@
                 </div>
             </div>
         </template>
+
         <template v-else>
             <div v-if="displayTags.length" class="tag-manager__chip-list tag-manager__chip-list--readonly">
-                <span v-for="(tag, index) in displayTags" :key="`${tag}-${index}`" class="tag-manager__chip">
-                    {{ tag }}
-                </span>
+        <span v-for="(tag, index) in displayTags" :key="`${tag}-${index}`" class="tag-manager__chip">
+          {{ tag }}
+        </span>
             </div>
             <p v-else class="tag-manager__empty">{{ labels.empty }}</p>
         </template>
+
     </section>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
 
 const props = withDefaults(
     defineProps<{
@@ -86,6 +87,7 @@ const props = withDefaults(
         saveLabel?: string
         cancelLabel?: string
         savingLabel?: string
+        isEditing?: boolean
     }>(),
     {
         tags: () => [],
@@ -98,7 +100,8 @@ const props = withDefaults(
         addButtonLabel: '',
         saveLabel: '',
         cancelLabel: '',
-        savingLabel: ''
+        savingLabel: '',
+        isEditing: undefined
     }
 )
 
@@ -109,23 +112,15 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: 'global' })
 
-const isEditing = ref(false)
+// Internal editing state (used only if parent does not control via prop)
+const internalEditing = ref(false)
 const draftTags = ref<string[]>([])
 const newTagName = ref('')
 
-const normalizeTag = (value: string): string => value.replace(/\s+/g, ' ').trim()
+// Compute effective editing state
+const effectiveEditing = computed(() => props.isEditing ?? internalEditing.value)
 
-const normalizedList = (tags?: string[]): string[] =>
-    Array.from(
-        new Set(
-            (tags ?? [])
-                .map((tag) => (typeof tag === 'string' ? normalizeTag(tag) : normalizeTag(String(tag))))
-                .filter((tag) => tag.length > 0)
-        )
-    )
-
-const displayTags = computed(() => normalizedList(props.tags))
-
+// Labels
 const labels = computed(() => ({
     title: props.title || t('event_teaser_tags'),
     edit: props.editLabel || t('event_tags_edit'),
@@ -137,31 +132,44 @@ const labels = computed(() => ({
     saving: props.savingLabel || t('form_saving')
 }))
 
-const resetEditor = () => {
-    draftTags.value = []
-    newTagName.value = ''
-}
+// Normalize tags
+const normalizeTag = (value: string): string => value.replace(/\s+/g, ' ').trim()
+const normalizedList = (tags?: string[]): string[] =>
+    Array.from(
+        new Set(
+            (tags ?? [])
+                .map((tag) => (typeof tag === 'string' ? normalizeTag(tag) : normalizeTag(String(tag))))
+                .filter((tag) => tag.length > 0)
+        )
+    )
 
+const displayTags = computed(() => normalizedList(props.tags))
+
+// --- Editing control ---
 const startEditing = () => {
     draftTags.value = [...displayTags.value]
     newTagName.value = ''
-    isEditing.value = true
+    if (props.isEditing === undefined) {
+        internalEditing.value = true
+    }
 }
 
 const cancelEditing = () => {
-    isEditing.value = false
-    resetEditor()
+    draftTags.value = []
+    newTagName.value = ''
+    if (props.isEditing === undefined) {
+        internalEditing.value = false
+    }
     emit('cancel')
 }
 
+// --- Tag actions ---
 const addDraftTag = () => {
     const normalized = normalizeTag(newTagName.value)
     if (!normalized) return
-
     if (!draftTags.value.includes(normalized)) {
         draftTags.value.push(normalized)
     }
-
     newTagName.value = ''
 }
 
@@ -174,10 +182,11 @@ const handleSave = () => {
     emit('save', payload)
 }
 
+// --- Watchers ---
 watch(
     () => props.tags,
     () => {
-        if (!isEditing.value) {
+        if (!effectiveEditing.value) {
             draftTags.value = [...displayTags.value]
         }
     },
@@ -187,9 +196,10 @@ watch(
 watch(
     () => props.isSaving,
     (newVal, oldVal) => {
-        if (oldVal && !newVal && !props.error) {
-            isEditing.value = false
-            resetEditor()
+        if (oldVal && !newVal && !props.error && props.isEditing === undefined) {
+            internalEditing.value = false
+            draftTags.value = []
+            newTagName.value = ''
         }
     }
 )
@@ -316,5 +326,4 @@ const error = computed(() => props.error)
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: 0.01em;
-}
-</style>
+}</style>

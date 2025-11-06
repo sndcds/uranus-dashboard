@@ -1,5 +1,6 @@
 <template>
-  <div :class="{ 'event-header-section--editing': isEditing }">
+    <UranusInlineEditSection :active="isEditing">
+
     <UranusInlineEditLabel
         :label-text="t('event_title')"
         :edit-button-text="t('edit')"
@@ -33,7 +34,7 @@
       <h1 class="event-header-section__title">{{ title }}</h1>
       <p v-if="subtitle" class="event-header-section__subtitle">{{ subtitle }}</p>
     </template>
-  </div>
+  </UranusInlineEditSection>
 </template>
 
 <script setup lang="ts">
@@ -43,6 +44,7 @@ import { apiFetch } from '@/api'
 
 import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
+import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
 
 const props = defineProps<{
     eventId: number

@@ -70,20 +70,20 @@
             <div v-if="!showMetadata"
                 class="uranus-event-image-upload__meta-display"
             >
-                <span v-if="localAltText" class="event-image-upload__meta-line">
+                <span>
                     <strong>{{ t('event_image_alt_text') }}:</strong> {{ localAltText }}
                 </span>
-                <span v-if="localCopyright">
+                <span>
                     <strong>{{ t('event_image_copyright') }}:</strong> {{ localCopyright }}
                 </span>
-                <span v-if="localLicense">
+                <span>
                     <strong>{{ t('event_image_license') }}:</strong>
                         {{
                             licenseOptions.find((l) => l.value === localLicense)?.label ||
                             t('event_image_license_unknown')
                         }}
                 </span>
-                <span v-if="localCreatedBy">
+                <span>
                     <strong>{{ t('event_image_created_by') }}:</strong> {{ localCreatedBy }}
                 </span>
             </div>
@@ -95,36 +95,23 @@
                                  :label="t('event_image_alt_text')"
                 />
 
-                <div class="event-image-upload__field">
-                    <label
-                        for="image-copyright"
-                        class="event-image-upload__label">{{ t('event_image_copyright') }}
-                    </label>
-                    <input
-                        id="image-copyright"
-                        v-model="localCopyright"
-                        type="text"
-                        class="event-image-upload__input"
-                        :placeholder="t('event_image_copyright_placeholder')"
-                    />
-                </div>
+                <UranusTextInput id="image-copyright"
+                                 v-model="localCopyright"
+                                 :label="t('event_image_copyright')"
+                />
 
-                <div class="event-image-upload__field">
-                    <label
-                        for="image-created-by"
-                        class="event-image-upload__label">{{ t('event_image_created_by') }}
-                    </label>
-                    <input
-                        id="image-created-by"
-                        v-model="localCreatedBy"
-                        type="text"
-                        class="event-image-upload__input"
-                        :placeholder="t('event_image_created_by_placeholder')"
-                    />
-                </div>
+                <UranusTextInput id="image-created-by"
+                                 v-model="localCreatedBy"
+                                 :label="t('event_image_created_by')"
+                                 :placeholder="t('event_image_created_by_placeholder')"
+                />
 
+                <UranusFieldLabel
+                    id="image-license"
+                    :label="t('event_image_license')"
+                    :error="licenseError"
+                >
                 <div class="event-image-upload__field">
-                    <label for="image-license" class="event-image-upload__label">{{ t('event_image_license') }}</label>
                     <select
                         id="image-license"
                         v-model.number="localLicense"
@@ -146,6 +133,7 @@
                         <p class="form-feedback-error">{{ licenseError }}</p>
                     </div>
                 </div>
+                    </UranusFieldLabel>
 
                 <!-- Save Action -->
                 <div class="event-image-upload__actions">
@@ -452,6 +440,7 @@ import { onUnmounted } from 'vue'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
 import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
 import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
 onUnmounted(() => {
     clearPreview()
 })

@@ -1,5 +1,5 @@
 <template>
-    <section class="uranus-hover-section" :class="{ 'event-url-section--editing': isEditingLinks }">
+    <UranusInlineEditSection :active="isEditingLinks">
 
         <UranusInlineEditLabel :label-text="t('event_links_title')" :edit-button-text="t('edit')"
             @edit-started="startEditingLinks" />
@@ -86,7 +86,7 @@
         <div v-if="error" class="error-message">
             {{ error }}
         </div>
-    </section>
+    </UranusInlineEditSection>
 </template>
 
 <script setup lang="ts">
@@ -94,6 +94,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
+import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
 
 interface Props {
     eventId: number

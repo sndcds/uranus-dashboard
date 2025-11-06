@@ -1,13 +1,16 @@
 <template>
-    <article>
+    <div>
         <EventImageUploadComponent v-model="eventImage" v-model:alt-text="imageAltText"
             v-model:copyright="imageCopyright" v-model:license="imageLicense" v-model:created-by="imageCreatedBy"
             :event-id="eventId" :max-size="5 * 1024 * 1024" :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
             :existing-image-url="existingImagePreviewUrl" :upload-url="`/api/admin/event/${eventId}/image`"
             :delete-url="`/api/admin/event/${eventId}/image`" :get-url="`/api/admin/event/${eventId}/image`"
             @updated="emit('updated')" />
-        <div class="uranus-hover-section">
-            <template v-if="isEditing">
+
+        <UranusInlineEditSection :active="isEditing">
+            <UranusInlineEditLabel :label-text="t('teaser_text')" :edit-button-text="t('edit')"
+                                   @edit-started="startEditing" />
+            <div v-if="isEditing">
                 <MarkdownEditorComponent v-model="editedTeaser" class="event-teaser__markdown"
                     :placeholder="t('event_teaser_placeholder')" />
                 <div class="event-teaser__actions">
@@ -19,19 +22,20 @@
                         <span v-else>{{ t('saving') }}</span>
                     </button>
                 </div>
-            </template>
-            <template v-else>
-                <UranusInlineEditLabel :label-text="t('teaser_text')" :edit-button-text="t('edit')"
-                    @edit-started="startEditing" />
+            </div>
+            <div v-else>
                 <p class="event-teaser__text">
                     {{ teaserText || t('event_teaser_fallback') }}
                 </p>
-            </template>
-        </div>
+            </div>
+        </UranusInlineEditSection>
 
-        <EventTagsSection class="event-teaser__tags" :event-id="eventId" :tags="tags ?? undefined"
+        <EventTagsSection
+            class="event-teaser__tags"
+            :event-id="eventId"
+            :tags="tags ?? undefined"
             @updated="emit('updated')" />
-    </article>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -43,6 +47,7 @@ import EventImageUploadComponent from '@/components/event/EventImageUploadCompon
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import EventTagsSection from '@/components/event/EventTagsSection.vue'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
+import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
 
 const props = defineProps<{
     eventId: number

@@ -1,20 +1,28 @@
 <template>
-    <TagManagerComponent
-        class="event-tags-section"
-        :tags="tags"
-        :is-saving="isSaving"
-        :error="error"
-        :title="t('event_teaser_tags')"
-        :edit-label="t('event_tags_edit')"
-        :empty-label="t('tag_no_tags')"
-        :add-placeholder="t('tag_select_placeholder')"
-        :add-button-label="t('tag_selector_add')"
-        :save-label="t('form_save')"
-        :cancel-label="t('form_cancel')"
-        :saving-label="t('form_saving')"
-        @save="handleSave"
-        @cancel="handleCancel"
-    />
+    <UranusInlineEditSection :active="isActive">
+        <UranusInlineEditLabel
+            label-text="Hello"
+            :edit-button-text="t('edit')"
+            @edit-started="startEditing"
+        />
+        <TagManagerComponent
+            class="event-tags-section"
+            :tags="tags"
+            :is-saving="isSaving"
+            :error="error"
+            :title="t('event_teaser_tags')"
+            :edit-label="t('event_tags_edit')"
+            :empty-label="t('tag_no_tags')"
+            :add-placeholder="t('tag_select_placeholder')"
+            :add-button-label="t('tag_selector_add')"
+            :save-label="t('form_save')"
+            :cancel-label="t('form_cancel')"
+            :saving-label="t('form_saving')"
+            :is-editing="isActive"
+            @save="handleSave"
+            @cancel="handleCancel"
+        />
+</UranusInlineEditSection>
 </template>
 
 <script setup lang="ts">
@@ -22,6 +30,8 @@ import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import TagManagerComponent from '@/components/TagManagerComponent.vue'
+import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
+import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
 
 const props = defineProps<{
     eventId: number
@@ -35,6 +45,7 @@ const emit = defineEmits<{
 const { t } = useI18n({ useScope: 'global' })
 
 const tags = ref<string[]>([])
+const isActive = ref(false)
 const isSaving = ref(false)
 const error = ref('')
 
@@ -56,6 +67,17 @@ const uniqueNormalized = (values: readonly unknown[] = []): string[] => {
 
 const applyTags = (incoming: readonly unknown[] | null | undefined) => {
     tags.value = uniqueNormalized(Array.isArray(incoming) ? incoming : [])
+}
+
+// --- Editing control ---
+const startEditing = () => {
+    isActive.value = true
+}
+
+const handleCancel = () => {
+    error.value = ''
+    applyTags(props.tags)
+    isActive.value = false
 }
 
 const handleSave = async (draft: string[]) => {
@@ -80,11 +102,6 @@ const handleSave = async (draft: string[]) => {
     } finally {
         isSaving.value = false
     }
-}
-
-const handleCancel = () => {
-    error.value = ''
-    applyTags(props.tags)
 }
 
 watch(

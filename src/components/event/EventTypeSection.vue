@@ -1,5 +1,5 @@
 <template>
-    <section class="uranus-hover-section">
+    <UranusInlineEditSection :active="isEditing">
       <UranusInlineEditLabel
           :label-text="t('event_tags_heading')"
           :edit-button-text="t('edit')"
@@ -38,7 +38,7 @@
                 <span v-else>{{ t('saving') }}</span>
             </button>
         </div>
-    </section>
+    </UranusInlineEditSection>
 </template>
 
 <script setup lang="ts">
@@ -48,6 +48,7 @@ import { apiFetch } from '@/api'
 import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
 import type { Selection as TagSelection } from '@/components/TwoStageTagListComponent.vue'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
+import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
 
 interface EventType {
     type_id: number

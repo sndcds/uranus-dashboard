@@ -2,33 +2,62 @@
   <div v-if="event">
     <div class="event-content">
       <section class="event-layout">
-        <EventImageUploadComponent v-model="eventImage" v-model:alt-text="imageAltText"
-          v-model:copyright="imageCopyright" v-model:license="imageLicense" v-model:created-by="imageCreatedBy"
-          :event-id="eventId" :max-size="5 * 1024 * 1024" :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
-          :existing-image-id="event.image_id" :existing-image-url="existingImagePreviewUrl"
-          :upload-url="`/api/admin/event/${eventId}/image`" :delete-url="`/api/admin/event/${eventId}/image`"
-          :get-url="`/api/admin/event/${eventId}/image`" @updated="loadEvent" />
+        <EventImageUploadComponent
+            v-model="eventImage"
+            v-model:alt-text="imageAltText"
+            v-model:copyright="imageCopyright"
+            v-model:license="imageLicense"
+            v-model:created-by="imageCreatedBy"
+            :event-id="eventId"
+            :max-size="5 * 1024 * 1024"
+            :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
+            :existing-image-id="event.image_id"
+            :existing-image-url="existingImagePreviewUrl"
+            :upload-url="`/api/admin/event/${eventId}/image`"
+            :delete-url="`/api/admin/event/${eventId}/image`"
+            :get-url="`/api/admin/event/${eventId}/image`"
+            @updated="loadEvent" />
 
-        <EventHeaderSection class="uranus-hover-section" :event-id="event.id" :title="event.title"
-          :subtitle="event.subtitle" @updated="loadEvent" />
+        <EventHeaderSection
+            class="uranus-hover-section"
+            :event-id="event.id"
+            :title="event.title"
+            :subtitle="event.subtitle"
+            @updated="loadEvent" />
 
-        <EventDescriptionSection :event-id="event.id" :description="event.description"
-          :participation-info="event.participation_info" :meeting-point="event.meeting_point"
-          :event-types="event.event_types" :languages="event.languages" :locale="locale" @updated="loadEvent" />
+        <EventDescriptionSection
+            :event-id="event.id"
+            :description="event.description"
+            :participation-info="event.participation_info"
+            :meeting-point="event.meeting_point"
+            :event-types="event.event_types"
+            :languages="event.languages"
+            :locale="locale"
+            @updated="loadEvent" />
 
-        <EventUrlSection :event-id="event.id" :links="eventLinks" @updated="loadEvent" />
+        <EventUrlSection
+            :event-id="event.id"
+            :links="eventLinks"
+            @updated="loadEvent" />
 
-        <EventTeaserSection :event-id="event.id" :teaser-text="event.teaser_text" :tags="event.tags"
-          class="event-teaser" @updated="loadEvent" />
+        <EventTeaserSection
+            :event-id="event.id"
+            :teaser-text="event.teaser_text"
+            :tags="event.tags"
+            class="event-teaser"
+            @updated="loadEvent" />
       </section>
 
       <div class="event-sidebar">
-        <LocationMapComponent :latitude="event.venue_lat" :longitude="event.venue_lon" :zoom="18" :selectable="false"
-          class="event-map" />
+        <LocationMapComponent
+            :latitude="event.venue_lat"
+            :longitude="event.venue_lon"
+            :zoom="18"
+            :selectable="false" class="event-map" />
 
         <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
-          :event-dates="eventSchedulePayload" :space-id="event.space_id" :space-name="event.space_name ?? ''"
-          @updated="loadEvent" />
+            :event-dates="eventSchedulePayload" :space-id="event.space_id" :space-name="event.space_name ?? ''"
+            @updated="loadEvent" />
 
         <EventVenueSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
           :venue-name="event.venue_name" :venue-street="event.venue_street ?? ''"
@@ -38,8 +67,12 @@
           :space-seating-capacity="event.space_seating_capacity" :space-total-capacity="event.space_total_capacity"
           @updated="loadEvent" />
 
-        <EventReleaseSection :event-id="event.id" :release-status-id="event.release_status_id"
-          :release-date="event.release_date" :locale="locale" @updated="loadEvent" />
+        <EventReleaseSection
+            :event-id="event.id"
+            :release-status-id="event.release_status_id"
+            :release-date="event.release_date"
+            :locale="locale"
+            @updated="loadEvent" />
       </div>
     </div>
   </div>
@@ -143,9 +176,9 @@ interface EventDetail {
   venue_state_code: string | null
   space_id: number | null
   space_name: string | null
-  space_building_level: number | null
-  space_seating_capacity: number | null
-  space_total_capacity: number | null
+    space_building_level: number | null
+    space_seating_capacity: number | null
+    space_total_capacity: number | null
   start_date: string | null
   start_time: string | null
   end_date: string | null
@@ -177,12 +210,12 @@ const primaryEventDate = computed<EventDate | null>(() => {
 
 const dateFormatter = computed(
   () =>
-    new Intl.DateTimeFormat(locale.value, {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+  new Intl.DateTimeFormat(locale.value, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
 )
 
 const timeFormatter = computed(() => new Intl.DateTimeFormat(locale.value, { hour: '2-digit', minute: '2-digit' }))
@@ -236,7 +269,7 @@ const eventSchedulePayload = computed<EventSchedulePayloadItem[]>(() => {
     const payload: EventSchedulePayloadItem = {}
 
     if (date.event_date_id !== null) {
-      payload.id = date.event_date_id
+        payload.id = date.event_date_id
     }
 
     if (date.start_date) {
@@ -373,11 +406,11 @@ const mapEventImage = (raw: unknown): EventImageDetail | null => {
   const imageId = toNumberOrNull(record.image_id ?? record.id ?? record.imageId ?? record.main_image_id)
   const urlCandidate =
     toNullableString(
-      record.url ??
-      record.image_url ??
-      record.path ??
-      record.src ??
-      (typeof record.image === 'string' ? record.image : null)
+        record.url ??
+        record.image_url ??
+        record.path ??
+        record.src ??
+        (typeof record.image === 'string' ? record.image : null)
     ) ?? null
 
   return {
@@ -458,19 +491,19 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
   if (id === null) return null
 
   const eventTypes = Array.isArray(record.event_types)
-    ? (record.event_types as unknown[]).map(mapEventType).filter(Boolean) as EventType[]
-    : []
+      ? (record.event_types as unknown[]).map(mapEventType).filter(Boolean) as EventType[]
+      : []
 
   const eventDates = Array.isArray(record.event_dates)
-    ? (record.event_dates as unknown[]).map(mapEventDate).filter(Boolean) as EventDate[]
-    : []
+      ? (record.event_dates as unknown[]).map(mapEventDate).filter(Boolean) as EventDate[]
+      : []
 
   const eventUrls = Array.isArray(record.event_urls)
-    ? (record.event_urls as unknown[]).map(mapEventUrl).filter(Boolean) as EventUrl[]
-    : []
+      ? (record.event_urls as unknown[]).map(mapEventUrl).filter(Boolean) as EventUrl[]
+      : []
 
   const languageCodes = mapLanguageCodes(
-    (record.languages ?? record.language_codes ?? record.event_languages) as unknown
+      (record.languages ?? record.language_codes ?? record.event_languages) as unknown
   )
 
   const primary = eventDates.find((entry) => entry.start_date || entry.start_time || entry.entry_time || entry.end_date || entry.end_time) ?? null
@@ -497,10 +530,10 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
     image_focus_y: toNumberOrNull(record.image_focus_y),
     image_license_id: toNullableString(record.image_license_id),
     image_url: toNullableString(
-      record.image_url ??
-      record.main_image_url ??
-      (typeof record.image === 'string' ? record.image : null) ??
-      (record.image && typeof record.image === 'object'
+        record.image_url ??
+        record.main_image_url ??
+        (typeof record.image === 'string' ? record.image : null) ??
+        (record.image && typeof record.image === 'object'
         ? (record.image as Record<string, unknown>).url
         : null)
     ),
@@ -517,9 +550,9 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
     venue_state_code: toNullableString(record.venue_state_code),
     space_id: toNumberOrNull(record.space_id),
     space_name: toNullableString(record.space_name),
-    space_building_level: toNumberOrNull(record.space_building_level),
-    space_seating_capacity: toNumberOrNull(record.space_seating_capacity),
-    space_total_capacity: toNumberOrNull(record.space_total_capacity),
+      space_building_level: toNumberOrNull(record.space_building_level),
+      space_seating_capacity: toNumberOrNull(record.space_seating_capacity),
+      space_total_capacity: toNumberOrNull(record.space_total_capacity),
     start_date: primary?.start_date ?? null,
     start_time: primary?.start_time ?? null,
     end_date: primary?.end_date ?? null,
@@ -622,9 +655,9 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .event-page {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1rem, 4vw, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 4vw, 1.5rem);
 }
 
 .event-content {
@@ -637,97 +670,97 @@ onMounted(() => {
 }
 
 .event-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(1rem, 4vw, 1.5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1rem, 4vw, 1.5rem);
 }
 
 .event-map {
-  width: 100%;
-  height: 250px;
-  border-radius: 12px;
-  overflow: hidden;
+    width: 100%;
+    height: 250px;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .event-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .event-loading {
-  min-height: 50vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  color: var(--muted-text);
-  padding: 2rem 1rem;
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--muted-text);
+    padding: 2rem 1rem;
 }
 
 .event-map-wrapper {
-  width: 100%; // or a fixed width
+  width: 100%;          // or a fixed width
 }
 
 .event-map {
   width: 100%;
-  height: 100%; // fill the wrapper
+  height: 100%;         // fill the wrapper
 }
 
 @media (min-width: 640px) {
-  .event-page {
-    gap: clamp(1.25rem, 3vw, 2rem);
-    padding: 0 clamp(1.5rem, 5vw, 3rem);
-  }
+    .event-page {
+        gap: clamp(1.25rem, 3vw, 2rem);
+        padding: 0 clamp(1.5rem, 5vw, 3rem);
+    }
 
-  .event-layout {
-    gap: clamp(1.25rem, 3vw, 2rem);
-  }
+    .event-layout {
+        gap: clamp(1.25rem, 3vw, 2rem);
+    }
 
-  .event-map {
-    height: 280px;
-  }
+    .event-map {
+        height: 280px;
+    }
 
-  .event-sidebar {
-    gap: 1.25rem;
-  }
+    .event-sidebar {
+        gap: 1.25rem;
+    }
 }
 
 @media (min-width: 1024px) {
-  .event-page {
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-    margin: 0 auto;
-  }
+    .event-page {
+        gap: clamp(1.5rem, 3vw, 2.5rem);
+        margin: 0 auto;
+    }
 
-  .event-content {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    gap: clamp(1.5rem, 3vw, 2rem);
-    align-items: start;
-  }
+    .event-content {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        gap: clamp(1.5rem, 3vw, 2rem);
+        align-items: start;
+    }
 
-  .event-layout {
-    gap: clamp(1.5rem, 3vw, 2rem);
-  }
+    .event-layout {
+        gap: clamp(1.5rem, 3vw, 2rem);
+    }
 
-  .event-sidebar {
-    align-self: stretch;
-  }
+    .event-sidebar {
+        align-self: stretch;
+    }
 
-  .event-map {
-    width: 100%;
-    height: 100%;
-    min-height: 320px;
-  }
+    .event-map {
+        width: 100%;
+        height: 100%;
+        min-height: 320px;
+    }
 }
 
 @media (min-width: 1280px) {
-  .event-page {
-    padding: 0 clamp(2rem, 4vw, 3rem);
-  }
+    .event-page {
+        padding: 0 clamp(2rem, 4vw, 3rem);
+    }
 
-  .event-map {
-    height: 320px;
-  }
+    .event-map {
+        height: 320px;
+    }
 }
 </style>
