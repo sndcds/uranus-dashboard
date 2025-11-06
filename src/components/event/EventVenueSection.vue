@@ -1,6 +1,7 @@
 <template>
     <section class="uranus-card uranus-hover-section">
-        <UranusInlineEditLabel :label-text="t('venue')" :edit-button-text="t('edit')" @edit-started="startEditingVenue" />
+        <UranusInlineEditLabel :label-text="t('venue')" :edit-button-text="t('edit')"
+            @edit-started="startEditingVenue" />
 
         <h2>{{ venueName }}</h2>
 
@@ -40,11 +41,18 @@
                 @edit-started="startEditingSpace" />
 
             <p>{{ spaceName }} ({{ spaceCapacityDisplay }} {{ t('event_capacity_label') }})</p>
+            <p v-if="spaceBuildingLevelDisplay">
+                {{ spaceBuildingLevelDisplay }} ({{ t('event_building_level_label') }})
+            </p>
+            <p v-if="spaceSeatingCapacityDisplay">
+                {{ spaceSeatingCapacityDisplay }} ({{ t('event_seating_capacity_label') }})
+            </p>
 
             <template v-if="isEditingSpace">
                 <div class="event-space__controls">
-                    <label class="event-space__label" for="event-space-select">{{ t('event_space_select_label')
-                        }}</label>
+                    <label class="event-space__label" for="event-space-select">
+                        {{ t('event_space_select_label') }}
+                    </label>
                     <select id="event-space-select" class="event-space__select" v-model="selectedSpaceId"
                         :disabled="isLoadingSpaces">
                         <option :value="null" disabled>{{ t('event_space_select_placeholder') }}</option>
@@ -89,6 +97,8 @@ const props = defineProps<{
     spaceId: number | null
     spaceName: string
     spaceTotalCapacity: number | null
+    spaceBuildingLevel: string | null
+    spaceSeatingCapacity: number | null
 }>()
 
 const emit = defineEmits<{
@@ -109,6 +119,18 @@ const spaceOptions = ref<Array<{ id: number; name: string }>>([])
 const isLoadingSpaces = ref(false)
 const isSavingSpace = ref(false)
 
+const spaceSeatingCapacityDisplay = computed(() => {
+    if (props.spaceSeatingCapacity == null || Number.isNaN(props.spaceSeatingCapacity)) {
+        return '—'
+    }
+    return String(props.spaceSeatingCapacity)
+})
+const spaceBuildingLevelDisplay = computed(() => {
+    if (props.spaceBuildingLevel == null || props.spaceBuildingLevel.trim() === '') {
+        return '—'
+    }
+    return props.spaceBuildingLevel
+})
 const spaceCapacityDisplay = computed(() => {
     if (props.spaceTotalCapacity == null || Number.isNaN(props.spaceTotalCapacity)) {
         return '—'

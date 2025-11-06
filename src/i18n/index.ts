@@ -126,6 +126,8 @@ const messages = {
     de: {
         ...event.de,
         ...sharedAuthFor('de'),
+        event_building_level_label: 'Etage',
+        event_seating_capacity_label: 'Sitzplatzkapazität',
         email_required: 'E-Mail ist erforderlich',
         organizer: 'Veranstalter',
         visitor_nav_admin_dashboard: 'Dashboard',
@@ -707,6 +709,8 @@ const messages = {
     en: {
         ...event.en,
         ...sharedAuthFor('en'),
+        event_building_level_label: 'Level',
+        event_seating_capacity_label: 'Seating capacity',
         email_required: 'Email is required',
         organizer: 'Organizer',
         visitor_nav_admin_dashboard: 'Dashboard',
@@ -1283,6 +1287,8 @@ const messages = {
     da: {
         ...event.da,
         ...sharedAuthFor('da'),
+        event_building_level_label: 'Etage',
+        event_seating_capacity_label: 'SiddPladsKapacitet',
         email_required: 'E-mail er påkrævet',
         organizer: 'Arrangør',
         visitor_nav_admin_dashboard: 'Dashboard',

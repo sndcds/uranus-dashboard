@@ -1,16 +1,10 @@
 <template>
     <section class="uranus-card uranus-hover-section">
-      <UranusInlineEditLabel
-          :label-text="t('event_details_time')"
-          :edit-button-text="t('edit')"
-          @edit-started="startEditingSchedule"
-      />
+        <UranusInlineEditLabel :label-text="t('event_details_time')" :edit-button-text="t('edit')"
+            @edit-started="startEditingSchedule" />
 
-        <button
-          v-if="isEditingSchedule"
-          class="uranus-inline-cancel-button"
-          @click="cancelEditingSchedule">
-          {{ t('form_cancel') }}
+        <button v-if="isEditingSchedule" class="uranus-inline-cancel-button" @click="cancelEditingSchedule">
+            {{ t('form_cancel') }}
         </button>
 
         <EventDatesComponent v-if="isEditingSchedule" ref="scheduleEditorRef" class="event-meta__editor"
@@ -70,7 +64,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
-import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
+import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
 
 interface EventDateApi {
     id?: number | null
