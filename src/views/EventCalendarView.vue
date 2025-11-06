@@ -189,6 +189,12 @@ const intlDate = new Intl.DateTimeFormat(undefined, {
     year: 'numeric',
 })
 
+const intlDateCompact = new Intl.DateTimeFormat(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+})
+
 const intlWeekday = new Intl.DateTimeFormat(undefined, {
     weekday: 'long',
 })
@@ -533,7 +539,7 @@ const formatCompactDate = (date: string) => {
         return t('events_calendar_yesterday')
     }
 
-    return intlDate.format(parsedDate)
+    return intlDateCompact.format(parsedDate)
 }
 
 const formatNumberDate = (date: string, locale = navigator.language) => {
