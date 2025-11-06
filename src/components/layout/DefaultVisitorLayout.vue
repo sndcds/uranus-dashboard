@@ -60,6 +60,9 @@
                             {{ link.label }}
                         </router-link>
                     </slot>
+                    <a href="https://github.com/sndcds/uranus-dashboard" target="_blank" rel="noopener" class="visitor-layout__footer-link">
+                        GitHub
+                    </a>
                 </div>
                 <p class="visitor-layout__footer-copy">© {{ currentYear }} Uranus</p>
             </div>
