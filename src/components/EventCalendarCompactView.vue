@@ -11,10 +11,13 @@
         </div>
         <div v-else class="calendar-events-compact">
             <article v-for="event in filteredEvents" :key="event.id" class="calendar-event-compact">
-                <div class="calendar-event-compact__summary" @click="toggleEvent(event.id, event.event_date_id, $event)">
+                <div class="calendar-event-compact__summary"
+                    @click="toggleEvent(event.id, event.event_date_id, $event)">
                     <div class="calendar-event-compact__time">
-                        <span class="calendar-event-compact__date-badge">{{ formatCompactDate(event.start_date) }}</span>
-                        <span class="calendar-event-compact__time-badge">{{ formatTime(event.start_date, event.start_time) }}</span>
+                        <span class="calendar-event-compact__date-badge">{{ formatCompactDate(event.start_date)
+                        }}</span>
+                        <span class="calendar-event-compact__time-badge">{{ formatTime(event.start_date,
+                            event.start_time) }}</span>
                     </div>
                     <div class="calendar-event-compact__content">
                         <header class="calendar-event-compact__header">
@@ -29,7 +32,7 @@
                             <ul v-if="event.typeLabels.length" class="calendar-event-compact__tags">
                                 <li v-for="tag in event.typeLabels" :key="tag">
                                     <button type="button" class="calendar-event-compact__tag-button"
-                                        :class="{ 'is-active': selectedType === tag }" 
+                                        :class="{ 'is-active': selectedType === tag }"
                                         @click.prevent.stop="emit('filterByTag', tag)"
                                         :aria-pressed="selectedType === tag">
                                         {{ tag }}
@@ -39,11 +42,14 @@
                         </div>
                     </div>
                     <div class="calendar-event-compact__icon">
-                        <span :class="{ 'is-expanded': expandedEventId === event.id }">▼</span>
+                        <span
+                            :class="{ 'is-expanded': expandedEventId === `${event.id}-${event.event_date_id}` }">▼</span>
                     </div>
                 </div>
-                <div v-if="expandedEventId === event.id" class="calendar-event-compact__details">
-                    <div v-if="loadingEventId === event.id" class="calendar-event-compact__loading">
+                <div v-if="expandedEventId === `${event.id}-${event.event_date_id}`"
+                    class="calendar-event-compact__details">
+                    <div v-if="loadingEventId === `${event.id}-${event.event_date_id}`"
+                        class="calendar-event-compact__loading">
                         Loading...
                     </div>
                     <div v-else-if="eventDetailsError" class="calendar-event-compact__error">
@@ -51,12 +57,12 @@
                     </div>
                     <div v-else-if="eventDetails" class="calendar-event-compact__info">
                         <div v-if="eventDetails.image_path" class="calendar-event-compact__image-wrapper">
-                            <img 
-                                :src="eventDetails.image_path + (eventDetails.image_path.includes('?') ? '&' : '?') + 'ratio=16by9&width=600'"
+                            <img :src="eventDetails.image_path + (eventDetails.image_path.includes('?') ? '&' : '?') + 'ratio=16by9&width=600'"
                                 :alt="eventDetails.image_alt_text || eventDetails.title"
                                 class="calendar-event-compact__image" />
                         </div>
-                        <div v-if="eventDetails.description" class="calendar-event-compact__description" v-html="formatDescription(eventDetails.description)"></div>
+                        <div v-if="formattedDescription" class="calendar-event-compact__description"
+                            v-html="formattedDescription"></div>
                         <div class="calendar-event-compact__metadata">
                             <div class="calendar-event-compact__field">
                                 <strong>Date:</strong> {{ formatCompactDate(eventDetails.start_date) }}
@@ -64,12 +70,14 @@
                                     at {{ formatTime(eventDetails.start_date, eventDetails.start_time) }}
                                 </template>
                                 <template v-if="eventDetails.end_date || eventDetails.end_time">
-                                    - 
-                                    <template v-if="eventDetails.end_date && eventDetails.end_date !== eventDetails.start_date">
+                                    -
+                                    <template
+                                        v-if="eventDetails.end_date && eventDetails.end_date !== eventDetails.start_date">
                                         {{ formatCompactDate(eventDetails.end_date) }}
                                     </template>
                                     <template v-if="eventDetails.end_time">
-                                        {{ formatTime(eventDetails.end_date || eventDetails.start_date, eventDetails.end_time) }}
+                                        {{ formatTime(eventDetails.end_date || eventDetails.start_date,
+                                            eventDetails.end_time) }}
                                     </template>
                                 </template>
                             </div>
@@ -79,8 +87,11 @@
                             <div v-if="eventDetails.space_name" class="calendar-event-compact__field">
                                 <strong>Space:</strong> {{ eventDetails.space_name }}
                             </div>
-                            <div v-if="eventDetails.venue_street && eventDetails.venue_house_number" class="calendar-event-compact__field">
-                                <strong>Address:</strong> {{ eventDetails.venue_street }} {{ eventDetails.venue_house_number }}, {{ eventDetails.venue_postal_code }} {{ eventDetails.venue_city }}
+                            <div v-if="eventDetails.venue_street && eventDetails.venue_house_number"
+                                class="calendar-event-compact__field">
+                                <strong>Address:</strong> {{ eventDetails.venue_street }} {{
+                                    eventDetails.venue_house_number }}, {{
+                                    eventDetails.venue_postal_code }} {{ eventDetails.venue_city }}
                             </div>
                             <div v-if="eventDetails.event_urls?.length" class="calendar-event-compact__field">
                                 <strong>Links:</strong>
@@ -94,7 +105,8 @@
                             </div>
                         </div>
                         <div class="calendar-event-compact__actions">
-                            <router-link :to="`/event/${event.id}/date/${event.event_date_id}`" class="calendar-event-compact__view-button">
+                            <router-link :to="`/event/${event.id}/date/${event.event_date_id}`"
+                                class="calendar-event-compact__view-button">
                                 View Full Event
                             </router-link>
                         </div>
@@ -229,25 +241,32 @@ const loadingLabel = computed(() => t('events_calendar_loading'))
 const emptyLabel = computed(() => t('events_calendar_empty'))
 
 // Accordion state
-const expandedEventId = ref<number | null>(null)
-const loadingEventId = ref<number | null>(null)
+const expandedEventId = ref<string | null>(null)
+const loadingEventId = ref<string | null>(null)
 const eventDetails = ref<EventDetails | null>(null)
 const eventDetailsError = ref<string | null>(null)
+const formattedDescription = ref<string>('')
+
+const getEventKey = (eventId: number, eventDateId: number) => `${eventId}-${eventDateId}`
 
 const toggleEvent = async (eventId: number, eventDateId: number, event: MouseEvent) => {
-    if (expandedEventId.value === eventId) {
+    const eventKey = getEventKey(eventId, eventDateId)
+
+    if (expandedEventId.value === eventKey) {
         // Collapse if already expanded
         expandedEventId.value = null
         eventDetails.value = null
         eventDetailsError.value = null
+        formattedDescription.value = ''
         return
     }
 
     // Expand new event
-    expandedEventId.value = eventId
-    loadingEventId.value = eventId
+    expandedEventId.value = eventKey
+    loadingEventId.value = eventKey
     eventDetailsError.value = null
     eventDetails.value = null
+    formattedDescription.value = ''
 
     // Scroll to the top of the clicked accordion
     const target = event.currentTarget as HTMLElement
@@ -259,15 +278,18 @@ const toggleEvent = async (eventId: number, eventDateId: number, event: MouseEve
     try {
         const response = await apiFetch<EventDetails>(`/api/event/${eventId}/date/${eventDateId}`)
         eventDetails.value = response.data
+
+        // Convert markdown to HTML
+        if (response.data.description) {
+            formattedDescription.value = marked.parse(response.data.description, { async: false }) as string
+        } else {
+            formattedDescription.value = ''
+        }
     } catch (error) {
         eventDetailsError.value = error instanceof Error ? error.message : 'Failed to load event details'
     } finally {
         loadingEventId.value = null
     }
-}
-
-const formatDescription = (description: string): string => {
-    return marked.parse(description, { async: false }) as string
 }
 </script>
 
