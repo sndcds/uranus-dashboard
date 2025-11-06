@@ -61,7 +61,7 @@
                         </router-link>
                     </slot>
                     <a href="https://github.com/sndcds/uranus-dashboard" target="_blank" rel="noopener" class="visitor-layout__footer-link">
-                        GitHub
+                        <img src="/github-mark.svg" alt="GitHub" class="visitor-layout__footer-icon" />GitHub
                     </a>
                 </div>
                 <p class="visitor-layout__footer-copy">© {{ currentYear }} Uranus</p>
@@ -189,6 +189,12 @@ watch(
 </script>
 
 <style scoped lang="scss">
+.visitor-layout__footer-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
 .visitor-layout {
     min-height: 100vh;
     display: flex;
