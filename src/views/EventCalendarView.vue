@@ -16,6 +16,10 @@
         </div>
 
         <ul class="calendar-event-types-list">
+            <li>
+                <button @click="filterByType('all')" :class="{ 'is-active': activeSelectedType === 'all' }">{{
+                    allEventsLabel }} ({{ allEventsCount }})</button>
+            </li>
             <li v-for="type in typeCountOptions" :key="type.id">
                 <button @click="filterByType(type.id)" :class="{ 'is-active': activeSelectedType === type.id }">{{
                     type.name }} ({{ type.count }})</button>
@@ -80,11 +84,6 @@ interface CalendarEventType {
     type_name: string
 }
 
-interface EventTypeOption {
-    id: number
-    name: string
-}
-
 interface EventTypesCount {
     id: number
     name: string
@@ -130,12 +129,10 @@ const appStore = useAppStore()
 const events = ref<AugmentedEvent[]>([])
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
-const typeOptions = ref<string[]>([])
 const typeCountOptions = ref<EventTypesCount[]>([])
-const isTypesLoading = ref(false)
 const isInitialLoadComplete = ref(false)
 const suspendDateWatcher = ref(false)
-const activeSelectedType = ref<number | null>(null)
+const activeSelectedType = ref<number | string | null>(null)
 
 const searchQuery = ref('')
 const selectedType = ref<'all' | string>('all')
@@ -190,6 +187,11 @@ const compactViewLabel = computed(() => t('events_calendar_compact_view'))
 const tilesViewLabel = computed(() => t('events_calendar_tiles_view'))
 const dailyGroupingLabel = computed(() => t('events_calendar_daily_grouping'))
 const monthlyGroupingLabel = computed(() => t('events_calendar_monthly_grouping'))
+const allEventsLabel = computed(() => t('events_calendar_all_events'))
+
+const allEventsCount = computed(() => {
+    return typeCountOptions.value.reduce((sum, type) => sum + type.count, 0)
+})
 
 // Date field behaviour
 const tempStartDate = ref<string | null>(null)
@@ -213,38 +215,10 @@ const onDateConfirm = async (which: 'start' | 'end', event: Event) => {
     await loadEvents({ preserveSelection: true })
 }
 
-const deriveTypeNamesFromEvents = () => {
-    const names = new Set<string>()
-    for (const event of events.value) {
-        for (const label of event.typeLabels) {
-            if (label) {
-                names.add(label)
-            }
-        }
-    }
-    const localeValue = locale.value || undefined
-    return Array.from(names).sort((a, b) => a.localeCompare(b, localeValue, { sensitivity: 'base' }))
-}
-
-const ensureSelectedTypeIsValid = () => {
-    if (selectedType.value !== 'all' && !typeOptions.value.includes(selectedType.value)) {
-        selectedType.value = 'all'
-    }
-}
-
-const ensureTypeOptionPresent = (label: string) => {
-    if (!label) return
-    if (typeOptions.value.includes(label)) return
-    const localeValue = locale.value || undefined
-    const updated = [...typeOptions.value, label]
-    updated.sort((a, b) => a.localeCompare(b, localeValue, { sensitivity: 'base' }))
-    typeOptions.value = updated
-}
-
 const filterByTag = (tag: string) => {
     const normalized = tag?.trim()
     if (!normalized) return
-    ensureTypeOptionPresent(normalized)
+
     if (selectedType.value === normalized) {
         selectedType.value = 'all'
     } else {
@@ -594,11 +568,40 @@ const setInitialDate = () => {
     clearDateFilters({ silent: true })
 }
 
-const setActiveSelectedType = (typeId: number) => {
+const setActiveSelectedType = (typeId: number | string) => {
     activeSelectedType.value = typeId
 }
 
-const filterByType = async (typeId: number) => {
+const filterByType = async (typeId: number | string) => {
+    // Handle "all" case
+    if (typeId === 'all') {
+        setActiveSelectedType('all')
+        selectedType.value = 'all'
+
+        isLoading.value = true
+        loadError.value = null
+
+        try {
+            const params = new URLSearchParams()
+            params.set('lang', locale.value)
+
+            const endpoint = `/api/events?${params.toString()}`
+            const { data } = await apiFetch<CalendarEvent[]>(endpoint)
+            events.value = hydrateEvents(Array.isArray(data) ? data : [])
+
+            ensureDatesWithinRange()
+        } catch (error: unknown) {
+            loadError.value =
+                error instanceof Error && error.message
+                    ? error.message
+                    : t('events_calendar_load_error')
+        } finally {
+            isLoading.value = false
+        }
+        return
+    }
+
+    // Handle specific type case
     const typeOption = typeCountOptions.value.find((type) => type.id === typeId)
     if (!typeOption) return
 
@@ -617,9 +620,7 @@ const filterByType = async (typeId: number) => {
         events.value = hydrateEvents(Array.isArray(data) ? data : [])
 
         // Update selected type
-        const typeName = typeOption.name
-        ensureTypeOptionPresent(typeName)
-        selectedType.value = typeName
+        selectedType.value = typeOption.name
 
         ensureDatesWithinRange()
     } catch (error: unknown) {
@@ -644,32 +645,6 @@ const loadTypesCount = async () => {
     }
 }
 
-const loadEventTypes = async () => {
-    isTypesLoading.value = true
-
-    try {
-        const params = new URLSearchParams()
-        const endpoint = `/api/choosable-event-types?lang=${locale.value}`
-        const { data } = await apiFetch<EventTypeOption[]>(endpoint)
-        const options = Array.isArray(data) ? data : []
-        const names = options
-            .map((option) => option?.name?.trim())
-            .filter((name): name is string => Boolean(name))
-        const localeValue = locale.value || undefined
-        typeOptions.value = Array.from(new Set(names)).sort((a, b) => a.localeCompare(b, localeValue, { sensitivity: 'base' }))
-
-        if (!typeOptions.value.length) {
-            typeOptions.value = deriveTypeNamesFromEvents()
-        }
-    } catch (error) {
-        console.error('Failed to load event types', error)
-        typeOptions.value = deriveTypeNamesFromEvents()
-    } finally {
-        ensureSelectedTypeIsValid()
-        isTypesLoading.value = false
-    }
-}
-
 const loadEvents = async (options: LoadEventsOptions = {}) => {
     const { preserveSelection = false } = options
     isLoading.value = true
@@ -684,11 +659,6 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
         }
 
         ensureDatesWithinRange()
-
-        if (!typeOptions.value.length) {
-            typeOptions.value = deriveTypeNamesFromEvents()
-            ensureSelectedTypeIsValid()
-        }
     } catch (error: unknown) {
         loadError.value =
             error instanceof Error && error.message
@@ -704,20 +674,11 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
 
 onMounted(() => {
     void loadEvents()
-    void loadEventTypes()
     void loadTypesCount()
 })
 
 watch(locale, () => {
-    void loadEventTypes()
-})
 
-watch(events, () => {
-    if (!typeOptions.value.length) {
-        typeOptions.value = deriveTypeNamesFromEvents()
-        ensureSelectedTypeIsValid()
-    }
-    ensureDatesWithinRange()
 })
 
 watch(

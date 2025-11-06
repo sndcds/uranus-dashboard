@@ -7,21 +7,20 @@
 
         <div class="calendar-sidebar__section calendar-sidebar__section--search">
             <label class="calendar-sidebar__label" :for="searchId">{{ searchLabel }}</label>
-            <input :id="searchId" type="search" :placeholder="searchPlaceholder"
-                v-model="searchQueryModel" :disabled="isLoading" />
+            <input :id="searchId" type="search" :placeholder="searchPlaceholder" v-model="searchQueryModel"
+                :disabled="isLoading" />
         </div>
 
         <div class="calendar-sidebar__section calendar-sidebar__section--dates">
             <label class="calendar-sidebar__label" :for="dateId">{{ dateLabel }}</label>
             <div class="calendar-sidebar__date-controls">
-                <input :id="dateId" type="date" :value="tempStartDate" :max="lastAvailableDate"
-                    :disabled="isLoading" @blur="onDateConfirm('start', $event)"
-                    @keyup.enter="onDateConfirm('start', $event)" />
+                <input :id="dateId" type="date" :value="tempStartDate" :max="lastAvailableDate" :disabled="isLoading"
+                    @blur="onDateConfirm('start', $event)" @keyup.enter="onDateConfirm('start', $event)" />
                 <div class="calendar-sidebar__end-date">
                     <label class="calendar-sidebar__sublabel" :for="endDateId">{{ endDateLabel }}</label>
-                    <input :id="endDateId" type="date" :value="tempEndDate"
-                        :min="selectedDate ?? firstAvailableDate" :max="lastAvailableDate" :disabled="isLoading"
-                        @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
+                    <input :id="endDateId" type="date" :value="tempEndDate" :min="selectedDate ?? firstAvailableDate"
+                        :max="lastAvailableDate" :disabled="isLoading" @blur="onDateConfirm('end', $event)"
+                        @keyup.enter="onDateConfirm('end', $event)" />
                 </div>
                 <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
                     :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
