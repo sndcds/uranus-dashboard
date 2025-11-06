@@ -48,7 +48,6 @@
                 :date-id="`calendar-date-${currentView}`" :end-date-id="`calendar-end-date-${currentView}`"
                 :search-query="searchQuery" :selected-date="selectedDate" :selected-end-date="selectedEndDate"
                 :temp-start-date="tempStartDate" :temp-end-date="tempEndDate" :is-loading="isLoading"
-                :last-available-date="lastAvailableDate" :first-available-date="firstAvailableDate"
                 :filters-active="filtersActive" @update:search-query="searchQuery = $event"
                 @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
 
@@ -93,10 +92,9 @@ interface EventTypesCount {
 }
 
 interface EventTypesCountResponse {
-    result: {
-        total: number
-        types: EventTypesCount[]
-    }
+    total: number
+    types: EventTypesCount[]
+
 }
 
 interface CalendarEvent {
@@ -207,7 +205,7 @@ watch(selectedDate, (val) => { tempStartDate.value = val })
 watch(selectedEndDate, (val) => { tempEndDate.value = val })
 
 const onDateConfirm = async (which: 'start' | 'end', event: Event) => {
-    // When user presses Enter or finishes input (onchange)
+    // When user presses Enter or finishes input (onblur)
     const target = event.target as HTMLInputElement
     const value = target.value || null
 
@@ -219,6 +217,7 @@ const onDateConfirm = async (which: 'start' | 'end', event: Event) => {
 
     // Trigger reload explicitly
     await loadEvents({ preserveSelection: true })
+    await loadTypesCount()
 }
 
 const filterByTag = (tag: string) => {
@@ -262,25 +261,8 @@ const clearDateFilters = (options?: { silent?: boolean }) => {
 }
 
 const ensureDatesWithinRange = () => {
-    const last = lastAvailableDate.value
-
-    if (!last) {
-        return
-    }
-
-    withDateWatcherSuspended(() => {
-        if (selectedDate.value && selectedDate.value > last) {
-            selectedDate.value = last
-        }
-
-        if (selectedEndDate.value && selectedEndDate.value > last) {
-            selectedEndDate.value = last
-        }
-
-        if (selectedDate.value && selectedEndDate.value && selectedEndDate.value < selectedDate.value) {
-            selectedEndDate.value = selectedDate.value
-        }
-    })
+    // No longer limiting dates to available range - let user enter any date
+    return
 }
 
 const availableDates = computed(() => {
@@ -293,27 +275,26 @@ const availableDates = computed(() => {
     return Array.from(unique).sort()
 })
 
-const firstAvailableDate = computed(() => (availableDates.value.length ? availableDates.value[0] : undefined))
-const lastAvailableDate = computed(() => (availableDates.value.length ? availableDates.value[availableDates.value.length - 1] : undefined))
-
 const computeRequestDateRange = () => {
     const normalizedStart = normalizeDateValue(selectedDate.value)
     const normalizedEnd = normalizeDateValue(selectedEndDate.value)
-    const startCandidate = normalizedStart ?? normalizedEnd
-    const endCandidate = normalizedEnd ?? normalizedStart
 
-    if (!startCandidate && !endCandidate) {
+    if (!normalizedStart && !normalizedEnd) {
         return null
     }
 
-    const start = startCandidate ?? endCandidate!
-    let end = endCandidate ?? start
-
-    if (end < start) {
-        end = start
+    // Only return what's actually set
+    const result: { start?: string; end?: string } = {}
+    
+    if (normalizedStart) {
+        result.start = normalizedStart
+    }
+    
+    if (normalizedEnd) {
+        result.end = normalizedEnd
     }
 
-    return { start, end }
+    return result
 }
 
 const buildEventsEndpoint = () => {
@@ -322,8 +303,31 @@ const buildEventsEndpoint = () => {
         return '/api/events'
     }
 
-    const params = new URLSearchParams({ start: range.start, end: range.end })
+    const params = new URLSearchParams()
+    if (range.start) {
+        params.set('start', range.start)
+    }
+    if (range.end) {
+        params.set('end', range.end)
+    }
+    
     return `/api/events?${params.toString()}`
+}
+
+const buildTypesCountEndpoint = () => {
+    const range = computeRequestDateRange()
+    const params = new URLSearchParams({ lang: locale.value })
+    
+    if (range) {
+        if (range.start) {
+            params.set('start', range.start)
+        }
+        if (range.end) {
+            params.set('end', range.end)
+        }
+    }
+    
+    return `/api/events/types-count?${params.toString()}`
 }
 
 interface LoadEventsOptions {
@@ -594,8 +598,6 @@ const filterByType = async (typeId: number | string) => {
             const endpoint = `/api/events?${params.toString()}`
             const { data } = await apiFetch<CalendarEvent[]>(endpoint)
             events.value = hydrateEvents(Array.isArray(data) ? data : [])
-
-            ensureDatesWithinRange()
         } catch (error: unknown) {
             loadError.value =
                 error instanceof Error && error.message
@@ -627,8 +629,6 @@ const filterByType = async (typeId: number | string) => {
 
         // Update selected type
         selectedType.value = typeOption.name
-
-        ensureDatesWithinRange()
     } catch (error: unknown) {
         loadError.value =
             error instanceof Error && error.message
@@ -641,18 +641,13 @@ const filterByType = async (typeId: number | string) => {
 
 const loadTypesCount = async () => {
     try {
-        const endpoint = `/api/events/types-count?lang=${locale.value}`
-        const { data } = await apiFetch<EventTypesCountResponse[]>(endpoint)
+        const endpoint = buildTypesCountEndpoint()
+        const { data } = await apiFetch<EventTypesCountResponse>(endpoint)
 
-        // Handle the nested response structure
-        if (Array.isArray(data) && data.length > 0) {
-            const firstResult = data[0]
-            if (firstResult?.result?.types) {
-                allEventsCount.value = firstResult.result.total
-                typeCountOptions.value = firstResult.result.types
-            } else {
-                typeCountOptions.value = []
-            }
+        // Handle the response structure directly
+        if (data?.types) {
+            allEventsCount.value = data.total
+            typeCountOptions.value = data.types
         } else {
             typeCountOptions.value = []
         }
@@ -674,8 +669,6 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
         if (!preserveSelection) {
             setInitialDate()
         }
-
-        ensureDatesWithinRange()
     } catch (error: unknown) {
         loadError.value =
             error instanceof Error && error.message
@@ -734,6 +727,7 @@ watch(
         }
 
         await loadEvents({ preserveSelection: true })
+        await loadTypesCount()
     }
 )
 </script>
