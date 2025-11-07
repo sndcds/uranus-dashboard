@@ -6,10 +6,10 @@
 
     <div class="organizer-card__button-group">
       <div class="organizer-actions">
-        <router-link :to="`/admin/organizer/${organizer.organizer_id}/edit`" class="uranus-secondary-button">
+        <router-link v-if="organizer.can_edit_organizer" :to="`/admin/organizer/${organizer.organizer_id}/edit`" class="uranus-secondary-button">
           {{ t('edit_organizer') }}
         </router-link>
-        <button class="uranus-secondary-button" @click="deleteOrganizer(organizer.organizer_id)">
+        <button v-if="organizer.can_delete_organizer" class="uranus-secondary-button" @click="deleteOrganizer(organizer.organizer_id)">
           {{ t('delete_organizer') }}
         </button>
       </div>
@@ -97,6 +97,8 @@ interface Organizer {
   organizer_id: number
   organizer_name: string
   total_upcoming_events: number
+  can_delete_organizer: boolean
+  can_edit_organizer: boolean
   venues: Venue[]
 }
 

@@ -1,10 +1,6 @@
 <template>
-  <div class="uranus-main-layout">
-    <DashboardHeroComponent
-        :title="t('user_permissions_title')"
-        :subtitle="t('user_permissions_subtitle')"
-    />
-
+    <div class="uranus-main-layout">
+        <DashboardHeroComponent :title="t('user_permissions_title')" :subtitle="t('user_permissions_subtitle')" />
 
         <div v-if="isLoading" class="user-permissions__status">
             {{ t('user_permissions_loading') }}
@@ -71,7 +67,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 
 interface PermissionResponseEntity {
     add_event: boolean
@@ -196,9 +192,7 @@ onMounted(() => {
 }
 
 .permission-group {
-    background: var(--card-bg);
     border-radius: 20px;
-    padding: clamp(1.25rem, 3vw, 2rem);
     display: flex;
     flex-direction: column;
     gap: clamp(1rem, 2vw, 1.5rem);
@@ -228,6 +222,7 @@ onMounted(() => {
 }
 
 .permission-card {
+    background-color: var(--uranus-card-background-color);
     border: 1px solid rgba(148, 163, 184, 0.25);
     border-radius: 16px;
     padding: clamp(1rem, 2vw, 1.5rem);
