@@ -115,6 +115,41 @@ const sharedAuthTranslations: Record<string, Record<LocaleKey, string>> = {
         en: 'Password reset failed.',
         da: 'Nulstilling mislykkedes.',
     },
+    activate_account: {
+        de: 'Konto aktivieren',
+        en: 'Activate Account',
+        da: 'Aktiver konto',
+    },
+    activate_account_subtitle: {
+        de: 'Bitte warten, während wir dein Konto aktivieren.',
+        en: 'Please wait while we activate your account.',
+        da: 'Vent venligst, mens vi aktiverer din konto.',
+    },
+    activating_account: {
+        de: 'Konto wird aktiviert…',
+        en: 'Activating account…',
+        da: 'Aktiverer konto…',
+    },
+    activation_success: {
+        de: 'Dein Konto wurde erfolgreich aktiviert!',
+        en: 'Your account has been successfully activated!',
+        da: 'Din konto er blevet aktiveret!',
+    },
+    redirecting_to_login: {
+        de: 'Du wirst zur Anmeldeseite weitergeleitet…',
+        en: 'Redirecting you to the login page…',
+        da: 'Sender dig videre til login…',
+    },
+    activation_no_token: {
+        de: 'Kein Aktivierungstoken gefunden. Bitte überprüfe den Link aus deiner E-Mail.',
+        en: 'No activation token provided. Please check the link from your email.',
+        da: 'Intet aktiveringstoken fundet. Tjek venligst linket fra din e-mail.',
+    },
+    activation_failed: {
+        de: 'Kontoaktivierung fehlgeschlagen. Bitte versuche es erneut oder kontaktiere den Support.',
+        en: 'Account activation failed. Please try again or contact support.',
+        da: 'Kontoaktivering mislykkedes. Prøv igen eller kontakt support.',
+    },
 }
 
 const sharedAuthFor = (locale: LocaleKey) =>

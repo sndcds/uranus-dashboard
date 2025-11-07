@@ -33,6 +33,7 @@ import AboutView from '@/views/AboutView.vue'
 import MapView from '@/views/MapView.vue'
 import EmptyVenuesView from '@/views/EmptyVenuesView.vue'
 import EmptyEventsView from '@/views/EmptyEventsView.vue'
+import UserActivateView from '@/views/UserActivateView.vue'
 
 const routes = [
     {
@@ -207,6 +208,11 @@ const routes = [
                 name: 'app-reset-password',
                 component: ResetPasswordView,
             },
+            {
+                path: 'activate/account',
+                name: 'app-activate-account',
+                component: UserActivateView,
+            }
         ],
     },
 ]
