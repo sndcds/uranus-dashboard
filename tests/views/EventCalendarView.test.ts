@@ -197,6 +197,9 @@ describe('EventCalendarView', () => {
       return Promise.reject(new Error('API Error'))
     })
 
+    // Suppress console.error for this test since we expect errors
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     const wrapper = mount(EventCalendarView, {
       global: {
         plugins: [i18n, router],
@@ -206,6 +209,9 @@ describe('EventCalendarView', () => {
     await flushPromises()
 
     expect(wrapper.find('.calendar-state--error').exists()).toBe(true)
+    
+    // Restore console.error
+    consoleErrorSpy.mockRestore()
   })
 
   it('switches between view modes', async () => {
@@ -226,17 +232,17 @@ describe('EventCalendarView', () => {
     await flushPromises()
 
     // Default is detailed view
-    expect(wrapper.find('.calendar-body').exists()).toBe(true)
+    expect(wrapper.find('.calendar-body--detailed').exists()).toBe(true)
 
     // Switch to compact view
     const compactButton = wrapper.findAll('.calendar-toggle-btn')[1]
     await compactButton.trigger('click')
-    expect(wrapper.find('.calendar-body-compact').exists()).toBe(true)
+    expect(wrapper.find('.calendar-body--compact').exists()).toBe(true)
 
     // Switch to tiles view
     const tilesButton = wrapper.findAll('.calendar-toggle-btn')[2]
     await tilesButton.trigger('click')
-    expect(wrapper.find('.calendar-body-tiles').exists()).toBe(true)
+    expect(wrapper.find('.calendar-body--tiles').exists()).toBe(true)
   })
 
   it('filters events by search query', async () => {

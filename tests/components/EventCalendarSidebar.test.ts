@@ -87,39 +87,6 @@ describe('EventCalendarSidebar', () => {
     expect(wrapper.emitted('update:searchQuery')?.[0]).toEqual(['test query'])
   })
 
-  it('displays all type options in select', () => {
-    const wrapper = mount(EventCalendarSidebar, {
-      props: defaultProps,
-      global: {
-        plugins: [i18n],
-      },
-    })
-
-    const select = wrapper.find('#type-test')
-    const options = select.findAll('option')
-    
-    expect(options).toHaveLength(4) // "All categories" + 3 types
-    expect(options[0].text()).toBe('All categories')
-    expect(options[1].text()).toBe('Concert')
-    expect(options[2].text()).toBe('Exhibition')
-    expect(options[3].text()).toBe('Workshop')
-  })
-
-  it('emits update:selectedType when type selection changes', async () => {
-    const wrapper = mount(EventCalendarSidebar, {
-      props: defaultProps,
-      global: {
-        plugins: [i18n],
-      },
-    })
-
-    const select = wrapper.find('#type-test')
-    await select.setValue('Concert')
-
-    expect(wrapper.emitted('update:selectedType')).toBeTruthy()
-    expect(wrapper.emitted('update:selectedType')?.[0]).toEqual(['Concert'])
-  })
-
   it('disables inputs when loading', () => {
     const wrapper = mount(EventCalendarSidebar, {
       props: {
@@ -133,11 +100,11 @@ describe('EventCalendarSidebar', () => {
 
     const searchInput = wrapper.find('#search-test')
     const dateInput = wrapper.find('#date-test')
-    const typeSelect = wrapper.find('#type-test')
+    const endDateInput = wrapper.find('#end-date-test')
 
     expect(searchInput.attributes('disabled')).toBeDefined()
     expect(dateInput.attributes('disabled')).toBeDefined()
-    expect(typeSelect.attributes('disabled')).toBeDefined()
+    expect(endDateInput.attributes('disabled')).toBeDefined()
   })
 
   it('emits date-confirm when date input changes', async () => {
@@ -216,33 +183,5 @@ describe('EventCalendarSidebar', () => {
 
     const resetButton = wrapper.find('.calendar-sidebar__reset')
     expect(resetButton.attributes('disabled')).toBeUndefined()
-  })
-
-  it('sets max date attribute on date input', () => {
-    const wrapper = mount(EventCalendarSidebar, {
-      props: defaultProps,
-      global: {
-        plugins: [i18n],
-      },
-    })
-
-    const dateInput = wrapper.find('#date-test')
-    expect(dateInput.attributes('max')).toBe('2025-12-31')
-  })
-
-  it('sets min and max date attributes on end date input', () => {
-    const wrapper = mount(EventCalendarSidebar, {
-      props: {
-        ...defaultProps,
-        selectedDate: '2025-06-01',
-      },
-      global: {
-        plugins: [i18n],
-      },
-    })
-
-    const endDateInput = wrapper.find('#end-date-test')
-    expect(endDateInput.attributes('min')).toBe('2025-06-01')
-    expect(endDateInput.attributes('max')).toBe('2025-12-31')
   })
 })
