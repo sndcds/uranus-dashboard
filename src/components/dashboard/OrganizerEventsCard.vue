@@ -14,17 +14,13 @@
       <div class="events-list">
         <article v-for="event in events" :key="event.event_id">
           <router-link :to="`/admin/event/${event.event_id}`" class="uranus-card">
-            <span 
-              v-if="event.release_status_name" 
-              class="release-status-chip"
-              :class="{
-                'release-status-chip--red': event.release_status_id === 1,
-                'release-status-chip--orange': event.release_status_id === 2,
-                'release-status-chip--green': event.release_status_id === 3,
-                'release-status-chip--blue': event.release_status_id === 4,
-                'release-status-chip--pink': event.release_status_id === 5
-              }"
-            >
+            <span v-if="event.release_status_name" class="release-status-chip" :class="{
+              'release-status-chip--red': event.release_status_id === 1,
+              'release-status-chip--orange': event.release_status_id === 2,
+              'release-status-chip--green': event.release_status_id === 3,
+              'release-status-chip--blue': event.release_status_id === 4,
+              'release-status-chip--pink': event.release_status_id === 5
+            }">
               {{ event.release_status_name }}
             </span>
             <img class="events-card__image" v-if="event.image_id" :src="buildImageUrl(event)"
@@ -48,6 +44,16 @@
                 </span>
               </li>
             </ul>
+            <p class="event-actions">
+              <router-link v-if="event.can_edit_event" :to="`/admin/event/${event.event_id}`"
+                class="uranus-secondary-button">
+                {{ t('edit_event') }}
+              </router-link>
+              <button v-if="event.can_delete_event" @click.prevent.stop="deleteEvent(event.event_id)"
+                class="uranus-secondary-button">
+                {{ t('delete_event') }}
+              </button>
+            </p>
           </router-link>
         </article>
       </div>
@@ -58,6 +64,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { apiFetch } from '@/api'
 
 export interface OrganizerEventItem {
   event_id: number
@@ -73,6 +80,9 @@ export interface OrganizerEventItem {
   focus_y?: number | null
   release_status_id?: number | null
   release_status_name?: string | null
+  can_edit_event: boolean
+  can_delete_event: boolean
+  can_release_event: boolean
 }
 
 const props = withDefaults(
@@ -128,6 +138,28 @@ const buildImageUrl = (event: OrganizerEventItem) => {
 
   return `${props.apiBase}/api/image/${event.image_id}?${params.toString()}`
 }
+
+const deleteEvent = async (eventId: number) => {
+  if (!confirm(t('confirm_delete_event'))) {
+    return
+  }
+
+  try {
+    await apiFetch(`/api/admin/event/${eventId}`, {
+      method: 'DELETE',
+    })
+
+    // Emit event to parent to refresh the list
+    emit('deleted', eventId)
+  } catch (err: unknown) {
+    console.error('Failed to delete event:', err)
+    alert(t('failed_to_delete_event'))
+  }
+}
+
+const emit = defineEmits<{
+  deleted: [eventId: number]
+}>()
 </script>
 
 <style scoped lang="scss">
@@ -178,6 +210,13 @@ const buildImageUrl = (event: OrganizerEventItem) => {
     background: #fce7f3;
     color: #9d174d;
   }
+}
+
+.event-actions {
+  margin-bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 .chip {

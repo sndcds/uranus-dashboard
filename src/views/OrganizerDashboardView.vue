@@ -59,6 +59,8 @@ interface Organizer {
   organizer_id: number
   organizer_name: string
   total_upcoming_events: number
+  can_delete_organizer: boolean
+  can_edit_organizer: boolean
   venues: Venue[]
 }
 

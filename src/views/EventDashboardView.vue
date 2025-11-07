@@ -10,7 +10,7 @@
             </router-link>
         </UranusDashboardActionBar>
 
-        <OrganizerEventsCard :events="events" :is-loading="isLoading" :error="error" :api-base="apiBase" />
+        <OrganizerEventsCard :events="events" :is-loading="isLoading" :error="error" :api-base="apiBase" @deleted="removeEventCard" />
     </div>
 </template>
 
@@ -24,7 +24,7 @@ import OrganizerEventsCard, { type OrganizerEventItem } from '@/components/dashb
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
 
-const apiBase = ((import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? 'https://uranus2.oklabflensburg.de')
+const apiBase = import.meta.env.VITE_API_URL
 
 const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
@@ -68,4 +68,8 @@ onMounted(async () => {
         isLoading.value = false
     }
 })
+
+const removeEventCard = (eventId: number) => {
+    events.value = events.value.filter(event => event.event_id !== eventId)
+}
 </script>
