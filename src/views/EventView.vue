@@ -676,7 +676,7 @@ onMounted(() => {
 .event-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: clamp(1rem, 4vw, 1.5rem);
+    gap: var(--uranus-grid-gap)
 }
 
 .event-map {
@@ -717,10 +717,6 @@ onMounted(() => {
         padding: 0 clamp(1.5rem, 5vw, 3rem);
     }
 
-    .event-layout {
-        gap: clamp(1.25rem, 3vw, 2rem);
-    }
-
     .event-map {
         height: 280px;
     }
@@ -741,10 +737,6 @@ onMounted(() => {
         grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
         gap: clamp(1.5rem, 3vw, 2rem);
         align-items: start;
-    }
-
-    .event-layout {
-        gap: clamp(1.5rem, 3vw, 2rem);
     }
 
     .event-sidebar {
