@@ -61,8 +61,9 @@ const activateAccount = async () => {
     activationError.value = null
 
     try {
-        const { status } = await apiFetch(`/api/activate?token=${encodeURIComponent(token)}`, {
-            method: 'GET',
+        const { status } = await apiFetch('/api/activate', {
+            method: 'POST',
+            body: JSON.stringify({ token }),
         })
 
         if (status === 200) {
