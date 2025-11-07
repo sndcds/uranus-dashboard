@@ -1,9 +1,6 @@
 <template>
   <div class="uranus-main-layout">
-    <DashboardHeroComponent
-        :title="t('venues')"
-        :subtitle="t('venues_description')"
-    />
+    <DashboardHeroComponent :title="t('venues')" :subtitle="t('venues_description')" />
 
     <!-- No Organizer Selected Message -->
     <div v-if="!organizerId" class="organizer-venue-view__no-organizer">
@@ -19,13 +16,11 @@
     </div>
 
     <div v-else class="uranus-main-layout">
-        <UranusDashboardActionBar>
-            <router-link
-                :to = "`/admin/organizer/${organizerId}/venue/create`"
-                class = "uranus-button">
-                {{ t('add_new_venue') }}
-            </router-link>
-        </UranusDashboardActionBar>
+      <UranusDashboardActionBar>
+        <router-link :to="`/admin/organizer/${organizerId}/venue/create`" class="uranus-button">
+          {{ t('add_new_venue') }}
+        </router-link>
+      </UranusDashboardActionBar>
 
       <!-- Error Message -->
       <div v-if="error" class="organizer-venue-view__error">
@@ -47,6 +42,7 @@
             :key="venue.venue_id"
             :venue="venue"
             :organizerId="organizerId || 0"
+            @deleted="handleVenueDeleted"
           />
         </div>
       </div>
@@ -61,8 +57,8 @@ import { apiFetch } from '@/api'
 import { useAppStore } from '@/store/appStore'
 
 import VenueCardComponent from '@/components/VenueCardComponent.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
-import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue"
 
 const { t } = useI18n()
 const appStore = useAppStore()
@@ -108,32 +104,42 @@ interface Organizer {
 const organizer = ref<Organizer | null>(null)
 const error = ref<string | null>(null)
 
+const handleVenueDeleted = (venueId: number) => {
+  if (!organizer.value) {
+    return
+  }
+  organizer.value = {
+    ...organizer.value,
+    venues: organizer.value.venues.filter((venue) => venue.venue_id !== venueId),
+  }
+}
+
 // Watch for changes in organizerId and fetch organizer data
 watch(
-    organizerId,
-    async (id) => {
-      if (id === null) {
-        organizer.value = null
-        return
-      }
+  organizerId,
+  async (id) => {
+    if (id === null) {
+      organizer.value = null
+      return
+    }
 
-      try {
-        const response = await apiFetch<Organizer>(
-            `/api/admin/organizer/${id}/venues?start=2000-01-01`
-        )
-        organizer.value = response.data
-        error.value = null
-      } catch (err: unknown) {
-        if (typeof err === 'object' && err && 'data' in err) {
-          const e = err as { data?: { error?: string } }
-          error.value = e.data?.error || 'Failed to load organizer venues'
-        } else {
-          error.value = 'Unknown error'
-        }
-        organizer.value = null
+    try {
+      const response = await apiFetch<Organizer>(
+        `/api/admin/organizer/${id}/venues?start=2000-01-01`
+      )
+      organizer.value = response.data
+      error.value = null
+    } catch (err: unknown) {
+      if (typeof err === 'object' && err && 'data' in err) {
+        const e = err as { data?: { error?: string } }
+        error.value = e.data?.error || 'Failed to load organizer venues'
+      } else {
+        error.value = 'Unknown error'
       }
-    },
-    { immediate: true } // fetch on initial load
+      organizer.value = null
+    }
+  },
+  { immediate: true } // fetch on initial load
 )
 </script>
 
