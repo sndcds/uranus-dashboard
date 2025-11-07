@@ -1,3 +1,7 @@
+<!-- EventView.vue
+    Description: Inline Event Editor used in Uranus Dashboard
+    Last Updated:
+-->
 <template>
   <div v-if="event">
     <div class="event-content">
