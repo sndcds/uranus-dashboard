@@ -308,7 +308,7 @@ const computeRequestDateRange = () => {
 
 const buildApiEndpoint = (path: string, additionalParams?: Record<string, string>) => {
     const range = computeRequestDateRange()
-    const params = new URLSearchParams({ lang: locale.value })
+    const params = new URLSearchParams({ mode: 'basic', lang: locale.value })
 
     if (range) {
         if (range.start) {
