@@ -205,15 +205,24 @@ watch(selectedDate, (val) => { tempStartDate.value = val })
 watch(selectedEndDate, (val) => { tempEndDate.value = val })
 
 const onDateConfirm = async (which: 'start' | 'end', event: Event) => {
-    // When user presses Enter or finishes input (onblur)
+    // When user presses Enter or finishes input (onchange/onblur)
     const target = event.target as HTMLInputElement
     const value = target.value || null
 
-    if (which === 'start') {
-        selectedDate.value = value
-    } else {
-        selectedEndDate.value = value
+    // Check if value actually changed to prevent duplicate calls
+    const currentValue = which === 'start' ? selectedDate.value : selectedEndDate.value
+    if (currentValue === value) {
+        return // No change, skip
     }
+
+    // Update the date value with watcher suspended to avoid double trigger
+    withDateWatcherSuspended(() => {
+        if (which === 'start') {
+            selectedDate.value = value
+        } else {
+            selectedEndDate.value = value
+        }
+    })
 
     // Trigger reload explicitly
     await loadEvents({ preserveSelection: true })
@@ -285,11 +294,11 @@ const computeRequestDateRange = () => {
 
     // Only return what's actually set
     const result: { start?: string; end?: string } = {}
-    
+
     if (normalizedStart) {
         result.start = normalizedStart
     }
-    
+
     if (normalizedEnd) {
         result.end = normalizedEnd
     }
@@ -297,27 +306,10 @@ const computeRequestDateRange = () => {
     return result
 }
 
-const buildEventsEndpoint = () => {
-    const range = computeRequestDateRange()
-    if (!range) {
-        return '/api/events'
-    }
-
-    const params = new URLSearchParams()
-    if (range.start) {
-        params.set('start', range.start)
-    }
-    if (range.end) {
-        params.set('end', range.end)
-    }
-    
-    return `/api/events?${params.toString()}`
-}
-
-const buildTypesCountEndpoint = () => {
+const buildApiEndpoint = (path: string, additionalParams?: Record<string, string>) => {
     const range = computeRequestDateRange()
     const params = new URLSearchParams({ lang: locale.value })
-    
+
     if (range) {
         if (range.start) {
             params.set('start', range.start)
@@ -326,8 +318,15 @@ const buildTypesCountEndpoint = () => {
             params.set('end', range.end)
         }
     }
-    
-    return `/api/events/types-count?${params.toString()}`
+
+    // Add any additional parameters
+    if (additionalParams) {
+        Object.entries(additionalParams).forEach(([key, value]) => {
+            params.set(key, value)
+        })
+    }
+
+    return `${path}?${params.toString()}`
 }
 
 interface LoadEventsOptions {
@@ -364,19 +363,6 @@ const filteredEvents = computed(() => {
 
     if (selectedType.value !== 'all') {
         list = list.filter((event) => event.typeLabels.includes(selectedType.value as string))
-    }
-
-    const startFilter = selectedDate.value
-    const endFilter = selectedEndDate.value
-
-    if (startFilter && endFilter) {
-        const rangeStart = startFilter
-        const rangeEnd = endFilter >= rangeStart ? endFilter : rangeStart
-        list = list.filter((event) => event.start_date >= rangeStart && event.start_date <= rangeEnd)
-    } else if (startFilter) {
-        list = list.filter((event) => event.start_date === startFilter)
-    } else if (endFilter) {
-        list = list.filter((event) => event.start_date <= endFilter)
     }
 
     return list.sort((a, b) => a.startDateTime - b.startDateTime)
@@ -592,10 +578,7 @@ const filterByType = async (typeId: number | string) => {
         loadError.value = null
 
         try {
-            const params = new URLSearchParams()
-            params.set('lang', locale.value)
-
-            const endpoint = `/api/events?${params.toString()}`
+            const endpoint = buildApiEndpoint('/api/events')
             const { data } = await apiFetch<CalendarEvent[]>(endpoint)
             events.value = hydrateEvents(Array.isArray(data) ? data : [])
         } catch (error: unknown) {
@@ -619,11 +602,7 @@ const filterByType = async (typeId: number | string) => {
     loadError.value = null
 
     try {
-        const params = new URLSearchParams()
-        params.set('lang', locale.value)
-        params.set('event_type', String(typeId))
-
-        const endpoint = `/api/events?${params.toString()}`
+        const endpoint = buildApiEndpoint('/api/events', { event_type: String(typeId) })
         const { data } = await apiFetch<CalendarEvent[]>(endpoint)
         events.value = hydrateEvents(Array.isArray(data) ? data : [])
 
@@ -641,7 +620,7 @@ const filterByType = async (typeId: number | string) => {
 
 const loadTypesCount = async () => {
     try {
-        const endpoint = buildTypesCountEndpoint()
+        const endpoint = buildApiEndpoint('/api/events/types-count')
         const { data } = await apiFetch<EventTypesCountResponse>(endpoint)
 
         // Handle the response structure directly
@@ -663,7 +642,7 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
     loadError.value = null
 
     try {
-        const endpoint = buildEventsEndpoint()
+        const endpoint = buildApiEndpoint('/api/events')
         const { data } = await apiFetch<CalendarEvent[]>(endpoint)
         events.value = hydrateEvents(Array.isArray(data) ? data : [])
         if (!preserveSelection) {

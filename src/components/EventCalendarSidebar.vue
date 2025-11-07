@@ -15,11 +15,11 @@
             <label class="calendar-sidebar__label" :for="dateId">{{ dateLabel }}</label>
             <div class="calendar-sidebar__date-controls">
                 <input :id="dateId" type="date" :value="tempStartDate" :disabled="isLoading"
-                    @blur="onDateConfirm('start', $event)" @keyup.enter="onDateConfirm('start', $event)" />
+                    @change="onDateConfirm('start', $event)" @blur="onDateConfirm('start', $event)" @keyup.enter="onDateConfirm('start', $event)" />
                 <div class="calendar-sidebar__end-date">
                     <label class="calendar-sidebar__sublabel" :for="endDateId">{{ endDateLabel }}</label>
                     <input :id="endDateId" type="date" :value="tempEndDate" :disabled="isLoading" 
-                        @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
+                        @change="onDateConfirm('end', $event)" @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
                 </div>
                 <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
                     :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
