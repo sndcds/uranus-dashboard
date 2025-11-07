@@ -61,7 +61,7 @@ const activateAccount = async () => {
     activationError.value = null
 
     try {
-        const { status } = await apiFetch('/api/activate', {
+        const { status } = await apiFetch('/api/admin/activate', {
             method: 'POST',
             body: JSON.stringify({ token }),
         })

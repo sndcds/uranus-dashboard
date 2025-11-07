@@ -1,6 +1,6 @@
 <template>
     <div class="auth-page">
-        <div class="auth-card">
+        <div class="uranus-card">
             <header class="auth-header">
                 <h1>{{ t('reset_password_title') }}</h1>
                 <p>{{ t('reset_password_subtitle') }}</p>
