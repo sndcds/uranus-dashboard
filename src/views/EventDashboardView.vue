@@ -4,7 +4,7 @@
             :title="t('events_title')"
             :subtitle="t('events_subtitle')" />
 
-        <UranusDashboardActionBar>
+        <UranusDashboardActionBar v-if="canAddEvent">
             <router-link :to="`/admin/organizer/${organizerId}/event/create`" class="uranus-button">
                 {{ t('add_new_event') }}
             </router-link>
@@ -34,8 +34,21 @@ const organizerId = Number(route.params.id)
 const events = ref<OrganizerEventItem[]>([])
 const isLoading = ref(false)
 const error = ref<string | null>(null)
+const canAddEvent = ref(false)
 
-onMounted(async () => {
+const loadOrganizerPermission = async () => {
+    try {
+        const { data } = await apiFetch<{ can_add_event: boolean }>(
+            `/api/admin/organizer/${organizerId}/event/permission`
+        )
+        canAddEvent.value = Boolean(data?.can_add_event)
+    } catch (err) {
+        console.error('Failed to load organizer permissions', err)
+        canAddEvent.value = false
+    }
+}
+
+const fetchEvents = async () => {
     isLoading.value = true
     error.value = null
 
@@ -67,6 +80,11 @@ onMounted(async () => {
     } finally {
         isLoading.value = false
     }
+}
+
+onMounted(async () => {
+    await fetchEvents()
+    await loadOrganizerPermission()
 })
 
 const removeEventCard = (eventId: number) => {
