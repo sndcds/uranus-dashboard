@@ -1,7 +1,7 @@
 <template>
     <UranusInlineEditSection :active="isActive">
         <UranusInlineEditLabel
-            label-text="Hello"
+            :label-text="t('hashtags')"
             :edit-button-text="t('edit')"
             @edit-started="startEditing"
         />

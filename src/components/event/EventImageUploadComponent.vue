@@ -66,13 +66,13 @@
       </div>
     </div>
 
-    <UranusInlineEditSection :active="showMetadata">
+    <UranusInlineEditSection :active="isActiveEdit">
       <UranusInlineEditLabel
           :label-text="t('image_details')"
           :edit-button-text="t('edit')"
-          @edit-started="showMetadata = true" />
+          @edit-started="isActiveEdit = true" />
 
-      <div v-if="!showMetadata" class="uranus-event-image-upload__meta-display">
+      <div v-if="!isActiveEdit" class="uranus-event-image-upload__meta-display">
         <span>
           <strong>{{ t('event_image_alt_text') }}:</strong> {{ localAltText }}
         </span>
@@ -92,7 +92,7 @@
       </div>
 
       <!-- Image Metadata Form -->
-      <div v-if="hasImage && showMetadata">
+      <div v-if="hasImage && isActiveEdit" class="uranus-inline-section-layout">
         <UranusTextInput id="image-alt-text"
                          v-model="localAltText"
                          :label="t('event_image_alt_text')"
@@ -114,48 +114,45 @@
             :label="t('event_image_license')"
             :error="licenseError"
         >
-
-        <div class="event-image-upload__field">
-            <select
-                id="image-license"
-                v-model.number="localLicense"
-                class="event-image-upload__select"
-                :disabled="licenseLoading"
-            >
-            <option :value="null">
-                {{ licenseLoading ? t('loading') : t('event_image_license_select') }}
-            </option>
-            <option
-                v-for="option in licenseOptions"
-                :key="option.value"
-                :value="option.value"
-            >
-                {{ option.label }}
-            </option>
-            </select>
-            <div v-if="licenseError" class="event-image-upload__field-error">
-                <p class="form-feedback-error">{{ licenseError }}</p>
-            </div>
-        </div>
-
-        </UranusFieldLabel>
-          <!-- Save Action -->
-          <div class="">
-            <button
-                type="button"
-                class="uranus-inline-cancel-button" @click="showMetadata = false"
-                :disabled="isSaving">
-                {{ t('form_cancel') }}
-            </button>
-            <button
-                type="button"
-                class="uranus-inline-save-button"
-                @click="saveImage"
-                :disabled="isSaving || !canSave">
-                <span v-if="!isSaving">{{ t('event_image_save') }}</span>
-                <span v-else>{{ t('saving') }}</span>
-            </button>
+          <div class="event-image-upload__field">
+              <select
+                  id="image-license"
+                  v-model.number="localLicense"
+                  class="event-image-upload__select"
+                  :disabled="licenseLoading"
+              >
+              <option :value="null">
+                  {{ licenseLoading ? t('loading') : t('event_image_license_select') }}
+              </option>
+              <option
+                  v-for="option in licenseOptions"
+                  :key="option.value"
+                  :value="option.value"
+              >
+                  {{ option.label }}
+              </option>
+              </select>
+              <div v-if="licenseError" class="event-image-upload__field-error">
+                  <p class="form-feedback-error">{{ licenseError }}</p>
+              </div>
           </div>
+        </UranusFieldLabel>
+
+        <UranusInlineActionBar>
+          <UranusInlineCancelButton
+              :disabled="isSaving"
+              :onClick="() => isActiveEdit = false"
+              :label="t('form_cancel')"
+          />
+
+          <UranusInlineOKButton
+              :disabled="isSaving || !canSave"
+              :loading="isSaving"
+              :onClick="saveImage"
+              :label="t('event_image_save')"
+              :loadingLabel="t('saving')"
+          />
+        </UranusInlineActionBar>
       </div>
     </UranusInlineEditSection>
   </div>
@@ -215,7 +212,7 @@ const isDragOver = ref(false)
 const error = ref<string>('')
 const isSaving = ref(false)
 const isDeleting = ref(false)
-const showMetadata = ref(false)
+const isActiveEdit = ref(false)
 
 const hasImage = computed(() => !!props.modelValue || !!existingImageUrl.value)
 const previewUrl = ref<string>('')
@@ -318,7 +315,7 @@ const toNumberOrNull = (value: unknown): number | null => {
 }
 
 watch(() => props.modelValue, (newFile) => {
-    showMetadata.value = !!newFile
+  isActiveEdit.value = !!newFile
 
     if (newFile && newFile instanceof File) {
         existingImageUrl.value = null
@@ -414,7 +411,7 @@ const removeImage = async () => {
         })
 
         existingImageUrl.value = null
-        showMetadata.value = false
+      isActiveEdit.value = false
         emit('update:modelValue', null)
 
         if (fileInput.value) {
@@ -445,6 +442,9 @@ import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue
 import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
 import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
 import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
+import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue";
+import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue";
+import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue";
 onUnmounted(() => {
     clearPreview()
 })
@@ -573,7 +573,7 @@ const saveImage = async () => {
             body: formData,
         })
 
-        showMetadata.value = false
+      isActiveEditisActiveEdit.value = false
         emit('updated')
     } catch (err) {
         console.error('Failed to save image', err)

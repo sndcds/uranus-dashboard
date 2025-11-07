@@ -12,22 +12,19 @@
           :subtitle="editedSubtitle"
           @update:title="editedTitle = $event"
           @update:subtitle="editedSubtitle = $event" />
-      <div class="event-header-section__actions">
-        <button
-            type="button"
-            class="uranus-inline-cancel-button"
-            @click="cancelEditing">
-          {{ t('form_cancel') }}
-        </button>
-        <button
-            type="button"
-            class="uranus-inline-save-button"
-            @click="saveHeader"
-            :disabled="isSaving">
-          <span v-if="!isSaving">{{ t('form_save') }}</span>
-          <span v-else>{{ t('saving') }}</span>
-        </button>
-      </div>
+      <UranusInlineActionBar>
+        <UranusInlineCancelButton
+            :disabled="isSaving"
+            :onClick="cancelEditing"
+            :label="t('form_cancel')"
+        />
+        <UranusInlineOKButton
+            :onClick="saveHeader"
+            :label="t('event_image_save')"
+            :loadingLabel="t('saving')"
+        />
+
+      </UranusInlineActionBar>
     </template>
 
     <template v-else>
@@ -45,6 +42,9 @@ import { apiFetch } from '@/api'
 import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
 import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
+import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue";
+import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue";
+import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue";
 
 const props = defineProps<{
     eventId: number

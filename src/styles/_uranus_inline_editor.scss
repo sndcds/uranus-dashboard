@@ -18,6 +18,12 @@
     border-color: var(--uranus-ia-inline-color);
 }
 
+.uranus-inline-section-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--uranus-grid-gap);
+}
+
 
 .uranus-inline-edit-button {
   padding: 0.2rem 0.5rem;
@@ -28,6 +34,13 @@
 .uranus-inline-edit-button {
   opacity: 1;
   transition: all 0.5s ease;
+}
+
+.uranus-inline-action-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--uranus-grid-gap);
+    margin-top: var(--uranus-grid-gap);
 }
 
 /* Show edit buttons on mobile without hover */

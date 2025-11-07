@@ -28,13 +28,13 @@ const props = defineProps({
 }
 
 .uranus-field-error {
-  color: #dc2626;
+  color: var(--uranus-required-color);
   font-size: 0.85rem;
   margin-top: 0.25rem;
 }
 
 .uranus-form-required {
-  color: #dc2626;
+  color: var(--uranus-required-color);
   font-weight: 700;
 }
 </style>

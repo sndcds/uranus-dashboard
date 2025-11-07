@@ -285,7 +285,7 @@ const messages = {
         event_language_edit: 'Sprachen bearbeiten',
         user_profile: 'Nutzerprofil',
         permissions: 'Berechtigungen',
-        event_teaser_tags: 'Hashtags',
+        hashtags: 'Hashtags',
         add_new_event: 'Neue Veranstaltung erstellen',
         add_new_space: 'Neuer Raum',
         venue_name: 'Name der Spielstätte',
