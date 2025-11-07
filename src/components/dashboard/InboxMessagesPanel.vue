@@ -536,15 +536,6 @@ defineExpose({
   color: var(--muted-text);
 }
 
-.message-card__meta {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
-  color: var(--muted-text);
-}
-
 .message-list__loading,
 .message-list__empty {
   margin: 0;
@@ -662,9 +653,4 @@ defineExpose({
   color: #b91c1c;
 }
 
-.inbox-feedback--success {
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.22);
-  color: #047857;
-}
 </style>

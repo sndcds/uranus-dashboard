@@ -272,36 +272,6 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.event-url-section {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
-.event-url-section__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-}
-
-.event-links-title {
-    margin: 0;
-    color: var(--color-text);
-}
-
-.event-url-section__edit {
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.event-url-section:hover .event-url-section__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
 .event-url-section__body {
     display: flex;
     flex-direction: column;
@@ -431,14 +401,6 @@ onMounted(() => {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
-}
-
-.event-url-section__button {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-
-    &--cancel {
-        @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-    }
 }
 
 .event-url-section__empty {

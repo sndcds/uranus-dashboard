@@ -216,26 +216,6 @@ const error = computed(() => props.error)
     position: relative;
 }
 
-.tag-manager__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-}
-
-.tag-manager__edit {
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.tag-manager:hover .tag-manager__edit,
-.tag-manager--editing .tag-manager__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
 .tag-manager__chip-list {
     display: flex;
     flex-wrap: wrap;
@@ -291,24 +271,6 @@ const error = computed(() => props.error)
     gap: 0.75rem;
 }
 
-.tag-manager__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-}
-
-.tag-manager__button {
-    display: inline-flex;
-}
-
-.tag-manager__button--primary {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.tag-manager__button--secondary {
-    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
 .tag-manager__empty {
     margin: 0;
     color: var(--muted-text);
@@ -320,10 +282,10 @@ const error = computed(() => props.error)
     margin: 0;
 }
 
-.tag-manager__title {
-    margin: 0 0 0.75rem 0;
-    color: var(--color-text);
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-}</style>
+.tag-manager__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+</style>

@@ -33,6 +33,7 @@
                     :error="fieldErrors.password"
                     size="normal"
                     flex="1"
+                    autocomplete="new-password"
                 />
 
                 <transition name="fade">

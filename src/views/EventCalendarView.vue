@@ -749,32 +749,6 @@ watch(
     margin: 0 auto;
 }
 
-.calendar-hero {
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.12), rgba(14, 165, 233, 0.12));
-    border-radius: var(--uranus-tiny-border-radius);
-    border: 0px solid rgba(148, 163, 184, 0.25);
-}
-
-.calendar-hero__content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-    max-width: 720px;
-}
-
-.calendar-hero h1 {
-    margin: 0;
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 700;
-}
-
-.calendar-hero p {
-    margin: 0;
-    color: var(--muted-text);
-    font-size: clamp(1rem, 2.4vw, 1.125rem);
-    line-height: 1.6;
-}
-
 .calendar-view-toggle {
     display: flex;
     gap: 0.5rem;

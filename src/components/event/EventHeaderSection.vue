@@ -118,30 +118,6 @@ const saveHeader = async () => {
 </script>
 
 <style scoped lang="scss">
-.event-header-section {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-}
-
-.event-header-section--editing {
-    align-items: stretch;
-    text-align: left;
-}
-
-.event-header-section--editing .title-fields {
-    width: 100%;
-}
-
-.event-header-section--editing .event-header-section__actions {
-    justify-content: flex-end;
-    width: 100%;
-}
-
 .event-header-section__title {
     font-size: clamp(2rem, 4vw, 2.8rem);
     margin: 0;
@@ -152,25 +128,5 @@ const saveHeader = async () => {
     margin: 0;
     color: var(--color-text);
     font-size: 1.2rem;
-}
-
-
-.event-header-section:hover .event-header-section__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.event-header-section__actions {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: center;
-}
-
-.event-header-section__button {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-header-section__button--cancel {
-    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 </style>

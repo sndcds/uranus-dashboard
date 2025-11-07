@@ -177,24 +177,6 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.user-permissions {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.25rem, 3vw, 2rem);
-    padding: clamp(1.5rem, 4vw, 2.5rem);
-}
-
-.user-permissions__header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.user-permissions__subtitle {
-    margin: 0;
-    color: var(--muted-text);
-}
-
 .user-permissions__status {
     padding: 1rem;
     border-radius: 12px;

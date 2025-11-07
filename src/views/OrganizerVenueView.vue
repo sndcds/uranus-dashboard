@@ -138,48 +138,6 @@ watch(
 </script>
 
 <style scoped lang="scss">
-// Mobile-first responsive OrganizerVenueView
-.organizer-venue-view {
-  @include form-page();
-  padding: clamp(1rem, 4vw, 2rem);
-  min-height: 100vh;
-}
-
-// Header section
-.organizer-venue-view__header {
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--uranus-grid-gap);
-  text-align: center;
-}
-
-.organizer-venue-view__title {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 700;
-  color: var(--color-text);
-  margin: 0;
-}
-
-// Actions section
-.organizer-venue-view__actions {
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  justify-content: center;
-}
-
-.organizer-venue-view__create-btn {
-  @include form-primary-button();
-  text-decoration: none;
-  transition: all 0.2s ease;
-
-  &:hover {
-    text-decoration: none;
-  }
-}
-
 // Error feedback
 .organizer-venue-view__error {
   width: 100%;
@@ -201,18 +159,6 @@ watch(
 }
 
 // Stats section
-.organizer-venue-view__stats {
-  @include form-section();
-  padding: clamp(1rem, 3vw, 1.5rem);
-}
-
-.organizer-venue-view__stat {
-  margin: 0;
-  font-size: clamp(0.95rem, 2vw, 1.1rem);
-  font-weight: 600;
-  color: var(--color-text);
-}
-
 // Venue cards grid
 .organizer-venue-view__grid {
   display: grid;

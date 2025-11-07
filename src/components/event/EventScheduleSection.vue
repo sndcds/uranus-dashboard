@@ -470,147 +470,75 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.event-meta {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 1rem;
+.event-meta__empty {
+    margin: 0;
+    color: var(--muted-text);
+    font-size: 0.95rem;
+}
+
+.event-meta__list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-
-    &__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    &__edit {
-        @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-        opacity: 0;
-        transform: translateY(-4px);
-        transition: opacity 0.2s ease, transform 0.2s ease;
-
-        &--cancel {
-            @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-        }
-    }
-
-    &__empty {
-        margin: 0;
-        color: var(--muted-text);
-        font-size: 0.95rem;
-    }
-
-    &__list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    &__display {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    &__row {
-        display: flex;
-        flex-direction: column;
-        gap: 0.15rem;
-    }
-
-    &__label {
-        font-size: 1.85rem;
-        font-weight: 600;
-        color: var(--color-text);
-    }
-
-    &__value {
-        margin: 0;
-        color: var(--color-text);
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    &__actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.75rem;
-    }
-
-    &__button {
-        @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-
-        &--cancel {
-            @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-        }
-    }
-
-    &__error {
-        margin: 0;
-        color: #b91c1c;
-        font-weight: 600;
-        font-size: 0.85rem;
-
-        &--global {
-            align-self: flex-start;
-        }
-    }
-
-    h3 {
-        margin: 0;
-        color: var(--color-text);
-        font-size: 1.1rem;
-    }
 }
 
-.event-meta:hover .event-meta__edit {
-    opacity: 1;
-    transform: translateY(0);
+.event-meta__display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.event-meta__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.event-meta__label {
+    font-size: 1.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.event-meta__value {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.event-meta__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.event-meta__error {
+    margin: 0;
+    color: #b91c1c;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.event-meta__error--global {
+    align-self: flex-start;
 }
 
 @media (min-width: 640px) {
-    .event-meta {
-        border-radius: 20px;
-        padding: 1.25rem;
-
-        &__label {
-            font-size: 2rem;
-        }
-
-        h3 {
-            font-size: 1.2rem;
-        }
+    .event-meta__label {
+        font-size: 2rem;
     }
 }
 
 @media (min-width: 1024px) {
-    .event-meta {
-        border-radius: 24px;
-        padding: 1.4rem;
-
-        &__label {
-            font-size: 2.85rem;
-        }
-
-        h3 {
-            font-size: 1.3rem;
-        }
-
-        p {
-            font-size: 1rem;
-        }
+    .event-meta__label {
+        font-size: 2.85rem;
     }
 
-    .event-meta__editor :deep(.event-dates__grid) {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .event-meta__value {
+        font-size: 1rem;
     }
+
 }
 
-@media (min-width: 1280px) {
-    .event-meta {
-        padding: 1.75rem;
-    }
-}
 </style>

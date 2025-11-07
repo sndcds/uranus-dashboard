@@ -254,14 +254,6 @@ defineExpose({ validate })
 </script>
 
 <style scoped lang="scss">
-.event-section {
-    @include form-section();
-}
-
-.event-section__header {
-    @include form-section-header();
-}
-
 .event-section__form {
     display: flex;
     flex-direction: column;
@@ -274,20 +266,4 @@ defineExpose({ validate })
     gap: clamp(1rem, 2vw, 1.5rem);
 }
 
-.form-field {
-    @include form-group();
-}
-
-@media (max-width: 540px) {
-    .event-section {
-        padding: clamp(1.25rem, 6vw, 1.8rem);
-    }
-}
-
-.field-error {
-    margin: 0;
-    font-size: 0.85rem;
-    color: #b91c1c;
-    font-weight: 600;
-}
 </style>

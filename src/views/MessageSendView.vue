@@ -209,18 +209,4 @@ const handleSearchStateChange = (payload: { searchTerm: string; organizers: Orga
   }
 }
 
-.inbox-content {
-  background: var(--card-bg);
-  border-radius: clamp(1rem, 2vw, 1.5rem);
-  padding: clamp(1.25rem, 2.5vw, 1.75rem);
-  border: 1px solid var(--border-soft);
-  box-shadow: var(--card-shadow);
-}
-
-.inbox-content {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1.5rem, 3vw, 2.5rem);
-}
-
 </style>

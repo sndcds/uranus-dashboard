@@ -15,7 +15,7 @@
                     :class="[sizeClass]"
                     :aria-required="required ? 'true' : 'false'"
                     :aria-invalid="error ? 'true' : 'false'"
-                    autocomplete="current-password"
+                    :autocomplete="autocompleteValue"
                 />
                 <button
                     type="button"
@@ -53,6 +53,7 @@ const props = defineProps({
     size: { type: String, default: 'normal' }, // tiny / normal / big
     flex: { type: [Number, String], default: 1 },
     error: { type: String, default: '' },
+    autocomplete: { type: String, default: 'current-password' }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -82,6 +83,8 @@ const sizeClass = computed(() => {
         default: return ''
     }
 })
+
+const autocompleteValue = computed(() => props.autocomplete)
 </script>
 
 <style scoped>

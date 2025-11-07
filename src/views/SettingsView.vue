@@ -29,14 +29,6 @@ const openProfileLabel = computed(() => (te('settings_open_profile') ? t('settin
 </script>
 
 <style scoped lang="scss">
-.settings-page {
-  @include form-page();
-}
-
-.settings-hero {
-  @include form-hero(540px);
-}
-
 .settings-card {
   @include form-card(720px, clamp(1.75rem, 4vw, 2.5rem), clamp(1.25rem, 3vw, 1.75rem));
 }

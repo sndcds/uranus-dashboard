@@ -39,14 +39,6 @@ function startEditing() {
 </script>
 
 <style scoped>
-.uranus-hover-section {
-  display: flex;            /* use flex layout */
-  align-items: center;      /* vertically centers children */
-  gap: 0.5rem;              /* optional spacing between span and button */
-  margin: 0;
-  padding: 0;
-}
-
 .uranus-inline-edit-button:hover {
   background-color: var(--uranus-secondary-button-background-color);
 }

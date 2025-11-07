@@ -116,28 +116,6 @@ const saveTeaser = async () => {
 </script>
 
 <style scoped lang="scss">
-.event-teaser {
-    background: var(--card-bg);
-    border-radius: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.event-teaser__image {
-    width: min(520px, 100%);
-    border-radius: 20px;
-    object-fit: cover;
-}
-
-.event-teaser__content {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-}
-
 .event-teaser__text {
     text-align: left;
     margin: 0;
@@ -147,19 +125,6 @@ const saveTeaser = async () => {
     border: 2px solid #eee;
     border-radius: 6px;
     padding: 0.25rem 1rem;
-}
-
-.event-teaser__edit {
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    align-self: flex-end;
-}
-
-.event-teaser:hover .event-teaser__edit {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 .event-teaser__actions {
@@ -173,11 +138,4 @@ const saveTeaser = async () => {
     align-self: stretch;
 }
 
-.event-teaser__button {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-teaser__button--cancel {
-    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
 </style>

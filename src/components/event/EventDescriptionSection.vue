@@ -112,50 +112,16 @@ const saveDescription = async () => {
 </script>
 
 <style scoped lang="scss">
-.event-description {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-    position: relative;
-}
-
-.event-description__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-}
-
 .event-description__content {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.event-description__edit {
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.event-description:hover .event-description__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
 .event-description__actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
-}
-
-.event-description__button {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-description__button--cancel {
-    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
 }
 
 .event-additional {

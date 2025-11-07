@@ -93,35 +93,6 @@ onMounted(async () => {
 }
 
 
-// Mobile-first responsive OrganizerDashboardView
-.organizer-dashboard-view {
-  @include form-page();
-  padding: clamp(1rem, 4vw, 2rem);
-  min-height: 100vh;
-}
-
-.organizer-dashboard-view__hero {
-  @include form-hero(540px);
-}
-
-.organizer-title {
-  margin: 0 0 clamp(0.5rem, 2vw, 1rem) 0;
-}
-
-// Header section
-.organizer-dashboard-view__header {
-  width: 100%;
-  max-width: 1200px;
-  text-align: center;
-}
-
-.organizer-dashboard-view__title {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 700;
-  color: var(--color-text);
-  margin: 0;
-}
-
 // Empty state
 .organizer-dashboard-view__empty {
   width: 100%;
@@ -136,24 +107,6 @@ onMounted(async () => {
   line-height: 1.6;
 }
 
-// Actions section
-.organizer-dashboard-view__actions {
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  justify-content: center;
-}
-
-.organizer-dashboard-view__create-btn {
-  @include form-primary-button();
-  text-decoration: none;
-  transition: all 0.2s ease;
-
-  &:hover {
-    text-decoration: none;
-  }
-}
-
 // Error feedback
 .organizer-dashboard-view__error {
   width: 100%;
@@ -165,35 +118,4 @@ onMounted(async () => {
   @include form-feedback-error();
 }
 
-// Organizer cards grid - mobile first
-.organizer-dashboard-view__grid {
-  @include form-grid(280px, clamp(1rem, 3vw, 1.5rem));
-  width: 100%;
-  max-width: 1200px;
-}
-
-// Tablet enhancements (640px+)
-@media (min-width: 640px) {
-  .organizer-dashboard-view__actions {
-    justify-content: center;
-  }
-
-  .organizer-dashboard-view__grid {
-    @include form-grid(320px, clamp(1.25rem, 3.5vw, 1.75rem));
-  }
-}
-
-// Desktop enhancements (1024px+)
-@media (min-width: 1024px) {
-  .organizer-dashboard-view__grid {
-    @include form-grid(360px, clamp(1.5rem, 4vw, 2rem));
-  }
-}
-
-// Large desktop (1280px+)
-@media (min-width: 1280px) {
-  .organizer-dashboard-view__grid {
-    @include form-grid(400px, clamp(2rem, 5vw, 2.5rem));
-  }
-}
 </style>

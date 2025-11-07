@@ -375,68 +375,45 @@ function formatReleaseDate(value: string | null | undefined): string {
 </script>
 
 <style scoped lang="scss">
-.event-meta {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 1rem;
+.event-meta__empty {
+    margin: 0;
+    color: var(--muted-text);
+    font-size: 0.95rem;
+}
+
+.event-meta__display {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+}
 
-    &__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 0.75rem;
-    }
+.event-meta__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
 
-    &__empty {
-        margin: 0;
-        color: var(--muted-text);
-        font-size: 0.95rem;
-    }
+.event-meta__label {
+    font-size: 1.85rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
 
-    &__display {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
+.event-meta__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
 
-    &__row {
-        display: flex;
-        flex-direction: column;
-        gap: 0.15rem;
-    }
+.event-meta__error {
+    margin: 0;
+    color: #b91c1c;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
 
-    &__label {
-        font-size: 1.85rem;
-        font-weight: 600;
-        color: var(--color-text);
-    }
-
-    &__value {
-        margin: 0;
-        color: var(--color-text);
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    &__actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.75rem;
-    }
-
-    &__error {
-        margin: 0;
-        color: #b91c1c;
-        font-weight: 600;
-        font-size: 0.85rem;
-
-        &--global {
-            align-self: flex-start;
-        }
-    }
+.event-meta__error--global {
+    align-self: flex-start;
 }
 
 .release-status-chip {
@@ -476,37 +453,35 @@ function formatReleaseDate(value: string | null | undefined): string {
   }
 }
 
-.event-release {
-    &__editor {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
+.event-release__editor {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
 
-    &__description {
-        margin: 0.5rem 0 0;
-        font-size: 0.85rem;
-        color: var(--muted-text);
-    }
+.event-release__description {
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted-text);
+}
 
-    &__date-input {
-        padding: 0.5rem 0.75rem;
-        border: 1px solid var(--border-soft);
-        border-radius: 0.5rem;
-        background: var(--surface-muted);
-        color: var(--color-text);
-        font-size: 0.95rem;
-        transition: border-color 0.2s ease;
+.event-release__date-input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-soft);
+    border-radius: 0.5rem;
+    background: var(--surface-muted);
+    color: var(--color-text);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+}
 
-        &:hover {
-            border-color: var(--accent-primary);
-        }
+.event-release__date-input:hover {
+    border-color: var(--accent-primary);
+}
 
-        &:focus-visible {
-            outline: 2px solid var(--accent-primary);
-            outline-offset: 2px;
-        }
-    }
+.event-release__date-input:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
 }
 
 .form-group {
@@ -545,35 +520,4 @@ function formatReleaseDate(value: string | null | undefined): string {
     }
 }
 
-@media (min-width: 640px) {
-    .event-meta {
-        border-radius: 20px;
-        padding: 1.25rem;
-
-        &__label {
-            font-size: 2rem;
-        }
-    }
-}
-
-@media (min-width: 1024px) {
-    .event-meta {
-        border-radius: 24px;
-        padding: 1.4rem;
-
-        &__label {
-            font-size: 2.85rem;
-        }
-
-        p {
-            font-size: 1rem;
-        }
-    }
-}
-
-@media (min-width: 1280px) {
-    .event-meta {
-        padding: 1.75rem;
-    }
-}
 </style>

@@ -125,23 +125,3 @@ const clearError = () => {
     }
 }
 </script>
-
-<style scoped lang="scss">
-.venue-page {
-    @include form-page();
-}
-
-.venue-hero {
-    @include form-hero(960px);
-}
-
-.venue-card {
-    @include form-card(1080px, clamp(1.75rem, 4vw, 2.75rem), clamp(1.25rem, 3vw, 1.75rem));
-}
-
-@media (max-width: 480px) {
-    .venue-card {
-        padding: clamp(1.5rem, 6vw, 2rem);
-    }
-}
-</style>

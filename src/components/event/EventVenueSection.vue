@@ -273,35 +273,6 @@ const saveSpace = async () => {
 </script>
 
 <style scoped lang="scss">
-.event-venue {
-    background: var(--card-bg);
-    border-radius: 24px;
-    padding: 1.4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    position: relative;
-}
-
-.event-venue__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.event-venue__edit {
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.event-venue:hover .event-venue__edit {
-    opacity: 1;
-    transform: translateY(0);
-}
-
 .event-venue__controls {
     display: flex;
     flex-direction: column;
@@ -336,42 +307,10 @@ const saveSpace = async () => {
     gap: 0.75rem;
 }
 
-.event-venue__button {
-    @include form-primary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
-.event-venue__button--cancel {
-    @include form-secondary-button($padding-y: 0.5rem, $padding-x: 1.3rem);
-}
-
 .event-space {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-}
-
-.event-space__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.event-space__text {
-    margin: 0;
-    color: var(--muted-text);
-}
-
-.event-space__edit {
-    @include form-secondary-button($padding-y: 0.35rem, $padding-x: 0.85rem);
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.event-space:hover .event-space__edit {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 .event-space__controls {
@@ -408,11 +347,4 @@ const saveSpace = async () => {
     gap: 0.75rem;
 }
 
-.event-space__button {
-    @include form-primary-button($padding-y: 0.45rem, $padding-x: 1.2rem);
-}
-
-.event-space__button--cancel {
-    @include form-secondary-button($padding-y: 0.45rem, $padding-x: 1.2rem);
-}
 </style>

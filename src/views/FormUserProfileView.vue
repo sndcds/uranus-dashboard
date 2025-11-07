@@ -327,19 +327,6 @@ const handleAvatarUpdated = () => {
 </script>
 
 <style scoped lang="scss">
-.profile-page {
-    @include form-page();
-}
-
-.profile-hero {
-    @include form-hero(520px);
-}
-
-.profile-card {
-    @include form-card(920px, clamp(1.75rem, 4vw, 2.5rem), clamp(1.25rem, 3vw, 1.75rem));
-    position: relative;
-}
-
 .profile-form {
     display: flex;
     flex-direction: column;
@@ -453,32 +440,12 @@ const handleAvatarUpdated = () => {
         grid-template-columns: 1fr;
     }
 
-    .profile-photo-wrapper {
-        margin-inline: auto;
-    }
-
     .profile-actions {
         align-items: stretch;
     }
 }
 
 @media (max-width: 540px) {
-    .profile-card {
-        padding: clamp(1.25rem, 6vw, 1.8rem);
-    }
-
-    .profile-photo-panel {
-        align-items: center;
-    }
-
-    .profile-photo-panel__label {
-        align-self: flex-start;
-    }
-
-    .profile-photo-hint {
-        text-align: center;
-    }
-
     .profile-actions button {
         width: 100%;
     }

@@ -190,19 +190,6 @@ const confirmDelete = async (password: string) => {
   }
 }
 
-// Header section
-.organizer-card__header {
-  gap: 0;
-}
-
-.organizer-card__title {
-  margin: 0;
-  font-size: clamp(1.1rem, 2.5vw, 1.25rem);
-  font-weight: 700;
-  color: var(--color-text);
-  line-height: 1.3;
-}
-
 // Content section
 .organizer-card__content {
   flex: 1;
@@ -273,45 +260,10 @@ const confirmDelete = async (password: string) => {
   text-align: center;
 }
 
-// Footer section
-.organizer-card__footer {
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-soft);
-}
-
 .organizer-card__button-group {
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-}
-
-.organizer-card__button {
-  @include form-secondary-button();
-  justify-content: center;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-
-  // Active state for button
-  &--active {
-    background: var(--accent-primary);
-    color: white;
-    border-color: var(--accent-primary);
-
-    &:hover {
-      background: var(--accent-secondary);
-      border-color: var(--accent-secondary);
-    }
-  }
-}
-
-.organizer-card__edit-btn {
-  @include form-secondary-button();
-
-  &:hover {
-    text-decoration: none;
-  }
 }
 
 // Responsive adjustments

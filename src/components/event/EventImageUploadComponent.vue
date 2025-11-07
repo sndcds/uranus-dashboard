@@ -786,19 +786,6 @@ const saveImage = async () => {
     margin-top: 0.5rem;
 }
 
-.event-image-upload__actions {
-    margin-top: clamp(1.25rem, 4vw, 2rem);
-    display: flex;
-    justify-content: flex-end;
-    gap: clamp(0.5rem, 2vw, 0.75rem);
-}
-
-@media (min-width: 640px) {
-    .event-image-upload__actions {
-        justify-content: flex-end;
-    }
-}
-
 @media (min-width: 1024px) {
 }
 

@@ -177,12 +177,6 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
     flex-direction: column;
 }
 
-.calendar-tile__time,
-.calendar-tile__date {
-    font-weight: 500;
-    opacity: 0.9;
-}
-
 @media (max-width: 900px) {
     .calendar-events-tiles {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

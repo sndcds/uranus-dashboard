@@ -658,12 +658,6 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.event-page {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1rem, 4vw, 1.5rem);
-}
-
 .event-content {
   display: flex;
   flex-direction: column;
@@ -702,21 +696,12 @@ onMounted(() => {
     padding: 2rem 1rem;
 }
 
-.event-map-wrapper {
-  width: 100%;          // or a fixed width
-}
-
 .event-map {
   width: 100%;
   height: 100%;         // fill the wrapper
 }
 
 @media (min-width: 640px) {
-    .event-page {
-        gap: clamp(1.25rem, 3vw, 2rem);
-        padding: 0 clamp(1.5rem, 5vw, 3rem);
-    }
-
     .event-map {
         height: 280px;
     }
@@ -727,11 +712,6 @@ onMounted(() => {
 }
 
 @media (min-width: 1024px) {
-    .event-page {
-        gap: clamp(1.5rem, 3vw, 2.5rem);
-        margin: 0 auto;
-    }
-
     .event-content {
         display: grid;
         grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
@@ -751,10 +731,6 @@ onMounted(() => {
 }
 
 @media (min-width: 1280px) {
-    .event-page {
-        padding: 0 clamp(2rem, 4vw, 3rem);
-    }
-
     .event-map {
         height: 320px;
     }

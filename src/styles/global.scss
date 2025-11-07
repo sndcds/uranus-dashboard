@@ -167,43 +167,10 @@ $button-text-color: #333;
   }
 }
 
-.card {
-  position: relative;
-  border-radius: 8px;
-  padding: 16px;
-  padding-bottom: 50px;
-  background-color: var(--card-bg);
-  color: var(--color-text);
-  min-height: 200px;
-  border: 4px solid transparent;
-  transition: background-color 0.4s, border 0.4s;
-
-  &.card-active {
-    background-color: #e7f4fd;
-    border: 4px solid #529ae1;
-  }
-
-  h2 {
-    margin: 0 0 8px;
-    font-size: 1.4rem;
-  }
-
-  h3 {
-    margin: 12px 0 4px;
-    font-size: 1.1rem;
-  }
-
-  ul {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-
     li {
       font-size: 0.95rem;
       margin-bottom: 4px;
     }
-  }
-}
 
 .card-title {
   color: #222;

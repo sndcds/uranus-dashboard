@@ -213,24 +213,6 @@ const buildImageUrl = (event: OrganizerEventItem) => {
   align-items: stretch;
 }
 
-.event-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.25rem;
-  border: 1px solid var(--border-soft);
-  border-radius: 1.25rem;
-  background: rgba(79, 70, 229, 0.06);
-  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
-}
-
-.event-card__header {
-  width: 33%;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
 .event-card__title h3 {
   margin: 0;
   font-size: 1rem;
@@ -257,21 +239,8 @@ const buildImageUrl = (event: OrganizerEventItem) => {
   gap: 0.25rem;
 }
 
-.event-card__label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted-text);
-}
-
 .event-card__value {
   font-size: 0.95rem;
-}
-
-.event-card__footer {
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 0.5rem;
 }
 
 .events-card__image {
@@ -286,19 +255,6 @@ const buildImageUrl = (event: OrganizerEventItem) => {
   .events-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  }
-
-  .event-card {
-    flex-direction: row;
-    align-items: stretch;
-    gap: 1.25rem;
-  }
-
-  .event-card__header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-    min-width: 180px;
   }
 
   .event-card__title h3 {
@@ -320,19 +276,8 @@ const buildImageUrl = (event: OrganizerEventItem) => {
     gap: 0.75rem;
   }
 
-  .event-card__label {
-    min-width: 120px;
-    font-size: 0.78rem;
-    letter-spacing: 0.1em;
-  }
-
   .event-card__value {
     font-size: 0.98rem;
-  }
-
-  .event-card__footer {
-    align-items: center;
-    margin-top: 0;
   }
 
   .events-card__image {

@@ -263,14 +263,6 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-.inbox-sidebar {
-  background: var(--card-bg);
-  border-radius: clamp(1rem, 2vw, 1.5rem);
-  padding: clamp(1.25rem, 2.5vw, 1.75rem);
-  border: 1px solid var(--border-soft);
-  box-shadow: var(--card-shadow);
-}
-
 .inbox-sidebar__title {
   font-size: clamp(1.1rem, 2vw, 1.35rem);
   font-weight: 600;
