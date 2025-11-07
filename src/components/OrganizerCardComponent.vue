@@ -70,7 +70,8 @@ import { ref } from 'vue'
 import { useAppStore } from '@/store/appStore'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import PasswordConfirmModal from './PasswordConfirmModal.vue'
+
+import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 
 const appStore = useAppStore()
 const { t } = useI18n()

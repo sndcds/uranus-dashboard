@@ -1,38 +1,55 @@
 <template>
-    <div v-if="show" class="modal-overlay" @click.self="$emit('cancel')">
-        <div class="modal-content">
-            <h3 class="modal-title">{{ title }}</h3>
-            <p class="modal-description">{{ description }}</p>
+  <UranusModal
+    :show="show"
+    :title="title"
+    :description="description"
+    max-width="520px"
+    @close="$emit('cancel')"
+  >
+    <form :id="formId" @submit.prevent="handleSubmit" class="modal-form">
+      <div class="form-field">
+        <label for="password-input" class="form-label">
+          {{ t('password') }}
+        </label>
+        <input
+          id="password-input"
+          v-model="password"
+          type="password"
+          class="form-input"
+          :placeholder="t('enter_password_to_confirm')"
+          required
+          autofocus
+        />
+      </div>
 
-            <form @submit.prevent="handleSubmit" class="modal-form">
-                <div class="form-field">
-                    <label for="password-input" class="form-label">
-                        {{ t('password') }}
-                    </label>
-                    <input id="password-input" v-model="password" type="password" class="form-input"
-                        :placeholder="t('enter_password_to_confirm')" required autofocus />
-                </div>
+      <div v-if="error" class="error-message">
+        {{ error }}
+      </div>
+    </form>
 
-                <div v-if="error" class="error-message">
-                    {{ error }}
-                </div>
-
-                <div class="modal-actions">
-                    <button type="button" @click="$emit('cancel')" class="uranus-secondary-button">
-                        {{ t('form_cancel') }}
-                    </button>
-                    <button type="submit" :disabled="isSubmitting" class="uranus-button uranus-button--danger">
-                        {{ isSubmitting ? loadingText : confirmText }}
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <template #actions>
+      <div class="modal-actions">
+        <button type="button" @click="$emit('cancel')" class="uranus-secondary-button">
+          {{ t('form_cancel') }}
+        </button>
+        <button
+          type="submit"
+          :form="formId"
+          :disabled="isSubmitting"
+          class="uranus-button uranus-button--danger"
+        >
+          {{ isSubmitting ? loadingText : confirmText }}
+        </button>
+      </div>
+    </template>
+  </UranusModal>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import UranusModal from '@/components/uranus/UranusModal.vue'
 
 const { t } = useI18n()
 
@@ -57,6 +74,7 @@ const emit = defineEmits<{
 }>()
 
 const password = ref('')
+const formId = `password-confirm-${Math.random().toString(36).slice(2, 9)}`
 
 // Reset password when modal is closed
 watch(() => props.show, (newValue) => {
@@ -71,45 +89,6 @@ const handleSubmit = () => {
 </script>
 
 <style scoped lang="scss">
-// Modal styles
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    padding: 1rem;
-}
-
-.modal-content {
-    background: var(--surface-primary, #ffffff);
-    border-radius: 0.5rem;
-    padding: 2rem;
-    max-width: 500px;
-    width: 100%;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    position: relative;
-    z-index: 10000;
-}
-
-.modal-title {
-    margin: 0 0 1rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--color-text);
-}
-
-.modal-description {
-    margin: 0 0 1.5rem;
-    color: var(--color-text);
-    line-height: 1.5;
-}
-
 .modal-form {
     display: flex;
     flex-direction: column;
@@ -151,13 +130,6 @@ const handleSubmit = () => {
     font-size: 0.9rem;
 }
 
-.modal-actions {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: flex-end;
-    margin-top: 0.5rem;
-}
-
 .uranus-button--danger {
     background: #dc2626;
     color: white;
@@ -172,5 +144,11 @@ const handleSubmit = () => {
         opacity: 0.6;
         cursor: not-allowed;
     }
+}
+
+.modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
 }
 </style>

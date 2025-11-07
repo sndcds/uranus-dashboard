@@ -45,12 +45,18 @@
               </li>
             </ul>
             <p class="event-actions">
-              <router-link v-if="event.can_edit_event" :to="`/admin/event/${event.event_id}`"
-                class="uranus-secondary-button">
+              <router-link
+                v-if="event.can_edit_event"
+                :to="`/admin/event/${event.event_id}`"
+                class="uranus-secondary-button"
+              >
                 {{ t('edit_event') }}
               </router-link>
-              <button v-if="event.can_delete_event" @click.prevent.stop="deleteEvent(event.event_id)"
-                class="uranus-secondary-button">
+              <button
+                v-if="event.can_delete_event"
+                class="uranus-secondary-button"
+                @click.prevent.stop="requestDelete(event)"
+              >
                 {{ t('delete_event') }}
               </button>
             </p>
@@ -58,13 +64,26 @@
         </article>
       </div>
     </div>
+
+    <PasswordConfirmModal
+      :show="showDeleteModal"
+      :title="t('confirm_delete_event')"
+      :description="pendingDeleteTitle"
+      :confirm-text="t('delete_event')"
+      :loading-text="t('deleting')"
+      :error="deleteError"
+      :is-submitting="isDeleting"
+      @confirm="confirmDelete"
+      @cancel="cancelDelete"
+    />
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 
 export interface OrganizerEventItem {
   event_id: number
@@ -139,27 +158,64 @@ const buildImageUrl = (event: OrganizerEventItem) => {
   return `${props.apiBase}/api/image/${event.image_id}?${params.toString()}`
 }
 
-const deleteEvent = async (eventId: number) => {
-  if (!confirm(t('confirm_delete_event'))) {
-    return
-  }
-
-  try {
-    await apiFetch(`/api/admin/event/${eventId}`, {
-      method: 'DELETE',
-    })
-
-    // Emit event to parent to refresh the list
-    emit('deleted', eventId)
-  } catch (err: unknown) {
-    console.error('Failed to delete event:', err)
-    alert(t('failed_to_delete_event'))
-  }
-}
-
 const emit = defineEmits<{
   deleted: [eventId: number]
 }>()
+
+const showDeleteModal = ref(false)
+const deleteError = ref('')
+const isDeleting = ref(false)
+const pendingDeleteId = ref<number | null>(null)
+const pendingDeleteTitle = ref('')
+
+const requestDelete = (event: OrganizerEventItem) => {
+  if (!event.can_delete_event) {
+    return
+  }
+  pendingDeleteId.value = event.event_id
+  pendingDeleteTitle.value = event.event_title
+  deleteError.value = ''
+  showDeleteModal.value = true
+}
+
+const cancelDelete = () => {
+  showDeleteModal.value = false
+  deleteError.value = ''
+  pendingDeleteId.value = null
+  pendingDeleteTitle.value = ''
+}
+
+const confirmDelete = async (password: string) => {
+  if (!pendingDeleteId.value) {
+    return
+  }
+
+  deleteError.value = ''
+  isDeleting.value = true
+
+  try {
+    await apiFetch(`/api/admin/event/${pendingDeleteId.value}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password }),
+    })
+
+    emit('deleted', pendingDeleteId.value)
+    cancelDelete()
+  } catch (err: unknown) {
+    console.error('Failed to delete event:', err)
+    const status = typeof err === 'object' && err !== null ? (err as { status?: number }).status : undefined
+    if (status === 401 || status === 403) {
+      deleteError.value = t('incorrect_password')
+    } else {
+      deleteError.value = t('failed_to_delete_event')
+    }
+  } finally {
+    isDeleting.value = false
+  }
+}
 </script>
 
 <style scoped lang="scss">
