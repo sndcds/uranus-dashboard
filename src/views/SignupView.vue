@@ -41,11 +41,21 @@
                     </p>
                 </transition>
 
+                <transition name="fade">
+                    <div v-if="signupSuccess" class="feedback feedback--success" role="status" aria-live="polite">
+                        <p><strong>{{ t('signup_success_title') || 'Account created successfully!' }}</strong></p>
+                        <p>{{ t('signup_success_message') || 'Please check your email to confirm your account. You will need to verify your email address before you can log in.' }}</p>
+                    </div>
+                </transition>
+
                 <div class="form-actions">
-                    <button class="uranus-button" type="submit" :disabled="isSubmitting">
+                    <button v-if="!signupSuccess" class="uranus-button" type="submit" :disabled="isSubmitting">
                         <span v-if="!isSubmitting">{{ t('signup_cta') }}</span>
                         <span v-else>{{ t('signup_loading') }}</span>
                     </button>
+                    <router-link v-else to="/app/login" class="uranus-button">
+                        {{ t('go_to_login') || 'Go to Login' }}
+                    </router-link>
                 </div>
             </form>
 
@@ -60,16 +70,14 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
-import { apiFetch } from '../api'
+import { apiFetch } from '@/api'
 
 import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
 import UranusPasswordInput from "@/components/uranus/UranusPasswordInput.vue";
 
 type SignupResponse = { message?: string;[key: string]: unknown }
 
-const { t, te } = useI18n()
-const router = useRouter()
+const { t, te, locale } = useI18n()
 
 const email = ref('')
 const repeatEmail = ref('')
@@ -77,6 +85,7 @@ const password = ref('')
 const isPasswordVisible = ref(false)
 const error = ref<string | null>(null)
 const isSubmitting = ref(false)
+const signupSuccess = ref(false)
 
 const fieldErrors = reactive({
     email: null as string | null,
@@ -201,7 +210,7 @@ const signup = async () => {
     isSubmitting.value = true
 
     try {
-        const { data, status } = await apiFetch<SignupResponse | null>('/api/admin/signup', {
+        const { data, status } = await apiFetch<SignupResponse | null>(`/api/admin/signup?lang=${locale.value}`, {
             method: 'POST',
             body: JSON.stringify({
                 email: trimmedEmail,
@@ -215,7 +224,8 @@ const signup = async () => {
         }
 
         resetForm()
-        router.push('/app/login')
+        signupSuccess.value = true
+        // Don't redirect automatically - let user read the message and click to login
     } catch (err: unknown) {
         if (typeof err === 'object' && err && 'data' in err) {
             const e = err as { data?: { error?: string } }
@@ -238,8 +248,9 @@ const signup = async () => {
     justify-content: center;
 }
 
-.signup-card {
-    @include form-card(420px, clamp(2rem, 4vw, 2.75rem), clamp(1.5rem, 3vw, 2rem));
+.uranus-card {
+    width: 100%;
+    max-width: 500px;
 }
 
 .signup-header {
@@ -262,51 +273,6 @@ const signup = async () => {
     }
 }
 
-.input-with-toggle {
-    position: relative;
-
-    input {
-        width: 100%;
-        padding-right: 2.75rem;
-    }
-}
-
-.password-toggle {
-    position: absolute;
-    top: 50%;
-    right: 0.75rem;
-    transform: translateY(-50%);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 999px;
-    border: 1px solid transparent;
-    background: transparent;
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
-    padding: 0;
-
-    &:hover {
-        background: rgba(79, 70, 229, 0.08);
-        border-color: rgba(79, 70, 229, 0.25);
-    }
-
-    &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
-        border-color: var(--accent-primary, #4f46e5);
-        background: rgba(79, 70, 229, 0.08);
-    }
-}
-
-.password-toggle__icon {
-    width: 1.1rem;
-    height: 1.1rem;
-    fill: var(--muted-text, #475569);
-}
-
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -323,6 +289,24 @@ const signup = async () => {
         background-color: #fee;
         color: #c00;
         border: 1px solid #fcc;
+    }
+
+    &--success {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #a5d6a7;
+
+        p {
+            margin: 0;
+            
+            &:first-child {
+                margin-bottom: 0.5rem;
+            }
+
+            strong {
+                font-weight: 600;
+            }
+        }
     }
 }
 
@@ -353,11 +337,5 @@ const signup = async () => {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
-}
-
-@media (max-width: 480px) {
-    .signup-card {
-        padding: clamp(1.5rem, 6vw, 2rem);
-    }
 }
 </style>

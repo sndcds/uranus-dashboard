@@ -209,6 +209,11 @@ const login = async () => {
     justify-content: center;
 }
 
+.uranus-card {
+    width: 100%;
+    max-width: 500px;
+}
+
 .forgot-password-link {
     margin-top: -0.5rem;
     margin-bottom: 1rem;

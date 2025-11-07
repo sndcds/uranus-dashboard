@@ -8,8 +8,8 @@
 
             <form class="uranus-form" @submit.prevent="requestReset" :aria-busy="isSubmitting" novalidate>
                 <UranusTextInput id="forgot-email" v-model="email" type="email" :label="t('email')"
-                    :placeholder="t('email_placeholder')" autocomplete="email" required
-                    :error="displayError('email')" @input="handleInput" />
+                    :placeholder="t('email_placeholder')" autocomplete="email" required :error="displayError('email')"
+                    @input="handleInput" />
 
                 <transition name="fade">
                     <p v-if="error" :id="errorMessageId" class="feedback feedback--error" role="alert"
@@ -141,8 +141,9 @@ const requestReset = async () => {
     justify-content: center;
 }
 
-.auth-card {
-    @include form-card(420px, clamp(2rem, 4vw, 2.75rem), clamp(1.5rem, 3vw, 2rem));
+.uranus-card {
+    width: 100%;
+    max-width: 500px;
 }
 
 .auth-header {
@@ -219,9 +220,4 @@ const requestReset = async () => {
     opacity: 0;
 }
 
-@media (max-width: 480px) {
-    .auth-card {
-        padding: clamp(1.5rem, 6vw, 2rem);
-    }
-}
 </style>

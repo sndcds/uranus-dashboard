@@ -275,6 +275,11 @@ const handleSubmit = async () => {
     justify-content: center;
 }
 
+.uranus-card {
+    width: 100%;
+    max-width: 500px;
+}
+
 .auth-card {
     @include form-card(420px, clamp(2rem, 4vw, 2.75rem), clamp(1.5rem, 3vw, 2rem));
 }
