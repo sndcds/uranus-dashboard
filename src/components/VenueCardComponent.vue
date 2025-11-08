@@ -153,7 +153,7 @@ const cancelDelete = () => {
   pendingVenueName.value = ''
 }
 
-const confirmDelete = async (password: string) => {
+const confirmDelete = async ({ password }: { password: string }) => {
   if (!pendingVenueId.value) return
 
   deleteError.value = ''
@@ -198,7 +198,7 @@ const cancelDeleteSpace = () => {
   pendingSpaceName.value = ''
 }
 
-const confirmDeleteSpace = async (password: string) => {
+const confirmDeleteSpace = async ({ password }: { password: string }) => {
   if (!pendingSpaceId.value) return
 
   deleteSpaceError.value = ''

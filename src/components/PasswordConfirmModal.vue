@@ -7,6 +7,30 @@
     @close="$emit('cancel')"
   >
     <form :id="formId" @submit.prevent="handleSubmit" class="modal-form">
+      <div v-if="timeSeries > 1" class="form-field">
+        <span class="form-label">{{ t('delete_time_series_question') }}</span>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input
+              type="radio"
+              value="single"
+              v-model="seriesChoice"
+              :name="`${formId}-time-series`"
+            />
+            <span>{{ t('delete_time_series_option_single') }}</span>
+          </label>
+          <label class="radio-option">
+            <input
+              type="radio"
+              value="series"
+              v-model="seriesChoice"
+              :name="`${formId}-time-series`"
+            />
+            <span>{{ t('delete_time_series_option_series', { count: timeSeries }) }}</span>
+          </label>
+        </div>
+      </div>
+
       <div class="form-field">
         <label for="password-input" class="form-label">
           {{ t('password') }}
@@ -61,30 +85,37 @@ interface Props {
     loadingText: string
     error?: string
     isSubmitting?: boolean
+    timeSeries?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
     error: '',
     isSubmitting: false,
+    timeSeries: 1,
 })
 
 const emit = defineEmits<{
-    confirm: [password: string]
+    confirm: [payload: { password: string; deleteSeries?: boolean }]
     cancel: []
 }>()
 
 const password = ref('')
 const formId = `password-confirm-${Math.random().toString(36).slice(2, 9)}`
+const seriesChoice = ref<'single' | 'series'>('single')
 
 // Reset password when modal is closed
 watch(() => props.show, (newValue) => {
     if (!newValue) {
         password.value = ''
+        seriesChoice.value = 'single'
     }
 })
 
 const handleSubmit = () => {
-    emit('confirm', password.value)
+    emit('confirm', {
+        password: password.value,
+        deleteSeries: props.timeSeries > 1 ? seriesChoice.value === 'series' : undefined,
+    })
 }
 </script>
 
@@ -150,5 +181,19 @@ const handleSubmit = () => {
     display: flex;
     gap: 0.75rem;
     justify-content: flex-end;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--color-text);
 }
 </style>

@@ -125,7 +125,7 @@ const cancelDelete = () => {
   pendingDeleteId.value = null
 }
 
-const confirmDelete = async (password: string) => {
+const confirmDelete = async ({ password }: { password: string }) => {
   if (!pendingDeleteId.value) return
 
   deleteError.value = ''

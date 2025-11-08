@@ -75,6 +75,7 @@
       :is-submitting="isDeleting"
       @confirm="confirmDelete"
       @cancel="cancelDelete"
+      :time-series="pendingTimeSeriesCount"
     />
   </section>
 </template>
@@ -83,6 +84,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 
 export interface OrganizerEventItem {
@@ -102,6 +104,7 @@ export interface OrganizerEventItem {
   can_edit_event: boolean
   can_delete_event: boolean
   can_release_event: boolean
+  time_series: number
 }
 
 const props = withDefaults(
@@ -162,11 +165,17 @@ const emit = defineEmits<{
   deleted: [eventId: number]
 }>()
 
+interface PasswordConfirmPayload {
+  password: string
+  deleteSeries?: boolean
+}
+
 const showDeleteModal = ref(false)
 const deleteError = ref('')
 const isDeleting = ref(false)
 const pendingDeleteId = ref<number | null>(null)
 const pendingDeleteTitle = ref('')
+const pendingTimeSeriesCount = ref(1)
 
 const requestDelete = (event: OrganizerEventItem) => {
   if (!event.can_delete_event) {
@@ -174,6 +183,7 @@ const requestDelete = (event: OrganizerEventItem) => {
   }
   pendingDeleteId.value = event.event_id
   pendingDeleteTitle.value = event.event_title
+  pendingTimeSeriesCount.value = event.time_series ?? 1
   deleteError.value = ''
   showDeleteModal.value = true
 }
@@ -183,9 +193,10 @@ const cancelDelete = () => {
   deleteError.value = ''
   pendingDeleteId.value = null
   pendingDeleteTitle.value = ''
+  pendingTimeSeriesCount.value = 1
 }
 
-const confirmDelete = async (password: string) => {
+const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload) => {
   if (!pendingDeleteId.value) {
     return
   }
@@ -194,12 +205,16 @@ const confirmDelete = async (password: string) => {
   isDeleting.value = true
 
   try {
+    const body: Record<string, unknown> = { password }
+    if (deleteSeries) {
+      body.delete_series = true
+    }
     await apiFetch(`/api/admin/event/${pendingDeleteId.value}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify(body),
     })
 
     emit('deleted', pendingDeleteId.value)
