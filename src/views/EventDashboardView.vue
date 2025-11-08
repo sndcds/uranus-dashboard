@@ -93,17 +93,15 @@ interface DeleteEventPayload {
     deleteSeries: boolean
 }
 
-const removeEventCard = ({ eventId, eventDateId, deleteSeries }: DeleteEventPayload) => {
+const removeEventCard = async ({ eventId, eventDateId, deleteSeries }: DeleteEventPayload) => {
     if (deleteSeries) {
         events.value = events.value.filter(event => event.event_id !== eventId)
-        return
-    }
-
-    if (eventDateId !== null) {
+    } else if (eventDateId !== null) {
         events.value = events.value.filter(event => event.event_date_id !== eventDateId)
-        return
+    } else {
+        events.value = events.value.filter(event => event.event_id !== eventId)
     }
 
-    events.value = events.value.filter(event => event.event_id !== eventId)
+    await fetchEvents()
 }
 </script>
