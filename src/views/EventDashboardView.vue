@@ -87,7 +87,23 @@ onMounted(async () => {
     await loadOrganizerPermission()
 })
 
-const removeEventCard = (eventId: number) => {
+interface DeleteEventPayload {
+    eventId: number
+    eventDateId: number | null
+    deleteSeries: boolean
+}
+
+const removeEventCard = ({ eventId, eventDateId, deleteSeries }: DeleteEventPayload) => {
+    if (deleteSeries) {
+        events.value = events.value.filter(event => event.event_id !== eventId)
+        return
+    }
+
+    if (eventDateId !== null) {
+        events.value = events.value.filter(event => event.event_date_id !== eventDateId)
+        return
+    }
+
     events.value = events.value.filter(event => event.event_id !== eventId)
 }
 </script>

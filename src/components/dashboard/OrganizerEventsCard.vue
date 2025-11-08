@@ -163,7 +163,7 @@ const buildImageUrl = (event: OrganizerEventItem) => {
 }
 
 const emit = defineEmits<{
-  deleted: [eventId: number]
+  deleted: [payload: { eventId: number; eventDateId: number | null; deleteSeries: boolean }]
 }>()
 
 interface PasswordConfirmPayload {
@@ -230,7 +230,11 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
       body: JSON.stringify(body),
     })
 
-    emit('deleted', pendingDeleteId.value)
+    emit('deleted', {
+      eventId: pendingDeleteId.value,
+      eventDateId: pendingEventDateId.value,
+      deleteSeries: deleteEntireSeries,
+    })
     cancelDelete()
   } catch (err: unknown) {
     console.error('Failed to delete event:', err)
