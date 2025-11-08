@@ -44,6 +44,13 @@
                     class="uranus-secondary-button">
                     {{ t('edit_space') }}
                   </router-link>
+                  <button
+                    v-if="venue.can_delete_space"
+                    class="uranus-secondary-button"
+                    @click="requestDeleteSpace(space)"
+                  >
+                    {{ t('delete_space') }}
+                  </button>
                 </span>
               </span>
             </div>
@@ -63,6 +70,18 @@
       :is-submitting="isDeleting"
       @confirm="confirmDelete"
       @cancel="cancelDelete"
+    />
+
+    <PasswordConfirmModal
+      :show="showDeleteSpaceModal"
+      :title="t('confirm_delete_space')"
+      :description="t('confirm_delete_space_description', { name: pendingSpaceName })"
+      :confirm-text="t('delete_space')"
+      :loading-text="t('deleting')"
+      :error="deleteSpaceError"
+      :is-submitting="isDeletingSpace"
+      @confirm="confirmDeleteSpace"
+      @cancel="cancelDeleteSpace"
     />
   </article>
 </template>
@@ -113,6 +132,11 @@ const deleteError = ref('')
 const isDeleting = ref(false)
 const pendingVenueId = ref<number | null>(null)
 const pendingVenueName = ref('')
+const showDeleteSpaceModal = ref(false)
+const deleteSpaceError = ref('')
+const isDeletingSpace = ref(false)
+const pendingSpaceId = ref<number | null>(null)
+const pendingSpaceName = ref('')
 
 const requestDelete = (venue: Venue) => {
   if (!venue.can_delete_venue) return
@@ -156,6 +180,55 @@ const confirmDelete = async (password: string) => {
     }
   } finally {
     isDeleting.value = false
+  }
+}
+
+const requestDeleteSpace = (space: Space) => {
+  if (!props.venue.can_delete_space) return
+  pendingSpaceId.value = space.space_id
+  pendingSpaceName.value = space.space_name
+  deleteSpaceError.value = ''
+  showDeleteSpaceModal.value = true
+}
+
+const cancelDeleteSpace = () => {
+  showDeleteSpaceModal.value = false
+  deleteSpaceError.value = ''
+  pendingSpaceId.value = null
+  pendingSpaceName.value = ''
+}
+
+const confirmDeleteSpace = async (password: string) => {
+  if (!pendingSpaceId.value) return
+
+  deleteSpaceError.value = ''
+  isDeletingSpace.value = true
+
+  try {
+    await apiFetch(`/api/admin/space/${pendingSpaceId.value}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password }),
+    })
+
+    const index = props.venue.spaces.findIndex(space => space.space_id === pendingSpaceId.value)
+    if (index !== -1) {
+      props.venue.spaces.splice(index, 1)
+    }
+
+    cancelDeleteSpace()
+  } catch (err: unknown) {
+    console.error('Failed to delete space:', err)
+    const status = typeof err === 'object' && err !== null ? (err as { status?: number }).status : undefined
+    if (status === 401 || status === 403) {
+      deleteSpaceError.value = t('incorrect_password')
+    } else {
+      deleteSpaceError.value = t('failed_to_delete_space')
+    }
+  } finally {
+    isDeletingSpace.value = false
   }
 }
 </script>
