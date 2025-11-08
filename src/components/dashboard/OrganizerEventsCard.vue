@@ -89,6 +89,7 @@ import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 
 export interface OrganizerEventItem {
   event_id: number
+  event_date_id: number
   event_title: string
   start_date: string
   start_time: string
@@ -176,6 +177,7 @@ const isDeleting = ref(false)
 const pendingDeleteId = ref<number | null>(null)
 const pendingDeleteTitle = ref('')
 const pendingTimeSeriesCount = ref(1)
+const pendingEventDateId = ref<number | null>(null)
 
 const requestDelete = (event: OrganizerEventItem) => {
   if (!event.can_delete_event) {
@@ -184,6 +186,7 @@ const requestDelete = (event: OrganizerEventItem) => {
   pendingDeleteId.value = event.event_id
   pendingDeleteTitle.value = event.event_title
   pendingTimeSeriesCount.value = event.time_series ?? 1
+  pendingEventDateId.value = event.event_date_id
   deleteError.value = ''
   showDeleteModal.value = true
 }
@@ -194,6 +197,7 @@ const cancelDelete = () => {
   pendingDeleteId.value = null
   pendingDeleteTitle.value = ''
   pendingTimeSeriesCount.value = 1
+  pendingEventDateId.value = null
 }
 
 const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload) => {
@@ -206,10 +210,19 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
 
   try {
     const body: Record<string, unknown> = { password }
-    if (deleteSeries) {
+    const deleteEntireSeries = Boolean(deleteSeries)
+    if (deleteEntireSeries) {
       body.delete_series = true
     }
-    await apiFetch(`/api/admin/event/${pendingDeleteId.value}`, {
+    let url: string
+    if (deleteEntireSeries) {
+      url = `/api/admin/event/${pendingDeleteId.value}`
+    } else if (pendingEventDateId.value !== null) {
+      url = `/api/admin/event/${pendingDeleteId.value}/date/${pendingEventDateId.value}`
+    } else {
+      url = `/api/admin/event/${pendingDeleteId.value}`
+    }
+    await apiFetch(url, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
