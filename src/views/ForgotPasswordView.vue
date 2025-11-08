@@ -45,7 +45,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const email = ref('')
 const error = ref<string | null>(null)
@@ -103,7 +103,7 @@ const requestReset = async () => {
     isSubmitting.value = true
 
     try {
-        const { status } = await apiFetch('/api/admin/forgot-password', {
+        const { status } = await apiFetch(`/api/admin/forgot-password?lang=${locale.value}`, {
             method: 'POST',
             body: JSON.stringify({
                 email: email.value.trim(),
