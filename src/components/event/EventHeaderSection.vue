@@ -22,7 +22,7 @@
 
         <UranusInlineOKButton
             :label="t('button_save')"
-            :loadingLabel="t('saving')"
+            :busyLabel="t('saving')"
             :onClick="saveHeader"
         />
       </UranusInlineActionBar>

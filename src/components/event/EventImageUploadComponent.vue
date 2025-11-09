@@ -5,11 +5,24 @@
 <template>
   <div class="uranus-event-image-upload-layout">
 
+    <p>
+      hasImage: {{ hasImage }}<br>
+      existingImageUrl: {{ existingImageUrl }}<br>
+      currentImageId: {{ currentImageId }}<br>
+      inputFileSelected: {{ inputFileSelected }}<br>
+      error: {{ error }}<br>
+      isSaving: {{ isSaving }}<br>
+      isDeleting: {{ isDeleting }}<br>
+      isActiveEdit: {{ isActiveEdit }}<br>
+      fileName: {{ fileName }}<br>
+      fileSize: {{ fileSize }}<br>
+    </p>
+
     <!-- Image Upload Section -->
     <div class="event-image-upload__upload-section">
       <div
           class="event-image-upload__upload-area"
-          :class="{ 'event-image-upload__upload-area--has-image': hasImage, 'event-image-upload__upload-area--drag-over': isDragOver }"
+          :class="{ 'event-image-upload__upload-area--has-image': hasImage }"
           @dragover.prevent @dragleave.prevent @drop.prevent="handleDrop">
 
         <!-- Upload Placeholder -->
@@ -93,7 +106,7 @@
               </span>
           </div>
 
-          <!-- Image Metadata Form -->
+          <!-- Inline Form, Image Metadata -->
           <div v-if="hasImage && isActiveEdit" class="uranus-inline-section-layout">
             <UranusTextInput id="image-alt-text" v-model="localAltText" :label="t('event_image_alt_text')" />
 
@@ -135,12 +148,12 @@
             <UranusInlineCancelButton
                 :label="t('button_cancel')"
                 :disabled="isSaving"
-                :onClick="() => isActiveEdit = false"
+                :onClick="cancelEdit"
             />
 
             <UranusInlineOKButton
-                :label="t('event_image_save')"
-                :loadingLabel="t('saving')"
+                :label="okButtonLabel"
+                :busyLabel="okButtonLabel"
                 :disabled="isSaving || !canSave"
                 :loading="isSaving"
                 :onClick="saveImage"
@@ -158,7 +171,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 interface Props {
-    modelValue?: File | null
+    image?: File | null
     altText?: string
     copyright?: string
     license?: string | number
@@ -173,7 +186,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    modelValue: null,
+  image: null,
     altText: '',
     copyright: '',
     license: '',
@@ -187,7 +200,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-    'update:modelValue': [file: File | null]
+    'update:image': [file: File | null]
     'update:altText': [value: string]
     'update:copyright': [value: string]
     'update:license': [value: number | null]
@@ -201,13 +214,24 @@ const existingImageUrl = ref<string | null>(props.existingImageUrl ?? null)
 const currentImageId = ref<number | null>(null)
 
 const fileInput = ref<HTMLInputElement>()
-const isDragOver = ref(false)
 const error = ref<string>('')
 const isSaving = ref(false)
 const isDeleting = ref(false)
 const isActiveEdit = ref(false)
 
-const hasImage = computed(() => !!props.modelValue || !!existingImageUrl.value)
+const hasImage = computed(() => !!props.image || !!existingImageUrl.value)
+
+const inputFileSelected = computed(() => {
+  const input = fileInput.value
+  return !!input?.files?.length
+})
+
+const okButtonLabel = computed(() => {
+  if (inputFileSelected.value) return t('event_image_save')
+  return t('button_save')
+})
+
+
 const previewUrl = ref<string>('')
 const fileName = ref<string>('')
 const fileSize = ref<number>(0)
@@ -222,12 +246,7 @@ const localCreatedBy = ref(props.createdBy)
 
 // Computed property to check if we can save
 const canSave = computed(() => {
-    return hasImage.value && props.eventId && (
-        localAltText.value.trim() ||
-        localCopyright.value ||
-        localLicense.value ||
-        localCreatedBy.value.trim()
-    )
+    return hasImage.value && props.eventId
 })
 
 const computedUploadUrl = computed(() => {
@@ -300,6 +319,23 @@ const applyExistingImagePreview = (url: string) => {
     fileSize.value = 0
 }
 
+const cancelEdit = () => {
+  isActiveEdit.value = false
+
+  // If user selected a new file but hasn't uploaded yet, clear it
+  if (props.image) {
+    emit('update:image', null)
+    clearPreview()
+    if (fileInput.value) fileInput.value.value = ''
+  }
+
+  // Reset local form fields to original props
+  localAltText.value = props.altText
+  localCopyright.value = props.copyright
+  localLicense.value = props.license ? Number(props.license) : null
+  localCreatedBy.value = props.createdBy
+}
+
 const toNumberOrNull = (value: unknown): number | null => {
     if (typeof value === 'number' && Number.isFinite(value)) return value
     if (typeof value === 'string' && value.trim() !== '') {
@@ -309,7 +345,7 @@ const toNumberOrNull = (value: unknown): number | null => {
     return null
 }
 
-watch(() => props.modelValue, (newFile) => {
+watch(() => props.image, (newFile) => {
     isActiveEdit.value = !!newFile
 
     if (newFile && newFile instanceof File) {
@@ -331,7 +367,7 @@ watch(() => props.modelValue, (newFile) => {
 watch(() => props.existingImageUrl, (newUrl) => {
     existingImageUrl.value = newUrl ?? null
 
-    if (props.modelValue) {
+    if (props.image) {
         return
     }
 
@@ -370,7 +406,7 @@ const handleFileSelect = (event: Event) => {
 
     if (file && file instanceof File) {
         if (validateFile(file)) {
-            emit('update:modelValue', file)
+            emit('update:image', file)
             existingImageUrl.value = null
         }
     } else {
@@ -380,11 +416,10 @@ const handleFileSelect = (event: Event) => {
 }
 
 const handleDrop = (event: DragEvent) => {
-    isDragOver.value = false
     const file = event.dataTransfer?.files?.[0]
 
     if (file && file instanceof File && validateFile(file)) {
-        emit('update:modelValue', file)
+        emit('update:image', file)
         existingImageUrl.value = null
     }
 }
@@ -393,8 +428,8 @@ const removeImage = async () => {
   if (isDeleting.value) return
 
   // No existing image and only a selected file → just clear it locally
-  if (!existingImageUrl.value && props.modelValue) {
-    emit('update:modelValue', null)
+  if (!existingImageUrl.value && props.image) {
+    emit('update:image', null)
     if (fileInput.value) fileInput.value.value = ''
     clearPreview()
     isActiveEdit.value = false
@@ -418,7 +453,7 @@ const removeImage = async () => {
 
     existingImageUrl.value = null
     isActiveEdit.value = false
-    emit('update:modelValue', null)
+    emit('update:image', null)
 
     if (fileInput.value) {
       fileInput.value.value = ''
@@ -547,7 +582,7 @@ onMounted(() => {
 })
 
 const saveImage = async () => {
-    if (!props.modelValue || !props.eventId || isSaving.value) return
+    if (!props.image || !props.eventId || isSaving.value) return
 
     if (!computedUploadUrl.value) {
         error.value = t('event_image_upload_url_missing')
@@ -559,7 +594,7 @@ const saveImage = async () => {
 
     try {
         const formData = new FormData()
-        formData.append('image', props.modelValue)
+        formData.append('image', props.image)
 
         if (localAltText.value.trim()) {
             formData.append('alt_text', localAltText.value.trim())
@@ -567,7 +602,7 @@ const saveImage = async () => {
         if (localCopyright.value) {
             formData.append('copyright', localCopyright.value)
         }
-      if (localLicense.value !== null) {
+        if (localLicense.value !== null) {
             formData.append('license_id', String(localLicense.value))
         }
         if (localCreatedBy.value.trim()) {

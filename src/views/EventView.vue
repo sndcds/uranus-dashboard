@@ -7,7 +7,7 @@
     <div class="event-content">
       <section class="event-layout">
         <EventImageUploadComponent
-            v-model="eventImage"
+            v-model:image="eventImage"
             v-model:alt-text="imageAltText"
             v-model:copyright="imageCopyright"
             v-model:license="imageLicense"

@@ -1,10 +1,18 @@
 <template>
     <div>
-        <EventImageUploadComponent v-model="eventImage" v-model:alt-text="imageAltText"
-            v-model:copyright="imageCopyright" v-model:license="imageLicense" v-model:created-by="imageCreatedBy"
-            :event-id="eventId" :max-size="5 * 1024 * 1024" :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
-            :existing-image-url="existingImagePreviewUrl" :upload-url="`/api/admin/event/${eventId}/image`"
-            :delete-url="`/api/admin/event/${eventId}/image`" :get-url="`/api/admin/event/${eventId}/image`"
+        <EventImageUploadComponent
+            v-model:image="eventImage"
+            v-model:alt-text="imageAltText"
+            v-model:copyright="imageCopyright"
+            v-model:license="imageLicense"
+            v-model:created-by="imageCreatedBy"
+            :event-id="eventId"
+            :max-size="5 * 1024 * 1024"
+            :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
+            :existing-image-url="existingImagePreviewUrl"
+            :upload-url="`/api/admin/event/${eventId}/image`"
+            :delete-url="`/api/admin/event/${eventId}/image`"
+            :get-url="`/api/admin/event/${eventId}/image`"
             @updated="emit('updated')" />
 
         <UranusInlineEditSection :active="isEditing">
