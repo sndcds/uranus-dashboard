@@ -273,16 +273,46 @@ const closeSettingsMenu = () => {
 }
 
 // Theme switching
-const setTheme = (theme: 'light' | 'dark') => {
+const setTheme = async (theme: 'light' | 'dark') => {
     currentTheme.value = theme
     applyTheme(theme)
     localStorage.setItem('app-theme', theme)
+    
+    // Save to API if authenticated
+    if (tokenStore.isAuthenticated) {
+        try {
+            await apiFetch('/api/admin/user/me/settings', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    theme: theme,
+                    locale: currentLocale.value
+                })
+            })
+        } catch (err) {
+            console.error('Failed to save theme setting:', err)
+        }
+    }
 }
 
 // Language switching
-const setLanguage = (lang: string) => {
+const setLanguage = async (lang: string) => {
     locale.value = lang
     localStorage.setItem('app-locale', lang)
+    
+    // Save to API if authenticated
+    if (tokenStore.isAuthenticated) {
+        try {
+            await apiFetch('/api/admin/user/me/settings', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    theme: currentTheme.value,
+                    locale: lang
+                })
+            })
+        } catch (err) {
+            console.error('Failed to save language setting:', err)
+        }
+    }
 }
 
 // Initialize theme and locale from storage

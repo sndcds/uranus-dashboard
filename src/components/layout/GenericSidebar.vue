@@ -165,6 +165,14 @@ const eventsRoute = computed(() => {
   overflow-y: auto;
   transition: transform 0.3s ease;
 
+  // Sticky positioning on desktop
+  @media (min-width: 769px) {
+    position: sticky;
+    top: 0;
+    max-height: 100vh;
+    align-self: flex-start;
+  }
+
   // Hide visitor sidebar on desktop (shown only on mobile)
   &:not(.generic-sidebar--admin) {
     @media (min-width: 769px) {
