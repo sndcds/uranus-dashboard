@@ -17,7 +17,7 @@
                     <span class="profile-loading__text">{{ loadingLabel }}</span>
                 </div>
 
-                <div v-else class="profile-layout">
+                <div v-else>
                     <UserAvatarUpload :label="photoLabel" :hint="photoHint" :upload-label="uploadLabel"
                         :remove-label="removeLabel" :initials="avatarInitial" :disabled="isSubmitting"
                         @busy-change="handleAvatarBusyChange" @error="handleAvatarError"
@@ -386,13 +386,13 @@ const handleAvatarUpdated = () => {
 }
 
 .profile-fields {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.25rem, 3vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--uranus-grid-gap);
 }
 
 .profile-field-row {
-    gap: clamp(1rem, 2vw, 1.25rem);
+  gap: var(--uranus-grid-gap);
 }
 
 .profile-preferences {
