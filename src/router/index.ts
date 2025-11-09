@@ -34,7 +34,6 @@ import MapView from '@/views/MapView.vue'
 import EmptyVenuesView from '@/views/EmptyVenuesView.vue'
 import EmptyEventsView from '@/views/EmptyEventsView.vue'
 import UserActivateView from '@/views/UserActivateView.vue'
-import GenericLayout from '@/components/layout/GenericLayout.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 
 const routes = [
