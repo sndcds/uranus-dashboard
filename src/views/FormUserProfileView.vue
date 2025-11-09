@@ -1,9 +1,6 @@
 <template>
-  <div class="uranus-main-layout">
-    <DashboardHeroComponent
-        :title="heroTitle"
-        :subtitle="heroSubtitle"
-    />
+    <div class="uranus-main-layout">
+        <DashboardHeroComponent :title="heroTitle" :subtitle="heroSubtitle" />
 
         <section class="uranus-card">
             <transition name="fade">
@@ -25,40 +22,20 @@
 
                     <div class="profile-fields">
                         <UranusFormRow class="profile-field-row">
-                            <UranusTextInput
-                                id="profile_display_name"
-                                v-model="profile.displayName"
-                                :label="t('user_profile_display_name')"
-                                required
-                                size="big"
-                                autocomplete="nickname"
-                                :disabled="isSubmitting"
-                            />
-                            <UranusTextInput
-                                id="profile_email"
-                                v-model="profile.emailAddress"
-                                type="email"
-                                :label="t('user_profile_email')"
-                                required
-                                autocomplete="email"
-                                :disabled="isSubmitting"
-                            />
+                            <UranusTextInput id="profile_display_name" v-model="profile.displayName"
+                                :label="t('user_profile_display_name')" required autocomplete="nickname"
+                                :disabled="isSubmitting" />
+                            <UranusTextInput id="profile_email" v-model="profile.emailAddress" type="email"
+                                :label="t('user_profile_email')" required autocomplete="email"
+                                :disabled="isSubmitting" />
                         </UranusFormRow>
                         <UranusFormRow class="profile-field-row">
-                            <UranusTextInput
-                                id="profile_first_name"
-                                v-model="profile.firstName"
-                                :label="t('user_profile_first_name')"
-                                autocomplete="given-name"
-                                :disabled="isSubmitting"
-                            />
-                            <UranusTextInput
-                                id="profile_last_name"
-                                v-model="profile.lastName"
-                                :label="t('user_profile_last_name')"
-                                autocomplete="family-name"
-                                :disabled="isSubmitting"
-                            />
+                            <UranusTextInput id="profile_first_name" v-model="profile.firstName"
+                                :label="t('user_profile_first_name')" autocomplete="given-name"
+                                :disabled="isSubmitting" />
+                            <UranusTextInput id="profile_last_name" v-model="profile.lastName"
+                                :label="t('user_profile_last_name')" autocomplete="family-name"
+                                :disabled="isSubmitting" />
                         </UranusFormRow>
 
                         <div class="profile-preferences">
@@ -67,32 +44,18 @@
                                 <p>{{ preferencesDescription }}</p>
                             </div>
                             <UranusFormRow class="profile-preferences__grid">
-                                <UranusFieldLabel
-                                    id="profile_language"
-                                    :label="t('language')"
-                                >
-                                    <select
-                                        id="profile_language"
-                                        v-model="selectedLocale"
-                                        class="uranus-select"
-                                        :disabled="isSubmitting"
-                                    >
+                                <UranusFieldLabel id="profile_language" :label="t('language')">
+                                    <select id="profile_language" v-model="selectedLocale" class="uranus-select"
+                                        :disabled="isSubmitting">
                                         <option v-for="option in localeOptions" :key="option.value"
                                             :value="option.value">
                                             {{ option.label }}
                                         </option>
                                     </select>
                                 </UranusFieldLabel>
-                                <UranusFieldLabel
-                                    id="profile_theme"
-                                    :label="t('settings_theme')"
-                                >
-                                    <select
-                                        id="profile_theme"
-                                        v-model="selectedTheme"
-                                        class="uranus-select"
-                                        :disabled="isSubmitting"
-                                    >
+                                <UranusFieldLabel id="profile_theme" :label="t('settings_theme')">
+                                    <select id="profile_theme" v-model="selectedTheme" class="uranus-select"
+                                        :disabled="isSubmitting">
                                         <option v-for="option in themeOptions" :key="option.value"
                                             :value="option.value">
                                             {{ t(option.label) }}
@@ -134,10 +97,10 @@ import { useUserStore } from '@/store/userStore'
 import UserAvatarUpload from '@/components/UserAvatarUpload.vue'
 import type { ThemeMode } from '@/utils/theme'
 import { apiFetch } from '@/api'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
-import UranusFormRow from "@/components/uranus/UranusFormRow.vue";
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
+import UranusFormRow from "@/components/uranus/UranusFormRow.vue"
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
 
 interface UserProfilePayload {
     user_id?: string | number | null
@@ -386,13 +349,13 @@ const handleAvatarUpdated = () => {
 }
 
 .profile-fields {
-  display: flex;
-  flex-direction: column;
-  gap: var(--uranus-grid-gap);
+    display: flex;
+    flex-direction: column;
+    gap: var(--uranus-grid-gap);
 }
 
 .profile-field-row {
-  gap: var(--uranus-grid-gap);
+    gap: var(--uranus-grid-gap);
 }
 
 .profile-preferences {

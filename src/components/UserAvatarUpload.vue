@@ -345,6 +345,7 @@ onBeforeUnmount(() => {
     border: 1px dashed var(--border-soft);
     border-radius: 20px;
     padding: clamp(1.25rem, 3vw, 1.75rem);
+    margin-bottom: 1.5rem;
 }
 
 .profile-photo-panel__label {
