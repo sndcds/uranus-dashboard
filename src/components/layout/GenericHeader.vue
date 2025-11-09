@@ -4,12 +4,15 @@
             <!-- Logo / Brand -->
             <div class="generic-header__brand">
                 <router-link v-if="isAdminPage" to="/" class="generic-header__logo">
+                    <UranusLogo class="generic-header__logo-icon" />
                     <span class="generic-header__logo-text">Uranus</span>
                 </router-link>
                 <router-link v-else-if="tokenStore.isAuthenticated" to="/admin/dashboard" class="generic-header__logo">
+                    <UranusLogo class="generic-header__logo-icon" />
                     <span class="generic-header__logo-text">Uranus</span>
                 </router-link>
                 <router-link v-else to="/" class="generic-header__logo">
+                    <UranusLogo class="generic-header__logo-icon" />
                     <span class="generic-header__logo-text">Uranus</span>
                 </router-link>
 
@@ -196,6 +199,8 @@ import { useTokenStore } from '@/store/tokenStore'
 import { apiFetch } from '@/api'
 import { applyTheme } from '@/utils/theme'
 
+import UranusLogo from '@/components/uranus/UranusLogo.vue'
+
 const { t, locale } = useI18n()
 const router = useRouter()
 const route = useRoute()
@@ -348,14 +353,27 @@ onUnmounted(() => {
 }
 
 .generic-header__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     text-decoration: none;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--accent-primary);
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
 
     &:hover {
         color: var(--accent-secondary);
+        transform: translateY(-1px);
+    }
+}
+
+.generic-header__logo-icon {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+
+    .generic-header__logo:hover & {
+        transform: rotate(15deg);
     }
 }
 
