@@ -16,6 +16,8 @@
       isActiveEdit: {{ isActiveEdit }}<br>
       fileName: {{ fileName }}<br>
       fileSize: {{ fileSize }}<br>
+      computedUploadUrl: {{ computedUploadUrl }}<br>
+      computedSaveImageInfo: {{ computedSaveImageInfo }}<br>
     </p>
 
     <!-- Image Upload Section -->
@@ -171,41 +173,41 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 interface Props {
-    image?: File | null
-    altText?: string
-    copyright?: string
-    license?: string | number
-    createdBy?: string
-    eventId?: number
-    maxSize?: number // in bytes, default 5MB
-    acceptedTypes?: string[] // default ['image/jpeg', 'image/png', 'image/webp']
-    existingImageUrl?: string | null
-    uploadUrl?: string // URL for POST/PUT operations
-    deleteUrl?: string // URL for DELETE operation
-    getUrl?: string // URL for GET operation (if needed)
+  image?: File | null
+  altText?: string
+  copyright?: string
+  license?: string | number
+  createdBy?: string
+  eventId?: number
+  maxSize?: number // in bytes, default 5MB
+  acceptedTypes?: string[] // default ['image/jpeg', 'image/png', 'image/webp']
+  existingImageUrl?: string | null
+  uploadUrl?: string // URL for POST/PUT operations
+  deleteUrl?: string // URL for DELETE operation
+  getUrl?: string // URL for GET operation (if needed)
 }
 
 const props = withDefaults(defineProps<Props>(), {
   image: null,
-    altText: '',
-    copyright: '',
-    license: '',
-    createdBy: '',
-    maxSize: 5 * 1024 * 1024, // 5MB
-    acceptedTypes: () => ['image/jpeg', 'image/png', 'image/webp'],
-    existingImageUrl: null,
-    uploadUrl: '',
-    deleteUrl: '',
-    getUrl: '',
+  altText: '',
+  copyright: '',
+  license: '',
+  createdBy: '',
+  maxSize: 5 * 1024 * 1024, // 5MB
+  acceptedTypes: () => ['image/jpeg', 'image/png', 'image/webp'],
+  existingImageUrl: null,
+  uploadUrl: '',
+  deleteUrl: '',
+  getUrl: '',
 })
 
 const emit = defineEmits<{
-    'update:image': [file: File | null]
-    'update:altText': [value: string]
-    'update:copyright': [value: string]
-    'update:license': [value: number | null]
-    'update:createdBy': [value: string]
-    'updated': []
+  'update:image': [file: File | null]
+  'update:altText': [value: string]
+  'update:copyright': [value: string]
+  'update:license': [value: number | null]
+  'update:createdBy': [value: string]
+  'updated': []
 }>()
 
 const { t, locale } = useI18n()
@@ -266,6 +268,13 @@ const computedGetUrl = computed(() => {
         return props.getUrl
     }
 })
+
+const computedSaveImageInfo = computed(() => {
+  if (!props.image || !props.eventId || isSaving.value) return 'None'
+  if (!computedUploadUrl.value) return 'Upload URL missing'
+  return 'OK'
+})
+
 
 // Watch for prop changes to sync local values
 watch(() => props.altText, (newVal) => { localAltText.value = newVal })
@@ -582,7 +591,7 @@ onMounted(() => {
 })
 
 const saveImage = async () => {
-    if (!props.image || !props.eventId || isSaving.value) return
+    // if (!props.image || !props.eventId || isSaving.value) return
 
     if (!computedUploadUrl.value) {
         error.value = t('event_image_upload_url_missing')
