@@ -1,44 +1,36 @@
 <template>
-    <UranusInlineEditSection :active="isEditing">
-      <UranusInlineEditLabel
-          :label-text="t('event_tags_heading')"
-          :edit-button-text="t('edit')"
-          @edit-started="startEditing"
-      />
-      <TwoStageTagListComponent
-          v-if="selection"
-          :fetchPrimaries="fetchEventTypes"
-          :fetchSecondaries="fetchEventGenres"
-          :initialSelection="selection"
-          :labelPrimary="t('event_type')"
-          :labelSecondary="t('genre')"
-          :placeholderPrimary="t('choose_event_type')"
-          :placeholderSecondary="t('choose_genre')"
-          :editable="true"
-          :isEditing="isEditing"
-          @update-selection="onSelectionUpdate"/>
+  <UranusInlineEditSection :active="isEditing">
+    <UranusInlineEditLabel
+        :label-text="t('event_tags_heading')"
+        :edit-button-text="t('edit')"
+        @edit-started="startEditing"
+    />
+    <TwoStageTagListComponent
+        v-if="selection"
+        :fetchPrimaries="fetchEventTypes"
+        :fetchSecondaries="fetchEventGenres"
+        :initialSelection="selection"
+        :labelPrimary="t('event_type')"
+        :labelSecondary="t('genre')"
+        :placeholderPrimary="t('choose_event_type')"
+        :placeholderSecondary="t('choose_genre')"
+        :editable="true"
+        :isEditing="isEditing"
+        @update-selection="onSelectionUpdate"/>
 
-        <div
-            v-if="isEditing">
-            <button
-                type="button"
-                class="uranus-inline-cancel-button"
-                @click="cancelEditing"
-                :disabled="isSaving"
-            >
-                {{ t('form_cancel') }}
-            </button>
-            <button
-                type="button"
-                class="uranus-inline-save-button"
-                @click="saveTypes"
-                :disabled="isSaving"
-            >
-                <span v-if="!isSaving">{{ t('form_save') }}</span>
-                <span v-else>{{ t('saving') }}</span>
-            </button>
-        </div>
-    </UranusInlineEditSection>
+    <UranusInlineActionBar v-if="isEditing">
+      <UranusInlineCancelButton
+          :label="t('button_cancel')"
+          :onClick="cancelEditing"
+      />
+
+      <UranusInlineOKButton
+          :label="t('button_save')"
+          :onClick="saveTypes"
+      />
+    </UranusInlineActionBar>
+
+  </UranusInlineEditSection>
 </template>
 
 <script setup lang="ts">
@@ -49,6 +41,9 @@ import TwoStageTagListComponent from '@/components/TwoStageTagListComponent.vue'
 import type { Selection as TagSelection } from '@/components/TwoStageTagListComponent.vue'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
 import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
+import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue";
+import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue";
+import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue";
 
 interface EventType {
     type_id: number

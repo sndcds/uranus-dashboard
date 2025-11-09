@@ -161,6 +161,9 @@ const messages = {
     de: {
         ...event.de,
         ...sharedAuthFor('de'),
+        button_cancel: 'Abbrechen',
+        button_ok: 'OK',
+        button_save: 'Speichern',
         events_calendar_all_events: 'Alle Veranstaltungen',
         event_building_level_label: 'Etage',
         event_seating_capacity_label: 'Sitzplatzkapazität',
@@ -763,6 +766,9 @@ const messages = {
     en: {
         ...event.en,
         ...sharedAuthFor('en'),
+        button_cancel: 'Cancel',
+        button_ok: 'OK',
+        button_save: 'Save',
         events_calendar_all_events: 'All events',
         event_building_level_label: 'Level',
         event_seating_capacity_label: 'Seating capacity',
@@ -1360,6 +1366,9 @@ const messages = {
     da: {
         ...event.da,
         ...sharedAuthFor('da'),
+        button_cancel: 'Anuller',
+        button_ok: 'OK',
+        button_save: 'Gem',
         events_calendar_all_events: 'Alle arrangementer',
         event_building_level_label: 'Etage',
         event_seating_capacity_label: 'SiddPladsKapacitet',

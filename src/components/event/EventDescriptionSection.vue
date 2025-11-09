@@ -6,21 +6,24 @@
             @edit-started="startEditingDescription" />
 
         <div class="event-description__content">
-          <template v-if="isEditingDescription">
+          <div v-if="isEditingDescription">
             <MarkdownEditorComponent v-model="editedDescription"
                                      :placeholder="t('event_description_placeholder')" />
-            <div class="event-description__actions">
-              <button type="button" class="uranus-inline-cancel-button"
-                      @click="cancelEditingDescription">
-                {{ t('form_cancel') }}
-              </button>
-              <button type="button" class="uranus-inline-save-button" :disabled="isSavingDescription"
-                      @click="saveDescription">
-                <span v-if="!isSavingDescription">{{ t('form_save') }}</span>
-                <span v-else>{{ t('saving') }}</span>
-              </button>
-            </div>
-          </template>
+
+            <UranusInlineActionBar>
+              <UranusInlineCancelButton
+                  :label="t('button_cancel')"
+                  :onClick="cancelEditingDescription"
+              />
+
+              <UranusInlineOKButton
+                  :label="t('button_save')"
+                  :disabled="isSavingDescription"
+                  :onClick="saveDescription"
+              />
+            </UranusInlineActionBar>
+
+          </div>
           <template v-else>
             <MarkdownPreviewComponent v-if="description" :value="description" />
             <p v-else class="empty">{{ t('event_details_empty') }}</p>
@@ -29,18 +32,18 @@
 
       </UranusInlineEditSection>
 
-        <EventTypeSection
-            :event-id="eventId" :locale="locale"
-            :event-types="eventTypes"
-            @updated="emit('updated')" />
+      <EventTypeSection
+          :event-id="eventId" :locale="locale"
+          :event-types="eventTypes"
+          @updated="emit('updated')" />
 
-        <EventLanguageSection
-            :event-id="eventId"
-            :locale="locale"
-            :languages="languages"
-            @updated="emit('updated')" />
+      <EventLanguageSection
+          :event-id="eventId"
+          :locale="locale"
+          :languages="languages"
+          @updated="emit('updated')" />
 
-      <!-- Additional Info -->
+  <!-- Additional Info -->
         <div class="event-additional">
             <p v-if="participationInfo">
                 <strong>{{ t('event_participation_label') }}:</strong>
@@ -66,6 +69,9 @@ import EventLanguageSection from '@/components/event/EventLanguageSection.vue'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue";
 import EventUrlSection from "@/components/event/EventUrlSection.vue";
 import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
+import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue";
+import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue";
+import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue";
 
 interface EventType { type_id: number; type_name: string; genre_id: number | null; genre_name: string | null }
 

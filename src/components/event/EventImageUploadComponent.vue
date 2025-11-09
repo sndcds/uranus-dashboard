@@ -86,33 +86,53 @@
                 <UranusTextInput id="image-created-by" v-model="localCreatedBy" :label="t('event_image_created_by')"
                     :placeholder="t('event_image_created_by_placeholder')" />
 
-                <UranusFieldLabel id="image-license" :label="t('event_image_license')" :error="licenseError">
-                    <div class="event-image-upload__field">
-                        <select id="image-license" v-model.number="localLicense" class="event-image-upload__select"
-                            :disabled="licenseLoading">
-                            <option :value="null">
-                                {{ licenseLoading ? t('loading') : t('event_image_license_select') }}
-                            </option>
-                            <option v-for="option in licenseOptions" :key="option.value" :value="option.value">
-                                {{ option.label }}
-                            </option>
-                        </select>
-                        <div v-if="licenseError" class="event-image-upload__field-error">
-                            <p class="form-feedback-error">{{ licenseError }}</p>
-                        </div>
-                    </div>
-                </UranusFieldLabel>
+        <UranusFieldLabel
+            id="image-license"
+            :label="t('event_image_license')"
+            :error="licenseError"
+        >
+          <div class="event-image-upload__field">
+              <select
+                  id="image-license"
+                  v-model.number="localLicense"
+                  class="event-image-upload__select"
+                  :disabled="licenseLoading"
+              >
+              <option :value="null">
+                  {{ licenseLoading ? t('loading') : t('event_image_license_select') }}
+              </option>
+              <option
+                  v-for="option in licenseOptions"
+                  :key="option.value"
+                  :value="option.value"
+              >
+                  {{ option.label }}
+              </option>
+              </select>
+              <div v-if="licenseError" class="event-image-upload__field-error">
+                  <p class="form-feedback-error">{{ licenseError }}</p>
+              </div>
+          </div>
+        </UranusFieldLabel>
 
-                <UranusInlineActionBar>
-                    <UranusInlineCancelButton :disabled="isSaving" :onClick="() => isActiveEdit = false"
-                        :label="t('form_cancel')" />
+        <UranusInlineActionBar>
+          <UranusInlineCancelButton
+              :label="t('button_cancel')"
+              :disabled="isSaving"
+              :onClick="() => isActiveEdit = false"
+          />
 
-                    <UranusInlineOKButton :disabled="isSaving || !canSave" :loading="isSaving" :onClick="saveImage"
-                        :label="t('event_image_save')" :loadingLabel="t('saving')" />
-                </UranusInlineActionBar>
-            </div>
-        </UranusInlineEditSection>
-    </div>
+          <UranusInlineOKButton
+              :label="t('event_image_save')"
+              :loadingLabel="t('saving')"
+              :disabled="isSaving || !canSave"
+              :loading="isSaving"
+              :onClick="saveImage"
+          />
+        </UranusInlineActionBar>
+      </div>
+    </UranusInlineEditSection>
+  </div>
 </template>
 
 
@@ -215,8 +235,8 @@ const computedGetUrl = computed(() => {
 // Watch for prop changes to sync local values
 watch(() => props.altText, (newVal) => { localAltText.value = newVal })
 watch(() => props.copyright, (newVal) => { localCopyright.value = newVal })
-watch(() => props.license, (newVal) => { 
-    localLicense.value = newVal ? Number(newVal) : null 
+watch(() => props.license, (newVal) => {
+    localLicense.value = newVal ? Number(newVal) : null
 })
 watch(() => props.createdBy, (newVal) => { localCreatedBy.value = newVal })
 
@@ -520,7 +540,7 @@ const saveImage = async () => {
         if (localCopyright.value) {
             formData.append('copyright', localCopyright.value)
         }
-        if (localLicense.value !== null) {
+      if (localLicense.value !== null) {
             formData.append('license_id', String(localLicense.value))
         }
         if (localCreatedBy.value.trim()) {
@@ -552,34 +572,34 @@ const saveImage = async () => {
 }
 
 .uranus-event-image-upload__meta-display {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 // Upload Section
 .event-image-upload__upload-section {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(0.75rem, 4vw, 1rem);
-    max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 4vw, 1rem);
+  max-width: 500px;
 }
 
 // Upload Area - Mobile first
 .event-image-upload__upload-area {
-    position: relative;
-    border: 2px dashed var(--input-border);
-    border-radius: var(--uranus-card-border-radius);
-    background: var(--card-bg);
-    transition: all 0.2s ease;
-    cursor: pointer;
-    width: 100%;
-    aspect-ratio: 4 / 3;
+  position: relative;
+  border: 2px dashed var(--input-border);
+  border-radius: var(--uranus-card-border-radius);
+  background: var(--card-bg);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  aspect-ratio: 4 / 3;
 
     &--has-image {
-        border-style: solid;
-        border-width: 0px;
-        background: var(--surface-muted);
+      border-style: solid;
+      border-width: 0px;
+      background: var(--surface-muted);
     }
 
     &--drag-over {
@@ -642,17 +662,17 @@ const saveImage = async () => {
 
 // Image Preview
 .event-image-upload__preview {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .event-image-upload__preview-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.2s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
 
     .event-image-upload__upload-area:hover & {
         transform: scale(1.05);

@@ -58,7 +58,21 @@
             </div>
             <p v-else class="event-url-section__empty">{{ t('event_links_empty') }}</p>
 
-            <div class="event-url-section__actions">
+          <UranusInlineActionBar>
+            <UranusInlineCancelButton
+                :label="t('button_cancel')"
+                :onClick="cancelEditingLinks"
+            />
+
+            <UranusInlineOKButton
+                :label="t('button_save')"
+                :disabled="isSaving || !draftLinks.length"
+                :onClick="saveLinks"
+            />
+          </UranusInlineActionBar>
+
+
+          <div class="event-url-section__actions">
                 <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingLinks">
                     {{ t('form_cancel') }}
                 </button>
@@ -95,6 +109,9 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
 import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
+import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue";
+import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue";
+import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue";
 
 interface Props {
     eventId: number

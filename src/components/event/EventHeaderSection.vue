@@ -6,26 +6,28 @@
         :edit-button-text="t('edit')"
         @edit-started="startEditing" />
 
-    <template v-if="isEditing">
+    <div v-if="isEditing">
       <EventTitleFieldsComponent
           :title="editedTitle"
           :subtitle="editedSubtitle"
           @update:title="editedTitle = $event"
           @update:subtitle="editedSubtitle = $event" />
+
       <UranusInlineActionBar>
         <UranusInlineCancelButton
+            :label="t('button_cancel')"
             :disabled="isSaving"
             :onClick="cancelEditing"
-            :label="t('form_cancel')"
-        />
-        <UranusInlineOKButton
-            :onClick="saveHeader"
-            :label="t('event_image_save')"
-            :loadingLabel="t('saving')"
         />
 
+        <UranusInlineOKButton
+            :label="t('button_save')"
+            :loadingLabel="t('saving')"
+            :onClick="saveHeader"
+        />
       </UranusInlineActionBar>
-    </template>
+
+    </div>
 
     <template v-else>
       <h1 class="event-header-section__title">{{ title }}</h1>

@@ -101,6 +101,8 @@ import EventVenueSection from '@/components/event/EventVenueSection.vue'
 import EventUrlSection from '@/components/event/EventUrlSection.vue'
 import EventScheduleSection from '@/components/event/EventScheduleSection.vue'
 import EventReleaseSection from '@/components/event/EventReleaseSection.vue'
+import EventLanguageSection from "@/components/event/EventLanguageSection.vue";
+import EventTypeSection from "@/components/event/EventTypeSection.vue";
 
 const envApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 const apiBase = envApiUrl
