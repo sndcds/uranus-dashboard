@@ -16,6 +16,10 @@
                 :autocomplete="autocomplete"
                 :aria-required="required ? 'true' : 'false'"
                 :aria-invalid="error ? 'true' : 'false'"
+                :required="required"
+                :disabled="disabled"
+                :name="inputName"
+                v-bind="$attrs"
             />
         </UranusFieldLabel>
     </div>
@@ -23,7 +27,12 @@
 
 <script setup>
 import { computed } from 'vue'
-import UranusFieldLabel from './UranusFieldLabel.vue'
+
+import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
+
+defineOptions({
+    inheritAttrs: false,
+})
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -35,6 +44,8 @@ const props = defineProps({
     error: { type: String, default: '' },
     placeholder: { type: String, default: '' },
     autocomplete: { type: String, default: 'off' },
+    disabled: { type: Boolean, default: false },
+    name: { type: String, default: '' },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -50,6 +61,8 @@ const sizeClass = computed(() => {
         default: return ''
     }
 })
+
+const inputName = computed(() => props.name || undefined)
 </script>
 
 <style scoped>

@@ -12,7 +12,7 @@
                 </p>
             </transition>
 
-            <form class="profile-form" @submit.prevent="submitProfile">
+            <form class="uranus-form profile-form" @submit.prevent="submitProfile">
                 <div v-if="isLoading" class="profile-loading">
                     <span class="profile-loading__text">{{ loadingLabel }}</span>
                 </div>
@@ -24,54 +24,82 @@
                         @clear-feedback="handleAvatarFeedbackClear" @avatar-updated="handleAvatarUpdated" />
 
                     <div class="profile-fields">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="profile_display_name">{{ t('user_profile_display_name') }}</label>
-                                <input id="profile_display_name" v-model="profile.displayName" type="text"
-                                    autocomplete="nickname" :disabled="isSubmitting" required />
-                            </div>
-                            <div class="form-group">
-                                <label for="profile_first_name">{{ t('user_profile_first_name') }}</label>
-                                <input id="profile_first_name" v-model="profile.firstName" type="text"
-                                    autocomplete="given-name" :disabled="isSubmitting" />
-                            </div>
-                            <div class="form-group">
-                                <label for="profile_last_name">{{ t('user_profile_last_name') }}</label>
-                                <input id="profile_last_name" v-model="profile.lastName" type="text"
-                                    autocomplete="family-name" :disabled="isSubmitting" />
-                            </div>
-                            <div class="form-group">
-                                <label for="profile_email">{{ t('user_profile_email') }}</label>
-                                <input id="profile_email" v-model="profile.emailAddress" type="email"
-                                    autocomplete="email" :disabled="isSubmitting" required />
-                            </div>
-                        </div>
+                        <UranusFormRow class="profile-field-row">
+                            <UranusTextInput
+                                id="profile_display_name"
+                                v-model="profile.displayName"
+                                :label="t('user_profile_display_name')"
+                                required
+                                size="big"
+                                autocomplete="nickname"
+                                :disabled="isSubmitting"
+                            />
+                            <UranusTextInput
+                                id="profile_email"
+                                v-model="profile.emailAddress"
+                                type="email"
+                                :label="t('user_profile_email')"
+                                required
+                                autocomplete="email"
+                                :disabled="isSubmitting"
+                            />
+                        </UranusFormRow>
+                        <UranusFormRow class="profile-field-row">
+                            <UranusTextInput
+                                id="profile_first_name"
+                                v-model="profile.firstName"
+                                :label="t('user_profile_first_name')"
+                                autocomplete="given-name"
+                                :disabled="isSubmitting"
+                            />
+                            <UranusTextInput
+                                id="profile_last_name"
+                                v-model="profile.lastName"
+                                :label="t('user_profile_last_name')"
+                                autocomplete="family-name"
+                                :disabled="isSubmitting"
+                            />
+                        </UranusFormRow>
 
                         <div class="profile-preferences">
                             <div class="profile-preferences__header">
                                 <h4>{{ preferencesHeading }}</h4>
                                 <p>{{ preferencesDescription }}</p>
                             </div>
-                            <div class="profile-preferences__grid">
-                                <div class="form-group">
-                                    <label for="profile_language">{{ t('language') }}</label>
-                                    <select id="profile_language" v-model="selectedLocale" :disabled="isSubmitting">
+                            <UranusFormRow class="profile-preferences__grid">
+                                <UranusFieldLabel
+                                    id="profile_language"
+                                    :label="t('language')"
+                                >
+                                    <select
+                                        id="profile_language"
+                                        v-model="selectedLocale"
+                                        class="uranus-select"
+                                        :disabled="isSubmitting"
+                                    >
                                         <option v-for="option in localeOptions" :key="option.value"
                                             :value="option.value">
                                             {{ option.label }}
                                         </option>
                                     </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="profile_theme">{{ t('settings_theme') }}</label>
-                                    <select id="profile_theme" v-model="selectedTheme" :disabled="isSubmitting">
+                                </UranusFieldLabel>
+                                <UranusFieldLabel
+                                    id="profile_theme"
+                                    :label="t('settings_theme')"
+                                >
+                                    <select
+                                        id="profile_theme"
+                                        v-model="selectedTheme"
+                                        class="uranus-select"
+                                        :disabled="isSubmitting"
+                                    >
                                         <option v-for="option in themeOptions" :key="option.value"
                                             :value="option.value">
                                             {{ t(option.label) }}
                                         </option>
                                     </select>
-                                </div>
-                            </div>
+                                </UranusFieldLabel>
+                            </UranusFormRow>
                         </div>
                     </div>
                 </div>
@@ -88,7 +116,7 @@
                         </p>
                     </transition>
 
-                    <button type="submit" :disabled="saveDisabled">
+                    <button class="uranus-button" type="submit" :disabled="saveDisabled">
                         <span v-if="!isSubmitting">{{ saveButtonLabel }}</span>
                         <span v-else>{{ savingLabel }}</span>
                     </button>
@@ -107,6 +135,9 @@ import UserAvatarUpload from '@/components/UserAvatarUpload.vue'
 import type { ThemeMode } from '@/utils/theme'
 import { apiFetch } from '@/api'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
+import UranusFormRow from "@/components/uranus/UranusFormRow.vue";
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
 
 interface UserProfilePayload {
     user_id?: string | number | null
@@ -336,7 +367,7 @@ const handleAvatarUpdated = () => {
 .profile-loading {
     min-height: 240px;
     border-radius: 18px;
-    background: var(--input-bg);
+    background: var(--surface-primary, var(--input-bg));
     display: grid;
     place-items: center;
     color: var(--muted-text);
@@ -360,6 +391,10 @@ const handleAvatarUpdated = () => {
     gap: clamp(1.25rem, 3vw, 1.75rem);
 }
 
+.profile-field-row {
+    gap: clamp(1rem, 2vw, 1.25rem);
+}
+
 .profile-preferences {
     display: flex;
     flex-direction: column;
@@ -367,7 +402,7 @@ const handleAvatarUpdated = () => {
     padding: clamp(1rem, 3vw, 1.5rem);
     border-radius: 18px;
     border: 1px solid var(--border-soft);
-    background: var(--input-bg);
+    background: var(--surface-primary, var(--input-bg));
 }
 
 .profile-preferences__header {
@@ -391,15 +426,15 @@ const handleAvatarUpdated = () => {
 }
 
 .profile-preferences__grid {
-    @include form-grid(220px, clamp(0.9rem, 2vw, 1.2rem));
+    gap: clamp(0.9rem, 2vw, 1.2rem);
 }
 
-.form-grid {
-    @include form-grid(220px, clamp(1rem, 2vw, 1.25rem));
+.profile-preferences__grid .uranus-label {
+    flex: 1;
 }
 
-.form-group {
-    @include form-group();
+.profile-preferences__grid select {
+    width: 100%;
 }
 
 .profile-actions {
@@ -409,8 +444,8 @@ const handleAvatarUpdated = () => {
     align-items: flex-end;
 }
 
-.profile-actions button {
-    @include form-primary-button($padding-y: 0.85rem, $padding-x: 2.2rem);
+.profile-actions .uranus-button {
+    min-width: 200px;
 }
 
 .feedback {
@@ -446,7 +481,7 @@ const handleAvatarUpdated = () => {
 }
 
 @media (max-width: 540px) {
-    .profile-actions button {
+    .profile-actions .uranus-button {
         width: 100%;
     }
 }

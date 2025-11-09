@@ -16,6 +16,11 @@
                 :aria-invalid="error ? 'true' : 'false'"
                 :placeholder="placeholder"
                 :autocomplete="autocomplete"
+                :required="required"
+                :disabled="disabled"
+                :readonly="readonly"
+                :name="inputName"
+                v-bind="$attrs"
             />
         </UranusFieldLabel>
     </div>
@@ -24,6 +29,10 @@
 <script setup>
 import { computed } from 'vue'
 import UranusFieldLabel from './UranusFieldLabel.vue'
+
+defineOptions({
+    inheritAttrs: false,
+})
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -36,6 +45,9 @@ const props = defineProps({
     error: { type: String, default: '' },
     placeholder: { type: String, default: '' },       // added
     autocomplete: { type: String, default: 'off' },  // added
+    disabled: { type: Boolean, default: false },
+    readonly: { type: Boolean, default: false },
+    name: { type: String, default: '' },
 })
 
 const flexValue = computed(() => {
@@ -51,6 +63,8 @@ const sizeClass = computed(() => {
         default: return ''
     }
 })
+
+const inputName = computed(() => props.name || undefined)
 </script>
 
 <style scoped>

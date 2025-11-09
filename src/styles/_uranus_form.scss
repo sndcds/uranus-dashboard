@@ -100,7 +100,7 @@ input.uranus-text-input {
   // children (selects, inputs) shrink if space is limited
   > * {
     flex: 1 1 auto;   // flex-grow:1, flex-shrink:1, flex-basis:auto
-    min-width: 120px; // optional: don't shrink below 120px
+    //min-width: 120px; // optional: don't shrink below 120px
   }
 }
 
@@ -108,7 +108,7 @@ input.uranus-text-input {
 
 .uranus-form-row > .uranus-textfield-wrapper {
   flex: 1;           /* grow to fill row */
-  min-width: 150px;  /* optional: prevent too small inputs */
+  //min-width: 150px;  /* optional: prevent too small inputs */
   margin: 0;
 }
 
@@ -125,6 +125,11 @@ input.uranus-text-input {
 @media (max-width: 600px) {
   .uranus-form-row {
     flex-direction: column; /* stack vertically on narrow screens */
+  }
+
+  .uranus-form-row > .uranus-textfield-wrapper {
+    min-width: 100%;
+    width: 100%;
   }
 }
 

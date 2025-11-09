@@ -55,23 +55,37 @@
         </ul>
 
         <div v-if="isEditingTodo || isAddingTodo" class="todo-editor uranus-card">
-            <div class="todo-editor__form">
-                <div class="form-group">
-                    <label for="todo-title">{{ todoTitleLabel }}</label>
-                    <input v-model="todoDraft.title" id="todo-title" type="text" class="todo-editor__input"
-                        :placeholder="todoTitlePlaceholder" @keyup.escape="cancelEditingTodo" />
-                </div>
+            <div class="todo-editor__form uranus-form">
+                <UranusTextInput
+                    id="todo-title"
+                    v-model="todoDraft.title"
+                    :label="todoTitleLabel"
+                    :placeholder="todoTitlePlaceholder"
+                    :disabled="todoSaving"
+                    @keyup.escape="cancelEditingTodo"
+                />
 
-                <div class="form-group">
-                    <label for="todo-description">{{ todoDescriptionLabel }}</label>
-                    <textarea v-model="todoDraft.description" id="todo-description" class="todo-editor__textarea"
-                        :placeholder="todoDescriptionPlaceholder" rows="3" />
-                </div>
+                <UranusFieldLabel
+                    id="todo-description"
+                    :label="todoDescriptionLabel"
+                >
+                    <textarea
+                        id="todo-description"
+                        v-model="todoDraft.description"
+                        class="todo-editor__textarea"
+                        :placeholder="todoDescriptionPlaceholder"
+                        rows="3"
+                        :disabled="todoSaving"
+                        @keyup.escape="cancelEditingTodo"
+                    />
+                </UranusFieldLabel>
 
-                <div class="form-group">
-                    <label for="todo-due-date">{{ todoDueDateLabel }}</label>
-                    <input v-model="todoDraft.dueDate" id="todo-due-date" type="date" class="todo-editor__input" />
-                </div>
+                <UranusDateInput
+                    id="todo-due-date"
+                    v-model="todoDraft.dueDate"
+                    :label="todoDueDateLabel"
+                    :disabled="todoSaving"
+                />
 
                 <div v-if="todoDraftError" class="todo-feedback todo-feedback--error">
                     {{ todoDraftError }}
@@ -97,6 +111,10 @@
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+
+import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
+import UranusDateInput from '@/components/uranus/UranusDateInput.vue'
+import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
 
 interface Todo {
     todo_id: number
@@ -527,52 +545,35 @@ defineExpose({
     gap: 1rem;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    label {
-        font-weight: 600;
-        font-size: 0.95rem;
-        color: var(--uranus-color);
-    }
+.todo-editor__form :deep(.uranus-label) {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--uranus-color);
 }
 
-.todo-editor__input,
 .todo-editor__textarea {
-    padding: 0.6rem 0.85rem;
-    border: 1px solid var(--uranus-disabled-color);
-    border-radius: 8px;
-    background: var(--uranus-bg-color);
-    color: var(--uranus-color);
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--uranus-input-border-color);
+    border-radius: var(--uranus-form-field-border-radius);
+    background: var(--input-bg);
+    color: var(--color-text);
     font-size: 0.95rem;
     font-family: inherit;
-    transition: all 0.2s ease;
-
-    &:hover {
-        border-color: var(--uranus-ia-color);
-    }
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    resize: vertical;
+    min-height: 96px;
 
     &:focus-visible {
         outline: none;
-        border-color: var(--uranus-ia-color);
-        box-shadow: 0 0 0 3px rgba(0, 92, 230, 0.1);
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
 
     &:disabled {
-        opacity: 0.6;
+        opacity: 0.65;
         cursor: not-allowed;
     }
-}
-
-.todo-editor__input[type="date"] {
-    width: 300px;
-}
-
-.todo-editor__textarea {
-    resize: vertical;
-    min-height: 80px;
 }
 
 .todo-editor__actions {
