@@ -223,7 +223,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
     const tokenStore = useTokenStore()
-    const isAuthenticated = Boolean(tokenStore.accessToken)
+    const isAuthenticated = tokenStore.isAuthenticated
     const requiresAuth = to.matched.some((record) => record.meta?.requiresAuth)
     const guestOnly = to.matched.some((record) => record.meta?.guestOnly)
 
