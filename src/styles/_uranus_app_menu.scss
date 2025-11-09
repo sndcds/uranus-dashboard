@@ -1,15 +1,3 @@
-:root {
-  --uranus-app-menu-width: 260px;
-  --uranus-app-menu-background: #fff;
-  --uranus-app-menu-color: #333;
-}
-
-:root[data-theme="dark"] {
-  --uranus-app-menu-background: #111;
-  --uranus-app-menu-color: #eee;
-}
-
-
 // Mobile-first: Hidden app menu by default
 .uranus-app-menu {
   display: flex;

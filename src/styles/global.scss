@@ -12,11 +12,24 @@
 :root {
   color-scheme: light;
 
-  // Basic colors, same in light and dark mode
+  // Base typography & text colors
+  --font-brand: 'Space Grotesk', 'Inter', sans-serif;
+  --color-bg: #f5f7fb;
+  --color-text: #0f172a;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-link: #2563eb;
+  --muted-text: #64748b;
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--muted-text);
+
+  // Brand system colors
   --uranus-brand-color: #235df1;
-  --uranus-success-color: rgb(49, 181, 128);
+  --uranus-success-color: #31b580;
   --uranus-error-color: #ed6056;
-  --uranus-ia-color: #005CE6;
+  --uranus-required-color: #ed6056;
+  --uranus-ia-color: #005ce6;
   --uranus-ia-color-light1: #246fea;
   --uranus-ia-color-light2: #4382e6;
   --uranus-ia-color-dark1: #0150c6;
@@ -26,35 +39,57 @@
   --uranus-ia-inline-color-light2: #ddb5ff;
   --uranus-ia-inline-color-dark1: #6e24aa;
   --uranus-ia-inline-color-dark2: #582780;
-    --uranus-required-color: #ed6056;
 
-  // Light mode versions
-  --uranus-bg-color: #fcfcfc;
-  --uranus-bg-color-d1: #ededed;
-  --uranus-bg-color-d2: #dedede;
-  --uranus-color: #2b2b2b;
-  --uranus-disabled-color: #e1e1e1;
+  // Accent tokens shared across layouts
+  --accent-primary: #4f46e5;
+  --accent-primary-hover: #4338ca;
+  --accent-secondary: #22d3ee;
+  --accent-muted: rgba(79, 70, 229, 0.1);
+  --accent-muted-hover: rgba(79, 70, 229, 0.2);
+
+  // Surface and card tokens
+  --card-bg: #ffffff;
+  --card-shadow: 0 24px 50px rgba(15, 23, 42, 0.08);
+  --surface-bg: #eef2ff;
+  --surface-primary: #ffffff;
+  --surface-muted: #e2e8f0;
+  --surface-hover: rgba(15, 23, 42, 0.06);
+  --uranus-card-background-color: var(--card-bg);
+  --uranus-card-color: var(--color-text);
+  --uranus-card-border-radius: 12px;
+
+  // Application chrome
+  --uranus-bg-color: #f5f7fb;
+  --uranus-bg-color-d1: #e4e9f5;
+  --uranus-bg-color-d2: #d5ddeb;
+  --uranus-color: var(--color-text);
+  --uranus-disabled-color: #c7cedd;
   --uranus-low-contrast-color: #c6c6c6;
   --uranus-medium-contrast-color: #666666;
-
-  --uranus-input-bg-color: rgb(255, 255, 255);
-  --uranus-input-border-color: rgb(121, 213, 179);
-
-  --uranus-dashboard-bg-color: rgb(222, 228, 237);
-  --uranus-card-background-color: #ffffff;
-
-  --uranus-menu-active-color: #eeeeee;
-  --uranus-menu-active-bg: #333333;
-
-  // Mode independent settings
-  --uranus-card-border-radius: 12px;
+  --uranus-dashboard-bg-color: #e3e9f7;
+  --uranus-menu-active-color: #0f172a;
+  --uranus-menu-active-bg: rgba(79, 70, 229, 0.12);
+  --uranus-grid-gap: 12px;
+  --uranus-inline-edit-border-radius: 12px;
   --uranus-form-field-border-radius: 12px;
   --uranus-tiny-border-radius: 4px;
 
-  --uranus-inline-edit-border-radius: 12px;
+  // Inputs & borders
+  --input-bg: #ffffff;
+  --input-border: #cbd5f5;
+  --uranus-input-bg-color: #ffffff;
+  --uranus-input-border-color: #79d5b3;
+  --border-soft: rgba(148, 163, 184, 0.4);
+  --border-color: #d9e3f5;
 
-  --uranus-grid-gap: 12px;
+  // Secondary controls
+  --uranus-secondary-button-background-color: rgba(155, 32, 255, 0.12);
+
+  // App menu
+  --uranus-app-menu-width: 260px;
+  --uranus-app-menu-background: #ffffff;
   --uranus-app-menu-background-menu-bg: #fcfcfc;
+  --uranus-app-menu-color: #1f2937;
 
   font-family: 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.5;
@@ -70,12 +105,51 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  // Dark mode versions
-  --uranus-bg-color: #2b2b2b;
-  --uranus-color: #fcfcfc;
-  --uranus-disabled-color: #424242;
-  --uranus-low-contrast-color: #666666;
-  --uranus-medium-contrast-color: #c6c6c6;
+  --color-bg: #050b16;
+  --color-text: #f1f5f9;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5f5;
+  --color-link: #93c5fd;
+  --muted-text: #94a3b8;
+  --text-muted: var(--muted-text);
+
+  --card-bg: #111c2f;
+  --card-shadow: 0 24px 50px rgba(2, 6, 23, 0.8);
+  --surface-bg: #030712;
+  --surface-primary: #111c2f;
+  --surface-muted: #1b2640;
+  --surface-hover: rgba(148, 163, 184, 0.35);
+
+  --accent-muted: rgba(99, 102, 241, 0.25);
+  --accent-muted-hover: rgba(99, 102, 241, 0.35);
+
+  --input-bg: #0f172a;
+  --input-border: rgba(148, 163, 184, 0.45);
+  --uranus-input-bg-color: #0f172a;
+  --uranus-input-border-color: rgba(99, 102, 241, 0.5);
+
+  --border-soft: rgba(148, 163, 184, 0.35);
+  --border-color: #1f2a44;
+
+  --uranus-bg-color: #050b16;
+  --uranus-bg-color-d1: #0f172a;
+  --uranus-bg-color-d2: #1e293b;
+  --uranus-color: var(--color-text);
+  --uranus-disabled-color: #4f5a74;
+  --uranus-low-contrast-color: #4b5563;
+  --uranus-medium-contrast-color: #cbd5f5;
+  --uranus-dashboard-bg-color: #050b16;
+  --uranus-card-background-color: var(--card-bg);
+  --uranus-card-color: var(--color-text);
+
+  --uranus-menu-active-color: #e2e8f0;
+  --uranus-menu-active-bg: rgba(99, 102, 241, 0.35);
+
+  --uranus-app-menu-background: #0f172a;
+  --uranus-app-menu-background-menu-bg: #0a1224;
+  --uranus-app-menu-color: #f8fafc;
+
+  --uranus-secondary-button-background-color: rgba(155, 32, 255, 0.24);
 }
 
 *,

@@ -1,5 +1,5 @@
 <template>
-    <div class="visitor-layout">
+    <div class="visitor-layout" :class="`visitor-layout--${selectedTheme}`">
         <header class="visitor-layout__topbar">
             <div class="visitor-layout__brand">
                 <button type="button" class="visitor-layout__hamburger"
@@ -199,8 +199,9 @@ watch(
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: rgb(177, 211, 235);
-    color: var(--uranus-color);
+    background: var(--surface-bg, #eef2ff);
+    color: var(--color-text, #0f172a);
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .visitor-layout__topbar {
@@ -211,7 +212,7 @@ watch(
     gap: clamp(1rem, 4vw, 2rem);
     justify-content: space-between;
     padding: clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 4vw, 2rem);
-    background: var(--uranus-bg-color);
+    background: var(--surface-primary, var(--uranus-bg-color));
     backdrop-filter: blur(100px);
     /* blur what's behind */
     -webkit-backdrop-filter: blur(100px);
@@ -253,13 +254,13 @@ watch(
     height: 44px;
     border-radius: 10px;
     border: 1px solid var(--border-soft, rgba(148, 163, 184, 0.4));
-    background: var(--uranus-bg-color);
+    background: var(--surface-primary, var(--uranus-bg-color));
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .visitor-layout__hamburger:hover {
-    background: var(--surface-muted, rgba(148, 163, 184, 0.1));
+    background: var(--surface-hover, rgba(148, 163, 184, 0.2));
     border-color: var(--accent-primary, #4f46e5);
 }
 
@@ -342,10 +343,12 @@ watch(
 .visitor-layout__content {
     display: flex;
     flex: 1;
+    background: var(--uranus-dashboard-bg-color);
+    transition: background 0.3s ease;
 }
 
 .visitor-layout__footer {
-    background: var(--uranus-bg-color);
+    background: var(--surface-primary, var(--uranus-bg-color));
     border-top: 1px solid var(--border-soft, rgba(148, 163, 184, 0.2));
     padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 3rem);
 }
@@ -399,7 +402,7 @@ watch(
         left: 0;
         height: 100vh;
         width: min(340px, 85vw);
-        background: var(--uranus-bg-color);
+        background: var(--surface-primary, var(--uranus-bg-color));
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
