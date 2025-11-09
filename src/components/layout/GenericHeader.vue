@@ -206,6 +206,7 @@ const isAdminPage = computed(() => route.path.startsWith('/admin'))
 const userName = ref('User')
 const userEmail = ref('user@example.com')
 const userAvatar = ref<string | null>(null)
+const userId = ref(0)
 
 const userInitials = computed(() => {
     const names = userName.value.split(' ').filter(n => n.length > 0)
@@ -223,15 +224,16 @@ const userInitials = computed(() => {
 const fetchUserProfile = async () => {
     try {
         const { data } = await apiFetch<{
-            display_name?: string
-            email?: string
-            photo_url?: string
-        }>('/api/profile')
+            display_name: string
+            email_address: string
+            user_id: number
+        }>('/api/admin/user/me')
 
         if (data) {
-            userName.value = data.display_name || 'User'
-            userEmail.value = data.email || 'user@example.com'
-            userAvatar.value = data.photo_url || null
+            userName.value = data.display_name
+            userEmail.value = data.email_address
+            userId.value = data.user_id
+            userAvatar.value = `${import.meta.env.VITE_API_URL}/api/user/${userId.value}/avatar/64`
         }
     } catch (err) {
         console.error('Failed to fetch user profile:', err)
