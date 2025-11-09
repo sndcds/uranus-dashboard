@@ -1,9 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useTokenStore } from '@/store/tokenStore'
 
-import DashboardLayout from '@/components/layout/DashboardLayout.vue'
-import DefaultVisitorLayout from '@/components/layout/DefaultVisitorLayout.vue'
-
 import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import OrganizerDashboardView from '@/views/OrganizerDashboardView.vue'
@@ -34,12 +31,13 @@ import MapView from '@/views/MapView.vue'
 import EmptyVenuesView from '@/views/EmptyVenuesView.vue'
 import EmptyEventsView from '@/views/EmptyEventsView.vue'
 import UserActivateView from '@/views/UserActivateView.vue'
-import AdminLayout from '@/components/layout/AdminLayout.vue'
+
+import GenericLayout from '@/components/layout/GenericLayout.vue'
 
 const routes = [
     {
         path: '/admin',
-        component: AdminLayout,
+        component: GenericLayout,
         meta: { requiresAuth: true },
         children: [
             {
@@ -145,7 +143,7 @@ const routes = [
     },
     {
         path: '/',
-        component: DefaultVisitorLayout,
+        component: GenericLayout,
         children: [
             {
                 path: '',
@@ -186,7 +184,7 @@ const routes = [
     },
     {
         path: '/app',
-        component: DefaultVisitorLayout,
+        component: GenericLayout,
         meta: { guestOnly: true },
         children: [
             {

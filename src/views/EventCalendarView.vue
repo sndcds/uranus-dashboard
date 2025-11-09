@@ -743,7 +743,6 @@ watch(
     display: flex;
     flex-direction: column;
     gap: clamp(1.5rem, 3vw, 2.25rem);
-    padding: clamp(1.5rem, 4vw, 2.5rem);
     max-width: 1920px;
     width: 100%;
     margin: 0 auto;
@@ -816,12 +815,6 @@ watch(
 @media (max-width: 900px) {
     .calendar-body {
         grid-template-columns: minmax(0, 1fr);
-    }
-}
-
-@media (max-width: 640px) {
-    .calendar-page {
-        padding: clamp(1.25rem, 6vw, 1.75rem);
     }
 }
 </style>
