@@ -666,6 +666,7 @@ onMounted(() => {
   gap: 16px;
   padding: 16px;
   max-width: 1280px;
+  border-radius: var(--uranus-card-border-radius);
   background: var(--uranus-bg-color);
 }
 
