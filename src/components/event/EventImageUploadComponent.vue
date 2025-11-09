@@ -591,46 +591,48 @@ onMounted(() => {
 })
 
 const saveImage = async () => {
-    // if (!props.image || !props.eventId || isSaving.value) return
+  if ( !props.eventId || isSaving.value) return
 
-    if (!computedUploadUrl.value) {
-        error.value = t('event_image_upload_url_missing')
-        return
+  if (!computedUploadUrl.value) {
+      error.value = t('event_image_upload_url_missing')
+      return
+  }
+
+  isSaving.value = true
+  error.value = ''
+
+  try {
+    const formData = new FormData()
+    if (props.image) {
+      formData.append('image', props.image)
     }
 
-    isSaving.value = true
-    error.value = ''
-
-    try {
-        const formData = new FormData()
-        formData.append('image', props.image)
-
-        if (localAltText.value.trim()) {
-            formData.append('alt_text', localAltText.value.trim())
-        }
-        if (localCopyright.value) {
-            formData.append('copyright', localCopyright.value)
-        }
-        if (localLicense.value !== null) {
-            formData.append('license_id', String(localLicense.value))
-        }
-        if (localCreatedBy.value.trim()) {
-            formData.append('created_by', localCreatedBy.value.trim())
-        }
-
-        await apiFetch(computedUploadUrl.value, {
-            method: 'POST',
-            body: formData,
-        })
-
-        isActiveEdit.value = false
-        emit('updated')
-    } catch (err) {
-        console.error('Failed to save image', err)
-        error.value = t('event_image_save_error')
-    } finally {
-        isSaving.value = false
+    if (localAltText.value.trim()) {
+      formData.append('alt_text', localAltText.value.trim())
     }
+    if (localCopyright.value) {
+      formData.append('copyright', localCopyright.value)
+    }
+    if (localLicense.value !== null) {
+      formData.append('license_id', String(localLicense.value))
+    }
+    if (localCreatedBy.value.trim()) {
+      formData.append('created_by', localCreatedBy.value.trim())
+    }
+
+    await apiFetch(computedUploadUrl.value, {
+      method: 'POST',
+      body: formData,
+    })
+
+    isActiveEdit.value = false
+    emit('updated')
+  } catch (err) {
+    console.error('Failed to save image', err)
+    error.value = t('event_image_save_error')
+  } finally {
+    isSaving.value = false
+  }
 }
 </script>
 
