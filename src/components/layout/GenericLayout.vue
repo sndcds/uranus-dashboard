@@ -3,7 +3,7 @@
         <GenericHeader @toggle-sidebar="toggleSidebar" />
 
         <div class="generic-layout__container">
-            <GenericSidebar :is-open="isSidebarOpen" :is-admin-page="isAdminPage" />
+            <GenericSidebar :is-open="isSidebarOpen" :is-admin-page="isAdminPage" @close="closeSidebar" />
 
             <!-- Overlay for mobile -->
             <div v-if="isSidebarOpen" class="generic-layout__overlay" @click="closeSidebar"></div>

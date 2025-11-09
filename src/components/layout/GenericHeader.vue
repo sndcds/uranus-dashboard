@@ -18,6 +18,10 @@
 
                 <!-- Visitor Navigation -->
                 <nav v-if="!isAdminPage" class="generic-header__nav">
+                    <router-link v-if="tokenStore.isAuthenticated" to="/admin/dashboard" class="generic-header__nav-link" active-class="generic-header__nav-link--active">
+                        {{ t('dashboard') }}
+                    </router-link>
+
                     <router-link to="/" class="generic-header__nav-link" :class="{ 'generic-header__nav-link--active': route.path === '/' }" exact>
                         {{ t('events') }}
                     </router-link>
@@ -31,6 +35,11 @@
 
                     <router-link v-if="!tokenStore.isAuthenticated" to="/app/login" class="generic-header__nav-link" active-class="generic-header__nav-link--active">
                         {{ t('visitor_nav_login') }}
+                    </router-link>
+                </nav>
+                <nav v-else class="generic-header__nav">
+                    <router-link to="/" class="generic-header__nav-link" :class="{ 'generic-header__nav-link--active': route.path === '/' }" exact>
+                        {{ t('events') }}
                     </router-link>
                 </nav>
             </div>

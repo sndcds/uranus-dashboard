@@ -4,7 +4,7 @@
       <!-- Admin Navigation -->
       <template v-if="isAdminPage">
         <router-link to="/admin/dashboard" class="generic-sidebar__nav-item"
-          active-class="generic-sidebar__nav-item--active">
+          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor" />
@@ -14,7 +14,7 @@
         </router-link>
 
         <router-link to="/admin/organizers" class="generic-sidebar__nav-item"
-          active-class="generic-sidebar__nav-item--active">
+          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -26,7 +26,7 @@
         </router-link>
 
         <router-link :to="venuesRoute" class="generic-sidebar__nav-item"
-          active-class="generic-sidebar__nav-item--active">
+          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" fill="currentColor" />
@@ -36,7 +36,7 @@
         </router-link>
 
         <router-link :to="eventsRoute" class="generic-sidebar__nav-item"
-          active-class="generic-sidebar__nav-item--active">
+          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -48,7 +48,7 @@
         </router-link>
 
         <router-link to="/admin/settings" class="generic-sidebar__nav-item"
-          active-class="generic-sidebar__nav-item--active">
+          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -61,7 +61,16 @@
 
       <!-- Visitor Navigation -->
       <template v-else>
-        <router-link to="/" class="generic-sidebar__nav-item" :class="{ 'generic-sidebar__nav-item--active': route.path === '/' }" exact>
+        <router-link v-if="tokenStore.isAuthenticated" to="/admin/dashboard" class="generic-sidebar__nav-item"
+          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
+          <span class="generic-sidebar__nav-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor" />
+            </svg>
+          </span>
+          <span class="generic-sidebar__nav-text">{{ t('dashboard') }}</span>
+        </router-link>
+        <router-link to="/" class="generic-sidebar__nav-item" :class="{ 'generic-sidebar__nav-item--active': route.path === '/' }" exact @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor" />
@@ -69,7 +78,7 @@
           </span>
           <span class="generic-sidebar__nav-text">{{ t('events') }}</span>
         </router-link>
-        <router-link to="/map" class="generic-sidebar__nav-item" active-class="generic-sidebar__nav-item--active">
+        <router-link to="/map" class="generic-sidebar__nav-item" active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -80,7 +89,7 @@
           <span class="generic-sidebar__nav-text">{{ t('visitor_nav_map') }}</span>
         </router-link>
 
-        <router-link to="/about" class="generic-sidebar__nav-item" active-class="generic-sidebar__nav-item--active">
+        <router-link to="/about" class="generic-sidebar__nav-item" active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
@@ -91,7 +100,7 @@
         </router-link>
 
         <router-link v-if="!tokenStore.isAuthenticated" to="/app/login" class="generic-sidebar__nav-item"
-          active-class="generic-sidebar__nav-item--active">
+          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -120,10 +129,18 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const emit = defineEmits<{
+  'close': []
+}>()
+
 const { t } = useI18n()
 const route = useRoute()
 const appStore = useAppStore()
 const tokenStore = useTokenStore()
+
+const handleLinkClick = () => {
+  emit('close')
+}
 
 // Dynamic routes based on organizerId
 const venuesRoute = computed(() => {
