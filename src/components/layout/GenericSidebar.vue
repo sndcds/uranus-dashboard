@@ -168,7 +168,7 @@ const eventsRoute = computed(() => {
   // Sticky positioning on desktop
   @media (min-width: 769px) {
     position: sticky;
-    top: 0;
+    top: 80px;
     max-height: 100vh;
     align-self: flex-start;
   }
