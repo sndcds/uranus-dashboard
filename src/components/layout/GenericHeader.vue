@@ -3,18 +3,7 @@
         <div class="generic-header__content">
             <!-- Logo / Brand -->
             <div class="generic-header__brand">
-                <router-link v-if="isAdminPage" to="/" class="generic-header__logo">
-                    <UranusLogo class="generic-header__logo-icon" />
-                    <span class="generic-header__logo-text">Uranus</span>
-                </router-link>
-                <router-link v-else-if="tokenStore.isAuthenticated" to="/admin/dashboard" class="generic-header__logo">
-                    <UranusLogo class="generic-header__logo-icon" />
-                    <span class="generic-header__logo-text">Uranus</span>
-                </router-link>
-                <router-link v-else to="/" class="generic-header__logo">
-                    <UranusLogo class="generic-header__logo-icon" />
-                    <span class="generic-header__logo-text">Uranus</span>
-                </router-link>
+                <UranusLogo class="generic-header__logo-icon" />
 
                 <!-- Visitor Navigation -->
                 <nav v-if="!isAdminPage" class="generic-header__nav">
