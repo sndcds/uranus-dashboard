@@ -35,8 +35,15 @@
             </button>
         </div>
 
-        <textarea v-if="!previewMode" ref="textareaRef" v-model="draft" :placeholder="placeholder" @input="emitValue"
-            @keydown="handleKeydown"></textarea>
+        <textarea
+            class="markdown-editor-textarea"
+            v-if="!previewMode"
+            ref="textareaRef"
+            v-model="draft"
+            :placeholder="placeholder"
+            @input="emitValue"
+            @keydown="handleKeydown">
+        </textarea>
 
         <MarkdownPreviewComponent v-else :value="draft" />
     </div>
@@ -318,19 +325,30 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+
+.uranus-markdown-editor textarea,
+.uranus-markdown-editor textarea:focus {
+  border: none;
+  border-radius: 0;
+}
+
 .markdown-editor {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .markdown-editor-toggle {
-    margin-left: auto;
+  margin-left: auto;
 }
 
-textarea {
-    min-height: 180px;
-    resize: vertical;
+.markdown-editor-textarea {
+  min-height: 200px;
+  resize: vertical;
+  padding: 0;
+  padding-top: 14px;
+  line-height: 1.4;
 }
+
 
 </style>

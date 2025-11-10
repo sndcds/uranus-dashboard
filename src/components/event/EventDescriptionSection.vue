@@ -5,8 +5,8 @@
             :edit-button-text="t('edit')"
             @edit-started="startEditingDescription" />
 
-        <div class="event-description__content">
-          <div v-if="isEditingDescription">
+        <UranusInlineSectionLayout v-if="isEditingDescription">
+          <!--div v-if="isEditingDescription"-->
             <MarkdownEditorComponent v-model="editedDescription"
                                      :placeholder="t('event_description_placeholder')" />
 
@@ -23,12 +23,12 @@
               />
             </UranusInlineActionBar>
 
-          </div>
-          <template v-else>
-            <MarkdownPreviewComponent v-if="description" :value="description" />
-            <p v-else class="empty">{{ t('event_details_empty') }}</p>
-          </template>
-        </div>
+          <!--/div-->
+        </UranusInlineSectionLayout>
+        <UranusInlineSectionLayout v-else>
+          <MarkdownPreviewComponent v-if="description" :value="description" />
+          <p v-else class="empty">{{ t('event_details_empty') }}</p>
+        </UranusInlineSectionLayout>
 
       </UranusInlineEditSection>
 
@@ -72,6 +72,7 @@ import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection
 import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue";
 import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue";
 import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue";
+import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
 
 interface EventType { type_id: number; type_name: string; genre_id: number | null; genre_name: string | null }
 

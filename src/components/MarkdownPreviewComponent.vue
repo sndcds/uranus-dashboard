@@ -23,7 +23,7 @@ const renderedContent = computed(() => {
     if (!props.value) {
         return '<p class="empty">' + t('markdown_empty') + '</p>'
     }
-    
+
     try {
         return marked.parse(props.value) as string
     } catch (error) {
@@ -33,17 +33,16 @@ const renderedContent = computed(() => {
 })
 </script>
 
-<style scoped>
-.markdown-preview {
-    min-height: 180px;
-    padding: 1rem 0;
-    border-radius: 2px;
-    border: 1px solid var(--border-soft);
-    background: var(--card-bg);
-    color: var(--color-text);
-    line-height: 1.6;
-}
+<style scoped lang="scss">
 
+.markdown-preview {
+  min-height: 180px;
+  border-radius: 2px;
+  background: var(--card-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+/*
 :deep(.markdown-preview h1),
 :deep(.markdown-preview h2),
 :deep(.markdown-preview h3) {
@@ -51,8 +50,8 @@ const renderedContent = computed(() => {
     margin-bottom: 0.5rem;
 }
 
-:deep(.markdown-preview p) {
-    margin: 0.5rem 0;
+:deep(.markdown-preview) {
+    margin: 1rem 0;
 }
 
 :deep(.markdown-preview ul),
@@ -98,4 +97,6 @@ const renderedContent = computed(() => {
     color: var(--muted-text);
     font-style: italic;
 }
+*/
+
 </style>

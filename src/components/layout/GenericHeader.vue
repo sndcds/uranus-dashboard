@@ -199,6 +199,7 @@ import { apiFetch } from '@/api'
 import { applyTheme } from '@/utils/theme'
 
 import UranusLogo from '@/components/uranus/UranusLogo.vue'
+import UranusBlob from "@/components/uranus/UranusBlob.vue";
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -286,7 +287,7 @@ const setTheme = async (theme: 'light' | 'dark') => {
     currentTheme.value = theme
     applyTheme(theme)
     localStorage.setItem('app-theme', theme)
-    
+
     // Save to API if authenticated
     if (tokenStore.isAuthenticated) {
         try {
@@ -307,7 +308,7 @@ const setTheme = async (theme: 'light' | 'dark') => {
 const setLanguage = async (lang: string) => {
     locale.value = lang
     localStorage.setItem('app-locale', lang)
-    
+
     // Save to API if authenticated
     if (tokenStore.isAuthenticated) {
         try {

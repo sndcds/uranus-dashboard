@@ -1,10 +1,10 @@
 <template>
-    <img src="/uranus-logo.svg" alt="Uranus Logo" class="uranus-logo" />
+    <img src="/uranus-alien.svg" alt="Uranus Logo" class="uranus-logo" />
 </template>
 
 <style scoped lang="scss">
 .uranus-logo {
-    width: 28px;
+    width: 48px;
     height: auto;
     display: block;
     flex-shrink: 0;

@@ -1,12 +1,11 @@
 <template>
-    <UranusInlineEditSection :active="isEditing">
-
+  <UranusInlineEditSection :active="isEditing">
     <UranusInlineEditLabel
         :label-text="t('event_title')"
         :edit-button-text="t('edit')"
         @edit-started="startEditing" />
 
-    <div v-if="isEditing">
+    <UranusInlineSectionLayout v-if="isEditing">
       <EventTitleFieldsComponent
           :title="editedTitle"
           :subtitle="editedSubtitle"
@@ -26,13 +25,11 @@
             :onClick="saveHeader"
         />
       </UranusInlineActionBar>
-
-    </div>
-
-    <template v-else>
-      <h1 class="event-header-section__title">{{ title }}</h1>
+    </UranusInlineSectionLayout>
+    <div v-else>
+      <h1>{{ title }}</h1>
       <p v-if="subtitle" class="event-header-section__subtitle">{{ subtitle }}</p>
-    </template>
+    </div>
   </UranusInlineEditSection>
 </template>
 
@@ -47,6 +44,7 @@ import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection
 import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue";
 import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue";
 import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue";
+import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
 
 const props = defineProps<{
     eventId: number
@@ -120,11 +118,6 @@ const saveHeader = async () => {
 </script>
 
 <style scoped lang="scss">
-.event-header-section__title {
-    font-size: clamp(2rem, 4vw, 2.8rem);
-    margin: 0;
-    color: var(--color-text);
-}
 
 .event-header-section__subtitle {
     margin: 0;

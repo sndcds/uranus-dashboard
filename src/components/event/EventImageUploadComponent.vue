@@ -4,7 +4,6 @@
 -->
 <template>
   <div class="uranus-event-image-upload-layout">
-
     <!--p>
       hasImage: {{ hasImage }}<br>
       existingImageUrl: {{ existingImageUrl }}<br>
@@ -90,12 +89,9 @@
                 @edit-started="isActiveEdit = true" />
 
           <div v-if="!isActiveEdit" class="uranus-event-image-upload__meta-display">
-            <span>
-              <strong>{{ t('event_image_alt_text') }}:</strong> {{ localAltText }}
-            </span>
-            <span>
-              <strong>{{ t('event_image_copyright') }}:</strong> {{ localCopyright }}
-            </span>
+            <span><strong>{{ t('event_image_alt_text') }}:</strong> {{ localAltText }}</span>
+            <span><strong>{{ t('event_image_created_by') }}:</strong> {{ localCreatedBy }}</span>
+            <span><strong>{{ t('event_image_copyright') }}:</strong> {{ localCopyright }}</span>
             <span>
               <strong>{{ t('event_image_license') }}:</strong>
                 {{
@@ -103,13 +99,10 @@
                     t('event_image_license_unknown')
                 }}
               </span>
-              <span>
-                <strong>{{ t('event_image_created_by') }}:</strong> {{ localCreatedBy }}
-              </span>
           </div>
 
           <!-- Inline Form, Image Metadata -->
-          <div v-if="hasImage && isActiveEdit" class="uranus-inline-section-layout">
+          <UranusInlineSectionLayout v-if="hasImage && isActiveEdit">
             <UranusTextInput id="image-alt-text" v-model="localAltText" :label="t('event_image_alt_text')" />
 
             <UranusTextInput id="image-copyright" v-model="localCopyright" :label="t('event_image_copyright')" />
@@ -161,8 +154,11 @@
                 :onClick="saveImage"
             />
           </UranusInlineActionBar>
-        </div>
+
+        </UranusInlineSectionLayout>
+
       </UranusInlineEditSection>
+
     </div>
 </template>
 
@@ -495,6 +491,7 @@ import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
 import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue"
 import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue"
 import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue"
+import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
 onUnmounted(() => {
     clearPreview()
 })
@@ -663,7 +660,7 @@ const saveImage = async () => {
 .event-image-upload__upload-area {
   position: relative;
   border: 2px dashed var(--input-border);
-  border-radius: var(--uranus-card-border-radius);
+  border-radius: var(--uranus-tiny-border-radius);
   background: var(--card-bg);
   transition: all 0.2s ease;
   cursor: pointer;
