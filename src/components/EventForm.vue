@@ -8,13 +8,15 @@
         @spaces-change="onSpacesChange"
     />
 
-    <EventDatesComponent
-        ref="datesRef"
-        :model-value="eventDates"
-        :organizer-id="organizerId"
-        :spaces="availableSpaces"
-        @update:modelValue="onDatesUpdate"
-    />
+    <UranusCard>
+      <EventDatesComponent
+          ref="datesRef"
+          :model-value="eventDates"
+          :organizer-id="organizerId"
+          :spaces="availableSpaces"
+          @update:modelValue="onDatesUpdate"
+      />
+    </UranusCard>
 
     <EventDetailsComponent
         ref="detailsRef"
@@ -43,6 +45,7 @@ import { useI18n } from 'vue-i18n'
 import EventBasicInfoComponent from '@/components/EventBasicInfoComponent.vue'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import EventDetailsComponent from '@/components/EventDetailsComponent.vue'
+import UranusCard from "@/components/uranus/UranusCard.vue";
 
 interface SelectOption {
     id: number
