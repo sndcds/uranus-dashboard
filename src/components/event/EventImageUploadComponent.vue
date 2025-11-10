@@ -88,7 +88,7 @@
                 :edit-button-text="t('edit')"
                 @edit-started="isActiveEdit = true" />
 
-          <div v-if="!isActiveEdit" class="uranus-event-image-upload__meta-display">
+          <div v-if="!isActiveEdit" class="uranus-vertical-flex">
             <span><strong>{{ t('event_image_alt_text') }}:</strong> {{ localAltText }}</span>
             <span><strong>{{ t('event_image_created_by') }}:</strong> {{ localCreatedBy }}</span>
             <span><strong>{{ t('event_image_copyright') }}:</strong> {{ localCopyright }}</span>

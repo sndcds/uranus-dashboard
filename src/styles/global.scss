@@ -232,6 +232,12 @@ $button-text-color: #333;
   padding: 18px;
 }
 
+.uranus-vertical-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 /* Tablet and up: Sidebar layout */
 @media (min-width: 768px) {
   .uranus-dashboard-layout {

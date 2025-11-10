@@ -1,81 +1,75 @@
 <template>
-    <UranusInlineEditSection>
+  <UranusInlineEditSection>
+    <UranusInlineEditLabel
+        :label-text="t('venue_and_space')"
+        :edit-button-text="t('edit')"
+        @edit-started="startEditingVenue" />
 
-        <UranusInlineEditLabel :label-text="t('venue')" :edit-button-text="t('edit')" @edit-started="startEditingVenue" />
+    <h2>{{ venueName }}</h2>
 
-        <h2>{{ venueName }}</h2>
+    <UranusInlineSectionLayout v-if="isEditing">
+      <UranusFieldLabel
+          id="event-venue-select"
+          :label="t('event_organizer_label')">
+        <select
+            id="event-venue-select"
+            class="event-venue__select"
+            v-model="selectedVenueId"
+            :disabled="isLoadingVenues"
+            @change="setSelectedVenue(selectedVenueId)">
+          <option :value="null" disabled>{{ t('event_venue_select_placeholder') }}</option>
+          <option v-for="venueOption in venueOptions" :key="venueOption.id" :value="venueOption.id">
+            {{ venueOption.name }}
+          </option>
+        </select>
+      </UranusFieldLabel>
 
-        <template v-if="isEditingVenue">
-            <div class="event-venue__controls">
-                <label class="event-venue__label" for="event-venue-select">{{ t('event_venue_select_label') }}</label>
-                <select id="event-venue-select" class="event-venue__select" v-model="selectedVenueId"
-                    :disabled="isLoadingVenues">
-                    <option :value="null" disabled>{{ t('event_venue_select_placeholder') }}</option>
-                    <option v-for="venueOption in venueOptions" :key="venueOption.id" :value="venueOption.id">
-                        {{ venueOption.name }}
-                    </option>
-                </select>
-                <p v-if="isLoadingVenues" class="event-venue__empty">{{ t('loading') }}</p>
-                <p v-else-if="!venueOptions.length" class="event-venue__empty">{{ t('event_venue_no_options') }}</p>
-            </div>
-            <div class="event-venue__actions">
-                <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingVenue">
-                    {{ t('form_cancel') }}
-                </button>
-                <button type="button" class="uranus-inline-save-button"
-                    :disabled="selectedVenueId === null || isLoadingVenues" @click="saveVenue">
-                    <span v-if="!isSavingVenue">{{ t('form_save') }}</span>
-                    <span v-else>{{ t('saving') }}</span>
-                </button>
-            </div>
-        </template>
-        <template v-else>
-            <p>
-                {{ venueStreet }} {{ venueHouseNumber }}<br />
-                {{ venuePostalCode }} {{ venueCity }}
-            </p>
-        </template>
+      <UranusFieldLabel
+          id="event-space-select"
+          :label="t('event_space_select_label')">
+        <select
+            id="event-space-select"
+            class="event-space__select"
+            v-model="selectedSpaceId"
+            :disabled="isLoadingSpaces">
+          <option :value="null" disabled>{{ t('event_space_select_placeholder') }}</option>
+          <option v-for="spaceOption in spaceOptions" :key="spaceOption.id" :value="spaceOption.id">
+            {{ spaceOption.name }}
+          </option>
+        </select>
+      </UranusFieldLabel>
 
-        <div>
-            <UranusInlineEditLabel :label-text="t('space')" :edit-button-text="t('edit')"
-                @edit-started="startEditingSpace" />
+      <UranusInlineActionBar v-if="isEditing">
+        <UranusInlineCancelButton
+            :label="t('button_cancel')"
+            :disabled="isSaving"
+            :onClick="cancelEditing"
+        />
+        <UranusInlineOKButton
+            :label="t('button_save')"
+            :busyLabel="t('saving')"
+            :onClick="save"/>
+      </UranusInlineActionBar>
+    </UranusInlineSectionLayout>
 
-            <p>{{ spaceName }} ({{ spaceCapacityDisplay }} {{ t('event_capacity_label') }})</p>
-            <p v-if="spaceBuildingLevelDisplay">
-                {{ spaceBuildingLevelDisplay }} ({{ t('event_building_level_label') }})
-            </p>
-            <p v-if="spaceSeatingCapacityDisplay">
-                {{ spaceSeatingCapacityDisplay }} ({{ t('event_seating_capacity_label') }})
-            </p>
+    <template v-else>
+      <div class="uranus-vertical-flex">
+        <span>{{ venueStreet }} {{ venueHouseNumber }}</span>
+        <span>{{ venuePostalCode }} {{ venueCity }}</span>
+        <span>{{ spaceName }} ({{ spaceCapacityDisplay }} {{ t('event_capacity_label') }})</span>
+      </div>
+      <!--div>
+        <span>{{ spaceName }} ({{ spaceCapacityDisplay }} {{ t('event_capacity_label') }})</span>
+        <span v-if="spaceBuildingLevelDisplay">
+          {{ spaceBuildingLevelDisplay }} ({{ t('event_building_level_label') }})
+        </span>
+        <span v-if="spaceSeatingCapacityDisplay">
+          {{ spaceSeatingCapacityDisplay }} ({{ t('event_seating_capacity_label') }})
+        </span>
+      </div-->
+    </template>
 
-            <template v-if="isEditingSpace">
-                <div class="event-space__controls">
-                    <label class="event-space__label" for="event-space-select">
-                        {{ t('event_space_select_label') }}
-                    </label>
-                    <select id="event-space-select" class="event-space__select" v-model="selectedSpaceId"
-                        :disabled="isLoadingSpaces">
-                        <option :value="null" disabled>{{ t('event_space_select_placeholder') }}</option>
-                        <option v-for="spaceOption in spaceOptions" :key="spaceOption.id" :value="spaceOption.id">
-                            {{ spaceOption.name }}
-                        </option>
-                    </select>
-                    <p v-if="isLoadingSpaces" class="event-space__empty">{{ t('loading') }}</p>
-                    <p v-else-if="!spaceOptions.length" class="event-space__empty">{{ t('event_space_no_options') }}</p>
-                </div>
-                <div class="event-space__actions">
-                    <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingSpace">
-                        {{ t('form_cancel') }}
-                    </button>
-                    <button type="button" class="uranus-inline-save-button"
-                        :disabled="selectedSpaceId === null || isLoadingSpaces" @click="saveSpace">
-                        <span v-if="!isSavingSpace">{{ t('form_save') }}</span>
-                        <span v-else>{{ t('saving') }}</span>
-                    </button>
-                </div>
-            </template>
-        </div>
-    </UranusInlineEditSection>
+  </UranusInlineEditSection>
 </template>
 
 <script setup lang="ts">
@@ -85,6 +79,11 @@ import { apiFetch } from '@/api'
 
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
 import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
+import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue";
+import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue";
+import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue";
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
+import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
 
 const props = defineProps<{
     eventId: number
@@ -108,13 +107,12 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: 'global' })
 
-const isEditingVenue = ref(false)
+const isEditing = ref(false)
 const selectedVenueId = ref<number | null>(props.venueId ?? null)
 const venueOptions = ref<Array<{ id: number; name: string }>>([])
 const isLoadingVenues = ref(false)
 const isSavingVenue = ref(false)
 
-const isEditingSpace = ref(false)
 const selectedSpaceId = ref<number | null>(props.spaceId ?? null)
 const spaceOptions = ref<Array<{ id: number; name: string }>>([])
 const isLoadingSpaces = ref(false)
@@ -139,10 +137,11 @@ const spaceCapacityDisplay = computed(() => {
     return String(props.spaceTotalCapacity)
 })
 
+/*
 watch(
     () => props.venueId,
     (value) => {
-        if (!isEditingVenue.value) {
+        if (!isEditing.value) {
             selectedVenueId.value = value ?? null
         }
     }
@@ -156,6 +155,7 @@ watch(
         }
     }
 )
+*/
 
 const fetchVenueOptions = async () => {
     if (!props.organizerId) {
@@ -197,22 +197,35 @@ const fetchSpaceOptions = async (venueId: number | null) => {
     }
 }
 
-const startEditingVenue = async () => {
-    selectedVenueId.value = props.venueId ?? null
-    isEditingVenue.value = true
-    if (!venueOptions.value.length) {
-        await fetchVenueOptions()
-    }
+function setSelectedVenue(venueId: number | null) {
+  console.log("venueId: " + venueId)
+  selectedVenueId.value = venueId
+  fetchSpaceOptions(selectedVenueId.value)
 }
 
-const cancelEditingVenue = () => {
-    selectedVenueId.value = props.venueId ?? null
-    isEditingVenue.value = false
+const startEditingVenue = async () => {
+  selectedVenueId.value = props.venueId ?? null
+  selectedSpaceId.value = props.spaceId ?? null
+
+  isEditing.value = true
+  if (!venueOptions.value.length) {
+    await fetchVenueOptions()
+  }
+
+  if (!spaceOptions.value.length) {
+    await fetchSpaceOptions(props.venueId ?? null)
+  }
+}
+
+const cancelEditing = () => {
+  selectedVenueId.value = props.venueId ?? null
+  selectedSpaceId.value = props.spaceId ?? null
+  isEditing.value = false
 }
 
 const saveVenue = async () => {
     if (selectedVenueId.value === null) {
-        isEditingVenue.value = false
+      isEditing.value = false
         return
     }
 
@@ -224,28 +237,16 @@ const saveVenue = async () => {
                 venue_id: selectedVenueId.value,
             }),
         })
-        isEditingVenue.value = false
+      isEditing.value = false
         emit('updated')
     } catch (err) {
         console.error('Failed to update venue', err)
-        isEditingVenue.value = false
+      isEditing.value = false
     } finally {
         isSavingVenue.value = false
     }
 }
 
-const startEditingSpace = async () => {
-    selectedSpaceId.value = props.spaceId ?? null
-    isEditingSpace.value = true
-    if (!spaceOptions.value.length) {
-        await fetchSpaceOptions(props.venueId ?? null)
-    }
-}
-
-const cancelEditingSpace = () => {
-    selectedSpaceId.value = props.spaceId ?? null
-    isEditingSpace.value = false
-}
 
 const saveSpace = async () => {
     if (selectedSpaceId.value === null) {
