@@ -1,25 +1,28 @@
 <template>
-    <section class="uranus-card uranus-hover-section">
-        <UranusInlineEditLabel :label-text="t('event_details_time')" :edit-button-text="t('edit')"
-            @edit-started="startEditingSchedule" />
+  <UranusInlineEditSection :active="isEditing">
+    <UranusInlineEditLabel
+        :label-text="t('event_details_time')"
+        :edit-button-text="t('edit')"
+        @edit-started="startEditingSchedule" />
 
-        <button v-if="isEditingSchedule" class="uranus-inline-cancel-button" @click="cancelEditingSchedule">
-            {{ t('form_cancel') }}
-        </button>
-
-        <EventDatesComponent v-if="isEditingSchedule" ref="scheduleEditorRef" class="event-meta__editor"
-            :model-value="scheduleDraft" :spaces="availableSpaces" :organizer-id="organizerId"
-            @update:model-value="onScheduleDraftChange" />
+      <EventDatesComponent
+          v-if="isEditing"
+          ref="scheduleEditorRef"
+          class="event-meta__editor"
+          :model-value="scheduleDraft"
+          :spaces="availableSpaces"
+          :organizer-id="organizerId"
+          @update:model-value="onScheduleDraftChange" />
 
         <p v-if="scheduleSaveError" class="event-meta__error event-meta__error--global">
             {{ scheduleSaveError }}
         </p>
 
-        <div v-if="!isEditingSchedule && !eventScheduleDisplay.length" class="event-meta__empty">
+        <div v-if="!isEditing && !eventScheduleDisplay.length" class="event-meta__empty">
             {{ t('event_schedule_empty') }}
         </div>
 
-        <div v-if="!isEditingSchedule && eventScheduleDisplay.length" class="event-meta__list">
+        <div v-if="!isEditing && eventScheduleDisplay.length" class="event-meta__list">
             <article v-for="entry in eventScheduleDisplay" :key="entry.key" class="event-meta__display">
                 <div class="event-meta__row">
                     <span class="event-meta__label">{{ entry.startDate }}</span>
@@ -47,7 +50,7 @@
             </article>
         </div>
 
-        <div v-if="isEditingSchedule" class="event-meta__actions">
+        <div v-if="isEditing" class="event-meta__actions">
             <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingSchedule">
                 {{ t('form_cancel') }}
             </button>
@@ -56,7 +59,7 @@
                 <span v-else>{{ t('form_save') }}</span>
             </button>
         </div>
-    </section>
+    </UranusInlineEditSection>
 </template>
 
 <script setup lang="ts">
@@ -65,6 +68,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
+import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
 
 interface EventDateApi {
     id?: number | null
@@ -149,7 +153,7 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const availableSpaces = ref<SelectOption[]>([])
 const scheduleEntries = ref<EventScheduleEntry[]>([])
 const scheduleDraft = ref<ScheduleDraftEntry[]>([])
-const isEditingSchedule = ref(false)
+const isEditing = ref(false)
 const isSavingSchedule = ref(false)
 const scheduleSaveError = ref<string | null>(null)
 const scheduleEditorRef = ref<InstanceType<typeof EventDatesComponent> | null>(null)
@@ -277,7 +281,7 @@ const deriveScheduleFromProps = (): EventScheduleEntry[] => {
 }
 
 const syncScheduleEntries = (force = false) => {
-    if (isEditingSchedule.value && !force) {
+    if (isEditing.value && !force) {
         return
     }
 
@@ -352,12 +356,12 @@ const startEditingSchedule = async () => {
         : [createEmptyDraftEntry()]
 
     scheduleSaveError.value = null
-    isEditingSchedule.value = true
+    isEditing.value = true
     await loadSpaces(props.venueId ?? null)
 }
 
 const cancelEditingSchedule = () => {
-    isEditingSchedule.value = false
+    isEditing.value = false
     scheduleDraft.value = []
     scheduleSaveError.value = null
 }
@@ -409,7 +413,7 @@ const saveSchedule = async () => {
             body: JSON.stringify(payload),
         })
 
-        isEditingSchedule.value = false
+        isEditing.value = false
         const updatedEntries = scheduleDraft.value
             .map(createScheduleEntryFromDraft)
             .filter((entry) => entry.startDate || entry.startTime)
@@ -495,7 +499,7 @@ onMounted(() => {
 }
 
 .event-meta__label {
-    font-size: 1.85rem;
+    font-size: 1.5rem;
     font-weight: 600;
     color: var(--color-text);
 }
@@ -532,7 +536,7 @@ onMounted(() => {
 
 @media (min-width: 1024px) {
     .event-meta__label {
-        font-size: 2.85rem;
+        font-size: 2rem;
     }
 
     .event-meta__value {

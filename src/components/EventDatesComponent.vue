@@ -1,8 +1,5 @@
 <template>
-    <UranusCard>
-        <UranusCardHeader :title="t('event_section_dates')" :subtitle="t('event_section_dates_subtitle')" />
-
-        <div class="event-section__form">
+  <UranusInlineSectionLayout>
             <div class="event-dates">
                 <div v-for="(date, index) in localDates" :key="index" class="event-dates__card">
                     <div class="event-dates__meta">
@@ -11,12 +8,15 @@
                             {{ t('event_remove_date') }}
                         </button>
                     </div>
+
                     <p v-if="errors[index]" class="field-error">{{ errors[index] }}</p>
-                    <div class="event-dates__grid">
+
+                    <div class="event-dates__grid" style="font-size: 0.1rem; background: red;">
                         <UranusDateInput
                             id="`start-date-${index}`"
                             v-model="date.startDate"
                             :label="t('event_start_date')"
+                            size="tiny"
                             required
                         />
 
@@ -24,24 +24,28 @@
                             id="`start-time-${index}`"
                             v-model="date.startTime"
                             :label="t('event_start_time')"
+                            size="tiny"
                             required
                         />
 
                         <UranusDateInput
                             id="`end-date-${index}`"
                             v-model="date.endDate"
+                            size="tiny"
                             :label="t('event_end_date')"
                         />
 
                         <UranusTimeInput
                             id="`end-time-${index}`"
                             v-model="date.endTime"
+                            size="tiny"
                             :label="t('event_end_time')"
                         />
 
                         <UranusTimeInput
                             id="`entry-time-${index}`"
                             v-model="date.entryTime"
+                            size="tiny"
                             :label="t('event_entry_time')"
                         />
 
@@ -69,8 +73,7 @@
                     {{ t('event_add_date') }}
                 </button>
             </div>
-        </div>
-    </UranusCard>
+        </UranusInlineSectionLayout>
 </template>
 
 <script setup lang="ts">
@@ -81,6 +84,7 @@ import UranusCard from "@/components/uranus/UranusCard.vue";
 import UranusDateInput from "@/components/uranus/UranusDateInput.vue";
 import UranusTimeInput from "@/components/uranus/UranusTimeInput.vue";
 import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
+import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
 
 const props = defineProps<{
     organizerId: number | null
@@ -284,7 +288,7 @@ defineExpose({ validate })
 .event-dates__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(0.75rem, 2vw, 1.2rem);
+    gap: 8px;
 }
 
 .form-field {

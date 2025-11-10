@@ -12,24 +12,10 @@
 
         <div v-if="Object.values(groupedPermissions).every(entries => entries.length === 0)">
           <UranusNotification
-              type="info"
-              title="Permissions Missing"
-              text="You have no permissions assigned."
-              button-text="Learn more"
-              button-link="/help/permissions"
-          />
-          <UranusNotification
               type="warning"
-              title="Permissions Missing"
-              text="You have no permissions assigned."
-              button-text="Learn more"
-              button-link="/help/permissions"
-          />
-          <UranusNotification
-              type="error"
-              title="Permissions Missing"
-              text="You have no permissions assigned."
-              button-text="Learn more"
+              :title="t('notification')"
+              :text="t('user_no_permissions_data_notification')"
+              :button-text="t('show_manual_page')"
               button-link="/help/permissions"
           />
 

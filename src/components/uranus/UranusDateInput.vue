@@ -35,17 +35,17 @@ defineOptions({
 })
 
 const props = defineProps({
-    id: { type: String, required: true },
-    label: { type: String, required: true },
-    modelValue: { type: String, default: '' },
-    required: { type: Boolean, default: false },
-    size: { type: String, default: 'normal' }, // tiny / normal / big
-    flex: { type: [Number, String], default: 1 },
-    error: { type: String, default: '' },
-    placeholder: { type: String, default: '' },
-    autocomplete: { type: String, default: 'off' },
-    disabled: { type: Boolean, default: false },
-    name: { type: String, default: '' },
+  id: { type: String, required: true },
+  label: { type: String, required: true },
+  modelValue: { type: String, default: '' },
+  required: { type: Boolean, default: false },
+  size: { type: String, default: 'normal' }, // tiny / normal / big
+  flex: { type: [Number, String], default: 1 },
+  error: { type: String, default: '' },
+  placeholder: { type: String, default: '' },
+  autocomplete: { type: String, default: 'off' },
+  disabled: { type: Boolean, default: false },
+  name: { type: String, default: '' },
 })
 
 const emit = defineEmits(['update:modelValue'])

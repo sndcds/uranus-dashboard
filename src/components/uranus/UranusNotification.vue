@@ -4,7 +4,7 @@
       <h3>{{ title }}</h3>
     </div>
     <div class="notification-content">
-      <p class="notification-text">{{ text }}</p>
+      <p class="notification-text" v-html="text"></p>
     </div>
     <div class="notification-actions">
       <a
@@ -80,6 +80,9 @@ const notificationTypeClass = computed(() => {
 
   .notification-content {
     padding: var(--uranus-default-text-padding);
+    p {
+      font-size: 1em;
+    }
   }
 
   .notification-actions {

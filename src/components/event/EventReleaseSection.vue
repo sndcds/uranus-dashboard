@@ -394,7 +394,7 @@ function formatReleaseDate(value: string | null | undefined): string {
 }
 
 .event-meta__label {
-    font-size: 1.85rem;
+    font-size: 1.5rem;
     font-weight: 600;
     color: var(--color-text);
 }
