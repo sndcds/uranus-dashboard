@@ -39,7 +39,7 @@
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { apiFetch } from '../api'
+import { apiFetch } from '@/api'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -53,7 +53,7 @@ const activateAccount = async () => {
     const token = route.query.token as string
 
     if (!token) {
-        activationError.value = t('activation_no_token') || 'No activation token provided.'
+        router.push('/app/login')
         return
     }
 
@@ -68,19 +68,15 @@ const activateAccount = async () => {
 
         if (status === 200) {
             activationSuccess.value = true
-            // Redirect to login after 2 seconds
-            setTimeout(() => {
-                router.push('/app/login')
-            }, 2000)
         } else {
-            activationError.value = t('activation_failed') || 'Account activation failed. Please try again or contact support.'
+            activationError.value = t('activation_failed')
         }
     } catch (err: unknown) {
         if (typeof err === 'object' && err && 'data' in err) {
             const e = err as { data?: { error?: string } }
-            activationError.value = e.data?.error || (t('activation_failed') || 'Account activation failed.')
+            activationError.value = e.data?.error || t('activation_failed')
         } else {
-            activationError.value = t('activation_failed') || 'Account activation failed.'
+            activationError.value = t('activation_failed')
         }
     } finally {
         isActivating.value = false

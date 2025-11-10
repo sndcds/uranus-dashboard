@@ -161,6 +161,8 @@ const messages = {
     de: {
         ...event.de,
         ...sharedAuthFor('de'),
+        toggle_menu: 'Menü umschalten',
+        github_repository: 'GitHub-Repository',
         button_cancel: 'Abbrechen',
         button_ok: 'OK',
         button_save: 'Speichern',
@@ -766,6 +768,8 @@ const messages = {
     en: {
         ...event.en,
         ...sharedAuthFor('en'),
+        toggle_menu: 'Toggle menu',
+        github_repository: 'GitHub repository',
         button_cancel: 'Cancel',
         button_ok: 'OK',
         button_save: 'Save',
@@ -1366,6 +1370,8 @@ const messages = {
     da: {
         ...event.da,
         ...sharedAuthFor('da'),
+        toggle_menu: 'Skift menu',
+        github_repository: 'GitHub-repositorium',
         button_cancel: 'Anuller',
         button_ok: 'OK',
         button_save: 'Gem',

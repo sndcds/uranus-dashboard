@@ -20,13 +20,18 @@ export const useAppStore = defineStore('app', () => {
         eventGroupingMode.value = mode
     }
 
+    function clearOrganizerId() {
+        organizerId.value = null
+    }
+
     return {
         organizerId,
         eventViewMode,
         eventGroupingMode,
         setOrganizerId,
         setViewMode,
-        setGroupingMode
+        setGroupingMode,
+        clearOrganizerId
     }
 }, {
     persist: true

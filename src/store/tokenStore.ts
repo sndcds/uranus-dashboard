@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
+import { useUserStore } from '@/store/userStore'
+import { useAppStore } from '@/store/appStore'
+
 type TokenValue = string | null
 
 export const useTokenStore = defineStore('token', () => {
@@ -30,6 +33,15 @@ export const useTokenStore = defineStore('token', () => {
   function clearTokens() {
     accessToken.value = null
     refreshToken.value = null
+    
+    // Clear user store
+    const userStore = useUserStore()
+    userStore.clearUserId()
+    userStore.clearDisplayName()
+    
+    // Clear app store
+    const appStore = useAppStore()
+    appStore.clearOrganizerId()
   }
 
   return {
