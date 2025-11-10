@@ -204,8 +204,14 @@ function addCombination() {
   if (exists) return
 
   selectedList.value.push({ primary, secondary })
+  
+  // Reset both primary and secondary inputs
+  selectedPrimaryId.value = null
+  selectedPrimaryName.value = ''
   selectedSecondaryId.value = null
   selectedSecondaryName.value = ''
+  secondaryOptions.value = []
+  
   emitSelection()
 }
 

@@ -196,7 +196,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useTokenStore } from '@/store/tokenStore'
@@ -227,14 +227,9 @@ const currentLocale = computed(() => locale.value)
 const isAdminPage = computed(() => route.path.startsWith('/admin'))
 
 // User data
-const userId = computed(() => userStore.userId)
 const userName = computed(() => userStore.displayName || 'User')
 const userEmail = computed(() => userStore.emailAddress)
-const userAvatar = computed(() => {
-    if (!userId.value || !isAvatarValid.value) return null
-    return `${import.meta.env.VITE_API_URL}/api/user/${userId.value}/avatar/64`
-})
-const isAvatarValid = ref(true)
+const userAvatar = computed(() => userStore.userAvatar)
 
 const userInitials = computed(() => {
     const name = userName.value
@@ -308,16 +303,6 @@ const setLanguage = async (lang: string) => {
     }
 }
 
-// Check if avatar image is valid
-const checkAvatarValidity = async (userId: string): Promise<boolean> => {
-    try {
-        const { status } = await apiFetch(`/api/user/${userId}/avatar/64`)
-        return status === 200
-    } catch {
-        return false
-    }
-}
-
 // Fetch user profile data
 const fetchUserProfile = async () => {
     if (!tokenStore.isAuthenticated) return
@@ -326,6 +311,7 @@ const fetchUserProfile = async () => {
         const { data } = await apiFetch<{
             display_name: string
             email_address: string
+            user_avatar: string | null
             user_id: string
         }>('/api/admin/user/me')
 
@@ -333,10 +319,7 @@ const fetchUserProfile = async () => {
             userStore.setUserId(data.user_id)
             userStore.setDisplayName(data.display_name)
             userStore.setEmailAddress(data.email_address)
-
-            // Check if avatar is valid
-            const avatarValid = await checkAvatarValidity(data.user_id)
-            isAvatarValid.value = avatarValid
+            userStore.setUserAvatar(data.user_avatar)
         }
     } catch (err) {
         console.error('Failed to fetch user profile:', err)
@@ -372,6 +355,13 @@ const handleLogout = () => {
     tokenStore.clearTokens()
     router.push('/app/login')
 }
+
+// Watch for authentication state changes
+watch(() => tokenStore.isAuthenticated, (isAuthenticated) => {
+    if (isAuthenticated) {
+        fetchUserProfile()
+    }
+})
 
 onMounted(() => {
     initializePreferences()

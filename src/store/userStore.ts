@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
     // State as refs
@@ -7,10 +7,15 @@ export const useUserStore = defineStore('user', () => {
     const displayName = ref('')
     const userId = ref('')
     const avatarVersion = ref(0)
+    const userAvatar = ref<string | null>(null)
 
     // Actions as functions
     function setUserId(id: string) {
         userId.value = id
+    }
+
+    function setUserAvatar(url: string | null) {
+        userAvatar.value = url
     }
 
     function clearUserId() {
@@ -43,6 +48,8 @@ export const useUserStore = defineStore('user', () => {
         displayName,
         userId,
         avatarVersion,
+        userAvatar,
+        setUserAvatar,
         setUserId,
         clearUserId,
         setDisplayName,

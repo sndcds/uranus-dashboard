@@ -161,6 +161,7 @@ const messages = {
     de: {
         ...event.de,
         ...sharedAuthFor('de'),
+        space_created_success: 'Raum erfolgreich erstellt',
         toggle_menu: 'Menü umschalten',
         github_repository: 'GitHub-Repository',
         button_cancel: 'Abbrechen',
@@ -768,6 +769,7 @@ const messages = {
     en: {
         ...event.en,
         ...sharedAuthFor('en'),
+        space_created_success: 'Space created successfully',
         toggle_menu: 'Toggle menu',
         github_repository: 'GitHub repository',
         button_cancel: 'Cancel',
@@ -1370,6 +1372,7 @@ const messages = {
     da: {
         ...event.da,
         ...sharedAuthFor('da'),
+        space_created_success: 'Lokale oprettet',
         toggle_menu: 'Skift menu',
         github_repository: 'GitHub-repositorium',
         button_cancel: 'Anuller',

@@ -1,150 +1,110 @@
 <template>
-  <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
+    <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
 
-      <section class="uranus-card">
+        <section class="uranus-card">
 
-      <UranusTextInput id="space_name" size="big" required
-                       v-model="spaceName"
-                       :label="t('space_name')"
-                       :error="fieldErrors.spaceName" />
-      <UranusFormRow>
-          <UranusFieldLabel :label="t('space_total_capacity')" id="total_capacity" required :error="fieldErrors.totalCapacity">
-              <input
-                  id="total_capacity"
-                  type="number"
-                  v-model.number="totalCapacity"
-                  min="0"
-                  class="uranus-text-input"
-                  :aria-required="true"
-                  :aria-invalid="fieldErrors.totalCapacity ? 'true' : 'false'"
-            />
-          </UranusFieldLabel>
+            <UranusTextInput id="space_name" size="big" required v-model="spaceName" :label="t('space_name')"
+                :error="fieldErrors.spaceName" />
+            <UranusFormRow>
+                <UranusFieldLabel :label="t('space_total_capacity')" id="total_capacity" required
+                    :error="fieldErrors.totalCapacity">
+                    <input id="total_capacity" type="number" v-model.number="totalCapacity" min="0"
+                        class="uranus-text-input" :aria-required="true"
+                        :aria-invalid="fieldErrors.totalCapacity ? 'true' : 'false'" />
+                </UranusFieldLabel>
 
-          <UranusFieldLabel :label="t('space_seating_capacity')" id="seating_capacity" required :error="fieldErrors.seatingCapacity">
-            <input
-                id="seating_capacity"
-                type="number"
-                v-model.number="seatingCapacity"
-                min="0"
-                class="uranus-text-input"
-                :aria-required="true"
-                :aria-invalid="fieldErrors.seatingCapacity ? 'true' : 'false'"
-            />
-      </UranusFieldLabel>
-    </UranusFormRow>
+                <UranusFieldLabel :label="t('space_seating_capacity')" id="seating_capacity" required
+                    :error="fieldErrors.seatingCapacity">
+                    <input id="seating_capacity" type="number" v-model.number="seatingCapacity" min="0"
+                        class="uranus-text-input" :aria-required="true"
+                        :aria-invalid="fieldErrors.seatingCapacity ? 'true' : 'false'" />
+                </UranusFieldLabel>
+            </UranusFormRow>
 
-    <UranusFormRow>
-      <UranusFieldLabel :label="t('space_building_level')" id="building_level" required :error="fieldErrors.buildingLevel">
-        <input
-            id="building_level"
-            type="number"
-            v-model.number="buildingLevel"
-            class="uranus-text-input"
-            :aria-required="true"
-            :aria-invalid="fieldErrors.buildingLevel ? 'true' : 'false'"
-        />
-      </UranusFieldLabel>
+            <UranusFormRow>
+                <UranusFieldLabel :label="t('space_building_level')" id="building_level" required
+                    :error="fieldErrors.buildingLevel">
+                    <input id="building_level" type="number" v-model.number="buildingLevel" class="uranus-text-input"
+                        :aria-required="true" :aria-invalid="fieldErrors.buildingLevel ? 'true' : 'false'" />
+                </UranusFieldLabel>
 
-      <UranusFieldLabel :label="t('space_type')" id="space_type_id" required :error="fieldErrors.spaceTypeId">
-        <select
-            id="space_type_id"
-            v-model.number="spaceTypeId"
-            class="uranus-text-input"
-            :aria-required="true"
-            :aria-invalid="fieldErrors.spaceTypeId ? 'true' : 'false'"
-        >
-          <option :value="null" disabled>
-            {{ t('select_space_type') }}
-          </option>
-          <option v-for="type in spaceTypes" :key="type.id" :value="type.id">
-            {{ type.name }}
-          </option>
-        </select>
-      </UranusFieldLabel>
-    </UranusFormRow>
+                <UranusFieldLabel :label="t('space_type')" id="space_type_id" required :error="fieldErrors.spaceTypeId">
+                    <select id="space_type_id" v-model.number="spaceTypeId" class="uranus-text-input"
+                        :aria-required="true" :aria-invalid="fieldErrors.spaceTypeId ? 'true' : 'false'">
+                        <option :value="null" disabled>
+                            {{ t('select_space_type') }}
+                        </option>
+                        <option v-for="type in spaceTypes" :key="type.id" :value="type.id">
+                            {{ type.name }}
+                        </option>
+                    </select>
+                </UranusFieldLabel>
+            </UranusFormRow>
 
-      </section>
+        </section>
 
-      <section class="uranus-card">
+        <section class="uranus-card">
+            <UranusTextInput id="website_url" v-model="websiteUrl" :label="t('website')"
+                :error="fieldErrors.websiteUrl" />
 
-      <UranusTextInput id="website_url"
-                     v-model="websiteUrl"
-                     :label="t('website')"
-                     :error="fieldErrors.websiteUrl"
-    />
+            <UranusFieldLabel :label="t('space_description')" id="description" :error="fieldErrors.description">
+                <textarea id="description" v-model="description" class="uranus-text-input" rows="3"></textarea>
+            </UranusFieldLabel>
+        </section>
 
-    <UranusFieldLabel :label="t('space_description')" id="description" :error="fieldErrors.description">
-      <textarea
-          id="description"
-          v-model="description"
-          class="uranus-text-input"
-          rows="3"
-      ></textarea>
-    </UranusFieldLabel>
+        <section class="uranus-card">
+            <UranusFieldLabel :label="t('space_accessibility_summary')" id="accessibility_summary"
+                :error="fieldErrors.accessibilitySummary">
+                <textarea id="accessibility_summary" v-model="accessibilitySummary" class="uranus-text-input"
+                    rows="3"></textarea>
+            </UranusFieldLabel>
 
-      </section>
+            <div v-if="accessibilityTopics.length">
+                <fieldset class="accessibility-section" aria-describedby="accessibility-flags-hint">
+                    <p id="accessibility-flags-hint" class="accessibility-section__hint">
+                        {{ t('space_accessibility_flags_hint') }}
+                    </p>
 
-      <section class="uranus-card">
-    <UranusFieldLabel :label="t('space_accessibility_summary')" id="accessibility_summary" :error="fieldErrors.accessibilitySummary">
-      <textarea
-          id="accessibility_summary"
-          v-model="accessibilitySummary"
-          class="uranus-text-input"
-          rows="3"
-      ></textarea>
-    </UranusFieldLabel>
+                    <div class="accessibility-topics">
+                        <section v-for="topic in accessibilityTopics" :key="topic.id" class="accessibility-topic">
+                            <header class="accessibility-topic__header">
+                                <h4 class="accessibility-topic__title">{{ topic.title }}</h4>
+                                <p v-if="topic.description" class="accessibility-topic__description">
+                                    {{ topic.description }}
+                                </p>
+                            </header>
 
-    <div v-if="accessibilityTopics.length">
-      <fieldset class="accessibility-section" aria-describedby="accessibility-flags-hint">
-        <p id="accessibility-flags-hint" class="accessibility-section__hint">
-          {{ t('space_accessibility_flags_hint') }}
-        </p>
-
-        <div class="accessibility-topics">
-          <section v-for="topic in accessibilityTopics" :key="topic.id" class="accessibility-topic">
-            <header class="accessibility-topic__header">
-              <h4 class="accessibility-topic__title">{{ topic.title }}</h4>
-              <p v-if="topic.description" class="accessibility-topic__description">
-                {{ topic.description }}
-              </p>
-            </header>
-
-            <div class="accessibility-flags">
-              <div v-for="flag in topic.flags" :key="flag.id" class="accessibility-flag">
-                <input
-                    :id="`accessibility-flag-${flag.id}`"
-                    type="checkbox"
-                    :value="flag.value"
-                    v-model="selectedAccessibilityFlags"
-                />
-                <div class="accessibility-flag__content">
-                  <label class="accessibility-flag__label" :for="`accessibility-flag-${flag.id}`">
-                    {{ flag.label }}
-                  </label>
-                  <p v-if="flag.description" class="accessibility-flag__description">
-                    {{ flag.description }}
-                  </p>
-                </div>
-              </div>
+                            <div class="accessibility-flags">
+                                <div v-for="flag in topic.flags" :key="flag.id" class="accessibility-flag">
+                                    <input :id="`accessibility-flag-${flag.id}`" type="checkbox" :value="flag.value"
+                                        v-model="selectedAccessibilityFlags" />
+                                    <div class="accessibility-flag__content">
+                                        <label class="accessibility-flag__label" :for="`accessibility-flag-${flag.id}`">
+                                            {{ flag.label }}
+                                        </label>
+                                        <p v-if="flag.description" class="accessibility-flag__description">
+                                            {{ flag.description }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </fieldset>
             </div>
-          </section>
+        </section>
+
+        <div class="uranus-form-action-footer">
+            <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
         </div>
-      </fieldset>
-    </div>
+    </form>
 
-      </section>
-
-    <div class="uranus-form-action-footer">
-      <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
-    </div>
-  </form>
-
-  <transition name="fade">
-    <p v-if="displayError" class="feedback feedback--error">{{ displayError }}</p>
-  </transition>
-  <transition name="fade">
-    <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
-  </transition>
+    <transition name="fade">
+        <p v-if="displayError" class="feedback feedback--error">{{ displayError }}</p>
+    </transition>
+    <transition name="fade">
+        <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
+    </transition>
 </template>
 
 <script setup lang="ts">
@@ -280,7 +240,7 @@ watch(
 
 async function fetchSpaceTypes() {
     try {
-        const { data, status } = await apiFetch<Array<{ id: number; name: string }> | { space_types?: Array<{ id: number; name: string }> }>('/api/space/types', {
+        const { data, status } = await apiFetch<Array<{ id: number; name: string }> | { space_types?: Array<{ id: number; name: string }> }>(`/api/space/types?lang=${locale.value}`, {
             method: 'GET',
         })
 

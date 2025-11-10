@@ -12,7 +12,7 @@
             />
 
             <div class="event-section__grid">
-                <UranusFieldLabel :label="t('event_organizer_label')" required :error="errors.organizerId">
+                <UranusFieldLabel id="organizer" :label="t('event_organizer_label')" required :error="errors.organizerId">
                     <select id="organizer" v-model="basicInfo.organizerId">
                         <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                         <option v-for="org in organizers" :key="org.id" :value="org.id">
@@ -21,7 +21,7 @@
                     </select>
                 </UranusFieldLabel>
 
-                <UranusFieldLabel :label="t('venue')" required :error="errors.venueId">
+                <UranusFieldLabel id="event-venue" :label="t('venue')" required :error="errors.venueId">
                     <select id="event-venue" v-model="basicInfo.venueId">
                         <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                         <option v-for="ven in venues" :key="ven.id" :value="ven.id">
@@ -30,7 +30,7 @@
                     </select>
                 </UranusFieldLabel>
 
-                <UranusFieldLabel :label="t('event_space_label')">
+                <UranusFieldLabel id="event-space" :label="t('event_space_label')">
                     <select id="event-space" v-model="basicInfo.spaceId">
                         <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                         <option v-for="sp in spaces" :key="sp.id" :value="sp.id">
