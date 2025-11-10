@@ -112,7 +112,7 @@ interface UserProfilePayload {
     theme?: ThemeMode | null
 }
 
-const { t, te, locale } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 const themeStore = useThemeStore()
 const userStore = useUserStore()
 
@@ -143,21 +143,21 @@ const themeOptions: Array<{ value: ThemeMode; label: string }> = [
     { value: 'dark', label: 'settings_theme_dark' },
 ]
 
-const heroTitle = computed(() => (te('user_profile_title') ? t('user_profile_title') : 'Update your profile'))
-const heroSubtitle = computed(() => (te('user_profile_subtitle') ? t('user_profile_subtitle') : 'Manage how others see your information.'))
-const photoLabel = computed(() => (te('user_profile_photo_label') ? t('user_profile_photo_label') : 'Profile picture'))
-const photoHint = computed(() => (te('user_profile_photo_hint') ? t('user_profile_photo_hint') : 'JPG or PNG, max 5 MB.'))
-const uploadLabel = computed(() => (te('user_profile_upload') ? t('user_profile_upload') : 'Upload new photo'))
-const removeLabel = computed(() => (te('user_profile_remove_photo') ? t('user_profile_remove_photo') : 'Remove photo'))
-const saveButtonLabel = computed(() => (te('user_profile_save') ? t('user_profile_save') : 'Save profile'))
-const successMessage = computed(() => (te('user_profile_save_success') ? t('user_profile_save_success') : 'Profile updated successfully.'))
-const saveErrorMessage = computed(() => (te('user_profile_save_error') ? t('user_profile_save_error') : 'Could not save your profile.'))
-const loadErrorMessage = computed(() => (te('user_profile_load_error') ? t('user_profile_load_error') : 'Could not load your profile.'))
-const loadingLabel = computed(() => (te('user_profile_loading') ? t('user_profile_loading') : 'Loading profile…'))
-const validationMessage = computed(() => (te('user_profile_validation_error') ? t('user_profile_validation_error') : 'Please provide a display name and email address.'))
-const savingLabel = computed(() => (te('form_saving') ? t('form_saving') : 'Saving…'))
-const preferencesHeading = computed(() => (te('user_profile_preferences_heading') ? t('user_profile_preferences_heading') : 'Workspace preferences'))
-const preferencesDescription = computed(() => (te('user_profile_preferences_description') ? t('user_profile_preferences_description') : 'Choose your language and theme for the dashboard.'))
+const heroTitle = computed(() => t('user_profile_title'))
+const heroSubtitle = computed(() => t('user_profile_subtitle'))
+const photoLabel = computed(() => t('user_profile_photo_label'))
+const photoHint = computed(() => t('user_profile_photo_hint'))
+const uploadLabel = computed(() => t('user_profile_upload'))
+const removeLabel = computed(() => t('user_profile_remove_photo'))
+const saveButtonLabel = computed(() => t('user_profile_save'))
+const successMessage = computed(() => t('user_profile_save_success'))
+const saveErrorMessage = computed(() => t('user_profile_save_error'))
+const loadErrorMessage = computed(() => t('user_profile_load_error'))
+const loadingLabel = computed(() => t('user_profile_loading'))
+const validationMessage = computed(() => t('user_profile_validation_error'))
+const savingLabel = computed(() => t('form_saving'))
+const preferencesHeading = computed(() => t('user_profile_preferences_heading'))
+const preferencesDescription = computed(() => t('user_profile_preferences_description'))
 const selectedLocale = computed({
     get: () => locale.value,
     set: (value: string) => {
