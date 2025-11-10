@@ -97,16 +97,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.map-container {
-  width: 100%;
-  height: 600px;
-}
-
 .loading-state {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 600px;
   font-size: 1.2rem;
   color: var(--text-secondary);
 }
