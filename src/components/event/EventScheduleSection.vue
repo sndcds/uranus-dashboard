@@ -12,7 +12,7 @@
         class="event-meta__editor"
         :model-value="scheduleDraft"
         :spaces="availableSpaces"
-        :organizer-id="organizerId"
+        :organizer-id="organizerId ?? null"
         @update:model-value="onScheduleDraftChange"
     />
 
@@ -112,10 +112,20 @@ const scheduleSaveError = ref<string | null>(null)
 const scheduleEditorRef = ref<InstanceType<typeof EventDatesComponent> | null>(null)
 
 // --- Utilities ---
-function parseDateTime(dateStr: string, timeStr?: string) {
+function parseDateTime(dateStr: string, timeStr?: string): Date | null {
   if (!dateStr) return null
+
   const [year, month, day] = dateStr.split('-').map(Number)
-  const [hour = 0, minute = 0] = timeStr?.split(':').map(Number) ?? []
+  if ([year, month, day].some(isNaN)) return null
+
+  let hour = 0
+  let minute = 0
+  if (timeStr) {
+    const parsedTime = timeStr.split(':').map(Number)
+    if (parsedTime.some(isNaN)) return null
+        [hour, minute] = parsedTime
+  }
+
   return new Date(year, month - 1, day, hour, minute)
 }
 
