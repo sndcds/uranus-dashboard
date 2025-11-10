@@ -10,7 +10,7 @@
     <UranusInlineSectionLayout v-if="isEditing">
       <UranusFieldLabel
           id="event-venue-select"
-          :label="t('event_organizer_label')">
+          :label="t('event_venue_select_label')">
         <select
             id="event-venue-select"
             class="event-venue__select"
@@ -137,26 +137,6 @@ const spaceCapacityDisplay = computed(() => {
     return String(props.spaceTotalCapacity)
 })
 
-/*
-watch(
-    () => props.venueId,
-    (value) => {
-        if (!isEditing.value) {
-            selectedVenueId.value = value ?? null
-        }
-    }
-)
-
-watch(
-    () => props.spaceId,
-    (value) => {
-        if (!isEditingSpace.value) {
-            selectedSpaceId.value = value ?? null
-        }
-    }
-)
-*/
-
 const fetchVenueOptions = async () => {
     if (!props.organizerId) {
         venueOptions.value = []
@@ -198,7 +178,6 @@ const fetchSpaceOptions = async (venueId: number | null) => {
 }
 
 function setSelectedVenue(venueId: number | null) {
-  console.log("venueId: " + venueId)
   selectedVenueId.value = venueId
   fetchSpaceOptions(selectedVenueId.value)
 }
@@ -223,11 +202,11 @@ const cancelEditing = () => {
   isEditing.value = false
 }
 
-const saveVenue = async () => {
-    if (selectedVenueId.value === null) {
-      isEditing.value = false
-        return
-    }
+const save = async () => {
+  if (selectedVenueId.value === null) {
+    isEditing.value = false
+    return
+  }
 
     isSavingVenue.value = true
     try {
