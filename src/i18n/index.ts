@@ -161,6 +161,8 @@ const messages = {
     de: {
         ...event.de,
         ...sharedAuthFor('de'),
+        event_teaser_tags: 'Event-Tags',
+        event_image_license_unknown: 'Unbekannte Bildlizenz',
         space_created_success: 'Raum erfolgreich erstellt',
         toggle_menu: 'Menü umschalten',
         github_repository: 'GitHub-Repository',
@@ -772,6 +774,8 @@ const messages = {
     en: {
         ...event.en,
         ...sharedAuthFor('en'),
+        event_teaser_tags: 'Tags',
+        event_image_license_unknown: 'Unknown license',
         notification: 'Notification',
         space_created_success: 'Space created successfully',
         toggle_menu: 'Toggle menu',
@@ -1378,6 +1382,8 @@ const messages = {
     da: {
         ...event.da,
         ...sharedAuthFor('da'),
+        event_teaser_tags: 'Tags',
+        event_image_license_unknown: 'Ukendt licens',
         notification: 'Bemærk',
         space_created_success: 'Lokale oprettet',
         toggle_menu: 'Skift menu',

@@ -34,29 +34,23 @@
                   {{ formatDate(event.start_date) }} · {{ event.start_time }}
                 </span>
               </li>
-              <li>
-                <span class="event-card__value">{{ event.venue_name || '—' }}</span> /
-                <span class="event-card__value">{{ event.space_name || '—' }}</span>
+              <li class="event-card__value">
+                <span class="event-card__value">{{ event.venue_name || '—' }}</span> / <span
+                  class="event-card__value">{{ event.space_name || '—' }}</span>
               </li>
-              <li>
+              <li v-if="event.event_types">
                 <span class="event-card__value">
-                  <span class="chip">{{ event.event_type || t('event_type_unknown') }}</span>
+                  <span class="chip">{{ formatEventTypeNames(event.event_types) }}</span>
                 </span>
               </li>
             </ul>
             <p class="event-actions">
-              <router-link
-                v-if="event.can_edit_event"
-                :to="`/admin/event/${event.event_id}`"
-                class="uranus-secondary-button"
-              >
+              <router-link v-if="event.can_edit_event" :to="`/admin/event/${event.event_id}`"
+                class="uranus-secondary-button">
                 {{ t('edit_event') }}
               </router-link>
-              <button
-                v-if="event.can_delete_event"
-                class="uranus-secondary-button"
-                @click.prevent.stop="requestDelete(event)"
-              >
+              <button v-if="event.can_delete_event" class="uranus-secondary-button"
+                @click.prevent.stop="requestDelete(event)">
                 {{ t('delete_event') }}
               </button>
             </p>
@@ -65,18 +59,9 @@
       </div>
     </div>
 
-    <PasswordConfirmModal
-      :show="showDeleteModal"
-      :title="t('confirm_delete_event')"
-      :description="pendingDeleteTitle"
-      :confirm-text="t('delete_event')"
-      :loading-text="t('deleting')"
-      :error="deleteError"
-      :is-submitting="isDeleting"
-      @confirm="confirmDelete"
-      @cancel="cancelDelete"
-      :time-series="pendingTimeSeriesCount"
-    />
+    <PasswordConfirmModal :show="showDeleteModal" :title="t('confirm_delete_event')" :description="pendingDeleteTitle"
+      :confirm-text="t('delete_event')" :loading-text="t('deleting')" :error="deleteError" :is-submitting="isDeleting"
+      @confirm="confirmDelete" @cancel="cancelDelete" :time-series="pendingTimeSeriesCount" />
   </section>
 </template>
 
@@ -87,21 +72,35 @@ import { apiFetch } from '@/api'
 
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 
+export interface OrganizerEventType {
+  type_id: number
+  type_name: string | null
+  genre_id: number | null
+  genre_name: string | null
+}
+
 export interface OrganizerEventItem {
   event_id: number
   event_date_id: number
   event_title: string
+  event_subtitle: string | null
+  event_organizer_id: number
+  event_organizer_name: string
   start_date: string
   start_time: string
+  end_date: string | null
+  end_time: string | null
+  venue_id: number | null
   venue_name: string | null
-  space_name: string | null
-  event_organizer_name: string
-  event_type: string | null
+  venue_lon: number | null
+  venue_lat: number | null
+  space_name?: string | null
+  event_types: OrganizerEventType[] | null
   image_id: number | null
   focus_x?: number | null
   focus_y?: number | null
-  release_status_id?: number | null
-  release_status_name?: string | null
+  release_status_id: number | null
+  release_status_name: string | null
   can_edit_event: boolean
   can_delete_event: boolean
   can_release_event: boolean
@@ -137,6 +136,19 @@ const formatDate = (value: string) => {
     return value
   }
   return dateFormatter.value.format(date)
+}
+
+const formatEventTypeNames = (eventTypes: OrganizerEventType[] | null | undefined) => {
+  if (!Array.isArray(eventTypes)) {
+    return t('event_type_unknown')
+  }
+  const names = eventTypes
+    .map((eventType) => eventType?.type_name?.trim())
+    .filter((name): name is string => Boolean(name))
+  if (!names.length) {
+    return t('event_type_unknown')
+  }
+  return names.join(', ')
 }
 
 const buildImageUrl = (event: OrganizerEventItem) => {
@@ -361,13 +373,14 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
 }
 
 .event-card__details li {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .event-card__value {
   font-size: 0.95rem;
+  margin-bottom: 1rem;
 }
 
 .events-card__image {
@@ -395,12 +408,6 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
   .event-card__details {
     flex: 1;
     // gap: 0.75rem;
-  }
-
-  .event-card__details li {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.75rem;
   }
 
   .event-card__value {

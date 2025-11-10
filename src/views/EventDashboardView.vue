@@ -26,7 +26,7 @@ import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionB
 
 const apiBase = import.meta.env.VITE_API_URL
 
-const { t } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
 
 const organizerId = Number(route.params.id)
@@ -54,7 +54,7 @@ const fetchEvents = async () => {
 
     try {
         const { data, status } = await apiFetch<OrganizerEventItem[] | { events?: OrganizerEventItem[] }>(
-            `/api/admin/organizer/${organizerId}/events?start=2000-01-01`
+            `/api/admin/organizer/${organizerId}/events?start=2000-01-01&lang=${locale.value}`
         )
 
         if (status >= 200 && status < 300) {
