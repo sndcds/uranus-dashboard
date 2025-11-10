@@ -67,12 +67,18 @@
   --uranus-low-contrast-color: #c6c6c6;
   --uranus-medium-contrast-color: #666666;
   --uranus-dashboard-bg-color: #e3e9f7;
+  --uranus-dashboard-content-width: 1024px;
   --uranus-menu-active-color: #0f172a;
   --uranus-menu-active-bg: rgba(79, 70, 229, 0.12);
   --uranus-grid-gap: 12px;
+  --uranus-default-text-padding: 6px 12px;
   --uranus-inline-edit-border-radius: 12px;
   --uranus-form-field-border-radius: 12px;
   --uranus-tiny-border-radius: 4px;
+
+    --uranus-notify-info-color: #a2bae8;
+    --uranus-notify-warning-color: #fdee89;
+    --uranus-notify-error-color: #ffafaf;
 
   // Inputs & borders
   --input-bg: #ffffff;

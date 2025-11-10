@@ -10,6 +10,30 @@
             {{ error }}
         </div>
 
+        <div v-if="Object.values(groupedPermissions).every(entries => entries.length === 0)">
+          <UranusNotification
+              type="info"
+              title="Permissions Missing"
+              text="You have no permissions assigned."
+              button-text="Learn more"
+              button-link="/help/permissions"
+          />
+          <UranusNotification
+              type="warning"
+              title="Permissions Missing"
+              text="You have no permissions assigned."
+              button-text="Learn more"
+              button-link="/help/permissions"
+          />
+          <UranusNotification
+              type="error"
+              title="Permissions Missing"
+              text="You have no permissions assigned."
+              button-text="Learn more"
+              button-link="/help/permissions"
+          />
+
+        </div>
         <div v-else class="user-permissions__groups">
             <article v-for="(entries, type) in groupedPermissions" :key="type" class="permission-group">
                 <header class="permission-group__header">
@@ -68,6 +92,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusNotification from "@/components/uranus/UranusNotification.vue";
 
 interface PermissionResponseEntity {
     add_event: boolean
@@ -154,7 +179,6 @@ const loadPermissions = async () => {
 
         if (!Array.isArray(data)) {
             permissions.value = []
-            error.value = t('user_permissions_invalid_response')
             return
         }
 
