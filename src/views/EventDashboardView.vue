@@ -1,5 +1,5 @@
 <template>
-    <div class="uranus-main-layout">
+    <div class="uranus-max-layout">
         <DashboardHeroComponent
             :title="t('events_title')"
             :subtitle="t('events_subtitle')" />
@@ -10,7 +10,12 @@
             </router-link>
         </UranusDashboardActionBar>
 
-        <OrganizerEventsCard :events="events" :is-loading="isLoading" :error="error" :api-base="apiBase" @deleted="removeEventCard" />
+        <OrganizerEventsCard
+            :events="events"
+            :is-loading="isLoading"
+            :error="error"
+            :api-base="apiBase"
+            @deleted="removeEventCard" />
     </div>
 </template>
 

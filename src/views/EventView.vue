@@ -97,7 +97,8 @@
           :latitude="event.venue_lat"
           :longitude="event.venue_lon"
           :zoom="18"
-          :selectable="false" class="event-map" />
+          :selectable="false"
+          class="event-map" />
     </UranusCard>
 
   </div>

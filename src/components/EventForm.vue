@@ -9,6 +9,9 @@
     />
 
     <UranusCard>
+      <UranusCardHeader
+          :title="t('event_dates_and_times_title')"
+          :subtitle="t('event_dates_and_times_subtitle')" />
       <EventDatesComponent
           ref="datesRef"
           :model-value="eventDates"
@@ -17,6 +20,7 @@
           @update:modelValue="onDatesUpdate"
       />
     </UranusCard>
+
 
     <EventDetailsComponent
         ref="detailsRef"
@@ -46,6 +50,7 @@ import EventBasicInfoComponent from '@/components/EventBasicInfoComponent.vue'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import EventDetailsComponent from '@/components/EventDetailsComponent.vue'
 import UranusCard from "@/components/uranus/UranusCard.vue";
+import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
 
 interface SelectOption {
     id: number

@@ -1,5 +1,7 @@
 export const event = {
     de: {
+        event_dates_and_times_title: 'Termine & Zeiten',
+        event_dates_and_times_subtitle: 'Plane die einzelnen Termine und Zeiten deines Events',
         event_end: 'Veranstaltungsende',
         event_start: 'Veranstaltungsbeginn',
         event_portal: 'Uranus Event Portal',

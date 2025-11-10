@@ -1,8 +1,10 @@
 <template>
+  <div class="map-wrapper">
     <div ref="mapContainer" class="leaflet-map"></div>
     <footer class="map-footer">
       <!--slot name="footer" /-->
     </footer>
+  </div>
 </template>
 
 <script setup lang="ts">

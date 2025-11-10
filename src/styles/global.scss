@@ -211,14 +211,17 @@ $button-text-color: #333;
   padding: 10px;
 }
 
+.uranus-max-layout,
 .uranus-main-layout {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: var(--uranus-grid-gap);
-    width: 100%;
-    max-width: var(--uranus-dashboard-content-width);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: var(--uranus-grid-gap);
+  width: 100%;
+}
 
+.uranus-main-layout {
+    max-width: var(--uranus-dashboard-content-width);
 }
 
 .uranus-dashboard-hero {

@@ -346,10 +346,9 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
 }
 
 .events-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
   gap: 8px;
-  align-items: stretch;
 }
 
 .event-card__title h3 {
@@ -392,11 +391,6 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
 }
 
 @media (min-width: 768px) {
-  .events-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  }
-
   .event-card__title h3 {
     font-size: 1.1rem;
   }
