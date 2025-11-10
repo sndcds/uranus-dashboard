@@ -1733,7 +1733,6 @@ const messages = {
         user_profile_preferences_heading: 'Arbejdsmiljø-indstillinger',
         user_profile_preferences_description: 'Sprog og tema gælder i hele dashboardet.',
         spaces_empty: 'Ingen lokaler oprettet endnu.',
-        user_permissions_title: 'Rettigheder',
         user_permissions_subtitle: 'Disse roller og tilladelser er knyttet til din konto.',
         user_permissions_loading: 'Indlæser rettigheder…',
         user_permissions_entities: 'poster',
