@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
     // State as refs
+    const emailAddress = ref('')
     const displayName = ref('')
     const userId = ref('')
     const avatarVersion = ref(0)
@@ -15,6 +16,14 @@ export const useUserStore = defineStore('user', () => {
     function clearUserId() {
         userId.value = ''
         avatarVersion.value = 0
+    }
+
+    function setEmailAddress(email: string) {
+        emailAddress.value = email
+    }
+
+    function clearEmailAddress() {
+        emailAddress.value = ''
     }
 
     function setDisplayName(name: string) {
@@ -30,6 +39,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     return {
+        emailAddress,
         displayName,
         userId,
         avatarVersion,
@@ -37,6 +47,8 @@ export const useUserStore = defineStore('user', () => {
         clearUserId,
         setDisplayName,
         clearDisplayName,
+        setEmailAddress,
+        clearEmailAddress,
         bumpAvatarVersion
     }
 }, {

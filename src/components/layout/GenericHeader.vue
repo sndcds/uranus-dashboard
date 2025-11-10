@@ -7,27 +7,33 @@
 
                 <!-- Visitor Navigation -->
                 <nav v-if="!isAdminPage" class="generic-header__nav">
-                    <router-link v-if="tokenStore.isAuthenticated" to="/admin/dashboard" class="generic-header__nav-link" active-class="generic-header__nav-link--active">
+                    <router-link v-if="tokenStore.isAuthenticated" to="/admin/dashboard"
+                        class="generic-header__nav-link" active-class="generic-header__nav-link--active">
                         {{ t('dashboard') }}
                     </router-link>
 
-                    <router-link to="/" class="generic-header__nav-link" :class="{ 'generic-header__nav-link--active': route.path === '/' }" exact>
+                    <router-link to="/" class="generic-header__nav-link"
+                        :class="{ 'generic-header__nav-link--active': route.path === '/' }" exact>
                         {{ t('events') }}
                     </router-link>
-                    <router-link to="/map" class="generic-header__nav-link" active-class="generic-header__nav-link--active">
+                    <router-link to="/map" class="generic-header__nav-link"
+                        active-class="generic-header__nav-link--active">
                         {{ t('visitor_nav_map') }}
                     </router-link>
 
-                    <router-link to="/about" class="generic-header__nav-link" active-class="generic-header__nav-link--active">
+                    <router-link to="/about" class="generic-header__nav-link"
+                        active-class="generic-header__nav-link--active">
                         {{ t('visitor_nav_about') }}
                     </router-link>
 
-                    <router-link v-if="!tokenStore.isAuthenticated" to="/app/login" class="generic-header__nav-link" active-class="generic-header__nav-link--active">
+                    <router-link v-if="!tokenStore.isAuthenticated" to="/app/login" class="generic-header__nav-link"
+                        active-class="generic-header__nav-link--active">
                         {{ t('visitor_nav_login') }}
                     </router-link>
                 </nav>
                 <nav v-else class="generic-header__nav">
-                    <router-link to="/" class="generic-header__nav-link" :class="{ 'generic-header__nav-link--active': route.path === '/' }" exact>
+                    <router-link to="/" class="generic-header__nav-link"
+                        :class="{ 'generic-header__nav-link--active': route.path === '/' }" exact>
                         {{ t('events') }}
                     </router-link>
                 </nav>
@@ -45,8 +51,8 @@
 
                 <!-- Settings Menu (Theme & Language - Always Visible) -->
                 <div class="generic-header__settings-menu">
-                    <button class="generic-header__settings-trigger" @click="toggleSettingsMenu" :aria-expanded="isSettingsMenuOpen"
-                        :aria-label="t('settings')">
+                    <button class="generic-header__settings-trigger" @click="toggleSettingsMenu"
+                        :aria-expanded="isSettingsMenuOpen" :aria-label="t('settings')">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path
                                 d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
@@ -117,8 +123,7 @@
                 <div v-if="tokenStore.isAuthenticated" class="generic-header__user-menu">
                     <button class="generic-header__user-trigger" @click="toggleUserMenu" :aria-expanded="isUserMenuOpen"
                         :aria-label="t('user_profile')">
-                        <img v-if="userAvatar && isAvatarValid" :src="userAvatar" :alt="userName" 
-                            class="generic-header__user-avatar" @error="handleAvatarError" />
+                        <img v-if="userAvatar" :src="userAvatar" :alt="userName" class="generic-header__user-avatar" />
                         <div v-else class="generic-header__user-avatar-placeholder">
                             {{ userInitials }}
                         </div>
@@ -197,14 +202,15 @@ import { useI18n } from 'vue-i18n'
 import { useTokenStore } from '@/store/tokenStore'
 import { apiFetch } from '@/api'
 import { applyTheme } from '@/utils/theme'
+import { useUserStore } from '@/store/userStore'
 
 import UranusLogo from '@/components/uranus/UranusLogo.vue'
-import UranusBlob from "@/components/uranus/UranusBlob.vue";
 
 const { t, locale } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const tokenStore = useTokenStore()
+const userStore = useUserStore()
 
 const emit = defineEmits<{
     'toggle-sidebar': []
@@ -221,14 +227,18 @@ const currentLocale = computed(() => locale.value)
 const isAdminPage = computed(() => route.path.startsWith('/admin'))
 
 // User data
-const userName = ref('User')
-const userEmail = ref('user@example.com')
-const userAvatar = ref<string | null>(null)
-const userId = ref(0)
+const userId = computed(() => userStore.userId)
+const userName = computed(() => userStore.displayName || 'User')
+const userEmail = computed(() => userStore.emailAddress)
+const userAvatar = computed(() => {
+    if (!userId.value || !isAvatarValid.value) return null
+    return `${import.meta.env.VITE_API_URL}/api/user/${userId.value}/avatar/64`
+})
 const isAvatarValid = ref(true)
 
 const userInitials = computed(() => {
-    const names = userName.value.split(' ').filter(n => n.length > 0)
+    const name = userName.value
+    const names = name.split(' ').filter(n => n.length > 0)
     if (names.length >= 2) {
         const first = names[0]?.[0]
         const last = names[names.length - 1]?.[0]
@@ -236,35 +246,8 @@ const userInitials = computed(() => {
             return (first + last).toUpperCase()
         }
     }
-    return userName.value.substring(0, 2).toUpperCase()
+    return name.substring(0, 2).toUpperCase()
 })
-
-// Fetch user profile data
-const fetchUserProfile = async () => {
-    if (!tokenStore.isAuthenticated) return
-
-    try {
-        const { data } = await apiFetch<{
-            display_name: string
-            email_address: string
-            user_id: number
-        }>('/api/admin/user/me')
-
-        if (data) {
-            userName.value = data.display_name
-            userEmail.value = data.email_address
-            userId.value = data.user_id
-            userAvatar.value = `${import.meta.env.VITE_API_URL}/api/user/${userId.value}/avatar/64`
-            isAvatarValid.value = true
-        }
-    } catch (err) {
-        console.error('Failed to fetch user profile:', err)
-    }
-}
-
-const handleAvatarError = () => {
-    isAvatarValid.value = false
-}
 
 const toggleUserMenu = () => {
     isUserMenuOpen.value = !isUserMenuOpen.value
@@ -322,6 +305,43 @@ const setLanguage = async (lang: string) => {
         } catch (err) {
             console.error('Failed to save language setting:', err)
         }
+    }
+}
+
+// Check if avatar image is valid
+const checkAvatarValidity = async (userId: string): Promise<boolean> => {
+    try {
+        const { status } = await apiFetch(`/api/user/${userId}/avatar/64`, {
+            method: 'HEAD'
+        })
+        return status === 200
+    } catch {
+        return false
+    }
+}
+
+// Fetch user profile data
+const fetchUserProfile = async () => {
+    if (!tokenStore.isAuthenticated) return
+
+    try {
+        const { data } = await apiFetch<{
+            display_name: string
+            email_address: string
+            user_id: string
+        }>('/api/admin/user/me')
+
+        if (data) {
+            userStore.setUserId(data.user_id)
+            userStore.setDisplayName(data.display_name)
+            userStore.setEmailAddress(data.email_address)
+
+            // Check if avatar is valid
+            const avatarValid = await checkAvatarValidity(data.user_id)
+            isAvatarValid.value = avatarValid
+        }
+    } catch (err) {
+        console.error('Failed to fetch user profile:', err)
     }
 }
 
@@ -745,5 +765,4 @@ onUnmounted(() => {
         }
     }
 }
-
 </style>
