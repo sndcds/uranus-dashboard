@@ -14,7 +14,6 @@ import type { LngLatLike, Popup } from 'maplibre-gl'
 // Props
 const props = defineProps<{
   data: FeatureCollection
-  popupContent?: (properties: Record<string, any>) => string
 }>()
 
 const mapContainer = ref<HTMLElement | null>(null)
@@ -26,6 +25,170 @@ const GEOJSON_SOURCE_ID = 'events'
 const CLUSTER_LAYER_ID = 'clusters'
 const CLUSTER_COUNT_LAYER_ID = 'cluster-count'
 const UNCLUSTERED_LAYER_ID = 'unclustered-point'
+
+type PopupProperties = Record<string, unknown>
+
+const normalizeProperties = (raw: unknown): PopupProperties => {
+  if (!raw) {
+    return {}
+  }
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw)
+      return typeof parsed === 'object' && parsed !== null ? (parsed as PopupProperties) : { value: raw }
+    } catch {
+      return { value: raw }
+    }
+  }
+  if (typeof raw === 'object') {
+    return raw as PopupProperties
+  }
+  return {}
+}
+
+const escapeHtml = (value: string): string =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+
+const pickString = (properties: PopupProperties, keys: string[], fallback = ''): string => {
+  for (const key of keys) {
+    const value = properties[key]
+    if (typeof value === 'string' && value.trim().length > 0) {
+      return value.trim()
+    }
+  }
+  return fallback
+}
+
+const pickNumber = (properties: PopupProperties, keys: string[]): number | undefined => {
+  for (const key of keys) {
+    const value = properties[key]
+    if (typeof value === 'number' && !Number.isNaN(value)) {
+      return value
+    }
+    if (typeof value === 'string' && value.trim().length > 0) {
+      const parsed = Number(value)
+      if (!Number.isNaN(parsed)) {
+        return parsed
+      }
+    }
+  }
+  return undefined
+}
+
+const formatTypeInfo = (properties: PopupProperties): string => {
+  if (typeof properties.venue_type_list === 'string') {
+    return properties.venue_type_list
+  }
+  const eventTypes = properties.event_types
+  if (Array.isArray(eventTypes)) {
+    const names = eventTypes
+      .map((entry) => {
+        if (typeof entry === 'string') return entry
+        if (entry && typeof entry === 'object' && 'type_name' in entry) {
+          const value = (entry as Record<string, unknown>).type_name
+          return typeof value === 'string' ? value : ''
+        }
+        return ''
+      })
+      .filter((name) => name.trim().length > 0)
+    if (names.length) {
+      return names.join(', ')
+    }
+  }
+  const fallbackKeys = ['type', 'category', 'event_type']
+  return pickString(properties, fallbackKeys)
+}
+
+const buildDirectionsUrl = (properties: PopupProperties, coordinates: [number, number]): string => {
+  const lat = pickNumber(properties, ['venue_lat', 'lat', 'latitude']) ?? coordinates[1]
+  const lon = pickNumber(properties, ['venue_lon', 'lon', 'longitude']) ?? coordinates[0]
+  const destination = `${lat},${lon}`
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`
+}
+
+const safeUrl = (value: string): string => {
+  if (!value) return ''
+  try {
+    const base =
+      typeof window !== 'undefined' && window.location ? window.location.origin : 'https://localhost'
+    const url = new URL(value, base)
+    return url.toString()
+  } catch {
+    return ''
+  }
+}
+
+const buildPopupHtml = (properties: PopupProperties, coordinates: [number, number]): string => {
+  const title = pickString(properties, ['venue_name', 'event_title', 'name', 'title'], 'Unbenannter Ort')
+  const city = pickString(properties, ['venue_city', 'city', 'event_city'])
+  const address = pickString(properties, ['venue_address', 'address', 'street'])
+  const typeInfo = formatTypeInfo(properties)
+  const websiteRaw = pickString(properties, ['venue_url', 'url', 'link'])
+  const website = safeUrl(websiteRaw)
+  const directionsUrl = buildDirectionsUrl(properties, coordinates)
+
+  const subtitleParts = [city, address].filter((part) => part.length > 0)
+  const metaLines = [subtitleParts.join(' · '), typeInfo].filter((line) => line.length > 0)
+
+  const titleHtml = website
+    ? `<a class="generic-info-window__title-link" href="${website}" target="_blank" rel="noopener noreferrer">${escapeHtml(
+        title
+      )}</a>`
+    : `<span class="generic-info-window__title-text">${escapeHtml(title)}</span>`
+
+  const metaHtml = metaLines
+    .map(
+      (line) => `
+        <p class="generic-info-window__meta">
+          ${escapeHtml(line)}
+        </p>
+      `
+    )
+    .join('')
+
+  const detailsLink = website
+    ? `<a class="generic-info-window__action generic-info-window__action--details" href="${website}" target="_blank" rel="noopener noreferrer">
+        <span>Mehr erfahren</span>
+      </a>`
+    : ''
+
+  return `
+    <div class="generic-info-window">
+      <div class="generic-info-window__header">
+        ${titleHtml}
+        <button class="generic-info-window__close" type="button" data-map-popup-close aria-label="Popup schließen">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="generic-info-window__body">
+        ${metaHtml || '<p class="generic-info-window__meta">Keine weiteren Angaben</p>'}
+      </div>
+      <div class="generic-info-window__footer">
+        <a class="generic-info-window__action generic-info-window__action--route" href="${directionsUrl}" target="_blank" rel="noopener noreferrer">
+          <span>Route</span>
+        </a>
+        ${detailsLink}
+      </div>
+    </div>
+  `
+}
+
+const attachPopupInteractions = (popup: Popup | null) => {
+  if (!popup) return
+  const element = popup.getElement()
+  if (!element) return
+  const button = element.querySelector<HTMLButtonElement>('[data-map-popup-close]')
+  if (!button) return
+  const close = () => {
+    popup.remove()
+  }
+  button.addEventListener('click', close, { once: true })
+}
 
 onMounted(() => {
   if (!mapContainer.value) return
@@ -126,28 +289,35 @@ onMounted(() => {
     map.on('click', UNCLUSTERED_LAYER_ID, (e) => {
       if (!e.features || e.features.length === 0) return
 
-      const properties = e.features[0]!.properties
+      const feature = e.features[0]
+      if (!feature) return
+
+      const properties = normalizeProperties(feature.properties)
+      const geometry = feature.geometry
+      const coordinates: [number, number] =
+        geometry && geometry.type === 'Point'
+          ? (geometry.coordinates as [number, number])
+          : [e.lngLat.lng, e.lngLat.lat]
 
       if (currentPopup) {
         currentPopup.remove()
         currentPopup = null
       }
 
-      // Use custom popup content if provided, otherwise show basic info
-      const html = props.popupContent
-        ? props.popupContent(properties || {})
-        : `<div style="padding: 8px;"><strong>${properties?.name || 'Feature'}</strong></div>`
+      const html = buildPopupHtml(properties, coordinates)
 
       currentPopup = new maplibregl.Popup({
-        closeButton: true,
+        closeButton: false,
         closeOnClick: false,
-        maxWidth: '300px',
+        maxWidth: '320px',
         anchor: 'left',
-        offset: 15
+        offset: 15,
       })
         .setLngLat(e.lngLat)
         .setHTML(html)
         .addTo(map)
+
+      attachPopupInteractions(currentPopup)
     })
 
     // Close popup on clicking outside
@@ -208,21 +378,16 @@ onMounted(() => {
 watch(
   () => props.data,
   (geojson) => {
-    console.log('Data changed, features:', geojson.features.length)
-
     const map = mapInstance.value
     if (!map) {
-      console.log('Map instance not ready yet')
       return
     }
 
     // Wait for map to be loaded
     if (!map.isStyleLoaded()) {
-      console.log('Map style not loaded yet, waiting...')
       map.once('load', () => {
         const source = map.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
         if (source) {
-          console.log('Setting data after load:', geojson.features.length)
           source.setData(geojson)
         }
       })
@@ -231,10 +396,7 @@ watch(
 
     const source = map.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
     if (source) {
-      console.log('Setting data immediately:', geojson.features.length)
       source.setData(geojson)
-    } else {
-      console.log('Source not found yet')
     }
   },
   { deep: true }
@@ -253,86 +415,123 @@ watch(
 .maplibregl-popup-content {
   padding: 0 !important;
   border-radius: 12px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-  background: white !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2) !important;
+  background: transparent !important;
   overflow: hidden;
+  border: none !important;
 }
 
 .maplibregl-popup-close-button {
-  font-size: 20px !important;
-  padding: 4px 8px !important;
-  color: #666 !important;
-  right: 4px !important;
-  top: 4px !important;
+  display: none !important;
 }
 
-.maplibregl-popup-close-button:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-  color: #333 !important;
-}
-
-.popup-wrapper {
-  background: white;
-  min-width: 200px;
-  max-width: 300px;
-}
-
-.popup-content {
-  padding: 16px;
-}
-
-.popup-title {
-  font-size: 1.1em;
-  font-weight: 600;
-  line-height: 1.3;
-  color: #2d3748;
-  margin: 0 0 12px 0;
-}
-
-.popup-title a {
-  color: #667eea;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.popup-title a:hover {
-  color: #764ba2;
-  text-decoration: underline;
-}
-
-.popup-details {
+.generic-info-window {
+  width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 12px;
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text-primary);
+  background: var(--uranus-bg-color);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.popup-city,
-.popup-type {
-  margin: 0;
-  font-size: 0.9em;
-  color: #4a5568;
+.generic-info-window__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--uranus-bg-color-d2);
+  color: #fff;
+}
+
+.generic-info-window__title-link,
+.generic-info-window__title-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: none;
+  margin-right: 12px;
+  line-height: 1.3;
+}
+
+.generic-info-window__title-link:hover {
+  opacity: 0.85;
+}
+
+.generic-info-window__close {
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 999px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.generic-info-window__close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.generic-info-window__body {
+  padding: 12px 16px 4px;
+  background: var(--uranus-bg-color);
+}
+
+.generic-info-window__meta {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: var(--muted-text);
   line-height: 1.4;
 }
 
-.popup-button {
-  display: inline-block;
-  width: 100%;
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.9em;
-  transition: all 0.2s ease;
-  border: none;
-  cursor: pointer;
+.generic-info-window__meta:last-child {
+  margin-bottom: 0;
 }
 
-.popup-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+.generic-info-window__footer {
+  display: flex;
+  width: 100%;
+  border-top: 1px solid var(--border-color);
+}
+
+.generic-info-window__action {
+  flex: 1;
+  padding: 12px 16px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: background 0.2s ease, color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.generic-info-window__action--route {
+  background: var(--accent-primary);
+  color: var(--uranus-bg-color);
+}
+
+.generic-info-window__action--route:hover {
+  background: var(--accent-primary-hover);
+}
+
+.generic-info-window__action--details {
+  background: var(--uranus-bg-color-d1);
+  color: var(--text-primary);
+  border-left: 1px solid var(--border-color);
+}
+
+.generic-info-window__action--details:hover {
+  background: var(--uranus-bg-color-d2);
 }
 </style>

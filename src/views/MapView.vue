@@ -2,7 +2,7 @@
   <div v-if="loading" class="loading-state">
     Loading venues...
   </div>
-  <LibreMap v-else :data="geojsonData" :popup-content="getPopupContent" class="map-container" />
+  <LibreMap v-else :data="geojsonData" class="map-container" />
 </template>
 
 <script setup lang="ts">
@@ -44,26 +44,6 @@ const geojsonData = computed<FeatureCollection<Point>>(() => {
 
   return data
 })
-
-const getPopupContent = (properties: Record<string, any>): string => {
-  return `
-    <div class="popup-wrapper">
-      <div class="popup-content">
-        <h3 class="popup-title">${properties.venue_url
-      ? `<a href="${properties.venue_url}" target="_blank" rel="noopener noreferrer">${properties.venue_name}</a>`
-      : properties.venue_name || ''
-    }</h3>
-        <div class="popup-details">
-          <p class="popup-city">📍 ${properties.venue_city || ''}</p>
-          ${properties.venue_type_list ? `<p class="popup-type">🏛️ ${properties.venue_type_list}</p>` : ''}
-        </div>
-        ${properties.venue_url
-      ? `<a href="${properties.venue_url}" target="_blank" rel="noopener noreferrer" class="popup-button">View Details</a>`
-      : ''}
-      </div>
-    </div>
-  `
-}
 
 const loadVenues = async () => {
   try {
