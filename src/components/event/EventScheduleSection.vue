@@ -29,7 +29,7 @@
         <thead>
         <tr>
           <th>Date</th>
-          <th></th>
+          <th>Time</th>
           <th>Entry Time</th>
         </tr>
         </thead>
@@ -115,15 +115,30 @@ const scheduleEditorRef = ref<InstanceType<typeof EventDatesComponent> | null>(n
 function parseDateTime(dateStr: string, timeStr?: string): Date | null {
   if (!dateStr) return null
 
-  const [year, month, day] = dateStr.split('-').map(Number)
-  if ([year, month, day].some(isNaN)) return null
+  const dateParts = dateStr.split('-')
+  const [yearStr, monthStr, dayStr] = dateParts
+  if (!yearStr || !monthStr || !dayStr) {
+    return null
+  }
+
+  const year = Number(yearStr)
+  const month = Number(monthStr)
+  const day = Number(dayStr)
+  if ([year, month, day].some((value) => Number.isNaN(value))) {
+    return null
+  }
 
   let hour = 0
   let minute = 0
   if (timeStr) {
-    const parsedTime = timeStr.split(':').map(Number)
-    if (parsedTime.some(isNaN)) return null
-        [hour, minute] = parsedTime
+    const [rawHour = '', rawMinute = ''] = timeStr.split(':')
+    const parsedHour = Number(rawHour)
+    const parsedMinute = Number(rawMinute)
+    if (Number.isNaN(parsedHour) || Number.isNaN(parsedMinute)) {
+      return null
+    }
+    hour = parsedHour
+    minute = parsedMinute
   }
 
   return new Date(year, month - 1, day, hour, minute)
@@ -137,7 +152,10 @@ function capitalize(str: string) {
 function formatWeekday(dateStr: string) {
   if (!dateStr) return ''
   const [year, month, day] = dateStr.split('-').map(Number)
-  const dt = new Date(year, month - 1, day)
+  if ([year, month, day].some((value) => value === undefined || Number.isNaN(value))) {
+    return ''
+  }
+  const dt = new Date(year!, month! - 1, day!)
   const w = dt.toLocaleDateString(locale.value, { weekday: 'short' })
   return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
 }
@@ -228,11 +246,11 @@ const spaceLookup = computed(() => {
 })
 
 const eventScheduleDisplay = computed<EventScheduleDisplay[]>(() =>
-    scheduleEntries.value.map((entry, index) => ({
-      ...entry,
-      key: entry.id ?? `schedule-${index}`,
-      spaceDisplay: entry.spaceId !== null ? spaceLookup.value[entry.spaceId] ?? '' : '',
-    }))
+  scheduleEntries.value.map((entry, index) => ({
+    ...entry,
+    key: typeof entry.id === 'number' ? entry.id.toString() : `schedule-${index}`,
+    spaceDisplay: entry.spaceId !== null ? spaceLookup.value[entry.spaceId] ?? '' : '',
+  }))
 )
 
 // --- Normalize API data ---
