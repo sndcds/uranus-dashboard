@@ -311,9 +311,7 @@ const setLanguage = async (lang: string) => {
 // Check if avatar image is valid
 const checkAvatarValidity = async (userId: string): Promise<boolean> => {
     try {
-        const { status } = await apiFetch(`/api/user/${userId}/avatar/64`, {
-            method: 'HEAD'
-        })
+        const { status } = await apiFetch(`/api/user/${userId}/avatar/64`)
         return status === 200
     } catch {
         return false
