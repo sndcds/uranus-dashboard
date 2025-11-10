@@ -1,10 +1,8 @@
 <template>
-  <div class="map-wrapper">
     <div ref="mapContainer" class="leaflet-map"></div>
     <footer class="map-footer">
       <!--slot name="footer" /-->
     </footer>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -169,11 +167,10 @@ watch(
 
 .leaflet-map {
   width: 100%;         /* take full width of wrapper */
-  aspect-ratio: 1 / 1; /* keep it square */
-  border-radius: 12px;
+  height: 400px;
+  border-radius: var(--uranus-tiny-border-radius);
   overflow: hidden;
   cursor: grab;
-  min-width: 280px;    /* optional */
   max-width: 100%;     /* prevent overflowing parent */
 
   &:active {

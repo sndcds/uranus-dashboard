@@ -1,84 +1,105 @@
-<!-- EventView.vue
-    Description: Inline Event Editor used in Uranus Dashboard
-    Last Updated:
--->
 <template>
-  <div v-if="event">
-    <div class="event-content">
-      <section class="event-layout">
-        <EventImageUploadComponent
-            v-model:image="eventImage"
-            v-model:alt-text="imageAltText"
-            v-model:copyright="imageCopyright"
-            v-model:license="imageLicense"
-            v-model:created-by="imageCreatedBy"
-            :event-id="eventId"
-            :max-size="5 * 1024 * 1024"
-            :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
-            :existing-image-id="event.image_id"
-            :existing-image-url="existingImagePreviewUrl"
-            :upload-url="`/api/admin/event/${eventId}/image`"
-            :delete-url="`/api/admin/event/${eventId}/image`"
-            :get-url="`/api/admin/event/${eventId}/image`"
-            @updated="loadEvent" />
+  <div v-if="event" class="event-layout">
+    <UranusCard>
 
-        <EventHeaderSection
-            class="uranus-hover-section"
-            :event-id="event.id"
-            :title="event.title"
-            :subtitle="event.subtitle"
-            @updated="loadEvent" />
-
-        <EventDescriptionSection
-            :event-id="event.id"
-            :description="event.description"
-            :participation-info="event.participation_info"
-            :meeting-point="event.meeting_point"
-            :event-types="event.event_types"
-            :languages="event.languages"
-            :locale="locale"
-            @updated="loadEvent" />
-
-        <EventUrlSection
-            :event-id="event.id"
-            :links="eventLinks"
-            @updated="loadEvent" />
-
-        <EventTeaserSection
-            :event-id="event.id"
-            :teaser-text="event.teaser_text"
-            :tags="event.tags"
-            class="event-teaser"
-            @updated="loadEvent" />
-      </section>
-
-      <div class="event-sidebar">
-        <LocationMapComponent
-            :latitude="event.venue_lat"
-            :longitude="event.venue_lon"
-            :zoom="18"
-            :selectable="false" class="event-map" />
-
-        <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
-            :event-dates="eventSchedulePayload" :space-id="event.space_id" :space-name="event.space_name ?? ''"
-            @updated="loadEvent" />
-
-        <EventVenueSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
-          :venue-name="event.venue_name" :venue-street="event.venue_street ?? ''"
-          :venue-house-number="event.venue_house_number ?? ''" :venue-postal-code="event.venue_postal_code ?? ''"
-          :venue-city="event.venue_city ?? ''" :space-id="event.space_id" :space-name="event.space_name ?? ''"
-          :space-building-level="event.space_building_level !== null ? String(event.space_building_level) : null"
-          :space-seating-capacity="event.space_seating_capacity" :space-total-capacity="event.space_total_capacity"
+      <EventHeaderSection
+          class="uranus-hover-section"
+          :event-id="event.id"
+          :title="event.title"
+          :subtitle="event.subtitle"
           @updated="loadEvent" />
 
-        <EventReleaseSection
-            :event-id="event.id"
-            :release-status-id="event.release_status_id"
-            :release-date="event.release_date"
-            :locale="locale"
-            @updated="loadEvent" />
-      </div>
-    </div>
+      <EventImageUploadComponent
+          v-model:image="eventImage"
+          v-model:alt-text="imageAltText"
+          v-model:copyright="imageCopyright"
+          v-model:license="imageLicense"
+          v-model:created-by="imageCreatedBy"
+          :event-id="eventId"
+          :max-size="5 * 1024 * 1024"
+          :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
+          :existing-image-id="event.image_id"
+          :existing-image-url="existingImagePreviewUrl"
+          :upload-url="`/api/admin/event/${eventId}/image`"
+          :delete-url="`/api/admin/event/${eventId}/image`"
+          :get-url="`/api/admin/event/${eventId}/image`"
+          @updated="loadEvent" />
+    </UranusCard>
+
+    <UranusCard>
+      <EventScheduleSection
+          :event-id="event.id"
+          :organizer-id="event.organizer_id"
+          :venue-id="event.venue_id"
+          :event-dates="eventSchedulePayload"
+          :space-id="event.space_id"
+          :space-name="event.space_name ?? ''"
+          @updated="loadEvent" />
+
+      <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);"/>
+
+      <EventVenueSection
+          :event-id="event.id"
+          :organizer-id="event.organizer_id"
+          :venue-id="event.venue_id"
+          :venue-name="event.venue_name"
+          :venue-street="event.venue_street ?? ''"
+          :venue-house-number="event.venue_house_number ?? ''"
+          :venue-postal-code="event.venue_postal_code ?? ''"
+          :venue-city="event.venue_city ?? ''"
+          :space-id="event.space_id"
+          :space-name="event.space_name ?? ''"
+          :space-building-level="event.space_building_level !== null ? String(event.space_building_level) : null"
+          :space-seating-capacity="event.space_seating_capacity"
+          :space-total-capacity="event.space_total_capacity"
+          @updated="loadEvent" />
+
+      <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);"/>
+
+      <EventReleaseSection
+          :event-id="event.id"
+          :release-status-id="event.release_status_id"
+          :release-date="event.release_date"
+          :locale="locale"
+          @updated="loadEvent" />
+    </UranusCard>
+
+    <UranusCard>
+      <EventDescriptionSection
+          :event-id="event.id"
+          :description="event.description"
+          :participation-info="event.participation_info"
+          :meeting-point="event.meeting_point"
+          :event-types="event.event_types"
+          :languages="event.languages"
+          :locale="locale"
+          @updated="loadEvent" />
+    </UranusCard>
+
+    <UranusCard>
+      <EventUrlSection
+          :event-id="event.id"
+          :links="eventLinks"
+          @updated="loadEvent" />
+    </UranusCard>
+
+    <UranusCard>
+      <EventTeaserSection
+          :event-id="event.id"
+          :teaser-text="event.teaser_text"
+          :tags="event.tags"
+          class="event-teaser"
+          @updated="loadEvent" />
+    </UranusCard>
+
+    <UranusCard>
+      <LocationMapComponent
+          :latitude="event.venue_lat"
+          :longitude="event.venue_lon"
+          :zoom="18"
+          :selectable="false" class="event-map" />
+    </UranusCard>
+
   </div>
   <div v-else class="event-loading">
     <p v-if="error">{{ error }}</p>
@@ -103,6 +124,8 @@ import EventScheduleSection from '@/components/event/EventScheduleSection.vue'
 import EventReleaseSection from '@/components/event/EventReleaseSection.vue'
 import EventLanguageSection from "@/components/event/EventLanguageSection.vue";
 import EventTypeSection from "@/components/event/EventTypeSection.vue";
+import UranusCard from "@/components/uranus/UranusCard.vue";
+import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
 
 const envApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 const apiBase = envApiUrl
@@ -673,7 +696,8 @@ onMounted(() => {
 .event-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--uranus-grid-gap)
+    gap: var(--uranus-grid-gap);
+  max-width: var(--uranus-dashboard-content-width);
 }
 
 .event-map {

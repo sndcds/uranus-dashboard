@@ -1,7 +1,9 @@
 <template>
-    <section class="uranus-card uranus-hover-section">
-        <UranusInlineEditLabel :label-text="t('event_release_date')" :edit-button-text="t('edit')"
-            @edit-started="startEditingRelease" />
+  <UranusInlineEditSection>
+    <UranusInlineEditLabel
+        :label-text="t('event_release_date')"
+        :edit-button-text="t('edit')"
+        @edit-started="startEditingRelease" />
 
         <p v-if="releaseSaveError" class="event-meta__error event-meta__error--global">
             {{ releaseSaveError }}
@@ -58,7 +60,7 @@
                 </button>
             </div>
         </div>
-    </section>
+    </UranusInlineEditSection>
 </template>
 
 <script setup lang="ts">
@@ -67,6 +69,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
+import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
 
 interface Release {
     id: number

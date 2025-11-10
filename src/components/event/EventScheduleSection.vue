@@ -3,328 +3,292 @@
     <UranusInlineEditLabel
         :label-text="t('event_details_time')"
         :edit-button-text="t('edit')"
-        @edit-started="startEditingSchedule" />
+        @edit-started="startEditingSchedule"
+    />
 
-      <EventDatesComponent
-          v-if="isEditing"
-          ref="scheduleEditorRef"
-          class="event-meta__editor"
-          :model-value="scheduleDraft"
-          :spaces="availableSpaces"
-          :organizer-id="organizerId"
-          @update:model-value="onScheduleDraftChange" />
+    <EventDatesComponent
+        v-if="isEditing"
+        ref="scheduleEditorRef"
+        class="event-meta__editor"
+        :model-value="scheduleDraft"
+        :spaces="availableSpaces"
+        :organizer-id="organizerId"
+        @update:model-value="onScheduleDraftChange"
+    />
 
-        <p v-if="scheduleSaveError" class="event-meta__error event-meta__error--global">
-            {{ scheduleSaveError }}
-        </p>
+    <p v-if="scheduleSaveError" class="event-meta__error event-meta__error--global">
+      {{ scheduleSaveError }}
+    </p>
 
-        <div v-if="!isEditing && !eventScheduleDisplay.length" class="event-meta__empty">
-            {{ t('event_schedule_empty') }}
-        </div>
+    <div v-if="!isEditing && !eventScheduleDisplay.length" class="event-meta__empty">
+      {{ t('event_schedule_empty') }}
+    </div>
 
-        <div v-if="!isEditing && eventScheduleDisplay.length" class="event-meta__list">
-            <article v-for="entry in eventScheduleDisplay" :key="entry.key" class="event-meta__display">
-                <div class="event-meta__row">
-                    <span class="event-meta__label">{{ entry.startDate }}</span>
-                    <p class="event-meta__value">
-                        <template v-if="entry.allDay">
-                            {{ t('event_schedule_all_day') }}
-                        </template>
-                        <template v-else>
-                            {{ entry.startTime }}
-                            <template v-if="entry.endTime">
-                                &nbsp;– {{ entry.endTime }}
-                            </template>
-                        </template>
-                    </p>
-                </div>
-                <p v-if="entry.endDate && entry.endDate !== entry.startDate" class="event-meta__value">
-                    {{ t('event_schedule_until', { date: entry.endDate }) }}
-                </p>
-                <p v-if="entry.entryTime" class="event-meta__value">
-                    {{ t('event_schedule_entry_time', { time: entry.entryTime }) }}
-                </p>
-                <p v-if="entry.spaceDisplay" class="event-meta__value">
-                    {{ entry.spaceDisplay }}
-                </p>
-            </article>
-        </div>
-
-        <div v-if="isEditing" class="event-meta__actions">
-            <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingSchedule">
-                {{ t('form_cancel') }}
-            </button>
-            <button type="button" class="uranus-inline-save-button" :disabled="isSavingSchedule" @click="saveSchedule">
-                <span v-if="isSavingSchedule">{{ t('form_saving') }}</span>
-                <span v-else>{{ t('form_save') }}</span>
-            </button>
-        </div>
-    </UranusInlineEditSection>
+    <div v-if="!isEditing && eventScheduleDisplay.length" class="event-meta__list">
+      <table class="event-schedule-table">
+        <thead>
+        <tr>
+          <th>Date</th>
+          <th></th>
+          <th>Entry Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="entry in eventScheduleDisplay" :key="entry.key">
+          <td><h2>{{ formatDate(entry.startDate) }}</h2></td>
+          <td>{{ formatEventDate2(entry) }}</td>
+          <td>{{ entry.endTime || '' }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div v-if="isEditing" class="event-meta__actions">
+      <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingSchedule">
+        {{ t('form_cancel') }}
+      </button>
+      <button type="button" class="uranus-inline-save-button" :disabled="isSavingSchedule" @click="saveSchedule">
+        <span v-if="isSavingSchedule">{{ t('form_saving') }}</span>
+        <span v-else>{{ t('form_save') }}</span>
+      </button>
+    </div>
+  </UranusInlineEditSection>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
-import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
-
-interface EventDateApi {
-    id?: number | null
-    start_date?: string
-    end_date?: string | null
-    start_time?: string | null
-    end_time?: string | null
-    entry_time?: string | null
-    all_day?: boolean | null
-    space_id?: number | null
-}
-
-type EventDateSource = EventDateApi[] | Record<string, EventDateApi> | null | undefined
-
-interface SelectOption {
-    id: number
-    name: string
-}
+import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue"
 
 interface EventScheduleEntry {
-    id: number | null
-    startDate: string
-    startTime: string
-    endDate: string | null
-    endTime: string
-    entryTime: string | null
-    allDay: boolean
-    spaceId: number | null
+  id: number | null
+  startDate: string
+  startTime: string
+  endDate: string | null
+  endTime: string | null
+  entryTime: string | null
+  allDay: boolean
+  spaceId: number | null
 }
 
-interface ScheduleDraftEntry {
-    id: number | null
-    startDate: string
-    endDate: string | null
-    startTime: string
-    endTime: string
-    entryTime: string | null
-    spaceId: number | null
-    allDayEvent: boolean
+interface SelectOption {
+  id: number
+  name: string
 }
 
-type EventDateModelValue = {
-    startDate: string
-    endDate: string | null
-    startTime: string
-    endTime: string | null
-    entryTime: string | null
-    spaceId: number | null
-    allDayEvent: boolean
-}
-
-interface EventScheduleDisplay {
-    key: string
-    startDate: string
-    startTime: string
-    endDate: string
-    endTime: string
-    entryTime: string
-    allDay: boolean
-    spaceDisplay: string
+interface EventScheduleDisplay extends EventScheduleEntry {
+  key: string
+  spaceDisplay: string
 }
 
 const props = defineProps<{
-    eventId: number
-    organizerId: number | null
-    venueId: number | null
-    startDate?: string | null
-    startTime?: string | null
-    endDate?: string | null
-    endTime?: string | null
-    entryTime?: string | null
-    dates?: EventDateSource
-    eventDates?: EventDateSource
-    spaceId: number | null
-    spaceName?: string | null
+  eventId: number
+  organizerId?: number | null
+  venueId: number | null
+  startDate?: string | null
+  startTime?: string | null
+  endDate?: string | null
+  endTime?: string | null
+  entryTime?: string | null
+  dates?: Record<string, any> | any[]
+  eventDates?: Record<string, any> | any[]
+  spaceId: number | null
+  spaceName?: string | null
 }>()
 
 const emit = defineEmits<{ (e: 'updated'): void }>()
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
+// --- State ---
 const availableSpaces = ref<SelectOption[]>([])
 const scheduleEntries = ref<EventScheduleEntry[]>([])
-const scheduleDraft = ref<ScheduleDraftEntry[]>([])
+const scheduleDraft = ref<any[]>([])
 const isEditing = ref(false)
 const isSavingSchedule = ref(false)
 const scheduleSaveError = ref<string | null>(null)
 const scheduleEditorRef = ref<InstanceType<typeof EventDatesComponent> | null>(null)
 
-const dateFormatter = computed(
-    () =>
-        new Intl.DateTimeFormat(locale.value, {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        })
-)
-
-const dateFormatterWeekday = computed(
-    () =>
-        new Intl.DateTimeFormat(locale.value, {
-            weekday: 'long'
-        })
-)
-
-const timeFormatter = computed(() => new Intl.DateTimeFormat(locale.value, { hour: '2-digit', minute: '2-digit' }))
-
-const normalizeCollection = <T>(collection: T[] | Record<string, T> | null | undefined): T[] => {
-    if (Array.isArray(collection)) return collection
-    if (collection && typeof collection === 'object') {
-        return Object.values(collection as Record<string, T>)
-    }
-    return []
+// --- Utilities ---
+function parseDateTime(dateStr: string, timeStr?: string) {
+  if (!dateStr) return null
+  const [year, month, day] = dateStr.split('-').map(Number)
+  const [hour = 0, minute = 0] = timeStr?.split(':').map(Number) ?? []
+  return new Date(year, month - 1, day, hour, minute)
 }
 
-const formatDisplayDate = (value: string | null): string => {
-    if (!value) return ''
-    const parsed = new Date(value)
-    return Number.isNaN(parsed.getTime()) ? value : dateFormatter.value.format(parsed)
+function capitalize(str: string) {
+  if (!str) return ''
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 
-const formatDisplayTime = (date: string | null, time: string | null): string => {
-    if (!date || !time) return ''
-    const parsed = new Date(`${date}T${time}`)
-    if (Number.isNaN(parsed.getTime())) {
-        return time
-    }
-
-    const weekday = dateFormatterWeekday.value.format(parsed)
-    const timeLabel = timeFormatter.value.format(parsed)
-    return `${weekday} ${timeLabel}`
+function formatWeekday(dateStr: string) {
+  if (!dateStr) return ''
+  const [year, month, day] = dateStr.split('-').map(Number)
+  const dt = new Date(year, month - 1, day)
+  const w = dt.toLocaleDateString(locale.value, { weekday: 'short' })
+  return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
 }
 
-const spaceLookup = computed<Record<number, string>>(() => {
-    const map: Record<number, string> = {}
-    availableSpaces.value.forEach((option) => {
-        map[option.id] = option.name
-    })
+function formatDate(dateStr: string) {
+  if (!dateStr) return ''
+  const dt = parseDateTime(dateStr)
+  if (!dt) return ''
+  return dt.toLocaleDateString(locale.value, { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
 
-    if (props.spaceId !== null && props.spaceName) {
-        map[props.spaceId] = props.spaceName
+function formatEventDate(entry: EventScheduleEntry) {
+  const start = parseDateTime(entry.startDate, entry.startTime)
+  if (!start) return ''
+
+  const end = entry.endDate && entry.endTime ? parseDateTime(entry.endDate, entry.endTime) : null
+
+  const weekdayOpt = { weekday: 'short' } as const
+  const dateOpt = { year: 'numeric', month: '2-digit', day: '2-digit' } as const
+  const timeOpt = { hour: 'numeric', minute: '2-digit' } as const
+
+  const startWeekday = capitalize(start.toLocaleDateString(locale.value, weekdayOpt))
+  const startDateStr = start.toLocaleDateString(locale.value, dateOpt)
+  const startTimeStr = start.toLocaleTimeString(locale.value, timeOpt)
+
+  let result = `<strong>${startWeekday}, ${startDateStr}</strong>, ${startTimeStr}`
+
+  if (end) {
+    const endWeekday = capitalize(end.toLocaleDateString(locale.value, weekdayOpt))
+    const endDateStr = end.toLocaleDateString(locale.value, dateOpt)
+    const endTimeStr = end.toLocaleTimeString(locale.value, timeOpt)
+
+    if (entry.startDate === entry.endDate) {
+      result = `<strong>${startWeekday}, ${startDateStr}</strong>, ${startTimeStr} - ${endTimeStr}`
+    } else {
+      result = `<strong>${startWeekday}, ${startDateStr}</strong>, ${startTimeStr} - ${endWeekday}, ${endDateStr}, ${endTimeStr}`
     }
+  }
+  return result
+}
 
-    return map
+function formatEventDate2(entry: EventScheduleEntry) {
+  const start = parseDateTime(entry.startDate, entry.startTime)
+  if (!start) return ''
+
+  const end = entry.endDate && entry.endTime ? parseDateTime(entry.endDate, entry.endTime) : null
+
+  const weekdayOpt = { weekday: 'short' } as const
+  const dateOpt = { year: 'numeric', month: '2-digit', day: '2-digit' } as const
+  const timeOpt = { hour: 'numeric', minute: '2-digit' } as const
+
+  const startWeekday = capitalize(start.toLocaleDateString(locale.value, weekdayOpt))
+  const startDateStr = start.toLocaleDateString(locale.value, dateOpt)
+  const startTimeStr = start.toLocaleTimeString(locale.value, timeOpt)
+
+  let result = `${startWeekday}, ${startTimeStr}`
+
+  if (end) {
+    const endWeekday = capitalize(end.toLocaleDateString(locale.value, weekdayOpt))
+    const endDateStr = end.toLocaleDateString(locale.value, dateOpt)
+    const endTimeStr = end.toLocaleTimeString(locale.value, timeOpt)
+
+    if (entry.startDate === entry.endDate) {
+      // same day
+      result += ` - ${endTimeStr}`
+    } else {
+      // different days
+      result += ` - ${endWeekday} ${endDateStr}, ${endTimeStr}`
+    }
+  }
+
+  return result
+}
+
+function formatEntryTime(entry: EventScheduleEntry) {
+  if (!entry.entryTime) return ''
+  const dt = parseDateTime(entry.startDate, entry.entryTime)
+  if (!dt) return entry.entryTime
+  return dt.toLocaleTimeString(locale.value, { hour: '2-digit', minute: '2-digit' })
+}
+
+// --- Derived ---
+const spaceLookup = computed(() => {
+  const map: Record<number, string> = {}
+  availableSpaces.value.forEach((s) => (map[s.id] = s.name))
+  if (props.spaceId !== null && props.spaceName) map[props.spaceId] = props.spaceName
+  return map
 })
 
 const eventScheduleDisplay = computed<EventScheduleDisplay[]>(() =>
-    scheduleEntries.value.map((entry, index) => {
-        const key = entry.id !== null ? `schedule-${entry.id}` : `schedule-${index}`
-        const startDateLabel = formatDisplayDate(entry.startDate)
-        const endDateLabel = formatDisplayDate(entry.endDate)
-        const allDay = !!entry.allDay
-        return {
-            key,
-            startDate: startDateLabel,
-            startTime: allDay ? '' : formatDisplayTime(entry.startDate, entry.startTime),
-            endDate: endDateLabel,
-            endTime: allDay ? '' : formatDisplayTime(entry.endDate || entry.startDate, entry.endTime),
-            entryTime: allDay ? '' : formatDisplayTime(entry.startDate, entry.entryTime),
-            allDay,
-            spaceDisplay: entry.spaceId !== null ? spaceLookup.value[entry.spaceId] ?? '' : '',
-        }
-    })
+    scheduleEntries.value.map((entry, index) => ({
+      ...entry,
+      key: entry.id ?? `schedule-${index}`,
+      spaceDisplay: entry.spaceId !== null ? spaceLookup.value[entry.spaceId] ?? '' : '',
+    }))
 )
 
-const mapApiDateToEntry = (item: EventDateApi): EventScheduleEntry => ({
+// --- Normalize API data ---
+function normalizeCollection(collection?: any[] | Record<string, any>) {
+  if (!collection) return []
+  return Array.isArray(collection) ? collection : Object.values(collection)
+}
+
+function mapApiToEntry(item: any): EventScheduleEntry {
+  return {
     id: typeof item.id === 'number' ? item.id : null,
     startDate: item.start_date ?? '',
     startTime: item.start_time ?? '',
     endDate: item.end_date ?? null,
-    endTime: item.end_time ?? '',
+    endTime: item.end_time ?? null,
     entryTime: item.entry_time ?? null,
     allDay: item.all_day ?? false,
     spaceId: typeof item.space_id === 'number' ? item.space_id : null,
-})
+  }
+}
 
-const createScheduleEntryFromDraft = (entry: ScheduleDraftEntry): EventScheduleEntry => ({
-    id: entry.id ?? null,
-    startDate: entry.startDate,
-    startTime: entry.startTime,
-    endDate: entry.endDate,
-    endTime: entry.endTime,
-    entryTime: entry.entryTime,
-    allDay: entry.allDayEvent,
-    spaceId: entry.spaceId,
-})
+function deriveScheduleFromProps() {
+  const fromDates = normalizeCollection(props.dates)
+  const fromEventDates = normalizeCollection(props.eventDates)
+  const source = fromDates.length ? fromDates : fromEventDates
 
-const deriveScheduleFromProps = (): EventScheduleEntry[] => {
-    const fromDates = normalizeCollection<EventDateApi>(props.dates)
-    const fromEventDates = normalizeCollection<EventDateApi>(props.eventDates)
-    const normalized = fromDates.length ? fromDates : fromEventDates
-    const mapped = normalized.map(mapApiDateToEntry).filter((entry) => entry.startDate || entry.startTime)
+  const mapped = source.map(mapApiToEntry).filter((e) => e.startDate && e.startTime)
 
-    if (mapped.length) {
-        return mapped
-    }
+  if (mapped.length) return mapped
 
-    const fallback: EventScheduleEntry = {
+  if (props.startDate && props.startTime) {
+    return [
+      {
         id: null,
-        startDate: props.startDate ?? '',
-        startTime: props.startTime ?? '',
+        startDate: props.startDate,
+        startTime: props.startTime,
         endDate: props.endDate ?? null,
-        endTime: props.endTime ?? '',
+        endTime: props.endTime ?? null,
         entryTime: props.entryTime ?? null,
         allDay: false,
         spaceId: props.spaceId ?? null,
-    }
+      },
+    ]
+  }
 
-    return fallback.startDate || fallback.startTime ? [fallback] : []
+  return []
 }
 
-const syncScheduleEntries = (force = false) => {
-    if (isEditing.value && !force) {
-        return
-    }
-
-    scheduleEntries.value = deriveScheduleFromProps()
+function syncScheduleEntries() {
+  scheduleEntries.value = deriveScheduleFromProps()
 }
 
-syncScheduleEntries(true)
-
-const loadSpaces = async (venueId: number | null) => {
-    if (venueId === null || !Number.isFinite(venueId)) {
-        availableSpaces.value = []
-        return
-    }
-
-    try {
-        const { data } = await apiFetch<SelectOption[]>(`/api/choosable-spaces/venue/${venueId}`)
-        availableSpaces.value = Array.isArray(data) ? data : []
-    } catch (err) {
-        console.error('Failed to load spaces', err)
-        availableSpaces.value = []
-    }
+// --- Load spaces ---
+async function loadSpaces(venueId: number | null) {
+  if (!venueId) return
+  try {
+    const { data } = await apiFetch<SelectOption[]>(`/api/choosable-spaces/venue/${venueId}`)
+    availableSpaces.value = Array.isArray(data) ? data : []
+  } catch {
+    availableSpaces.value = []
+  }
 }
 
-const onScheduleDraftChange = (value: EventDateModelValue[]) => {
-    const previousDraft = scheduleDraft.value
-    scheduleDraft.value = value.map((entry, index) => {
-        const entryWithId = entry as EventDateModelValue & { id?: number | null }
-        const preservedId = entryWithId.id ?? previousDraft[index]?.id ?? null
-
-        return {
-            id: preservedId,
-            startDate: entry.startDate ?? '',
-            endDate: entry.endDate ?? null,
-            startTime: entry.startTime ?? '',
-            endTime: entry.endTime ?? '',
-            entryTime: entry.entryTime ?? null,
-            spaceId: entry.spaceId ?? null,
-            allDayEvent: entry.allDayEvent ?? false,
-        }
-    })
-}
-
-const createDraftEntryFromSchedule = (entry: EventScheduleEntry): ScheduleDraftEntry => ({
+// --- Editing functions ---
+const startEditingSchedule = async () => {
+  scheduleDraft.value = scheduleEntries.value.map((entry) => ({
     id: entry.id,
     startDate: entry.startDate,
     endDate: entry.endDate,
@@ -333,216 +297,145 @@ const createDraftEntryFromSchedule = (entry: EventScheduleEntry): ScheduleDraftE
     entryTime: entry.entryTime,
     spaceId: entry.spaceId,
     allDayEvent: entry.allDay,
-})
-
-const createEmptyDraftEntry = (): ScheduleDraftEntry => ({
-    id: null,
-    startDate: '',
-    endDate: null,
-    startTime: '',
-    endTime: '',
-    entryTime: null,
-    spaceId: props.spaceId ?? null,
-    allDayEvent: false,
-})
-
-const startEditingSchedule = async () => {
-    if (!scheduleEntries.value.length) {
-        scheduleEntries.value = deriveScheduleFromProps()
-    }
-
-    scheduleDraft.value = scheduleEntries.value.length
-        ? scheduleEntries.value.map(createDraftEntryFromSchedule)
-        : [createEmptyDraftEntry()]
-
-    scheduleSaveError.value = null
-    isEditing.value = true
-    await loadSpaces(props.venueId ?? null)
+  }))
+  isEditing.value = true
+  scheduleSaveError.value = null
+  await loadSpaces(props.venueId ?? null)
 }
 
 const cancelEditingSchedule = () => {
-    isEditing.value = false
-    scheduleDraft.value = []
-    scheduleSaveError.value = null
+  isEditing.value = false
+  scheduleDraft.value = []
+}
+
+const onScheduleDraftChange = (value: any[]) => {
+  scheduleDraft.value = value
 }
 
 const saveSchedule = async () => {
-    scheduleSaveError.value = null
+  scheduleSaveError.value = null
+  if (!scheduleDraft.value.length) {
+    scheduleSaveError.value = t('event_submit_error_generic')
+    return
+  }
 
-    const validationResult = scheduleEditorRef.value?.validate?.()
-    if (validationResult === false) {
-        scheduleSaveError.value = t('event_submit_missing_fields')
-        return
+  isSavingSchedule.value = true
+
+  try {
+    const payload = {
+      dates: scheduleDraft.value.map((entry) => ({
+        id: entry.id ?? undefined,
+        start_date: entry.startDate,
+        start_time: entry.startTime,
+        end_date: entry.endDate ?? null,
+        end_time: entry.endTime ?? null,
+        entry_time: entry.entryTime ?? null,
+        all_day: entry.allDayEvent ?? false,
+        space_id: entry.spaceId ?? null,
+      })),
     }
 
-    if (!scheduleDraft.value.length) {
-        scheduleSaveError.value = t('event_submit_error_generic')
-        return
-    }
+    await apiFetch(`/api/admin/event/${props.eventId}/dates`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    })
 
-    if (!Number.isFinite(props.eventId)) {
-        scheduleSaveError.value = t('event_submit_error_generic')
-        return
-    }
+    scheduleEntries.value = scheduleDraft.value.map((entry) => ({
+      id: entry.id,
+      startDate: entry.startDate,
+      endDate: entry.endDate,
+      startTime: entry.startTime,
+      endTime: entry.endTime,
+      entryTime: entry.entryTime,
+      allDay: entry.allDayEvent,
+      spaceId: entry.spaceId,
+    }))
 
-    isSavingSchedule.value = true
-
-    try {
-        const payload = {
-            dates: scheduleDraft.value.map((entry) => {
-                const body: Record<string, unknown> = {
-                    start_date: entry.startDate,
-                    start_time: entry.startTime,
-                    end_date: entry.endDate || null,
-                    end_time: entry.endTime || null,
-                    entry_time: entry.entryTime || null,
-                    all_day: entry.allDayEvent ?? false,
-                    space_id: entry.spaceId ?? null,
-                }
-
-                if (entry.id !== null) {
-                    body.id = entry.id
-                }
-
-                return body
-            }),
-        }
-
-        await apiFetch(`/api/admin/event/${props.eventId}/dates`, {
-            method: 'PUT',
-            body: JSON.stringify(payload),
-        })
-
-        isEditing.value = false
-        const updatedEntries = scheduleDraft.value
-            .map(createScheduleEntryFromDraft)
-            .filter((entry) => entry.startDate || entry.startTime)
-        scheduleEntries.value = updatedEntries
-        scheduleDraft.value = []
-        await loadSpaces(props.venueId ?? null)
-        emit('updated')
-    } catch (err) {
-        console.error('Failed to update event dates', err)
-        scheduleSaveError.value = t('event_submit_error_generic')
-    } finally {
-        isSavingSchedule.value = false
-    }
+    scheduleDraft.value = []
+    isEditing.value = false
+    emit('updated')
+  } catch {
+    scheduleSaveError.value = t('event_submit_error_generic')
+  } finally {
+    isSavingSchedule.value = false
+  }
 }
 
+// --- Watch props and sync ---
 watch(
-    () => props.eventId,
-    () => {
-        syncScheduleEntries(true)
-    }
-)
-
-watch(
-    () => props.venueId,
-    (venueId) => {
-        void loadSpaces(venueId ?? null)
-    },
-    { immediate: true }
-)
-
-watch(
-    () => [props.startDate, props.startTime, props.endDate, props.endTime, props.entryTime, props.spaceId],
-    () => {
-        syncScheduleEntries()
-    }
-)
-
-watch(
-    () => props.dates,
-    () => {
-        syncScheduleEntries()
-    },
-    { deep: true }
-)
-
-watch(
-    () => props.eventDates,
-    () => {
-        syncScheduleEntries()
-    },
+    () => [props.dates, props.eventDates, props.startDate, props.startTime, props.endDate, props.endTime],
+    () => syncScheduleEntries(),
     { deep: true }
 )
 
 onMounted(() => {
-    void loadSpaces(props.venueId ?? null)
-    syncScheduleEntries(true)
+  void loadSpaces(props.venueId ?? null)
+  syncScheduleEntries()
 })
 </script>
 
 <style scoped lang="scss">
 .event-meta__empty {
-    margin: 0;
-    color: var(--muted-text);
-    font-size: 0.95rem;
+  color: var(--muted-text);
+  font-size: 0.95rem;
 }
 
 .event-meta__list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .event-meta__display {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .event-meta__row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-}
-
-.event-meta__label {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 .event-meta__value {
-    margin: 0;
-    color: var(--color-text);
-    font-size: 0.9rem;
-    line-height: 1.4;
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .event-meta__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
 }
 
 .event-meta__error {
-    margin: 0;
-    color: #b91c1c;
-    font-weight: 600;
-    font-size: 0.85rem;
+  color: #b91c1c;
+  font-weight: 600;
+  font-size: 0.85rem;
 }
 
-.event-meta__error--global {
-    align-self: flex-start;
+.event-meta__inline {
+  display: flex;
+  white-space: nowrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
 }
 
-@media (min-width: 640px) {
-    .event-meta__label {
-        font-size: 2rem;
-    }
+.event-schedule-table {
+  border-collapse: collapse; // remove extra spacing between cells
+  table-layout: auto;        // columns size themselves based on content
+  width: auto;               // do not stretch table to container
 }
 
-@media (min-width: 1024px) {
-    .event-meta__label {
-        font-size: 2rem;
-    }
-
-    .event-meta__value {
-        font-size: 1rem;
-    }
-
+.event-schedule-table th,
+.event-schedule-table td {
+  padding: 0.25rem 0.5rem;   // adjust padding as needed
+  white-space: nowrap;       // prevent text from wrapping
+  text-align: left;          // optional
 }
 
 </style>

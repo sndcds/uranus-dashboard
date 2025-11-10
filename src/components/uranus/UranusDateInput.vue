@@ -51,15 +51,15 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const flexValue = computed(() => {
-    return typeof props.flex === 'number' ? `${props.flex}` : props.flex
+  return typeof props.flex === 'number' ? `${props.flex}` : props.flex
 })
 
 const sizeClass = computed(() => {
-    switch (props.size) {
-        case 'tiny': return 'uranus-tiny-text'
-        case 'big': return 'uranus-big-text'
-        default: return ''
-    }
+  switch (props.size) {
+    case 'tiny': return 'uranus-tiny-text'
+    case 'big': return 'uranus-big-text'
+    default: return ''
+  }
 })
 
 const inputName = computed(() => props.name || undefined)
@@ -67,7 +67,7 @@ const inputName = computed(() => props.name || undefined)
 
 <style scoped>
 :deep(.uranus-text-input) {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
 }
 </style>

@@ -679,8 +679,8 @@ const saveImage = async () => {
 
   &--drag-over {
     border-color: var(--accent-primary);
-    background: rgba(79, 70, 229, 0.05);
-    transform: scale(1.02);
+    background-color: rgba(var(--uranus-dashboard-bg-color), 0.2);
+    transform: scale(1.24);
   }
 
   &:hover:not(.event-image-upload__upload-area--has-image) {
@@ -733,7 +733,7 @@ const saveImage = async () => {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: var(--uranus-inline-edit-border-radius);
+  border-radius: var(--uranus-tiny-border-radius);
   overflow: hidden;
 }
 
@@ -747,7 +747,7 @@ const saveImage = async () => {
   transition: transform 0.2s ease;
 
   .event-image-upload__upload-area:hover & {
-    transform: scale(1.03);
+    transform: scale(1.04);
   }
 }
 
@@ -757,7 +757,7 @@ const saveImage = async () => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(255, 255, 255, 0.86);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -773,7 +773,7 @@ const saveImage = async () => {
 .event-image-upload__change-btn,
 .event-image-upload__remove-btn {
     padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 3vw, 1rem);
-    border-radius: 8px;
+  border-radius: var(--uranus-tiny-border-radius);
     font-size: clamp(0.85rem, 2vw, 0.95rem);
     font-weight: 500;
     cursor: pointer;

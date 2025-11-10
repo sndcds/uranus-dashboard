@@ -72,7 +72,7 @@
   --uranus-menu-active-bg: rgba(79, 70, 229, 0.12);
   --uranus-grid-gap: 12px;
   --uranus-default-text-padding: 6px 12px;
-  --uranus-inline-edit-border-radius: 12px;
+  --uranus-inline-edit-border-radius: 4px;
   --uranus-form-field-border-radius: 12px;
   --uranus-tiny-border-radius: 4px;
 
@@ -212,11 +212,13 @@ $button-text-color: #333;
 }
 
 .uranus-main-layout {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 100%;
-  gap: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: var(--uranus-grid-gap);
+    width: 100%;
+    max-width: var(--uranus-dashboard-content-width);
+
 }
 
 .uranus-dashboard-hero {

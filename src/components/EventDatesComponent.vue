@@ -11,12 +11,11 @@
 
                     <p v-if="errors[index]" class="field-error">{{ errors[index] }}</p>
 
-                    <div class="event-dates__grid" style="font-size: 0.1rem; background: red;">
+                    <div class="event-dates__grid">
                         <UranusDateInput
                             id="`start-date-${index}`"
                             v-model="date.startDate"
                             :label="t('event_start_date')"
-                            size="tiny"
                             required
                         />
 
@@ -24,28 +23,24 @@
                             id="`start-time-${index}`"
                             v-model="date.startTime"
                             :label="t('event_start_time')"
-                            size="tiny"
                             required
                         />
 
                         <UranusDateInput
                             id="`end-date-${index}`"
                             v-model="date.endDate"
-                            size="tiny"
                             :label="t('event_end_date')"
                         />
 
                         <UranusTimeInput
                             id="`end-time-${index}`"
                             v-model="date.endTime"
-                            size="tiny"
                             :label="t('event_end_time')"
                         />
 
                         <UranusTimeInput
                             id="`entry-time-${index}`"
                             v-model="date.entryTime"
-                            size="tiny"
                             :label="t('event_entry_time')"
                         />
 
@@ -58,12 +53,16 @@
                             </select>
                         </UranusFieldLabel>
 
-                        <div class="form-field form-field--checkbox">
-                            <label :for="`all-day-${index}`">
-                                <input type="checkbox" :id="`all-day-${index}`" v-model="date.allDayEvent" />
-                                {{ t('event_all_day') }}
-                            </label>
-                        </div>
+                      <label :for="`all-day-${index}`" class="checkbox-label">
+                        <input
+                            type="checkbox"
+                            :id="`all-day-${index}`"
+                            v-model="date.allDayEvent"
+                            class="checkbox-input"
+                        />
+                        <span class="checkbox-text">{{ t('event_all_day') }}</span>
+                      </label>
+
                     </div>
                 </div>
             </div>
@@ -308,6 +307,41 @@ defineExpose({ validate })
         font-weight: 600;
         color: #374151;
     }
+}
+
+/* Force inline horizontal layout */
+.checkbox-label {
+  display: inline-flex !important;   /* inline so it doesn't force a new line */
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  cursor: pointer !important;
+  width: auto !important;
+  padding-left: 12px;
+}
+
+/* Make sure the input isn't being forced into block/full-width */
+.checkbox-input,
+.checkbox-label input[type="checkbox"] {
+  transform: scale(1.5); /* 1 = normal size; 1.5 = 150% larger */
+  transform-origin: left center;
+  cursor: pointer;
+  display: inline-block !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+  -webkit-appearance: checkbox !important;
+  appearance: checkbox !important;
+  flex-shrink: 0 !important; /* prevent flex from stretching it */
+  box-sizing: content-box !important;
+}
+
+/* Ensure the label text sits inline */
+.checkbox-text {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  white-space: nowrap; /* optional: keeps text on same line */
 }
 
 .event-section__actions {
