@@ -9,7 +9,7 @@
             <div v-if="isSidebarOpen" class="generic-layout__overlay" @click="closeSidebar"></div>
 
             <main class="generic-layout__main">
-                <div class="generic-layout__content">
+                <div :class="layoutClass">
                     <router-view />
                 </div>
 
@@ -31,6 +31,14 @@ const route = useRoute()
 
 // Check if we're on an admin page
 const isAdminPage = computed(() => route.path.startsWith('/admin'))
+
+const layoutClass = computed(() => {
+  const mode = route.meta.layoutMode as string | undefined
+  return [
+    'generic-layout__content',
+    mode === 'zero-padding' ? 'generic-layout__zero-padding' : ''
+  ].filter(Boolean).join(' ')
+})
 
 const isSidebarOpen = ref(false)
 
@@ -92,4 +100,9 @@ const closeSidebar = () => {
         padding: 1rem;
     }
 }
+
+.generic-layout__zero-padding {
+  padding: 0;
+}
+
 </style>

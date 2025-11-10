@@ -179,6 +179,7 @@ const routes = [
                 path: 'map',
                 name: 'map',
                 component: MapView,
+                meta: { layoutMode: 'zero-padding' },
             }
         ],
     },
