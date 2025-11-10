@@ -39,8 +39,10 @@
                   class="event-card__value">{{ event.space_name || '—' }}</span>
               </li>
               <li v-if="event.event_types">
-                <span class="event-card__value">
-                  <span class="chip">{{ formatEventTypeNames(event.event_types) }}</span>
+                <span class="event-card__value chip-wrapper">
+                  <span class="chip" v-for="ev in event.event_types" :key="ev.type_id">
+                    {{ formatTypeGenre(ev) }}
+                  </span>
                 </span>
               </li>
             </ul>
@@ -130,25 +132,19 @@ const dateFormatter = computed(
     })
 )
 
+const formatTypeGenre = (type: OrganizerEventType) => {
+  if (type.genre_name) {
+    return `${type.type_name} / ${type.genre_name}`
+  }
+  return type.type_name || ''
+}
+
 const formatDate = (value: string) => {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) {
     return value
   }
   return dateFormatter.value.format(date)
-}
-
-const formatEventTypeNames = (eventTypes: OrganizerEventType[] | null | undefined) => {
-  if (!Array.isArray(eventTypes)) {
-    return t('event_type_unknown')
-  }
-  const names = eventTypes
-    .map((eventType) => eventType?.type_name?.trim())
-    .filter((name): name is string => Boolean(name))
-  if (!names.length) {
-    return t('event_type_unknown')
-  }
-  return names.join(', ')
 }
 
 const buildImageUrl = (event: OrganizerEventItem) => {
@@ -313,10 +309,17 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
 }
 
 .event-actions {
+  margin-top: 0;
   margin-bottom: 0;
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
+}
+
+.chip-wrapper {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
 }
 
 .chip {
@@ -378,8 +381,8 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
 }
 
 .event-card__value {
+  margin-top: 1rem;
   font-size: 0.95rem;
-  margin-bottom: 1rem;
 }
 
 .events-card__image {
