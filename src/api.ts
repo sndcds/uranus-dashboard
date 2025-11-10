@@ -1,5 +1,5 @@
 import { useTokenStore } from '@/store/tokenStore'
-import { useRouter } from 'vue-router'
+import router from '@/router'
 import type { ThemeMode } from '@/utils/theme'
 
 let refreshPromise: Promise<boolean> | null = null;
@@ -66,7 +66,6 @@ export async function apiFetch<T = unknown>(
 ): Promise<ApiResponse<T>> {
     const url = `${import.meta.env.VITE_API_URL}${path}`;
     const tokenStore = useTokenStore();
-    const router = useRouter();
 
     const doFetch = async (): Promise<ApiResponse<T>> => {
         const headers = new Headers(options.headers ?? undefined);
