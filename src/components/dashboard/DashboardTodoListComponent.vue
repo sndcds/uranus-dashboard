@@ -85,7 +85,6 @@
                         <template v-else>
                             <form class="uranus-form todo-editor todo-editor--inline" @submit.prevent="saveTodo">
                                 <DashboardTodoFormFields
-                                    class="uranus-card"
                                     :id-prefix="`todo-${todo.todo_id}`"
                                     v-model:title="todoDraft.title"
                                     v-model:description="todoDraft.description"
