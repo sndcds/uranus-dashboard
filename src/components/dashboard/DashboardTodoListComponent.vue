@@ -631,5 +631,10 @@ defineExpose({
         width: 100%;
         justify-content: center;
     }
+
+    // show footer buttons always on mobile
+    .todo-item__footer {
+        opacity: 1;
+    }
 }
 </style>
