@@ -319,6 +319,11 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
         }
     }
 
+    // Add search query if present
+    if (searchQuery.value.trim()) {
+        params.set('search', searchQuery.value.trim())
+    }
+
     // Add any additional parameters
     if (additionalParams) {
         Object.entries(additionalParams).forEach(([key, value]) => {
@@ -345,22 +350,7 @@ const filtersActive = computed(() => {
 const filteredEvents = computed(() => {
     let list = [...events.value]
 
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
-        list = list.filter((event) => {
-            const fields = [
-                event.title,
-                event.subtitle ?? '',
-                event.teaser_text ?? '',
-                event.description ?? '',
-                event.organizer_name ?? '',
-                event.venue_name ?? '',
-                event.venue_city ?? '',
-            ]
-            return fields.some((field) => field.toLowerCase().includes(query))
-        })
-    }
-
+    // Filter by type in frontend (search is now done by API)
     if (selectedType.value !== 'all') {
         list = list.filter((event) => event.typeLabels.includes(selectedType.value as string))
     }
@@ -668,6 +658,16 @@ onMounted(() => {
 
 watch(locale, () => {
 
+})
+
+watch(searchQuery, async (newQuery, oldQuery) => {
+    if (!isInitialLoadComplete.value) return
+    
+    // Debounce might be nice here, but for now reload immediately
+    if (newQuery.trim() !== oldQuery.trim()) {
+        await loadEvents({ preserveSelection: true })
+        await loadTypesCount()
+    }
 })
 
 watch(
