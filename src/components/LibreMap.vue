@@ -348,7 +348,7 @@ onMounted(() => {
         duration: 600,
       })
     })
-    
+
     // Cursor pointer
     const layers = [UNCLUSTERED_LAYER_ID, CLUSTER_LAYER_ID] as const
     layers.forEach((layer) => {
