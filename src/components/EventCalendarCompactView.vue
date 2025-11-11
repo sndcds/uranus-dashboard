@@ -499,6 +499,7 @@ const toggleEvent = async (eventId: number, eventDateId: number, event: MouseEve
 
 .calendar-event-compact__image-wrapper {
     width: 100%;
+    max-width: 600px;
     border-radius: 8px;
     overflow: hidden;
     background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(14, 165, 233, 0.1));
@@ -506,6 +507,7 @@ const toggleEvent = async (eventId: number, eventDateId: number, event: MouseEve
 
 .calendar-event-compact__image {
     width: 100%;
+    max-width: 600px;
     height: auto;
     display: block;
     object-fit: cover;

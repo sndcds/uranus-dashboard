@@ -409,7 +409,6 @@ p {
     max-width: 1400px;
     width: 100%;
     margin: 0 auto;
-    padding: clamp(1.5rem, 4vw, 2.5rem);
     gap: clamp(2rem, 4vw, 3rem);
 }
 
@@ -439,8 +438,8 @@ p {
 
 .event-image {
     width: 100%;
-    height: 100%;
     max-width: 800px;
+    height: auto;
     object-fit: cover;
     display: block;
 }
@@ -456,7 +455,6 @@ p {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin: 16px;
 }
 
 .event-detail-languages-tags {
@@ -491,8 +489,6 @@ p {
 }
 
 .event-detail-section {
-    padding: 16px;
-
     h1 {
         margin-top: 32px;
         font-size: 2.8rem;
