@@ -1,78 +1,77 @@
 <template>
   <UranusInlineSectionLayout>
-            <div class="event-dates">
-                <div v-for="(date, index) in localDates" :key="index" class="event-dates__card">
-                    <div class="event-dates__meta">
-                        <span class="badge">#{{ index + 1 }}</span>
-                        <button type="button" class="link" @click="removeDate(index)" v-if="localDates.length > 1">
-                            {{ t('event_remove_date') }}
-                        </button>
-                    </div>
+    <div class="event-dates">
+      <div v-for="(date, index) in localDates" :key="index" class="event-dates__card">
+        <div class="event-dates__meta">
+          <span class="badge">#{{ index + 1 }}</span>
+          <button type="button" class="link" @click="removeDate(index)" v-if="localDates.length > 1">
+            {{ t('event_remove_date') }}
+          </button>
+        </div>
 
-                    <p v-if="errors[index]" class="field-error">{{ errors[index] }}</p>
+        <p v-if="errors[index]" class="field-error">{{ errors[index] }}</p>
+          <div class="event-dates__grid">
+            <UranusDateInput
+                id="`start-date-${index}`"
+                v-model="date.startDate"
+                :label="t('event_start_date')"
+                required
+            />
 
-                    <div class="event-dates__grid">
-                        <UranusDateInput
-                            id="`start-date-${index}`"
-                            v-model="date.startDate"
-                            :label="t('event_start_date')"
-                            required
-                        />
+            <UranusTimeInput
+                id="`start-time-${index}`"
+                v-model="date.startTime"
+                :label="t('event_start_time')"
+                required
+            />
 
-                        <UranusTimeInput
-                            id="`start-time-${index}`"
-                            v-model="date.startTime"
-                            :label="t('event_start_time')"
-                            required
-                        />
+            <UranusDateInput
+                id="`end-date-${index}`"
+                v-model="date.endDate"
+                :label="t('event_end_date')"
+            />
 
-                        <UranusDateInput
-                            id="`end-date-${index}`"
-                            v-model="date.endDate"
-                            :label="t('event_end_date')"
-                        />
+            <UranusTimeInput
+                id="`end-time-${index}`"
+                v-model="date.endTime"
+                :label="t('event_end_time')"
+            />
 
-                        <UranusTimeInput
-                            id="`end-time-${index}`"
-                            v-model="date.endTime"
-                            :label="t('event_end_time')"
-                        />
+            <UranusTimeInput
+                id="`entry-time-${index}`"
+                v-model="date.entryTime"
+                :label="t('event_entry_time')"
+            />
 
-                        <UranusTimeInput
-                            id="`entry-time-${index}`"
-                            v-model="date.entryTime"
-                            :label="t('event_entry_time')"
-                        />
+            <UranusFieldLabel :id="`space-${index}`" :label="t('event_space_label')">
+                <select :id="`space-${index}`" v-model="date.spaceId">
+                    <option :value="null" disabled>{{ t('select_placeholder') }}</option>
+                    <option v-for="sp in spaces" :key="sp.id" :value="sp.id">
+                        {{ sp.name }}
+                    </option>
+                </select>
+            </UranusFieldLabel>
 
-                        <UranusFieldLabel :id="`space-${index}`" :label="t('event_space_label')">
-                            <select :id="`space-${index}`" v-model="date.spaceId">
-                                <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                                <option v-for="sp in spaces" :key="sp.id" :value="sp.id">
-                                    {{ sp.name }}
-                                </option>
-                            </select>
-                        </UranusFieldLabel>
+            <label :for="`all-day-${index}`" class="checkbox-label">
+              <input
+                  type="checkbox"
+                  :id="`all-day-${index}`"
+                  v-model="date.allDayEvent"
+                  class="checkbox-input"
+              />
+              <span class="checkbox-text">{{ t('event_all_day') }}</span>
+            </label>
 
-                      <label :for="`all-day-${index}`" class="checkbox-label">
-                        <input
-                            type="checkbox"
-                            :id="`all-day-${index}`"
-                            v-model="date.allDayEvent"
-                            class="checkbox-input"
-                        />
-                        <span class="checkbox-text">{{ t('event_all_day') }}</span>
-                      </label>
+          </div>
+        </div>
+      </div>
 
-                    </div>
-                </div>
-            </div>
-
-            <div class="event-section__actions">
-                <button type="button" class="uranus-secondary-button" @click="addDate">
-                    {{ t('event_add_date') }}
-                </button>
-            </div>
-        </UranusInlineSectionLayout>
+      <div class="event-section__actions">
+        <button type="button" class="uranus-secondary-button" @click="addDate">
+          {{ t('event_add_date') }}
+        </button>
+      </div>
+  </UranusInlineSectionLayout>
 </template>
 
 <script setup lang="ts">

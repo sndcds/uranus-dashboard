@@ -7,8 +7,13 @@
 
         <div class="calendar-sidebar__section calendar-sidebar__section--search">
             <label class="calendar-sidebar__label" :for="searchId">{{ searchLabel }}</label>
-            <input :id="searchId" type="search" :placeholder="searchPlaceholder" v-model="searchQueryModel"
-                :disabled="isLoading" />
+            <input
+                type="search"
+                v-model="searchQueryModel"
+                :id="searchId"
+                :placeholder="searchPlaceholder"
+                :disabled="isLoading"
+                @keyup.enter="onSearchEnter" />
         </div>
 
         <div class="calendar-sidebar__section calendar-sidebar__section--dates">
@@ -18,7 +23,7 @@
                     @change="onDateConfirm('start', $event)" @blur="onDateConfirm('start', $event)" @keyup.enter="onDateConfirm('start', $event)" />
                 <div class="calendar-sidebar__end-date">
                     <label class="calendar-sidebar__sublabel" :for="endDateId">{{ endDateLabel }}</label>
-                    <input :id="endDateId" type="date" :value="tempEndDate" :disabled="isLoading" 
+                    <input :id="endDateId" type="date" :value="tempEndDate" :disabled="isLoading"
                         @change="onDateConfirm('end', $event)" @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
                 </div>
                 <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
@@ -38,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 interface Props {
@@ -70,11 +75,23 @@ const emit = defineEmits<Emits>()
 
 const { t } = useI18n({ useScope: 'global' })
 
-// Computed properties for v-model support
+// Computed for v-model binding
 const searchQueryModel = computed({
-    get: () => props.searchQuery,
-    set: (value: string) => emit('update:searchQuery', value.trim())
+  get: () => internalSearch.value,
+  set: (value: string) => {
+    internalSearch.value = value
+  }
 })
+const internalSearch = ref(props.searchQuery)
+
+// Keep internalSearch in sync if the prop changes
+watch(() => props.searchQuery, (val) => {
+  internalSearch.value = val
+})
+
+const onSearchEnter = () => {
+  emit('update:searchQuery', internalSearch.value.trim())
+}
 
 const filtersTitle = computed(() => t('events_calendar_filters_title'))
 const filtersSubtitle = computed(() => t('events_calendar_filters_subtitle'))
