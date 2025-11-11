@@ -27,9 +27,11 @@
     color: var(--uranus-color);
     border: 2px solid var(--uranus-input-border-color);
   }
+
   input[type="date"] {
     font-weight: 900;
   }
+
   textarea {
     border-radius: var(--uranus-form-field-border-radius);
   }
@@ -41,8 +43,10 @@
     font-size: 0.9rem;
     color: var(--uranus-medium-contrast-color);
     display: flex;
-    align-items: center; /* vertically align text and star */
-    gap: 0.25rem; /* small gap between label and star */
+    align-items: center;
+    /* vertically align text and star */
+    gap: 0.25rem;
+    /* small gap between label and star */
   }
 
   select {
@@ -61,18 +65,16 @@
 }
 
 .uranus-inline-edit-section {
-    input,
-    input[type="text"],
-    input[type="email"],
-    select,
-    textarea {
-        border: 2px solid var(--uranus-ia-inline-color-light2);
-    }
+  input,
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    border: 2px solid var(--uranus-ia-inline-color-light2);
+  }
 }
 
-
-input.uranus-text-input {
-}
+input.uranus-text-input {}
 
 .uranus-tiny-text {
   font-size: 0.85rem !important;
@@ -87,8 +89,10 @@ input.uranus-text-input {
   display: flex;
   gap: 12px;
   flex-wrap: wrap; // allow items to move to next line if needed
-  overflow: hidden; /* hide overflow if needed */
-  text-overflow: ellipsis; /* optional: show ... */
+  overflow: hidden;
+  /* hide overflow if needed */
+  text-overflow: ellipsis;
+  /* optional: show ... */
 
   hr {
     width: 100%;
@@ -97,36 +101,35 @@ input.uranus-text-input {
   }
 
   // children (selects, inputs) shrink if space is limited
-  > * {
-    flex: 1 1 auto;   // flex-grow:1, flex-shrink:1, flex-basis:auto
+  >* {
+    flex: 1 1 auto; // flex-grow:1, flex-shrink:1, flex-basis:auto
     //min-width: 120px; // optional: don't shrink below 120px
   }
 }
 
 /* Make each textfield inside the row grow */
-
-.uranus-form-row > .uranus-textfield-wrapper {
-  flex: 1;           /* grow to fill row */
+.uranus-form-row>.uranus-textfield-wrapper {
+  flex: 1;
+  /* grow to fill row */
   //min-width: 150px;  /* optional: prevent too small inputs */
   margin: 0;
 }
-
 
 .uranus-form-action-footer {
   display: flex;
   justify-content: flex-end;
   padding: 20px;
   background: transparent;
+  gap: 12px;
 }
-
-
 
 @media (max-width: 600px) {
   .uranus-form-row {
-    flex-direction: column; /* stack vertically on narrow screens */
+    flex-direction: column;
+    /* stack vertically on narrow screens */
   }
 
-  .uranus-form-row > .uranus-textfield-wrapper {
+  .uranus-form-row>.uranus-textfield-wrapper {
     min-width: 100%;
     width: 100%;
   }
@@ -167,8 +170,6 @@ input.uranus-text-input {
   font-weight: 600;
 }
 
-@media (min-width: 600px) {
-}
+@media (min-width: 600px) {}
 
-@media (min-width: 1000px) {
-}
+@media (min-width: 1000px) {}
