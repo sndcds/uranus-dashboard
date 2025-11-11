@@ -153,7 +153,7 @@ const buildPopupHtml = (properties: PopupProperties, coordinates: [number, numbe
 
   const detailsLink = website
     ? `<a class="generic-info-window__action generic-info-window__action--details" href="${website}" target="_blank" rel="noopener noreferrer">
-        <span>Mehr erfahren</span>
+        <span>Link</span>
       </a>`
     : ''
 
@@ -227,7 +227,7 @@ onMounted(() => {
       type: 'geojson',
       data: props.data, // Use initial data from props
       cluster: true,
-      clusterRadius: 40,
+      clusterRadius: 20,
       clusterMaxZoom: 17,
     })
 
@@ -239,9 +239,9 @@ onMounted(() => {
       filter: ['has', 'point_count'],
       paint: {
         'circle-color': '#ffffff',
-        'circle-radius': ['step', ['get', 'point_count'], 24, 16, 32, 48, 40],
+        'circle-radius': ['step', ['get', 'point_count'], 16, 16, 20, 48, 24],
         'circle-stroke-width': 3,
-        'circle-stroke-color': '#A0D896',
+        'circle-stroke-color': '#235df1',
       },
     })
 
@@ -331,33 +331,24 @@ onMounted(() => {
       }
     })
 
-    // Cluster click zoom
     map.on('click', CLUSTER_LAYER_ID, (e) => {
       const features = map.queryRenderedFeatures(e.point, { layers: [CLUSTER_LAYER_ID] })
-      if (!features.length || !features[0]) return
+      if (!features.length) return
 
       const feature = features[0]
-      const clusterId = feature.properties?.cluster_id
-      if (!clusterId) return
+      if (!feature || feature.geometry.type !== 'Point') return
 
-      const geometry = feature.geometry
-      if (geometry.type !== 'Point') return
+      const coordinates = feature.geometry.coordinates as [number, number]
+      const currentZoom = map.getZoom()
 
-      const source = map.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
-
-      // Type assertion for the callback - MapLibre's types are inconsistent here
-      ;(source as any).getClusterExpansionZoom(
-        clusterId,
-        (err: Error | null, zoom: number) => {
-          if (err) return
-          map.easeTo({
-            center: geometry.coordinates as [number, number],
-            zoom
-          })
-        }
-      )
+      // Smooth zoom-in by 2 levels, max 18
+      map.easeTo({
+        center: coordinates,
+        zoom: Math.min(currentZoom + 2, 18),
+        duration: 600,
+      })
     })
-
+    
     // Cursor pointer
     const layers = [UNCLUSTERED_LAYER_ID, CLUSTER_LAYER_ID] as const
     layers.forEach((layer) => {
@@ -441,7 +432,7 @@ watch(
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  background: var(--uranus-bg-color-d2);
+  background: var(--accent-primary);
   color: #fff;
 }
 
@@ -485,7 +476,7 @@ watch(
 
 .generic-info-window__meta {
   margin: 0 0 8px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--muted-text);
   line-height: 1.4;
 }
@@ -498,37 +489,38 @@ watch(
   display: flex;
   width: 100%;
   border-top: 1px solid var(--border-color);
+  gap: 6px;
+  padding: 12px;
 }
 
 .generic-info-window__action {
   flex: 1;
-  padding: 12px 16px;
+  padding: 4px 6px;
   text-align: center;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.9rem;
-  text-transform: uppercase;
+  font-size: 0.8rem;
   letter-spacing: 0.04em;
   transition: background 0.2s ease, color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 100px;
   gap: 8px;
 }
 
 .generic-info-window__action--route {
-  background: var(--accent-primary);
+  background: var(--uranus-ia-color-light2);
   color: var(--uranus-bg-color);
 }
 
 .generic-info-window__action--route:hover {
-  background: var(--accent-primary-hover);
+  background: var(--uranus-ia-color);
 }
 
 .generic-info-window__action--details {
   background: var(--uranus-bg-color-d1);
   color: var(--text-primary);
-  border-left: 1px solid var(--border-color);
 }
 
 .generic-info-window__action--details:hover {

@@ -1,5 +1,5 @@
 <template>
-    <img src="/uranus-alien.svg" alt="Uranus Logo" class="uranus-logo" />
+    <img src="/uranus-logo.svg" alt="Uranus Logo" class="uranus-logo" />
 </template>
 
 <style scoped lang="scss">

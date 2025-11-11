@@ -1,15 +1,16 @@
 <template>
-  <UranusInlineEditSection>
+  <UranusInlineEditSection :active="isEditing">
     <UranusInlineEditLabel
         :label-text="t('venue_and_space')"
         :edit-button-text="t('edit')"
-        @edit-started="startEditingVenue" />
+        @edit-started="startEditing" />
 
     <h2>{{ venueName }}</h2>
 
     <UranusInlineSectionLayout v-if="isEditing">
       <UranusFieldLabel
           id="event-venue-select"
+          required
           :label="t('event_venue_select_label')">
         <select
             id="event-venue-select"
@@ -182,7 +183,7 @@ function setSelectedVenue(venueId: number | null) {
   fetchSpaceOptions(selectedVenueId.value)
 }
 
-const startEditingVenue = async () => {
+const startEditing = async () => {
   selectedVenueId.value = props.venueId ?? null
   selectedSpaceId.value = props.spaceId ?? null
 
@@ -204,32 +205,34 @@ const cancelEditing = () => {
 
 const save = async () => {
   if (selectedVenueId.value === null) {
+    // TODO: Set error ...
     isEditing.value = false
     return
   }
 
-    isSavingVenue.value = true
-    try {
-        await apiFetch(`/api/admin/event/${props.eventId}/venue`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                venue_id: selectedVenueId.value,
-            }),
-        })
-      isEditing.value = false
-        emit('updated')
-    } catch (err) {
-        console.error('Failed to update venue', err)
-      isEditing.value = false
-    } finally {
-        isSavingVenue.value = false
-    }
+  isSavingVenue.value = true
+  try {
+    await apiFetch(`/api/admin/event/${props.eventId}/venue`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        venue_id: selectedVenueId.value,
+        space_id: selectedSpaceId.value,
+      }),
+    })
+    isEditing.value = false
+    emit('updated')
+  } catch (err) {
+    console.error('Failed to update venue', err)
+    isEditing.value = false
+  } finally {
+    isSavingVenue.value = false
+  }
 }
 
 
 const saveSpace = async () => {
     if (selectedSpaceId.value === null) {
-        isEditingSpace.value = false
+      isEditing.value = false
         return
     }
 
@@ -241,11 +244,11 @@ const saveSpace = async () => {
                 space_id: selectedSpaceId.value,
             }),
         })
-        isEditingSpace.value = false
+      isEditing.value = false
         emit('updated')
     } catch (err) {
         console.error('Failed to update space', err)
-        isEditingSpace.value = false
+      isEditing.value = false
     } finally {
         isSavingSpace.value = false
     }
