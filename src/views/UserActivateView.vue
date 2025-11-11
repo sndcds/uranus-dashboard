@@ -19,7 +19,11 @@
                 <div v-else-if="activationSuccess" class="activation-state activation-state--success">
                     <div class="success-icon">✓</div>
                     <p class="success-message">{{ t('activation_success') }}</p>
-                    <p class="redirect-message">{{ t('redirecting_to_login') }}</p>
+                    <p class="redirect-message">
+                        <router-link to="/app/login" class="uranus-button">
+                            {{ t('go_to_login') }}
+                        </router-link>
+                    </p>
                 </div>
 
                 <!-- Error State -->

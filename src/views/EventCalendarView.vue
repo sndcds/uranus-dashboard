@@ -21,9 +21,10 @@
                     {{ allEventsLabel }} ({{ allEventsCount }})
                 </button>
             </li>
-            <li v-for="type in typeCountOptions" :key="type.id">
-                <button @click="filterByType(type.id)" :class="{ 'is-active': activeSelectedType === type.id }">
-                    {{ type.name }} ({{ type.count }})
+            <li v-for="type in typeCountOptions" :key="type.type_id">
+                <button @click="filterByType(type.type_id)"
+                    :class="{ 'is-active': activeSelectedType === type.type_id }">
+                    {{ type.type_name }} ({{ type.count }})
                 </button>
             </li>
         </ul>
@@ -85,16 +86,16 @@ interface CalendarEventType {
     type_name: string
 }
 
-interface EventTypesCount {
-    id: number
-    name: string
+interface EventTypeSummary {
+    type_id: number
+    type_name: string
     count: number
 }
 
-interface EventTypesCountResponse {
+interface EventsResponse {
+    events: CalendarEvent[]
     total: number
-    types: EventTypesCount[]
-
+    type_summary: EventTypeSummary[]
 }
 
 interface CalendarEvent {
@@ -136,7 +137,7 @@ const appStore = useAppStore()
 const events = ref<AugmentedEvent[]>([])
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
-const typeCountOptions = ref<EventTypesCount[]>([])
+const typeCountOptions = ref<EventTypeSummary[]>([])
 const isInitialLoadComplete = ref(false)
 const suspendDateWatcher = ref(false)
 const activeSelectedType = ref<number | string | null>('all')
@@ -226,7 +227,6 @@ const onDateConfirm = async (which: 'start' | 'end', event: Event) => {
 
     // Trigger reload explicitly
     await loadEvents({ preserveSelection: true })
-    await loadTypesCount()
 }
 
 const filterByTag = (tag: string) => {
@@ -569,8 +569,13 @@ const filterByType = async (typeId: number | string) => {
 
         try {
             const endpoint = buildApiEndpoint('/api/events')
-            const { data } = await apiFetch<CalendarEvent[]>(endpoint)
-            events.value = hydrateEvents(Array.isArray(data) ? data : [])
+            const { data } = await apiFetch<EventsResponse>(endpoint)
+
+            if (data) {
+                events.value = hydrateEvents(Array.isArray(data.events) ? data.events : [])
+                allEventsCount.value = data.total
+                typeCountOptions.value = data.type_summary || []
+            }
         } catch (error: unknown) {
             loadError.value =
                 error instanceof Error && error.message
@@ -583,7 +588,7 @@ const filterByType = async (typeId: number | string) => {
     }
 
     // Handle specific type case
-    const typeOption = typeCountOptions.value.find((type) => type.id === typeId)
+    const typeOption = typeCountOptions.value.find((type) => type.type_id === typeId)
     if (!typeOption) return
 
     setActiveSelectedType(typeId)
@@ -593,11 +598,16 @@ const filterByType = async (typeId: number | string) => {
 
     try {
         const endpoint = buildApiEndpoint('/api/events', { event_type: String(typeId) })
-        const { data } = await apiFetch<CalendarEvent[]>(endpoint)
-        events.value = hydrateEvents(Array.isArray(data) ? data : [])
+        const { data } = await apiFetch<EventsResponse>(endpoint)
+
+        if (data) {
+            events.value = hydrateEvents(Array.isArray(data.events) ? data.events : [])
+            allEventsCount.value = data.total
+            typeCountOptions.value = data.type_summary || []
+        }
 
         // Update selected type
-        selectedType.value = typeOption.name
+        selectedType.value = typeOption.type_name
     } catch (error: unknown) {
         loadError.value =
             error instanceof Error && error.message
@@ -608,24 +618,6 @@ const filterByType = async (typeId: number | string) => {
     }
 }
 
-const loadTypesCount = async () => {
-    try {
-        const endpoint = buildApiEndpoint('/api/events/types-count')
-        const { data } = await apiFetch<EventTypesCountResponse>(endpoint)
-
-        // Handle the response structure directly
-        if (data?.types) {
-            allEventsCount.value = data.total
-            typeCountOptions.value = data.types
-        } else {
-            typeCountOptions.value = []
-        }
-    } catch (error) {
-        console.error('Failed to load event types count', error)
-        typeCountOptions.value = []
-    }
-}
-
 const loadEvents = async (options: LoadEventsOptions = {}) => {
     const { preserveSelection = false } = options
     isLoading.value = true
@@ -633,8 +625,14 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
 
     try {
         const endpoint = buildApiEndpoint('/api/events')
-        const { data } = await apiFetch<CalendarEvent[]>(endpoint)
-        events.value = hydrateEvents(Array.isArray(data) ? data : [])
+        const { data } = await apiFetch<EventsResponse>(endpoint)
+
+        if (data) {
+            events.value = hydrateEvents(Array.isArray(data.events) ? data.events : [])
+            allEventsCount.value = data.total
+            typeCountOptions.value = data.type_summary || []
+        }
+
         if (!preserveSelection) {
             setInitialDate()
         }
@@ -653,7 +651,6 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
 
 onMounted(() => {
     void loadEvents()
-    void loadTypesCount()
 })
 
 watch(locale, () => {
@@ -662,11 +659,10 @@ watch(locale, () => {
 
 watch(searchQuery, async (newQuery, oldQuery) => {
     if (!isInitialLoadComplete.value) return
-    
+
     // Debounce might be nice here, but for now reload immediately
     if (newQuery.trim() !== oldQuery.trim()) {
         await loadEvents({ preserveSelection: true })
-        await loadTypesCount()
     }
 })
 
@@ -706,7 +702,6 @@ watch(
         }
 
         await loadEvents({ preserveSelection: true })
-        await loadTypesCount()
     }
 )
 </script>
