@@ -161,6 +161,8 @@ const messages = {
     de: {
         ...event.de,
         ...sharedAuthFor('de'),
+        delete: 'Löschen',
+        release_date: 'Veröffentlichungsdatum',
         event_teaser_tags: 'Event-Tags',
         event_image_license_unknown: 'Unbekannte Bildlizenz',
         space_created_success: 'Raum erfolgreich erstellt',
@@ -775,6 +777,8 @@ const messages = {
     en: {
         ...event.en,
         ...sharedAuthFor('en'),
+        delete: 'Delete',
+        release_date: 'Release date',
         event_teaser_tags: 'Tags',
         event_image_license_unknown: 'Unknown license',
         notification: 'Notification',
@@ -1384,6 +1388,8 @@ const messages = {
     da: {
         ...event.da,
         ...sharedAuthFor('da'),
+        delete: 'Slet',
+        release_date: 'Udgivelsesdato',
         event_teaser_tags: 'Tags',
         event_image_license_unknown: 'Ukendt licens',
         notification: 'Bemærk',
