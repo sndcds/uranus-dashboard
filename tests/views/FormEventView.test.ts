@@ -21,7 +21,6 @@ const i18n = createI18n({
       event_organizer_label: 'Organizer',
       select_placeholder: 'Select...',
       venue: 'Venue',
-      event_space_label: 'Space',
       choose_event_type: 'Event Type',
       choose_genre: 'Genre',
       event_title_label: 'Title',
@@ -142,9 +141,9 @@ describe('FormEventView', () => {
 
   it('handles form submission successfully', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ 
-      data: { event_id: 42 }, 
-      status: 201 
+    vi.mocked(apiFetch).mockResolvedValue({
+      data: { event_id: 42 },
+      status: 201
     })
 
     const wrapper = mount(FormEventView, {
@@ -175,9 +174,9 @@ describe('FormEventView', () => {
   it('navigates to event view after successful creation', async () => {
     const { apiFetch } = await import('../../src/api')
     const push = vi.spyOn(router, 'push')
-    vi.mocked(apiFetch).mockResolvedValue({ 
-      data: { event_id: 42 }, 
-      status: 201 
+    vi.mocked(apiFetch).mockResolvedValue({
+      data: { event_id: 42 },
+      status: 201
     })
 
     const wrapper = mount(FormEventView, {
@@ -204,9 +203,9 @@ describe('FormEventView', () => {
 
   it('displays success message after creation', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ 
-      data: { event_id: 42 }, 
-      status: 201 
+    vi.mocked(apiFetch).mockResolvedValue({
+      data: { event_id: 42 },
+      status: 201
     })
 
     const wrapper = mount(FormEventView, {
@@ -234,9 +233,9 @@ describe('FormEventView', () => {
 
   it('handles API error with status code', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ 
-      data: null, 
-      status: 400 
+    vi.mocked(apiFetch).mockResolvedValue({
+      data: null,
+      status: 400
     })
 
     const wrapper = mount(FormEventView, {
@@ -263,8 +262,8 @@ describe('FormEventView', () => {
 
   it('handles API error with error object', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockRejectedValue({ 
-      data: { error: 'Custom error message' } 
+    vi.mocked(apiFetch).mockRejectedValue({
+      data: { error: 'Custom error message' }
     })
 
     const wrapper = mount(FormEventView, {

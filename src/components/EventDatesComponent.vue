@@ -37,21 +37,6 @@
                 :label="t('event_end_time')"
             />
 
-            <UranusTimeInput
-                id="`entry-time-${index}`"
-                v-model="date.entryTime"
-                :label="t('event_entry_time')"
-            />
-
-            <UranusFieldLabel :id="`space-${index}`" :label="t('event_space_label')">
-                <select :id="`space-${index}`" v-model="date.spaceId">
-                    <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                    <option v-for="sp in spaces" :key="sp.id" :value="sp.id">
-                        {{ sp.name }}
-                    </option>
-                </select>
-            </UranusFieldLabel>
-
             <label :for="`all-day-${index}`" class="checkbox-label">
               <input
                   type="checkbox"
@@ -61,6 +46,30 @@
               />
               <span class="checkbox-text">{{ t('event_all_day') }}</span>
             </label>
+
+            <UranusTimeInput
+                id="`entry-time-${index}`"
+                v-model="date.entryTime"
+                :label="t('event_entry_time')"
+            />
+
+            <UranusFieldLabel :id="`space-${index}`" :label="t('event_venue_label')">
+              <select :id="`space-${index}`" v-model="date.venueId">
+                <option :value="null" disabled>{{ t('select_placeholder') }}</option>
+                <option v-for="venue in venues" :key="venue.id" :value="venue.id">
+                  {{ venue.name }}
+                </option>
+              </select>
+            </UranusFieldLabel>
+
+            <UranusFieldLabel :id="`space-${index}`" :label="t('event_space_label')">
+                <select :id="`space-${index}`" v-model="date.spaceId">
+                    <option :value="null" disabled>{{ t('select_placeholder') }}</option>
+                    <option v-for="sp in spaces" :key="sp.id" :value="sp.id">
+                        {{ sp.name }}
+                    </option>
+                </select>
+            </UranusFieldLabel>
 
           </div>
         </div>
@@ -85,9 +94,10 @@ import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
 import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
 
 const props = defineProps<{
-    organizerId: number | null
-    modelValue: EventDate[]
-    spaces?: SelectOption[]
+  organizerId: number | null
+  modelValue: EventDate[]
+  venues?: SelectOption[]
+  spaces?: SelectOption[]
 }>()
 
 const emit = defineEmits<{
@@ -97,42 +107,45 @@ const emit = defineEmits<{
 const { t } = useI18n({ useScope: 'global' })
 
 interface EventDate {
-    startDate: string
-    endDate: string | null
-    startTime: string
-    endTime: string | null
-    entryTime: string | null
-    spaceId: number | null
-    allDayEvent: boolean
+  startDate: string
+  endDate: string | null
+  startTime: string
+  endTime: string | null
+  entryTime: string | null
+  venueId: number | null
+  spaceId: number | null
+  allDayEvent: boolean
 }
 
 interface SelectOption {
-    id: number
-    name: string
+  id: number
+  name: string
 }
 
 const localDates = ref<EventDate[]>([])
 const errors = ref<string[]>([])
+const venues = computed<SelectOption[]>(() => (Array.isArray(props.venues) ? props.venues : []))
 const spaces = computed<SelectOption[]>(() => (Array.isArray(props.spaces) ? props.spaces : []))
 let suppressEmit = false
 
 const emptyDate = (): EventDate => ({
-    startDate: '',
-    endDate: null,
-    startTime: '',
-    endTime: null,
-    entryTime: null,
-    spaceId: null,
-    allDayEvent: false,
+  startDate: '',
+  endDate: null,
+  startTime: '',
+  endTime: null,
+  entryTime: null,
+  venueId: null,
+  spaceId: null,
+  allDayEvent: false,
 })
 
 const toMinutes = (time: string | null): number | null => {
-    if (!time) return null
-    const [hours, minutes] = time.split(':')
-    const h = Number(hours)
-    const m = Number(minutes)
-    if (Number.isNaN(h) || Number.isNaN(m)) return null
-    return h * 60 + m
+  if (!time) return null
+  const [hours, minutes] = time.split(':')
+  const h = Number(hours)
+  const m = Number(minutes)
+  if (Number.isNaN(h) || Number.isNaN(m)) return null
+  return h * 60 + m
 }
 
 const isAfter = (start: string, end: string | null): boolean => {
