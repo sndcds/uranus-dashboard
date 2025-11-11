@@ -1,71 +1,59 @@
 <template>
-  <section class="uranus-card">
-    <h2>{{ t('notifications') }}</h2>
+  <section>
+    <h2 class="section-title">{{ t('notifications') }}</h2>
 
-    <div v-if="isLoading" class="notifications-feedback">
-      {{ t('notifications_loading') }}
-    </div>
-    
-    <div v-else-if="error" class="feedback feedback--error" role="alert">
+    <div v-if="error" class="feedback feedback--error" role="alert">
       {{ error }}
     </div>
-    
-    <div v-else-if="!notifications.length" class="notifications-feedback">
-      {{ t('notifications_empty') }}
-    </div>
-    
-    <ul v-else class="notifications-list">
-      <li v-for="notification in notifications" :key="notification.event_id" class="notification-item">
-        <div class="notification-content">
-          <h3 class="notification-title">{{ notification.event_title }}</h3>
-          <div class="notification-organizer">{{ notification.organizer_name }}</div>
-          <div class="notification-meta">
-            <span class="notification-date">
-              {{ t('release_date') }}: {{ formatDate(notification.release_date) }}
-            </span>
-            <span 
-              v-if="notification.days_until_release !== null"
-              class="days-until-release" 
-              :class="{
-                'is-urgent': notification.days_until_release <= 3,
-                'is-soon': notification.days_until_release > 3 && notification.days_until_release <= 7,
-                'is-past': notification.days_until_release < 0
-              }"
+
+    <div v-else>
+      <div v-if="isLoading" class="events-feedback">
+        {{ t('notifications_loading') }}
+      </div>
+      <div v-else-if="!notifications.length" class="events-feedback">
+        {{ t('notifications_empty') }}
+      </div>
+      <div v-else class="events-list">
+        <article v-for="notification in notifications" :key="notification.event_id">
+          <router-link :to="`/admin/event/${notification.event_id}`" class="uranus-card notification-card">
+            <span
+              v-if="notification.release_status_name || notification.release_status_id"
+              class="release-status-chip"
+              :class="releaseStatusClass(notification.release_status_id)"
             >
-              <template v-if="notification.days_until_release === 0">
-                {{ t('today') }}
-              </template>
-              <template v-else-if="notification.days_until_release === 1">
-                {{ t('tomorrow') }}
-              </template>
-              <template v-else-if="notification.days_until_release < 0">
-                {{ Math.abs(notification.days_until_release) }} {{ t('days_overdue') }}
-              </template>
-              <template v-else>
-                {{ notification.days_until_release }} {{ t('days_left') }}
-              </template>
+              {{ formatReleaseStatus(notification) }}
             </span>
-            <span class="event-date-info">
-              {{ t('event_starts') }}: {{ formatDate(notification.earliest_event_date) }}
-              <template v-if="notification.days_until_event < 0">
-                ({{ Math.abs(notification.days_until_event) }} {{ t('days_ago') }})
-              </template>
-              <template v-else-if="notification.days_until_event === 0">
-                ({{ t('today') }})
-              </template>
-              <template v-else>
-                ({{ t('in') }} {{ notification.days_until_event }} {{ t('days') }})
-              </template>
-            </span>
-            <span>
-              <router-link :to="`/admin/event/${notification.event_id}`" class="uranus-button">
+            <ul class="event-card__details">
+              <li class="event-card__title">
+                <h3>{{ notification.event_title }}</h3>
+                <p>{{ notification.organizer_name }}</p>
+              </li>
+              <li>
+                <span class="event-card__value">
+                  {{ t('release_date') }} · {{ formatDate(notification.release_date) }}
+                </span>
+              </li>
+              <li>
+                <span class="event-card__value">
+                  {{ formatReleaseCountdown(notification.days_until_release) }}
+                </span>
+              </li>
+              <li>
+                <span class="event-card__value">
+                  {{ t('event_starts') }} · {{ formatDate(notification.earliest_event_date) }}
+                  <span class="event-card__value--muted">{{ formatEventCountdown(notification.days_until_event) }}</span>
+                </span>
+              </li>
+            </ul>
+            <p class="event-actions">
+              <router-link :to="`/admin/event/${notification.event_id}`" class="uranus-secondary-button">
                 {{ t('edit_event') }}
               </router-link>
-            </span>
-          </div>
-        </div>
-      </li>
-    </ul>
+            </p>
+          </router-link>
+        </article>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -80,7 +68,8 @@ interface Notification {
   organizer_id: number
   organizer_name: string
   release_date: string
-  release_status_id: number
+  release_status_id: number | null
+  release_status_name?: string | null
   earliest_event_date: string
   days_until_release: number | null
   days_until_event: number
@@ -111,6 +100,62 @@ const formatDate = (value: string) => {
   }
 }
 
+const releaseStatusClass = (statusId: number | null | undefined) => {
+  switch (statusId) {
+    case 1:
+      return 'release-status-chip--red'
+    case 2:
+      return 'release-status-chip--orange'
+    case 3:
+      return 'release-status-chip--green'
+    case 4:
+      return 'release-status-chip--blue'
+    case 5:
+      return 'release-status-chip--pink'
+    default:
+      return ''
+  }
+}
+
+const formatReleaseStatus = (notification: Notification) => {
+  if (notification.release_status_name && notification.release_status_name.trim().length > 0) {
+    return notification.release_status_name
+  }
+  if (notification.release_status_id) {
+    return t('event_release_status_placeholder', { id: notification.release_status_id })
+  }
+  return t('event_release_status_placeholder', { id: '—' })
+}
+
+const formatReleaseCountdown = (days: number | null) => {
+  if (days === null || Number.isNaN(days)) {
+    return `${t('release_date')}: —`
+  }
+  if (days === 0) {
+    return t('today')
+  }
+  if (days === 1) {
+    return t('tomorrow')
+  }
+  if (days < 0) {
+    return `${Math.abs(days)} ${t('days_overdue')}`
+  }
+  return `${days} ${t('days_left')}`
+}
+
+const formatEventCountdown = (days: number) => {
+  if (Number.isNaN(days)) {
+    return ''
+  }
+  if (days === 0) {
+    return `(${t('today')})`
+  }
+  if (days < 0) {
+    return `(${Math.abs(days)} ${t('days_ago')})`
+  }
+  return `(${t('in')} ${days} ${t('days')})`
+}
+
 const loadNotifications = async () => {
   isLoading.value = true
   error.value = null
@@ -138,18 +183,105 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-h2 {
+.section-title {
   margin: 0 0 1rem;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--color-text);
 }
 
+.notification-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.release-status-chip {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &--red {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  &--orange {
+    background: #ffedd5;
+    color: #9a3412;
+  }
+
+  &--green {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  &--blue {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  &--pink {
+    background: #fce7f3;
+    color: #9d174d;
+  }
+}
+
+.event-actions {
+  margin-top: 0;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.event-card__details {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-card__title h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.event-card__title p {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted-text);
+}
+
+.event-card__value {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.event-card__value--muted {
+  margin-left: 0.5rem;
+  color: var(--muted-text);
+  font-size: 0.85rem;
+}
+
 .feedback {
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   font-size: 0.9rem;
-  
+
   &--error {
     background: #fee2e2;
     color: #991b1b;
@@ -157,92 +289,16 @@ h2 {
   }
 }
 
-.notifications-feedback {
-  padding: 1rem;
+.events-feedback {
   text-align: center;
   color: var(--muted-text);
-  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 1rem 0;
 }
 
-.notifications-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.notification-item {
-  background: var(--surface-muted);
-  border-radius: 0.75rem;
-  border: 1px solid var(--border-soft);
-  transition: background 0.2s ease;
-  
-  &:hover {
-    background: var(--surface-hover);
-  }
-}
-
-.notification-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.notification-title {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--color-text);
-}
-
-.notification-organizer {
-  font-size: 0.85rem;
-  color: var(--muted-text);
-  font-style: italic;
-}
-
-.notification-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.notification-date {
-  font-size: 0.8rem;
-  color: var(--muted-text);
-}
-
-.event-date-info {
-  font-size: 0.8rem;
-  color: var(--muted-text);
-}
-
-.days-until-release {
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  background-color: var(--surface-muted);
-  color: var(--color-text);
-  
-  &.is-urgent {
-    background-color: #fee2e2;
-    color: #991b1b;
-  }
-  
-  &.is-soon {
-    background-color: #ffedd5;
-    color: #9a3412;
-  }
-  
-  &.is-past {
-    background-color: #f3f4f6;
-    color: #6b7280;
-    text-decoration: line-through;
-  }
+.events-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 8px;
 }
 </style>
