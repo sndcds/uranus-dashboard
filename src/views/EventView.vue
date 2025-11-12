@@ -690,7 +690,7 @@ const loadEvent = async () => {
 
 const loadChoosableVenues = async () => {
   try {
-    const { data } = await apiFetch<Venue[]>('/api/admin/user/choosable-event-venues')
+    const { data } = await apiFetch<ChoosableVenue[]>('/api/admin/user/choosable-event-venues')
     choosableVenues.value = data
 
     if (!data || data.length === 0) {
