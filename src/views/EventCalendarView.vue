@@ -381,7 +381,7 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
     }
 
     if (selectedVenue.value?.id) {
-        params.set('venue_id', String(selectedVenue.value.id))
+        params.set('venues', String(selectedVenue.value.id))
     }
 
     // Add location coordinates and radius if available (from either geolocation or address search)
