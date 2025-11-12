@@ -4,7 +4,7 @@ import { ref } from 'vue'
 export const useAppStore = defineStore('app', () => {
     // State
     const organizerId = ref<number | null>(null)
-    const eventViewMode = ref<'detailed' | 'compact' | 'tiles'>('detailed')
+    const eventViewMode = ref<'detailed' | 'compact' | 'tiles' | 'map'>('detailed')
     const eventGroupingMode = ref<'daily' | 'monthly'>('daily')
 
     // Actions
@@ -12,7 +12,7 @@ export const useAppStore = defineStore('app', () => {
         organizerId.value = id
     }
 
-    function setViewMode(mode: 'detailed' | 'compact' | 'tiles') {
+    function setViewMode(mode: 'detailed' | 'compact' | 'tiles' | 'map') {
         eventViewMode.value = mode
     }
 

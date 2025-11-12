@@ -13,6 +13,10 @@
                 @click="currentView = 'tiles'">
                 {{ tilesViewLabel }}
             </button>
+            <button type="button" class="calendar-toggle-btn" :class="{ 'is-active': currentView === 'map' }"
+                @click="currentView = 'map'">
+                {{ t('events_calendar_map_view') }}
+            </button>
         </div>
 
         <ul class="calendar-event-types-list">
@@ -43,7 +47,8 @@
         <div class="calendar-body" :class="{
             'calendar-body--detailed': currentView === 'detailed',
             'calendar-body--compact': currentView === 'compact',
-            'calendar-body--tiles': currentView === 'tiles'
+            'calendar-body--tiles': currentView === 'tiles',
+            'calendar-body--map': currentView === 'map'
         }">
             <EventCalendarSidebar
                 :search-id="`calendar-search-${currentView}`"
@@ -87,6 +92,10 @@
 
             <EventCalendarTilesView v-else-if="currentView === 'tiles'" :is-loading="isLoading" :load-error="loadError"
                 :filtered-events="filteredEvents" :format-time="formatTime" :format-number-date="formatNumberDate" />
+
+            <EventCalendarMapView v-else-if="currentView === 'map'" :is-loading="isLoading" :load-error="loadError"
+                :filtered-events="filteredEvents" :format-time="formatTime" :format-location="formatLocation"
+                @filter-by-tag="filterByTag" />
         </div>
     </div>
 </template>
@@ -101,6 +110,7 @@ import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'
 import EventCalendarDetailedView from '@/components/EventCalendarDetailedView.vue'
 import EventCalendarCompactView from '@/components/EventCalendarCompactView.vue'
 import EventCalendarTilesView from '@/components/EventCalendarTilesView.vue'
+import EventCalendarMapView from '@/components/EventCalendarMapView.vue'
 
 interface CalendarEventType {
     genre_id: number | null
@@ -148,6 +158,11 @@ interface CalendarEvent {
     venue_postal_code: string | null
     event_types: CalendarEventType[] | null
     organizer_name: string | null
+    venue_lat?: number | null
+    venue_lon?: number | null
+    venue_geometry?: unknown
+    geometry?: unknown
+    geojson?: unknown
 }
 
 interface GroupedEvents {
@@ -197,6 +212,8 @@ const groupingMode = computed({
     get: () => appStore.eventGroupingMode,
     set: (value) => appStore.setGroupingMode(value)
 })
+
+const apiMode = computed(() => (currentView.value === 'map' ? 'geometry' : 'basic'))
 
 const normalizeDateValue = (value: string | null) => {
     if (value === null || value === undefined) {
@@ -347,7 +364,7 @@ const computeRequestDateRange = () => {
 
 const buildApiEndpoint = (path: string, additionalParams?: Record<string, string>) => {
     const range = computeRequestDateRange()
-    const params = new URLSearchParams({ mode: 'basic', lang: locale.value })
+    const params = new URLSearchParams({ mode: apiMode.value, lang: locale.value })
 
     if (range) {
         if (range.start) {
@@ -364,7 +381,7 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
     }
 
     if (selectedVenue.value?.id) {
-        params.set('venues', String(selectedVenue.value.id))
+        params.set('venue_id', String(selectedVenue.value.id))
     }
 
     // Add location coordinates and radius if available (from either geolocation or address search)
@@ -801,6 +818,11 @@ const onRadiusSlideEnd = async () => {
 
 watch(locale, () => {
 
+})
+
+watch(currentView, async () => {
+    if (!isInitialLoadComplete.value) return
+    await loadEvents({ preserveSelection: true })
 })
 
 watch(searchQuery, async (newQuery, oldQuery) => {
