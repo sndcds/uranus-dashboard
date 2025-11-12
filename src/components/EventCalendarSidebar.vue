@@ -7,29 +7,37 @@
 
         <div class="calendar-sidebar__section calendar-sidebar__section--search">
             <label class="calendar-sidebar__label" :for="searchId">{{ searchLabel }}</label>
-            <input
-                type="search"
-                v-model="searchQueryModel"
-                :id="searchId"
-                :placeholder="searchPlaceholder"
-                :disabled="isLoading"
-                @keyup.enter="onSearchEnter" />
+            <input type="search" v-model="searchQueryModel" :id="searchId" :placeholder="searchPlaceholder"
+                :disabled="isLoading" @keyup.enter="onSearchEnter" />
         </div>
 
         <div class="calendar-sidebar__section calendar-sidebar__section--dates">
             <label class="calendar-sidebar__label" :for="dateId">{{ dateLabel }}</label>
             <div class="calendar-sidebar__date-controls">
                 <input :id="dateId" type="date" :value="tempStartDate" :disabled="isLoading"
-                    @change="onDateConfirm('start', $event)" @blur="onDateConfirm('start', $event)" @keyup.enter="onDateConfirm('start', $event)" />
+                    @change="onDateConfirm('start', $event)" @blur="onDateConfirm('start', $event)"
+                    @keyup.enter="onDateConfirm('start', $event)" />
                 <div class="calendar-sidebar__end-date">
                     <label class="calendar-sidebar__sublabel" :for="endDateId">{{ endDateLabel }}</label>
                     <input :id="endDateId" type="date" :value="tempEndDate" :disabled="isLoading"
-                        @change="onDateConfirm('end', $event)" @blur="onDateConfirm('end', $event)" @keyup.enter="onDateConfirm('end', $event)" />
+                        @change="onDateConfirm('end', $event)" @blur="onDateConfirm('end', $event)"
+                        @keyup.enter="onDateConfirm('end', $event)" />
                 </div>
                 <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
                     :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
                     {{ showAllDatesLabel }}
                 </button>
+            </div>
+        </div>
+
+        <div class="calendar-sidebar__section calendar-sidebar__section--location">
+            <div class="calendar-sidebar__toggle">
+                <label class="calendar-sidebar__toggle-label">
+                    <input type="checkbox" v-model="showMyLocationModel" :disabled="isLoading"
+                        class="calendar-sidebar__toggle-input" />
+                    <span class="calendar-sidebar__toggle-slider"></span>
+                    <span class="calendar-sidebar__toggle-text">{{ showMyLocationLabel }}</span>
+                </label>
             </div>
         </div>
 
@@ -57,6 +65,7 @@ interface Props {
     tempEndDate: string | null
     isLoading: boolean
     filtersActive: boolean
+    showMyLocation: boolean
 }
 
 interface Emits {
@@ -65,6 +74,7 @@ interface Emits {
     (e: 'update:selectedEndDate', value: string | null): void
     (e: 'update:tempStartDate', value: string | null): void
     (e: 'update:tempEndDate', value: string | null): void
+    (e: 'update:showMyLocation', value: boolean): void
     (e: 'date-confirm', which: 'start' | 'end', event: Event): void
     (e: 'clear-date-filters'): void
     (e: 'reset-filters'): void
@@ -77,20 +87,27 @@ const { t } = useI18n({ useScope: 'global' })
 
 // Computed for v-model binding
 const searchQueryModel = computed({
-  get: () => internalSearch.value,
-  set: (value: string) => {
-    internalSearch.value = value
-  }
+    get: () => internalSearch.value,
+    set: (value: string) => {
+        internalSearch.value = value
+    }
 })
 const internalSearch = ref(props.searchQuery)
 
 // Keep internalSearch in sync if the prop changes
 watch(() => props.searchQuery, (val) => {
-  internalSearch.value = val
+    internalSearch.value = val
+})
+
+const showMyLocationModel = computed({
+    get: () => props.showMyLocation,
+    set: (value: boolean) => {
+        emit('update:showMyLocation', value)
+    }
 })
 
 const onSearchEnter = () => {
-  emit('update:searchQuery', internalSearch.value.trim())
+    emit('update:searchQuery', internalSearch.value.trim())
 }
 
 const filtersTitle = computed(() => t('events_calendar_filters_title'))
@@ -101,6 +118,7 @@ const dateLabel = computed(() => t('events_calendar_date_label'))
 const endDateLabel = computed(() => t('events_calendar_end_date_label'))
 const showAllDatesLabel = computed(() => t('events_calendar_all_dates'))
 const resetFiltersLabel = computed(() => t('events_calendar_reset_filters'))
+const showMyLocationLabel = computed(() => t('events_calendar_show_my_location'))
 
 const onDateConfirm = (which: 'start' | 'end', event: Event) => {
     emit('date-confirm', which, event)
@@ -201,6 +219,70 @@ const resetFilters = () => {
 .calendar-sidebar__all-dates {
     width: 100%;
     justify-content: center;
+}
+
+.calendar-sidebar__toggle {
+    display: flex;
+    align-items: center;
+}
+
+.calendar-sidebar__toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.calendar-sidebar__toggle-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.calendar-sidebar__toggle-slider {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    background-color: var(--border-soft);
+    border-radius: 24px;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+}
+
+.calendar-sidebar__toggle-slider::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.calendar-sidebar__toggle-input:checked+.calendar-sidebar__toggle-slider {
+    background-color: var(--accent-primary);
+}
+
+.calendar-sidebar__toggle-input:checked+.calendar-sidebar__toggle-slider::after {
+    transform: translateX(20px);
+}
+
+.calendar-sidebar__toggle-input:disabled+.calendar-sidebar__toggle-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.calendar-sidebar__toggle-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-text);
 }
 
 .calendar-sidebar__footer {

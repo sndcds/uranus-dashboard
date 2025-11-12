@@ -49,7 +49,8 @@
                 :date-id="`calendar-date-${currentView}`" :end-date-id="`calendar-end-date-${currentView}`"
                 :search-query="searchQuery" :selected-date="selectedDate" :selected-end-date="selectedEndDate"
                 :temp-start-date="tempStartDate" :temp-end-date="tempEndDate" :is-loading="isLoading"
-                :filters-active="filtersActive" @update:search-query="searchQuery = $event"
+                :filters-active="filtersActive" :show-my-location="showMyLocation"
+                @update:search-query="searchQuery = $event" @update:show-my-location="showMyLocation = $event"
                 @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
 
             <EventCalendarDetailedView v-if="currentView === 'detailed'" :is-loading="isLoading" :load-error="loadError"
@@ -147,6 +148,9 @@ const searchQuery = ref('')
 const selectedType = ref<'all' | string>('all')
 const selectedDate = ref<string | null>(null)
 const selectedEndDate = ref<string | null>(null)
+const showMyLocation = ref(false)
+const userLatitude = ref<number | null>(null)
+const userLongitude = ref<number | null>(null)
 
 // Use appStore for persisted state
 const currentView = computed({
@@ -322,6 +326,12 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
     // Add search query if present
     if (searchQuery.value.trim()) {
         params.set('search', searchQuery.value.trim())
+    }
+
+    // Add location coordinates if available
+    if (showMyLocation.value && userLatitude.value !== null && userLongitude.value !== null) {
+        params.set('lat', userLatitude.value.toString())
+        params.set('lon', userLongitude.value.toString())
     }
 
     // Add any additional parameters
@@ -653,6 +663,32 @@ onMounted(() => {
     void loadEvents()
 })
 
+const getUserLocation = () => {
+    return new Promise<{ latitude: number; longitude: number }>((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject(new Error('Geolocation is not supported by this browser'))
+            return
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                })
+            },
+            (error) => {
+                reject(error)
+            },
+            {
+                enableHighAccuracy: false,
+                timeout: 10000,
+                maximumAge: 300000 // Cache for 5 minutes
+            }
+        )
+    })
+}
+
 watch(locale, () => {
 
 })
@@ -662,6 +698,35 @@ watch(searchQuery, async (newQuery, oldQuery) => {
 
     // Debounce might be nice here, but for now reload immediately
     if (newQuery.trim() !== oldQuery.trim()) {
+        await loadEvents({ preserveSelection: true })
+    }
+})
+
+watch(showMyLocation, async (enabled) => {
+    if (!isInitialLoadComplete.value) return
+
+    if (enabled) {
+        try {
+            const location = await getUserLocation()
+            userLatitude.value = location.latitude
+            userLongitude.value = location.longitude
+            await loadEvents({ preserveSelection: true })
+        } catch (error) {
+            console.error('Failed to get user location:', error)
+            // Reset toggle if location access fails
+            showMyLocation.value = false
+            userLatitude.value = null
+            userLongitude.value = null
+
+            // Optionally show error message to user
+            loadError.value = error instanceof Error
+                ? `Location access denied: ${error.message}`
+                : 'Failed to get your location'
+        }
+    } else {
+        // Clear location when disabled
+        userLatitude.value = null
+        userLongitude.value = null
         await loadEvents({ preserveSelection: true })
     }
 })
