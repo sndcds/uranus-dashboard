@@ -31,6 +31,8 @@
         </div>
 
         <div class="calendar-sidebar__section calendar-sidebar__section--location">
+            <label class="calendar-sidebar__label">{{ locationLabel }}</label>
+
             <div class="calendar-sidebar__toggle">
                 <label class="calendar-sidebar__toggle-label">
                     <input type="checkbox" v-model="showMyLocationModel" :disabled="isLoading"
@@ -40,7 +42,21 @@
                 </label>
             </div>
 
-            <div v-if="showMyLocation" class="calendar-sidebar__radius">
+            <div class="calendar-sidebar__address-search">
+                <label class="calendar-sidebar__label" :for="addressSearchId">{{ addressSearchLabel }}</label>
+                <div class="calendar-sidebar__address-input-wrapper">
+                    <input type="text" v-model="addressQueryModel" :id="addressSearchId"
+                        :placeholder="addressSearchPlaceholder" :disabled="isLoading || isGeocodingLoading"
+                        @keyup.enter="onAddressSearch" />
+                    <button type="button" class="calendar-btn calendar-btn--search"
+                        :disabled="!addressQueryModel.trim() || isLoading || isGeocodingLoading"
+                        @click="onAddressSearch">
+                        {{ searchAddressLabel }}
+                    </button>
+                </div>
+            </div>
+
+            <div v-if="showMyLocation || userLatitude !== null" class="calendar-sidebar__radius">
                 <label class="calendar-sidebar__label" for="radius-slider">
                     {{ radiusLabel }}: {{ radiusModel }} km
                 </label>
@@ -70,6 +86,7 @@ interface Props {
     searchId: string
     dateId: string
     endDateId: string
+    addressSearchId: string
     searchQuery: string
     selectedDate: string | null
     selectedEndDate: string | null
@@ -79,6 +96,8 @@ interface Props {
     filtersActive: boolean
     showMyLocation: boolean
     locationRadius: number
+    isGeocodingLoading: boolean
+    userLatitude: number | null
 }
 
 interface Emits {
@@ -92,6 +111,7 @@ interface Emits {
     (e: 'date-confirm', which: 'start' | 'end', event: Event): void
     (e: 'clear-date-filters'): void
     (e: 'reset-filters'): void
+    (e: 'address-search', query: string): void
 }
 
 const props = defineProps<Props>()
@@ -127,6 +147,9 @@ const radiusModel = computed({
     }
 })
 
+// Address search state
+const addressQueryModel = ref('')
+
 // Radius slider configuration
 const radiusMin = 5
 const radiusMax = 100
@@ -134,6 +157,13 @@ const radiusStep = 5
 
 const onSearchEnter = () => {
     emit('update:searchQuery', internalSearch.value.trim())
+}
+
+const onAddressSearch = () => {
+    const query = addressQueryModel.value.trim()
+    if (query) {
+        emit('address-search', query)
+    }
 }
 
 const filtersTitle = computed(() => t('events_calendar_filters_title'))
@@ -144,8 +174,12 @@ const dateLabel = computed(() => t('events_calendar_date_label'))
 const endDateLabel = computed(() => t('events_calendar_end_date_label'))
 const showAllDatesLabel = computed(() => t('events_calendar_all_dates'))
 const resetFiltersLabel = computed(() => t('events_calendar_reset_filters'))
+const locationLabel = computed(() => t('events_calendar_location_label'))
 const showMyLocationLabel = computed(() => t('events_calendar_show_my_location'))
 const radiusLabel = computed(() => t('events_calendar_radius_label'))
+const addressSearchLabel = computed(() => t('events_calendar_address_search_label'))
+const addressSearchPlaceholder = computed(() => t('events_calendar_address_search_placeholder'))
+const searchAddressLabel = computed(() => t('events_calendar_search_address_button'))
 
 const onDateConfirm = (which: 'start' | 'end', event: Event) => {
     emit('date-confirm', which, event)
@@ -156,6 +190,7 @@ const clearDateFilters = () => {
 }
 
 const resetFilters = () => {
+    addressQueryModel.value = ''
     emit('reset-filters')
 }
 </script>
@@ -310,6 +345,31 @@ const resetFilters = () => {
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--color-text);
+}
+
+.calendar-sidebar__address-search {
+    margin-top: 0.75rem;
+}
+
+.calendar-sidebar__address-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.calendar-sidebar__address-input-wrapper input {
+    flex: 1;
+    border-radius: 999px;
+    border: 1px solid var(--border-soft);
+    padding: 0.65rem 1rem;
+    background: var(--input-bg);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.calendar-sidebar__address-input-wrapper input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
 }
 
 .calendar-sidebar__radius {

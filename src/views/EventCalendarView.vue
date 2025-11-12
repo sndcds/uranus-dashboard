@@ -47,12 +47,15 @@
         }">
             <EventCalendarSidebar :search-id="`calendar-search-${currentView}`"
                 :date-id="`calendar-date-${currentView}`" :end-date-id="`calendar-end-date-${currentView}`"
-                :search-query="searchQuery" :selected-date="selectedDate" :selected-end-date="selectedEndDate"
-                :temp-start-date="tempStartDate" :temp-end-date="tempEndDate" :is-loading="isLoading"
-                :filters-active="filtersActive" :show-my-location="showMyLocation" :location-radius="locationRadius"
+                :address-search-id="`calendar-address-search-${currentView}`" :search-query="searchQuery"
+                :selected-date="selectedDate" :selected-end-date="selectedEndDate" :temp-start-date="tempStartDate"
+                :temp-end-date="tempEndDate" :is-loading="isLoading" :filters-active="filtersActive"
+                :show-my-location="showMyLocation" :location-radius="locationRadius"
+                :is-geocoding-loading="isGeocodingLoading" :user-latitude="userLatitude"
                 @update:search-query="searchQuery = $event" @update:show-my-location="showMyLocation = $event"
-                @update:location-radius="locationRadius = $event"
-                @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
+                @update:location-radius="locationRadius = $event" @date-confirm="onDateConfirm"
+                @clear-date-filters="clearDateFilters" @reset-filters="resetFilters"
+                @address-search="onAddressSearch" />
 
             <EventCalendarDetailedView v-if="currentView === 'detailed'" :is-loading="isLoading" :load-error="loadError"
                 :grouped-events="groupedEvents" :selected-type="selectedType"
@@ -73,7 +76,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 import { useAppStore } from '@/store/appStore'
 
 import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'
@@ -153,6 +156,7 @@ const showMyLocation = ref(false)
 const userLatitude = ref<number | null>(null)
 const userLongitude = ref<number | null>(null)
 const locationRadius = ref(25) // Default 25km
+const isGeocodingLoading = ref(false)
 
 // Use appStore for persisted state
 const currentView = computed({
@@ -330,8 +334,8 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
         params.set('search', searchQuery.value.trim())
     }
 
-    // Add location coordinates and radius if available
-    if (showMyLocation.value && userLatitude.value !== null && userLongitude.value !== null) {
+    // Add location coordinates and radius if available (from either geolocation or address search)
+    if (userLatitude.value !== null && userLongitude.value !== null) {
         params.set('lat', userLatitude.value.toString())
         params.set('lon', userLongitude.value.toString())
         // Convert radius from kilometers to meters
@@ -548,6 +552,9 @@ const resetFilters = () => {
     searchQuery.value = ''
     selectedType.value = 'all'
     clearDateFilters()
+    showMyLocation.value = false
+    userLatitude.value = null
+    userLongitude.value = null
 }
 
 const hydrateEvents = (payload: CalendarEvent[]): AugmentedEvent[] => {
@@ -693,6 +700,34 @@ const getUserLocation = () => {
     })
 }
 
+const onAddressSearch = async (query: string) => {
+    isGeocodingLoading.value = true
+    loadError.value = null
+
+    try {
+        const result = await fetchCoordinatesForAddress(query, 1)
+
+        if (!result) {
+            loadError.value = t('events_calendar_address_not_found')
+            return
+        }
+
+        // Set coordinates from geocoding result
+        userLatitude.value = parseFloat(result.lat)
+        userLongitude.value = parseFloat(result.lon)
+
+        // Reload events with new coordinates
+        await loadEvents({ preserveSelection: true })
+    } catch (error) {
+        console.error('Geocoding error:', error)
+        loadError.value = error instanceof Error
+            ? `Geocoding failed: ${error.message}`
+            : 'Failed to geocode address'
+    } finally {
+        isGeocodingLoading.value = false
+    }
+}
+
 watch(locale, () => {
 
 })
@@ -719,8 +754,6 @@ watch(showMyLocation, async (enabled) => {
             console.error('Failed to get user location:', error)
             // Reset toggle if location access fails
             showMyLocation.value = false
-            userLatitude.value = null
-            userLongitude.value = null
 
             // Optionally show error message to user
             loadError.value = error instanceof Error
@@ -728,10 +761,11 @@ watch(showMyLocation, async (enabled) => {
                 : 'Failed to get your location'
         }
     } else {
-        // Clear location when disabled
-        userLatitude.value = null
-        userLongitude.value = null
-        await loadEvents({ preserveSelection: true })
+        // When toggle is off, keep coordinates from address search if they exist
+        // Only reload if we previously had geolocation enabled
+        if (userLatitude.value !== null && userLongitude.value !== null) {
+            await loadEvents({ preserveSelection: true })
+        }
     }
 })
 
