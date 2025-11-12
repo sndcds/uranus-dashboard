@@ -187,13 +187,14 @@ const normalizeNumber = (value: unknown): number | null => {
 
 <style scoped>
 .calendar-map-view {
-    min-height: 480px;
     border-radius: 12px;
     overflow: hidden;
     background: var(--card-bg, #fff);
     border: 1px solid var(--border-soft);
     display: flex;
     flex-direction: column;
+    height: 100%;
+    min-height: 480px;
 }
 
 .calendar-map-view__state {
@@ -214,5 +215,6 @@ const normalizeNumber = (value: unknown): number | null => {
 .calendar-map-view__map {
     flex: 1;
     min-height: 100%;
+    height: 100%;
 }
 </style>

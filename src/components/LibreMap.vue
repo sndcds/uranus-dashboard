@@ -275,14 +275,55 @@ onMounted(() => {
       })
     }
 
+    const fitMapToData = (geojson: FeatureCollection) => {
+        if (!mapInstance.value) return
+        const { features } = geojson
+        if (!Array.isArray(features) || features.length === 0) return
+
+        const coordinates: [number, number][] = []
+        for (const feature of features) {
+            const geometry = feature?.geometry
+            if (!geometry) continue
+            if (geometry.type === 'Point' && Array.isArray(geometry.coordinates)) {
+                const [lon, lat] = geometry.coordinates as [number, number]
+                if (Number.isFinite(lon) && Number.isFinite(lat)) {
+                    coordinates.push([lon, lat])
+                }
+            }
+        }
+
+        if (!coordinates.length) return
+
+        if (coordinates.length === 1) {
+            mapInstance.value.easeTo({
+                center: coordinates[0],
+                zoom: Math.max(mapInstance.value.getZoom(), 12),
+                duration: 600,
+            })
+            return
+        }
+
+        const bounds = coordinates.slice(1).reduce(
+            (acc, coord) => acc.extend(coord),
+            new maplibregl.LngLatBounds(coordinates[0], coordinates[0])
+        )
+
+        mapInstance.value.fitBounds(bounds, {
+            padding: 60,
+            duration: 600,
+            maxZoom: 15,
+        })
+    }
+
     watch(
-        () => props.data,
-        (geojson) => {
-          if (!mapInstance.value?.getSource(GEOJSON_SOURCE_ID)) return
-          const source = mapInstance.value.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
-          source.setData(geojson)
-        },
-        { immediate: true }
+      () => props.data,
+      (geojson) => {
+        if (!mapInstance.value?.getSource(GEOJSON_SOURCE_ID)) return
+        const source = mapInstance.value.getSource(GEOJSON_SOURCE_ID) as maplibregl.GeoJSONSource
+        source.setData(geojson)
+        fitMapToData(geojson)
+      },
+      { immediate: true }
     )
 
     // Click popups
