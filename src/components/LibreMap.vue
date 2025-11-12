@@ -294,24 +294,27 @@ onMounted(() => {
 
         if (!coordinates.length) return
 
+        let bounds = coordinates.reduce<maplibregl.LngLatBounds | null>((acc, coord) => {
+            if (!acc) {
+                return new maplibregl.LngLatBounds(coord, coord)
+            }
+            acc.extend(coord)
+            return acc
+        }, null)
+
+        if (!bounds) return
+
         if (coordinates.length === 1) {
-            mapInstance.value.easeTo({
-                center: coordinates[0],
-                zoom: Math.max(mapInstance.value.getZoom(), 12),
-                duration: 600,
-            })
-            return
+            const [lon, lat] = coordinates[0]
+            const delta = 0.01
+            bounds.extend([lon + delta, lat + delta])
+            bounds.extend([lon - delta, lat - delta])
         }
 
-        const bounds = coordinates.slice(1).reduce(
-            (acc, coord) => acc.extend(coord),
-            new maplibregl.LngLatBounds(coordinates[0], coordinates[0])
-        )
-
         mapInstance.value.fitBounds(bounds, {
-            padding: 60,
+            padding: 80,
             duration: 600,
-            maxZoom: 15,
+            maxZoom: coordinates.length === 1 ? 14 : 15,
         })
     }
 
