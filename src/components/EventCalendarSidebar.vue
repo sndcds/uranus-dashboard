@@ -11,6 +11,21 @@
                 :disabled="isLoading" @keyup.enter="onSearchEnter" />
         </div>
 
+        <div class="calendar-sidebar__section calendar-sidebar__section--types">
+            <label class="calendar-sidebar__label" for="venue-select">{{ t('events_calendar_venue_label') }}</label>
+            <select
+                id="venue-select"
+                v-model="selectedVenueModel"
+                :disabled="isLoading || !props.venueCountOptions.length"
+                class="calendar-sidebar__select"
+            >
+                <option value="">{{ t('events_calendar_venue_all_option') }}</option>
+                <option v-for="venue in props.venueCountOptions" :key="venue.id" :value="venue.id.toString()">
+                    {{ venue.name }}
+                </option>
+            </select>
+        </div>
+
         <div class="calendar-sidebar__section calendar-sidebar__section--dates">
             <label class="calendar-sidebar__label" :for="dateId">{{ dateLabel }}</label>
             <div class="calendar-sidebar__date-controls">
@@ -95,6 +110,13 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+interface VenueOption {
+    id: number
+    name: string
+    city: string
+    event_date_count: number
+}
+
 interface Props {
     searchId: string
     dateId: string
@@ -103,6 +125,7 @@ interface Props {
     searchQuery: string
     selectedDate: string | null
     selectedEndDate: string | null
+    selectedVenue: VenueOption | null
     tempStartDate: string | null
     tempEndDate: string | null
     isLoading: boolean
@@ -111,6 +134,7 @@ interface Props {
     locationRadius: number
     isGeocodingLoading: boolean
     userLatitude: number | null
+    venueCountOptions: VenueOption[]
 }
 
 interface Emits {
@@ -127,6 +151,7 @@ interface Emits {
     (e: 'clear-date-filters'): void
     (e: 'reset-filters'): void
     (e: 'address-search', query: string): void
+    (e: 'selected-venue', venue: VenueOption | null): void
 }
 
 const props = defineProps<Props>()
@@ -159,6 +184,25 @@ const radiusModel = computed({
     get: () => props.locationRadius,
     set: (value: number) => {
         emit('update:locationRadius', value)
+    }
+})
+
+const selectedVenueModel = computed({
+    get: () => props.selectedVenue?.id?.toString() ?? '',
+    set: (value: string) => {
+        if (!value) {
+            emit('selected-venue', null)
+            return
+        }
+
+        const id = Number(value)
+        if (Number.isNaN(id)) {
+            emit('selected-venue', null)
+            return
+        }
+
+        const venue = props.venueCountOptions.find((item) => item.id === id) ?? null
+        emit('selected-venue', venue)
     }
 })
 

@@ -45,20 +45,35 @@
             'calendar-body--compact': currentView === 'compact',
             'calendar-body--tiles': currentView === 'tiles'
         }">
-            <EventCalendarSidebar :search-id="`calendar-search-${currentView}`"
-                :date-id="`calendar-date-${currentView}`" :end-date-id="`calendar-end-date-${currentView}`"
-                :address-search-id="`calendar-address-search-${currentView}`" :search-query="searchQuery"
-                :selected-date="selectedDate" :selected-end-date="selectedEndDate" :temp-start-date="tempStartDate"
-                :temp-end-date="tempEndDate" :is-loading="isLoading" :filters-active="filtersActive"
-                :show-my-location="showMyLocation" :location-radius="locationRadius"
-                :is-geocoding-loading="isGeocodingLoading" :user-latitude="userLatitude"
-                @update:search-query="searchQuery = $event" @update:show-my-location="showMyLocation = $event"
+            <EventCalendarSidebar
+                :search-id="`calendar-search-${currentView}`"
+                :date-id="`calendar-date-${currentView}`"
+                :end-date-id="`calendar-end-date-${currentView}`"
+                :address-search-id="`calendar-address-search-${currentView}`"
+                :search-query="searchQuery"
+                :selected-date="selectedDate"
+                :selected-end-date="selectedEndDate"
+                :temp-start-date="tempStartDate"
+                :temp-end-date="tempEndDate"
+                :is-loading="isLoading"
+                :filters-active="filtersActive"
+                :show-my-location="showMyLocation"
+                :location-radius="locationRadius"
+                :is-geocoding-loading="isGeocodingLoading"
+                :user-latitude="userLatitude"
+                :venue-count-options="venueCountOptions"
+                :selected-venue="selectedVenue"
+                @update:search-query="searchQuery = $event"
+                @update:show-my-location="showMyLocation = $event"
                 @update:location-radius="locationRadius = $event"
                 @radius-slide-start="isRadiusSliding = true"
                 @radius-slide-end="onRadiusSlideEnd"
                 @date-confirm="onDateConfirm"
-                @clear-date-filters="clearDateFilters" @reset-filters="resetFilters"
-                @address-search="onAddressSearch" />
+                @clear-date-filters="clearDateFilters"
+                @reset-filters="resetFilters"
+                @address-search="onAddressSearch"
+                @selected-venue="onSelectedVenue"
+            />
 
             <EventCalendarDetailedView v-if="currentView === 'detailed'" :is-loading="isLoading" :load-error="loadError"
                 :grouped-events="groupedEvents" :selected-type="selectedType"
@@ -100,10 +115,18 @@ interface EventTypeSummary {
     count: number
 }
 
+interface EventVenueSummary {
+    id: number
+    name: string
+    city: string
+    event_date_count: number
+}
+
 interface EventsResponse {
     events: CalendarEvent[]
     total: number
     type_summary: EventTypeSummary[]
+    venues_summary: EventVenueSummary[]
 }
 
 interface CalendarEvent {
@@ -146,6 +169,7 @@ const events = ref<AugmentedEvent[]>([])
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
 const typeCountOptions = ref<EventTypeSummary[]>([])
+const venueCountOptions = ref<EventVenueSummary[]>([])
 const isInitialLoadComplete = ref(false)
 const suspendDateWatcher = ref(false)
 const activeSelectedType = ref<number | string | null>('all')
@@ -153,6 +177,7 @@ const allEventsCount = ref(0)
 
 const searchQuery = ref('')
 const selectedType = ref<'all' | string>('all')
+const selectedVenue = ref<EventVenueSummary | null>(null)
 const selectedDate = ref<string | null>(null)
 const selectedEndDate = ref<string | null>(null)
 const showMyLocation = ref(false)
@@ -338,6 +363,10 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
         params.set('search', searchQuery.value.trim())
     }
 
+    if (selectedVenue.value?.id) {
+        params.set('venues', String(selectedVenue.value.id))
+    }
+
     // Add location coordinates and radius if available (from either geolocation or address search)
     if (userLatitude.value !== null && userLongitude.value !== null) {
         params.set('lat', userLatitude.value.toString())
@@ -365,7 +394,8 @@ const filtersActive = computed(() => {
         searchQuery.value ||
         selectedDate.value ||
         selectedEndDate.value ||
-        (selectedType.value !== 'all')
+        (selectedType.value !== 'all') ||
+        selectedVenue.value
     )
 })
 
@@ -555,6 +585,7 @@ const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slic
 const resetFilters = () => {
     searchQuery.value = ''
     selectedType.value = 'all'
+    selectedVenue.value = null
     clearDateFilters()
     showMyLocation.value = false
     userLatitude.value = null
@@ -600,6 +631,7 @@ const filterByType = async (typeId: number | string) => {
                 events.value = hydrateEvents(Array.isArray(data.events) ? data.events : [])
                 allEventsCount.value = data.total
                 typeCountOptions.value = data.type_summary || []
+                venueCountOptions.value = data.venues_summary || []
             }
         } catch (error: unknown) {
             loadError.value =
@@ -629,6 +661,7 @@ const filterByType = async (typeId: number | string) => {
             events.value = hydrateEvents(Array.isArray(data.events) ? data.events : [])
             allEventsCount.value = data.total
             typeCountOptions.value = data.type_summary || []
+            venueCountOptions.value = data.venues_summary || []
         }
 
         // Update selected type
@@ -641,6 +674,30 @@ const filterByType = async (typeId: number | string) => {
     } finally {
         isLoading.value = false
     }
+}
+
+const onSelectedVenue = async (venue: EventVenueSummary | number | string | null) => {
+    let resolvedVenue: EventVenueSummary | null = null
+
+    if (venue && typeof venue === 'object') {
+        resolvedVenue = venue
+    } else if (venue !== null && venue !== undefined) {
+        const venueId = Number(venue)
+        if (!Number.isNaN(venueId)) {
+            resolvedVenue = venueCountOptions.value.find((item) => item.id === venueId) ?? null
+        }
+    }
+
+    const currentId = selectedVenue.value?.id ?? null
+    const nextId = resolvedVenue?.id ?? null
+
+    if (currentId === nextId) {
+        selectedVenue.value = null
+    } else {
+        selectedVenue.value = resolvedVenue
+    }
+
+    await loadEvents({ preserveSelection: true })
 }
 
 const loadEvents = async (options: LoadEventsOptions = {}) => {
@@ -656,6 +713,7 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
             events.value = hydrateEvents(Array.isArray(data.events) ? data.events : [])
             allEventsCount.value = data.total
             typeCountOptions.value = data.type_summary || []
+            venueCountOptions.value = data.venues_summary || []
         }
 
         if (!preserveSelection) {
