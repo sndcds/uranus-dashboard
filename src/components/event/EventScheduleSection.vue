@@ -303,6 +303,17 @@ function syncScheduleEntries() {
   scheduleEntries.value = deriveScheduleFromProps()
 }
 
+
+// --- Load spaces ---
+async function loadVenues(venueId: number | null) {
+  try {
+    const data = null // TODO: Fetch data for user/organizer
+    availableSpaces.value = Array.isArray(data) ? data : []
+  } catch {
+    availableSpaces.value = []
+  }
+}
+
 // --- Load spaces ---
 async function loadSpaces(venueId: number | null) {
   if (!venueId) return

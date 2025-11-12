@@ -53,8 +53,8 @@
                 :label="t('event_entry_time')"
             />
 
-            <UranusFieldLabel :id="`space-${index}`" :label="t('event_venue_label')">
-              <select :id="`space-${index}`" v-model="date.venueId">
+            <UranusFieldLabel :id="`venue-${index}`" :label="t('event_venue_label')">
+              <select :id="`venue-${index}`" v-model="date.venueId">
                 <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                 <option v-for="venue in venues" :key="venue.id" :value="venue.id">
                   {{ venue.name }}
