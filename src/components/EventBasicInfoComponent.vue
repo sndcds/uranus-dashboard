@@ -157,7 +157,7 @@ async function fetchOrganizers(contextId: number | null) {
 
     try {
         const { data } = await apiFetch<SelectOption[]>(
-            `/api/admin/user/me/choosable-event-organizers/organizer/${contextId}`
+            `/api/admin/user/choosable-event-organizers/organizer/${contextId}`
         )
 
         organizers.value = Array.isArray(data) ? data : []
