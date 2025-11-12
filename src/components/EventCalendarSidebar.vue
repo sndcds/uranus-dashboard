@@ -39,6 +39,18 @@
                     <span class="calendar-sidebar__toggle-text">{{ showMyLocationLabel }}</span>
                 </label>
             </div>
+
+            <div v-if="showMyLocation" class="calendar-sidebar__radius">
+                <label class="calendar-sidebar__label" for="radius-slider">
+                    {{ radiusLabel }}: {{ radiusModel }} km
+                </label>
+                <input id="radius-slider" type="range" v-model.number="radiusModel" :min="radiusMin" :max="radiusMax"
+                    :step="radiusStep" :disabled="isLoading" class="calendar-sidebar__range-slider" />
+                <div class="calendar-sidebar__range-labels">
+                    <span>{{ radiusMin }} km</span>
+                    <span>{{ radiusMax }} km</span>
+                </div>
+            </div>
         </div>
 
         <div class="calendar-sidebar__footer">
@@ -66,6 +78,7 @@ interface Props {
     isLoading: boolean
     filtersActive: boolean
     showMyLocation: boolean
+    locationRadius: number
 }
 
 interface Emits {
@@ -75,6 +88,7 @@ interface Emits {
     (e: 'update:tempStartDate', value: string | null): void
     (e: 'update:tempEndDate', value: string | null): void
     (e: 'update:showMyLocation', value: boolean): void
+    (e: 'update:locationRadius', value: number): void
     (e: 'date-confirm', which: 'start' | 'end', event: Event): void
     (e: 'clear-date-filters'): void
     (e: 'reset-filters'): void
@@ -106,6 +120,18 @@ const showMyLocationModel = computed({
     }
 })
 
+const radiusModel = computed({
+    get: () => props.locationRadius,
+    set: (value: number) => {
+        emit('update:locationRadius', value)
+    }
+})
+
+// Radius slider configuration
+const radiusMin = 5
+const radiusMax = 100
+const radiusStep = 5
+
 const onSearchEnter = () => {
     emit('update:searchQuery', internalSearch.value.trim())
 }
@@ -119,6 +145,7 @@ const endDateLabel = computed(() => t('events_calendar_end_date_label'))
 const showAllDatesLabel = computed(() => t('events_calendar_all_dates'))
 const resetFiltersLabel = computed(() => t('events_calendar_reset_filters'))
 const showMyLocationLabel = computed(() => t('events_calendar_show_my_location'))
+const radiusLabel = computed(() => t('events_calendar_radius_label'))
 
 const onDateConfirm = (which: 'start' | 'end', event: Event) => {
     emit('date-confirm', which, event)
@@ -283,6 +310,67 @@ const resetFilters = () => {
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--color-text);
+}
+
+.calendar-sidebar__radius {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-soft);
+}
+
+.calendar-sidebar__range-slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border-soft);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.calendar-sidebar__range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.calendar-sidebar__range-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.calendar-sidebar__range-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.calendar-sidebar__range-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.calendar-sidebar__range-slider:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.calendar-sidebar__range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--muted-text);
+    margin-top: 0.25rem;
 }
 
 .calendar-sidebar__footer {

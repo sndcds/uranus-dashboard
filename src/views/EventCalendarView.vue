@@ -49,8 +49,9 @@
                 :date-id="`calendar-date-${currentView}`" :end-date-id="`calendar-end-date-${currentView}`"
                 :search-query="searchQuery" :selected-date="selectedDate" :selected-end-date="selectedEndDate"
                 :temp-start-date="tempStartDate" :temp-end-date="tempEndDate" :is-loading="isLoading"
-                :filters-active="filtersActive" :show-my-location="showMyLocation"
+                :filters-active="filtersActive" :show-my-location="showMyLocation" :location-radius="locationRadius"
                 @update:search-query="searchQuery = $event" @update:show-my-location="showMyLocation = $event"
+                @update:location-radius="locationRadius = $event"
                 @date-confirm="onDateConfirm" @clear-date-filters="clearDateFilters" @reset-filters="resetFilters" />
 
             <EventCalendarDetailedView v-if="currentView === 'detailed'" :is-loading="isLoading" :load-error="loadError"
@@ -151,6 +152,7 @@ const selectedEndDate = ref<string | null>(null)
 const showMyLocation = ref(false)
 const userLatitude = ref<number | null>(null)
 const userLongitude = ref<number | null>(null)
+const locationRadius = ref(25) // Default 25km
 
 // Use appStore for persisted state
 const currentView = computed({
@@ -328,10 +330,12 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
         params.set('search', searchQuery.value.trim())
     }
 
-    // Add location coordinates if available
+    // Add location coordinates and radius if available
     if (showMyLocation.value && userLatitude.value !== null && userLongitude.value !== null) {
         params.set('lat', userLatitude.value.toString())
         params.set('lon', userLongitude.value.toString())
+        // Convert radius from kilometers to meters
+        params.set('radius', (locationRadius.value * 1000).toString())
     }
 
     // Add any additional parameters
@@ -729,6 +733,13 @@ watch(showMyLocation, async (enabled) => {
         userLongitude.value = null
         await loadEvents({ preserveSelection: true })
     }
+})
+
+watch(locationRadius, async () => {
+    // Only reload if location is enabled and we have coordinates
+    if (!isInitialLoadComplete.value || !showMyLocation.value) return
+    if (userLatitude.value === null || userLongitude.value === null) return
+    await loadEvents({ preserveSelection: true })
 })
 
 watch(
