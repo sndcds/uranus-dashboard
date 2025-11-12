@@ -58,10 +58,21 @@
 
             <div v-if="showMyLocation || userLatitude !== null" class="calendar-sidebar__radius">
                 <label class="calendar-sidebar__label" for="radius-slider">
-                    {{ radiusLabel }}: {{ radiusModel }} km
+                    {{ radiusLabel }}: {{ radius }} km
                 </label>
-                <input id="radius-slider" type="range" v-model.number="radiusModel" :min="radiusMin" :max="radiusMax"
-                    :step="radiusStep" :disabled="isLoading" class="calendar-sidebar__range-slider" />
+
+                <input
+                    id="radius-slider"
+                    type="range"
+                    v-model.number="radius"
+                    :min="radiusMin"
+                    :max="radiusMax"
+                    :step="radiusStep"
+                    :disabled="isLoading"
+                    @mouseup="onRadiusSliderRelease"
+                    @touchend="onRadiusSliderRelease"
+                    class="calendar-sidebar__range-slider"
+                />
                 <div class="calendar-sidebar__range-labels">
                     <span>{{ radiusMin }} km</span>
                     <span>{{ radiusMax }} km</span>
@@ -151,9 +162,16 @@ const radiusModel = computed({
 const addressQueryModel = ref('')
 
 // Radius slider configuration
-const radiusMin = 5
+const radiusMin = 1
 const radiusMax = 100
-const radiusStep = 5
+const radiusStep = 1
+const radius = ref(1) // initial value
+
+// Action triggered when slider is released
+function onRadiusSliderRelease() {
+  emit('update:locationRadius', radius.value)
+}
+
 
 const onSearchEnter = () => {
     emit('update:searchQuery', internalSearch.value.trim())
