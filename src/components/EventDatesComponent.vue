@@ -54,21 +54,29 @@
             />
 
             <UranusFieldLabel :id="`venue-${index}`" :label="t('event_venue_label')">
-              <select :id="`venue-${index}`" v-model="date.venueId">
+              <select
+                  :id="`venue-${index}`"
+                  v-model="date.venueId"
+                  @change="onVenueSelected(date.venueId)"
+              >
                 <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                <option v-for="venue in venues" :key="venue.id" :value="venue.id">
+                <option v-for="venue in choosableVenues" :key="venue.id" :value="venue.id">
                   {{ venue.name }}
                 </option>
               </select>
             </UranusFieldLabel>
 
             <UranusFieldLabel :id="`space-${index}`" :label="t('event_space_label')">
-                <select :id="`space-${index}`" v-model="date.spaceId">
-                    <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                    <option v-for="sp in spaces" :key="sp.id" :value="sp.id">
-                        {{ sp.name }}
-                    </option>
-                </select>
+              <select
+                  :id="`space-${index}`"
+                  v-model="date.spaceId"
+                  @change="onSpaceSelected(date.spaceId)"
+              >
+                <option :value="null" disabled>{{ t('select_placeholder') }}</option>
+                <option v-for="sp in choosableSpaces" :key="sp.id" :value="sp.id">
+                  {{ sp.name }}
+                </option>
+              </select>
             </UranusFieldLabel>
 
           </div>
@@ -86,6 +94,8 @@
 <script setup lang="ts">
 import {computed, nextTick, ref, watch, inject, type Ref} from 'vue'
 import { useI18n } from 'vue-i18n'
+import { apiFetch } from '@/api'
+
 import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
 import UranusCard from "@/components/uranus/UranusCard.vue";
 import UranusDateInput from "@/components/uranus/UranusDateInput.vue";
@@ -100,8 +110,35 @@ interface ChoosableVenue {
   country_code: string
 }
 
+interface ChoosableSpace {
+  id: number
+  name: string
+}
+
+
 // Inject and type it correctly
 const choosableVenues = inject<Ref<ChoosableVenue[]>>('choosableVenues')
+const choosableSpaces = ref<SelectOption[]>([])
+
+function onVenueSelected(selectedId: number | null) {
+  loadSpaces(selectedId)
+}
+
+function onSpaceSelected(selectedId: number | null) {
+  console.log("space_id: " + selectedId)
+}
+
+async function loadSpaces(venueId: number | null) {
+  if (!venueId) return
+  try {
+    const { data } = await apiFetch<ChoosableSpace[]>(`/api/choosable-spaces/venue/${venueId}`)
+    choosableSpaces.value = Array.isArray(data) ? data : []
+  } catch (err) {
+    console.error('Failed to load spaces:', err)
+    choosableSpaces.value = []
+  }
+}
+
 
 
 const props = defineProps<{
