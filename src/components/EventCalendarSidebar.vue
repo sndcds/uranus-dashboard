@@ -21,7 +21,7 @@
             >
                 <option value="">{{ t('events_calendar_venue_all_option') }}</option>
                 <option v-for="venue in props.venueCountOptions" :key="venue.id" :value="venue.id.toString()">
-                    {{ venue.name }}, {{ venue.city }} {{ venue.event_date_count }}
+                    {{ venue.name }}, {{ venue.city }} ({{ venue.event_date_count }})
                 </option>
             </select>
         </div>
