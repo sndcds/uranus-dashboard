@@ -16,7 +16,7 @@
                     <p>{{ group.weekday }}</p>
                 </header>
                 <div class="calendar-group__events">
-                    <article v-for="event in group.events" :key="event.id" class="calendar-card">
+                    <article v-for="event in group.events" :key="`${event.id}-${event.event_date_id}`" class="calendar-card">
                         <router-link :to="`/event/${event.id}/date/${event.event_date_id}`" class="calendar-card__link">
                             <div class="calendar-card__image-wrapper">
                                 <img v-if="event.image_path" 

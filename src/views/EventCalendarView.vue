@@ -53,7 +53,10 @@
                 :show-my-location="showMyLocation" :location-radius="locationRadius"
                 :is-geocoding-loading="isGeocodingLoading" :user-latitude="userLatitude"
                 @update:search-query="searchQuery = $event" @update:show-my-location="showMyLocation = $event"
-                @update:location-radius="locationRadius = $event" @date-confirm="onDateConfirm"
+                @update:location-radius="locationRadius = $event"
+                @radius-slide-start="isRadiusSliding = true"
+                @radius-slide-end="onRadiusSlideEnd"
+                @date-confirm="onDateConfirm"
                 @clear-date-filters="clearDateFilters" @reset-filters="resetFilters"
                 @address-search="onAddressSearch" />
 
@@ -157,6 +160,7 @@ const userLatitude = ref<number | null>(null)
 const userLongitude = ref<number | null>(null)
 const locationRadius = ref(25) // Default 25km
 const isGeocodingLoading = ref(false)
+const isRadiusSliding = ref(false)
 
 // Use appStore for persisted state
 const currentView = computed({
@@ -706,7 +710,7 @@ const onAddressSearch = async (query: string) => {
 
     try {
         const result = await fetchCoordinatesForAddress(query, 1)
-
+        
         if (!result) {
             loadError.value = t('events_calendar_address_not_found')
             return
@@ -725,6 +729,15 @@ const onAddressSearch = async (query: string) => {
             : 'Failed to geocode address'
     } finally {
         isGeocodingLoading.value = false
+    }
+}
+
+const onRadiusSlideEnd = async () => {
+    isRadiusSliding.value = false
+    
+    // Trigger reload if we have coordinates
+    if (userLatitude.value !== null && userLongitude.value !== null) {
+        await loadEvents({ preserveSelection: true })
     }
 }
 
@@ -770,9 +783,11 @@ watch(showMyLocation, async (enabled) => {
 })
 
 watch(locationRadius, async () => {
-    // Only reload if location is enabled and we have coordinates
-    if (!isInitialLoadComplete.value || !showMyLocation.value) return
+    // Only reload if we have coordinates (from either geolocation or address search)
+    if (!isInitialLoadComplete.value) return
     if (userLatitude.value === null || userLongitude.value === null) return
+    // Don't reload while user is still sliding
+    if (isRadiusSliding.value) return
     await loadEvents({ preserveSelection: true })
 })
 

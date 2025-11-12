@@ -58,19 +58,21 @@
 
             <div v-if="showMyLocation || userLatitude !== null" class="calendar-sidebar__radius">
                 <label class="calendar-sidebar__label" for="radius-slider">
-                    {{ radiusLabel }}: {{ radius }} km
+                    {{ radiusLabel }}: {{ radiusModel }} km
                 </label>
 
                 <input
                     id="radius-slider"
                     type="range"
-                    v-model.number="radius"
+                    v-model.number="radiusModel"
                     :min="radiusMin"
                     :max="radiusMax"
                     :step="radiusStep"
                     :disabled="isLoading"
-                    @mouseup="onRadiusSliderRelease"
-                    @touchend="onRadiusSliderRelease"
+                    @mousedown="emit('radius-slide-start')"
+                    @mouseup="emit('radius-slide-end')"
+                    @touchstart="emit('radius-slide-start')"
+                    @touchend="emit('radius-slide-end')"
                     class="calendar-sidebar__range-slider"
                 />
                 <div class="calendar-sidebar__range-labels">
@@ -119,6 +121,8 @@ interface Emits {
     (e: 'update:tempEndDate', value: string | null): void
     (e: 'update:showMyLocation', value: boolean): void
     (e: 'update:locationRadius', value: number): void
+    (e: 'radius-slide-start'): void
+    (e: 'radius-slide-end'): void
     (e: 'date-confirm', which: 'start' | 'end', event: Event): void
     (e: 'clear-date-filters'): void
     (e: 'reset-filters'): void
@@ -165,13 +169,6 @@ const addressQueryModel = ref('')
 const radiusMin = 1
 const radiusMax = 100
 const radiusStep = 1
-const radius = ref(1) // initial value
-
-// Action triggered when slider is released
-function onRadiusSliderRelease() {
-  emit('update:locationRadius', radius.value)
-}
-
 
 const onSearchEnter = () => {
     emit('update:searchQuery', internalSearch.value.trim())

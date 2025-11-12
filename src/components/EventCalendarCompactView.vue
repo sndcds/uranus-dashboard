@@ -10,7 +10,7 @@
             <span>{{ emptyLabel }}</span>
         </div>
         <div v-else class="calendar-events-compact">
-            <article v-for="event in filteredEvents" :key="event.id" class="calendar-event-compact">
+            <article v-for="event in filteredEvents" :key="`${event.id}-${event.event_date_id}`" class="calendar-event-compact">
                 <div class="calendar-event-compact__summary"
                     @click="toggleEvent(event.id, event.event_date_id, $event)">
                     <div class="calendar-event-compact__time">
