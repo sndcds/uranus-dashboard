@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import {computed, nextTick, ref, watch, inject, type Ref} from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
 import UranusCard from "@/components/uranus/UranusCard.vue";
@@ -92,6 +92,17 @@ import UranusDateInput from "@/components/uranus/UranusDateInput.vue";
 import UranusTimeInput from "@/components/uranus/UranusTimeInput.vue";
 import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
 import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
+
+interface ChoosableVenue {
+  id: number
+  name: string
+  city: string
+  country_code: string
+}
+
+// Inject and type it correctly
+const choosableVenues = inject<Ref<ChoosableVenue[]>>('choosableVenues')
+
 
 const props = defineProps<{
   organizerId: number | null

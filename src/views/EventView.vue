@@ -109,7 +109,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, provide } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
@@ -219,10 +219,20 @@ interface EventDetail {
   release_date?: string | null
 }
 
+interface ChoosableVenue {
+  id: number
+  name: string
+  city: string
+  country_code: string
+}
+
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
 
 const event = ref<EventDetail | null>(null)
+const choosableVenues = ref<ChoosableVenue[]>([])
+provide('choosableVenues', choosableVenues)
+
 const error = ref<string | null>(null)
 const eventLinks = ref<EventUrl[]>([])
 
@@ -678,8 +688,29 @@ const loadEvent = async () => {
   }
 }
 
+const loadChoosableVenues = async () => {
+  try {
+    const { data } = await apiFetch<Venue[]>('/api/admin/user/choosable-event-venues')
+    choosableVenues.value = data
+
+    if (!data || data.length === 0) {
+      choosableVenues.value = []
+      return
+    }
+
+    choosableVenues.value = data
+    error.value = null
+  } catch (err) {
+    console.error(err)
+    error.value = t('choosable_venues_load_error')
+    choosableVenues.value = []
+  }
+}
+
+
 onMounted(() => {
   void loadEvent()
+  void loadChoosableVenues()
 })
 </script>
 
