@@ -385,7 +385,7 @@ const removeMember = async (member: OrganizerTeamMember) => {
     memberActionId.value = member.user_id
 
     try {
-        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/members/${member.user_id}`, {
+        await apiFetch(`/api/admin/organizer/team/member/${member.user_id}`, {
             method: 'DELETE',
         })
 
