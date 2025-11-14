@@ -229,7 +229,11 @@ const isAdminPage = computed(() => route.path.startsWith('/admin'))
 // User data
 const userName = computed(() => userStore.displayName || 'User')
 const userEmail = computed(() => userStore.emailAddress)
-const userAvatar = computed(() => userStore.userAvatar)
+const userAvatar = computed({
+    get: () => userStore.userAvatar,
+    set: (avatarUrl) => userStore.setUserAvatar(avatarUrl)
+})
+
 
 const userInitials = computed(() => {
     const name = userName.value
@@ -311,15 +315,15 @@ const fetchUserProfile = async () => {
         const { data } = await apiFetch<{
             display_name: string
             email_address: string
-            user_avatar: string | null
-            user_id: string
+          avatar_url: string | null
+            user_id: number
         }>('/api/admin/user/me')
 
         if (data) {
             userStore.setUserId(data.user_id)
             userStore.setDisplayName(data.display_name)
             userStore.setEmailAddress(data.email_address)
-            userStore.setUserAvatar(data.user_avatar)
+            userStore.setUserAvatar(data.avatar_url)
         }
     } catch (err) {
         console.error('Failed to fetch user profile:', err)
@@ -362,6 +366,15 @@ watch(() => tokenStore.isAuthenticated, (isAuthenticated) => {
         fetchUserProfile()
     }
 })
+
+// Watch the Pinia store value
+watch(
+    () => userStore.userAvatar,
+    (newAvatar) => {
+      userAvatar.value = newAvatar
+    },
+    { immediate: true } // update immediately on component mount
+)
 
 onMounted(() => {
     initializePreferences()

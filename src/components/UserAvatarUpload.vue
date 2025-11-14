@@ -35,6 +35,8 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useUserStore } from '@/store/userStore'
 import { useTokenStore } from '@/store/tokenStore'
 import { apiFetch } from '@/api'
+import { onMounted } from 'vue'
+
 
 const props = withDefaults(
     defineProps<{
@@ -137,7 +139,7 @@ const loadAvatar = async () => {
     isLoadingAvatar.value = true
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/${userId}/avatar/256`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/${userId}/avatar/64`, {
             method: 'GET',
             headers: Object.keys(headers).length ? headers : undefined,
             cache: 'no-store',
