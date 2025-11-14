@@ -31,6 +31,7 @@ import MapView from '@/views/MapView.vue'
 import EmptyVenuesView from '@/views/EmptyVenuesView.vue'
 import EmptyEventsView from '@/views/EmptyEventsView.vue'
 import UserActivateView from '@/views/UserActivateView.vue'
+import FormOrganizerTeamView from '@/views/FormOrganizerTeamView.vue'
 
 import GenericLayout from '@/components/layout/GenericLayout.vue'
 
@@ -68,6 +69,11 @@ const routes = [
                 path: 'organizer/:id/edit',
                 name: 'admin-edit-organizer',
                 component: FormOrganizerUpdateView,
+            },
+            {
+                path: 'organizer/:id/team',
+                name: 'admin-team-organizer',
+                component: FormOrganizerTeamView,
             },
             {
                 path: 'organizer/:id/venue/create',

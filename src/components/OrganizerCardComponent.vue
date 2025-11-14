@@ -1,7 +1,10 @@
 <template>
   <div class="uranus-card" :class="{ 'organizer-card--active': appStore.organizerId === organizer.organizer_id }">
-    <header>
+    <header class="organizer-card__header">
       <h2>{{ organizer.organizer_name }}</h2>
+      <router-link :to="`/admin/organizer/${organizer.organizer_id}/team`" class="uranus-secondary-button organizer-card__edit-button">
+        {{ t('manage_team') }}
+      </router-link>
     </header>
 
     <div class="organizer-card__button-group">
@@ -24,9 +27,9 @@
       <table class="organizer-card__table simple-table">
         <thead>
           <tr>
-            <th class="organizer-card__table-header">Venue</th>
-            <th class="organizer-card__table-header organizer-card__table-header--right">Spaces</th>
-            <th class="organizer-card__table-header organizer-card__table-header--right">Events</th>
+            <th class="organizer-card__table-header">{{ t('organizer_table_header_venue') }}</th>
+            <th class="organizer-card__table-header organizer-card__table-header--right">{{ t('organizer_table_header_spaces') }}</th>
+            <th class="organizer-card__table-header organizer-card__table-header--right">{{ t('organizer_table_header_events') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -43,7 +46,7 @@
           </tr>
           <tr class="organizer-card__table-row organizer-card__table-row--total">
             <td class="organizer-card__table-cell">
-              <strong class="organizer-card__total-label">Total</strong>
+              <strong class="organizer-card__total-label">{{ t('organizer_table_total_label') }}</strong>
             </td>
             <td class="organizer-card__table-cell organizer-card__table-cell--right"></td>
             <td class="organizer-card__table-cell organizer-card__table-cell--right">
@@ -55,7 +58,7 @@
     </div>
 
     <div v-else class="organizer-card__empty">
-      <em class="organizer-card__empty-text">No venues found</em>
+      <em class="organizer-card__empty-text">{{ t('organizer_no_venues_label') }}</em>
     </div>
 
     <PasswordConfirmModal :show="showDeleteModal" :title="t('confirm_delete_organizer')"
@@ -168,6 +171,24 @@ const confirmDelete = async ({ password }: { password: string }) => {
 </script>
 
 <style scoped lang="scss">
+.organizer-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--color-text);
+  }
+
+  .organizer-card__edit-button {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+  }
+}
+
 .organizer-actions {
   display: flex;
   gap: 0.5rem;
