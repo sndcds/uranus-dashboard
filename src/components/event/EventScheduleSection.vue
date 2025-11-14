@@ -70,6 +70,7 @@ interface EventScheduleEntry {
   endTime: string | null
   entryTime: string | null
   allDay: boolean
+  venueId: number | null
   spaceId: number | null
 }
 
@@ -268,6 +269,7 @@ function mapApiToEntry(item: any): EventScheduleEntry {
     endTime: item.end_time ?? null,
     entryTime: item.entry_time ?? null,
     allDay: item.all_day ?? false,
+    venueId: typeof item.venue_id === 'number' ? item.venue_id : null,
     spaceId: typeof item.space_id === 'number' ? item.space_id : null,
   }
 }
@@ -291,6 +293,7 @@ function deriveScheduleFromProps() {
         endTime: props.endTime ?? null,
         entryTime: props.entryTime ?? null,
         allDay: false,
+        venueId: props.venueId ?? null,
         spaceId: props.spaceId ?? null,
       },
     ]
@@ -301,17 +304,6 @@ function deriveScheduleFromProps() {
 
 function syncScheduleEntries() {
   scheduleEntries.value = deriveScheduleFromProps()
-}
-
-
-// --- Load spaces ---
-async function loadVenues(venueId: number | null) {
-  try {
-    const data = null // TODO: Fetch data for user/organizer
-    availableSpaces.value = Array.isArray(data) ? data : []
-  } catch {
-    availableSpaces.value = []
-  }
 }
 
 // --- Load spaces ---
@@ -334,6 +326,7 @@ const startEditingSchedule = async () => {
     startTime: entry.startTime,
     endTime: entry.endTime,
     entryTime: entry.entryTime,
+    venueId: entry.venueId,
     spaceId: entry.spaceId,
     allDayEvent: entry.allDay,
   }))
@@ -370,6 +363,7 @@ const saveSchedule = async () => {
         end_time: entry.endTime ?? null,
         entry_time: entry.entryTime ?? null,
         all_day: entry.allDayEvent ?? false,
+        venue_id: entry.venueId ?? null,
         space_id: entry.spaceId ?? null,
       })),
     }
@@ -387,6 +381,7 @@ const saveSchedule = async () => {
       endTime: entry.endTime,
       entryTime: entry.entryTime,
       allDay: entry.allDayEvent,
+      venueId: entry.venueId,
       spaceId: entry.spaceId,
     }))
 

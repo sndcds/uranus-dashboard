@@ -15,6 +15,7 @@
         @submit="handleSubmit"
         @clear-error="clearError"
     />
+
   </div>
 </template>
 
@@ -22,7 +23,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { apiFetch } from '@/api'
+import {apiFetch, deepClean} from '@/api'
 import { useAppStore } from '@/store/appStore'
 
 import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
@@ -49,7 +50,7 @@ const handleSubmit = async (payload: EventFormSubmitPayload) => {
     try {
         const { status, data } = await apiFetch('/api/admin/event/create', {
             method: 'POST',
-            body: JSON.stringify(payload),
+            body: JSON.stringify(deepClean(payload)),
         })
 
         if (status >= 200 && status < 300) {

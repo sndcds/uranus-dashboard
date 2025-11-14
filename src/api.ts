@@ -176,3 +176,24 @@ export async function apiFetch<T = unknown>(
         throw err;
     }
 }
+
+/**
+ * Recursively removes all null and undefined fields from an object or array.
+ */
+export function deepClean<T>(obj: T): T {
+    if (Array.isArray(obj)) {
+        return obj
+            .map((item) => deepClean(item))
+            .filter((item) => item !== null && item !== undefined) as T
+    } else if (obj !== null && typeof obj === 'object') {
+        const cleaned: any = {}
+        Object.entries(obj).forEach(([key, value]) => {
+            const cleanedValue = deepClean(value)
+            if (cleanedValue !== null && cleanedValue !== undefined) {
+                cleaned[key] = cleanedValue
+            }
+        })
+        return cleaned
+    }
+    return obj
+}

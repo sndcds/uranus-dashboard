@@ -73,12 +73,12 @@ export interface EventTypeGenrePair {
 
 export interface EventDateModel {
     startDate: string
-    endDate: string | null
     startTime: string
+    endDate: string | null
     endTime: string | null
     entryTime: string | null
     spaceId: number | null
-    allDayEvent: boolean
+    allDayEvent: boolean | null
 }
 
 export interface EventDetailsModel {
@@ -106,8 +106,8 @@ export interface EventFormSubmitPayload {
     languages: string[]
     min_age: number | null
     max_age: number | null
-    participation_info: string
-    presenter: string
+    participation_info: string | null
+    presenter: string | null
     dates: Array<{
         start_date: string
         end_date: string | null
@@ -268,8 +268,8 @@ const handleSubmit = () => {
         languages: eventDetails.languages || [],
         min_age: eventDetails.minAge,
         max_age: eventDetails.maxAge,
-        participation_info: eventDetails.participationInfo,
-        presenter: eventDetails.presenter,
+        participation_info: eventDetails.participationInfo || null,
+        presenter: eventDetails.presenter || null,
         dates: eventDates.value.map((date) => ({
             start_date: date.startDate,
             end_date: date.endDate,
@@ -277,7 +277,7 @@ const handleSubmit = () => {
             end_time: date.endTime,
             entry_time: date.entryTime,
             space_id: date.spaceId,
-            all_day: date.allDayEvent,
+            all_day: date.allDayEvent || null,
         })),
     })
 }

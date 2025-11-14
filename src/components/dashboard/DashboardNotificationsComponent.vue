@@ -159,10 +159,10 @@ const formatEventCountdown = (days: number) => {
 const loadNotifications = async () => {
   isLoading.value = true
   error.value = null
-  
+
   try {
     const { data } = await apiFetch<Notification[]>(`/api/admin/user/event/notification?lang=${locale.value}`)
-    
+
     if (Array.isArray(data)) {
       notifications.value = data
     } else {
@@ -298,7 +298,7 @@ onMounted(() => {
 
 .events-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 8px;
 }
 </style>

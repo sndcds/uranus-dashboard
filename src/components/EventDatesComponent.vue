@@ -10,149 +10,102 @@
         </div>
 
         <p v-if="errors[index]" class="field-error">{{ errors[index] }}</p>
-          <div class="event-dates__grid">
-            <UranusDateInput
-                id="`start-date-${index}`"
-                v-model="date.startDate"
-                :label="t('event_start_date')"
-                required
+        <div class="event-dates__grid">
+
+          <UranusDateInput
+              :id="`start-date-${index}`"
+              v-model="date.startDate"
+              :label="t('event_start_date')"
+              required
+          />
+
+          <UranusTimeInput
+              :id="`start-time-${index}`"
+              v-model="date.startTime"
+              :label="t('event_start_time')"
+              required
+          />
+
+          <UranusDateInput
+              :id="`end-date-${index}`"
+              v-model="date.endDate"
+              :label="t('event_end_date')"
+          />
+
+          <UranusTimeInput
+              :id="`end-time-${index}`"
+              v-model="date.endTime"
+              :label="t('event_end_time')"
+          />
+
+          <label :for="`all-day-${index}`" class="checkbox-label">
+            <input
+                type="checkbox"
+                :id="`all-day-${index}`"
+                v-model="date.allDayEvent"
+                class="checkbox-input"
             />
+            <span class="checkbox-text">{{ t('event_all_day') }}</span>
+          </label>
 
-            <UranusTimeInput
-                id="`start-time-${index}`"
-                v-model="date.startTime"
-                :label="t('event_start_time')"
-                required
-            />
+          <UranusTimeInput
+              :id="`entry-time-${index}`"
+              v-model="date.entryTime"
+              :label="t('event_entry_time')"
+          />
 
-            <UranusDateInput
-                id="`end-date-${index}`"
-                v-model="date.endDate"
-                :label="t('event_end_date')"
-            />
+          <!-- Venue Selector -->
+          <UranusFieldLabel :id="`venue-${index}`" :label="t('event_venue_label')">
+            <select
+                :id="`venue-${index}`"
+                v-model="date.venueId"
+                @change="() => onVenueSelected(date.venueId, date)"
+            >
+              <option :value="null" disabled>{{ t('select_placeholder') }}</option>
+              <option v-for="venue in choosableVenues" :key="venue.id" :value="venue.id">
+                {{ venue.name }}
+              </option>
+            </select>
+          </UranusFieldLabel>
 
-            <UranusTimeInput
-                id="`end-time-${index}`"
-                v-model="date.endTime"
-                :label="t('event_end_time')"
-            />
+          <!-- Space Selector -->
+          <UranusFieldLabel :id="`space-${index}`" :label="t('event_space_label')">
+            <select
+                :id="`space-${index}`"
+                v-model="date.spaceId"
+            >
+              <option :value="null" disabled>{{ t('select_placeholder') }}</option>
+              <option v-for="sp in date.choosableSpaces" :key="sp.id" :value="sp.id">
+                {{ sp.name }}
+              </option>
+            </select>
+          </UranusFieldLabel>
 
-            <label :for="`all-day-${index}`" class="checkbox-label">
-              <input
-                  type="checkbox"
-                  :id="`all-day-${index}`"
-                  v-model="date.allDayEvent"
-                  class="checkbox-input"
-              />
-              <span class="checkbox-text">{{ t('event_all_day') }}</span>
-            </label>
-
-            <UranusTimeInput
-                id="`entry-time-${index}`"
-                v-model="date.entryTime"
-                :label="t('event_entry_time')"
-            />
-
-            <UranusFieldLabel :id="`venue-${index}`" :label="t('event_venue_label')">
-              <select
-                  :id="`venue-${index}`"
-                  v-model="date.venueId"
-                  @change="onVenueSelected(date.venueId)"
-              >
-                <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                <option v-for="venue in choosableVenues" :key="venue.id" :value="venue.id">
-                  {{ venue.name }}
-                </option>
-              </select>
-            </UranusFieldLabel>
-
-            <UranusFieldLabel :id="`space-${index}`" :label="t('event_space_label')">
-              <select
-                  :id="`space-${index}`"
-                  v-model="date.spaceId"
-                  @change="onSpaceSelected(date.spaceId)"
-              >
-                <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                <option v-for="sp in choosableSpaces" :key="sp.id" :value="sp.id">
-                  {{ sp.name }}
-                </option>
-              </select>
-            </UranusFieldLabel>
-
-          </div>
         </div>
       </div>
+    </div>
 
-      <div class="event-section__actions">
-        <button type="button" class="uranus-secondary-button" @click="addDate">
-          {{ t('event_add_date') }}
-        </button>
-      </div>
+    <div class="event-section__actions">
+      <button type="button" class="uranus-secondary-button" @click="addDate">
+        {{ t('event_add_date') }}
+      </button>
+    </div>
   </UranusInlineSectionLayout>
 </template>
 
 <script setup lang="ts">
-import {computed, nextTick, ref, watch, inject, type Ref} from 'vue'
+import { ref, watch, inject, nextTick, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
-import UranusCard from "@/components/uranus/UranusCard.vue";
-import UranusDateInput from "@/components/uranus/UranusDateInput.vue";
-import UranusTimeInput from "@/components/uranus/UranusTimeInput.vue";
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
-import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
+import UranusDateInput from "@/components/uranus/UranusDateInput.vue"
+import UranusTimeInput from "@/components/uranus/UranusTimeInput.vue"
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
+import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue"
 
-interface ChoosableVenue {
-  id: number
-  name: string
-  city: string
-  country_code: string
-}
-
-interface ChoosableSpace {
-  id: number
-  name: string
-}
-
-
-// Inject and type it correctly
-const choosableVenues = inject<Ref<ChoosableVenue[]>>('choosableVenues')
-const choosableSpaces = ref<SelectOption[]>([])
-
-function onVenueSelected(selectedId: number | null) {
-  loadSpaces(selectedId)
-}
-
-function onSpaceSelected(selectedId: number | null) {
-  console.log("space_id: " + selectedId)
-}
-
-async function loadSpaces(venueId: number | null) {
-  if (!venueId) return
-  try {
-    const { data } = await apiFetch<ChoosableSpace[]>(`/api/choosable-spaces/venue/${venueId}`)
-    choosableSpaces.value = Array.isArray(data) ? data : []
-  } catch (err) {
-    console.error('Failed to load spaces:', err)
-    choosableSpaces.value = []
-  }
-}
-
-
-
-const props = defineProps<{
-  organizerId: number | null
-  modelValue: EventDate[]
-  venues?: SelectOption[]
-  spaces?: SelectOption[]
-}>()
-
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: EventDate[]): void
-}>()
-
-const { t } = useI18n({ useScope: 'global' })
+interface ChoosableVenue { id: number; name: string; }
+interface ChoosableSpace { id: number; name: string; }
+interface SelectOption { id: number; name: string; }
 
 interface EventDate {
   startDate: string
@@ -163,131 +116,85 @@ interface EventDate {
   venueId: number | null
   spaceId: number | null
   allDayEvent: boolean
+  choosableSpaces: SelectOption[]
 }
 
-interface SelectOption {
-  id: number
-  name: string
-}
+const choosableVenues = inject<Ref<ChoosableVenue[]>>('choosableVenues') ?? ref([])
 
+const props = defineProps<{ modelValue: EventDate[] }>()
+const emit = defineEmits<{ (e: 'update:modelValue', value: EventDate[]): void }>()
+
+const { t } = useI18n({ useScope: 'global' })
 const localDates = ref<EventDate[]>([])
 const errors = ref<string[]>([])
-const venues = computed<SelectOption[]>(() => (Array.isArray(props.venues) ? props.venues : []))
-const spaces = computed<SelectOption[]>(() => (Array.isArray(props.spaces) ? props.spaces : []))
 let suppressEmit = false
 
 const emptyDate = (): EventDate => ({
-  startDate: '',
-  endDate: null,
-  startTime: '',
-  endTime: null,
-  entryTime: null,
-  venueId: null,
-  spaceId: null,
-  allDayEvent: false,
+  startDate: '', endDate: null,
+  startTime: '', endTime: null,
+  entryTime: null, venueId: null,
+  spaceId: null, allDayEvent: false,
+  choosableSpaces: [],
 })
 
-const toMinutes = (time: string | null): number | null => {
+// --- Helpers ---
+const toMinutes = (time: string | null) => {
   if (!time) return null
-  const [hours, minutes] = time.split(':')
-  const h = Number(hours)
-  const m = Number(minutes)
-  if (Number.isNaN(h) || Number.isNaN(m)) return null
-  return h * 60 + m
+  const [h, m] = time.split(':').map(Number)
+  return isNaN(h) || isNaN(m) ? null : h * 60 + m
 }
-
-const isAfter = (start: string, end: string | null): boolean => {
-    if (!end) return false
-    const startDate = new Date(start)
-    const endDate = new Date(end)
-    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) return false
-    return endDate.getTime() < startDate.getTime()
-}
-
+const isAfter = (start: string, end: string | null) => !end ? false : new Date(end).getTime() < new Date(start).getTime()
 const evaluateDateError = (date: EventDate): string => {
-    if (!date.startDate) return t('event_error_required')
-    if (!date.startTime) return t('event_error_required')
-    const startMinutes = toMinutes(date.startTime)
-    if (startMinutes === null) return t('event_error_required')
-
-    if (date.entryTime) {
-        const entryMinutes = toMinutes(date.entryTime)
-        if (entryMinutes === null || entryMinutes >= startMinutes) {
-            return t('event_error_entry_range')
-        }
-    }
-
-    if (date.endTime) {
-        const endMinutes = toMinutes(date.endTime)
-        if (endMinutes === null || startMinutes > endMinutes) {
-            return t('event_error_time_order')
-        }
-    }
-
-    if (date.endDate && isAfter(date.startDate, date.endDate)) {
-        return t('event_error_date_order')
-    }
-
-    return ''
+  if (!date.startDate || !date.startTime) return t('event_error_required')
+  const startMinutes = toMinutes(date.startTime)
+  if (startMinutes === null) return t('event_error_required')
+  if (date.entryTime && (toMinutes(date.entryTime) === null || toMinutes(date.entryTime)! >= startMinutes)) return t('event_error_entry_range')
+  if (date.endTime && (toMinutes(date.endTime) === null || startMinutes > toMinutes(date.endTime)!)) return t('event_error_time_order')
+  if (date.endDate && isAfter(date.startDate, date.endDate)) return t('event_error_date_order')
+  return ''
 }
 
-const initializeDates = (value: EventDate[] | undefined) => {
-    suppressEmit = true
-    const incoming = Array.isArray(value) && value.length ? value : [emptyDate()]
-    localDates.value = incoming.map((item) => ({ ...emptyDate(), ...item }))
-    errors.value = incoming.map(() => '')
-    nextTick(() => {
-        suppressEmit = false
-    })
+// --- Initialize ---
+const initializeDates = (value?: EventDate[]) => {
+  suppressEmit = true
+  const incoming = value && value.length ? value : [emptyDate()]
+  localDates.value = incoming.map(d => ({ ...emptyDate(), ...d }))
+  errors.value = incoming.map(() => '')
+  nextTick(() => suppressEmit = false)
 }
 
-watch(
-    () => props.modelValue,
-    (value) => {
-        initializeDates(value)
-    },
-    { deep: true, immediate: true }
-)
+watch(() => props.modelValue, v => initializeDates(v), { deep: true, immediate: true })
 
-watch(
-    localDates,
-    (value) => {
-        if (!suppressEmit) {
-            emit(
-                'update:modelValue',
-                value.map((item) => ({ ...item }))
-            )
-        }
-        errors.value = errors.value.map((error, index) => {
-            if (!error) return ''
-            const date = value[index]
-            return date ? evaluateDateError(date) : ''
-        })
-    },
-    { deep: true }
-)
+watch(localDates, value => {
+  if (!suppressEmit) emit('update:modelValue', value.map(d => ({ ...d })))
+  errors.value = value.map((date, i) => errors.value[i] ? evaluateDateError(date) : '')
+}, { deep: true })
 
-const addDate = () => {
-    localDates.value = [...localDates.value, emptyDate()]
-    errors.value = [...errors.value, '']
+// --- Add / Remove ---
+const addDate = () => { localDates.value.push(emptyDate()); errors.value.push('') }
+const removeDate = (index: number) => { localDates.value.splice(index,1); errors.value.splice(index,1); if(!localDates.value.length) localDates.value.push(emptyDate()) }
+
+// --- Venue / Space ---
+async function loadSpacesForDate(date: EventDate, venueId: number | null) {
+  if (!venueId) { date.choosableSpaces = []; date.spaceId = null; return }
+  try {
+    const { data } = await apiFetch<SelectOption[]>(`/api/choosable-spaces/venue/${venueId}`)
+    date.choosableSpaces = Array.isArray(data) ? data : []
+    if (!date.choosableSpaces.find(s => s.id === date.spaceId)) date.spaceId = null
+  } catch { date.choosableSpaces = []; date.spaceId = null }
+}
+function onVenueSelected(selectedVenueId: number | null, date: EventDate) {
+  date.spaceId = null
+  void loadSpacesForDate(date, selectedVenueId)
 }
 
-const removeDate = (index: number) => {
-    const updated = [...localDates.value]
-    updated.splice(index, 1)
-    const updatedErrors = [...errors.value]
-    updatedErrors.splice(index, 1)
-    localDates.value = updated.length ? updated : [emptyDate()]
-    errors.value = updated.length ? updatedErrors : ['']
+function validate() {
+  errors.value = localDates.value.map(evaluateDateError)
+  return errors.value.every(msg => !msg)
 }
-
-const validate = () => {
-    errors.value = localDates.value.map((date) => evaluateDateError(date))
-    return errors.value.every((msg) => !msg)
-}
-
 defineExpose({ validate })
 </script>
+
 
 <style scoped lang="scss">
 .event-section__form {

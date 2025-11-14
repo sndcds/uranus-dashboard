@@ -27,17 +27,6 @@
     </UranusCard>
 
     <UranusCard>
-      <EventScheduleSection
-          :event-id="event.id"
-          :organizer-id="event.organizer_id"
-          :venue-id="event.venue_id"
-          :event-dates="eventSchedulePayload"
-          :space-id="event.space_id"
-          :space-name="event.space_name ?? ''"
-          @updated="loadEvent" />
-
-      <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);"/>
-
       <EventVenueSection
           :event-id="event.id"
           :organizer-id="event.organizer_id"
@@ -52,6 +41,17 @@
           :space-building-level="event.space_building_level !== null ? String(event.space_building_level) : null"
           :space-seating-capacity="event.space_seating_capacity"
           :space-total-capacity="event.space_total_capacity"
+          @updated="loadEvent" />
+
+      <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);"/>
+
+      <EventScheduleSection
+          :event-id="event.id"
+          :organizer-id="event.organizer_id"
+          :venue-id="event.venue_id"
+          :event-dates="eventSchedulePayload"
+          :space-id="event.space_id"
+          :space-name="event.space_name ?? ''"
           @updated="loadEvent" />
 
       <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);"/>
