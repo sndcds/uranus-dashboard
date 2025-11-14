@@ -15,10 +15,21 @@ const i18n = createI18n({
       events_calendar_search_placeholder: 'Search by title, organizer, or location…',
       events_calendar_date_label: 'Choose a date',
       events_calendar_end_date_label: 'End date',
-      events_calendar_type_label: 'Event type',
       events_calendar_all_dates: 'All dates',
-      events_calendar_all_categories: 'All categories',
       events_calendar_reset_filters: 'Reset filters',
+      events_calendar_date_range_placeholder: 'Select a date range',
+      events_calendar_apply_date_range: 'Apply',
+      events_calendar_clear_date_range: 'Clear',
+      events_calendar_previous_month: 'Previous month',
+      events_calendar_next_month: 'Next month',
+      events_calendar_location_label: 'Location search',
+      events_calendar_show_my_location: 'Show my location',
+      events_calendar_radius_label: 'Radius',
+      events_calendar_address_search_label: 'Address search',
+      events_calendar_address_search_placeholder: 'City…',
+      events_calendar_search_address_button: 'Search',
+      events_calendar_venue_label: 'Venue',
+      events_calendar_venue_all_option: 'All venues',
     },
   },
 })
@@ -28,19 +39,20 @@ describe('EventCalendarSidebar', () => {
     searchId: 'search-test',
     dateId: 'date-test',
     endDateId: 'end-date-test',
-    typeId: 'type-test',
+    addressSearchId: 'address-test',
     searchQuery: '',
-    selectedType: 'all' as 'all' | string,
     selectedDate: null,
     selectedEndDate: null,
+    selectedVenue: null,
     tempStartDate: null,
     tempEndDate: null,
     isLoading: false,
-    isTypesLoading: false,
-    typeOptions: ['Concert', 'Exhibition', 'Workshop'],
-    lastAvailableDate: '2025-12-31',
-    firstAvailableDate: '2025-01-01',
     filtersActive: false,
+    showMyLocation: false,
+    locationRadius: 25,
+    isGeocodingLoading: false,
+    userLatitude: null,
+    venueCountOptions: [],
   }
 
   beforeEach(() => {
@@ -72,7 +84,7 @@ describe('EventCalendarSidebar', () => {
     expect(searchInput.attributes('type')).toBe('search')
   })
 
-  it('emits update:searchQuery when search input changes', async () => {
+  it('emits update:searchQuery when pressing enter inside search input', async () => {
     const wrapper = mount(EventCalendarSidebar, {
       props: defaultProps,
       global: {
@@ -82,6 +94,7 @@ describe('EventCalendarSidebar', () => {
 
     const searchInput = wrapper.find('#search-test')
     await searchInput.setValue('test query')
+    await searchInput.trigger('keyup.enter')
 
     expect(wrapper.emitted('update:searchQuery')).toBeTruthy()
     expect(wrapper.emitted('update:searchQuery')?.[0]).toEqual(['test query'])
@@ -99,26 +112,36 @@ describe('EventCalendarSidebar', () => {
     })
 
     const searchInput = wrapper.find('#search-test')
-    const dateInput = wrapper.find('#date-test')
-    const endDateInput = wrapper.find('#end-date-test')
+    const dateTrigger = wrapper.find('.calendar-sidebar__date-range-trigger')
 
     expect(searchInput.attributes('disabled')).toBeDefined()
-    expect(dateInput.attributes('disabled')).toBeDefined()
-    expect(endDateInput.attributes('disabled')).toBeDefined()
+    expect(dateTrigger.attributes('disabled')).toBeDefined()
   })
 
-  it('emits date-confirm when date input changes', async () => {
+  it('emits date-range-apply when applying new dates', async () => {
     const wrapper = mount(EventCalendarSidebar, {
-      props: defaultProps,
+      props: {
+        ...defaultProps,
+        tempStartDate: '2025-01-01',
+      },
       global: {
         plugins: [i18n],
       },
     })
 
-    const dateInput = wrapper.find('#date-test')
-    await dateInput.trigger('blur')
+    const trigger = wrapper.find('.calendar-sidebar__date-range-trigger')
+    await trigger.trigger('click')
 
-    expect(wrapper.emitted('date-confirm')).toBeTruthy()
+    const startButton = wrapper.find('[data-date="2025-01-10"]')
+    const endButton = wrapper.find('[data-date="2025-01-15"]')
+    await startButton.trigger('click')
+    await endButton.trigger('click')
+
+    const applyButton = wrapper.find('.calendar-sidebar__date-range-actions .calendar-btn:not(.calendar-btn--ghost)')
+    await applyButton.trigger('click')
+
+    expect(wrapper.emitted('date-range-apply')).toBeTruthy()
+    expect(wrapper.emitted('date-range-apply')?.[0]).toEqual([{ start: '2025-01-10', end: '2025-01-15' }])
   })
 
   it('emits clear-date-filters when clear button clicked', async () => {

@@ -28,21 +28,57 @@
 
         <div class="calendar-sidebar__section calendar-sidebar__section--dates">
             <label class="calendar-sidebar__label" :for="dateId">{{ dateLabel }}</label>
-            <div class="calendar-sidebar__date-controls">
-                <input :id="dateId" type="date" :value="tempStartDate" :disabled="isLoading"
-                    @change="onDateConfirm('start', $event)" @blur="onDateConfirm('start', $event)"
-                    @keyup.enter="onDateConfirm('start', $event)" />
-                <div class="calendar-sidebar__end-date">
-                    <label class="calendar-sidebar__sublabel" :for="endDateId">{{ endDateLabel }}</label>
-                    <input :id="endDateId" type="date" :value="tempEndDate" :disabled="isLoading"
-                        @change="onDateConfirm('end', $event)" @blur="onDateConfirm('end', $event)"
-                        @keyup.enter="onDateConfirm('end', $event)" />
-                </div>
-                <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
-                    :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
-                    {{ showAllDatesLabel }}
+            <div class="calendar-sidebar__date-range-picker" ref="dateRangePickerRef">
+                <button
+                    :id="dateId"
+                    type="button"
+                    class="calendar-sidebar__date-range-trigger"
+                    :disabled="isLoading"
+                    :aria-expanded="isDatePickerOpen ? 'true' : 'false'"
+                    aria-haspopup="dialog"
+                    @click="toggleDatePicker"
+                >
+                    <span class="calendar-sidebar__date-range-text">{{ dateRangeDisplay }}</span>
+                    <span class="calendar-sidebar__date-range-chevron" aria-hidden="true">▾</span>
                 </button>
+
+                <transition name="fade">
+                    <div v-if="isDatePickerOpen" class="calendar-sidebar__date-range-popover" role="dialog"
+                        :aria-labelledby="dateId">
+                        <DateRangeCalendar
+                            :start="datePickerStart || null"
+                            :end="datePickerEnd || null"
+                            :locale="activeLocale"
+                            :previous-month-label="previousMonthLabel"
+                            :next-month-label="nextMonthLabel"
+                            @update:start="onDatePickerStartUpdate"
+                            @update:end="onDatePickerEndUpdate"
+                        />
+                        <div class="calendar-sidebar__date-range-actions">
+                            <button
+                                type="button"
+                                class="calendar-btn calendar-btn--ghost"
+                                :disabled="isLoading"
+                                @click="onClearDateRange"
+                            >
+                                {{ clearDateRangeLabel }}
+                            </button>
+                            <button
+                                type="button"
+                                class="calendar-btn"
+                                :disabled="isLoading"
+                                @click="applyDateRange"
+                            >
+                                {{ applyDateRangeLabel }}
+                            </button>
+                        </div>
+                    </div>
+                </transition>
             </div>
+            <button type="button" class="calendar-btn calendar-btn--ghost calendar-sidebar__all-dates"
+                :disabled="isLoading || (!selectedDate && !selectedEndDate)" @click="clearDateFilters()">
+                {{ showAllDatesLabel }}
+            </button>
         </div>
 
         <div class="calendar-sidebar__section calendar-sidebar__section--location">
@@ -107,8 +143,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import DateRangeCalendar from '@/components/DateRangeCalendar.vue'
 
 interface VenueOption {
     id: number
@@ -147,7 +184,7 @@ interface Emits {
     (e: 'update:locationRadius', value: number): void
     (e: 'radius-slide-start'): void
     (e: 'radius-slide-end'): void
-    (e: 'date-confirm', which: 'start' | 'end', event: Event): void
+    (e: 'date-range-apply', payload: { start: string | null; end: string | null }): void
     (e: 'clear-date-filters'): void
     (e: 'reset-filters'): void
     (e: 'address-search', payload: { query: string; disableMyLocation: boolean }): void
@@ -157,7 +194,8 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
+const fallbackLocale = typeof navigator !== 'undefined' ? navigator.language : 'en'
 
 // Computed for v-model binding
 const searchQueryModel = computed({
@@ -235,6 +273,10 @@ const searchPlaceholder = computed(() => t('events_calendar_search_placeholder')
 const dateLabel = computed(() => t('events_calendar_date_label'))
 const endDateLabel = computed(() => t('events_calendar_end_date_label'))
 const showAllDatesLabel = computed(() => t('events_calendar_all_dates'))
+const applyDateRangeLabel = computed(() => t('events_calendar_apply_date_range'))
+const clearDateRangeLabel = computed(() => t('events_calendar_clear_date_range'))
+const previousMonthLabel = computed(() => t('events_calendar_previous_month'))
+const nextMonthLabel = computed(() => t('events_calendar_next_month'))
 const resetFiltersLabel = computed(() => t('events_calendar_reset_filters'))
 const locationLabel = computed(() => t('events_calendar_location_label'))
 const showMyLocationLabel = computed(() => t('events_calendar_show_my_location'))
@@ -243,13 +285,132 @@ const addressSearchLabel = computed(() => t('events_calendar_address_search_labe
 const addressSearchPlaceholder = computed(() => t('events_calendar_address_search_placeholder'))
 const searchAddressLabel = computed(() => t('events_calendar_search_address_button'))
 
-const onDateConfirm = (which: 'start' | 'end', event: Event) => {
-    emit('date-confirm', which, event)
+const activeLocale = computed(() => locale.value || fallbackLocale)
+
+const dateRangePickerRef = ref<HTMLElement | null>(null)
+const isDatePickerOpen = ref(false)
+const datePickerStart = ref(props.tempStartDate ?? '')
+const datePickerEnd = ref(props.tempEndDate ?? '')
+
+watch(() => props.tempStartDate, (value) => {
+    datePickerStart.value = value ?? ''
+})
+
+watch(() => props.tempEndDate, (value) => {
+    datePickerEnd.value = value ?? ''
+})
+
+const onDatePickerStartUpdate = (value: string | null) => {
+    datePickerStart.value = value ?? ''
+}
+
+const onDatePickerEndUpdate = (value: string | null) => {
+    datePickerEnd.value = value ?? ''
+}
+
+watch(() => props.isLoading, (loading) => {
+    if (loading) {
+        isDatePickerOpen.value = false
+    }
+})
+
+const dateFormatter = computed(() => new Intl.DateTimeFormat(activeLocale.value, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+}))
+
+const formatDateForDisplay = (value: string | null | undefined) => {
+    if (!value) return null
+    const [year, month, day] = value.split('-').map(Number)
+    if (!year || !month || !day) return null
+    const asDate = new Date(year, month - 1, day)
+    return dateFormatter.value.format(asDate)
+}
+
+const dateRangePlaceholder = computed(() => t('events_calendar_date_range_placeholder'))
+
+const dateRangeDisplay = computed(() => {
+    const formattedStart = formatDateForDisplay(props.selectedDate)
+    const formattedEnd = formatDateForDisplay(props.selectedEndDate)
+
+    if (formattedStart && formattedEnd) {
+        return `${formattedStart} \u2013 ${formattedEnd}`
+    }
+
+    if (formattedStart) {
+        return formattedStart
+    }
+
+    if (formattedEnd) {
+        return formattedEnd
+    }
+
+    return dateRangePlaceholder.value
+})
+
+const toggleDatePicker = () => {
+    if (props.isLoading) return
+    if (!isDatePickerOpen.value) {
+        datePickerStart.value = props.tempStartDate ?? ''
+        datePickerEnd.value = props.tempEndDate ?? ''
+    }
+    isDatePickerOpen.value = !isDatePickerOpen.value
+}
+
+const closeDatePicker = () => {
+    isDatePickerOpen.value = false
+}
+
+const normalizeDateValue = (value: string | null | undefined) => {
+    if (!value) return null
+    const trimmed = value.trim()
+    return trimmed.length ? trimmed : null
+}
+
+const ensureRangeOrder = (start: string | null, end: string | null) => {
+    if (start && end && start > end) {
+        return { start: end, end: start }
+    }
+    return { start, end }
+}
+
+const applyDateRange = () => {
+    const start = normalizeDateValue(datePickerStart.value)
+    const end = normalizeDateValue(datePickerEnd.value)
+    const ordered = ensureRangeOrder(start, end)
+
+    emit('date-range-apply', ordered)
+    closeDatePicker()
 }
 
 const clearDateFilters = () => {
     emit('clear-date-filters')
 }
+
+const onClearDateRange = () => {
+    datePickerStart.value = ''
+    datePickerEnd.value = ''
+    clearDateFilters()
+    closeDatePicker()
+}
+
+const onDocumentClick = (event: MouseEvent) => {
+    if (!isDatePickerOpen.value) return
+    const target = event.target as Node
+    if (dateRangePickerRef.value?.contains(target)) {
+        return
+    }
+    closeDatePicker()
+}
+
+onMounted(() => {
+    document.addEventListener('mousedown', onDocumentClick)
+})
+
+onBeforeUnmount(() => {
+    document.removeEventListener('mousedown', onDocumentClick)
+})
 
 const resetFilters = () => {
     addressQueryModel.value = ''
@@ -268,6 +429,8 @@ const resetFilters = () => {
     border: 0px solid var(--border-soft);
     position: sticky;
     top: 100px;
+    z-index: 200;
+    overflow: visible;
 }
 
 .calendar-sidebar__header {
@@ -307,12 +470,6 @@ const resetFilters = () => {
     color: var(--muted-text);
 }
 
-.calendar-sidebar__end-date {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-}
-
 .calendar-sidebar__section input,
 .calendar-sidebar__section select {
     width: 100%;
@@ -334,15 +491,89 @@ const resetFilters = () => {
     padding: 0.55rem 0.85rem;
 }
 
-.calendar-sidebar__date-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
 .calendar-sidebar__all-dates {
     width: 100%;
     justify-content: center;
+}
+
+.calendar-sidebar__date-range-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 999px;
+    border: 1px solid var(--border-soft);
+    padding: 0.65rem 1rem;
+    background: var(--input-bg);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+    cursor: pointer;
+    color: var(--color-text);
+}
+
+.calendar-sidebar__date-range-trigger:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.calendar-sidebar__date-range-trigger:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+.calendar-sidebar__date-range-text {
+    flex: 1;
+    text-align: left;
+}
+
+.calendar-sidebar__date-range-chevron {
+    margin-left: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.calendar-sidebar__date-range-popover {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    background: var(--card-bg, #fff);
+    border-radius: 16px;
+    border: 1px solid var(--border-soft);
+    padding: 1rem;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
+    z-index: 1050;
+    margin-top: 0.5rem;
+}
+
+@media (min-width: 640px) {
+    .calendar-sidebar__date-range-popover {
+        position: absolute;
+        top: calc(100% + 0.5rem);
+        left: 0;
+        width: min(520px, calc(100vw - 2rem));
+        min-width: min(320px, calc(100vw - 2rem));
+        margin-top: 0;
+    }
+}
+
+.calendar-sidebar__date-range-picker {
+    position: relative;
+}
+
+.calendar-sidebar__date-range-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.15s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
 }
 
 .calendar-sidebar__toggle {

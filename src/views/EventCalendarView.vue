@@ -68,12 +68,12 @@
                 :user-latitude="userLatitude"
                 :venue-count-options="venueCountOptions"
                 :selected-venue="selectedVenue"
+                @date-range-apply="onDateRangeApply"
                 @update:search-query="searchQuery = $event"
                 @update:show-my-location="setShowMyLocation"
                 @update:location-radius="locationRadius = $event"
                 @radius-slide-start="isRadiusSliding = true"
                 @radius-slide-end="onRadiusSlideEnd"
-                @date-confirm="onDateConfirm"
                 @clear-date-filters="clearDateFilters"
                 @reset-filters="resetFilters"
                 @address-search="onAddressSearch"
@@ -257,27 +257,12 @@ const tempEndDate = ref<string | null>(null)
 watch(selectedDate, (val) => { tempStartDate.value = val })
 watch(selectedEndDate, (val) => { tempEndDate.value = val })
 
-const onDateConfirm = async (which: 'start' | 'end', event: Event) => {
-    // When user presses Enter or finishes input (onchange/onblur)
-    const target = event.target as HTMLInputElement
-    const value = target.value || null
-
-    // Check if value actually changed to prevent duplicate calls
-    const currentValue = which === 'start' ? selectedDate.value : selectedEndDate.value
-    if (currentValue === value) {
-        return // No change, skip
-    }
-
-    // Update the date value with watcher suspended to avoid double trigger
+const onDateRangeApply = async (payload: { start: string | null; end: string | null }) => {
     withDateWatcherSuspended(() => {
-        if (which === 'start') {
-            selectedDate.value = value
-        } else {
-            selectedEndDate.value = value
-        }
+        selectedDate.value = payload.start ?? null
+        selectedEndDate.value = payload.end ?? null
     })
 
-    // Trigger reload explicitly
     await loadEvents({ preserveSelection: true })
 }
 

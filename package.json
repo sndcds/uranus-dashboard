@@ -1,7 +1,7 @@
 {
   "name": "uranus-dashboard",
   "private": true,
-  "version": "0.12.1",
+  "version": "0.12.7",
   "type": "module",
   "scripts": {
     "dev": "vite",
