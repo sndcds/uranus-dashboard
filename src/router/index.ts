@@ -31,6 +31,7 @@ import MapView from '@/views/MapView.vue'
 import EmptyVenuesView from '@/views/EmptyVenuesView.vue'
 import EmptyEventsView from '@/views/EmptyEventsView.vue'
 import UserActivateView from '@/views/UserActivateView.vue'
+import InviteActivateView from '@/views/InviteActivateView.vue'
 import FormOrganizerTeamView from '@/views/FormOrganizerTeamView.vue'
 
 import GenericLayout from '@/components/layout/GenericLayout.vue'
@@ -145,6 +146,11 @@ const routes = [
                 name: 'admin-user-messages-send',
                 component: MessageSendView,
             },
+            {
+                path: 'invite/accept',
+                name: 'admin-accept-invite',
+                component: InviteActivateView,
+            }
         ],
     },
     {

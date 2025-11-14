@@ -95,6 +95,7 @@ const closeSidebar = () => {
     flex: 1;
     padding: 2rem;
     max-width: 100%;
+    display: flex;
 
     @media (max-width: 768px) {
         padding: 1rem;

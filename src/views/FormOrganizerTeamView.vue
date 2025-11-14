@@ -426,7 +426,7 @@ const submitInvite = async () => {
     isInviting.value = true
 
     try {
-        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/member/invitate`, {
+        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/invitate?lang=${locale.value}`, {
             method: 'POST',
             body: JSON.stringify({ email, role_id: inviteRoleId.value }),
         })
