@@ -69,7 +69,7 @@
                 :venue-count-options="venueCountOptions"
                 :selected-venue="selectedVenue"
                 @update:search-query="searchQuery = $event"
-                @update:show-my-location="showMyLocation = $event"
+                @update:show-my-location="setShowMyLocation"
                 @update:location-radius="locationRadius = $event"
                 @radius-slide-start="isRadiusSliding = true"
                 @radius-slide-end="onRadiusSlideEnd"
@@ -180,6 +180,7 @@ const typeCountOptions = ref<EventTypeSummary[]>([])
 const venueCountOptions = ref<EventVenueSummary[]>([])
 const isInitialLoadComplete = ref(false)
 const suspendDateWatcher = ref(false)
+const suspendShowMyLocationWatcher = ref(false)
 const activeSelectedType = ref<number | string | null>('all')
 const allEventsCount = ref(0)
 const pendingTypeFilterId = ref<number | string | null>(null)
@@ -303,6 +304,22 @@ const withDateWatcherSuspended = (fn: () => void) => {
     } finally {
         void nextTick(() => {
             suspendDateWatcher.value = false
+        })
+    }
+}
+
+const withShowMyLocationWatcherSuspended = (fn: () => void) => {
+    if (suspendShowMyLocationWatcher.value) {
+        fn()
+        return
+    }
+
+    suspendShowMyLocationWatcher.value = true
+    try {
+        fn()
+    } finally {
+        void nextTick(() => {
+            suspendShowMyLocationWatcher.value = false
         })
     }
 }
@@ -599,9 +616,20 @@ const resetFilters = () => {
     selectedType.value = 'all'
     selectedVenue.value = null
     clearDateFilters()
-    showMyLocation.value = false
+    setShowMyLocation(false)
     userLatitude.value = null
     userLongitude.value = null
+}
+
+const setShowMyLocation = (value: boolean, options?: { silent?: boolean }) => {
+    if (options?.silent) {
+        withShowMyLocationWatcherSuspended(() => {
+            showMyLocation.value = value
+        })
+        return
+    }
+
+    showMyLocation.value = value
 }
 
 const applyFiltersFromStore = () => {
@@ -620,7 +648,7 @@ const applyFiltersFromStore = () => {
         selectedType.value = saved.selectedType ?? 'all'
         activeSelectedType.value = saved.activeSelectedType ?? 'all'
         selectedVenue.value = saved.selectedVenue ? { ...saved.selectedVenue } : null
-        showMyLocation.value = Boolean(saved.showMyLocation)
+        setShowMyLocation(Boolean(saved.showMyLocation), { silent: true })
         userLatitude.value = saved.userLatitude
         userLongitude.value = saved.userLongitude
         locationRadius.value = saved.locationRadius ?? 25
@@ -811,9 +839,20 @@ const getUserLocation = () => {
     })
 }
 
-const onAddressSearch = async (query: string) => {
+type AddressSearchPayload = string | { query: string; disableMyLocation?: boolean }
+
+const onAddressSearch = async (payload: AddressSearchPayload) => {
     isGeocodingLoading.value = true
     loadError.value = null
+
+    const rawQuery = typeof payload === 'string' ? payload : payload.query
+    const disableMyLocation = typeof payload === 'string' ? false : Boolean(payload.disableMyLocation)
+
+    const query = rawQuery?.trim() ?? ''
+    if (!query) {
+        isGeocodingLoading.value = false
+        return
+    }
 
     try {
         const result = await fetchCoordinatesForAddress(query, 1)
@@ -821,6 +860,10 @@ const onAddressSearch = async (query: string) => {
         if (!result) {
             loadError.value = t('events_calendar_address_not_found')
             return
+        }
+
+        if (disableMyLocation && showMyLocation.value) {
+            setShowMyLocation(false, { silent: true })
         }
 
         // Set coordinates from geocoding result
@@ -898,6 +941,7 @@ watch(searchQuery, async (newQuery, oldQuery) => {
 
 watch(showMyLocation, async (enabled) => {
     if (!isInitialLoadComplete.value) return
+    if (suspendShowMyLocationWatcher.value) return
 
     if (enabled) {
         try {
@@ -908,7 +952,7 @@ watch(showMyLocation, async (enabled) => {
         } catch (error) {
             console.error('Failed to get user location:', error)
             // Reset toggle if location access fails
-            showMyLocation.value = false
+            setShowMyLocation(false, { silent: true })
 
             // Optionally show error message to user
             loadError.value = error instanceof Error

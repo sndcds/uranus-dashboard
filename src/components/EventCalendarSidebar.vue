@@ -150,7 +150,7 @@ interface Emits {
     (e: 'date-confirm', which: 'start' | 'end', event: Event): void
     (e: 'clear-date-filters'): void
     (e: 'reset-filters'): void
-    (e: 'address-search', query: string): void
+    (e: 'address-search', payload: { query: string; disableMyLocation: boolean }): void
     (e: 'selected-venue', venue: VenueOption | null): void
 }
 
@@ -221,7 +221,10 @@ const onSearchEnter = () => {
 const onAddressSearch = () => {
     const query = addressQueryModel.value.trim()
     if (query) {
-        emit('address-search', query)
+        emit('address-search', {
+            query,
+            disableMyLocation: props.showMyLocation
+        })
     }
 }
 
