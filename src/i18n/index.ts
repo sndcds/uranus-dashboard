@@ -161,6 +161,7 @@ const messages = {
     de: {
         ...event.de,
         ...sharedAuthFor('de'),
+        user_profile_username: 'Benutzername',
         delete: 'Löschen',
         release_date: 'Veröffentlichungsdatum',
         event_teaser_tags: 'Event-Tags',
@@ -787,6 +788,7 @@ const messages = {
     en: {
         ...event.en,
         ...sharedAuthFor('en'),
+        user_profile_username: 'Username',
         delete: 'Delete',
         release_date: 'Release date',
         event_teaser_tags: 'Tags',
@@ -1408,6 +1410,7 @@ const messages = {
     da: {
         ...event.da,
         ...sharedAuthFor('da'),
+        user_profile_username: 'Brugernavn',
         delete: 'Slet',
         release_date: 'Udgivelsesdato',
         event_teaser_tags: 'Tags',

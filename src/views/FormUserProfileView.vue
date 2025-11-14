@@ -37,6 +37,10 @@
                                 :label="t('user_profile_last_name')" autocomplete="family-name"
                                 :disabled="isSubmitting" />
                         </UranusFormRow>
+                        <UranusFormRow class="profile-field-row">
+                            <UranusTextInput id="profile_username" v-model="profile.username"
+                                :label="t('user_profile_username')" />
+                        </UranusFormRow>
 
                         <div class="profile-preferences">
                             <div class="profile-preferences__header">
@@ -101,6 +105,7 @@ import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
 import UranusFormRow from "@/components/uranus/UranusFormRow.vue"
 import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
+import { use } from 'marked'
 
 interface UserProfilePayload {
     user_id?: string | number | null
@@ -108,6 +113,7 @@ interface UserProfilePayload {
     email_address?: string | null
     first_name?: string | null
     last_name?: string | null
+    username?: string | null
     locale?: string | null
     theme?: ThemeMode | null
 }
@@ -123,6 +129,7 @@ const profile = reactive({
     emailAddress: '',
     firstName: '',
     lastName: '',
+    username: ''
 })
 
 const isLoading = ref(true)
@@ -217,6 +224,10 @@ const mapResponseToState = (payload: UserProfilePayload | null | undefined) => {
         profile.lastName = typeof payload.last_name === 'string' ? payload.last_name : ''
     }
 
+    if ('username' in payload) {
+        profile.username = typeof payload.username === 'string' ? payload.username : ''
+    }
+
     const userIdValue = payload.user_id
     if ((typeof userIdValue === 'string' || typeof userIdValue === 'number') && userIdValue !== '') {
         userStore.setUserId(String(userIdValue))
@@ -275,6 +286,7 @@ const submitProfile = async () => {
         email_address: trimmedEmail,
         first_name: profile.firstName.trim() || null,
         last_name: profile.lastName.trim() || null,
+        username: profile.username.trim() || null,
         locale: selectedLocale.value,
         theme: selectedTheme.value,
     }
@@ -366,6 +378,7 @@ const handleAvatarUpdated = () => {
     border-radius: 18px;
     border: 1px solid var(--border-soft);
     background: var(--surface-primary, var(--input-bg));
+    margin-top: clamp(0.5rem, 2vw, 0.75rem);
 }
 
 .profile-preferences__header {
@@ -412,7 +425,7 @@ const handleAvatarUpdated = () => {
 }
 
 .feedback {
-    @include form-feedback($text-align: right);
+    @include form-feedback($text-align: center);
 
     &.feedback--error {
         @include form-feedback-error();

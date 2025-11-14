@@ -305,10 +305,12 @@ onMounted(() => {
         if (!bounds) return
 
         if (coordinates.length === 1) {
-            const [lon, lat] = coordinates[0]
-            const delta = 0.01
-            bounds.extend([lon + delta, lat + delta])
-            bounds.extend([lon - delta, lat - delta])
+            if (coordinates[0]) {
+                const [lon, lat] = coordinates[0]
+                const delta = 0.01
+                bounds.extend([lon + delta, lat + delta])
+                bounds.extend([lon - delta, lat - delta])
+            }
         }
 
         mapInstance.value.fitBounds(bounds, {
