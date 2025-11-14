@@ -352,7 +352,7 @@ const loadTeam = async () => {
 
     try {
         const { data } = await apiFetch<OrganizerTeamResponse>(
-            `/api/admin/organizer/${organizerId.value}/team`
+            `/api/admin/organizer/${organizerId.value}/team?lang=${locale.value}`
         )
 
         members.value = Array.isArray(data?.members) ? data.members : []
@@ -426,7 +426,7 @@ const submitInvite = async () => {
     isInviting.value = true
 
     try {
-        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/invitations`, {
+        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/member/invitate`, {
             method: 'POST',
             body: JSON.stringify({ email, role_id: inviteRoleId.value }),
         })
