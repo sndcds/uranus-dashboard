@@ -104,7 +104,7 @@
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
-import { useAppStore } from '@/store/appStore'
+import { useAppStore, type EventVenueSummary } from '@/store/appStore'
 
 import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'
 import EventCalendarDetailedView from '@/components/EventCalendarDetailedView.vue'
@@ -123,13 +123,6 @@ interface EventTypeSummary {
     type_id: number
     type_name: string
     count: number
-}
-
-interface EventVenueSummary {
-    id: number
-    name: string
-    city: string
-    event_date_count: number
 }
 
 interface EventsResponse {
@@ -189,6 +182,8 @@ const isInitialLoadComplete = ref(false)
 const suspendDateWatcher = ref(false)
 const activeSelectedType = ref<number | string | null>('all')
 const allEventsCount = ref(0)
+const pendingTypeFilterId = ref<number | string | null>(null)
+let isRestoringFilters = false
 
 const searchQuery = ref('')
 const selectedType = ref<'all' | string>('all')
@@ -609,6 +604,37 @@ const resetFilters = () => {
     userLongitude.value = null
 }
 
+const applyFiltersFromStore = () => {
+    const saved = appStore.calendarFilters
+    if (!saved) {
+        return
+    }
+
+    isRestoringFilters = true
+    try {
+        searchQuery.value = saved.searchQuery ?? ''
+        withDateWatcherSuspended(() => {
+            selectedDate.value = saved.selectedDate
+            selectedEndDate.value = saved.selectedEndDate
+        })
+        selectedType.value = saved.selectedType ?? 'all'
+        activeSelectedType.value = saved.activeSelectedType ?? 'all'
+        selectedVenue.value = saved.selectedVenue ? { ...saved.selectedVenue } : null
+        showMyLocation.value = Boolean(saved.showMyLocation)
+        userLatitude.value = saved.userLatitude
+        userLongitude.value = saved.userLongitude
+        locationRadius.value = saved.locationRadius ?? 25
+    } finally {
+        isRestoringFilters = false
+    }
+
+    if (saved.activeSelectedType !== null && saved.activeSelectedType !== 'all') {
+        pendingTypeFilterId.value = saved.activeSelectedType
+    }
+}
+
+applyFiltersFromStore()
+
 const hydrateEvents = (payload: CalendarEvent[]): AugmentedEvent[] => {
     return payload.map((event) => {
         const typeLabels = Array.from(
@@ -749,8 +775,14 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
     }
 }
 
-onMounted(() => {
-    void loadEvents()
+onMounted(async () => {
+    await loadEvents()
+
+    if (pendingTypeFilterId.value !== null && pendingTypeFilterId.value !== 'all') {
+        await filterByType(pendingTypeFilterId.value)
+    }
+
+    pendingTypeFilterId.value = null
 })
 
 const getUserLocation = () => {
@@ -819,6 +851,36 @@ const onRadiusSlideEnd = async () => {
 watch(locale, () => {
 
 })
+
+watch(
+    [
+        searchQuery,
+        selectedDate,
+        selectedEndDate,
+        selectedType,
+        activeSelectedType,
+        selectedVenue,
+        showMyLocation,
+        userLatitude,
+        userLongitude,
+        locationRadius,
+    ],
+    () => {
+        if (isRestoringFilters) return
+        appStore.updateCalendarFilters({
+            searchQuery: searchQuery.value,
+            selectedDate: selectedDate.value,
+            selectedEndDate: selectedEndDate.value,
+            selectedType: selectedType.value,
+            activeSelectedType: activeSelectedType.value,
+            selectedVenue: selectedVenue.value ? { ...selectedVenue.value } : null,
+            showMyLocation: showMyLocation.value,
+            userLatitude: userLatitude.value,
+            userLongitude: userLongitude.value,
+            locationRadius: locationRadius.value,
+        })
+    }
+)
 
 watch(currentView, async () => {
     if (!isInitialLoadComplete.value) return

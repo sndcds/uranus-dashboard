@@ -498,7 +498,7 @@ watch(
         }
 
         if (inviteRoleId.value == null || !ids.includes(inviteRoleId.value)) {
-            inviteRoleId.value = ids[0]
+            inviteRoleId.value = ids[0] ?? null
         }
     },
     { immediate: true }

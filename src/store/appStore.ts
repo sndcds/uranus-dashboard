@@ -1,11 +1,45 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+export interface CalendarFiltersState {
+    searchQuery: string
+    selectedDate: string | null
+    selectedEndDate: string | null
+    selectedType: string
+    activeSelectedType: number | string | null
+    selectedVenue: EventVenueSummary | null
+    showMyLocation: boolean
+    userLatitude: number | null
+    userLongitude: number | null
+    locationRadius: number
+}
+
+export interface EventVenueSummary {
+    id: number
+    name: string
+    city: string
+    event_date_count: number
+}
+
+const getDefaultCalendarFilters = (): CalendarFiltersState => ({
+    searchQuery: '',
+    selectedDate: null,
+    selectedEndDate: null,
+    selectedType: 'all',
+    activeSelectedType: 'all',
+    selectedVenue: null,
+    showMyLocation: false,
+    userLatitude: null,
+    userLongitude: null,
+    locationRadius: 25,
+})
+
 export const useAppStore = defineStore('app', () => {
     // State
     const organizerId = ref<number | null>(null)
     const eventViewMode = ref<'detailed' | 'compact' | 'tiles' | 'map'>('detailed')
     const eventGroupingMode = ref<'daily' | 'monthly'>('daily')
+    const calendarFilters = ref<CalendarFiltersState>(getDefaultCalendarFilters())
 
     // Actions
     function setOrganizerId(id: number | null) {
@@ -20,6 +54,17 @@ export const useAppStore = defineStore('app', () => {
         eventGroupingMode.value = mode
     }
 
+    function updateCalendarFilters(filters: Partial<CalendarFiltersState>) {
+        calendarFilters.value = {
+            ...calendarFilters.value,
+            ...filters,
+        }
+    }
+
+    function resetCalendarFilters() {
+        calendarFilters.value = getDefaultCalendarFilters()
+    }
+
     function clearOrganizerId() {
         organizerId.value = null
     }
@@ -28,9 +73,12 @@ export const useAppStore = defineStore('app', () => {
         organizerId,
         eventViewMode,
         eventGroupingMode,
+        calendarFilters,
         setOrganizerId,
         setViewMode,
         setGroupingMode,
+        updateCalendarFilters,
+        resetCalendarFilters,
         clearOrganizerId
     }
 }, {
