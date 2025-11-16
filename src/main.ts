@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import { createPinia } from 'pinia'
-import i18n from './i18n' // import the i18n instance
+import { i18n } from './i18n' // import the i18n instance
 import router from './router'
 
 import { useThemeStore } from '@/store/themeStore'
