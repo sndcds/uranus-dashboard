@@ -16,7 +16,6 @@
             :error="error"
             :api-base="apiBase"
             @deleted="removeEventCard" />
-      <JSONAdminFetch api-path="/api/admin/event/create" />
     </div>
 </template>
 

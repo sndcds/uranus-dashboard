@@ -58,7 +58,7 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     const { status, data } = await apiFetch(apiPath, {
-      method: 'POST',
+      method: 'PUT',
       body: JSON.stringify(deepClean(parsedJson)),
     })
 
@@ -83,6 +83,7 @@ const handleSubmit = async () => {
 <style scoped>
 .uranus-textarea {
   width: 100%;
+  height: 70vh;
   font-family: monospace;
   margin-bottom: 1rem;
   padding: 0.5rem;

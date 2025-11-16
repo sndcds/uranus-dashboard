@@ -140,15 +140,15 @@ interface EventType {
 
 interface EventDate {
   event_date_id: number | null
+  venue_id: number | null
+  venue_name: string | null
+  space_id: number | null
+  location_id: number | null
   start_date: string | null
   start_time: string | null
   end_date: string | null
   end_time: string | null
   entry_time: string | null
-  venue_id: number | null
-  space_id: number | null
-  venue_name: string | null
-  accessibility_flags: number | null
   duration: number | null
   visitor_info_flags: number | null
 }
@@ -162,15 +162,15 @@ interface EventUrl {
 
 type EventSchedulePayloadItem = {
   id?: number | null
+  venue_id?: number | null
+  venue_name?: string | null
+  space_id?: number | null
+  location_id?: number | null
   start_date?: string
-  end_date?: string | null
   start_time?: string
+  end_date?: string | null
   end_time?: string | null
   entry_time?: string | null
-  venue_id?: number | null
-  space_id?: number | null
-  venue_name?: string | null
-  accessibility_flags?: number | null
   duration?: number | null
   visitor_info_flags?: number | null
 }
@@ -313,15 +313,15 @@ const eventSchedulePayload = computed<EventSchedulePayloadItem[]>(() => {
     const payload: EventSchedulePayloadItem = {}
 
     if (date.event_date_id !== null) payload.id = date.event_date_id
+    if (date.venue_id !== null) payload.venue_id = date.venue_id
+    if (date.venue_name) payload.venue_name = date.venue_name
+    if (date.space_id !== null) payload.space_id = date.space_id
+    if (date.location_id !== null) payload.location_id = date.location_id
     if (date.start_date) payload.start_date = date.start_date
     if (date.start_time) payload.start_time = date.start_time
     if (date.end_date) payload.end_date = date.end_date
     if (date.end_time) payload.end_time = date.end_time
     if (date.entry_time) payload.entry_time = date.entry_time
-    if (date.space_id !== null) payload.space_id = date.space_id
-    if (date.venue_id !== null) payload.venue_id = date.venue_id   // <-- add this
-    if (date.venue_name) payload.venue_name = date.venue_name     // <-- add this
-    if (date.accessibility_flags !== null) payload.accessibility_flags = date.accessibility_flags
     if (date.duration !== null) payload.duration = date.duration
     if (date.visitor_info_flags !== null) payload.visitor_info_flags = date.visitor_info_flags
 
@@ -381,15 +381,15 @@ const mapEventDate = (raw: unknown): EventDate | null => {
   const record = raw as Record<string, unknown>
   return {
     event_date_id: toNumberOrNull(record.event_date_id),
+    venue_id: toNumberOrNull(record.venue_id),
+    venue_name: toNullableString(record.venue_name),
+    space_id: toNumberOrNull(record.space_id),
+    location_id: toNumberOrNull(record.location_id),
     start_date: toNullableString(record.start_date),
     start_time: toNullableString(record.start_time),
     end_date: toNullableString(record.end_date),
     end_time: toNullableString(record.end_time),
     entry_time: toNullableString(record.entry_time),
-    venue_id: toNumberOrNull(record.venue_id),
-    space_id: toNumberOrNull(record.space_id),
-    venue_name: toNullableString(record.venue_name),
-    accessibility_flags: toNumberOrNull(record.accessibility_flags),
     duration: toNumberOrNull(record.duration),
     visitor_info_flags: toNumberOrNull(record.visitor_info_flags),
   }
@@ -706,9 +706,9 @@ onMounted(() => {
 
 .event-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
   gap: var(--uranus-grid-gap);
   max-width: var(--uranus-dashboard-content-width);
+  width: 1024px;
 }
 
 .event-map {

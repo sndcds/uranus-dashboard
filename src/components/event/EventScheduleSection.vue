@@ -1,72 +1,116 @@
 <template>
-  <EventDatesComponent
-      v-if="isEditing"
-      ref="scheduleEditorRef"
-      class="event-meta__editor"
-      :model-value="scheduleDraft"
-      :spaces="availableSpaces"
-      :organizer-id="organizerId ?? null"
-      @update:model-value="onScheduleDraftChange"
-  />
+  <div>
+    <p v-if="scheduleSaveError" class="event-meta__error event-meta__error--global">
+      {{ scheduleSaveError }}
+    </p>
 
-  <p v-if="scheduleSaveError" class="event-meta__error event-meta__error--global">
-    {{ scheduleSaveError }}
-  </p>
+    <div v-if="!eventScheduleDisplay.length" class="event-meta__empty">
+      {{ t('event_schedule_empty') }}
+    </div>
 
-  <div v-if="!isEditing && !eventScheduleDisplay.length" class="event-meta__empty">
-    {{ t('event_schedule_empty') }}
-  </div>
-
-  <div v-if="!isEditing && eventScheduleDisplay.length" class="event-meta__list">
+    <div v-else class="event-meta__list">
       <UranusInlineEditSection
           v-for="entry in eventScheduleDisplay"
-          :key="entry.key"
-          :active="false">
+          :active="editingKey === entry.displayKey"
+      >
         <UranusInlineEditLabel
             :label-text="formatDate(entry.startDate)"
-            label-class="big"
+            labelClass="big"
             :edit-button-text="t('edit')"
+            @edit-started="onEditRequested(entry.displayKey)"
         />
-        <div>
-          <div>{{ formatEventDate2(entry) }}
-            <span class="event-meta__time" v-if="entry.entryTime">
-              {{ t('event_entry_time') }}: {{ entry.entryTime }}
-            </span>
+
+        <!-- Read-only view -->
+        <div v-if="editingKey !== entry.displayKey" class="event-meta__display">
+          <div class="event-meta__row">
+            <div v-html="formatEventDate2(entry)"></div>
+            <div class="event-meta__entry-time" v-if="entry.entryTime">
+              <span class="event-meta__time">{{ t('event_entry_time') }}: {{ entry.entryTime }}</span>
+            </div>
           </div>
-          {{ entry.venueDisplay || 'Unknown Venue' }}
+          <div v-if="entry.locationId" class="event-meta__row">
+            Location
+          </div>
+          <div v-else class="event-meta__row">
+            <strong>{{ entry.venueName || 'Unknown Venue' }}</strong>
+            <div class="event-meta__space">{{ entry.spaceDisplay || '' }}</div>
+          </div>
         </div>
+
+        <!-- Editor view -->
+        <form v-else class="event-meta__editor" @submit.prevent="saveRow(entry.displayKey)">
+          <div class="event-dates__grid">
+            <UranusDateInput v-model="editDraft.startDate" :label="t('event_start_date')" required />
+            <UranusTimeInput v-model="editDraft.startTime" :label="t('event_start_time')" required />
+            <UranusDateInput v-model="editDraft.endDate" :label="t('event_end_date')" />
+            <UranusTimeInput v-model="editDraft.endTime" :label="t('event_end_time')" />
+
+            <label class="checkbox-label">
+              <input type="checkbox" v-model="editDraft.allDay" class="checkbox-input" />
+              <span class="checkbox-text">{{ t('event_all_day') }}</span>
+            </label>
+
+            <UranusTimeInput v-model="editDraft.entryTime" :label="t('event_entry_time')" />
+
+            <UranusFieldLabel :label="t('event_venue_label')">
+              <select v-model.number="editDraft.venueId" @change="onRowVenueChange(editDraft.venueId)">
+                <option :value="null" disabled>{{ t('select_placeholder') }}</option>
+                <option v-for="v in choosableVenues" :key="v.id" :value="v.id">{{ v.name }}</option>
+              </select>
+            </UranusFieldLabel>
+
+            <UranusFieldLabel :label="t('event_space_label')">
+              <select v-model.number="editDraft.spaceId">
+                <option :value="null" disabled>{{ t('select_placeholder') }}</option>
+                <option v-for="sp in rowSpaces" :key="sp.id" :value="sp.id">{{ sp.name }}</option>
+              </select>
+            </UranusFieldLabel>
+          </div>
+
+          <div class="event-meta__actions">
+            <button type="button" class="uranus-inline-cancel-button" @click="cancelEdit">
+              {{ t('form_cancel') }}
+            </button>
+            <button type="submit" class="uranus-inline-save-button" :disabled="isSavingRow">
+              <span v-if="isSavingRow">{{ t('form_saving') }}</span>
+              <span v-else>{{ t('form_save') }}</span>
+            </button>
+          </div>
+        </form>
       </UranusInlineEditSection>
     </div>
-  <div v-if="isEditing" class="event-meta__actions">
-    <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingSchedule">
-      {{ t('form_cancel') }}
-    </button>
-    <button type="button" class="uranus-inline-save-button" :disabled="isSavingSchedule" @click="saveSchedule">
-      <span v-if="isSavingSchedule">{{ t('form_saving') }}</span>
-      <span v-else>{{ t('form_save') }}</span>
-    </button>
+
+    <div class="event-section__actions">
+      <button type="button" class="uranus-secondary-button" @click="addDate">
+        {{ t('event_add_date') }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import EventDatesComponent from '@/components/EventDatesComponent.vue'
-import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
-import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue"
+import UranusDateInput from '@/components/uranus/UranusDateInput.vue'
+import UranusTimeInput from '@/components/uranus/UranusTimeInput.vue'
+import UranusInlineEditSection from '@/components/uranus/UranusInlineEditSection.vue'
+import UranusInlineEditLabel from '@/components/uranus/UranusInlineEditLabel.vue'
+import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
 
 interface EventScheduleEntry {
   id: number | null
+  venueId: number | null
+  venueName?: string | null
+  spaceId: number | null
+  spaceName?: string | null
+  locationId: number | null
   startDate: string
   startTime: string
   endDate: string | null
   endTime: string | null
   entryTime: string | null
   allDay: boolean
-  venueId: number | null
-  spaceId: number | null
-  venueName?: string | null
 }
 
 interface SelectOption {
@@ -74,89 +118,209 @@ interface SelectOption {
   name: string
 }
 
-interface EventScheduleDisplay extends EventScheduleEntry {
-  key: string
-  spaceDisplay: string
-}
-
 const props = defineProps<{
   eventId: number
-  organizerId?: number | null
-  venueId: number | null
-  startDate?: string | null
-  startTime?: string | null
-  endDate?: string | null
-  endTime?: string | null
-  entryTime?: string | null
-  dates?: Record<string, any> | any[]
-  eventDates?: Record<string, any> | any[]
-  spaceId: number | null
+  dates?: any[] | Record<string, any>
+  eventDates?: any[] | Record<string, any>
+  choosableVenues?: SelectOption[]
+  initialSpaces?: SelectOption[]
+  venueId?: number | null
+  spaceId?: number | null
   venueName?: string | null
   spaceName?: string | null
 }>()
 
 const emit = defineEmits<{ (e: 'updated'): void }>()
-
 const { t, locale } = useI18n({ useScope: 'global' })
 
-// --- State ---
-const availableSpaces = ref<SelectOption[]>([])
+// State
 const scheduleEntries = ref<EventScheduleEntry[]>([])
-const scheduleDraft = ref<any[]>([])
-const isEditing = ref(false)
-const isSavingSchedule = ref(false)
+const editingKey = ref<string | null>(null)
+const editDraft = ref<EventScheduleEntry>({
+  id: null,
+  venueId: null,
+  venueName: null,
+  spaceId: null,
+  spaceName: null,
+  locationId: null,
+  startDate: '',
+  startTime: '',
+  endDate: null,
+  endTime: null,
+  entryTime: null,
+  allDay: false,
+})
+const rowSpaces = ref<SelectOption[]>(props.initialSpaces ?? [])
+const choosableVenues = ref<SelectOption[]>(props.choosableVenues ?? [])
+const isSavingRow = ref(false)
 const scheduleSaveError = ref<string | null>(null)
-const scheduleEditorRef = ref<InstanceType<typeof EventDatesComponent> | null>(null)
 
-// --- Utilities ---
-function parseDateTime(dateStr: string, timeStr?: string): Date | null {
-  if (!dateStr) return null
+// Derived display with computed key
+const eventScheduleDisplay = computed(() =>
+    scheduleEntries.value.map((entry, idx) => ({
+      ...entry,
+      displayKey: entry.id !== null ? `id-${entry.id}` : `new-${idx}`,
+      spaceDisplay: entry.spaceName ?? '',
+    }))
+)
 
-  const dateParts = dateStr.split('-')
-  const [yearStr, monthStr, dayStr] = dateParts
-  if (!yearStr || !monthStr || !dayStr) {
-    return null
+// Normalize API collections
+function normalizeCollection(collection?: any[] | Record<string, any>) {
+  if (!collection) return []
+  return Array.isArray(collection) ? collection : Object.values(collection)
+}
+
+function mapApiToEntry(item: any): EventScheduleEntry {
+  return {
+    id: item.id ?? null,
+    venueId: item.venue_id ?? null,
+    venueName: item.venue_name ?? null,
+    spaceId: item.space_id ?? null,
+    spaceName: item.space_name ?? null,
+    locationId: item.location_id ?? null,
+    startDate: item.start_date ?? '',
+    startTime: item.start_time ?? '',
+    endDate: item.end_date ?? null,
+    endTime: item.end_time ?? null,
+    entryTime: item.entry_time ?? null,
+    allDay: item.all_day ?? false,
+  }
+}
+
+function syncScheduleEntries() {
+  const fromDates = normalizeCollection(props.dates)
+  const fromEventDates = normalizeCollection(props.eventDates)
+  const source = fromDates.length ? fromDates : fromEventDates
+  scheduleEntries.value = source.map(mapApiToEntry)
+}
+
+// Edit handling
+function onEditRequested(key: string) {
+  if (editingKey.value === key) return cancelEdit()
+  const entry = eventScheduleDisplay.value.find((e) => e.displayKey === key)
+  if (!entry) return
+  editDraft.value = { ...entry }
+  editingKey.value = key
+  void loadRowSpaces(editDraft.value.venueId ?? null)
+}
+
+function cancelEdit() {
+  editingKey.value = null
+  editDraft.value = {
+    id: null,
+    venueId: null,
+    venueName: null,
+    spaceId: null,
+    spaceName: null,
+    locationId: null,
+    startDate: '',
+    startTime: '',
+    endDate: null,
+    endTime: null,
+    entryTime: null,
+    allDay: false,
+  }
+  rowSpaces.value = []
+  scheduleSaveError.value = null
+}
+
+// Venue & space selection
+async function onRowVenueChange(venueId: number | null) {
+  await loadRowSpaces(venueId)
+  if (editDraft.value) editDraft.value.spaceId = null
+}
+
+async function loadRowSpaces(venueId: number | null) {
+  if (!venueId) { rowSpaces.value = []; return }
+  try {
+    const { data } = await apiFetch<SelectOption[]>(`/api/choosable-spaces/venue/${venueId}`)
+    rowSpaces.value = Array.isArray(data) ? data : []
+  } catch {
+    rowSpaces.value = []
+  }
+}
+
+// Add new date
+function addDate() {
+  const newEntry: EventScheduleEntry = {
+    id: null,
+    venueId: props.venueId ?? null,
+    venueName: props.venueName ?? null,
+    spaceId: props.spaceId ?? null,
+    spaceName: props.spaceName ?? null,
+    locationId: null,
+    startDate: '',
+    startTime: '',
+    endDate: null,
+    endTime: null,
+    entryTime: null,
+    allDay: false,
+  }
+  scheduleEntries.value.push(newEntry)
+  const newKey = `new-${scheduleEntries.value.length - 1}`
+  onEditRequested(newKey)
+}
+
+
+interface ApiDateResponse {
+  id: number
+  start_date: string
+  start_time: string
+  end_date?: string | null
+  end_time?: string | null
+  entry_time?: string | null
+  all_day: boolean
+  venue_id: number | null
+  space_id: number | null
+}
+
+// Save
+async function saveRow(key: string) {
+  if (!editDraft.value) return
+  scheduleSaveError.value = null
+
+  const isNew = editDraft.value.id === null
+  const payload = {
+    start_date: editDraft.value.startDate,
+    start_time: editDraft.value.startTime,
+    end_date: editDraft.value.endDate ?? null,
+    end_time: editDraft.value.endTime ?? null,
+    entry_time: editDraft.value.entryTime ?? null,
+    all_day: !!editDraft.value.allDay,
+    venue_id: editDraft.value.venueId ?? null,
+    space_id: editDraft.value.spaceId ?? null,
   }
 
-  const year = Number(yearStr)
-  const month = Number(monthStr)
-  const day = Number(dayStr)
-  if ([year, month, day].some((value) => Number.isNaN(value))) {
-    return null
-  }
-
-  let hour = 0
-  let minute = 0
-  if (timeStr) {
-    const [rawHour = '', rawMinute = ''] = timeStr.split(':')
-    const parsedHour = Number(rawHour)
-    const parsedMinute = Number(rawMinute)
-    if (Number.isNaN(parsedHour) || Number.isNaN(parsedMinute)) {
-      return null
+  try {
+    if (isNew) {
+      const { data } = await apiFetch<ApiDateResponse>(`/api/admin/event/${props.eventId}/dates`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      })
+      editDraft.value.id = data.id
+    } else {
+      await apiFetch(`/api/admin/event/${props.eventId}/dates/${editDraft.value.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      })
     }
-    hour = parsedHour
-    minute = parsedMinute
+
+    // update local entry
+    const idx = scheduleEntries.value.findIndex((e, i) =>
+        e.id === editDraft.value?.id || `new-${i}` === key
+    )
+    if (idx !== -1) scheduleEntries.value[idx] = { ...editDraft.value }
+
+    cancelEdit()
+    emit('updated')
+  } catch {
+    scheduleSaveError.value = t('event_submit_error_generic')
+  } finally {
+    isSavingRow.value = false
   }
-
-  return new Date(year, month - 1, day, hour, minute)
 }
 
-function capitalize(str: string) {
-  if (!str) return ''
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-}
-
-function formatWeekday(dateStr: string) {
-  if (!dateStr) return ''
-  const [year, month, day] = dateStr.split('-').map(Number)
-  if ([year, month, day].some((value) => value === undefined || Number.isNaN(value))) {
-    return ''
-  }
-  const dt = new Date(year!, month! - 1, day!)
-  const w = dt.toLocaleDateString(locale.value, { weekday: 'short' })
-  return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
-}
-
+// Format helpers
 function formatDate(dateStr: string) {
   if (!dateStr) return ''
   const dt = parseDateTime(dateStr)
@@ -164,40 +328,9 @@ function formatDate(dateStr: string) {
   return dt.toLocaleDateString(locale.value, { day: '2-digit', month: '2-digit', year: 'numeric' })
 }
 
-function formatEventDate(entry: EventScheduleEntry) {
-  const start = parseDateTime(entry.startDate, entry.startTime)
-  if (!start) return ''
-
-  const end = entry.endDate && entry.endTime ? parseDateTime(entry.endDate, entry.endTime) : null
-
-  const weekdayOpt = { weekday: 'short' } as const
-  const dateOpt = { year: 'numeric', month: '2-digit', day: '2-digit' } as const
-  const timeOpt = { hour: 'numeric', minute: '2-digit' } as const
-
-  const startWeekday = capitalize(start.toLocaleDateString(locale.value, weekdayOpt))
-  const startDateStr = start.toLocaleDateString(locale.value, dateOpt)
-  const startTimeStr = start.toLocaleTimeString(locale.value, timeOpt)
-
-  let result = `<strong>${startWeekday}, ${startDateStr}</strong>, ${startTimeStr}`
-
-  if (end) {
-    const endWeekday = capitalize(end.toLocaleDateString(locale.value, weekdayOpt))
-    const endDateStr = end.toLocaleDateString(locale.value, dateOpt)
-    const endTimeStr = end.toLocaleTimeString(locale.value, timeOpt)
-
-    if (entry.startDate === entry.endDate) {
-      result = `<strong>${startWeekday}, ${startDateStr}</strong>, ${startTimeStr} - ${endTimeStr}`
-    } else {
-      result = `<strong>${startWeekday}, ${startDateStr}</strong>, ${startTimeStr} - ${endWeekday}, ${endDateStr}, ${endTimeStr}`
-    }
-  }
-  return result
-}
-
 function formatEventDate2(entry: EventScheduleEntry) {
   const start = parseDateTime(entry.startDate, entry.startTime)
   if (!start) return ''
-
   const end = entry.endDate && entry.endTime ? parseDateTime(entry.endDate, entry.endTime) : null
 
   const weekdayOpt = { weekday: 'short' } as const
@@ -205,256 +338,49 @@ function formatEventDate2(entry: EventScheduleEntry) {
   const timeOpt = { hour: 'numeric', minute: '2-digit' } as const
 
   const startWeekday = capitalize(start.toLocaleDateString(locale.value, weekdayOpt))
-  const startDateStr = start.toLocaleDateString(locale.value, dateOpt)
   const startTimeStr = start.toLocaleTimeString(locale.value, timeOpt)
-
   let result = `${startWeekday}, ${startTimeStr}`
 
   if (end) {
     const endWeekday = capitalize(end.toLocaleDateString(locale.value, weekdayOpt))
     const endDateStr = end.toLocaleDateString(locale.value, dateOpt)
     const endTimeStr = end.toLocaleTimeString(locale.value, timeOpt)
-
-    if (entry.startDate === entry.endDate) {
-      // same day
-      result += ` - ${endTimeStr}`
-    } else {
-      // different days
-      result += ` - ${endWeekday} ${endDateStr}, ${endTimeStr}`
-    }
+    result += entry.startDate === entry.endDate ? ` - ${endTimeStr}` : ` - ${endWeekday} ${endDateStr}, ${endTimeStr}`
   }
 
   return result
 }
 
-function formatEntryTime(entry: EventScheduleEntry) {
-  if (!entry.entryTime) return ''
-  const dt = parseDateTime(entry.startDate, entry.entryTime)
-  if (!dt) return entry.entryTime
-  return dt.toLocaleTimeString(locale.value, { hour: '2-digit', minute: '2-digit' })
-}
-
-// --- Derived ---
-const spaceLookup = computed(() => {
-  const map: Record<number, string> = {}
-  availableSpaces.value.forEach((s) => (map[s.id] = s.name))
-  if (props.spaceId !== null && props.spaceName) map[props.spaceId] = props.spaceName
-  return map
-})
-
-const eventScheduleDisplay = computed(() =>
-    scheduleEntries.value.map((entry, index) => ({
-      ...entry,
-      key: entry.id !== null ? entry.id.toString() : `schedule-${index}`,
-      spaceDisplay: entry.spaceId !== null ? spaceLookup.value[entry.spaceId] ?? '' : '',
-      venueDisplay: entry.venueName ?? 'Unknown Venue', // always safe fallback
-    }))
-)
-
-// --- Normalize API data ---
-function normalizeCollection(collection?: any[] | Record<string, any>) {
-  if (!collection) return []
-  return Array.isArray(collection) ? collection : Object.values(collection)
-}
-
-function mapApiToEntry(item: any): EventScheduleEntry {
-  console.log(item)  // see what keys actually exist
-  return {
-    id: typeof item.id === 'number' ? item.id : null,
-    startDate: item.start_date ?? '',
-    startTime: item.start_time ?? '',
-    endDate: item.end_date ?? null,
-    endTime: item.end_time ?? null,
-    entryTime: item.entry_time ?? null,
-    allDay: item.all_day ?? false,
-    venueId: typeof item.venue_id === 'number' ? item.venue_id : null,
-    spaceId: typeof item.space_id === 'number' ? item.space_id : null,
-    venueName: item.venue_name ?? "",
+function capitalize(str: string) { return str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : '' }
+function parseDateTime(dateStr: string, timeStr?: string): Date | null {
+  if (!dateStr) return null
+  const [yearStr, monthStr, dayStr] = dateStr.split('-')
+  const year = Number(yearStr), month = Number(monthStr), day = Number(dayStr)
+  if ([year, month, day].some(Number.isNaN)) return null
+  let hour = 0, minute = 0
+  if (timeStr) {
+    const [rawHour = '', rawMinute = ''] = timeStr.split(':')
+    hour = Number(rawHour)
+    minute = Number(rawMinute)
+    if ([hour, minute].some(Number.isNaN)) return null
   }
+  return new Date(year, month - 1, day, hour, minute)
 }
 
-function deriveScheduleFromProps(): EventScheduleEntry[] {
-  const {
-    startDate,
-    startTime,
-    endDate,
-    endTime,
-    venueId,
-    spaceId,
-    venueName,
-    dates,
-    eventDates,
-  } = props
-
-  const fromDates = normalizeCollection(dates)
-  const fromEventDates = normalizeCollection(eventDates)
-  const source = fromDates.length ? fromDates : fromEventDates
-
-  const mapped = source.map(mapApiToEntry).filter((e) => e.startDate && e.startTime)
-
-  if (mapped.length) return mapped
-
-  // fallback to props directly if no eventDates/dates
-  if (startDate && startTime) {
-    return [
-      {
-        id: null,
-        startDate,
-        startTime,
-        endDate: endDate ?? null,
-        endTime: endTime ?? null,
-        entryTime: null,
-        allDay: false,
-        venueId: venueId ?? null,
-        spaceId: spaceId ?? null,
-        venueName: venueName ?? 'Unknown Venue',
-      },
-    ]
-  }
-
-  return []
-}
-
-function syncScheduleEntries() {
-  scheduleEntries.value = deriveScheduleFromProps()
-}
-
-// --- Load spaces ---
-async function loadSpaces(venueId: number | null) {
-  if (!venueId) return
-  try {
-    const { data } = await apiFetch<SelectOption[]>(`/api/choosable-spaces/venue/${venueId}`)
-    availableSpaces.value = Array.isArray(data) ? data : []
-  } catch {
-    availableSpaces.value = []
-  }
-}
-
-// --- Editing functions ---
-const startEditingSchedule = async () => {
-  scheduleDraft.value = scheduleEntries.value.map((entry) => ({
-    id: entry.id,
-    startDate: entry.startDate,
-    endDate: entry.endDate,
-    startTime: entry.startTime,
-    endTime: entry.endTime,
-    entryTime: entry.entryTime,
-    venueId: entry.venueId,
-    spaceId: entry.spaceId,
-    venueName: entry.venueName,
-    allDayEvent: entry.allDay,
-  }))
-  isEditing.value = true
-  scheduleSaveError.value = null
-  await loadSpaces(props.venueId ?? null)
-}
-
-const cancelEditingSchedule = () => {
-  isEditing.value = false
-  scheduleDraft.value = []
-}
-
-const onScheduleDraftChange = (value: any[]) => {
-  scheduleDraft.value = value
-}
-
-const saveSchedule = async () => {
-  scheduleSaveError.value = null
-  if (!scheduleDraft.value.length) {
-    scheduleSaveError.value = t('event_submit_error_generic')
-    return
-  }
-
-  isSavingSchedule.value = true
-
-  try {
-    const payload = {
-      dates: scheduleDraft.value.map((entry) => ({
-        id: entry.id ?? undefined,
-        start_date: entry.startDate,
-        start_time: entry.startTime,
-        end_date: entry.endDate ?? null,
-        end_time: entry.endTime ?? null,
-        entry_time: entry.entryTime ?? null,
-        all_day: entry.allDayEvent ?? false,
-        venue_id: entry.venueId ?? null,
-        space_id: entry.spaceId ?? null,
-      })),
-    }
-
-    await apiFetch(`/api/admin/event/${props.eventId}/dates`, {
-      method: 'PUT',
-      body: JSON.stringify(payload),
-    })
-
-    scheduleEntries.value = scheduleDraft.value.map((entry) => ({
-      id: entry.id,
-      startDate: entry.startDate,
-      endDate: entry.endDate,
-      startTime: entry.startTime,
-      endTime: entry.endTime,
-      entryTime: entry.entryTime,
-      allDay: entry.allDayEvent,
-      venueId: entry.venueId,
-      spaceId: entry.spaceId,
-      venueName: entry.venueName,
-    }))
-
-    scheduleDraft.value = []
-    isEditing.value = false
-    emit('updated')
-  } catch {
-    scheduleSaveError.value = t('event_submit_error_generic')
-  } finally {
-    isSavingSchedule.value = false
-  }
-}
-
-// --- Watch props and sync ---
-watch(
-    () => [props.dates, props.eventDates, props.startDate, props.startTime, props.endDate, props.endTime],
-    () => syncScheduleEntries(),
-    { deep: true }
-)
-
-
-onMounted(() => {
-  void loadSpaces(props.venueId ?? null)
-  syncScheduleEntries()
-})
+// Init
+onMounted(() => syncScheduleEntries())
+watch(() => [props.dates, props.eventDates], syncScheduleEntries, { deep: true })
 </script>
 
 <style scoped lang="scss">
-.event-meta__empty {
-  color: var(--muted-text);
-  font-size: 0.95rem;
-}
-
-.event-meta__list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--uranus-grid-gap);
-}
-
-.event-meta__entry {
-  display: flex;
-  padding: var(--uranus-default-text-padding);
-  border-radius: var(--uranus-tiny-border-radius);
-  border: 1px solid var(--uranus-card-border-color);
-
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.event-meta__entry > div {
-  display: flex;
-  flex-direction: column;
-}
-
-.event-meta__time {
-  white-space: nowrap;   /* keep the content on one line */
-  overflow: hidden;      /* prevent overflow if needed */
-  text-overflow: ellipsis; /* optional: show ... if it overflows */
-}
-
+.event-meta__empty { color: var(--muted-text); font-size: 0.95rem; }
+.event-meta__list { display: flex; flex-direction: column; gap: var(--uranus-grid-gap); }
+.event-meta__entry { display: flex; align-items: stretch; }
+.uranus-inline-edit-section { width: 100%; }
+.event-meta__display { display: flex; flex-direction: column; gap: 0.25rem; flex: 1; }
+.event-meta__editor { width: 100%; display: flex; flex-direction: column; gap: 0.75rem; }
+.event-dates__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+.event-meta__actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
+.event-meta__actions-inline { display: flex; gap: 0.5rem; }
+.event-meta__time { white-space: nowrap; }
 </style>
