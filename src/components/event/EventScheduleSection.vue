@@ -1,57 +1,51 @@
 <template>
-  <UranusInlineEditSection :active="isEditing">
-    <UranusInlineEditLabel
-        :label-text="t('event_details_time')"
-        :edit-button-text="t('edit')"
-        @edit-started="startEditingSchedule"
-    />
+  <EventDatesComponent
+      v-if="isEditing"
+      ref="scheduleEditorRef"
+      class="event-meta__editor"
+      :model-value="scheduleDraft"
+      :spaces="availableSpaces"
+      :organizer-id="organizerId ?? null"
+      @update:model-value="onScheduleDraftChange"
+  />
 
-    <EventDatesComponent
-        v-if="isEditing"
-        ref="scheduleEditorRef"
-        class="event-meta__editor"
-        :model-value="scheduleDraft"
-        :spaces="availableSpaces"
-        :organizer-id="organizerId ?? null"
-        @update:model-value="onScheduleDraftChange"
-    />
+  <p v-if="scheduleSaveError" class="event-meta__error event-meta__error--global">
+    {{ scheduleSaveError }}
+  </p>
 
-    <p v-if="scheduleSaveError" class="event-meta__error event-meta__error--global">
-      {{ scheduleSaveError }}
-    </p>
+  <div v-if="!isEditing && !eventScheduleDisplay.length" class="event-meta__empty">
+    {{ t('event_schedule_empty') }}
+  </div>
 
-    <div v-if="!isEditing && !eventScheduleDisplay.length" class="event-meta__empty">
-      {{ t('event_schedule_empty') }}
+  <div v-if="!isEditing && eventScheduleDisplay.length" class="event-meta__list">
+      <UranusInlineEditSection
+          v-for="entry in eventScheduleDisplay"
+          :key="entry.key"
+          :active="false">
+        <UranusInlineEditLabel
+            :label-text="formatDate(entry.startDate)"
+            label-class="big"
+            :edit-button-text="t('edit')"
+        />
+        <div>
+          <div>{{ formatEventDate2(entry) }}
+            <span class="event-meta__time" v-if="entry.entryTime">
+              {{ t('event_entry_time') }}: {{ entry.entryTime }}
+            </span>
+          </div>
+          {{ entry.venueDisplay || 'Unknown Venue' }}
+        </div>
+      </UranusInlineEditSection>
     </div>
-
-    <div v-if="!isEditing && eventScheduleDisplay.length" class="event-meta__list">
-      <table class="event-schedule-table">
-        <thead>
-        <tr>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Entry Time</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="entry in eventScheduleDisplay" :key="entry.key">
-          <td><h2>{{ formatDate(entry.startDate) }}</h2></td>
-          <td>{{ formatEventDate2(entry) }}</td>
-          <td>{{ entry.endTime || '' }}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-    <div v-if="isEditing" class="event-meta__actions">
-      <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingSchedule">
-        {{ t('form_cancel') }}
-      </button>
-      <button type="button" class="uranus-inline-save-button" :disabled="isSavingSchedule" @click="saveSchedule">
-        <span v-if="isSavingSchedule">{{ t('form_saving') }}</span>
-        <span v-else>{{ t('form_save') }}</span>
-      </button>
-    </div>
-  </UranusInlineEditSection>
+  <div v-if="isEditing" class="event-meta__actions">
+    <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingSchedule">
+      {{ t('form_cancel') }}
+    </button>
+    <button type="button" class="uranus-inline-save-button" :disabled="isSavingSchedule" @click="saveSchedule">
+      <span v-if="isSavingSchedule">{{ t('form_saving') }}</span>
+      <span v-else>{{ t('form_save') }}</span>
+    </button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -72,6 +66,7 @@ interface EventScheduleEntry {
   allDay: boolean
   venueId: number | null
   spaceId: number | null
+  venueName?: string | null
 }
 
 interface SelectOption {
@@ -96,6 +91,7 @@ const props = defineProps<{
   dates?: Record<string, any> | any[]
   eventDates?: Record<string, any> | any[]
   spaceId: number | null
+  venueName?: string | null
   spaceName?: string | null
 }>()
 
@@ -246,12 +242,13 @@ const spaceLookup = computed(() => {
   return map
 })
 
-const eventScheduleDisplay = computed<EventScheduleDisplay[]>(() =>
-  scheduleEntries.value.map((entry, index) => ({
-    ...entry,
-    key: typeof entry.id === 'number' ? entry.id.toString() : `schedule-${index}`,
-    spaceDisplay: entry.spaceId !== null ? spaceLookup.value[entry.spaceId] ?? '' : '',
-  }))
+const eventScheduleDisplay = computed(() =>
+    scheduleEntries.value.map((entry, index) => ({
+      ...entry,
+      key: entry.id !== null ? entry.id.toString() : `schedule-${index}`,
+      spaceDisplay: entry.spaceId !== null ? spaceLookup.value[entry.spaceId] ?? '' : '',
+      venueDisplay: entry.venueName ?? 'Unknown Venue', // always safe fallback
+    }))
 )
 
 // --- Normalize API data ---
@@ -261,6 +258,7 @@ function normalizeCollection(collection?: any[] | Record<string, any>) {
 }
 
 function mapApiToEntry(item: any): EventScheduleEntry {
+  console.log(item)  // see what keys actually exist
   return {
     id: typeof item.id === 'number' ? item.id : null,
     startDate: item.start_date ?? '',
@@ -271,30 +269,45 @@ function mapApiToEntry(item: any): EventScheduleEntry {
     allDay: item.all_day ?? false,
     venueId: typeof item.venue_id === 'number' ? item.venue_id : null,
     spaceId: typeof item.space_id === 'number' ? item.space_id : null,
+    venueName: item.venue_name ?? "",
   }
 }
 
-function deriveScheduleFromProps() {
-  const fromDates = normalizeCollection(props.dates)
-  const fromEventDates = normalizeCollection(props.eventDates)
+function deriveScheduleFromProps(): EventScheduleEntry[] {
+  const {
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    venueId,
+    spaceId,
+    venueName,
+    dates,
+    eventDates,
+  } = props
+
+  const fromDates = normalizeCollection(dates)
+  const fromEventDates = normalizeCollection(eventDates)
   const source = fromDates.length ? fromDates : fromEventDates
 
   const mapped = source.map(mapApiToEntry).filter((e) => e.startDate && e.startTime)
 
   if (mapped.length) return mapped
 
-  if (props.startDate && props.startTime) {
+  // fallback to props directly if no eventDates/dates
+  if (startDate && startTime) {
     return [
       {
         id: null,
-        startDate: props.startDate,
-        startTime: props.startTime,
-        endDate: props.endDate ?? null,
-        endTime: props.endTime ?? null,
-        entryTime: props.entryTime ?? null,
+        startDate,
+        startTime,
+        endDate: endDate ?? null,
+        endTime: endTime ?? null,
+        entryTime: null,
         allDay: false,
-        venueId: props.venueId ?? null,
-        spaceId: props.spaceId ?? null,
+        venueId: venueId ?? null,
+        spaceId: spaceId ?? null,
+        venueName: venueName ?? 'Unknown Venue',
       },
     ]
   }
@@ -328,6 +341,7 @@ const startEditingSchedule = async () => {
     entryTime: entry.entryTime,
     venueId: entry.venueId,
     spaceId: entry.spaceId,
+    venueName: entry.venueName,
     allDayEvent: entry.allDay,
   }))
   isEditing.value = true
@@ -383,6 +397,7 @@ const saveSchedule = async () => {
       allDay: entry.allDayEvent,
       venueId: entry.venueId,
       spaceId: entry.spaceId,
+      venueName: entry.venueName,
     }))
 
     scheduleDraft.value = []
@@ -402,6 +417,7 @@ watch(
     { deep: true }
 )
 
+
 onMounted(() => {
   void loadSpaces(props.venueId ?? null)
   syncScheduleEntries()
@@ -417,59 +433,28 @@ onMounted(() => {
 .event-meta__list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--uranus-grid-gap);
 }
 
-.event-meta__display {
+.event-meta__entry {
+  display: flex;
+  padding: var(--uranus-default-text-padding);
+  border-radius: var(--uranus-tiny-border-radius);
+  border: 1px solid var(--uranus-card-border-color);
+
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.event-meta__entry > div {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
-.event-meta__row {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.event-meta__value {
-  margin: 0;
-  color: var(--color-text);
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-.event-meta__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-}
-
-.event-meta__error {
-  color: #b91c1c;
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.event-meta__inline {
-  display: flex;
-  white-space: nowrap;
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0;
-}
-
-.event-schedule-table {
-  border-collapse: collapse; // remove extra spacing between cells
-  table-layout: auto;        // columns size themselves based on content
-  width: auto;               // do not stretch table to container
-}
-
-.event-schedule-table th,
-.event-schedule-table td {
-  padding: 0.25rem 0.5rem;   // adjust padding as needed
-  white-space: nowrap;       // prevent text from wrapping
-  text-align: left;          // optional
+.event-meta__time {
+  white-space: nowrap;   /* keep the content on one line */
+  overflow: hidden;      /* prevent overflow if needed */
+  text-overflow: ellipsis; /* optional: show ... if it overflows */
 }
 
 </style>

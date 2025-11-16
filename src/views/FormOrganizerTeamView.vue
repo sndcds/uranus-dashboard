@@ -55,6 +55,7 @@
 
                             <div class="team-member__details">
                                 <div class="team-member__heading">
+                                    <img v-if="member.avatar_url" :src="member.avatar_url" />
                                     <div>
                                         <p class="team-member__name">{{ member.display_name || member.email }}</p>
                                         <p class="team-member__email">{{ member.email }}</p>

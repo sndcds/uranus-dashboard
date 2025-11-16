@@ -49,8 +49,8 @@
           :event-id="event.id"
           :organizer-id="event.organizer_id"
           :venue-id="event.venue_id"
-          :event-dates="eventSchedulePayload"
           :space-id="event.space_id"
+          :event-dates="eventSchedulePayload"
           :space-name="event.space_name ?? ''"
           @updated="loadEvent" />
 
@@ -145,7 +145,9 @@ interface EventDate {
   end_date: string | null
   end_time: string | null
   entry_time: string | null
+  venue_id: number | null
   space_id: number | null
+  venue_name: string | null
   accessibility_flags: number | null
   duration: number | null
   visitor_info_flags: number | null
@@ -165,7 +167,9 @@ type EventSchedulePayloadItem = {
   start_time?: string
   end_time?: string | null
   entry_time?: string | null
+  venue_id?: number | null
   space_id?: number | null
+  venue_name?: string | null
   accessibility_flags?: number | null
   duration?: number | null
   visitor_info_flags?: number | null
@@ -308,45 +312,18 @@ const eventSchedulePayload = computed<EventSchedulePayloadItem[]>(() => {
   return event.value.event_dates.map<EventSchedulePayloadItem>((date) => {
     const payload: EventSchedulePayloadItem = {}
 
-    if (date.event_date_id !== null) {
-        payload.id = date.event_date_id
-    }
-
-    if (date.start_date) {
-      payload.start_date = date.start_date
-    }
-
-    if (date.start_time) {
-      payload.start_time = date.start_time
-    }
-
-    if (date.end_date) {
-      payload.end_date = date.end_date
-    }
-
-    if (date.end_time) {
-      payload.end_time = date.end_time
-    }
-
-    if (date.entry_time) {
-      payload.entry_time = date.entry_time
-    }
-
-    if (date.space_id !== null) {
-      payload.space_id = date.space_id
-    }
-
-    if (date.accessibility_flags !== null) {
-      payload.accessibility_flags = date.accessibility_flags
-    }
-
-    if (date.duration !== null) {
-      payload.duration = date.duration
-    }
-
-    if (date.visitor_info_flags !== null) {
-      payload.visitor_info_flags = date.visitor_info_flags
-    }
+    if (date.event_date_id !== null) payload.id = date.event_date_id
+    if (date.start_date) payload.start_date = date.start_date
+    if (date.start_time) payload.start_time = date.start_time
+    if (date.end_date) payload.end_date = date.end_date
+    if (date.end_time) payload.end_time = date.end_time
+    if (date.entry_time) payload.entry_time = date.entry_time
+    if (date.space_id !== null) payload.space_id = date.space_id
+    if (date.venue_id !== null) payload.venue_id = date.venue_id   // <-- add this
+    if (date.venue_name) payload.venue_name = date.venue_name     // <-- add this
+    if (date.accessibility_flags !== null) payload.accessibility_flags = date.accessibility_flags
+    if (date.duration !== null) payload.duration = date.duration
+    if (date.visitor_info_flags !== null) payload.visitor_info_flags = date.visitor_info_flags
 
     return payload
   })
@@ -409,7 +386,9 @@ const mapEventDate = (raw: unknown): EventDate | null => {
     end_date: toNullableString(record.end_date),
     end_time: toNullableString(record.end_time),
     entry_time: toNullableString(record.entry_time),
+    venue_id: toNumberOrNull(record.venue_id),
     space_id: toNumberOrNull(record.space_id),
+    venue_name: toNullableString(record.venue_name),
     accessibility_flags: toNumberOrNull(record.accessibility_flags),
     duration: toNumberOrNull(record.duration),
     visitor_info_flags: toNumberOrNull(record.visitor_info_flags),
@@ -726,33 +705,33 @@ onMounted(() => {
 }
 
 .event-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--uranus-grid-gap);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--uranus-grid-gap);
   max-width: var(--uranus-dashboard-content-width);
 }
 
 .event-map {
-    width: 100%;
-    height: 250px;
-    border-radius: 12px;
-    overflow: hidden;
+  width: 100%;
+  height: 250px;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .event-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .event-loading {
-    min-height: 50vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    color: var(--muted-text);
-    padding: 2rem 1rem;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--muted-text);
+  padding: 2rem 1rem;
 }
 
 .event-map {
@@ -761,37 +740,37 @@ onMounted(() => {
 }
 
 @media (min-width: 640px) {
-    .event-map {
-        height: 280px;
-    }
+  .event-map {
+    height: 280px;
+  }
 
-    .event-sidebar {
-        gap: 1.25rem;
-    }
+  .event-sidebar {
+    gap: 1.25rem;
+  }
 }
 
 @media (min-width: 1024px) {
-    .event-content {
-        display: grid;
-        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-        gap: clamp(1.5rem, 3vw, 2rem);
-        align-items: start;
-    }
+  .event-content {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 2rem);
+    align-items: start;
+  }
 
-    .event-sidebar {
-        align-self: stretch;
-    }
+  .event-sidebar {
+    align-self: stretch;
+  }
 
-    .event-map {
-        width: 100%;
-        height: 100%;
-        min-height: 320px;
-    }
+  .event-map {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+  }
 }
 
 @media (min-width: 1280px) {
-    .event-map {
-        height: 320px;
-    }
+  .event-map {
+    height: 320px;
+  }
 }
 </style>

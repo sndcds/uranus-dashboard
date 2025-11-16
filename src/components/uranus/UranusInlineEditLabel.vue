@@ -1,12 +1,16 @@
 <template>
   <div class="uranus-inline-label">
-    <span>{{ labelText }}</span>
+    <span
+        v-if="labelText"
+        :class="['uranus-inline-label-text', labelClass]"
+    >
+      {{ labelText }}
+    </span>
     <button
-      v-if="!isEditing"
-      type="button"
-      class="uranus-inline-edit-button"
-      @click="startEditing"
-      style="margin-left: 8px"
+        type="button"
+        class="uranus-inline-edit-button"
+        @click="startEditing"
+        :style="{ marginLeft: labelText ? '8px' : '0' }"
     >
       {{ editButtonText }}
     </button>
@@ -19,6 +23,10 @@ defineProps({
     type: String,
     required: true
   },
+  labelClass: {
+    type: [String, Array, Object],
+    default: '' // optional class for the label span
+  },
   editButtonText: {
     type: String,
     required: true
@@ -29,8 +37,6 @@ defineProps({
   }
 })
 
-
-// Emit an event when editing starts
 const emit = defineEmits(['edit-started'])
 
 function startEditing() {
@@ -39,6 +45,25 @@ function startEditing() {
 </script>
 
 <style scoped>
+.uranus-inline-label {
+  display: flex;
+  align-items: center; /* vertically center button with label if present */
+}
+
+/* Label span is hidden if empty, takes no space */
+.uranus-inline-label span:empty {
+  display: none;
+}
+
+/* Optional: remove spacing if label is gone */
+.uranus-inline-edit-button {
+  margin-left: 8px;
+}
+
+.uranus-inline-label span:empty + .uranus-inline-edit-button {
+  margin-left: 0; /* button sticks to top-left when label missing */
+}
+
 .uranus-inline-edit-button:hover {
   background-color: var(--uranus-secondary-button-background-color);
 }

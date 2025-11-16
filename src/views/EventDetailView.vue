@@ -283,15 +283,17 @@ const intlTime = new Intl.DateTimeFormat(locale.value || 'de', {
     minute: '2-digit',
 })
 
-const formatDate = (dateStr: string) => {
-    const [year, month, day] = dateStr.split('-').map(Number)
-    if (!year || !month || !day) return dateStr
+const formatDate = (dateStr: string | null | undefined) => {
+  if (!dateStr || typeof dateStr !== 'string') return ''
 
-    // Format as DD.MM.YYYY
-    const paddedDay = String(day).padStart(2, '0')
-    const paddedMonth = String(month).padStart(2, '0')
+  const parts = dateStr.split('-')
+  if (parts.length !== 3) return dateStr
 
-    return `${paddedDay}.${paddedMonth}.${year}`
+  const [year, month, day] = parts.map(Number)
+
+  if (!year || !month || !day) return dateStr
+
+  return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year}`
 }
 
 const formatTime = (timeStr: string) => {
