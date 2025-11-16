@@ -2,6 +2,12 @@
   <div class="uranus-main-layout member-permission-view">
     <DashboardHeroComponent :title="t('permissions')" :subtitle="pageSubtitle" />
 
+    <transition name="fade">
+      <p v-if="updateError" class="feedback feedback--error" role="alert">
+        {{ updateError }}
+      </p>
+    </transition>
+
     <div v-if="isLoading" class="member-permission__state">
       {{ t('user_permissions_loading') }}
     </div>
@@ -20,7 +26,7 @@
           <div>
             <h2>{{ group.label }}</h2>
             <p class="member-permission__group-count">
-              {{ t('user_permissions_entities', { count: group.entries.length }) }}
+              {{ replaceInTemplate(t('user_permissions_entities'), { count: group.entries.length }) }}
             </p>
           </div>
         </header>
@@ -29,7 +35,14 @@
           <ul class="member-permission__bits">
             <li v-for="entry in group.entries" :key="`${group.type}-${entry.bit}`" class="member-permission__bit">
               <label class="member-permission__bit-checkbox">
-                <input type="checkbox" :value="entry.bit" v-model="selectedBits" :aria-label="entry.label" />
+                <input
+                  type="checkbox"
+                  :value="entry.bit"
+                  :checked="isBitSelected(entry.bit)"
+                  :disabled="isUpdatingBit === entry.bit || !canModifyPermissions"
+                  :aria-label="entry.label"
+                  @change="onPermissionToggle(entry, $event)"
+                />
               </label>
 
               <div class="member-permission__bit-content">
@@ -52,6 +65,8 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+
+import { replaceInTemplate } from '@/utils/string'
 
 import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
 import UranusCard from '@/components/uranus/UranusCard.vue'
@@ -83,7 +98,7 @@ const memberId = computed(() => {
   return Number.isFinite(raw) ? raw : null
 })
 
-const pageSubtitle = computed(() => t('user_permissions_subtitle', {
+const pageSubtitle = computed(() => replaceInTemplate(t('user_permissions_subtitle'), {
   name: memberDisplayName.value ?? t('user_unknown'),
   organization: organizerName.value ?? t('organizer_unknown'),
 }))
@@ -101,6 +116,9 @@ const permissionGroups = ref<PermissionGroup[]>([])
 const selectedBits = ref<number[]>([])
 const memberDisplayName = ref<string | null>(null)
 const organizerName = ref<string | null>(null)
+const isUpdatingBit = ref<number | null>(null)
+const updateError = ref<string | null>(null)
+const canModifyPermissions = computed(() => memberId.value != null)
 
 const buildQuery = () => {
   const params = new URLSearchParams({ lang: locale.value })
@@ -156,6 +174,7 @@ const loadPermissions = async () => {
 
     if (!data || typeof data !== 'object') {
       permissionGroups.value = []
+      selectedBits.value = []
       return
     }
 
@@ -180,11 +199,68 @@ const loadPermissions = async () => {
     selectedBits.value = permissionGroups.value.flatMap((group) =>
       group.entries.map((entry) => entry.bit)
     )
+    updateError.value = null
   } catch (err) {
     console.error('Failed to load permission list', err)
     error.value = t('user_permissions_load_error')
+    permissionGroups.value = []
+    selectedBits.value = []
   } finally {
     isLoading.value = false
+  }
+}
+
+const isBitSelected = (bit: number) => selectedBits.value.includes(bit)
+
+const applyBitSelection = (bit: number, enabled: boolean) => {
+  if (enabled) {
+    if (!selectedBits.value.includes(bit)) {
+      selectedBits.value = [...selectedBits.value, bit]
+    }
+  } else {
+    selectedBits.value = selectedBits.value.filter((value) => value !== bit)
+  }
+}
+
+const onPermissionToggle = (entry: PermissionBitEntry, event: Event) => {
+  const target = event.target as HTMLInputElement | null
+  const enabled = target?.checked ?? false
+  void updatePermission(entry, enabled, target)
+}
+
+const updatePermission = async (
+  entry: PermissionBitEntry,
+  enabled: boolean,
+  input?: HTMLInputElement | null
+) => {
+  if (!memberId.value) {
+    updateError.value = t('user_permissions_load_error')
+    if (input) {
+      input.checked = !enabled
+    }
+    return
+  }
+
+  const previous = selectedBits.value.slice()
+  applyBitSelection(entry.bit, enabled)
+  isUpdatingBit.value = entry.bit
+  updateError.value = null
+
+  try {
+    await apiFetch(`/api/admin/organizer/${organizerId.value}/member/${memberId.value}/permission`, {
+      method: 'PUT',
+      body: JSON.stringify({ bit: entry.bit, enabled }),
+    })
+  } catch (err) {
+    console.error('Failed to update permission bit', err)
+    selectedBits.value = previous
+    if (input) {
+      input.checked = !enabled
+    }
+    updateError.value =
+      err instanceof Error && err.message ? err.message : t('user_permissions_load_error')
+  } finally {
+    isUpdatingBit.value = null
   }
 }
 
