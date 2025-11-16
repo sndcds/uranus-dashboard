@@ -116,9 +116,34 @@ const permissionGroups = ref<PermissionGroup[]>([])
 const selectedBits = ref<number[]>([])
 const memberDisplayName = ref<string | null>(null)
 const organizerName = ref<string | null>(null)
+const permissionMask = ref<number | null>(null)
 const isUpdatingBit = ref<number | null>(null)
 const updateError = ref<string | null>(null)
-const canModifyPermissions = computed(() => memberId.value != null)
+const canModifyPermissions = computed(() => memberId.value != null && organizerId.value != null)
+
+const toMaskValue = (value: unknown): number | null => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value
+  }
+  if (typeof value === 'string') {
+    const parsed = Number(value.trim())
+    return Number.isFinite(parsed) ? parsed : null
+  }
+  return null
+}
+
+const computeSelectedBitsFromMask = (mask: number) => {
+  const bits: number[] = []
+  permissionGroups.value.forEach((group) => {
+    group.entries.forEach((entry) => {
+      const bitValue = 1 << entry.bit
+      if ((mask & bitValue) === bitValue) {
+        bits.push(entry.bit)
+      }
+    })
+  })
+  return bits
+}
 
 const buildQuery = () => {
   const params = new URLSearchParams({ lang: locale.value })
@@ -175,6 +200,7 @@ const loadPermissions = async () => {
     if (!data || typeof data !== 'object') {
       permissionGroups.value = []
       selectedBits.value = []
+      permissionMask.value = null
       return
     }
 
@@ -196,15 +222,14 @@ const loadPermissions = async () => {
       })
       .filter((group) => group.entries.length > 0)
 
-    selectedBits.value = permissionGroups.value.flatMap((group) =>
-      group.entries.map((entry) => entry.bit)
-    )
+    await loadUserPermissions()
     updateError.value = null
   } catch (err) {
     console.error('Failed to load permission list', err)
     error.value = t('user_permissions_load_error')
     permissionGroups.value = []
     selectedBits.value = []
+    permissionMask.value = null
   } finally {
     isLoading.value = false
   }
@@ -220,6 +245,12 @@ const applyBitSelection = (bit: number, enabled: boolean) => {
   } else {
     selectedBits.value = selectedBits.value.filter((value) => value !== bit)
   }
+}
+
+const updateLocalMask = (bit: number, enabled: boolean) => {
+  const bitValue = 1 << bit
+  const current = permissionMask.value ?? 0
+  permissionMask.value = enabled ? current | bitValue : current & ~bitValue
 }
 
 const onPermissionToggle = (entry: PermissionBitEntry, event: Event) => {
@@ -251,6 +282,7 @@ const updatePermission = async (
       method: 'PUT',
       body: JSON.stringify({ bit: entry.bit, enabled }),
     })
+    updateLocalMask(entry.bit, enabled)
   } catch (err) {
     console.error('Failed to update permission bit', err)
     selectedBits.value = previous
@@ -264,8 +296,37 @@ const updatePermission = async (
   }
 }
 
+const loadUserPermissions = async () => {
+  if (
+    memberId.value == null ||
+    organizerId.value == null ||
+    !permissionGroups.value.length
+  ) {
+    return
+  }
+
+  try {
+    const { data } = await apiFetch<{ permissions?: number | string | null }>(
+      `/api/admin/user/${memberId.value}/organizer/${organizerId.value}/permissions`
+    )
+
+    const mask = toMaskValue(data?.permissions ?? null)
+    if (mask == null) {
+      permissionMask.value = null
+      selectedBits.value = []
+      return
+    }
+
+    permissionMask.value = mask
+    selectedBits.value = computeSelectedBitsFromMask(mask)
+  } catch (err) {
+    console.error('Failed to load user permissions mask', err)
+    permissionMask.value = null
+  }
+}
+
 watch(
-  () => [memberId.value, locale.value],
+  () => [memberId.value, organizerId.value, locale.value],
   () => {
     void loadPermissions()
   }
