@@ -12,7 +12,7 @@
             </div>
 
             <div v-else class="team-grid">
-                <article class="team-card team-card--members">
+                <article class="uranus-card uranus-form team-card team-card--members">
                     <header class="team-card__header">
                         <div>
                             <h2>{{ t('organizer_team_members_title') }}</h2>
@@ -24,20 +24,22 @@
                         </button>
                     </header>
 
-                    <div class="team-toolbar">
+                    <UranusFormRow class="team-toolbar">
                         <UranusTextInput id="team-search" v-model="searchQuery" :placeholder="t('organizer_team_search_placeholder')"
                             :label="t('organizer_team_search_label')" />
 
-                        <label class="team-role-filter">
-                            <span>{{ t('organizer_team_role_filter_label') }}</span>
-                            <select v-model="roleFilterModel" class="uranus-select">
-                                <option value="all">{{ t('organizer_team_role_filter_all') }}</option>
-                                <option v-for="role in roles" :key="role.id" :value="role.id">
-                                    {{ role.name }}
-                                </option>
-                            </select>
-                        </label>
-                    </div>
+                        <div class="uranus-textfield-wrapper team-role-filter">
+                            <UranusFieldLabel id="team-role-filter-select"
+                                :label="t('organizer_team_role_filter_label')">
+                                <select id="team-role-filter-select" v-model="roleFilterModel" class="uranus-text-input">
+                                    <option value="all">{{ t('organizer_team_role_filter_all') }}</option>
+                                    <option v-for="role in roles" :key="role.id" :value="role.id">
+                                        {{ role.name }}
+                                    </option>
+                                </select>
+                            </UranusFieldLabel>
+                        </div>
+                    </UranusFormRow>
 
                     <transition name="fade">
                         <p v-if="memberActionError" class="feedback feedback--error" role="alert">
@@ -48,7 +50,7 @@
                     <ul v-if="filteredMembers.length" class="team-member-list">
                         <li v-for="member in filteredMembers" :key="member.user_id" class="team-member">
                             <div class="team-member__avatar" aria-hidden="true">
-                                {{ getInitials(member.display_name || member.email) }}
+                                <img v-if="member.avatar_url" :src="member.avatar_url" :alt="member.display_name || member.email">
                             </div>
 
                             <div class="team-member__details">
@@ -76,6 +78,11 @@
                                     <span v-if="memberActionId === member.user_id">{{ t('organizer_team_removing') }}</span>
                                     <span v-else>{{ t('organizer_team_remove_member_button') }}</span>
                                 </button>
+                                <router-link
+                                    :to="`/admin/member/${member.user_id}/permission`"
+                                    class="uranus-secondary-button">
+                                    {{ t('organizer_member_permission_edit_button') }}
+                                </router-link>
                             </div>
                         </li>
                     </ul>
@@ -85,7 +92,7 @@
                     </div>
                 </article>
 
-                <article class="team-card team-card--sidebar">
+                <article class="uranus-card team-card team-card--sidebar">
                     <header class="team-card__header">
                         <div>
                             <h2>{{ t('organizer_team_section_invite_title') }}</h2>
@@ -93,7 +100,7 @@
                         </div>
                     </header>
 
-                    <form class="team-form" @submit.prevent="submitInvite">
+                    <form class="team-form uranus-form" @submit.prevent="submitInvite">
                         <transition name="fade">
                             <p v-if="inviteError" class="feedback feedback--error" role="alert">
                                 {{ inviteError }}
@@ -108,16 +115,18 @@
                         <UranusFormRow>
                             <UranusTextInput id="invite-email" v-model="inviteEmail" type="email"
                                 :label="t('organizer_team_invite_email_label')" autocomplete="email" required />
+                            <div class="uranus-textfield-wrapper team-role-select">
+                                <UranusFieldLabel id="team-invite-role-select"
+                                    :label="t('organizer_team_invite_role_label')" :required="true">
+                                    <select id="team-invite-role-select" v-model="inviteRoleModel"
+                                        class="uranus-text-input" :disabled="!roles.length" required>
+                                        <option v-for="role in roles" :key="role.id" :value="role.id">
+                                            {{ role.name }}
+                                        </option>
+                                    </select>
+                                </UranusFieldLabel>
+                            </div>
                         </UranusFormRow>
-
-                        <label class="team-role-select">
-                            <span>{{ t('organizer_team_invite_role_label') }}</span>
-                            <select v-model="inviteRoleModel" class="uranus-select" :disabled="!roles.length">
-                                <option v-for="role in roles" :key="role.id" :value="role.id">
-                                    {{ role.name }}
-                                </option>
-                            </select>
-                        </label>
 
                         <button class="uranus-button" type="submit" :disabled="isInviting || !roles.length">
                             <span v-if="!isInviting">{{ t('organizer_team_invite_button') }}</span>
@@ -180,6 +189,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
+import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
 import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
 import UranusFormRow from '@/components/uranus/UranusFormRow.vue'
 
@@ -626,14 +636,12 @@ onMounted(() => {
 }
 
 .team-member__avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 16px;
-    background: var(--color-accent);
-    color: #fff;
-    font-weight: 700;
-    display: grid;
-    place-items: center;
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 9999px;
+    }
 }
 
 .team-member__details {
@@ -675,7 +683,11 @@ onMounted(() => {
     font-size: 0.85rem;
 }
 
-.team-member__actions button {
+.team-member__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
     white-space: nowrap;
 }
 
