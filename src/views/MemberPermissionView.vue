@@ -1,55 +1,50 @@
 <template>
-    <div class="uranus-main-layout member-permission-view">
-        <DashboardHeroComponent :title="t('permissions')" :subtitle="pageSubtitle" />
+  <div class="uranus-main-layout member-permission-view">
+    <DashboardHeroComponent :title="t('permissions')" :subtitle="pageSubtitle" />
 
-        <div v-if="isLoading" class="member-permission__state">
-            {{ t('user_permissions_loading') }}
-        </div>
-
-        <div v-else-if="error" class="member-permission__state member-permission__state--error" role="alert">
-            {{ error }}
-        </div>
-
-        <div v-else-if="!permissionGroups.length" class="member-permission__state">
-            {{ t('user_permissions_invalid_response') }}
-        </div>
-
-        <div v-else class="member-permission__groups">
-            <article v-for="group in permissionGroups" :key="group.type" class="member-permission__group">
-                <header class="member-permission__group-header">
-                    <div>
-                        <h2>{{ group.label }}</h2>
-                        <p class="member-permission__group-count">
-                            {{ t('user_permissions_entities', { count: group.entries.length }) }}
-                        </p>
-                    </div>
-                </header>
-
-                <UranusCard class="member-permission__card">
-                    <ul class="member-permission__bits">
-                        <li v-for="entry in group.entries" :key="`${group.type}-${entry.bit}`" class="member-permission__bit">
-                            <label class="member-permission__bit-checkbox">
-                                <input
-                                    type="checkbox"
-                                    :value="entry.bit"
-                                    v-model="selectedBits"
-                                    :aria-label="entry.label"
-                                />
-                            </label>
-
-                            <div class="member-permission__bit-content">
-                                <div class="member-permission__bit-header">
-                                    <span class="member-permission__bit-label">{{ entry.label }}</span>
-                                    <span class="member-permission__bit-code">#{{ entry.bit }}</span>
-                                </div>
-                                <p class="member-permission__bit-description">{{ entry.description }}</p>
-                            </div>
-                        </li>
-                    </ul>
-                </UranusCard>
-            </article>
-        </div>
+    <div v-if="isLoading" class="member-permission__state">
+      {{ t('user_permissions_loading') }}
     </div>
+
+    <div v-else-if="error" class="member-permission__state member-permission__state--error" role="alert">
+      {{ error }}
+    </div>
+
+    <div v-else-if="!permissionGroups.length" class="member-permission__state">
+      {{ t('user_permissions_invalid_response') }}
+    </div>
+
+    <div v-else class="member-permission__groups">
+      <article v-for="group in permissionGroups" :key="group.type" class="member-permission__group">
+        <header class="member-permission__group-header">
+          <div>
+            <h2>{{ group.label }}</h2>
+            <p class="member-permission__group-count">
+              {{ t('user_permissions_entities', { count: group.entries.length }) }}
+            </p>
+          </div>
+        </header>
+
+        <UranusCard class="member-permission__card">
+          <ul class="member-permission__bits">
+            <li v-for="entry in group.entries" :key="`${group.type}-${entry.bit}`" class="member-permission__bit">
+              <label class="member-permission__bit-checkbox">
+                <input type="checkbox" :value="entry.bit" v-model="selectedBits" :aria-label="entry.label" />
+              </label>
+
+              <div class="member-permission__bit-content">
+                <div class="member-permission__bit-header">
+                  <span class="member-permission__bit-label">{{ entry.label }}</span>
+                  <span class="member-permission__bit-code">#{{ entry.bit }}</span>
+                </div>
+                <p class="member-permission__bit-description">{{ entry.description }}</p>
+              </div>
+            </li>
+          </ul>
+        </UranusCard>
+      </article>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -62,15 +57,15 @@ import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
 import UranusCard from '@/components/uranus/UranusCard.vue'
 
 interface PermissionBitEntry {
-    bit: number
-    label: string
-    description: string
+  bit: number
+  label: string
+  description: string
 }
 
 interface PermissionGroup {
-    type: string
-    label: string
-    entries: PermissionBitEntry[]
+  type: string
+  label: string
+  entries: PermissionBitEntry[]
 }
 
 type PermissionListResponse = Record<string, PermissionBitEntry[] | null | undefined>
@@ -78,187 +73,233 @@ type PermissionListResponse = Record<string, PermissionBitEntry[] | null | undef
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
 
-const memberId = computed(() => {
-    const raw = Number(route.params.memberId)
-    return Number.isFinite(raw) ? raw : null
+const organizerId = computed(() => {
+  const raw = Number(route.params.id)
+  return Number.isFinite(raw) ? raw : null
 })
 
-const pageSubtitle = computed(() => t('user_permissions_subtitle'))
+const memberId = computed(() => {
+  const raw = Number(route.params.memberId)
+  return Number.isFinite(raw) ? raw : null
+})
+
+const pageSubtitle = computed(() => t('user_permissions_subtitle', {
+  name: memberDisplayName.value ?? t('user_unknown'),
+  organization: organizerName.value ?? t('organizer_unknown'),
+}))
 
 const entityTypeLabels = computed<Record<string, string>>(() => ({
-    organizer: t('user_permissions_type_organizer'),
-    venue: t('user_permissions_type_venue'),
-    space: t('user_permissions_type_space'),
-    event: t('user_permissions_type_event'),
+  organizer: t('user_permissions_type_organizer'),
+  venue: t('user_permissions_type_venue'),
+  space: t('user_permissions_type_space'),
+  event: t('user_permissions_type_event'),
 }))
 
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 const permissionGroups = ref<PermissionGroup[]>([])
 const selectedBits = ref<number[]>([])
+const memberDisplayName = ref<string | null>(null)
+const organizerName = ref<string | null>(null)
 
 const buildQuery = () => {
-    const params = new URLSearchParams({ lang: locale.value })
-    if (memberId.value != null) {
-        params.set('member_id', String(memberId.value))
+  const params = new URLSearchParams({ lang: locale.value })
+  if (memberId.value != null) {
+    params.set('member_id', String(memberId.value))
+  }
+  const query = params.toString()
+  return query ? `?${query}` : ''
+}
+
+const loadMember = async () => {
+  if (memberId.value == null) {
+    return
+  }
+
+  try {
+    const { data } = await apiFetch<{ display_name: string | null }>(
+      `/api/admin/user/${memberId.value}`
+    )
+    if (data && data.display_name) {
+      memberDisplayName.value = data.display_name
     }
-    const query = params.toString()
-    return query ? `?${query}` : ''
+  } catch (err) {
+    console.error('Failed to load member details', err)
+  }
+}
+
+const loadOrganizer = async () => {
+  if (organizerId.value == null) {
+    return
+  }
+
+  try {
+    const { data } = await apiFetch<{ name: string | null }>(
+      `/api/organizer/${organizerId.value}`
+    )
+    if (data && data.name) {
+      organizerName.value = data.name
+    }
+  } catch (err) {
+    console.error('Failed to load organizer details', err)
+  }
 }
 
 const loadPermissions = async () => {
-    isLoading.value = true
-    error.value = null
+  isLoading.value = true
+  error.value = null
 
-    try {
-        const { data } = await apiFetch<PermissionListResponse | null>(
-            `/api/admin/permission/list${buildQuery()}`
-        )
+  try {
+    const { data } = await apiFetch<PermissionListResponse | null>(
+      `/api/admin/permission/list${buildQuery()}`
+    )
 
-        if (!data || typeof data !== 'object') {
-            permissionGroups.value = []
-            return
-        }
-
-        permissionGroups.value = Object.entries(data)
-            .map(([type, entries]) => {
-                const normalized = Array.isArray(entries)
-                    ? entries.map((entry) => ({
-                          bit: entry.bit,
-                          label: entry.label,
-                          description: entry.description ?? '',
-                      }))
-                    : []
-
-                return {
-                    type,
-                    label: entityTypeLabels.value[type] ?? type,
-                    entries: normalized,
-                }
-            })
-            .filter((group) => group.entries.length > 0)
-
-        selectedBits.value = permissionGroups.value.flatMap((group) =>
-            group.entries.map((entry) => entry.bit)
-        )
-    } catch (err) {
-        console.error('Failed to load permission list', err)
-        error.value = t('user_permissions_load_error')
-    } finally {
-        isLoading.value = false
+    if (!data || typeof data !== 'object') {
+      permissionGroups.value = []
+      return
     }
+
+    permissionGroups.value = Object.entries(data)
+      .map(([type, entries]) => {
+        const normalized = Array.isArray(entries)
+          ? entries.map((entry) => ({
+            bit: entry.bit,
+            label: entry.label,
+            description: entry.description ?? '',
+          }))
+          : []
+
+        return {
+          type,
+          label: entityTypeLabels.value[type] ?? type,
+          entries: normalized,
+        }
+      })
+      .filter((group) => group.entries.length > 0)
+
+    selectedBits.value = permissionGroups.value.flatMap((group) =>
+      group.entries.map((entry) => entry.bit)
+    )
+  } catch (err) {
+    console.error('Failed to load permission list', err)
+    error.value = t('user_permissions_load_error')
+  } finally {
+    isLoading.value = false
+  }
 }
 
 watch(
-    () => [memberId.value, locale.value],
-    () => {
-        void loadPermissions()
-    }
+  () => [memberId.value, locale.value],
+  () => {
+    void loadPermissions()
+  }
 )
 
 onMounted(() => {
-    void loadPermissions()
+  void loadPermissions()
+  void loadOrganizer()
+  void loadMember()
 })
 </script>
 
 <style scoped lang="scss">
 .member-permission__state {
-    padding: 1rem;
-    border-radius: 12px;
-    background: rgba(79, 70, 229, 0.08);
-    color: var(--color-text);
-    text-align: center;
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(79, 70, 229, 0.08);
+  color: var(--color-text);
+  text-align: center;
 }
 
 .member-permission__state--error {
-    background: rgba(239, 68, 68, 0.1);
-    color: rgba(239, 68, 68, 0.9);
+  background: rgba(239, 68, 68, 0.1);
+  color: rgba(239, 68, 68, 0.9);
 }
 
 .member-permission__groups {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .member-permission__group-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
 }
 
 .member-permission__group-header h2 {
-    margin: 0;
-    font-size: 1.2rem;
+  margin: 0;
+  font-size: 1.2rem;
 }
 
 .member-permission__group-count {
-    margin: 0;
-    color: var(--muted-text);
-    font-size: 0.9rem;
+  margin: 0;
+  color: var(--muted-text);
+  font-size: 0.9rem;
 }
 
 .member-permission__card {
-    padding: 1rem;
+  padding: 1rem;
 }
 
 .member-permission__bits {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .member-permission__bit {
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border-soft);
-    display: flex;
-    gap: 0.75rem;
-    align-items: flex-start;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
 }
 
 .member-permission__bit:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
+  border-bottom: 0;
+  padding-bottom: 0;
 }
 
 .member-permission__bit-checkbox {
-    display: flex;
-    align-items: center;
-    margin-top: 0.2rem;
+  display: flex;
+  align-items: center;
+  margin-top: 0.2rem;
 }
 
 .member-permission__bit-checkbox input {
-    width: 1.1rem;
-    height: 1.1rem;
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
 .member-permission__bit-content {
-    flex: 1;
+  flex: 1;
 }
 
 .member-permission__bit-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
 }
 
 .member-permission__bit-label {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .member-permission__bit-code {
-    font-size: 0.85rem;
-    color: var(--muted-text);
+  font-size: 0.85rem;
+  color: var(--muted-text);
 }
 
 .member-permission__bit-description {
-    margin: 0.35rem 0 0;
-    color: var(--muted-text);
-    font-size: 0.95rem;
+  margin: 0.35rem 0 0;
+  color: var(--muted-text);
+  font-size: 0.95rem;
 }
 </style>

@@ -37,6 +37,7 @@ const getDefaultCalendarFilters = (): CalendarFiltersState => ({
 export const useAppStore = defineStore('app', () => {
     // State
     const organizerId = ref<number | null>(null)
+    const organizerName = ref<string | null>(null)
     const eventViewMode = ref<'detailed' | 'compact' | 'tiles' | 'map'>('detailed')
     const eventGroupingMode = ref<'daily' | 'monthly'>('daily')
     const calendarFilters = ref<CalendarFiltersState>(getDefaultCalendarFilters())
@@ -44,6 +45,10 @@ export const useAppStore = defineStore('app', () => {
     // Actions
     function setOrganizerId(id: number | null) {
         organizerId.value = id
+    }
+
+    function setOrganizerName(name: string | null) {
+        organizerName.value = name
     }
 
     function setViewMode(mode: 'detailed' | 'compact' | 'tiles' | 'map') {
@@ -67,14 +72,17 @@ export const useAppStore = defineStore('app', () => {
 
     function clearOrganizerId() {
         organizerId.value = null
+        organizerName.value = null
     }
 
     return {
         organizerId,
+        organizerName,
         eventViewMode,
         eventGroupingMode,
         calendarFilters,
         setOrganizerId,
+        setOrganizerName,
         setViewMode,
         setGroupingMode,
         updateCalendarFilters,

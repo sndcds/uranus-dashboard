@@ -153,7 +153,7 @@ const routes = [
                 component: InviteActivateView,
             },
             {
-                path: 'member/:memberId/permission',
+                path: 'organizer/:id/member/:memberId/permission',
                 name: 'admin-edit-member-permission',
                 component: MemberPermissionView,
             }

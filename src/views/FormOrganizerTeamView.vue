@@ -80,7 +80,7 @@
                                     <span v-else>{{ t('organizer_team_remove_member_button') }}</span>
                                 </button>
                                 <router-link
-                                    :to="`/admin/member/${member.user_id}/permission`"
+                                    :to="`/admin/organizer/${organizerId}/member/${member.user_id}/permission`"
                                     class="uranus-secondary-button">
                                     {{ t('organizer_member_permission_edit_button') }}
                                 </router-link>
