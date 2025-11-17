@@ -469,7 +469,7 @@ const cancelInvite = async (invite: OrganizerTeamInvitation) => {
     inviteActionId.value = invite.user_id
 
     try {
-        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/invite/${invite.user_id}`, {
+        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/member/${invite.user_id}`, {
                 method: 'DELETE',
             }
         )
