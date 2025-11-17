@@ -45,12 +45,35 @@
             <UranusDateInput v-model="editDraft.endDate" :label="t('event_end_date')" />
             <UranusTimeInput v-model="editDraft.endTime" :label="t('event_end_time')" />
 
-            <label class="checkbox-label">
-              <input type="checkbox" v-model="editDraft.allDay" class="checkbox-input" />
-              <span class="checkbox-text">{{ t('event_all_day') }}</span>
-            </label>
-
             <UranusTimeInput v-model="editDraft.entryTime" :label="t('event_entry_time')" />
+
+            <UranusButtonCheckbox
+                id="allDay"
+                v-model="editDraft.allDay"
+                :label="t('event_schedule_all_day')"
+            />
+          </div>
+
+          <div class="tabs-container">
+            <div class="tabs-buttons flex gap-2 mb-4">
+              <button
+                  type="button"
+                  :class="['tab-button', activeTab === 'venue' ? 'active' : '']"
+                  @click="activeTab = 'venue'"
+              >
+                {{ t('Venue') }}
+              </button>
+              <button
+                  type="button"
+                  :class="['tab-button', activeTab === 'location' ? 'active' : '']"
+                  @click="activeTab = 'location'"
+              >
+                {{ t('Location') }}
+              </button>
+            </div>
+
+            <!-- Tab Panels -->
+            <div v-show="activeTab === 'venue'" class="event-dates__grid">
 
             <UranusFieldLabel :label="t('event_venue_label')">
               <select v-model.number="editDraft.venueId" @change="onRowVenueChange(editDraft.venueId)">
@@ -65,8 +88,57 @@
                 <option v-for="sp in rowSpaces" :key="sp.id" :value="sp.id">{{ sp.name }}</option>
               </select>
             </UranusFieldLabel>
-          </div>
+            </div>
 
+            <!-- Tab Panels -->
+            <div v-show="activeTab === 'location'" class="event-dates__grid">
+            <UranusTextInput :id="locationName"
+                             v-model="locationName"
+                             :label="t('name')"
+                             :error="locationNameError"
+            />
+            <UranusTextInput :id="locationName"
+                             v-model="locationName"
+                             :label="t('street')"
+                             :error="locationNameError"
+            />
+            <UranusTextInput :id="locationName"
+                             v-model="locationName"
+                             :label="t('house_number')"
+                             :error="locationNameError"
+            />
+            <UranusTextInput :id="locationName"
+                             v-model="locationName"
+                             :label="t('postal_code')"
+                             :error="locationNameError"
+            />
+            <UranusTextInput :id="locationName"
+                             v-model="locationName"
+                             :label="t('country_code')"
+                             :error="locationNameError"
+            />
+            <UranusTextInput :id="locationName"
+                             v-model="locationName"
+                             :label="t('state_code')"
+                             :error="locationNameError"
+            />
+            <UranusTextInput :id="locationName"
+                             v-model="locationName"
+                             :label="t('latitude')"
+                             :error="locationNameError"
+            />
+            <UranusTextInput :id="locationName"
+                             v-model="locationName"
+                             :label="t('longitude')"
+                             :error="locationNameError"
+            />
+            <UranusTextInput :id="locationName"
+                             v-model="locationName"
+                             :label="t('description')"
+                             :error="locationNameError"
+            />
+          </div>
+          </div>
           <div class="event-meta__actions">
             <button type="button" class="uranus-inline-cancel-button" @click="cancelEdit">
               {{ t('form_cancel') }}
@@ -89,7 +161,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import UranusDateInput from '@/components/uranus/UranusDateInput.vue'
@@ -97,6 +169,8 @@ import UranusTimeInput from '@/components/uranus/UranusTimeInput.vue'
 import UranusInlineEditSection from '@/components/uranus/UranusInlineEditSection.vue'
 import UranusInlineEditLabel from '@/components/uranus/UranusInlineEditLabel.vue'
 import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
+import UranusButtonCheckbox from "@/components/uranus/UranusButtonCheckbox.vue";
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
 
 interface EventScheduleEntry {
   id: number | null
@@ -163,6 +237,34 @@ const eventScheduleDisplay = computed(() =>
       spaceDisplay: entry.spaceName ?? '',
     }))
 )
+
+const activeTab = ref<'venue' | 'location'>('venue');
+
+const locationFields = [
+  { id: 'name', key: 'name', label: 'name' },
+  { id: 'street', key: 'street', label: 'street' },
+  { id: 'house_number', key: 'house_number', label: 'house_number' },
+  { id: 'postal_code', key: 'postal_code', label: 'postal_code' },
+  { id: 'country_code', key: 'country_code', label: 'country_code' },
+  { id: 'state_code', key: 'state_code', label: 'state_code' },
+  { id: 'latitude', key: 'latitude', label: 'latitude' },
+  { id: 'longitude', key: 'longitude', label: 'longitude' },
+  { id: 'description', key: 'description', label: 'description' },
+];
+
+const locationName = reactive({
+  name: '',
+  street: '',
+  house_number: '',
+  postal_code: '',
+  country_code: '',
+  state_code: '',
+  latitude: '',
+  longitude: '',
+  description: ''
+});
+
+const locationNameError = ref('');
 
 // Normalize API collections
 function normalizeCollection(collection?: any[] | Record<string, any>) {
@@ -373,14 +475,101 @@ watch(() => [props.dates, props.eventDates], syncScheduleEntries, { deep: true }
 </script>
 
 <style scoped lang="scss">
-.event-meta__empty { color: var(--muted-text); font-size: 0.95rem; }
-.event-meta__list { display: flex; flex-direction: column; gap: var(--uranus-grid-gap); }
-.event-meta__entry { display: flex; align-items: stretch; }
-.uranus-inline-edit-section { width: 100%; }
-.event-meta__display { display: flex; flex-direction: column; gap: 0.25rem; flex: 1; }
-.event-meta__editor { width: 100%; display: flex; flex-direction: column; gap: 0.75rem; }
-.event-dates__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
-.event-meta__actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
-.event-meta__actions-inline { display: flex; gap: 0.5rem; }
-.event-meta__time { white-space: nowrap; }
+.event-meta__empty {
+  color: var(--muted-text);
+  font-size: 0.95rem;
+}
+
+.event-meta__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--uranus-grid-gap);
+}
+
+.event-meta__entry {
+  display: flex;
+  align-items: stretch;
+}
+
+.uranus-inline-edit-section {
+  width: 100%;
+}
+
+.event-meta__display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.event-meta__editor {
+  container-type: inline-size;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.event-dates__grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.event-meta__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.event-meta__actions-inline {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.event-meta__time {
+  white-space: nowrap;
+}
+
+@container (min-width: 400px) {
+  .event-dates__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+}
+
+@container (min-width: 800px) {
+  .event-dates__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+}
+</style>
+
+<style scoped>
+.tabs-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tab-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 0.5rem;
+  background: #f9fafb; /* gray-50 */
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-button.active {
+  border-color: #2563eb; /* blue-600 */
+  background: #2563eb;
+  color: white;
+}
+
+.tab-button:hover {
+  background: #e5e7eb; /* gray-200 */
+}
 </style>
