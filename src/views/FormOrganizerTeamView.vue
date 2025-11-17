@@ -154,7 +154,7 @@
                                         <span>{{ invite.role_name }}</span>
                                         <span>·</span>
                                         <span>
-                                            {{ t('organizer_team_invite_sent', { date: formatDate(invite.created_at) || t('organizer_team_date_unknown') }) }}
+                                            {{ t('organizer_team_invite_sent', { date: formatDate(invite.invited_at) || t('organizer_team_date_unknown') }) }}
                                         </span>
                                     </p>
                                     <p v-if="invite.expires_at" class="team-pending__expires">
@@ -211,12 +211,12 @@ interface OrganizerTeamMember {
 }
 
 interface OrganizerTeamInvitation {
-    invite_id: number
+    user_id: number
     email: string
     role_id: number | null
     role_name: string
     invited_by?: string | null
-    created_at?: string | null
+    invited_at?: string | null
     expires_at?: string | null
 }
 
@@ -270,8 +270,8 @@ const inviteRoleModel = computed({
 
 const pendingInvitations = computed(() =>
     [...invitations.value].sort((a, b) => {
-        const aTime = a.created_at ? new Date(a.created_at).getTime() : 0
-        const bTime = b.created_at ? new Date(b.created_at).getTime() : 0
+        const aTime = a.invited_at ? new Date(a.invited_at).getTime() : 0
+        const bTime = b.invited_at ? new Date(b.invited_at).getTime() : 0
         return bTime - aTime
     })
 )
@@ -395,7 +395,7 @@ const removeMember = async (member: OrganizerTeamMember) => {
     memberActionId.value = member.user_id
 
     try {
-        await apiFetch(`/api/admin/organizer/team/member/${member.user_id}`, {
+        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/member/${member.user_id}`, {
             method: 'DELETE',
         })
 
@@ -466,18 +466,16 @@ const cancelInvite = async (invite: OrganizerTeamInvitation) => {
         return
     }
 
-    inviteActionId.value = invite.invite_id
+    inviteActionId.value = invite.user_id
 
     try {
-        await apiFetch(
-            `/api/admin/organizer/${organizerId.value}/team/invitations/${invite.invite_id}`,
-            {
+        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/invitate/${invite.user_id}`, {
                 method: 'DELETE',
             }
         )
 
         invitations.value = invitations.value.filter(
-            (entry) => entry.invite_id !== invite.invite_id
+            (entry) => entry.user_id !== invite.user_id
         )
     } catch (err) {
         console.error('Failed to cancel invite', err)
