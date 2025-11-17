@@ -97,11 +97,14 @@
                 :filtered-events="filteredEvents" :format-time="formatTime" :format-location="formatLocation"
                 @filter-by-tag="filterByTag" />
         </div>
+        <div v-if="isLoadingMore" class="calendar-load-more-indicator" aria-live="polite">
+            <span>{{ t('events_calendar_loading') }}</span>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 import { useAppStore, type EventVenueSummary } from '@/store/appStore'
@@ -197,6 +200,15 @@ const userLongitude = ref<number | null>(null)
 const locationRadius = ref(25) // Default 25km
 const isGeocodingLoading = ref(false)
 const isRadiusSliding = ref(false)
+const EVENTS_PAGE_SIZE = 28
+const SCROLL_TRIGGER_DISTANCE = 300
+const paginationOffset = ref(0)
+const hasMoreEvents = ref(true)
+const isLoadingMore = ref(false)
+let scrollListenerAttached = false
+const debugLog = (...args: unknown[]) => {
+    console.log('[EventCalendar]', ...args)
+}
 
 // Use appStore for persisted state
 const currentView = computed({
@@ -389,6 +401,10 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
         params.set('radius', (locationRadius.value * 1000).toString())
     }
 
+    if (activeSelectedType.value !== null && activeSelectedType.value !== 'all') {
+        params.set('event_type', String(activeSelectedType.value))
+    }
+
     // Add any additional parameters
     if (additionalParams) {
         Object.entries(additionalParams).forEach(([key, value]) => {
@@ -399,8 +415,14 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
     return `${path}?${params.toString()}`
 }
 
+const resetPagination = () => {
+    paginationOffset.value = 0
+    hasMoreEvents.value = true
+}
+
 interface LoadEventsOptions {
     preserveSelection?: boolean
+    append?: boolean
 }
 
 const filtersActive = computed(() => {
@@ -671,65 +693,19 @@ const setActiveSelectedType = (typeId: number | string) => {
 }
 
 const filterByType = async (typeId: number | string) => {
-    // Handle "all" case
     if (typeId === 'all') {
         setActiveSelectedType('all')
         selectedType.value = 'all'
-
-        isLoading.value = true
-        loadError.value = null
-
-        try {
-            const endpoint = buildApiEndpoint('/api/events')
-            const { data } = await apiFetch<EventsResponse>(endpoint)
-
-            if (data) {
-                events.value = hydrateEvents(Array.isArray(data.events) ? data.events : [])
-                allEventsCount.value = data.total
-                typeCountOptions.value = data.type_summary || []
-                venueCountOptions.value = data.venues_summary || []
-            }
-        } catch (error: unknown) {
-            loadError.value =
-                error instanceof Error && error.message
-                    ? error.message
-                    : t('events_calendar_load_error')
-        } finally {
-            isLoading.value = false
+    } else {
+        const typeOption = typeCountOptions.value.find((type) => type.type_id === typeId)
+        if (!typeOption) {
+            return
         }
-        return
-    }
-
-    // Handle specific type case
-    const typeOption = typeCountOptions.value.find((type) => type.type_id === typeId)
-    if (!typeOption) return
-
-    setActiveSelectedType(typeId)
-
-    isLoading.value = true
-    loadError.value = null
-
-    try {
-        const endpoint = buildApiEndpoint('/api/events', { event_type: String(typeId) })
-        const { data } = await apiFetch<EventsResponse>(endpoint)
-
-        if (data) {
-            events.value = hydrateEvents(Array.isArray(data.events) ? data.events : [])
-            allEventsCount.value = data.total
-            typeCountOptions.value = data.type_summary || []
-            venueCountOptions.value = data.venues_summary || []
-        }
-
-        // Update selected type
+        setActiveSelectedType(typeId)
         selectedType.value = typeOption.type_name
-    } catch (error: unknown) {
-        loadError.value =
-            error instanceof Error && error.message
-                ? error.message
-                : t('events_calendar_load_error')
-    } finally {
-        isLoading.value = false
     }
+
+    await loadEvents({ preserveSelection: true })
 }
 
 const onSelectedVenue = async (venue: EventVenueSummary | number | string | null) => {
@@ -757,38 +733,178 @@ const onSelectedVenue = async (venue: EventVenueSummary | number | string | null
 }
 
 const loadEvents = async (options: LoadEventsOptions = {}) => {
-    const { preserveSelection = false } = options
-    isLoading.value = true
+    const { preserveSelection = false, append = false } = options
+
+    if (append) {
+        if (isLoading.value || isLoadingMore.value || !hasMoreEvents.value) {
+            debugLog('Skipping append load - busy or no more events', {
+                appendAttempt: append,
+                isLoading: isLoading.value,
+                isLoadingMore: isLoadingMore.value,
+                hasMoreEvents: hasMoreEvents.value,
+            })
+            return
+        }
+        debugLog('Appending events', { preserveSelection, offset: paginationOffset.value })
+        isLoadingMore.value = true
+    } else {
+        debugLog('Starting fresh load', { preserveSelection })
+        isLoading.value = true
+        loadError.value = null
+        resetPagination()
+        if (!preserveSelection) {
+            events.value = []
+        }
+    }
+
     loadError.value = null
+    const offset = append ? paginationOffset.value : 0
 
     try {
-        const endpoint = buildApiEndpoint('/api/events')
+        const endpoint = buildApiEndpoint('/api/events', {
+            offset: String(offset),
+            limit: String(EVENTS_PAGE_SIZE),
+        })
+        debugLog('Fetching events', { endpoint, offset, limit: EVENTS_PAGE_SIZE, append })
         const { data } = await apiFetch<EventsResponse>(endpoint)
 
         if (data) {
-            events.value = hydrateEvents(Array.isArray(data.events) ? data.events : [])
+            const incoming = hydrateEvents(Array.isArray(data.events) ? data.events : [])
+            debugLog('Received events payload', {
+                incomingCount: incoming.length,
+                append,
+                totalFromApi: data.total,
+            })
+            if (append) {
+                events.value = [...events.value, ...incoming]
+            } else {
+                events.value = incoming
+            }
+
             allEventsCount.value = data.total
             typeCountOptions.value = data.type_summary || []
             venueCountOptions.value = data.venues_summary || []
-        }
+            paginationOffset.value = offset + incoming.length
 
-        if (!preserveSelection) {
-            setInitialDate()
+            hasMoreEvents.value = incoming.length === EVENTS_PAGE_SIZE
+            debugLog('Updated pagination state', {
+                paginationOffset: paginationOffset.value,
+                totalLoaded: events.value.length,
+                hasMoreEvents: hasMoreEvents.value,
+            })
+
+            if (!append && !preserveSelection) {
+                setInitialDate()
+            }
+        } else {
+            debugLog('No data returned from API')
+            if (!append) {
+                events.value = []
+            }
+            hasMoreEvents.value = false
         }
     } catch (error: unknown) {
+        debugLog('Failed to load events', error)
         loadError.value =
             error instanceof Error && error.message
                 ? error.message
                 : t('events_calendar_load_error')
     } finally {
-        isLoading.value = false
-        if (!preserveSelection && !isInitialLoadComplete.value) {
-            isInitialLoadComplete.value = true
+        if (append) {
+            isLoadingMore.value = false
+        } else {
+            isLoading.value = false
+            if (!preserveSelection && !isInitialLoadComplete.value) {
+                isInitialLoadComplete.value = true
+            }
         }
+
+        void nextTick(() => {
+            debugLog('Load finished, checking if we should load additional events immediately')
+            maybeLoadAdditionalEvents()
+        })
     }
 }
 
+const loadMoreEvents = async () => {
+    debugLog('loadMoreEvents invoked')
+    await loadEvents({ preserveSelection: true, append: true })
+}
+
+const getScrollMetrics = () => {
+    if (typeof document === 'undefined') {
+        return { scrollTop: 0, scrollHeight: Number.MAX_SAFE_INTEGER, clientHeight: 0 }
+    }
+
+    const doc = document.documentElement
+    const body = document.body
+
+    const scrollTop = window.pageYOffset
+        ?? doc.scrollTop
+        ?? body?.scrollTop
+        ?? 0
+
+    const scrollHeight = Math.max(doc.scrollHeight, body?.scrollHeight ?? 0)
+    const clientHeight = window.innerHeight
+        ?? doc.clientHeight
+        ?? body?.clientHeight
+        ?? 0
+
+    return { scrollTop, scrollHeight, clientHeight }
+}
+
+const shouldLoadMoreOnScroll = () => {
+    if (!hasMoreEvents.value) return false
+    if (isLoading.value || isLoadingMore.value) return false
+    if (typeof window === 'undefined') return false
+
+    const { scrollTop, scrollHeight, clientHeight } = getScrollMetrics()
+    const distanceFromBottom = scrollHeight - (scrollTop + clientHeight)
+    debugLog('Scroll check', {
+        scrollTop,
+        scrollHeight,
+        clientHeight,
+        distanceFromBottom,
+        threshold: SCROLL_TRIGGER_DISTANCE,
+    })
+    return distanceFromBottom <= SCROLL_TRIGGER_DISTANCE
+}
+
+const maybeLoadAdditionalEvents = () => {
+    if (shouldLoadMoreOnScroll()) {
+        debugLog('Threshold met, loading additional events')
+        void loadMoreEvents()
+    } else {
+        debugLog('Threshold not met, no additional load triggered')
+    }
+}
+
+const onWindowScroll = () => {
+    debugLog('Window scroll event detected')
+    if (shouldLoadMoreOnScroll()) {
+        debugLog('Scroll handler triggering loadMoreEvents')
+        void loadMoreEvents()
+    }
+}
+
+const attachScrollListener = () => {
+    if (typeof window === 'undefined' || scrollListenerAttached) return
+    debugLog('Attaching scroll listener')
+    window.addEventListener('scroll', onWindowScroll, { passive: true })
+    scrollListenerAttached = true
+}
+
+const detachScrollListener = () => {
+    if (typeof window === 'undefined' || !scrollListenerAttached) return
+    debugLog('Detaching scroll listener')
+    window.removeEventListener('scroll', onWindowScroll)
+    scrollListenerAttached = false
+}
+
 onMounted(async () => {
+    debugLog('Component mounted, bootstrapping infinite scroll')
+    attachScrollListener()
+
     await loadEvents()
 
     if (pendingTypeFilterId.value !== null && pendingTypeFilterId.value !== 'all') {
@@ -796,6 +912,9 @@ onMounted(async () => {
     }
 
     pendingTypeFilterId.value = null
+    void nextTick(() => {
+        maybeLoadAdditionalEvents()
+    })
 })
 
 const getUserLocation = () => {
@@ -878,6 +997,15 @@ const onRadiusSlideEnd = async () => {
 
 watch(locale, () => {
 
+})
+
+watch(hasMoreEvents, (hasMore) => {
+    debugLog('hasMoreEvents changed', { hasMore })
+    if (hasMore) {
+        void nextTick(() => {
+            maybeLoadAdditionalEvents()
+        })
+    }
 })
 
 watch(
@@ -1000,6 +1128,10 @@ watch(
         await loadEvents({ preserveSelection: true })
     }
 )
+
+onBeforeUnmount(() => {
+    detachScrollListener()
+})
 </script>
 
 <style scoped lang="scss">
@@ -1101,6 +1233,13 @@ watch(
     grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
     gap: clamp(1.5rem, 3vw, 2.25rem);
     align-items: start;
+}
+
+.calendar-load-more-indicator {
+    margin-top: 1rem;
+    text-align: center;
+    color: var(--muted-text);
+    font-size: 0.85rem;
 }
 
 @media (max-width: 900px) {
