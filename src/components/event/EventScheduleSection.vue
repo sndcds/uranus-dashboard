@@ -91,53 +91,17 @@
             </div>
 
             <!-- Tab Panels -->
+            <!-- Location Tab -->
             <div v-show="activeTab === 'location'" class="event-dates__grid">
-            <UranusTextInput :id="locationName"
-                             v-model="locationName"
-                             :label="t('name')"
-                             :error="locationNameError"
-            />
-            <UranusTextInput :id="locationName"
-                             v-model="locationName"
-                             :label="t('street')"
-                             :error="locationNameError"
-            />
-            <UranusTextInput :id="locationName"
-                             v-model="locationName"
-                             :label="t('house_number')"
-                             :error="locationNameError"
-            />
-            <UranusTextInput :id="locationName"
-                             v-model="locationName"
-                             :label="t('postal_code')"
-                             :error="locationNameError"
-            />
-            <UranusTextInput :id="locationName"
-                             v-model="locationName"
-                             :label="t('country_code')"
-                             :error="locationNameError"
-            />
-            <UranusTextInput :id="locationName"
-                             v-model="locationName"
-                             :label="t('state_code')"
-                             :error="locationNameError"
-            />
-            <UranusTextInput :id="locationName"
-                             v-model="locationName"
-                             :label="t('latitude')"
-                             :error="locationNameError"
-            />
-            <UranusTextInput :id="locationName"
-                             v-model="locationName"
-                             :label="t('longitude')"
-                             :error="locationNameError"
-            />
-            <UranusTextInput :id="locationName"
-                             v-model="locationName"
-                             :label="t('description')"
-                             :error="locationNameError"
-            />
-          </div>
+              <UranusTextInput
+                  v-for="field in locationFields"
+                  :key="field.key"
+                  :id="field.key"
+                  v-model="locationName[field.key]"
+                  :label="t(field.label)"
+                  :error="locationNameError"
+              />
+            </div>
           </div>
           <div class="event-meta__actions">
             <button type="button" class="uranus-inline-cancel-button" @click="cancelEdit">
@@ -240,17 +204,19 @@ const eventScheduleDisplay = computed(() =>
 
 const activeTab = ref<'venue' | 'location'>('venue');
 
-const locationFields = [
-  { id: 'name', key: 'name', label: 'name' },
-  { id: 'street', key: 'street', label: 'street' },
-  { id: 'house_number', key: 'house_number', label: 'house_number' },
-  { id: 'postal_code', key: 'postal_code', label: 'postal_code' },
-  { id: 'country_code', key: 'country_code', label: 'country_code' },
-  { id: 'state_code', key: 'state_code', label: 'state_code' },
-  { id: 'latitude', key: 'latitude', label: 'latitude' },
-  { id: 'longitude', key: 'longitude', label: 'longitude' },
-  { id: 'description', key: 'description', label: 'description' },
-];
+type LocationKeys = keyof typeof locationName
+
+const locationFields: { key: LocationKeys; label: string }[] = [
+  { key: 'name', label: 'name' },
+  { key: 'street', label: 'street' },
+  { key: 'house_number', label: 'house_number' },
+  { key: 'postal_code', label: 'postal_code' },
+  { key: 'country_code', label: 'country_code' },
+  { key: 'state_code', label: 'state_code' },
+  { key: 'latitude', label: 'latitude' },
+  { key: 'longitude', label: 'longitude' },
+  { key: 'description', label: 'description' }
+]
 
 const locationName = reactive({
   name: '',
@@ -262,7 +228,7 @@ const locationName = reactive({
   latitude: '',
   longitude: '',
   description: ''
-});
+})
 
 const locationNameError = ref('');
 
