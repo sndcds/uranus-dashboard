@@ -57,7 +57,7 @@
                     </div>
                     <div v-else-if="eventDetails" class="calendar-event-compact__info">
                         <div v-if="eventDetails.image_path" class="calendar-event-compact__image-wrapper">
-                            <img :src="eventDetails.image_path + (eventDetails.image_path.includes('?') ? '&' : '?') + 'ratio=16by9&width=600'"
+                            <img :src="eventDetails.image_path + (eventDetails.image_path.includes('?') ? '&' : '?') + 'ratio=16:9&width=600'"
                                 :alt="eventDetails.image_alt_text || eventDetails.title"
                                 class="calendar-event-compact__image" />
                         </div>

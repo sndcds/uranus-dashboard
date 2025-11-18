@@ -90,7 +90,7 @@ watch(
 const existingImagePreviewUrl = computed(() => {
     if (props.eventId && !eventImage.value) {
       // TODO: Implement
-      // return `/api/image/event/${props.eventId}?mode=cover&width=400&ratio=3by2&focusx=0.5&focusy=0.5&type=webp&quality=90`
+      // return `/api/image/event/${props.eventId}?mode=cover&width=400&ratio=3:2&focusx=0.5&focusy=0.5&type=webp&quality=90`
     }
     return null
 })

@@ -155,7 +155,7 @@ const buildImageUrl = (event: OrganizerEventItem) => {
   const params = new URLSearchParams({
     mode: 'cover',
     width: '480',
-    ratio: '3by2',
+    ratio: '3:2',
     type: 'webp',
     quality: '90',
   })

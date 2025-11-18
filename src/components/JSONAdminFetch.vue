@@ -58,7 +58,7 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     const { status, data } = await apiFetch(apiPath, {
-      method: 'PUT',
+      method: 'POST',
       body: JSON.stringify(deepClean(parsedJson)),
     })
 

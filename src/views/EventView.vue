@@ -301,7 +301,7 @@ const existingImagePreviewUrl = computed(() => {
 
   const focusX = normalizeFocus(current.image_focus_x)
   const focusY = normalizeFocus(current.image_focus_y)
-  return `${apiBase}/api/image/${current.image_id}?mode=cover&width=800&ratio=16by9&focusx=${focusX}&focusy=${focusY}&type=webp&quality=90`
+  return `${apiBase}/api/image/${current.image_id}?mode=cover&width=800&ratio=16:9&focusx=${focusX}&focusy=${focusY}&type=webp&quality=90`
 })
 
 const eventSchedulePayload = computed<EventSchedulePayloadItem[]>(() => {

@@ -28,7 +28,6 @@ import { apiFetch } from '@/api'
 import OrganizerEventsCard, { type OrganizerEventItem } from '@/components/dashboard/OrganizerEventsCard.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
-import JSONAdminFetch from "@/components/JSONAdminFetch.vue";
 
 const apiBase = import.meta.env.VITE_API_URL
 

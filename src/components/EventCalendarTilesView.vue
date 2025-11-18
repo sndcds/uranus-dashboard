@@ -14,8 +14,8 @@
                 <router-link :to="`/event/${event.id}/date/${event.event_date_id}`">
                     <div class="calendar-tile__image-container">
                         <img v-if="event.image_path" :src="event.image_path.includes('?')
-                            ? `${event.image_path}&ratio=4by3&width=320`
-                            : `${event.image_path}?ratio=4by3&width=320`" :alt="event.title"
+                            ? `${event.image_path}&ratio=3:2&width=320`
+                            : `${event.image_path}?ratio=3:2&width=320`" :alt="event.title"
                             class="calendar-tile__image" />
                     </div>
                     <div>

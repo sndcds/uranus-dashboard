@@ -19,10 +19,10 @@
                     <article v-for="event in group.events" :key="`${event.id}-${event.event_date_id}`" class="calendar-card">
                         <router-link :to="`/event/${event.id}/date/${event.event_date_id}`" class="calendar-card__link">
                             <div class="calendar-card__image-wrapper">
-                                <img v-if="event.image_path" 
+                                <img v-if="event.image_path"
                                     :src="event.image_path.includes('?')
-                                        ? `${event.image_path}&ratio=16by9&width=400`
-                                        : `${event.image_path}?ratio=16by9&width=400`" 
+                                        ? `${event.image_path}&ratio=16:9&width=400`
+                                        : `${event.image_path}?ratio=16:9&width=400`"
                                     :alt="event.title"
                                     class="calendar-card__image" />
                                 <div v-else class="calendar-card__image-placeholder">
@@ -51,7 +51,7 @@
                                     <ul v-if="event.typeLabels.length" class="calendar-card__tags">
                                         <li v-for="tag in event.typeLabels" :key="tag">
                                             <button type="button" class="calendar-card__tag-button"
-                                                :class="{ 'is-active': selectedType === tag }" 
+                                                :class="{ 'is-active': selectedType === tag }"
                                                 @click.prevent.stop="emit('filterByTag', tag)"
                                                 :aria-pressed="selectedType === tag">
                                                 {{ tag }}

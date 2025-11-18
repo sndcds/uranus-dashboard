@@ -4,7 +4,7 @@
 -->
 <template>
   <div class="uranus-event-image-upload-layout">
-    <!--p>
+    <p>
       hasImage: {{ hasImage }}<br>
       existingImageUrl: {{ existingImageUrl }}<br>
       currentImageId: {{ currentImageId }}<br>
@@ -17,7 +17,7 @@
       fileSize: {{ fileSize }}<br>
       computedUploadUrl: {{ computedUploadUrl }}<br>
       computedSaveImageInfo: {{ computedSaveImageInfo }}<br>
-    </p-->
+    </p>
 
     <!-- Image Upload Section -->
     <div class="event-image-upload__upload-section">

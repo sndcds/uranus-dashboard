@@ -1,21 +1,20 @@
 <template>
-    <div class="uranus-main-layout">
-        <DashboardHeroComponent
-            :title="t('dashboard')"
-            :subtitle="t('dashboard_description')"
-            cta-label="Go to Inbox"
-            cta-to="/messages" />
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('dashboard')"
+        :subtitle="t('dashboard_description')"
+        cta-label="Go to Inbox"
+        cta-to="/messages" />
 
-        <UranusDashboardActionBar>
-            <router-link :to="'/'" class="uranus-button">
-                {{ t('event_portal') }}
-            </router-link>
-        </UranusDashboardActionBar>
+    <UranusDashboardActionBar>
+      <router-link :to="'/'" class="uranus-button">
+          {{ t('event_portal') }}
+      </router-link>
+    </UranusDashboardActionBar>
 
-        <DashboardTodoListComponent />
-
-        <DashboardNotificationsComponent />
-    </div>
+    <DashboardTodoListComponent />
+    <DashboardNotificationsComponent />
+</div>
 </template>
 
 <script setup lang="ts">
@@ -25,6 +24,7 @@ import DashboardTodoListComponent from '@/components/dashboard/DashboardTodoList
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import DashboardNotificationsComponent from '@/components/dashboard/DashboardNotificationsComponent.vue'
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
+import JSONAdminFetch from "@/components/JSONAdminFetch.vue";
 
 const { t } = useI18n()
 </script>

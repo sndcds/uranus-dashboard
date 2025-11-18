@@ -16,8 +16,8 @@
                     <div v-if="event.has_main_image && event.image_path" class="event-image-frame">
                         <div>
                             <img :src="event.image_path.includes('?')
-                                ? `${event.image_path}&ratio=16by9&width=1200`
-                                : `${event.image_path}?ratio=16by9&width=1200`"
+                                ? `${event.image_path}&ratio=16:9&width=1200`
+                                : `${event.image_path}?ratio=16:9&width=1200`"
                                 :alt="event.image_alt_text ? event.image_alt_text : event.title" class="event-image" />
                         </div>
                     </div>
