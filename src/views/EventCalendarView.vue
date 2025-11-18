@@ -746,15 +746,15 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
     const offset = append ? paginationOffset.value : 0
 
     try {
-        //fetch events from api for builded endpoint with current filters mode=type-summary
         const endpoint = buildApiEndpoint('/api/events', {
             mode: 'type-summary',
         })
 
         debugLog('Fetching event type summary', { endpoint })
-        const { data } = await apiFetch<{ type_summary: EventTypeSummary[], venues_summary: EventVenueSummary[] }>(endpoint)
+        const { data } = await apiFetch<{ total: number, type_summary: EventTypeSummary[], venues_summary: EventVenueSummary[] }>(endpoint)
 
         if (data && Array.isArray(data.type_summary)) {
+            allEventsCount.value = data.total
             typeCountOptions.value = data.type_summary
             venueCountOptions.value = data.venues_summary || []
 
@@ -788,7 +788,6 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
                 events.value = incoming
             }
 
-            allEventsCount.value = data.total
             paginationOffset.value = offset + incoming.length
 
             hasMoreEvents.value = incoming.length === EVENTS_PAGE_SIZE
