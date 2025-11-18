@@ -240,7 +240,7 @@ watch(
 
 async function fetchSpaceTypes() {
     try {
-        const { data, status } = await apiFetch<Array<{ id: number; name: string }> | { space_types?: Array<{ id: number; name: string }> }>(`/api/space/types?lang=${locale.value}`, {
+        const { data, status } = await apiFetch<Array<{ id: number; name: string }> | { space_types?: Array<{ id: number; name: string }> }>(`/api/choosable-space-types?lang=${locale.value}`, {
             method: 'GET',
         })
 
