@@ -334,21 +334,6 @@ const clearDateFilters = (options?: { silent?: boolean }) => {
     selectedEndDate.value = null
 }
 
-const ensureDatesWithinRange = () => {
-    // No longer limiting dates to available range - let user enter any date
-    return
-}
-
-const availableDates = computed(() => {
-    const unique = new Set<string>()
-    for (const event of events.value) {
-        if (event.start_date) {
-            unique.add(event.start_date)
-        }
-    }
-    return Array.from(unique).sort()
-})
-
 const computeRequestDateRange = () => {
     const normalizedStart = normalizeDateValue(selectedDate.value)
     const normalizedEnd = normalizeDateValue(selectedEndDate.value)
@@ -761,6 +746,28 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
     const offset = append ? paginationOffset.value : 0
 
     try {
+        //fetch events from api for builded endpoint with current filters mode=type-summary
+        const endpoint = buildApiEndpoint('/api/events', {
+            mode: 'type-summary',
+        })
+
+        debugLog('Fetching event type summary', { endpoint })
+        const { data } = await apiFetch<{ type_summary: EventTypeSummary[], venues_summary: EventVenueSummary[] }>(endpoint)
+
+        if (data && Array.isArray(data.type_summary)) {
+            typeCountOptions.value = data.type_summary
+            venueCountOptions.value = data.venues_summary || []
+
+            debugLog('Updated type count options from summary', {
+                count: typeCountOptions.value.length,
+                venueCount: venueCountOptions.value.length,
+            })
+        }
+    } catch (error: unknown) {
+        debugLog('Failed to load event type summary', error)
+    }
+
+    try {
         const endpoint = buildApiEndpoint('/api/events', {
             offset: String(offset),
             limit: String(EVENTS_PAGE_SIZE),
@@ -782,8 +789,6 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
             }
 
             allEventsCount.value = data.total
-            typeCountOptions.value = data.type_summary || []
-            venueCountOptions.value = data.venues_summary || []
             paginationOffset.value = offset + incoming.length
 
             hasMoreEvents.value = incoming.length === EVENTS_PAGE_SIZE
