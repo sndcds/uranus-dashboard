@@ -64,12 +64,6 @@
                     <input :id="nonprofitId" type="checkbox" v-model="nonprofit" />
                     <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit') }}</label>
                 </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="uranus-button" :disabled="isSubmitting">
-                        {{ submitButtonLabel }}
-                    </button>
-                </div>
             </form>
 
             <aside class="">
@@ -80,14 +74,20 @@
                 </LocationMapComponent>
                 <ValueInfoComponent :label="t('geo_location')" :value="locationSummary" />
             </aside>
-
-            <transition name="fade">
-                <p v-if="error" class="feedback feedback--error">{{ error }}</p>
-            </transition>
-            <transition name="fade">
-                <p v-if="success" class="feedback feedback--success">{{ success }}</p>
-            </transition>
         </section>
+
+        <div class="form-actions">
+            <button type="submit" class="uranus-button" :disabled="isSubmitting">
+                {{ submitButtonLabel }}
+            </button>
+        </div>
+
+        <transition name="fade">
+            <p v-if="error" class="feedback feedback--error">{{ error }}</p>
+        </transition>
+        <transition name="fade">
+            <p v-if="success" class="feedback feedback--success">{{ success }}</p>
+        </transition>
     </div>
 </template>
 
@@ -584,6 +584,10 @@ watch(website, (value) => {
 </script>
 
 <style scoped lang="scss">
+.uranus-card {
+    margin-bottom: 1rem;
+}
+
 .nonprofit-checkbox {
     display: flex;
     align-items: center;

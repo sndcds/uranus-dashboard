@@ -850,6 +850,7 @@ const messages = {
         about_version: 'Version',
         visitor_nav_about: 'Über uns',
         visitor_nav_map: 'Karte',
+        visitor_footer_docs: 'Dokumentation'
     },
     en: {
         ...event.en,
@@ -1540,6 +1541,7 @@ const messages = {
         about_version: 'Version',
         visitor_nav_about: 'About Us',
         visitor_nav_map: 'Event Map',
+        visitor_footer_docs: 'Documentation',
     },
     da: {
         ...event.da,
@@ -2223,6 +2225,7 @@ const messages = {
         about_version: 'Version',
         visitor_nav_about: 'Om os',
         visitor_nav_map: 'Kort',
+        visitor_footer_docs: 'Dokumentation',
     },
 }
 
