@@ -547,7 +547,7 @@ const messages = {
         events_calendar_time_all_day: 'Ganztägig',
         events_calendar_detailed_view: 'Details',
         events_calendar_compact_view: 'Liste',
-        events_calendar_tiles_view: 'Kachelansicht',
+        events_calendar_tiles_view: 'Kacheln',
         events_calendar_map_view: 'Karte',
         events_calendar_daily_grouping: 'Täglich',
         events_calendar_monthly_grouping: 'Monatlich',
