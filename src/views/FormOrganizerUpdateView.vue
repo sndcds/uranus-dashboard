@@ -1,6 +1,7 @@
 <template>
     <div class="uranus-main-layout">
         <DashboardHeroComponent :title="t('edit_organizer')" :subtitle="organizerDescription" />
+
         <section class="uranus-card">
             <form class="uranus-form" @submit.prevent="submitForm" novalidate>
                 <UranusTextInput id="organizer_name" size="big" required v-model="organizerName"
@@ -38,7 +39,6 @@
                         :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
                 </UranusFieldLabel>
 
-
                 <div class="form-group">
                     <label for="holding_organizer_id">
                         {{ labelMessage('organizer_holding_id') }}
@@ -65,10 +65,10 @@
                     <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit') }}</label>
                 </div>
 
-
                 <div class="form-actions">
-                    <button type="button" class="uranus-button" :disabled="isSubmitting">{{ submitButtonLabel
-                        }}</button>
+                    <button type="submit" class="uranus-button" :disabled="isSubmitting">
+                        {{ submitButtonLabel }}
+                    </button>
                 </div>
             </form>
 
@@ -94,7 +94,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
@@ -113,6 +113,7 @@ interface LatLngLiteral {
 
 const { t, locale } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 const organizerName = ref('')
 const addressAddition = ref('')
@@ -222,6 +223,7 @@ const loadLegalForms = async () => {
     }
 
     legalFormsLoading.value = true
+
     try {
         const { data } = await apiFetch<LegalFormResponse[]>(`/api/choosable-legal-forms?lang=${locale.value}`)
         if (Array.isArray(data)) {
@@ -491,6 +493,7 @@ const submitForm = async () => {
 
         if (status >= 200 && status < 300) {
             success.value = t('organizer_updated')
+            router.push(`/admin/organizers`)
         } else {
             throw new Error('Unexpected status code')
         }
