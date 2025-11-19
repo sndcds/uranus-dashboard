@@ -101,9 +101,9 @@
                             <!-- Single day event -->
                             <p class="event-date">{{ formatEventDateTime.date }}</p>
                             <p v-if="formatEventDateTime.time" class="event-time">{{ formatEventDateTime.time }}</p>
-                            <div v-if="event.entry_time" class="event-detail-section-spacing">
+                            <div v-if="currentEventDate?.entry_time" class="event-detail-section-spacing">
                                 <p class="event-detail-info-label">{{ t('event_entry_time') }}:</p>
-                                <p class="event-detail-info-value">{{ formatTime(event.entry_time) }}</p>
+                                <p class="event-detail-info-value">{{ formatTime(currentEventDate.entry_time) }}</p>
                             </div>
                         </div>
 
@@ -121,26 +121,27 @@
                                 <p v-if="formatEventDateTime.endTime" class="event-time">{{ formatEventDateTime.endTime
                                     }}</p>
                             </div>
-                            <div v-if="event.entry_time" class="event-detail-section-spacing">
+                            <div v-if="currentEventDate?.entry_time" class="event-detail-section-spacing">
                                 <p class="event-detail-info-label">{{ t('event_entry_time') }}:</p>
-                                <p class="event-detail-info-value">{{ formatTime(event.entry_time) }}</p>
+                                <p class="event-detail-info-value">{{ formatTime(currentEventDate.entry_time) }}</p>
                             </div>
                         </div>
 
-                        <div v-if="event.duration">
+                        <div v-if="eventDuration">
                             <span class="event-detail-info-label">{{ t('dashboard_todo_due') }}:</span>
-                            <span class="event-detail-info-value">{{ event.duration }}</span>
+                            <span class="event-detail-info-value">{{ eventDuration }}</span>
                         </div>
                     </div>
 
                     <!-- Venue -->
-                    <div v-if="event.venue_name">
+                    <div
+                        v-if="currentEventDate?.venue_name || currentEventDate?.venue_street || currentEventDate?.venue_house_number || currentEventDate?.venue_city || currentEventDate?.venue_postal_code">
                         <span class="event-detail-info-label">{{ t('location') }}:</span>
-                        <p>{{ event.venue_name }}</p>
-                        <div v-if="event.venue_street || event.venue_house_number">
-                            <p>{{ event.venue_street }} {{ event.venue_house_number }}</p>
-                            <p v-if="event.venue_postal_code || event.venue_city">
-                                {{ event.venue_postal_code }} {{ event.venue_city }}
+                        <p v-if="currentEventDate?.venue_name">{{ currentEventDate.venue_name }}</p>
+                        <div v-if="currentEventDate?.venue_street || currentEventDate?.venue_house_number">
+                            <p>{{ currentEventDate?.venue_street }} {{ currentEventDate?.venue_house_number }}</p>
+                            <p v-if="currentEventDate?.venue_postal_code || currentEventDate?.venue_city">
+                                {{ currentEventDate?.venue_postal_code }} {{ currentEventDate?.venue_city }}
                             </p>
                         </div>
                     </div>
@@ -152,24 +153,24 @@
                     </div>
 
                     <!-- Space Info -->
-                    <div v-if="event.space_name">
+                    <div v-if="currentEventDate?.space_name">
                         <p class="space">{{ t('space') }}:</p>
-                        <p>{{ event.space_name }}</p>
+                        <p>{{ currentEventDate.space_name }}</p>
                     </div>
-                    <div v-if="event.space_total_capacity || event.space_seating_capacity">
-                        <div v-if="event.space_total_capacity" class="event-detail-info-row">
+                    <div v-if="currentEventDate?.space_total_capacity || currentEventDate?.space_seating_capacity">
+                        <div v-if="currentEventDate?.space_total_capacity" class="event-detail-info-row">
                             <span>
-                                {{ t('space_total_capacity') }}: {{ event.space_total_capacity }}
+                                {{ t('space_total_capacity') }}: {{ currentEventDate?.space_total_capacity }}
                             </span>
                         </div>
-                        <div v-if="event.space_seating_capacity" class="event-detail-info-row">
+                        <div v-if="currentEventDate?.space_seating_capacity" class="event-detail-info-row">
                             <span>
-                                {{ t('space_seating_capacity') }}: {{ event.space_seating_capacity }}
+                                {{ t('space_seating_capacity') }}: {{ currentEventDate?.space_seating_capacity }}
                             </span>
                         </div>
-                        <div v-if="event.space_building_level" class="event-detail-info-row">
+                        <div v-if="currentEventDate?.space_building_level" class="event-detail-info-row">
                             <span>
-                                {{ t('space_building_level') }}: {{ event.space_building_level }}
+                                {{ t('space_building_level') }}: {{ currentEventDate?.space_building_level }}
                             </span>
                         </div>
                     </div>
@@ -215,16 +216,41 @@ interface EventUrl {
     url_type: string
 }
 
-interface EventDetail {
-    accessibility_flag_names: string[] | null
-    accessibility_flags: number[] | null
-    description: string | null
+interface EventDateDetail {
     duration: string | null
     end_date: string | null
     end_time: string | null
     entry_time: string | null
+    event_date_id: number
+    event_id: number
+    space_building_level: string | null
+    space_id: number | null
+    space_name: string | null
+    space_seating_capacity: number | null
+    space_total_capacity: number | null
+    start_date: string | null
+    start_time: string | null
+    venue_city: string | null
+    venue_country: string | null
+    venue_geometry: string | null
+    venue_house_number: string | null
+    venue_id: number | null
+    venue_lat: number | null
+    venue_lon: number | null
+    venue_name: string | null
+    venue_postal_code: string | null
+    venue_state: string | null
+    venue_street: string | null
+}
+
+interface EventDetailResponse {
+    accessibility_flag_names: string[] | null
+    accessibility_flags: number[] | null
+    description: string | null
+    event_dates: EventDateDetail[] | null
     event_types: EventType[] | null
     event_urls: EventUrl[] | null
+    event_id: number
     has_main_image: boolean
     image_license_id: string | null
     image_license_short_name: string | null
@@ -233,38 +259,18 @@ interface EventDetail {
     image_alt_text: string | null
     image_copyright: string | null
     image_created_by: string | null
-    id: number
     image_focus_x: number
     image_focus_y: number
     image_id: number | null
     image_path: string | null
     languages: string[] | null
     meeting_point: string | null
-    organizer_id: number
+    organizer_id: number | null
     organizer_name: string
     participation_info: string | null
-    space_building_level: string | null
-    space_id: number | null
-    space_name: string | null
-    space_seating_capacity: number | null
-    space_total_capacity: number | null
-    space_url: string | null
-    start_date: string
-    start_time: string | null
     subtitle: string | null
     teaser_text: string | null
     title: string
-    venue_city: string | null
-    venue_country: string | null
-    venue_geometry: string | null
-    venue_house_number: string | null
-    venue_id: number
-    venue_lat: number | null
-    venue_lon: number | null
-    venue_name: string
-    venue_postal_code: string | null
-    venue_state: string | null
-    venue_street: string | null
     visitor_info_flag_names: string[] | null
     visitor_info_flags: number[] | null
 }
@@ -272,7 +278,9 @@ interface EventDetail {
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
 
-const event = ref<EventDetail | null>(null)
+const event = ref<EventDetailResponse | null>(null)
+const eventDate = ref<EventDateDetail | null>(null)
+const currentEventDate = computed(() => eventDate.value)
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
 
@@ -296,7 +304,8 @@ const formatDate = (dateStr: string | null | undefined) => {
   return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year}`
 }
 
-const formatTime = (timeStr: string) => {
+const formatTime = (timeStr: string | null | undefined) => {
+    if (!timeStr) return ''
     const [hours, minutes] = timeStr.split(':').map(Number)
     const date = new Date()
     date.setHours(hours ?? 0, minutes ?? 0, 0, 0)
@@ -304,9 +313,10 @@ const formatTime = (timeStr: string) => {
 }
 
 const formatEventDateTime = computed(() => {
-    if (!event.value) return null
+    if (!currentEventDate.value) return null
 
-    const { start_date, start_time, end_date, end_time } = event.value
+    const { start_date, start_time, end_date, end_time } = currentEventDate.value
+    if (!start_date) return null
 
     // Check if it's a single-day event (same start and end date or no end date)
     const isSingleDay = !end_date || start_date === end_date
@@ -337,6 +347,8 @@ const formatEventDateTime = computed(() => {
     }
 })
 
+const eventDuration = computed(() => currentEventDate.value?.duration ?? null)
+
 const formatMarkdown = (markdown: string) => {
     try {
         return marked(markdown)
@@ -346,9 +358,17 @@ const formatMarkdown = (markdown: string) => {
     }
 }
 
+const resolveRouteParam = (param: string | string[] | undefined) => Array.isArray(param) ? param[0] : param
+const parseRouteParamToNumber = (param: string | string[] | undefined): number | null => {
+    const value = resolveRouteParam(param)
+    if (!value) return null
+    const parsed = Number(value)
+    return Number.isNaN(parsed) ? null : parsed
+}
+
 const loadEvent = async () => {
-    const eventId = route.params.id
-    const eventDateId = route.params.eventDateId
+    const eventId = resolveRouteParam(route.params.id)
+    const eventDateId = resolveRouteParam(route.params.eventDateId)
 
     if (!eventId) {
         loadError.value = 'No event ID provided'
@@ -368,8 +388,15 @@ const loadEvent = async () => {
     try {
         const lang = locale.value || 'de'
         const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
-        const { data } = await apiFetch<EventDetail>(endpoint)
+        const { data } = await apiFetch<EventDetailResponse>(endpoint)
+        const eventDates = Array.isArray(data.event_dates) ? data.event_dates : []
+        const requestedEventDateId = parseRouteParamToNumber(route.params.eventDateId)
+        const matchingEventDate = requestedEventDateId
+            ? eventDates.find((date) => date.event_date_id === requestedEventDateId)
+            : null
+        const fallbackEventDate = matchingEventDate ?? eventDates[0] ?? null
         event.value = data
+        eventDate.value = fallbackEventDate ?? null
     } catch (error: unknown) {
         loadError.value = error instanceof Error && error.message
             ? error.message

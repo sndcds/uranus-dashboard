@@ -52,33 +52,53 @@ vi.mock('../../src/api', () => ({
   apiFetch: vi.fn(),
 }))
 
-const mockEvent = {
-  id: 424,
-  title: 'Test Event',
-  subtitle: 'Event Subtitle',
-  teaser_text: 'This is a teaser',
-  description: '## Description\n\nThis is a **markdown** description.',
+const mockEventDate = {
+  event_date_id: 100,
+  event_id: 424,
   start_date: '2025-11-04',
   start_time: '14:00',
   end_date: '2025-11-05',
   end_time: '17:00',
+  entry_time: '13:30',
   duration: '3 hours',
-  has_main_image: true,
-  image_path: 'https://example.com/image.jpg',
-  languages: ['de', 'en'],
+  venue_id: 245,
   venue_name: 'Test Venue',
   venue_street: 'Main Street',
   venue_house_number: '123',
   venue_postal_code: '12345',
   venue_city: 'Test City',
+  venue_state: null,
+  venue_country: 'DEU',
+  venue_geometry: 'POINT(8.968997 54.621062)',
   venue_lat: 54.621062,
   venue_lon: 8.968997,
-  venue_id: 245,
+  space_id: 1,
   space_name: 'Main Hall',
   space_total_capacity: 500,
   space_seating_capacity: 300,
   space_building_level: '2nd Floor',
-  space_id: 1,
+}
+
+const mockEvent = {
+  event_id: 424,
+  title: 'Test Event',
+  subtitle: 'Event Subtitle',
+  teaser_text: 'This is a teaser',
+  description: '## Description\n\nThis is a **markdown** description.',
+  duration: '3 hours',
+  has_main_image: true,
+  image_path: 'https://example.com/image.jpg',
+  image_alt_text: 'Image alt',
+  image_created_by: 'Photographer',
+  image_copyright: 'Copyright',
+  image_license_id: '10',
+  image_license_short_name: 'ARR',
+  image_license_name: 'All rights reserved',
+  image_license_url: 'https://example.com/license',
+  image_focus_x: 0,
+  image_focus_y: 0,
+  image_id: 80,
+  languages: ['de', 'en'],
   organizer_name: 'Test Organizer',
   organizer_id: 111,
   event_types: [
@@ -88,19 +108,28 @@ const mockEvent = {
     { id: 10, title: 'Event Website', url: 'https://example.com', url_type: 'website' },
   ],
   meeting_point: 'Entrance Hall',
-  entry_time: '13:30',
   participation_info: 'Free admission',
   accessibility_flag_names: null,
   accessibility_flags: null,
   visitor_info_flag_names: null,
   visitor_info_flags: null,
-  image_focus_x: 0,
-  image_focus_y: 0,
-  image_id: 80,
+  space_building_level: null,
+  space_id: null,
+  space_name: null,
+  space_seating_capacity: null,
+  space_total_capacity: null,
+  venue_city: null,
   venue_country: null,
-  venue_geometry: 'POINT(8.968997 54.621062)',
+  venue_geometry: null,
+  venue_house_number: null,
+  venue_id: null,
+  venue_lat: null,
+  venue_lon: null,
+  venue_name: null,
+  venue_postal_code: null,
   venue_state: null,
-  space_url: null,
+  venue_street: null,
+  event_dates: [mockEventDate],
 }
 
 describe('EventDetailView', () => {
@@ -227,20 +256,7 @@ describe('EventDetailView', () => {
 
   it('displays date and time information', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({
-      data: {
-        id: 1,
-        title: 'Test Event',
-        start_date: '2025-11-04',
-        start_time: '14:00:00',
-        end_date: '2025-11-05',
-        end_time: '17:00:00',
-        duration: '3 hours',
-        type: { id: 1, name: 'Exhibition', slug: 'exhibition' },
-        genre: { id: 1, name: 'Art', slug: 'art' },
-      },
-      status: 200,
-    })
+    vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
     const wrapper = mount(EventDetailView, {
       global: {
@@ -335,22 +351,7 @@ describe('EventDetailView', () => {
 
   it('displays additional info when available', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({
-      data: {
-        id: 1,
-        title: 'Test Event',
-        start_date: '2025-11-04',
-        start_time: '14:00:00',
-        end_date: '2025-11-05',
-        end_time: '17:00:00',
-        meeting_point: 'Entrance Hall',
-        entry_time: '13:30:00',
-        participation_info: 'Free admission',
-        type: { id: 1, name: 'Exhibition', slug: 'exhibition' },
-        genre: { id: 1, name: 'Art', slug: 'art' },
-      },
-      status: 200,
-    })
+    vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
     const wrapper = mount(EventDetailView, {
       global: {
@@ -368,6 +369,15 @@ describe('EventDetailView', () => {
 
   it('hides optional sections when data is not available', async () => {
     const { apiFetch } = await import('../../src/api')
+    const minimalEventDate = {
+      ...mockEvent.event_dates[0],
+      entry_time: null,
+      duration: null,
+      space_name: null,
+      space_total_capacity: null,
+      space_seating_capacity: null,
+      space_building_level: null,
+    }
     const minimalEvent = {
       ...mockEvent,
       subtitle: null,
@@ -378,8 +388,8 @@ describe('EventDetailView', () => {
       space_total_capacity: null,
       space_seating_capacity: null,
       meeting_point: null,
-      entry_time: null,
       participation_info: null,
+      event_dates: [minimalEventDate],
     }
     vi.mocked(apiFetch).mockResolvedValue({ data: minimalEvent, status: 200 })
 
