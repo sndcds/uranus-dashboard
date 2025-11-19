@@ -22,11 +22,13 @@
 
     <section>
       <div>
-        <h3>{{ t('spaces') }}</h3>
-        <router-link v-if="venue.can_add_space"
-          :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/space/create`" class="uranus-secondary-button">
-          {{ t('add_new_space') }}
-        </router-link>
+        <h3>{{ t('spaces') }}
+          <UranusIconAction
+              mode="add"
+              v-if="venue.can_edit_venue"
+              :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
+          />
+        </h3>
       </div>
 
       <template v-if="venue.spaces.length">
