@@ -1,114 +1,77 @@
 <template>
-  <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
-    <section class="uranus-card">
-      <UranusTextInput id="venue_name" size="big" required
-          v-model="venueName"
-          :label="t('venue_name')"
-          :error="fieldErrors.venueName"
-      />
+    <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
+        <section class="uranus-card">
+            <UranusTextInput id="venue_name" size="big" required v-model="venueName" :label="t('venue_name')"
+                :error="fieldErrors.venueName" />
 
-      <UranusFormRow>
-        <UranusTextInput id="street" required :flex=2
-            v-model="street"
-            :label="t('street')"
-            :error="fieldErrors.street"
-        />
-        <UranusTextInput id="house_number" required
-            v-model="houseNumber"
-            :label="t('house_number')"
-            :error="fieldErrors.houseNumber"
-        />
-      </UranusFormRow>
+            <UranusFormRow>
+                <UranusTextInput id="street" required :flex=2 v-model="street" :label="t('street')"
+                    :error="fieldErrors.street" />
+                <UranusTextInput id="house_number" required v-model="houseNumber" :label="t('house_number')"
+                    :error="fieldErrors.houseNumber" />
+            </UranusFormRow>
 
-      <UranusFormRow>
-        <UranusTextInput id="postal_code" required
-            v-model="postalCode"
-            :label="t('postal_code')"
-            :error="fieldErrors.postalCode"
-        />
-        <UranusTextInput id="city" required :flex=2
-            v-model="city"
-            :label="t('city')"
-            :error="fieldErrors.city"
-        />
-      </UranusFormRow>
+            <UranusFormRow>
+                <UranusTextInput id="postal_code" required v-model="postalCode" :label="t('postal_code')"
+                    :error="fieldErrors.postalCode" />
+                <UranusTextInput id="city" required :flex=2 v-model="city" :label="t('city')"
+                    :error="fieldErrors.city" />
+            </UranusFormRow>
 
-      <UranusFormRow>
-      <RegionSelectorComponent
-          v-if="showRegionSelector"
-          v-model:country-code="countryCode"
-          v-model:state-code="stateCode" />
-      </UranusFormRow>
-    </section>
+            <UranusFormRow>
+                <RegionSelectorComponent v-if="showRegionSelector" v-model:country-code="countryCode"
+                    v-model:state-code="stateCode" />
+            </UranusFormRow>
+        </section>
 
-    <section class="uranus-card">
-      <UranusFormRow>
-        <UranusTextInput id="email"
-                         v-model="email"
-                         :label="t('email')"
-                         :error="fieldErrors.email"
-        />
+        <section class="uranus-card">
+            <UranusFormRow>
+                <UranusTextInput id="email" v-model="email" :label="t('email')" :error="fieldErrors.email" />
 
-        <UranusTextInput id="phone"
-                         v-model="phone"
-                         :label="t('phone')"
-                         :error="fieldErrors.phone"
-        />
-      </UranusFormRow>
+                <UranusTextInput id="phone" v-model="phone" :label="t('phone')" :error="fieldErrors.phone" />
+            </UranusFormRow>
 
-      <UranusTextInput id="website"
-                       v-model="website"
-                       :label="t('website')"
-                       :error="fieldErrors.website"/>
+            <UranusTextInput id="website" v-model="website" :label="t('website')" :error="fieldErrors.website" />
 
-      <UranusFieldLabel v-if="showDescription" :label="t('description')" :error="fieldErrors.description">
-        <MarkdownEditorComponent v-model="description" class="venue-description-editor"
-                                 :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
-      </UranusFieldLabel>
+            <UranusFieldLabel v-if="showDescription" :id="descriptionLabelId" :label="t('description')"
+                :error="fieldErrors.description">
+                <MarkdownEditorComponent v-model="description" class="venue-description-editor"
+                    :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
+            </UranusFieldLabel>
 
-      <UranusFormRow>
-          <UranusDateInput
-              id="opened_at"
-              v-model="openedAt"
-              :label="t('opened_at')"
-              :error="fieldErrors.openedAt"
-          />
+            <UranusFormRow>
+                <UranusDateInput id="opened_at" v-model="openedAt" :label="t('opened_at')"
+                    :error="fieldErrors.openedAt" />
 
-          <UranusDateInput
-              id="closed_at"
-              v-model="closedAt"
-              :label="t('closed_at')"
-              :error="fieldErrors.closedAt"
-          />
+                <UranusDateInput id="closed_at" v-model="closedAt" :label="t('closed_at')"
+                    :error="fieldErrors.closedAt" />
 
-      </UranusFormRow>
-    </section>
+            </UranusFormRow>
+        </section>
 
-    <section class="uranus-card">
-      <div>
-        <LocationMapComponent v-model="location" :zoom="13" :selectable="true" class="venue-map-panel">
-          <template #footer>
-            {{ mapHint }}
-          </template>
-        </LocationMapComponent>
-        <ValueInfoComponent
-            :label="t('geo_location')"
-            :value="locationSummary" />
-      </div>
-    </section>
+        <section class="uranus-card">
+            <div>
+                <LocationMapComponent v-model="location" :zoom="13" :selectable="true" class="venue-map-panel">
+                    <template #footer>
+                        {{ mapHint }}
+                    </template>
+                </LocationMapComponent>
+                <ValueInfoComponent :label="t('geo_location')" :value="locationSummary" />
+            </div>
+        </section>
 
-    <section class="uranus-form-action-footer">
-        <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
-    </section>
+        <section class="uranus-form-action-footer">
+            <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
+        </section>
 
-  </form>
+    </form>
 
-  <transition name="fade">
-      <p v-if="displayError" class="feedback feedback--error">{{ displayError }}</p>
-  </transition>
-  <transition name="fade">
-      <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
-  </transition>
+    <transition name="fade">
+        <p v-if="displayError" class="feedback feedback--error">{{ displayError }}</p>
+    </transition>
+    <transition name="fade">
+        <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
+    </transition>
 </template>
 
 <script setup lang="ts">
@@ -118,11 +81,11 @@ import { useI18n } from 'vue-i18n'
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
-import ValueInfoComponent from "@/components/ValueInfoComponent.vue";
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
-import UranusFormRow from "@/components/uranus/UranusFormRow.vue";
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
-import UranusDateInput from "@/components/uranus/UranusDateInput.vue";
+import ValueInfoComponent from "@/components/ValueInfoComponent.vue"
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
+import UranusFormRow from "@/components/uranus/UranusFormRow.vue"
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
+import UranusDateInput from "@/components/uranus/UranusDateInput.vue"
 
 interface LatLngLiteral {
     lat: number
@@ -183,7 +146,7 @@ const emit = defineEmits<{
     (e: 'clear-error'): void
 }>()
 
-const { t, te } = useI18n()
+const { t } = useI18n()
 const showDescription = toRef(props, 'showDescription')
 const showDateFields = toRef(props, 'showDateFields')
 const showRegionSelector = toRef(props, 'showRegionSelector')
@@ -218,21 +181,20 @@ const fieldErrors = reactive({
 
 const localError = ref<string | null>(null)
 
-const mapHint = computed(() => (te('venue_map_hint') ? t('venue_map_hint') : 'Click the map to drop a pin where the venue is located.'))
-const descriptionPlaceholder = computed(() => (te('venue_description_placeholder') ? t('venue_description_placeholder') : 'Describe the venue, amenities, and unique features (Markdown supported).'))
-const requiredA11yLabel = computed(() => (te('form_required_indicator') ? t('form_required_indicator') : 'Required field'))
+const mapHint = computed(() => t('venue_map_hint'))
+const descriptionPlaceholder = computed(() => t('venue_description_placeholder'))
 const descriptionLabelId = 'venue-description-label'
-const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
-const missingRequiredMessage = computed(() => (te('organizer_form_missing_required') ? t('organizer_form_missing_required') : 'Please complete all required fields.'))
-const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
-const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL.'))
+const requiredFieldMessage = computed(() => t('event_error_required'))
+const missingRequiredMessage = computed(() => t('organizer_form_missing_required'))
+const invalidEmailMessage = computed(() => t('organizer_form_invalid_email'))
+const invalidWebsiteMessage = computed(() => t('organizer_form_invalid_website'))
 
 const displayError = computed(() => localError.value ?? props.errorMessage ?? null)
-const invalidDatesMessage = computed(() => (te('venue_invalid_dates') ? t('venue_invalid_dates') : 'Closing date cannot be before opening date.'))
+const invalidDatesMessage = computed(() => t('venue_invalid_dates'))
 
 const locationSummary = computed(() => {
     if (!location.value) {
-        return te('venue_map_no_selection') ? t('venue_map_no_selection') : 'No location selected yet'
+        return t('venue_map_no_selection')
     }
     const { lat, lng } = location.value
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
@@ -352,7 +314,7 @@ const handleSubmit = () => {
     fieldErrors.website = trimmedWebsite ? (isValidUrl(trimmedWebsite) ? null : invalidWebsiteMessage.value) : null
 
     if (trimmedOpenedAt && trimmedClosedAt && new Date(trimmedClosedAt) < new Date(trimmedOpenedAt)) {
-        localError.value = te('venue_invalid_dates') ? t('venue_invalid_dates') : 'Closing date cannot be before opening date.'
+        localError.value = invalidDatesMessage.value
         fieldErrors.openedAt = localError.value
         fieldErrors.closedAt = localError.value
         return
@@ -515,7 +477,7 @@ defineExpose({
 
 <style scoped lang="scss">
 .venue-map-panel {
-  max-width: 100%;
-  height: 300px;
+    max-width: 100%;
+    height: 300px;
 }
 </style>

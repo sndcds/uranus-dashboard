@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
 import VenueForm, { type VenueFormSubmitPayload } from '@/components/VenueForm.vue'
@@ -21,8 +21,9 @@ interface LatLngLiteral {
     lng: number
 }
 
-const { t, te } = useI18n()
+const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 const organizerId = Number(route.params.id)
 
 const error = ref<string | null>(null)
@@ -30,7 +31,7 @@ const success = ref<string | null>(null)
 const isSubmitting = ref(false)
 const venueFormRef = ref<InstanceType<typeof VenueForm> | null>(null)
 
-const venueDescription = computed(() => (te('venue_create_description') ? t('venue_create_description') : 'Add the essential information for your venue profile.'))
+const venueDescription = computed(() => t('venue_create_description'))
 
 const toNumberOrNull = (value: unknown): number | null => {
     if (typeof value === 'number' && Number.isFinite(value)) {
@@ -103,6 +104,7 @@ const handleSubmit = async (formData: VenueFormSubmitPayload) => {
         })
         if (status >= 200 && status < 300) {
             success.value = t('venue_created')
+            router.push(`/admin/organizer/${organizerId}/venues`)
         } else {
             throw new Error('Unexpected status code')
         }

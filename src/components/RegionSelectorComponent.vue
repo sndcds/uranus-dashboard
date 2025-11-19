@@ -1,41 +1,32 @@
 <template>
-    <UranusFieldLabel :label="countryLabel" :required="true" :error="stateError">
-      <select
-          v-model="countryModel"
-          :disabled="countriesLoading"
-          class="uranus-select"
-          :aria-required="true"
-          :aria-invalid="countryError ? 'true' : 'false'"
-      >
-        <option value="" disabled>{{ countryPlaceholder }}</option>
-        <option v-for="country in countries" :key="country.code" :value="country.code">
-          {{ country.name }}
-        </option>
-      </select>
-    </UranusFieldLabel>
+  <UranusFieldLabel :id="countrySelectId" :label="countryLabel" :required="true" :error="countryError">
+    <select v-model="countryModel" :id="countrySelectId" :disabled="countriesLoading" class="uranus-select"
+      :aria-required="true" :aria-invalid="countryError ? 'true' : 'false'">
+      <option value="" disabled>{{ countryPlaceholder }}</option>
+      <option v-for="country in countries" :key="country.code" :value="country.code">
+        {{ country.name }}
+      </option>
+    </select>
+  </UranusFieldLabel>
 
-    <!-- State -->
-    <UranusFieldLabel :label="stateLabel" :required="true" :error="stateError">
-      <select
-          v-model="stateModel"
-          :disabled="statesLoading || !countryModel"
-          class="uranus-select"
-          :aria-required="true"
-          :aria-invalid="stateError ? 'true' : 'false'"
-      >
-        <option value="" disabled>{{ statePlaceholder }}</option>
-        <option v-for="state in states" :key="state.code" :value="state.code">
-          {{ state.name }}
-        </option>
-      </select>
-    </UranusFieldLabel>
+  <!-- State -->
+  <UranusFieldLabel :id="stateSelectId" :label="stateLabel" :required="true" :error="stateError">
+    <select v-model="stateModel" :id="stateSelectId" :disabled="statesLoading || !countryModel" class="uranus-select"
+      :aria-required="true" :aria-invalid="stateError ? 'true' : 'false'">
+      <option value="" disabled>{{ statePlaceholder }}</option>
+      <option v-for="state in states" :key="state.code" :value="state.code">
+        {{ state.name }}
+      </option>
+    </select>
+  </UranusFieldLabel>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
+
+import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
 
 // Models
 const countryModel = defineModel<string>('countryCode', { default: '' })
@@ -53,17 +44,18 @@ let pendingStateCountry: string | null = null
 let pendingCountryReload = false
 
 // IDs (used internally for select elements)
-const countrySelectId = 'region-selector-country'
-const stateSelectId = 'region-selector-state'
+const baseFieldId = useId()
+const countrySelectId = `${baseFieldId}-country`
+const stateSelectId = `${baseFieldId}-state`
 
 // Labels and placeholders
 const countryLabel = computed(() => t('organizer_country_code'))
 const stateLabel = computed(() => t('organizer_state_code'))
 const countryPlaceholder = computed(() =>
-    te('organizer_country_placeholder') ? t('organizer_country_placeholder') : 'Select country'
+  te('organizer_country_placeholder') ? t('organizer_country_placeholder') : 'Select country'
 )
 const statePlaceholder = computed(() =>
-    te('organizer_state_placeholder') ? t('organizer_state_placeholder') : 'Select state'
+  te('organizer_state_placeholder') ? t('organizer_state_placeholder') : 'Select state'
 )
 
 // Optional error messages
@@ -98,17 +90,17 @@ const loadCountries = async () => {
   pendingCountryReload = false
   try {
     const { data } = await apiFetch<{ country_code: string; country_name?: string | null }[]>(
-        `/api/choosable-countries?lang=${locale.value}`
+      `/api/choosable-countries?lang=${locale.value}`
     )
     countries.value = Array.isArray(data)
-        ? data
-            .map(item => {
-              const code = (item.country_code ?? '').trim()
-              const name = (item.country_name ?? code).trim()
-              return code ? { code, name } : null
-            })
-            .filter((v): v is { code: string; name: string } => !!v)
-        : []
+      ? data
+        .map(item => {
+          const code = (item.country_code ?? '').trim()
+          const name = (item.country_name ?? code).trim()
+          return code ? { code, name } : null
+        })
+        .filter((v): v is { code: string; name: string } => !!v)
+      : []
   } catch (err) {
     countries.value = []
     console.error('Failed to load countries', err)
@@ -140,17 +132,17 @@ const loadStates = async (countryCode: string) => {
   statesLoading.value = true
   try {
     const { data } = await apiFetch<{ state_code: string; state_name?: string | null }[]>(
-        `/api/choosable-states?country-code=${encodeURIComponent(trimmedCountry)}`
+      `/api/choosable-states?country-code=${encodeURIComponent(trimmedCountry)}`
     )
     states.value = Array.isArray(data)
-        ? data
-            .map(item => {
-              const code = (item.state_code ?? '').trim()
-              const name = (item.state_name ?? code).trim()
-              return code ? { code, name } : null
-            })
-            .filter((v): v is { code: string; name: string } => !!v)
-        : []
+      ? data
+        .map(item => {
+          const code = (item.state_code ?? '').trim()
+          const name = (item.state_name ?? code).trim()
+          return code ? { code, name } : null
+        })
+        .filter((v): v is { code: string; name: string } => !!v)
+      : []
   } catch (err) {
     states.value = []
     console.error('Failed to load states', err)
@@ -172,40 +164,40 @@ const loadStates = async (countryCode: string) => {
 
 // Watchers
 watch(
-    () => countryModel.value,
-    (code, previous) => {
-      const trimmed = code.trim()
-      if (!trimmed.length) {
-        states.value = []
-        if (stateModel.value) stateModel.value = ''
-        pendingStateCountry = null
-        return
-      }
+  () => countryModel.value,
+  (code, previous) => {
+    const trimmed = code.trim()
+    if (!trimmed.length) {
+      states.value = []
+      if (stateModel.value) stateModel.value = ''
+      pendingStateCountry = null
+      return
+    }
 
-      ensureCountryOption(trimmed)
+    ensureCountryOption(trimmed)
 
-      const previousTrimmed = (previous ?? '').trim()
-      if (previousTrimmed && previousTrimmed !== trimmed) stateModel.value = ''
+    const previousTrimmed = (previous ?? '').trim()
+    if (previousTrimmed && previousTrimmed !== trimmed) stateModel.value = ''
 
-      loadStates(trimmed)
-    },
-    { immediate: true }
+    loadStates(trimmed)
+  },
+  { immediate: true }
 )
 
 watch(
-    () => stateModel.value,
-    code => {
-      if (!code.trim().length) return
-      ensureStateOption(code)
-    }
+  () => stateModel.value,
+  code => {
+    if (!code.trim().length) return
+    ensureStateOption(code)
+  }
 )
 
 watch(
-    () => locale.value,
-    () => {
-      loadCountries()
-      if (countryModel.value.trim().length) loadStates(countryModel.value)
-    }
+  () => locale.value,
+  () => {
+    loadCountries()
+    if (countryModel.value.trim().length) loadStates(countryModel.value)
+  }
 )
 
 // Initial load
@@ -214,5 +206,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

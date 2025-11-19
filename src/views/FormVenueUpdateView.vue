@@ -2,27 +2,28 @@
     <div class="uranus-main-layout">
         <DashboardHeroComponent :title="t('update_venue')" :subtitle="venueDescription" />
         <VenueForm ref="venueFormRef" :submit-label="t('update_venue')" :loading="isSubmitting || isLoadingVenue"
-            :error-message="error" :success-message="success" :initial-values="formInitialValues"
-            @submit="handleSubmit" :show-description="true" :show-date-fields="true" @clear-error="clearError" />
+            :error-message="error" :success-message="success" :initial-values="formInitialValues" @submit="handleSubmit"
+            :show-description="true" :show-date-fields="true" @clear-error="clearError" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
 import VenueForm, { type VenueFormInitialValues, type VenueFormSubmitPayload } from '@/components/VenueForm.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 
 interface LatLngLiteral {
     lat: number
     lng: number
 }
 
-const { t, te } = useI18n()
+const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 const organizerId = Number(route.params.id)
 const venueFormRef = ref<InstanceType<typeof VenueForm> | null>(null)
 const error = ref<string | null>(null)
@@ -31,7 +32,7 @@ const isSubmitting = ref(false)
 const isLoadingVenue = ref(false)
 const formInitialValues = ref<VenueFormInitialValues | undefined>(undefined)
 
-const venueDescription = computed(() => (te('venue_update_description') ? t('venue_update_description') : 'Update the essential information for your venue profile.'))
+const venueDescription = computed(() => t('venue_update_description'))
 
 const toNumberOrNull = (value: unknown): number | null => {
     if (typeof value === 'number' && Number.isFinite(value)) {
@@ -90,7 +91,7 @@ const toVenueId = (value: unknown): number | null => {
 }
 
 const venueId = computed(() => toVenueId(route.params.venueId))
-const venueLoadErrorMessage = computed(() => (te('venue_load_error') ? t('venue_load_error') : 'Failed to load venue details.'))
+const venueLoadErrorMessage = computed(() => t('venue_load_error'))
 
 const loadVenueById = async (id: number) => {
     if (isLoadingVenue.value) {
@@ -211,7 +212,8 @@ const handleSubmit = async (formData: VenueFormSubmitPayload) => {
         })
 
         if (status >= 200 && status < 300) {
-            success.value = te('venue_updated') ? t('venue_updated') : 'Venue updated successfully'
+            success.value = t('venue_updated')
+            router.push(`/admin/organizer/${organizerId}/venues`)
         } else {
             throw new Error('Unexpected status code')
         }

@@ -33,7 +33,7 @@
 
                 <UranusTextInput id="website" v-model="website" :label="t('website')" :error="fieldErrors.website" />
 
-                <UranusFieldLabel :label="t('description')" :error="fieldErrors.description">
+                <UranusFieldLabel :id="descriptionLabelId" :label="t('description')" :error="fieldErrors.description">
                     <MarkdownEditorComponent v-model="description" class="organizer-description-editor"
                         :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
                 </UranusFieldLabel>
