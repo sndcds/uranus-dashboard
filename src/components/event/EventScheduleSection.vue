@@ -349,7 +349,7 @@ async function saveRow(key: string) {
 
   try {
     if (isNew) {
-      const { data } = await apiFetch<ApiDateResponse>(`/api/admin/event/${props.eventId}/dates`, {
+      const { data } = await apiFetch<ApiDateResponse>(`/api/admin/event/${props.eventId}/date`, {
         method: 'POST',
         body: JSON.stringify(payload),
       })
