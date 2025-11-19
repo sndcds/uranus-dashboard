@@ -355,7 +355,7 @@ async function saveRow(key: string) {
       })
       editDraft.value.id = data.id
     } else {
-      await apiFetch(`/api/admin/event/${props.eventId}/dates/${editDraft.value.id}`, {
+      await apiFetch(`/api/admin/event/${props.eventId}/date/${editDraft.value.id}`, {
         method: 'PUT',
         body: JSON.stringify(payload),
       })
