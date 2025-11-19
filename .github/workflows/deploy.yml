@@ -1,40 +1,33 @@
 name: Deploy to Server
 
 on:
-  push:
-    branches:
-      - main    # oder 'master' oder ein anderer Branch
-
+    push:
+        branches:
+            - main
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+    deploy:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout (optional, für lokale Nutzung)
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout (optional, für lokale Nutzung)
+              uses: actions/checkout@v4
 
-      - name: Add SSH key
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+            - name: Add SSH key
+              uses: webfactory/ssh-agent@v0.9.0
+              with:
+                  ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Deploy over SSH
-        run: |
-          ssh -o StrictHostKeyChecking=no -p "${{ secrets.SSH_PORT }}" \
-            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" << 'EOF'
-            cd /opt/git/uranus-dashboard/   # oder $APP_DIR, falls du ein Secret benutzt
+            - name: Deploy over SSH
+              run: |
+                  ssh -o StrictHostKeyChecking=no -p "${{ secrets.SSH_PORT }}" \
+                  "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" << 'EOF'
+                  cd /opt/git/uranus-dashboard/
 
-            # Letzte Version vom gewünschten Branch holen
-            git fetch origin
-            git reset --hard origin/main
+                  git fetch origin
+                  git reset --hard origin/main
 
-            # Dependencies installieren/aktualisieren
-            npm ci --omit=dev    # oder 'npm install', je nach Bedarf
+                  # WICHTIG: ohne --omit=dev
+                  npm ci
 
-            # Build anstoßen
-            npm run build
-
-            # Optional: Service neu starten (PM2 / systemd / docker etc.)
-            # Beispiel PM2:
-            # pm2 reload my-app || pm2 start dist/server.js --name my-app
-          EOF
+                  npm run build
+                  EOF
