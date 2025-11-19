@@ -2,103 +2,56 @@
   <div v-if="event" class="event-layout">
     <UranusCard>
 
-      <EventHeaderSection
-          class="uranus-hover-section"
-          :event-id="event.id"
-          :title="event.title"
-          :subtitle="event.subtitle"
-          @updated="loadEvent" />
+      <EventHeaderSection class="uranus-hover-section" :event-id="event.id" :title="event.title"
+        :subtitle="event.subtitle" @updated="loadEvent" />
 
-      <EventImageUploadComponent
-          v-model:image="eventImage"
-          v-model:alt-text="imageAltText"
-          v-model:copyright="imageCopyright"
-          v-model:license="imageLicense"
-          v-model:created-by="imageCreatedBy"
-          :event-id="eventId"
-          :max-size="5 * 1024 * 1024"
-          :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
-          :existing-image-id="event.image_id"
-          :existing-image-url="existingImagePreviewUrl"
-          :upload-url="`/api/admin/event/${eventId}/image`"
-          :delete-url="`/api/admin/event/${eventId}/image`"
-          :get-url="`/api/admin/event/${eventId}/image`"
-          @updated="loadEvent" />
+      <EventImageUploadComponent v-model:image="eventImage" v-model:alt-text="imageAltText"
+        v-model:copyright="imageCopyright" v-model:license="imageLicense" v-model:created-by="imageCreatedBy"
+        :event-id="eventId" :max-size="5 * 1024 * 1024" :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
+        :existing-image-id="event.image_id" :existing-image-url="existingImagePreviewUrl"
+        :upload-url="`/api/admin/event/${eventId}/image`" :delete-url="`/api/admin/event/${eventId}/image`"
+        :get-url="`/api/admin/event/${eventId}/image`" @updated="loadEvent" />
     </UranusCard>
 
     <UranusCard>
-      <EventVenueSection
-          :event-id="event.id"
-          :organizer-id="event.organizer_id"
-          :venue-id="event.venue_id"
-          :venue-name="event.venue_name"
-          :venue-street="event.venue_street ?? ''"
-          :venue-house-number="event.venue_house_number ?? ''"
-          :venue-postal-code="event.venue_postal_code ?? ''"
-          :venue-city="event.venue_city ?? ''"
-          :space-id="event.space_id"
-          :space-name="event.space_name ?? ''"
-          :space-building-level="event.space_building_level !== null ? String(event.space_building_level) : null"
-          :space-seating-capacity="event.space_seating_capacity"
-          :space-total-capacity="event.space_total_capacity"
-          @updated="loadEvent" />
+      <EventVenueSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
+        :venue-name="event.venue_name" :venue-street="event.venue_street ?? ''"
+        :venue-house-number="event.venue_house_number ?? ''" :venue-postal-code="event.venue_postal_code ?? ''"
+        :venue-city="event.venue_city ?? ''" :space-id="event.space_id" :space-name="event.space_name ?? ''"
+        :space-building-level="event.space_building_level !== null ? String(event.space_building_level) : null"
+        :space-seating-capacity="event.space_seating_capacity" :space-total-capacity="event.space_total_capacity"
+        @updated="loadEvent" />
 
-      <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);"/>
+      <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);" />
 
-      <EventScheduleSection
-          :event-id="event.id"
-          :organizer-id="event.organizer_id"
-          :venue-id="event.venue_id"
-          :space-id="event.space_id"
-          :event-dates="eventSchedulePayload"
-          :space-name="event.space_name ?? ''"
-          @updated="loadEvent" />
+      <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
+        :space-id="event.space_id" :event-dates="eventSchedulePayload" :space-name="event.space_name ?? ''"
+        @updated="loadEvent" />
 
-      <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);"/>
+      <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);" />
 
-      <EventReleaseSection
-          :event-id="event.id"
-          :release-status-id="event.release_status_id"
-          :release-date="event.release_date"
-          :locale="locale"
-          @updated="loadEvent" />
+      <EventReleaseSection :event-id="event.id" :release-status-id="event.release_status_id"
+        :release-date="event.release_date" :locale="locale" @updated="loadEvent" />
     </UranusCard>
 
     <UranusCard>
-      <EventDescriptionSection
-          :event-id="event.id"
-          :description="event.description"
-          :participation-info="event.participation_info"
-          :meeting-point="event.meeting_point"
-          :event-types="event.event_types"
-          :languages="event.languages"
-          :locale="locale"
-          @updated="loadEvent" />
+      <EventDescriptionSection :event-id="event.id" :description="event.description"
+        :participation-info="event.participation_info" :meeting-point="event.meeting_point"
+        :event-types="event.event_types" :languages="event.languages" :locale="locale" @updated="loadEvent" />
     </UranusCard>
 
     <UranusCard>
-      <EventUrlSection
-          :event-id="event.id"
-          :links="eventLinks"
-          @updated="loadEvent" />
+      <EventUrlSection :event-id="event.id" :links="eventLinks" @updated="loadEvent" />
     </UranusCard>
 
     <UranusCard>
-      <EventTeaserSection
-          :event-id="event.id"
-          :teaser-text="event.teaser_text"
-          :tags="event.tags"
-          class="event-teaser"
-          @updated="loadEvent" />
+      <EventTeaserSection :event-id="event.id" :teaser-text="event.teaser_text" :tags="event.tags" class="event-teaser"
+        @updated="loadEvent" />
     </UranusCard>
 
     <UranusCard>
-      <LocationMapComponent
-          :latitude="event.venue_lat"
-          :longitude="event.venue_lon"
-          :zoom="18"
-          :selectable="false"
-          class="event-map" />
+      <LocationMapComponent :latitude="event.venue_lat" :longitude="event.venue_lon" :zoom="18" :selectable="false"
+        class="event-map" />
     </UranusCard>
 
   </div>
@@ -123,10 +76,10 @@ import EventVenueSection from '@/components/event/EventVenueSection.vue'
 import EventUrlSection from '@/components/event/EventUrlSection.vue'
 import EventScheduleSection from '@/components/event/EventScheduleSection.vue'
 import EventReleaseSection from '@/components/event/EventReleaseSection.vue'
-import EventLanguageSection from "@/components/event/EventLanguageSection.vue";
-import EventTypeSection from "@/components/event/EventTypeSection.vue";
-import UranusCard from "@/components/uranus/UranusCard.vue";
-import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
+import EventLanguageSection from "@/components/event/EventLanguageSection.vue"
+import EventTypeSection from "@/components/event/EventTypeSection.vue"
+import UranusCard from "@/components/uranus/UranusCard.vue"
+import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue"
 
 const envApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 const apiBase = envApiUrl
@@ -210,9 +163,9 @@ interface EventDetail {
   venue_state_code: string | null
   space_id: number | null
   space_name: string | null
-    space_building_level: number | null
-    space_seating_capacity: number | null
-    space_total_capacity: number | null
+  space_building_level: number | null
+  space_seating_capacity: number | null
+  space_total_capacity: number | null
   start_date: string | null
   start_time: string | null
   end_date: string | null
@@ -254,12 +207,12 @@ const primaryEventDate = computed<EventDate | null>(() => {
 
 const dateFormatter = computed(
   () =>
-  new Intl.DateTimeFormat(locale.value, {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+    new Intl.DateTimeFormat(locale.value, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
 )
 
 const timeFormatter = computed(() => new Intl.DateTimeFormat(locale.value, { hour: '2-digit', minute: '2-digit' }))
@@ -425,11 +378,11 @@ const mapEventImage = (raw: unknown): EventImageDetail | null => {
   const imageId = toNumberOrNull(record.image_id ?? record.id ?? record.imageId ?? record.main_image_id)
   const urlCandidate =
     toNullableString(
-        record.url ??
-        record.image_url ??
-        record.path ??
-        record.src ??
-        (typeof record.image === 'string' ? record.image : null)
+      record.url ??
+      record.image_url ??
+      record.path ??
+      record.src ??
+      (typeof record.image === 'string' ? record.image : null)
     ) ?? null
 
   return {
@@ -510,19 +463,19 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
   if (id === null) return null
 
   const eventTypes = Array.isArray(record.event_types)
-      ? (record.event_types as unknown[]).map(mapEventType).filter(Boolean) as EventType[]
-      : []
+    ? (record.event_types as unknown[]).map(mapEventType).filter(Boolean) as EventType[]
+    : []
 
   const eventDates = Array.isArray(record.event_dates)
-      ? (record.event_dates as unknown[]).map(mapEventDate).filter(Boolean) as EventDate[]
-      : []
+    ? (record.event_dates as unknown[]).map(mapEventDate).filter(Boolean) as EventDate[]
+    : []
 
   const eventUrls = Array.isArray(record.event_urls)
-      ? (record.event_urls as unknown[]).map(mapEventUrl).filter(Boolean) as EventUrl[]
-      : []
+    ? (record.event_urls as unknown[]).map(mapEventUrl).filter(Boolean) as EventUrl[]
+    : []
 
   const languageCodes = mapLanguageCodes(
-      (record.languages ?? record.language_codes ?? record.event_languages) as unknown
+    (record.languages ?? record.language_codes ?? record.event_languages) as unknown
   )
 
   const primary = eventDates.find((entry) => entry.start_date || entry.start_time || entry.entry_time || entry.end_date || entry.end_time) ?? null
@@ -549,10 +502,10 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
     image_focus_y: toNumberOrNull(record.image_focus_y),
     image_license_id: toNullableString(record.image_license_id),
     image_url: toNullableString(
-        record.image_url ??
-        record.main_image_url ??
-        (typeof record.image === 'string' ? record.image : null) ??
-        (record.image && typeof record.image === 'object'
+      record.image_url ??
+      record.main_image_url ??
+      (typeof record.image === 'string' ? record.image : null) ??
+      (record.image && typeof record.image === 'object'
         ? (record.image as Record<string, unknown>).url
         : null)
     ),
@@ -569,9 +522,9 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
     venue_state_code: toNullableString(record.venue_state_code),
     space_id: toNumberOrNull(record.space_id),
     space_name: toNullableString(record.space_name),
-      space_building_level: toNumberOrNull(record.space_building_level),
-      space_seating_capacity: toNumberOrNull(record.space_seating_capacity),
-      space_total_capacity: toNumberOrNull(record.space_total_capacity),
+    space_building_level: toNumberOrNull(record.space_building_level),
+    space_seating_capacity: toNumberOrNull(record.space_seating_capacity),
+    space_total_capacity: toNumberOrNull(record.space_total_capacity),
     start_date: primary?.start_date ?? null,
     start_time: primary?.start_time ?? null,
     end_date: primary?.end_date ?? null,
@@ -736,7 +689,7 @@ onMounted(() => {
 
 .event-map {
   width: 100%;
-  height: 100%;         // fill the wrapper
+  height: 100%; // fill the wrapper
 }
 
 @media (min-width: 640px) {

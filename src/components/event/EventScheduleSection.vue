@@ -9,16 +9,9 @@
     </div>
 
     <div v-else class="event-meta__list">
-      <UranusInlineEditSection
-          v-for="entry in eventScheduleDisplay"
-          :active="editingKey === entry.displayKey"
-      >
-        <UranusInlineEditLabel
-            :label-text="formatDate(entry.startDate)"
-            labelClass="big"
-            :edit-button-text="t('edit')"
-            @edit-started="onEditRequested(entry.displayKey)"
-        />
+      <UranusInlineEditSection v-for="entry in eventScheduleDisplay" :active="editingKey === entry.displayKey">
+        <UranusInlineEditLabel :label-text="formatDate(entry.startDate)" labelClass="big" :edit-button-text="t('edit')"
+          @edit-started="onEditRequested(entry.displayKey)" />
 
         <!-- Read-only view -->
         <div v-if="editingKey !== entry.displayKey" class="event-meta__display">
@@ -40,67 +33,60 @@
         <!-- Editor view -->
         <form v-else class="event-meta__editor" @submit.prevent="saveRow(entry.displayKey)">
           <div class="event-dates__grid">
-            <UranusDateInput v-model="editDraft.startDate" :label="t('event_start_date')" required />
-            <UranusTimeInput v-model="editDraft.startTime" :label="t('event_start_time')" required />
-            <UranusDateInput v-model="editDraft.endDate" :label="t('event_end_date')" />
-            <UranusTimeInput v-model="editDraft.endTime" :label="t('event_end_time')" />
+            <UranusDateInput :id="getFieldId(entry.displayKey, 'start-date')" v-model="editDraft.startDate"
+              :label="t('event_start_date')" required />
 
-            <UranusTimeInput v-model="editDraft.entryTime" :label="t('event_entry_time')" />
+            <UranusTimeInput :id="getFieldId(entry.displayKey, 'start-time')" v-model="editDraft.startTime"
+              :label="t('event_start_time')" required />
 
-            <UranusButtonCheckbox
-                id="allDay"
-                v-model="editDraft.allDay"
-                :label="t('event_schedule_all_day')"
-            />
+            <UranusDateInput :id="getFieldId(entry.displayKey, 'end-date')" v-model="editDraft.endDate"
+              :label="t('event_end_date')" />
+
+            <UranusTimeInput :id="getFieldId(entry.displayKey, 'end-time')" v-model="editDraft.endTime"
+              :label="t('event_end_time')" />
+
+            <UranusTimeInput :id="getFieldId(entry.displayKey, 'entry-time')" v-model="editDraft.entryTime"
+              :label="t('event_entry_time')" />
+
+            <UranusButtonCheckbox :id="getFieldId(entry.displayKey, 'all-day')" v-model="editDraft.allDay"
+              :label="t('event_schedule_all_day')" />
           </div>
 
           <div class="tabs-container">
             <div class="tabs-buttons flex gap-2 mb-4">
-              <button
-                  type="button"
-                  :class="['tab-button', activeTab === 'venue' ? 'active' : '']"
-                  @click="activeTab = 'venue'"
-              >
-                {{ t('Venue') }}
+              <button type="button" :class="['tab-button', activeTab === 'venue' ? 'active' : '']"
+                @click="activeTab = 'venue'">
+                {{ t('venue') }}
               </button>
-              <button
-                  type="button"
-                  :class="['tab-button', activeTab === 'location' ? 'active' : '']"
-                  @click="activeTab = 'location'"
-              >
-                {{ t('Location') }}
+              <button type="button" :class="['tab-button', activeTab === 'location' ? 'active' : '']"
+                @click="activeTab = 'location'">
+                {{ t('location') }}
               </button>
             </div>
 
             <!-- Tab Panels -->
             <div v-show="activeTab === 'venue'" class="event-dates__grid">
+              <UranusFieldLabel :id="getFieldId(entry.displayKey, 'venue')" :label="t('event_venue_label')">
+                <select :id="getFieldId(entry.displayKey, 'venue')" v-model.number="editDraft.venueId"
+                  @change="onRowVenueChange(editDraft.venueId)">
+                  <option :value="null" disabled>{{ t('select_placeholder') }}</option>
+                  <option v-for="v in choosableVenues" :key="v.id" :value="v.id">{{ v.name }}</option>
+                </select>
+              </UranusFieldLabel>
 
-            <UranusFieldLabel :label="t('event_venue_label')">
-              <select v-model.number="editDraft.venueId" @change="onRowVenueChange(editDraft.venueId)">
-                <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                <option v-for="v in choosableVenues" :key="v.id" :value="v.id">{{ v.name }}</option>
-              </select>
-            </UranusFieldLabel>
-
-            <UranusFieldLabel :label="t('event_space_label')">
-              <select v-model.number="editDraft.spaceId">
-                <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                <option v-for="sp in rowSpaces" :key="sp.id" :value="sp.id">{{ sp.name }}</option>
-              </select>
-            </UranusFieldLabel>
+              <UranusFieldLabel :id="getFieldId(entry.displayKey, 'space')" :label="t('event_space_label')">
+                <select :id="getFieldId(entry.displayKey, 'space')" v-model.number="editDraft.spaceId">
+                  <option :value="null" disabled>{{ t('select_placeholder') }}</option>
+                  <option v-for="sp in rowSpaces" :key="sp.id" :value="sp.id">{{ sp.name }}</option>
+                </select>
+              </UranusFieldLabel>
             </div>
 
             <!-- Tab Panels -->
             <!-- Location Tab -->
             <div v-show="activeTab === 'location'" class="event-dates__grid">
-              <UranusTextInput
-                  v-for="field in locationFields"
-                  :key="field.key"
-                  :id="field.key"
-                  v-model="locationName[field.key]"
-                  :label="t(field.label)"
-                  :error="locationNameError"
-              />
+              <UranusTextInput v-for="field in locationFields" :key="field.key" :id="field.key"
+                v-model="locationName[field.key]" :label="t(field.label)" :error="locationNameError" />
             </div>
           </div>
           <div class="event-meta__actions">
@@ -128,13 +114,14 @@
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+
 import UranusDateInput from '@/components/uranus/UranusDateInput.vue'
 import UranusTimeInput from '@/components/uranus/UranusTimeInput.vue'
 import UranusInlineEditSection from '@/components/uranus/UranusInlineEditSection.vue'
 import UranusInlineEditLabel from '@/components/uranus/UranusInlineEditLabel.vue'
 import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
-import UranusButtonCheckbox from "@/components/uranus/UranusButtonCheckbox.vue";
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
+import UranusButtonCheckbox from "@/components/uranus/UranusButtonCheckbox.vue"
+import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
 
 interface EventScheduleEntry {
   id: number | null
@@ -192,17 +179,18 @@ const rowSpaces = ref<SelectOption[]>(props.initialSpaces ?? [])
 const choosableVenues = ref<SelectOption[]>(props.choosableVenues ?? [])
 const isSavingRow = ref(false)
 const scheduleSaveError = ref<string | null>(null)
+const getFieldId = (key: string, field: string) => `${key}-${field}`
 
 // Derived display with computed key
 const eventScheduleDisplay = computed(() =>
-    scheduleEntries.value.map((entry, idx) => ({
-      ...entry,
-      displayKey: entry.id !== null ? `id-${entry.id}` : `new-${idx}`,
-      spaceDisplay: entry.spaceName ?? '',
-    }))
+  scheduleEntries.value.map((entry, idx) => ({
+    ...entry,
+    displayKey: entry.id !== null ? `id-${entry.id}` : `new-${idx}`,
+    spaceDisplay: entry.spaceName ?? '',
+  }))
 )
 
-const activeTab = ref<'venue' | 'location'>('venue');
+const activeTab = ref<'venue' | 'location'>('venue')
 
 type LocationKeys = keyof typeof locationName
 
@@ -230,7 +218,7 @@ const locationName = reactive({
   description: ''
 })
 
-const locationNameError = ref('');
+const locationNameError = ref('')
 
 // Normalize API collections
 function normalizeCollection(collection?: any[] | Record<string, any>) {
@@ -375,7 +363,7 @@ async function saveRow(key: string) {
 
     // update local entry
     const idx = scheduleEntries.value.findIndex((e, i) =>
-        e.id === editDraft.value?.id || `new-${i}` === key
+      e.id === editDraft.value?.id || `new-${i}` === key
     )
     if (idx !== -1) scheduleEntries.value[idx] = { ...editDraft.value }
 
@@ -522,20 +510,24 @@ watch(() => [props.dates, props.eventDates], syncScheduleEntries, { deep: true }
 
 .tab-button {
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db; /* gray-300 */
+  border: 1px solid #d1d5db;
+  /* gray-300 */
   border-radius: 0.5rem;
-  background: #f9fafb; /* gray-50 */
+  background: #f9fafb;
+  /* gray-50 */
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .tab-button.active {
-  border-color: #2563eb; /* blue-600 */
+  border-color: #2563eb;
+  /* blue-600 */
   background: #2563eb;
   color: white;
 }
 
 .tab-button:hover {
-  background: #e5e7eb; /* gray-200 */
+  background: #e5e7eb;
+  /* gray-200 */
 }
 </style>

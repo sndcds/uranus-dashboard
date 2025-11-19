@@ -12,7 +12,7 @@ import FormVenueCreateView from '@/views/FormVenueCreateView.vue'
 import FormSpaceView from '@/views/FormSpaceView.vue'
 import EventDashboardView from '@/views/EventDashboardView.vue'
 import FormEventView from '@/views/FormEventView.vue'
-import EventView from '@/views/EventView.vue'
+import EventEditView from '@/views/EventEditView.vue'
 import UserPermissionView from '@/views/UserPermissionView.vue'
 import FormUserProfileView from '@/views/FormUserProfileView.vue'
 import EventCalendarView from '@/views/EventCalendarView.vue'
@@ -125,7 +125,7 @@ const routes = [
             {
                 path: 'event/:id',
                 name: 'admin-event-details',
-                component: EventView,
+                component: EventEditView,
             },
             {
                 path: 'user/permissions',

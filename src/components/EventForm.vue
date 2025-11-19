@@ -1,45 +1,30 @@
 <template>
-  <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
-    <EventBasicInfoComponent
-        ref="basicInfoRef"
-        :model-value="basicInfo"
-        :organizer-id="organizerId"
-        @update:modelValue="onBasicInfoUpdate"
-        @spaces-change="onSpacesChange"
-    />
+    <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
+        <EventBasicInfoComponent ref="basicInfoRef" :model-value="basicInfo" :organizer-id="organizerId"
+            @update:modelValue="onBasicInfoUpdate" @spaces-change="onSpacesChange" />
 
-    <UranusCard>
-      <UranusCardHeader
-          :title="t('event_dates_and_times_title')"
-          :subtitle="t('event_dates_and_times_subtitle')" />
-      <EventDatesComponent
-          ref="datesRef"
-          :model-value="eventDates"
-          :organizer-id="organizerId"
-          :spaces="availableSpaces"
-          @update:modelValue="onDatesUpdate"
-      />
-    </UranusCard>
+        <UranusCard>
+            <UranusCardHeader :title="t('event_dates_and_times_title')"
+                :subtitle="t('event_dates_and_times_subtitle')" />
 
+            <EventDatesComponent ref="datesRef" :model-value="eventDates" :organizer-id="organizerId"
+                :spaces="availableSpaces" @update:modelValue="onDatesUpdate" />
+        </UranusCard>
 
-    <EventDetailsComponent
-        ref="detailsRef"
-        :model-value="eventDetails"
-        :organizer-id="organizerId"
-        @update:modelValue="onDetailsUpdate"
-    />
+        <EventDetailsComponent ref="detailsRef" :model-value="eventDetails" :organizer-id="organizerId"
+            @update:modelValue="onDetailsUpdate" />
 
-    <section class="uranus-form-action-footer">
-      <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
-    </section>
-  </form>
+        <section class="uranus-form-action-footer">
+            <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
+        </section>
+    </form>
 
-  <transition name="fade">
-    <p v-if="displayError" class="feedback feedback--error">{{ displayError }}</p>
-  </transition>
-  <transition name="fade">
-    <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
-  </transition>
+    <transition name="fade">
+        <p v-if="displayError" class="feedback feedback--error">{{ displayError }}</p>
+    </transition>
+    <transition name="fade">
+        <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
+    </transition>
 </template>
 
 <script setup lang="ts">
@@ -49,8 +34,8 @@ import { useI18n } from 'vue-i18n'
 import EventBasicInfoComponent from '@/components/EventBasicInfoComponent.vue'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import EventDetailsComponent from '@/components/EventDetailsComponent.vue'
-import UranusCard from "@/components/uranus/UranusCard.vue";
-import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
+import UranusCard from "@/components/uranus/UranusCard.vue"
+import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue"
 
 interface SelectOption {
     id: number
@@ -77,8 +62,10 @@ export interface EventDateModel {
     endDate: string | null
     endTime: string | null
     entryTime: string | null
+    venueId: number | null
     spaceId: number | null
     allDayEvent: boolean | null
+    choosableSpaces: SelectOption[]
 }
 
 export interface EventDetailsModel {
@@ -158,6 +145,18 @@ const basicInfo = reactive<EventBasicInfoModel>({
     typeGenrePairs: [],
 })
 
+const normalizeEventDate = (date: Partial<EventDateModel>): EventDateModel => ({
+    startDate: date.startDate ?? '',
+    startTime: date.startTime ?? '',
+    endDate: date.endDate ?? null,
+    endTime: date.endTime ?? null,
+    entryTime: date.entryTime ?? null,
+    venueId: date.venueId ?? null,
+    spaceId: date.spaceId ?? null,
+    allDayEvent: date.allDayEvent ?? null,
+    choosableSpaces: Array.isArray(date.choosableSpaces) ? [...date.choosableSpaces] : [],
+})
+
 const eventDates = ref<EventDateModel[]>([])
 
 const eventDetails = reactive<EventDetailsModel>({
@@ -180,7 +179,7 @@ const onBasicInfoUpdate = (value: EventBasicInfoModel) => {
 }
 
 const onDatesUpdate = (value: EventDateModel[]) => {
-    eventDates.value = Array.isArray(value) ? value : []
+    eventDates.value = Array.isArray(value) ? value.map((date) => normalizeEventDate(date)) : []
 }
 
 const onDetailsUpdate = (value: EventDetailsModel) => {
@@ -287,7 +286,7 @@ const applyInitialValues = (values?: EventFormInitialValues) => {
         Object.assign(basicInfo, values.basicInfo)
     }
     if (values?.eventDates) {
-        eventDates.value = values.eventDates
+        eventDates.value = values.eventDates.map((date) => normalizeEventDate(date))
     }
     if (values?.eventDetails) {
         Object.assign(eventDetails, values.eventDetails)

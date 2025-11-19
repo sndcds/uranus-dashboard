@@ -20,10 +20,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import {apiFetch, deepClean} from '@/api'
+import { apiFetch, deepClean } from '@/api'
 import { useAppStore } from '@/store/appStore'
 
 import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
@@ -33,10 +33,35 @@ const { t } = useI18n({ useScope: 'global' })
 const router = useRouter()
 const appStore = useAppStore()
 
+interface ChoosableVenue {
+    id: number
+    name: string
+    city: string
+    country_code: string
+}
+
 const eventFormRef = ref<InstanceType<typeof EventForm> | null>(null)
 const isSubmitting = ref(false)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
+const choosableVenues = ref<ChoosableVenue[]>([])
+provide('choosableVenues', choosableVenues)
+
+const loadChoosableVenues = async () => {
+    try {
+        const { data } = await apiFetch<ChoosableVenue[]>('/api/admin/user/choosable-event-venues')
+        choosableVenues.value = Array.isArray(data) ? data : []
+        error.value = null
+    } catch (err) {
+        console.error(err)
+        error.value = t('choosable_venues_load_error')
+        choosableVenues.value = []
+    }
+}
+
+onMounted(() => {
+    void loadChoosableVenues()
+})
 
 const handleSubmit = async (payload: EventFormSubmitPayload) => {
     if (isSubmitting.value) {

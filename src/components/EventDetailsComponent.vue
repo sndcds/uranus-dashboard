@@ -61,8 +61,8 @@ import { apiFetch } from '@/api'
 
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue"
-import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
-import UranusCard from "@/components/uranus/UranusCard.vue";
+import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue"
+import UranusCard from "@/components/uranus/UranusCard.vue"
 
 const props = defineProps<{
     organizerId: number | null
