@@ -21,7 +21,7 @@
                     </select>
                 </UranusFieldLabel>
 
-                <UranusFieldLabel id="event-venue" :label="t('venue')" required :error="errors.venueId">
+                <UranusFieldLabel id="event-venue" :label="t('venue')" :error="errors.venueId">
                     <select id="event-venue" v-model="basicInfo.venueId">
                         <option :value="null" disabled>{{ t('select_placeholder') }}</option>
                         <option v-for="ven in venues" :key="ven.id" :value="ven.id">

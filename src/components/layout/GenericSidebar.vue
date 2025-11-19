@@ -47,7 +47,7 @@
           <span class="generic-sidebar__nav-text">{{ t('events') }}</span>
         </router-link>
 
-        <router-link to="/admin/settings" class="generic-sidebar__nav-item"
+        <!--router-link to="/admin/settings" class="generic-sidebar__nav-item"
           active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,7 +56,7 @@
             </svg>
           </span>
           <span class="generic-sidebar__nav-text">{{ t('settings') }}</span>
-        </router-link>
+        </router-link-->
       </template>
 
       <!-- Visitor Navigation -->

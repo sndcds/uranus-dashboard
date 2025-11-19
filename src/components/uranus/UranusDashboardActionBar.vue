@@ -1,8 +1,6 @@
 <template>
     <section class="uranus-dashboard-action-bar">
         <slot>
-            <!-- Default content if no slot is provided -->
-            <p>No actions defined.</p>
         </slot>
     </section>
 </template>

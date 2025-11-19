@@ -1,24 +1,22 @@
 <template>
-  <article class="uranus-card">
+  <UranusCard custom-style="width:100%;">
     <header>
       <div>
-        <h2>{{ venue.venue_name }}</h2>
+        <h2>{{ venue.venue_name }}
+          <UranusIconAction
+              mode="edit"
+              v-if="venue.can_edit_venue"
+              :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
+          />
+          <UranusIconAction
+              mode="delete"
+              :onClick="() => requestDelete(venue)"
+          />
+        </h2>
       </div>
       <p>
         <span>{{ venue.upcoming_event_count }}</span>
-        <span>{{ t('events') }}
-          <router-link v-if="venue.can_edit_venue" :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
-            class="uranus-secondary-button">
-            {{ t('edit_venue') }}
-          </router-link>
-          <button
-            v-if="venue.can_delete_venue"
-            class="uranus-secondary-button"
-            @click="requestDelete(venue)"
-          >
-            {{ t('delete_venue') }}
-          </button>
-        </span>
+        <span>&nbsp;{{ t('events') }}</span>
       </p>
     </header>
 
@@ -32,30 +30,23 @@
       </div>
 
       <template v-if="venue.spaces.length">
-        <ul>
-          <li v-for="space in venue.spaces" :key="space.space_id">
-            <div>
-              <span>{{ space.space_name }}</span>
-              <span>
-                {{ space.upcoming_event_count }}
-                <span>{{ t('events') }}
-                  <router-link v-if="venue.can_edit_space"
+        <span v-for="space in venue.spaces" :key="space.space_id">
+          <div>
+            <span>{{ space.space_name }}</span>
+            <span>&nbsp;({{ space.upcoming_event_count }})
+                <UranusIconAction
+                    mode="edit"
+                    v-if="venue.can_edit_space"
                     :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/space/${space.space_id}/edit`"
-                    class="uranus-secondary-button">
-                    {{ t('edit_space') }}
-                  </router-link>
-                  <button
-                    v-if="venue.can_delete_space"
-                    class="uranus-secondary-button"
-                    @click="requestDeleteSpace(space)"
-                  >
-                    {{ t('delete_space') }}
-                  </button>
-                </span>
-              </span>
-            </div>
-          </li>
-        </ul>
+                />
+                <UranusIconAction
+                    mode="delete"
+                    title="Delete"
+                    :onClick="() => requestDeleteSpace(space)"
+                />
+            </span>
+          </div>
+        </span>
       </template>
       <p v-else>{{ t('spaces_empty') }}</p>
     </section>
@@ -83,7 +74,7 @@
       @confirm="confirmDeleteSpace"
       @cancel="cancelDeleteSpace"
     />
-  </article>
+  </UranusCard>
 </template>
 
 <script setup lang="ts">
@@ -92,6 +83,8 @@ import { useI18n } from "vue-i18n"
 import { apiFetch } from '@/api'
 
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
+import UranusCard from "@/components/uranus/UranusCard.vue";
+import UranusIconAction from "@/components/uranus/UranusIconAction.vue";
 
 const { t } = useI18n()
 

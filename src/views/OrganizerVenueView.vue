@@ -30,10 +30,10 @@
       <!-- Organizer Content -->
       <div v-if="organizer" class="organizer-venue-view__content">
         <!-- Stats -->
-        <div class="uranus-card">
+        <!--div class="uranus-card">
           <h2 v-if="organizer">{{ organizer.organizer_name }}</h2>
           <p>{{ t('total_events') }}: {{ organizer.total_upcoming_events }}</p>
-        </div>
+        </div-->
 
         <!-- Venue Cards Grid -->
         <div class="organizer-venue-view__grid">
@@ -167,22 +167,16 @@ watch(
 // Stats section
 // Venue cards grid
 .organizer-venue-view__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: var(--uranus-grid-gap);
   width: 100%;
 }
 
 @media (max-width: 768px) {
-  .organizer-venue-view__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 
 @media (min-width: 1280px) {
-  .organizer-venue-view__grid {
-    gap: var(--uranus-grid-gap);
-  }
 }
 
 // No organizer selected message

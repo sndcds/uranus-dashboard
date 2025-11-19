@@ -138,11 +138,20 @@ const emptyDate = (): EventDate => ({
 })
 
 // --- Helpers ---
-const toMinutes = (time: string | null) => {
+const toMinutes = (time: string | null | undefined): number | null => {
   if (!time) return null
-  const [h, m] = time.split(':').map(Number)
-  return isNaN(h) || isNaN(m) ? null : h * 60 + m
+
+  const parts = time.split(':')
+  if (parts.length !== 2) return null
+
+  const hours = Number(parts[0])
+  const minutes = Number(parts[1])
+
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return null
+
+  return hours * 60 + minutes
 }
+
 const isAfter = (start: string, end: string | null) => !end ? false : new Date(end).getTime() < new Date(start).getTime()
 const evaluateDateError = (date: EventDate): string => {
   if (!date.startDate || !date.startTime) return t('event_error_required')
