@@ -99,8 +99,8 @@
                     <div>
                         <div v-if="formatEventDateTime && 'date' in formatEventDateTime">
                             <!-- Single day event -->
-                            <p class="event-date">{{ formatEventDateTime.date }}</p>
-                            <p v-if="formatEventDateTime.time" class="event-time">{{ formatEventDateTime.time }}</p>
+                            <p class="uranus-ev-date">{{ formatEventDateTime.date }}</p>
+                            <p v-if="formatEventDateTime.time" class="uranus-ev-time">{{ formatEventDateTime.time }}</p>
                             <div v-if="currentEventDate?.entry_time" class="event-detail-section-spacing">
                                 <p class="event-detail-info-label">{{ t('event_entry_time') }}:</p>
                                 <p class="event-detail-info-value">{{ formatTime(currentEventDate.entry_time) }}</p>
@@ -111,14 +111,14 @@
                             <!-- Multi-day event -->
                             <div>
                                 <p class="event-detail-info-label">{{ t('event_start') }}:</p>
-                                <p class="event-date">{{ formatEventDateTime.startDate }}</p>
-                                <p v-if="formatEventDateTime.startTime" class="event-time">{{
+                                <p class="uranus-ev-date">{{ formatEventDateTime.startDate }}</p>
+                                <p v-if="formatEventDateTime.startTime" class="uranus-ev-time">{{
                                     formatEventDateTime.startTime }}</p>
                             </div>
                             <div class="event-detail-section-spacing">
                                 <p class="event-detail-info-label">{{ t('event_end') }}:</p>
-                                <p class="event-date">{{ formatEventDateTime.endDate }}</p>
-                                <p v-if="formatEventDateTime.endTime" class="event-time">{{ formatEventDateTime.endTime
+                                <p class="uranus-ev-date">{{ formatEventDateTime.endDate }}</p>
+                                <p v-if="formatEventDateTime.endTime" class="uranus-ev-time">{{ formatEventDateTime.endTime
                                     }}</p>
                             </div>
                             <div v-if="currentEventDate?.entry_time" class="event-detail-section-spacing">
@@ -244,35 +244,36 @@ interface EventDateDetail {
 }
 
 interface EventDetailResponse {
-    accessibility_flag_names: string[] | null
-    accessibility_flags: number[] | null
-    description: string | null
-    event_dates: EventDateDetail[] | null
-    event_types: EventType[] | null
-    event_urls: EventUrl[] | null
-    event_id: number
-    has_main_image: boolean
-    image_license_id: string | null
-    image_license_short_name: string | null
-    image_license_name: string | null
-    image_license_url: string | null
-    image_alt_text: string | null
-    image_copyright: string | null
-    image_created_by: string | null
-    image_focus_x: number
-    image_focus_y: number
-    image_id: number | null
-    image_path: string | null
-    languages: string[] | null
-    meeting_point: string | null
-    organizer_id: number | null
-    organizer_name: string
-    participation_info: string | null
-    subtitle: string | null
-    teaser_text: string | null
-    title: string
-    visitor_info_flag_names: string[] | null
-    visitor_info_flags: number[] | null
+  accessibility_flag_names: string[] | null
+  accessibility_flags: number[] | null
+  description: string | null
+  date: EventDateDetail | null
+  further_dates: EventDateDetail[] | null
+  event_types: EventType[] | null
+  event_urls: EventUrl[] | null
+  event_id: number
+  has_main_image: boolean
+  image_license_id: string | null
+  image_license_short_name: string | null
+  image_license_name: string | null
+  image_license_url: string | null
+  image_alt_text: string | null
+  image_copyright: string | null
+  image_created_by: string | null
+  image_focus_x: number
+  image_focus_y: number
+  image_id: number | null
+  image_path: string | null
+  languages: string[] | null
+  meeting_point: string | null
+  organizer_id: number | null
+  organizer_name: string
+  participation_info: string | null
+  subtitle: string | null
+  teaser_text: string | null
+  title: string
+  visitor_info_flag_names: string[] | null
+  visitor_info_flags: number[] | null
 }
 
 const route = useRoute()
@@ -367,42 +368,37 @@ const parseRouteParamToNumber = (param: string | string[] | undefined): number |
 }
 
 const loadEvent = async () => {
-    const eventId = resolveRouteParam(route.params.id)
-    const eventDateId = resolveRouteParam(route.params.eventDateId)
+  const eventId = resolveRouteParam(route.params.id)
+  const eventDateId = resolveRouteParam(route.params.eventDateId)
 
-    if (!eventId) {
-        loadError.value = 'No event ID provided'
-        isLoading.value = false
-        return
-    }
+  if (!eventId) {
+    loadError.value = 'No event ID provided'
+    isLoading.value = false
+    return
+  }
 
-    if (!eventDateId) {
-        loadError.value = 'No event date ID provided'
-        isLoading.value = false
-        return
-    }
+  if (!eventDateId) {
+    loadError.value = 'No event date ID provided'
+    isLoading.value = false
+    return
+  }
 
-    isLoading.value = true
-    loadError.value = null
+  isLoading.value = true
+  loadError.value = null
 
-    try {
-        const lang = locale.value || 'de'
-        const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
-        const { data } = await apiFetch<EventDetailResponse>(endpoint)
-        const eventDates = Array.isArray(data.event_dates) ? data.event_dates : []
-        const requestedEventDateId = parseRouteParamToNumber(route.params.eventDateId)
-        const matchingEventDate = requestedEventDateId
-            ? eventDates.find((date) => date.event_date_id === requestedEventDateId)
-            : null
-        const fallbackEventDate = matchingEventDate ?? eventDates[0] ?? null
-        event.value = data
-        eventDate.value = fallbackEventDate ?? null
-    } catch (error: unknown) {
-        loadError.value = error instanceof Error && error.message
-            ? error.message
-            : t('event_load_error')
+  try {
+    const lang = locale.value || 'de'
+    const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
+    const { data } = await apiFetch<EventDetailResponse>(endpoint)
+
+    event.value = data
+    eventDate.value = data.date
+  } catch (error: unknown) {
+    loadError.value = error instanceof Error && error.message
+        ? error.message
+        : t('event_load_error')
     } finally {
-        isLoading.value = false
+      isLoading.value = false
     }
 }
 
@@ -421,15 +417,14 @@ p {
     margin: 0;
 }
 
-.event-date {
-    font-weight: 600;
-    font-size: 2rem;
+.uranus-ev-date {
+  font-weight: 700;
+  font-size: 1.4rem;
 }
 
-.event-time {
-    font-weight: 500;
-    font-size: 1.5rem;
-    margin-top: 0.5rem;
+.uranus-ev-time {
+  font-weight: 500;
+  margin: 0;
 }
 
 .event-detail-page {
