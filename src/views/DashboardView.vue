@@ -7,9 +7,6 @@
         cta-to="/messages" />
 
     <UranusDashboardActionBar>
-      <router-link :to="'/'" class="uranus-button">
-          {{ t('event_portal') }}
-      </router-link>
     </UranusDashboardActionBar>
 
     <DashboardTodoListComponent />
