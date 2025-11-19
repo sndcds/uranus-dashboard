@@ -84,6 +84,23 @@ The value can point at `http://localhost:8000` when running a local backend. Dur
   npm run preview
   ```
 
+## Testing
+
+Uranus Dashboard ships with a [Vitest](https://vitest.dev/) suite that exercises components, views, Pinia stores, and high-level authentication flows. Run the commands below from the project root:
+
+```bash
+# Run the full suite (default happy-dom environment)
+npm run test
+
+# Launch the Vitest UI runner
+npm run test:ui
+
+# Collect coverage information
+npm run test:coverage
+```
+
+Test helpers, mocks, and specs live inside the `tests/` directory—see `tests/README.md` for a full breakdown of available specs and coverage focus areas.
+
 ## Project Layout
 
 ```
