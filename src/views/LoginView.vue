@@ -65,7 +65,7 @@ import { useThemeStore } from '@/store/themeStore'
 import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
 import UranusPasswordInput from "@/components/uranus/UranusPasswordInput.vue";
 
-const { t, te } = useI18n()
+const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const tokenStore = useTokenStore()
@@ -91,7 +91,7 @@ const fieldErrors = reactive({
     password: null as string | null,
 })
 
-const loginSubtitle = computed(() => (te('login_subtitle') ? t('login_subtitle') : 'Welcome back! Sign in to continue organizing your events.'))
+const loginSubtitle = computed(() => t('login_subtitle'))
 
 const displayError = computed(() => {
     if (fieldErrors.email) return fieldErrors.email
@@ -104,8 +104,8 @@ const isValidEmail = (value: string) => {
     return emailPattern.test(value)
 }
 
-const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
-const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
+const requiredFieldMessage = computed(() => t('event_error_required'))
+const invalidEmailMessage = computed(() => t('organizer_form_invalid_email'))
 
 watch(email, (value) => {
     if (fieldErrors.email && value.trim()) {
@@ -185,14 +185,14 @@ const login = async () => {
             const redirectTarget = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
             router.replace(redirectTarget)
         } else {
-            error.value = te('invalid_credentials') ? t('invalid_credentials') : 'Invalid credentials'
+            error.value = t('invalid_credentials')
         }
     } catch (err: unknown) {
         if (typeof err === 'object' && err && 'data' in err) {
             const e = err as { data?: { error?: string } }
-            error.value = e.data?.error || (te('login_failed') ? t('login_failed') : 'Login failed')
+            error.value = e.data?.error || t('login_failed')
         } else {
-            error.value = te('login_failed') ? t('login_failed') : 'Login failed'
+            error.value = t('login_failed')
         }
     } finally {
         isSubmitting.value = false

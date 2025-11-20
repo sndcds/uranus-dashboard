@@ -5,13 +5,13 @@ export const useUserStore = defineStore('user', () => {
     // State as refs
     const emailAddress = ref('')
     const displayName = ref('')
-    const userId = ref<number | null>(null)
+    const userId = ref<string | null>(null)
     const avatarVersion = ref(0)
     const userAvatar = ref<string | null>(null)
 
     // Actions as functions
-    function setUserId(id: number) {
-        userId.value = id
+    function setUserId(id: string | number) {
+        userId.value = String(id)
     }
 
     function setUserAvatar(url: string | null) {
