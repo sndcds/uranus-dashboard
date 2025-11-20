@@ -2,8 +2,8 @@
     <div class="uranus-main-layout">
         <DashboardHeroComponent :title="t('edit_organizer')" :subtitle="organizerDescription" />
 
-        <section class="uranus-card">
-            <form class="uranus-form" @submit.prevent="submitForm" novalidate>
+        <form class="uranus-form" @submit.prevent="submitForm" novalidate>
+            <section class="uranus-card">
                 <UranusTextInput id="organizer_name" size="big" required v-model="organizerName"
                     :label="t('organizer_name')" :error="fieldErrors.organizerName" />
                 <UranusTextInput id="address_addition" v-model="addressAddition"
@@ -64,23 +64,23 @@
                     <input :id="nonprofitId" type="checkbox" v-model="nonprofit" />
                     <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit') }}</label>
                 </div>
-            </form>
 
-            <aside class="">
-                <LocationMapComponent v-model="location" :zoom="13" :selectable="true">
-                    <template #footer>
-                        {{ mapHint }}
-                    </template>
-                </LocationMapComponent>
-                <ValueInfoComponent :label="t('geo_location')" :value="locationSummary" />
-            </aside>
-        </section>
+                <aside class="">
+                    <LocationMapComponent v-model="location" :zoom="13" :selectable="true">
+                        <template #footer>
+                            {{ mapHint }}
+                        </template>
+                    </LocationMapComponent>
+                    <ValueInfoComponent :label="t('geo_location')" :value="locationSummary" />
+                </aside>
+            </section>
 
-        <div class="form-actions">
-            <button type="submit" class="uranus-button" :disabled="isSubmitting">
-                {{ submitButtonLabel }}
-            </button>
-        </div>
+            <div class="form-actions">
+                <button type="submit" class="uranus-button" :disabled="isSubmitting">
+                    {{ submitButtonLabel }}
+                </button>
+            </div>
+        </form>
 
         <transition name="fade">
             <p v-if="error" class="feedback feedback--error">{{ error }}</p>

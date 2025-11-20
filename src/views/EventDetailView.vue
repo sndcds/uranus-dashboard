@@ -90,23 +90,10 @@
                             </a>
                         </div>
                     </div>
-
-                    <section v-if="event.event_id && currentEventDate?.event_date_id" class="event-detail-section">
-                        <button type="button" class="event-detail-link"
-                            :disabled="isDownloadingIcs"
-                            @click="downloadIcs">
-                            {{ t('download_ics') }}
-                            <span class="event-detail-link__icon" aria-hidden="true">⬇</span>
-                        </button>
-                        <p v-if="icsDownloadError" class="event-detail-download-error">
-                            {{ icsDownloadError }}
-                        </p>
-                    </section>
                 </section>
 
                 <!-- Right Column - Sidebar -->
                 <aside class="event-detail-sidebar">
-
                     <!-- Date & Time -->
                     <div>
                         <div v-if="formatEventDateTime && 'date' in formatEventDateTime">
@@ -124,14 +111,16 @@
                             <div>
                                 <p class="event-detail-info-label">{{ t('event_start') }}:</p>
                                 <p class="uranus-ev-date">{{ formatEventDateTime.startDate }}</p>
-                                <p v-if="formatEventDateTime.startTime" class="uranus-ev-time">{{
-                                    formatEventDateTime.startTime }}</p>
+                                <p v-if="formatEventDateTime.startTime" class="uranus-ev-time">
+                                    {{ formatEventDateTime.startTime }}
+                                </p>
                             </div>
                             <div class="event-detail-section-spacing">
                                 <p class="event-detail-info-label">{{ t('event_end') }}:</p>
                                 <p class="uranus-ev-date">{{ formatEventDateTime.endDate }}</p>
-                                <p v-if="formatEventDateTime.endTime" class="uranus-ev-time">{{ formatEventDateTime.endTime
-                                    }}</p>
+                                <p v-if="formatEventDateTime.endTime" class="uranus-ev-time">
+                                    {{ formatEventDateTime.endTime }}
+                                </p>
                             </div>
                             <div v-if="currentEventDate?.entry_time" class="event-detail-section-spacing">
                                 <p class="event-detail-info-label">{{ t('event_entry_time') }}:</p>
@@ -201,6 +190,17 @@
                             </div>
                         </div>
                     </div>
+
+                    <div v-if="event.event_id && currentEventDate?.event_date_id" class="event-detail-section">
+                        <button type="button" class="event-detail-link" :disabled="isDownloadingIcs"
+                            @click="downloadIcs">
+                            {{ t('download_ics') }}
+                            <span class="event-detail-link__icon" aria-hidden="true">⬇</span>
+                        </button>
+                        <p v-if="icsDownloadError" class="event-detail-download-error">
+                            {{ icsDownloadError }}
+                        </p>
+                    </div>
                 </aside>
             </div>
         </div>
@@ -256,36 +256,36 @@ interface EventDateDetail {
 }
 
 interface EventDetailResponse {
-  accessibility_flag_names: string[] | null
-  accessibility_flags: number[] | null
-  description: string | null
-  date: EventDateDetail | null
-  further_dates: EventDateDetail[] | null
-  event_types: EventType[] | null
-  event_urls: EventUrl[] | null
-  event_id: number
-  has_main_image: boolean
-  image_license_id: string | null
-  image_license_short_name: string | null
-  image_license_name: string | null
-  image_license_url: string | null
-  image_alt_text: string | null
-  image_copyright: string | null
-  image_created_by: string | null
-  image_focus_x: number
-  image_focus_y: number
-  image_id: number | null
-  image_path: string | null
-  languages: string[] | null
-  meeting_point: string | null
-  organizer_id: number | null
-  organizer_name: string
-  participation_info: string | null
-  subtitle: string | null
-  teaser_text: string | null
-  title: string
-  visitor_info_flag_names: string[] | null
-  visitor_info_flags: number[] | null
+    accessibility_flag_names: string[] | null
+    accessibility_flags: number[] | null
+    description: string | null
+    date: EventDateDetail | null
+    further_dates: EventDateDetail[] | null
+    event_types: EventType[] | null
+    event_urls: EventUrl[] | null
+    event_id: number
+    has_main_image: boolean
+    image_license_id: string | null
+    image_license_short_name: string | null
+    image_license_name: string | null
+    image_license_url: string | null
+    image_alt_text: string | null
+    image_copyright: string | null
+    image_created_by: string | null
+    image_focus_x: number
+    image_focus_y: number
+    image_id: number | null
+    image_path: string | null
+    languages: string[] | null
+    meeting_point: string | null
+    organizer_id: number | null
+    organizer_name: string
+    participation_info: string | null
+    subtitle: string | null
+    teaser_text: string | null
+    title: string
+    visitor_info_flag_names: string[] | null
+    visitor_info_flags: number[] | null
 }
 
 const route = useRoute()
@@ -308,16 +308,16 @@ const intlTime = new Intl.DateTimeFormat(locale.value || 'de', {
 })
 
 const formatDate = (dateStr: string | null | undefined) => {
-  if (!dateStr || typeof dateStr !== 'string') return ''
+    if (!dateStr || typeof dateStr !== 'string') return ''
 
-  const parts = dateStr.split('-')
-  if (parts.length !== 3) return dateStr
+    const parts = dateStr.split('-')
+    if (parts.length !== 3) return dateStr
 
-  const [year, month, day] = parts.map(Number)
+    const [year, month, day] = parts.map(Number)
 
-  if (!year || !month || !day) return dateStr
+    if (!year || !month || !day) return dateStr
 
-  return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year}`
+    return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year}`
 }
 
 const formatTime = (timeStr: string | null | undefined) => {
@@ -433,37 +433,37 @@ const downloadIcs = async () => {
 }
 
 const loadEvent = async () => {
-  const eventId = resolveRouteParam(route.params.id)
-  const eventDateId = resolveRouteParam(route.params.eventDateId)
+    const eventId = resolveRouteParam(route.params.id)
+    const eventDateId = resolveRouteParam(route.params.eventDateId)
 
-  if (!eventId) {
-    loadError.value = 'No event ID provided'
-    isLoading.value = false
-    return
-  }
+    if (!eventId) {
+        loadError.value = 'No event ID provided'
+        isLoading.value = false
+        return
+    }
 
-  if (!eventDateId) {
-    loadError.value = 'No event date ID provided'
-    isLoading.value = false
-    return
-  }
+    if (!eventDateId) {
+        loadError.value = 'No event date ID provided'
+        isLoading.value = false
+        return
+    }
 
-  isLoading.value = true
-  loadError.value = null
+    isLoading.value = true
+    loadError.value = null
 
-  try {
-    const lang = locale.value || 'de'
-    const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
-    const { data } = await apiFetch<EventDetailResponse>(endpoint)
+    try {
+        const lang = locale.value || 'de'
+        const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
+        const { data } = await apiFetch<EventDetailResponse>(endpoint)
 
-    event.value = data
-    eventDate.value = data.date
-  } catch (error: unknown) {
-    loadError.value = error instanceof Error && error.message
-        ? error.message
-        : t('event_load_error')
+        event.value = data
+        eventDate.value = data.date
+    } catch (error: unknown) {
+        loadError.value = error instanceof Error && error.message
+            ? error.message
+            : t('event_load_error')
     } finally {
-      isLoading.value = false
+        isLoading.value = false
     }
 }
 
@@ -483,13 +483,13 @@ p {
 }
 
 .uranus-ev-date {
-  font-weight: 700;
-  font-size: 1.4rem;
+    font-weight: 700;
+    font-size: 1.4rem;
 }
 
 .uranus-ev-time {
-  font-weight: 500;
-  margin: 0;
+    font-weight: 500;
+    margin: 0;
 }
 
 .event-detail-page {
