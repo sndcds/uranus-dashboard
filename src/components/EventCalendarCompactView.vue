@@ -50,7 +50,7 @@
                     class="calendar-event-compact__details">
                     <div v-if="loadingEventId === `${event.id}-${event.event_date_id}`"
                         class="calendar-event-compact__loading">
-                        Loading...
+                        {{ detailLoadingLabel }}
                     </div>
                     <div v-else-if="eventDetailsError" class="calendar-event-compact__error">
                         {{ eventDetailsError }}
@@ -65,36 +65,36 @@
                             v-html="formattedDescription"></div>
                         <div class="calendar-event-compact__metadata">
                             <div class="calendar-event-compact__field">
-                                <strong>Date:</strong> {{ formatCompactDate(eventDetails.start_date) }}
-                                <template v-if="eventDetails.start_time">
-                                    at {{ formatTime(eventDetails.start_date, eventDetails.start_time) }}
+                                <strong>{{ detailDateLabel }}:</strong> {{ formatCompactDate(eventDetails.date.start_date) }}
+                                <template v-if="eventDetails.date.start_time">
+                                    {{ t('events_calendar_detail_at') }} {{ formatTime(eventDetails.date.start_date, eventDetails.date.start_time) }}
                                 </template>
-                                <template v-if="eventDetails.end_date || eventDetails.end_time">
+                                <template v-if="eventDetails.date.end_date || eventDetails.date.end_time">
                                     -
                                     <template
-                                        v-if="eventDetails.end_date && eventDetails.end_date !== eventDetails.start_date">
-                                        {{ formatCompactDate(eventDetails.end_date) }}
+                                        v-if="eventDetails.date.end_date && eventDetails.date.end_date !== eventDetails.date.start_date">
+                                        {{ formatCompactDate(eventDetails.date.end_date) }}
                                     </template>
-                                    <template v-if="eventDetails.end_time">
-                                        {{ formatTime(eventDetails.end_date || eventDetails.start_date,
-                                            eventDetails.end_time) }}
+                                    <template v-if="eventDetails.date.end_time">
+                                        {{ formatTime(eventDetails.date.end_date || eventDetails.date.start_date,
+                                            eventDetails.date.end_time) }}
                                     </template>
                                 </template>
                             </div>
                             <div v-if="eventDetails.organizer_name" class="calendar-event-compact__field">
-                                <strong>Organizer:</strong> {{ eventDetails.organizer_name }}
+                                <strong>{{ detailOrganizerLabel }}:</strong> {{ eventDetails.organizer_name }}
                             </div>
-                            <div v-if="eventDetails.space_name" class="calendar-event-compact__field">
-                                <strong>Space:</strong> {{ eventDetails.space_name }}
+                            <div v-if="eventDetails.date.space_name" class="calendar-event-compact__field">
+                                <strong>{{ detailSpaceLabel }}:</strong> {{ eventDetails.date.space_name }}
                             </div>
-                            <div v-if="eventDetails.venue_street && eventDetails.venue_house_number"
+                            <div v-if="eventDetails.date.venue_street && eventDetails.date.venue_house_number"
                                 class="calendar-event-compact__field">
-                                <strong>Address:</strong> {{ eventDetails.venue_street }} {{
-                                    eventDetails.venue_house_number }}, {{
-                                    eventDetails.venue_postal_code }} {{ eventDetails.venue_city }}
+                                <strong>{{ detailAddressLabel }}:</strong> {{ eventDetails.date.venue_street }} {{
+                                    eventDetails.date.venue_house_number }}, {{
+                                    eventDetails.date.venue_postal_code }} {{ eventDetails.date.venue_city }}
                             </div>
                             <div v-if="eventDetails.event_urls?.length" class="calendar-event-compact__field">
-                                <strong>Links:</strong>
+                                <strong>{{ detailLinksLabel }}:</strong>
                                 <ul class="calendar-event-compact__links">
                                     <li v-for="link in eventDetails.event_urls" :key="link.id">
                                         <a :href="link.url" target="_blank" rel="noopener noreferrer">
@@ -107,7 +107,7 @@
                         <div class="calendar-event-compact__actions">
                             <router-link :to="`/event/${event.id}/date/${event.event_date_id}`"
                                 class="calendar-event-compact__view-button">
-                                View Full Event
+                                {{ viewFullEventLabel }}
                             </router-link>
                         </div>
                     </div>
@@ -163,61 +163,50 @@ interface EventUrl {
     url_type: string
 }
 
-interface EventDetails {
-    id: number
-    title: string
-    subtitle: string | null
-    description: string | null
-    teaser_text: string | null
+interface EventDateDetails {
+    entry_time: string | null
+    event_date_id: number
+    event_id: number
+    space_building_level: number | null
+    space_id: number | null
+    space_name: string | null
+    space_seating_capacity: number | null
+    space_total_capacity: number | null
+    space_url?: string | null
     start_date: string
     start_time: string | null
     end_date: string | null
     end_time: string | null
-    entry_time: string | null
-    duration: number | null
-    organizer_id: number
-    organizer_name: string
-    venue_id: number
-    venue_name: string
-    venue_street: string
-    venue_house_number: string
-    venue_postal_code: string
-    venue_city: string
-    venue_state: string
-    venue_country: string
-    venue_lat: number
-    venue_lon: number
-    venue_geometry: string
-    space_id: number
-    space_name: string
-    space_building_level: number
-    space_seating_capacity: number
-    space_total_capacity: number
-    space_url: string
+    venue_city: string | null
+    venue_country: string | null
+    venue_house_number: string | null
+    venue_id: number | null
+    venue_lat: number | null
+    venue_lon: number | null
+    venue_name: string | null
+    venue_postal_code: string | null
+    venue_street: string | null
+    venue_state?: string | null
+    venue_geometry?: string | null
+}
+
+interface EventDetails {
+    event_id: number
+    title: string
+    subtitle: string | null
+    description: string | null
+    teaser_text: string | null
+    organizer_id: number | null
+    organizer_name: string | null
     event_types: CalendarEventType[]
     event_urls: EventUrl[] | null
     languages: string[]
-    has_main_image: boolean
-    image_id: number | null
     image_path: string | null
     image_alt_text: string | null
-    image_copyright: string | null
-    image_created_by: string | null
-    image_license_id: number | null
-    image_license_name: string | null
-    image_license_short_name: string | null
-    image_license_url: string | null
-    image_mime_type: string | null
-    image_width: number | null
-    image_height: number | null
-    image_focus_x: number
-    image_focus_y: number
-    meeting_point: string | null
-    participation_info: string | null
-    visitor_info_flags: number | null
-    visitor_info_flag_names: string[] | null
-    accessibility_flags: number | null
-    accessibility_flag_names: string[] | null
+    image_copyright?: string | null
+    image_license_name?: string | null
+    further_dates: unknown
+    date: EventDateDetails
 }
 
 interface Props {
@@ -239,6 +228,14 @@ const { t } = useI18n({ useScope: 'global' })
 
 const loadingLabel = computed(() => t('events_calendar_loading'))
 const emptyLabel = computed(() => t('events_calendar_empty'))
+const detailLoadingLabel = computed(() => t('events_calendar_loading_details'))
+const detailDateLabel = computed(() => t('events_calendar_detail_date_label'))
+const detailOrganizerLabel = computed(() => t('events_calendar_detail_organizer_label'))
+const detailSpaceLabel = computed(() => t('events_calendar_detail_space_label'))
+const detailAddressLabel = computed(() => t('events_calendar_detail_address_label'))
+const detailLinksLabel = computed(() => t('events_calendar_detail_links_label'))
+const viewFullEventLabel = computed(() => t('events_calendar_view_full_event'))
+const eventDetailsErrorLabel = computed(() => t('events_calendar_event_details_error'))
 
 // Accordion state
 const expandedEventId = ref<string | null>(null)
@@ -286,7 +283,10 @@ const toggleEvent = async (eventId: number, eventDateId: number, event: MouseEve
             formattedDescription.value = ''
         }
     } catch (error) {
-        eventDetailsError.value = error instanceof Error ? error.message : 'Failed to load event details'
+        eventDetailsError.value =
+            error instanceof Error && error.message
+                ? error.message
+                : eventDetailsErrorLabel.value
     } finally {
         loadingEventId.value = null
     }
