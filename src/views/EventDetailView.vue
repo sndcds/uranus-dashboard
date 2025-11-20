@@ -90,6 +90,18 @@
                             </a>
                         </div>
                     </div>
+
+                    <section v-if="event.event_id && currentEventDate?.event_date_id" class="event-detail-section">
+                        <button type="button" class="event-detail-link"
+                            :disabled="isDownloadingIcs"
+                            @click="downloadIcs">
+                            {{ t('download_ics') }}
+                            <span class="event-detail-link__icon" aria-hidden="true">⬇</span>
+                        </button>
+                        <p v-if="icsDownloadError" class="event-detail-download-error">
+                            {{ icsDownloadError }}
+                        </p>
+                    </section>
                 </section>
 
                 <!-- Right Column - Sidebar -->
@@ -284,8 +296,11 @@ const eventDate = ref<EventDateDetail | null>(null)
 const currentEventDate = computed(() => eventDate.value)
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
+const isDownloadingIcs = ref(false)
+const icsDownloadError = ref<string | null>(null)
 
 const loadingLabel = computed(() => t('loading'))
+const icsDownloadErrorLabel = computed(() => t('download_ics_error'))
 
 const intlTime = new Intl.DateTimeFormat(locale.value || 'de', {
     hour: '2-digit',
@@ -365,6 +380,56 @@ const parseRouteParamToNumber = (param: string | string[] | undefined): number |
     if (!value) return null
     const parsed = Number(value)
     return Number.isNaN(parsed) ? null : parsed
+}
+
+const createIcsFileName = (title: string, eventDateId: number) => {
+    const normalized = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .replace(/-+/g, '-')
+    const base = normalized || 'event'
+    return `${base}-${eventDateId}.ics`
+}
+
+const downloadIcs = async () => {
+    if (!event.value?.event_id || !currentEventDate.value?.event_date_id) {
+        return
+    }
+    if (isDownloadingIcs.value) return
+
+    isDownloadingIcs.value = true
+    icsDownloadError.value = null
+
+    try {
+        const eventId = event.value.event_id
+        const eventDateId = currentEventDate.value.event_date_id
+        const endpoint = `/api/event/${eventId}/date/${eventDateId}/ics?lang=${locale.value}`
+        const { data } = await apiFetch<string>(endpoint, {
+            headers: {
+                Accept: 'text/calendar,*/*;q=0.8',
+            },
+        })
+
+        if (typeof data !== 'string' || !data.trim()) {
+            throw new Error('Empty ICS payload')
+        }
+
+        const blob = new Blob([data], { type: 'text/calendar;charset=utf-8' })
+        const blobUrl = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = blobUrl
+        link.download = createIcsFileName(event.value.title, eventDateId)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(blobUrl)
+    } catch (error) {
+        console.error('Failed to download ICS file', error)
+        icsDownloadError.value = icsDownloadErrorLabel.value
+    } finally {
+        isDownloadingIcs.value = false
+    }
 }
 
 const loadEvent = async () => {
@@ -600,14 +665,29 @@ p {
     text-decoration: none;
     font-weight: 500;
     transition: opacity 0.2s ease;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
 }
 
 .event-detail-link:hover {
     opacity: 0.7;
 }
 
+.event-detail-link:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .event-detail-link__icon {
     font-size: 1.1rem;
+}
+
+.event-detail-download-error {
+    margin-top: 0.5rem;
+    color: #b91c1c;
+    font-size: 0.9rem;
 }
 
 .event-detail-sidebar {
