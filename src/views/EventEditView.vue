@@ -148,7 +148,7 @@ interface EventDetail {
   image_created_by: string | null
   image_focus_x: number | null
   image_focus_y: number | null
-  image_license_id: string | null
+  image_license_id: number | null
   image_url?: string | null
   has_main_image?: boolean
   venue_id: number | null
@@ -197,7 +197,7 @@ const eventId = computed(() => Number(route.params.id))
 const eventImage = ref<File | null>(null)
 const imageAltText = ref('')
 const imageCopyright = ref('')
-const imageLicense = ref('')
+const imageLicense = ref<number | null>(null)
 const imageCreatedBy = ref('')
 
 const primaryEventDate = computed<EventDate | null>(() => {
@@ -369,7 +369,7 @@ interface EventImageDetail {
   createdBy: string | null
   focusX: number | null
   focusY: number | null
-  licenseId: string | null
+  licenseId: number | null
 }
 
 const mapEventImage = (raw: unknown): EventImageDetail | null => {
@@ -393,7 +393,7 @@ const mapEventImage = (raw: unknown): EventImageDetail | null => {
     createdBy: toNullableString(record.created_by ?? record.createdBy),
     focusX: toNumberOrNull(record.focus_x ?? record.focusX),
     focusY: toNumberOrNull(record.focus_y ?? record.focusY),
-    licenseId: toNullableString(record.license_id ?? record.license_id ?? record.licenseId ?? record.licenseId),
+    licenseId: toNumberOrNull(record.license_id),
   }
 }
 
@@ -500,7 +500,7 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
     image_created_by: toNullableString(record.image_created_by),
     image_focus_x: toNumberOrNull(record.image_focus_x),
     image_focus_y: toNumberOrNull(record.image_focus_y),
-    image_license_id: toNullableString(record.image_license_id),
+    image_license_id: toNumberOrNull(record.image_license_id),
     image_url: toNullableString(
       record.image_url ??
       record.main_image_url ??
@@ -541,7 +541,7 @@ const resetState = () => {
   eventLinks.value = []
   imageAltText.value = ''
   imageCopyright.value = ''
-  imageLicense.value = ''
+  imageLicense.value = null
   imageCreatedBy.value = ''
 }
 
@@ -609,7 +609,7 @@ const loadEvent = async () => {
     eventLinks.value = mapped.event_urls ?? []
     imageAltText.value = mapped.image_alt_text ?? ''
     imageCopyright.value = mapped.image_copyright ?? ''
-    imageLicense.value = mapped.image_license_id ?? ''
+    imageLicense.value = mapped.image_license_id ?? null
     imageCreatedBy.value = mapped.image_created_by ?? ''
 
     await ensureEventImageDetails(mapped)

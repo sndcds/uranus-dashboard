@@ -94,10 +94,7 @@
             <span><strong>{{ t('event_image_copyright') }}:</strong> {{ localCopyright }}</span>
             <span>
               <strong>{{ t('event_image_license') }}:</strong>
-                {{
-                    licenseOptions.find((l) => l.value === localLicense)?.label ||
-                    t('event_image_license_unknown')
-                }}
+                {{ localLicenseLabel }}
               </span>
           </div>
 
@@ -172,7 +169,7 @@ interface Props {
   image?: File | null
   altText?: string
   copyright?: string
-  license?: string | number
+  license?: number | null
   createdBy?: string
   eventId?: number
   maxSize?: number // in bytes, default 5MB
@@ -187,7 +184,7 @@ const props = withDefaults(defineProps<Props>(), {
   image: null,
   altText: '',
   copyright: '',
-  license: '',
+  license: null,
   createdBy: '',
   maxSize: 5 * 1024 * 1024, // 5MB
   acceptedTypes: () => ['image/jpeg', 'image/png', 'image/webp'],
@@ -271,6 +268,11 @@ const computedSaveImageInfo = computed(() => {
   return 'OK'
 })
 
+const localLicenseLabel = computed(() => {
+  console.log(localLicense.value)
+  const match = licenseOptions.value.find(opt => opt.value === localLicense.value)
+  return match ? match.label : t('event_image_license_unknown')
+})
 
 // Watch for prop changes to sync local values
 watch(() => props.altText, (newVal) => { localAltText.value = newVal })

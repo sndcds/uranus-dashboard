@@ -21,7 +21,6 @@ import DashboardTodoListComponent from '@/components/dashboard/DashboardTodoList
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import DashboardNotificationsComponent from '@/components/dashboard/DashboardNotificationsComponent.vue'
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
-import JSONAdminFetch from "@/components/JSONAdminFetch.vue";
 
 const { t } = useI18n()
 </script>
