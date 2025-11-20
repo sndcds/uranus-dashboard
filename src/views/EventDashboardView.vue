@@ -59,7 +59,7 @@ const fetchEvents = async () => {
 
     try {
         const { data, status } = await apiFetch<OrganizerEventItem[] | { events?: OrganizerEventItem[] }>(
-            `/api/admin/organizer/${organizerId}/events?start=2000-01-01&lang=${locale.value}`
+            `/api/admin/organizer/${organizerId}/events?lang=${locale.value}`
         )
 
         if (status >= 200 && status < 300) {

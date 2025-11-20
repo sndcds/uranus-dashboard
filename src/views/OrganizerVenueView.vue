@@ -125,7 +125,7 @@ watch(
 
     try {
       const response = await apiFetch<Organizer>(
-        `/api/admin/organizer/${id}/venues?start=2000-01-01`
+        `/api/admin/organizer/${id}/venues`
       )
       organizer.value = response.data
       error.value = null

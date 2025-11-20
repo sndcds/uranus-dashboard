@@ -73,7 +73,7 @@ const handleOrganizerDeleted = (organizerId: number) => {
 
 onMounted(async () => {
   try {
-    const { data } = await apiFetch<Organizer[]>('/api/admin/organizer/dashboard?start=2000-01-01') // Todo: start should be Now
+    const { data } = await apiFetch<Organizer[]>('/api/admin/organizer/dashboard')
     organizers.value = data || []
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
