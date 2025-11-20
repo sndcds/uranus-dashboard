@@ -5,32 +5,19 @@
         :edit-button-text="t('edit')"
         @edit-started="startEditingRelease" />
 
-        <p v-if="releaseSaveError" class="event-meta__error event-meta__error--global">
-            {{ releaseSaveError }}
-        </p>
+    <p v-if="releaseSaveError" class="event-meta__error event-meta__error--global">
+      {{ releaseSaveError }}
+    </p>
 
-        <div v-if="!isEditingRelease && releaseDisplay" class="event-meta__display">
-            <div class="event-meta__row">
-                <span class="event-meta__label">{{ releaseDisplay.date }}</span>
-                <span v-if="releaseDisplay.label" class="release-status-chip" :class="{
-                    'release-status-chip--red': releaseDisplay.id === 1,
-                    'release-status-chip--orange': releaseDisplay.id === 2,
-                    'release-status-chip--green': releaseDisplay.id === 3,
-                    'release-status-chip--blue': releaseDisplay.id === 4,
-                    'release-status-chip--pink': releaseDisplay.id === 5
-                }">
-                    {{ releaseDisplay.label }}
-                </span>
-            </div>
-        </div>
-
-        <div v-if="!isEditingRelease && !releaseDisplay" class="event-meta__empty">
-            {{ t('event_release_empty') }}
-        </div>
+    <div v-if="!isEditingRelease" class="event-meta__display">
+      <div v-if="releaseDisplay" class="event-meta__row">
+        <UranusEventReleaseChip :releaseDisplay="releaseDisplay" size="big" />
+      </div>
+    </div>
 
         <div v-if="isEditingRelease" class="event-release__editor">
             <div class="form-group">
-                <label for="release-select">{{ t('event_release_select') }}</label>
+                <!--label for="release-select">{{ t('event_release_select') }}</label-->
                 <select v-model.number="releaseDraft" id="release-select" :disabled="isLoadingReleases">
                     <option :value="null" disabled>
                         {{ t('event_release_choose') }}
@@ -70,6 +57,7 @@ import { apiFetch } from '@/api'
 
 import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
 import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
+import UranusEventReleaseChip from "@/components/uranus/UranusEventReleaseChip.vue";
 
 interface Release {
     id: number
@@ -138,7 +126,7 @@ const releaseDisplay = computed<ReleaseDisplay | null>(() => {
     }
 
     return {
-        date: dateDisplay || '—',
+        date: dateDisplay || t('event_release_empty'),
         label: label || '—',
         id: statusId || 0
     }
@@ -427,7 +415,7 @@ function formatReleaseDate(value: string | null | undefined): string {
   font-weight: 600;
   font-size: 0.75rem;
   letter-spacing: 0.02em;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: fit-content;
 
   &--red {
