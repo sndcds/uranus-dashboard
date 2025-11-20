@@ -206,9 +206,6 @@ const paginationOffset = ref(0)
 const hasMoreEvents = ref(true)
 const isLoadingMore = ref(false)
 let scrollListenerAttached = false
-const debugLog = (...args: unknown[]) => {
-    console.log('[EventCalendar]', ...args)
-}
 
 // Use appStore for persisted state
 const currentView = computed({
@@ -722,18 +719,10 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
 
     if (append) {
         if (isLoading.value || isLoadingMore.value || !hasMoreEvents.value) {
-            debugLog('Skipping append load - busy or no more events', {
-                appendAttempt: append,
-                isLoading: isLoading.value,
-                isLoadingMore: isLoadingMore.value,
-                hasMoreEvents: hasMoreEvents.value,
-            })
             return
         }
-        debugLog('Appending events', { preserveSelection, offset: paginationOffset.value })
         isLoadingMore.value = true
     } else {
-        debugLog('Starting fresh load', { preserveSelection })
         isLoading.value = true
         loadError.value = null
         resetPagination()
@@ -750,7 +739,6 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
             mode: 'type-summary',
         })
 
-        debugLog('Fetching event type summary', { endpoint })
         const { data } = await apiFetch<{ total: number, type_summary: EventTypeSummary[], venues_summary: EventVenueSummary[] }>(endpoint)
 
         if (data && Array.isArray(data.type_summary)) {
@@ -758,13 +746,9 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
             typeCountOptions.value = data.type_summary
             venueCountOptions.value = data.venues_summary || []
 
-            debugLog('Updated type count options from summary', {
-                count: typeCountOptions.value.length,
-                venueCount: venueCountOptions.value.length,
-            })
         }
     } catch (error: unknown) {
-        debugLog('Failed to load event type summary', error)
+        // Ignore summary failures; the main event load below still executes
     }
 
     try {
@@ -772,16 +756,10 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
             offset: String(offset),
             limit: String(EVENTS_PAGE_SIZE),
         })
-        debugLog('Fetching events', { endpoint, offset, limit: EVENTS_PAGE_SIZE, append })
         const { data } = await apiFetch<EventsResponse>(endpoint)
 
         if (data) {
             const incoming = hydrateEvents(Array.isArray(data.events) ? data.events : [])
-            debugLog('Received events payload', {
-                incomingCount: incoming.length,
-                append,
-                totalFromApi: data.total,
-            })
             if (append) {
                 events.value = [...events.value, ...incoming]
             } else {
@@ -791,24 +769,17 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
             paginationOffset.value = offset + incoming.length
 
             hasMoreEvents.value = incoming.length === EVENTS_PAGE_SIZE
-            debugLog('Updated pagination state', {
-                paginationOffset: paginationOffset.value,
-                totalLoaded: events.value.length,
-                hasMoreEvents: hasMoreEvents.value,
-            })
 
             if (!append && !preserveSelection) {
                 setInitialDate()
             }
         } else {
-            debugLog('No data returned from API')
             if (!append) {
                 events.value = []
             }
             hasMoreEvents.value = false
         }
     } catch (error: unknown) {
-        debugLog('Failed to load events', error)
         loadError.value =
             error instanceof Error && error.message
                 ? error.message
@@ -824,14 +795,12 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
         }
 
         void nextTick(() => {
-            debugLog('Load finished, checking if we should load additional events immediately')
             maybeLoadAdditionalEvents()
         })
     }
 }
 
 const loadMoreEvents = async () => {
-    debugLog('loadMoreEvents invoked')
     await loadEvents({ preserveSelection: true, append: true })
 }
 
@@ -864,49 +833,34 @@ const shouldLoadMoreOnScroll = () => {
 
     const { scrollTop, scrollHeight, clientHeight } = getScrollMetrics()
     const distanceFromBottom = scrollHeight - (scrollTop + clientHeight)
-    debugLog('Scroll check', {
-        scrollTop,
-        scrollHeight,
-        clientHeight,
-        distanceFromBottom,
-        threshold: SCROLL_TRIGGER_DISTANCE,
-    })
     return distanceFromBottom <= SCROLL_TRIGGER_DISTANCE
 }
 
 const maybeLoadAdditionalEvents = () => {
     if (shouldLoadMoreOnScroll()) {
-        debugLog('Threshold met, loading additional events')
         void loadMoreEvents()
-    } else {
-        debugLog('Threshold not met, no additional load triggered')
     }
 }
 
 const onWindowScroll = () => {
-    debugLog('Window scroll event detected')
     if (shouldLoadMoreOnScroll()) {
-        debugLog('Scroll handler triggering loadMoreEvents')
         void loadMoreEvents()
     }
 }
 
 const attachScrollListener = () => {
     if (typeof window === 'undefined' || scrollListenerAttached) return
-    debugLog('Attaching scroll listener')
     window.addEventListener('scroll', onWindowScroll, { passive: true })
     scrollListenerAttached = true
 }
 
 const detachScrollListener = () => {
     if (typeof window === 'undefined' || !scrollListenerAttached) return
-    debugLog('Detaching scroll listener')
     window.removeEventListener('scroll', onWindowScroll)
     scrollListenerAttached = false
 }
 
 onMounted(async () => {
-    debugLog('Component mounted, bootstrapping infinite scroll')
     attachScrollListener()
 
     await loadEvents()
@@ -1004,7 +958,6 @@ watch(locale, () => {
 })
 
 watch(hasMoreEvents, (hasMore) => {
-    debugLog('hasMoreEvents changed', { hasMore })
     if (hasMore) {
         void nextTick(() => {
             maybeLoadAdditionalEvents()
