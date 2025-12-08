@@ -29,7 +29,7 @@
           <tr>
             <th class="organizer-card__table-header">{{ t('organizer_table_header_venue') }}</th>
             <th class="organizer-card__table-header organizer-card__table-header--right">{{ t('organizer_table_header_spaces') }}</th>
-            <th class="organizer-card__table-header organizer-card__table-header--right">{{ t('organizer_table_header_events') }}</th>
+            <th class="organizer-card__table-header organizer-card__table-header--right">{{ t('events') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -152,7 +152,7 @@ const confirmDelete = async ({ password }: { password: string }) => {
 
     // Emit the deleted event
     emit('deleted', pendingDeleteId.value)
-    
+
     // Close the modal
     cancelDelete()
   } catch (error: any) {
@@ -195,7 +195,6 @@ const confirmDelete = async ({ password }: { password: string }) => {
 }
 
 .organizer-card {
-  @include form-card(100%, clamp(1.25rem, 3vw, 1.75rem), clamp(0.75rem, 2vw, 1.25rem));
   position: relative;
   min-height: 280px;
   border: 4px solid transparent;
@@ -245,7 +244,7 @@ const confirmDelete = async ({ password }: { password: string }) => {
 
   &--total {
     border-top: 2px solid var(--border-soft);
-    background: var(--surface-muted);
+    background: var(--uranus-surface-muted);
   }
 }
 
@@ -279,7 +278,7 @@ const confirmDelete = async ({ password }: { password: string }) => {
 }
 
 .organizer-card__empty-text {
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-style: italic;
   text-align: center;
 }

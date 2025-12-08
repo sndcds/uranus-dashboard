@@ -18,7 +18,7 @@ export interface EventVenueSummary {
     id: number
     name: string
     city: string
-    event_date_count: number
+    eventDateCount: number
 }
 
 const getDefaultCalendarFilters = (): CalendarFiltersState => ({

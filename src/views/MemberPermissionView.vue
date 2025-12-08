@@ -66,10 +66,10 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import { replaceInTemplate } from '@/utils/string'
+import { replaceInTemplate } from '@/utils/UranusStringUtils.ts'
 
 import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
-import UranusCard from '@/components/uranus/UranusCard.vue'
+import UranusCard from '@/components/ui/UranusCard.vue'
 
 interface PermissionBitEntry {
   bit: number
@@ -373,7 +373,7 @@ onMounted(() => {
 
 .member-permission__group-count {
   margin: 0;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-size: 0.9rem;
 }
 
@@ -431,12 +431,12 @@ onMounted(() => {
 
 .member-permission__bit-code {
   font-size: 0.85rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .member-permission__bit-description {
   margin: 0.35rem 0 0;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-size: 0.95rem;
 }
 </style>

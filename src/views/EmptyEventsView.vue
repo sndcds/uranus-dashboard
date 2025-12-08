@@ -52,7 +52,7 @@ const { t } = useI18n()
 
   p {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     line-height: 1.6;
   }
 }

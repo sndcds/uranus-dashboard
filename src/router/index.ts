@@ -10,9 +10,9 @@ import OrganizerVenueView from '@/views/OrganizerVenueView.vue'
 import SignupView from '@/views/SignupView.vue'
 import FormVenueCreateView from '@/views/FormVenueCreateView.vue'
 import FormSpaceView from '@/views/FormSpaceView.vue'
-import EventDashboardView from '@/views/EventDashboardView.vue'
+import UranusDashboardEventsView from '@/views/UranusDashboardEventsView.vue'
 import FormEventView from '@/views/FormEventView.vue'
-import EventEditView from '@/views/EventEditView.vue'
+import UranusEventEditorView from '@/views/UranusEventEditorView.vue'
 import UserPermissionView from '@/views/UserPermissionView.vue'
 import FormUserProfileView from '@/views/FormUserProfileView.vue'
 import EventCalendarView from '@/views/EventCalendarView.vue'
@@ -110,7 +110,7 @@ const routes = [
             {
                 path: 'organizer/:id/events',
                 name: 'admin-organizer-events',
-                component: EventDashboardView,
+                component: UranusDashboardEventsView,
             },
             {
                 path: 'organizer/events/empty',
@@ -125,7 +125,7 @@ const routes = [
             {
                 path: 'event/:id',
                 name: 'admin-event-details',
-                component: EventEditView,
+                component: UranusEventEditorView,
             },
             {
                 path: 'user/permissions',

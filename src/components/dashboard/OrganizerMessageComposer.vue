@@ -220,7 +220,7 @@ defineExpose({
   display: grid;
   place-items: center;
   text-align: center;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-size: 0.95rem;
 }
 
@@ -248,7 +248,7 @@ defineExpose({
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .message-recipient__name {
@@ -260,7 +260,7 @@ defineExpose({
 .message-recipient__email,
 .message-recipient__meta {
   font-size: 0.85rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .input-group {

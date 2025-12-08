@@ -78,7 +78,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
-import UranusNotification from "@/components/uranus/UranusNotification.vue";
+import UranusNotification from "@/components/ui/UranusNotification.vue";
 
 interface PermissionResponseEntity {
     add_event: boolean
@@ -222,7 +222,7 @@ onMounted(() => {
 
 .permission-group__count {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-size: 0.9rem;
 }
 
@@ -255,12 +255,12 @@ onMounted(() => {
 
 .permission-card__role {
     margin: 0.15rem 0 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .permission-card__relation {
     font-size: 0.85rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .permission-card__capabilities {

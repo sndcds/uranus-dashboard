@@ -44,18 +44,18 @@
     color: var(--uranus-medium-contrast-color);
     display: flex;
     align-items: center;
-    /* vertically align text and star */
     gap: 0.25rem;
-    /* small gap between label and star */
   }
 
   select {
+    cursor: pointer;
     padding: 0.6rem 1.0rem;
     font-size: 1.0rem;
     border: 2px solid var(--uranus-input-border-color);
     background: var(--uranus-input-bg-color);
     border-radius: var(--uranus-form-field-border-radius);
     color: var(--uranus-color);
+    height: var(--uranus-input-height);
     box-sizing: border-box; // include padding/border in width
     // background: var(--uranus-bg-color-d1) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><polygon points="0,2 12,2 6,8" fill="%237f12e3"/></svg>') no-repeat right 0.8rem center;
     // appearance: none; /* remove default arrow */
@@ -70,11 +70,13 @@
   input[type="email"],
   select,
   textarea {
-    border: 2px solid var(--uranus-ia-inline-color-light2);
+    border: 2px solid var(--uranus-input-border-color);
   }
 }
 
-input.uranus-text-input {}
+input.uranus-text-input {
+  height: var(--uranus-input-height);
+}
 
 .uranus-tiny-text {
   font-size: 0.85rem !important;
@@ -83,6 +85,12 @@ input.uranus-text-input {}
 .uranus-big-text {
   font-size: 1.4rem !important;
   font-weight: 700 !important;
+}
+
+.uranus-textarea {
+  @apply w-full border border-gray-300 rounded-md p-2;
+  min-height: 4rem;
+  resize: vertical;
 }
 
 .uranus-form-row {
@@ -108,7 +116,7 @@ input.uranus-text-input {}
 }
 
 /* Make each textfield inside the row grow */
-.uranus-form-row>.uranus-textfield-wrapper {
+.uranus-form-row > .uranus-textfield-wrapper {
   flex: 1;
   /* grow to fill row */
   //min-width: 150px;  /* optional: prevent too small inputs */
@@ -135,9 +143,6 @@ input.uranus-text-input {}
   }
 }
 
-
-
-
 .uranus-form-wide {
   grid-column: span 2;
 }
@@ -146,7 +151,7 @@ input.uranus-text-input {}
   grid-column: span 3;
 }
 
-.uranus-form-required {
+.uranus-input-required {
   color: #dc2626;
   font-weight: 700;
 }
@@ -170,6 +175,21 @@ input.uranus-text-input {}
   font-weight: 600;
 }
 
-@media (min-width: 600px) {}
 
-@media (min-width: 1000px) {}
+.uranus-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 540px) {
+  .uranus-grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .uranus-grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

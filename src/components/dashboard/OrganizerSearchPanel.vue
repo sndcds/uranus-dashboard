@@ -279,7 +279,7 @@ defineExpose({
 .organizer-search__label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .organizer-search__controls {
@@ -343,7 +343,7 @@ defineExpose({
   margin: 0;
   padding: 0.75rem;
   font-size: 0.9rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .organizer-item {
@@ -355,7 +355,7 @@ defineExpose({
   padding: 0.9rem 1rem;
   border-radius: 0.9rem;
   border: 1px solid transparent;
-  background: var(--surface-muted);
+  background: var(--uranus-surface-muted);
   color: inherit;
   cursor: pointer;
   transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
@@ -369,12 +369,12 @@ defineExpose({
 
 .organizer-item__email {
   font-size: 0.85rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .organizer-item__meta {
   font-size: 0.8rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .organizer-item:hover {

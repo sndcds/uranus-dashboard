@@ -64,8 +64,8 @@ import router from '@/router'
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue"
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
-import UranusFormRow from "@/components/uranus/UranusFormRow.vue"
+import UranusTextInput from "@/components/ui/UranusTextInput.vue"
+import UranusFormRow from "@/components/ui/UranusFormRow.vue"
 
 interface LatLngLiteral {
     lat: number

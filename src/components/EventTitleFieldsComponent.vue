@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue";
+import UranusTextInput from "@/components/ui/UranusTextInput.vue";
 
 const props = defineProps<{
     title: string

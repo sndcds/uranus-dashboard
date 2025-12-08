@@ -215,7 +215,7 @@ const eventsRoute = computed(() => {
   transition: all 0.2s ease;
 
   &:hover {
-    background: var(--surface-muted);
+    background: var(--uranus-surface-muted);
     color: var(--accent-primary);
   }
 

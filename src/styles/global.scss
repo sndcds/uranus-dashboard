@@ -4,7 +4,7 @@
 @use 'uranus_button';
 @use 'uranus_combo_tag';
 @use 'uranus_dashboard';
-@use './_value_info.scss';
+@use 'uranus_value_info';
 @use './_markdown_editor.scss';
 @use 'uranus_inline_editor';
 
@@ -19,10 +19,9 @@
   --color-text-primary: #0f172a;
   --color-text-secondary: #475569;
   --color-link: #2563eb;
-  --muted-text: #64748b;
+  --uranus-muted-text: #64748b;
   --text-primary: var(--color-text-primary);
   --text-secondary: var(--color-text-secondary);
-  --text-muted: var(--muted-text);
 
   // Brand system colors
   --uranus-brand-color: #235df1;
@@ -39,6 +38,31 @@
   --uranus-ia-inline-color-light2: #ddb5ff;
   --uranus-ia-inline-color-dark1: #6e24aa;
   --uranus-ia-inline-color-dark2: #582780;
+  --uranus-inline-label-color: #808d9c;
+
+  --uranus-focus-border-color: #0078d4;
+
+  --uranus-surface-muted: rgb(234, 238, 246);
+
+  --uranus-event-type-chip-background: #f2f2fb;
+  --uranus-event-type-chip-color: #4f46e5;
+  --uranus-language-chip-background: rgb(230, 248, 232);
+  --uranus-language-chip-color: #0d853a;
+  --uranus-tag-chip-background: rgb(255, 240, 246);
+  --uranus-tag-chip-color: #bc0740;
+
+  // Event release status colors
+  --uranus-event-release-color-draft: #ffffff;
+  --uranus-event-release-background-draft: #ef4d4d;
+  --uranus-event-release-color-review: #ffffff;
+  --uranus-event-release-background-review: #ff9a60;
+  --uranus-event-release-color-released: #ffffff;
+  --uranus-event-release-background-released: #21bc63;
+  --uranus-event-release-color-cancelled: #ffffff;
+  --uranus-event-release-background-cancelled: #e11d9d;
+  --uranus-event-release-color-deferred: #ffffff;
+  --uranus-event-release-background-deferred: #5b51e1;
+
 
   // Accent tokens shared across layouts
   --accent-primary: #4f46e5;
@@ -52,7 +76,7 @@
   --card-shadow: 0 24px 50px rgba(15, 23, 42, 0.08);
   --surface-bg: #eef2ff;
   --surface-primary: #ffffff;
-  --surface-muted: #e2e8f0;
+
   --surface-hover: rgba(15, 23, 42, 0.06);
   --uranus-card-background-color: var(--card-bg);
   --uranus-card-color: var(--color-text);
@@ -71,11 +95,14 @@
   --uranus-dashboard-content-width: 1024px;
   --uranus-menu-active-color: #0f172a;
   --uranus-menu-active-bg: rgba(79, 70, 229, 0.12);
+  --uranus-dialog-padding: 24px;
   --uranus-grid-gap: 12px;
+  --uranus-card-gap: 8px;
   --uranus-default-text-padding: 6px 12px;
   --uranus-inline-edit-border-radius: 4px;
-  --uranus-form-field-border-radius: 12px;
+  --uranus-form-field-border-radius: 6px;
   --uranus-tiny-border-radius: 4px;
+  --uranus-input-height: 2.4em;
 
     --uranus-notify-info-color: #a2bae8;
     --uranus-notify-warning-color: #fdee89;
@@ -85,7 +112,7 @@
   --input-bg: #ffffff;
   --input-border: #cbd5f5;
   --uranus-input-bg-color: #ffffff;
-  --uranus-input-border-color: #79d5b3;
+  --uranus-input-border-color: rgba(186, 163, 248, 0.5);
   --border-soft: rgba(148, 163, 184, 0.4);
   --border-color: #d9e3f5;
 
@@ -117,14 +144,12 @@
   --color-text-primary: #f8fafc;
   --color-text-secondary: #cbd5f5;
   --color-link: #93c5fd;
-  --muted-text: #94a3b8;
-  --text-muted: var(--muted-text);
+  --uranus-muted-text: #94a3b8;
 
   --card-bg: #111c2f;
   --card-shadow: 0 24px 50px rgba(2, 6, 23, 0.8);
   --surface-bg: #030712;
   --surface-primary: #111c2f;
-  --surface-muted: #1b2640;
   --surface-hover: rgba(148, 163, 184, 0.35);
 
   --accent-muted: rgba(99, 102, 241, 0.25);
@@ -158,6 +183,9 @@
   --uranus-app-menu-color: #f8fafc;
 
   --uranus-secondary-button-background-color: rgba(155, 32, 255, 0.24);
+
+  --uranus-surface-muted: #1b2640;
+
 }
 
 *,
@@ -225,6 +253,18 @@ $button-text-color: #333;
 .uranus-main-layout {
     max-width: var(--uranus-dashboard-content-width);
 }
+
+.uranus-inline-layout {
+  h1 {
+    font-size: 2em;
+    font-weight: 600;
+  }
+  h3 {
+    font-size: 1.2em;
+    font-weight: 500;
+  }
+}
+
 
 .uranus-dashboard-hero {
   display: flex;
@@ -306,7 +346,7 @@ $uranus-form-card-radius: 24px;
 $uranus-form-control-border: var(--input-border);
 $uranus-form-control-background: var(--input-bg);
 $uranus-form-control-color: var(--color-text);
-$uranus-form-control-placeholder: var(--muted-text);
+$uranus-form-control-placeholder: var(--uranus-muted-text);
 $uranus-form-focus-border: var(--accent-primary);
 $uranus-form-focus-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
 $uranus-form-primary-gradient: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
@@ -315,160 +355,6 @@ $uranus-form-secondary-hover: var(--accent-muted);
 $uranus-form-select-icon: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%2363748B'/%3E%3C/svg%3E");
 $uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%234856FF'/%3E%3C/svg%3E");
 
-@mixin form-page($justify: flex-start, $padding: clamp(1.5rem, 4vw, 3rem)) {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: $justify;
-  gap: clamp(1.5rem, 3vw, 2.5rem);
-  backdrop-filter: blur(6px);
-}
-
-@mixin form-hero($max-width: 1080px) {
-  text-align: center;
-  max-width: $max-width;
-  color: var(--color-text);
-
-  h1 {
-    font-size: clamp(1.9rem, 3vw, 2.5rem);
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
-
-  p {
-    margin: 0;
-    font-size: clamp(1rem, 2.3vw, 1.15rem);
-    color: var(--color-text);
-    line-height: 1.6;
-  }
-}
-
-@mixin form-card($max-width: 1080px, $padding: clamp(1.75rem, 4vw, 2.75rem), $gap: clamp(1.25rem, 3vw, 1.75rem), $shadow: $uranus-form-card-shadow) {
-  width: min(#{$max-width}, 100%);
-  background: var(--card-bg);
-  border-radius: $uranus-form-card-radius;
-  padding: $padding;
-  box-shadow: var(--card-shadow, #{$shadow});
-  display: flex;
-  flex-direction: column;
-  gap: $gap;
-}
-
-@mixin form-grid($min-width: 220px, $gap: clamp(1rem, 2vw, 1.5rem)) {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
-  gap: $gap;
-}
-
-@mixin form-section {
-  background: var(--card-bg);
-  border-radius: $uranus-form-card-radius;
-  padding: clamp(1.75rem, 4vw, 2.5rem);
-  box-shadow: var(--card-shadow, 0 24px 50px rgba(31, 41, 55, 0.14));
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1.25rem, 3vw, 1.75rem);
-}
-
-@mixin form-section-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-
-  h2 {
-    font-size: clamp(1.35rem, 2.5vw, 1.75rem);
-    font-weight: 700;
-    color: var(--color-text);
-    margin: 0;
-  }
-
-  p {
-    margin: 0;
-    color: var(--muted-text);
-    line-height: 1.6;
-    font-size: 0.98rem;
-  }
-}
-
-@mixin form-primary-button($padding-y: 0.9rem, $padding-x: 2rem, $gradient: $uranus-form-primary-gradient) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: $padding-y $padding-x;
-  border-radius: 999px;
-  border: none;
-  background: $gradient;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-
-  &:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px rgba(72, 93, 255, 0.35);
-    filter: brightness(1.05);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.35);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.75;
-    transform: none;
-    box-shadow: none;
-  }
-}
-
-@mixin form-secondary-button($padding-y: 0.75rem, $padding-x: 1.5rem) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: $padding-y $padding-x;
-  border-radius: 999px;
-  border: 1px solid $uranus-form-secondary-border;
-  background: var(--card-bg);
-  color: var(--accent-primary);
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    background: var(--accent-muted-hover, $uranus-form-secondary-hover);
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.15);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
-  }
-}
-
-@mixin form-feedback($text-align: center, $radius: 14px) {
-  margin: 0;
-  border-radius: $radius;
-  padding: 0.85rem 1rem;
-  text-align: $text-align;
-  font-weight: 600;
-  font-size: 0.95rem;
-  border: 1px solid transparent;
-}
-
-@mixin form-feedback-error {
-  color: #991b1b;
-  background: rgba(254, 202, 202, 0.45);
-  border-color: rgba(248, 113, 113, 0.35);
-}
-
-@mixin form-feedback-success {
-  color: #047857;
-  background: rgba(167, 243, 208, 0.45);
-  border-color: rgba(74, 222, 128, 0.35);
-}
 
 @media (max-width: 600px) {
   .uranus-inline-edit-button {

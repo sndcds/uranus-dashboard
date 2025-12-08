@@ -43,7 +43,7 @@
 import { ref, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
+import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 
 const { t, locale } = useI18n()
 
@@ -133,7 +133,6 @@ const requestReset = async () => {
 
 <style scoped lang="scss">
 .auth-page {
-    @include form-page($justify: center, $padding: clamp(2rem, 6vw, 3rem));
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -162,7 +161,7 @@ const requestReset = async () => {
     p {
         margin: 0;
         font-size: 0.95rem;
-        color: var(--muted-text);
+        color: var(--uranus-muted-text);
     }
 }
 
@@ -196,7 +195,7 @@ const requestReset = async () => {
     justify-content: center;
     gap: 0.5rem;
     font-size: 0.95rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     margin-top: 1.5rem;
 
     a {

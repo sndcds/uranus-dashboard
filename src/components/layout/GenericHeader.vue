@@ -204,7 +204,7 @@ import { apiFetch } from '@/api'
 import { applyTheme } from '@/utils/theme'
 import { useUserStore } from '@/store/userStore'
 
-import UranusLogo from '@/components/uranus/UranusLogo.vue'
+import UranusLogo from '@/components/ui/UranusLogo.vue'
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -463,7 +463,7 @@ onUnmounted(() => {
 
     &:hover {
         color: var(--accent-primary);
-        background: var(--surface-muted);
+        background: var(--uranus-surface-muted);
     }
 
     &--active {
@@ -507,7 +507,7 @@ onUnmounted(() => {
     border-radius: 50%;
 
     &:hover {
-        background: var(--surface-muted);
+        background: var(--uranus-surface-muted);
     }
 }
 
@@ -541,7 +541,7 @@ onUnmounted(() => {
     padding: 0.5rem 1rem;
     font-size: 0.8rem;
     font-weight: 600;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 
@@ -578,7 +578,7 @@ onUnmounted(() => {
     }
 
     &:hover {
-        background: var(--surface-muted);
+        background: var(--uranus-surface-muted);
     }
 
     &--active {
@@ -619,7 +619,7 @@ onUnmounted(() => {
     color: var(--color-text);
 
     &:hover {
-        background: var(--surface-muted);
+        background: var(--uranus-surface-muted);
         border-color: var(--border-soft);
     }
 
@@ -716,7 +716,7 @@ onUnmounted(() => {
 
 .generic-header__user-dropdown-email {
     font-size: 0.85rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -755,7 +755,7 @@ onUnmounted(() => {
     }
 
     &:hover {
-        background: var(--surface-muted);
+        background: var(--uranus-surface-muted);
     }
 
     &--logout {

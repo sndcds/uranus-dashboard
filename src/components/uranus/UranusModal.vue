@@ -120,7 +120,7 @@ const hasHeaderContent = computed(
 
 .uranus-modal__description {
   margin: 0;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-size: 0.95rem;
   line-height: 1.4;
 }
@@ -134,7 +134,7 @@ const hasHeaderContent = computed(
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 
   &:hover {
     color: var(--color-text);

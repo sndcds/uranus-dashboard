@@ -73,8 +73,8 @@ import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
-import UranusPasswordInput from "@/components/uranus/UranusPasswordInput.vue";
+import UranusTextInput from '@/components/ui/UranusTextInput.vue'
+import UranusPasswordInput from "@/components/ui/UranusPasswordInput.vue";
 
 type SignupResponse = { message?: string;[key: string]: unknown }
 
@@ -270,7 +270,7 @@ const signup = async () => {
     p {
         margin: 0;
         font-size: 0.95rem;
-        color: var(--muted-text);
+        color: var(--uranus-muted-text);
     }
 }
 
@@ -299,7 +299,7 @@ const signup = async () => {
 
         p {
             margin: 0;
-            
+
             &:first-child {
                 margin-bottom: 0.5rem;
             }
@@ -316,7 +316,7 @@ const signup = async () => {
     justify-content: center;
     gap: 0.5rem;
     font-size: 0.95rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     margin-top: 1.5rem;
 
     a {

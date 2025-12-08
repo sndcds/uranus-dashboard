@@ -205,7 +205,7 @@ onMounted(() => {
   align-items: center;
   padding: 0.35rem 0.75rem;
   border-radius: 999px;
-  background: var(--surface-muted);
+  background: var(--uranus-surface-muted);
   color: var(--color-text);
   font-weight: 600;
   font-size: 0.75rem;
@@ -262,7 +262,7 @@ onMounted(() => {
 .event-card__title p {
   margin: 0.15rem 0 0;
   font-size: 0.85rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .event-card__value {
@@ -273,7 +273,7 @@ onMounted(() => {
 
 .event-card__value--muted {
   margin-left: 0.5rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-size: 0.85rem;
 }
 
@@ -291,7 +291,7 @@ onMounted(() => {
 
 .events-feedback {
   text-align: center;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-weight: 500;
   padding: 1rem 0;
 }

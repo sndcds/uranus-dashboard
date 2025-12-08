@@ -102,9 +102,9 @@ import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue"
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
-import UranusFormRow from "@/components/uranus/UranusFormRow.vue"
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
+import UranusTextInput from "@/components/ui/UranusTextInput.vue"
+import UranusFormRow from "@/components/ui/UranusFormRow.vue"
+import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
 
 interface LatLngLiteral {
     lat: number
@@ -619,15 +619,6 @@ watch(website, (value) => {
 
 
 .feedback {
-    @include form-feedback();
-
-    &--error {
-        @include form-feedback-error();
-    }
-
-    &--success {
-        @include form-feedback-success();
-    }
 }
 
 .fade-enter-active,

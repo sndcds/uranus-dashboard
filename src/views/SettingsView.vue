@@ -30,21 +30,19 @@ const openProfileLabel = computed(() => (te('settings_open_profile') ? t('settin
 
 <style scoped lang="scss">
 .settings-card {
-  @include form-card(720px, clamp(1.75rem, 4vw, 2.5rem), clamp(1.25rem, 3vw, 1.75rem));
 }
 
 .settings-notice {
   display: flex;
   flex-direction: column;
   gap: clamp(0.75rem, 2vw, 1.25rem);
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-size: 0.95rem;
   line-height: 1.6;
 }
 
 .settings-notice__link {
   align-self: flex-start;
-  @include form-secondary-button($padding-y: 0.65rem, $padding-x: 1.4rem);
 }
 
 @media (max-width: 540px) {

@@ -1,52 +1,83 @@
 <template>
-    <div class="uranus-markdown-editor">
-        <div class="uranus-markdown-editor-toolbar" role="toolbar">
-            <button type="button" @click="applySyntax('**', '**')" @keydown="handleToolbarShortcut($event, 'bold')"
-                :title="t('markdown_toolbar_bold')" :aria-label="t('markdown_toolbar_bold')">
-                <strong>B</strong>
-            </button>
-            <button type="button" @click="applySyntax('*', '*')" @keydown="handleToolbarShortcut($event, 'italic')"
-                :title="t('markdown_toolbar_italic')" :aria-label="t('markdown_toolbar_italic')">
-                <em>I</em>
-            </button>
-            <button type="button" @click="applySyntax('`', '`')" @keydown="handleToolbarShortcut($event, 'code')"
-                :title="t('markdown_toolbar_code')" :aria-label="t('markdown_toolbar_code')">
-                { }
-            </button>
-            <button type="button" @click="applyPrefix('- ')" @keydown="handleToolbarShortcut($event, 'bullet')"
-                :title="t('markdown_toolbar_bullet')" :aria-label="t('markdown_toolbar_bullet')">
-                •
-            </button>
-            <button type="button" @click="applyPrefix('1. ')" @keydown="handleToolbarShortcut($event, 'number')"
-                :title="t('markdown_toolbar_number')" :aria-label="t('markdown_toolbar_number')">
-                1.
-            </button>
-            <button type="button"
-                    @click="insertTable"
-                    @keydown="handleToolbarShortcut($event, 'table')"
-                    :title="t('markdown_insert_table')" :aria-label="t('markdown_insert_table')"
-            >
-                {{ t('markdown_toolbar_table_label') }}
-            </button>
-            <button
-                type="button" class="markdown-editor-toggle"
-                @click="togglePreview">
-                {{ previewMode ? t('markdown_write') : t('markdown_preview') }}
-            </button>
-        </div>
+  <div class="uranus-markdown-editor">
+    <div class="uranus-markdown-editor-toolbar" role="toolbar">
 
-        <textarea
-            class="markdown-editor-textarea"
-            v-if="!previewMode"
-            ref="textareaRef"
-            v-model="draft"
-            :placeholder="placeholder"
-            @input="emitValue"
-            @keydown="handleKeydown">
-        </textarea>
+      <button
+          type="button"
+          @click="applySyntax('**', '**')" @keydown="handleToolbarShortcut($event, 'bold')"
+          :title="t('markdown_toolbar_bold')"
+          :aria-label="t('markdown_toolbar_bold')"
+      >
+        <strong>B</strong>
+      </button>
 
-        <MarkdownPreviewComponent v-else :value="draft" />
+      <button
+          type="button"
+          @click="applySyntax('*', '*')"
+          @keydown="handleToolbarShortcut($event, 'italic')"
+          :title="t('markdown_toolbar_italic')"
+          :aria-label="t('markdown_toolbar_italic')">
+        <em>I</em>
+      </button>
+
+      <button
+          type="button"
+          @click="applySyntax('`', '`')"
+          @keydown="handleToolbarShortcut($event, 'code')"
+          :title="t('markdown_toolbar_code')" :aria-label="t('markdown_toolbar_code')"
+      >
+        { }
+      </button>
+
+      <button
+          type="button"
+          @click="applyPrefix('- ')"
+          @keydown="handleToolbarShortcut($event, 'bullet')"
+          :title="t('markdown_toolbar_bullet')" :aria-label="t('markdown_toolbar_bullet')"
+      >
+        •
+      </button>
+
+      <button
+          type="button"
+          @click="applyPrefix('1. ')"
+          @keydown="handleToolbarShortcut($event, 'number')"
+          :title="t('markdown_toolbar_number')" :aria-label="t('markdown_toolbar_number')"
+      >
+        1.
+      </button>
+
+      <button
+          type="button"
+          @click="insertTable"
+          @keydown="handleToolbarShortcut($event, 'table')"
+          :title="t('markdown_insert_table')"
+          :aria-label="t('markdown_insert_table')"
+      >
+        {{ t('markdown_toolbar_table_label') }}
+      </button>
+
+      <button
+          type="button"
+          class="uranus-markdown-editor-toggle"
+          @click="togglePreview"
+      >
+        {{ previewMode ? t('markdown_write') : t('markdown_preview') }}
+      </button>
     </div>
+
+    <textarea
+        class="uranus-markdown-editor-textarea"
+        v-if="!previewMode"
+        ref="textareaRef"
+        v-model="draft"
+        :placeholder="placeholder"
+        @input="emitValue"
+        @keydown="handleKeydown">
+    </textarea>
+
+    <MarkdownPreviewComponent v-else :value="draft" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -322,6 +353,15 @@ onMounted(() => {
     }
     nextTick(() => autoResize())
 })
+
+function focus() {
+  if (!previewMode.value) {
+    textareaRef.value?.focus()
+  }
+}
+
+defineExpose({ focus })
+
 </script>
 
 <style scoped lang="scss">
@@ -330,25 +370,25 @@ onMounted(() => {
 .uranus-markdown-editor textarea:focus {
   border: none;
   border-radius: 0;
+  padding: 10px;
 }
 
-.markdown-editor {
+.uranus-markdown-editor {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
 }
 
-.markdown-editor-toggle {
+.uranus-markdown-editor-toggle {
   margin-left: auto;
 }
 
-.markdown-editor-textarea {
+.uranus-markdown-editor-textarea {
   min-height: 200px;
   resize: vertical;
   padding: 0;
   padding-top: 14px;
   line-height: 1.4;
 }
-
 
 </style>

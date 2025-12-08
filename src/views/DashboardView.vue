@@ -1,5 +1,8 @@
 <template>
   <div class="uranus-main-layout">
+    <UranusBlob/>
+    <JSONAdminFetch api-path="/api/admin/event/create" />
+
     <DashboardHeroComponent
         :title="t('dashboard')"
         :subtitle="t('dashboard_description')"
@@ -21,9 +24,13 @@ import DashboardTodoListComponent from '@/components/dashboard/DashboardTodoList
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import DashboardNotificationsComponent from '@/components/dashboard/DashboardNotificationsComponent.vue'
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
+import JSONAdminFetch from "@/components/JSONAdminFetch.vue";
+import UranusBlob from "@/components/uranus/UranusBlob.vue";
 
 const { t } = useI18n()
+
 </script>
 
 <style scoped lang="scss">
 </style>
+

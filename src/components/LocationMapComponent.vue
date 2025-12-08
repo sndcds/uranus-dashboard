@@ -190,6 +190,6 @@ watch(
 
 .map-footer {
   font-size: 0.85rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 </style>

@@ -112,9 +112,9 @@ import { computed, reactive, ref, watch, toRef, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
-import UranusFormRow from '@/components/uranus/UranusFormRow.vue'
-import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
+import UranusTextInput from '@/components/ui/UranusTextInput.vue'
+import UranusFormRow from '@/components/ui/UranusFormRow.vue'
+import UranusFieldLabel from '@/components/ui/UranusFieldLabel.vue'
 
 interface AccessibilityFlagRecord {
     id?: string | number | null
@@ -153,14 +153,14 @@ export interface SpaceFormInitialValues {
 
 export interface SpaceFormSubmitPayload {
     name: string
-    total_capacity: number
-    seating_capacity: number
-    building_level: number
-    space_type_id: number
-    website_url: string | null
+    totalCapacity: number
+    seatingCapacity: number
+    buildingLevel: number
+    spaceTypeId: number
+    websiteUrl: string | null
     description: string | null
-    accessibility_summary: string | null
-    accessibility_flags: number | null
+    accessibilitySummary: string | null
+    accessibilityFlags: number | null
 }
 
 const props = withDefaults(defineProps<{
@@ -609,14 +609,14 @@ const handleSubmit = () => {
 
     emit('submit', {
         name: trimmedName,
-        total_capacity: totalCapacity.value,
-        seating_capacity: seatingCapacity.value,
-        building_level: buildingLevel.value,
-        space_type_id: spaceTypeId.value,
-        website_url: normalizedWebsite.length ? normalizedWebsite : null,
+        totalCapacity: totalCapacity.value,
+        seatingCapacity: seatingCapacity.value,
+        buildingLevel: buildingLevel.value,
+        spaceTypeId: spaceTypeId.value,
+        websiteUrl: normalizedWebsite.length ? normalizedWebsite : null,
         description: trimmedDescription.length ? trimmedDescription : null,
-        accessibility_summary: trimmedAccessibilitySummary.length ? trimmedAccessibilitySummary : null,
-        accessibility_flags: selectedAccessibilityFlags.value.length ? accessibilityMask : null,
+        accessibilitySummary: trimmedAccessibilitySummary.length ? trimmedAccessibilitySummary : null,
+        accessibilityFlags: selectedAccessibilityFlags.value.length ? accessibilityMask : null,
     })
 }
 

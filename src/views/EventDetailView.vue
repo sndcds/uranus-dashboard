@@ -515,7 +515,7 @@ p {
 }
 
 .event-detail-state--loading {
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .event-detail-state--error {
@@ -540,7 +540,7 @@ p {
 .event-detail-hero__subtitle {
     margin: 1rem 0 0;
     font-size: clamp(1.25rem, 3vw, 1.5rem);
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     line-height: 1.4;
 }
 
@@ -605,7 +605,7 @@ p {
     margin: 0;
     font-size: clamp(1.1rem, 2.5vw, 1.25rem);
     line-height: 1.6;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .event-detail-description {

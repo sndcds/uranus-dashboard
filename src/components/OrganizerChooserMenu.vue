@@ -277,7 +277,7 @@ watch(organizerId, () => {
 .organizer-chooser-menu__label {
     padding: 0.5rem 1.1rem 0.5rem 1.5rem;
     font-weight: 600;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     letter-spacing: 0.01em;
     font-size: 0.85rem;
     text-transform: uppercase;
@@ -297,7 +297,7 @@ watch(organizerId, () => {
     border: none;
     background: transparent;
     cursor: pointer;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-weight: 500;
     letter-spacing: 0.01em;
     transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
@@ -331,7 +331,7 @@ watch(organizerId, () => {
 .organizer-chooser-menu__icon {
     display: inline-flex;
     align-items: center;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     transition: transform 0.2s ease, color 0.2s ease;
 }
 
@@ -391,7 +391,7 @@ watch(organizerId, () => {
     padding: 0.65rem 1rem;
   border-radius: 8px;
     font-size: 0.95rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-weight: 500;
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease;
@@ -423,7 +423,7 @@ watch(organizerId, () => {
     margin: 0;
     padding: 0.75rem 1.1rem 0.75rem 1.5rem;
     font-size: 0.85rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-style: italic;
 }
 

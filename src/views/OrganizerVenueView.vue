@@ -151,8 +151,6 @@ watch(
 }
 
 .form-feedback-error {
-  @include form-feedback();
-  @include form-feedback-error();
 }
 
 // Content section
@@ -204,7 +202,7 @@ watch(
 
   p {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     line-height: 1.6;
   }
 

@@ -40,7 +40,7 @@
                 </UranusFieldLabel>
             </div>
 
-              <TwoStageTagListComponent
+              <!--TwoStageTagListComponent
                   :fetchPrimaries="fetchEventTypes"
                   :fetchSecondaries="fetchEventGenres"
                   :initialSelection="[]"
@@ -51,7 +51,7 @@
                   :placeholderPrimary="t('choose_event_type')"
                   :placeholderSecondary="t('choose_genre')"
                   @update-selection="onSelectionUpdate"
-              />
+              /-->
         </div>
     </UranusCard>
 </template>
@@ -62,11 +62,10 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import type { EventBasicInfoModel } from '@/models/event'
 
-import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue"
 import EventTitleFieldsComponent from '@/components/EventTitleFieldsComponent.vue'
-import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue";
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue";
-import UranusCard from "@/components/uranus/UranusCard.vue";
+import UranusCardHeader from "@/components/ui/UranusCardHeader.vue";
+import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue";
+import UranusCard from "@/components/ui/UranusCard.vue";
 
 interface Selection {
   primaryId: number

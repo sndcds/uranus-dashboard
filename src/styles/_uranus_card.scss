@@ -1,12 +1,12 @@
 .uranus-card {
   display: flex;
   flex-direction: column;
-  gap: var(--uranus-grid-gap);
+  gap: var(--uranus-card-gap);
   color: var(--uranus-card-color);
   background-color: var(--uranus-card-background-color);
   border-radius: 8px;
   border: 0px solid var(--uranus-low-contrast-color);
-  padding: 20px;
+  padding: 12px;
 }
 
 .uranus-card-hero {

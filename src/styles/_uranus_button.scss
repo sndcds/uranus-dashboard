@@ -38,16 +38,22 @@
 }
 
 .uranus-inline-save-button {
-  background: var(--uranus-success-color);
+  background: transparent;
+  border: 2px solid #39d190;
+  color: #39d190;
   &:hover:not(:disabled) {
+    color: white;
     background: #39d190;
   }
 }
 
 
 .uranus-inline-cancel-button {
-  background: var(--uranus-error-color);
+  background: transparent;
+  border: 2px solid #ff6358;
+  color: #ff6358;
   &:hover:not(:disabled) {
+    color: white;
     background: #ff6358;
   }
 }

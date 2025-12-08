@@ -1,7 +1,7 @@
 .uranus-inline-label {
   font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--uranus-color);
+  font-weight: 500;
+  color: var(--uranus-inline-label-color);
 }
 
 .uranus-inline-label .big {
@@ -9,22 +9,24 @@
 }
 
 .uranus-inline-edit-section {
-    border: 2px solid transparent;
-    border-radius: var(--uranus-inline-edit-border-radius);
-    padding: 12px;
-    transition: all 0.5s ease;
+  border: 2px solid transparent;
+  border-radius: var(--uranus-inline-edit-border-radius);
+  padding: 8px;
+  gap:6px;
+  transition: all 0.5s ease;
 }
 
 /* Hover effect */
 .uranus-inline-edit-section:hover,
 .uranus-inline-edit-section.uranus-inline-edit--active {
-    border-color: var(--uranus-ia-inline-color);
+  border-color: var(--uranus-ia-inline-color);
 }
 
 .uranus-inline-section-layout {
-    display: flex;
-    flex-direction: column;
-    gap: var(--uranus-grid-gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--uranus-grid-gap);
+  margin-top: var(--uranus-grid-gap);
 }
 
 

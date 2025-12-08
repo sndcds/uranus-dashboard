@@ -34,8 +34,8 @@ import { useI18n } from 'vue-i18n'
 import EventBasicInfoComponent from '@/components/EventBasicInfoComponent.vue'
 import EventDatesComponent from '@/components/EventDatesComponent.vue'
 import EventDetailsComponent from '@/components/EventDetailsComponent.vue'
-import UranusCard from "@/components/uranus/UranusCard.vue"
-import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue"
+import UranusCard from "@/components/ui/UranusCard.vue"
+import UranusCardHeader from "@/components/ui/UranusCardHeader.vue"
 
 interface SelectOption {
     id: number
@@ -81,28 +81,28 @@ export interface EventDetailsModel {
 export interface EventFormSubmitPayload {
     title: string
     subtitle: string | null
-    organizer_id: number
-    venue_id: number | null
-    space_id: number | null
+    organizerId: number
+    venueId: number | null
+    spaceId: number | null
     types: Array<{
-        type_id: number | null
-        genre_id: number | null
+        typeId: number | null
+        genreId: number | null
     }>
     description: string
-    teaser_text: string | null
+    teaserText: string | null
     languages: string[]
-    min_age: number | null
-    max_age: number | null
-    participation_info: string | null
+    minAge: number | null
+    maxAge: number | null
+    participationInfo: string | null
     presenter: string | null
     dates: Array<{
-        start_date: string
-        end_date: string | null
-        start_time: string
-        end_time: string | null
-        entry_time: string | null
+        startDate: string
+        endDate: string | null
+        startTime: string
+        endTime: string | null
+        entryTime: string | null
         space_id: number | null
-        all_day: boolean
+        allDay: boolean
     }>
 }
 
@@ -255,28 +255,28 @@ const handleSubmit = () => {
     emit('submit', {
         title: basicInfo.title,
         subtitle: basicInfo.subtitle || null,
-        organizer_id: basicInfo.organizerId,
-        venue_id: basicInfo.venueId,
-        space_id: basicInfo.spaceId,
+        organizerId: basicInfo.organizerId,
+        venueId: basicInfo.venueId,
+        spaceId: basicInfo.spaceId,
         types: basicInfo.typeGenrePairs.map((pair: EventTypeGenrePair) => ({
-            type_id: pair.typeId,
-            genre_id: pair.genreId ?? null,
+            typeId: pair.typeId,
+            genreId: pair.genreId ?? null,
         })),
         description: eventDetails.description,
-        teaser_text: eventDetails.teaserText || null,
+        teaserText: eventDetails.teaserText || null,
         languages: eventDetails.languages || [],
-        min_age: eventDetails.minAge,
-        max_age: eventDetails.maxAge,
-        participation_info: eventDetails.participationInfo || null,
+        minAge: eventDetails.minAge,
+        maxAge: eventDetails.maxAge,
+        participationInfo: eventDetails.participationInfo || null,
         presenter: eventDetails.presenter || null,
         dates: eventDates.value.map((date) => ({
-            start_date: date.startDate,
-            end_date: date.endDate,
-            start_time: date.startTime,
-            end_time: date.endTime,
-            entry_time: date.entryTime,
+            startDate: date.startDate,
+            endDate: date.endDate,
+            startTime: date.startTime,
+            endTime: date.endTime,
+            entryTime: date.entryTime,
             space_id: date.spaceId,
-            all_day: date.allDayEvent || null,
+            allDay: date.allDayEvent || null,
         })),
     })
 }

@@ -517,7 +517,7 @@ const getYearOptionsFor = (offset: number) => {
 .date-range-calendar__weekday {
     font-size: 0.75rem;
     text-align: center;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     text-transform: capitalize;
 }
 
@@ -541,7 +541,7 @@ const getYearOptionsFor = (offset: number) => {
 }
 
 .date-range-calendar__day.is-outside {
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .date-range-calendar__day.is-today {

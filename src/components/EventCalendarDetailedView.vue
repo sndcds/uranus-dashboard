@@ -151,7 +151,7 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
 }
 
 .calendar-state--loading {
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .calendar-state--error {
@@ -159,7 +159,7 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
 }
 
 .calendar-state--empty {
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .calendar-groups {
@@ -191,7 +191,7 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
 
 .calendar-group__header p {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-weight: 500;
     font-size: 0.9rem;
     text-transform: capitalize;
@@ -328,7 +328,7 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
 
 .calendar-card__subtitle {
     margin: 0.25rem 0 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-size: 0.85rem;
     line-height: 1.3;
     display: -webkit-box;
@@ -340,7 +340,7 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
 
 .calendar-card__teaser {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-size: 0.85rem;
     line-height: 1.4;
     display: -webkit-box;

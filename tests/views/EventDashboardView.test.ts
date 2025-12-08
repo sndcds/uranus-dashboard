@@ -3,7 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 import { createPinia, setActivePinia } from 'pinia'
-import EventDashboardView from '../../src/views/EventDashboardView.vue'
+import UranusDashboardEventsView from '../../src/views/UranusDashboardEventsView.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -55,7 +55,7 @@ const mockEvents = [
   },
 ]
 
-describe('EventDashboardView', () => {
+describe('UranusDashboardEventsView', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
@@ -65,7 +65,7 @@ describe('EventDashboardView', () => {
     await router.push(`/admin/organizer/${organizerId}/events`)
     await router.isReady()
 
-    return mount(EventDashboardView, {
+    return mount(UranusDashboardEventsView, {
       global: {
         plugins: [i18n, router],
       },
@@ -118,9 +118,9 @@ describe('EventDashboardView', () => {
 
   it('handles object response format with events property', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockResolvedValue({ 
-      data: { events: mockEvents }, 
-      status: 200 
+    vi.mocked(apiFetch).mockResolvedValue({
+      data: { events: mockEvents },
+      status: 200
     })
 
     const wrapper = await createWrapper()
@@ -145,7 +145,7 @@ describe('EventDashboardView', () => {
 
     const wrapper = await createWrapper()
 
-    // Component should render and pass loading state to OrganizerEventsCard
+    // Component should render and pass loading state to UranusDashboardEventCard
     const eventsCard = wrapper.findComponent({ name: 'OrganizerEventsCard' })
     expect(eventsCard.exists()).toBe(true)
   })
@@ -167,14 +167,14 @@ describe('EventDashboardView', () => {
     const wrapper = await createWrapper()
     await flushPromises()
 
-    // Error should be passed to OrganizerEventsCard component
+    // Error should be passed to UranusDashboardEventCard component
     expect(apiFetch).toHaveBeenCalled()
   })
 
   it('handles API error with error object', async () => {
     const { apiFetch } = await import('../../src/api')
-    vi.mocked(apiFetch).mockRejectedValue({ 
-      data: { error: 'Custom error message' } 
+    vi.mocked(apiFetch).mockRejectedValue({
+      data: { error: 'Custom error message' }
     })
 
     const wrapper = await createWrapper()

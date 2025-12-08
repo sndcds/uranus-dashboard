@@ -35,11 +35,11 @@
             <section class="uranus-form-action-footer">
                 <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingTodo"
                     :disabled="todoSaving">
-                    {{ t('form_cancel') }}
+                    {{ t('cancel') }}
                 </button>
                 <button type="submit" class="uranus-inline-save-button" :disabled="isSaveDisabled">
-                    <span v-if="!todoSaving">{{ t('form_save') }}</span>
-                    <span v-else>{{ t('form_saving') }}</span>
+                    <span v-if="!todoSaving">{{ t('save') }}</span>
+                    <span v-else>{{ t('saving') }}</span>
                 </button>
             </section>
         </form>
@@ -102,11 +102,11 @@
                                 <section class="uranus-form-action-footer">
                                     <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingTodo"
                                         :disabled="todoSaving">
-                                        {{ t('form_cancel') }}
+                                        {{ t('cancel') }}
                                     </button>
                                     <button type="submit" class="uranus-inline-save-button" :disabled="isSaveDisabled">
-                                        <span v-if="!todoSaving">{{ t('form_save') }}</span>
-                                        <span v-else>{{ t('form_saving') }}</span>
+                                        <span v-if="!todoSaving">{{ t('save') }}</span>
+                                        <span v-else>{{ t('saving') }}</span>
                                     </button>
                                 </section>
                             </form>

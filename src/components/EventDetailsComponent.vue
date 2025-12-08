@@ -20,9 +20,9 @@
                 </div>
             </div>
 
-            <TwoStageTagListComponent :fetchPrimaries="fetchLanguages" :initialSelection="initialLanguageSelection"
+            <!--TwoStageTagListComponent :fetchPrimaries="fetchLanguages" :initialSelection="initialLanguageSelection"
                 :labelPrimary="t('language')" :editable="true" :isEditing="true"
-                @update-selection="onSelectionUpdate" />
+                @update-selection="onSelectionUpdate" /-->
 
             <div class="event-section__grid event-section__grid--two">
 
@@ -60,9 +60,8 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
-import TwoStageTagListComponent from "@/components/TwoStageTagListComponent.vue"
-import UranusCardHeader from "@/components/uranus/UranusCardHeader.vue"
-import UranusCard from "@/components/uranus/UranusCard.vue"
+import UranusCardHeader from "@/components/ui/UranusCardHeader.vue"
+import UranusCard from "@/components/ui/UranusCard.vue"
 
 const props = defineProps<{
     organizerId: number | null
@@ -226,8 +225,6 @@ defineExpose({ validate })
 }
 
 .form-field {
-    @include form-group();
-
     textarea {
         resize: vertical;
     }

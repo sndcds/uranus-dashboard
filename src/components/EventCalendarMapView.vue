@@ -204,7 +204,7 @@ const normalizeNumber = (value: unknown): number | null => {
     justify-content: center;
     padding: 2rem;
     font-size: 1rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     text-align: center;
 }
 

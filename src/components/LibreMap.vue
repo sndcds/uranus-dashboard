@@ -523,7 +523,7 @@ watch(
 .generic-info-window__meta {
   margin: 0 0 8px;
   font-size: 1rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   line-height: 1.4;
 }
 

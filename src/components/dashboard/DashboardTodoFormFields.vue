@@ -39,10 +39,10 @@
 </template>
 
 <script setup lang="ts">
-import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
-import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
-import UranusFormRow from '@/components/uranus/UranusFormRow.vue'
-import UranusDateInput from '@/components/uranus/UranusDateInput.vue'
+import UranusTextInput from '@/components/ui/UranusTextInput.vue'
+import UranusFieldLabel from '@/components/ui/UranusFieldLabel.vue'
+import UranusFormRow from '@/components/ui/UranusFormRow.vue'
+import UranusDateInput from '@/components/ui/UranusDateInput.vue'
 
 const props = withDefaults(
   defineProps<{

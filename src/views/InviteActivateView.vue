@@ -196,7 +196,7 @@ onBeforeUnmount(() => {
     p {
         margin: 0;
         font-size: 0.95rem;
-        color: var(--muted-text);
+        color: var(--uranus-muted-text);
     }
 }
 
@@ -204,7 +204,7 @@ onBeforeUnmount(() => {
     text-transform: uppercase;
     letter-spacing: 0.06em;
     font-size: 0.8rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     margin: 0;
 }
 
@@ -234,7 +234,7 @@ onBeforeUnmount(() => {
         }
 
         p {
-            color: var(--muted-text);
+            color: var(--uranus-muted-text);
             font-size: 0.95rem;
         }
     }
@@ -262,7 +262,7 @@ onBeforeUnmount(() => {
 
         .redirect-message {
             font-size: 0.9rem;
-            color: var(--muted-text);
+            color: var(--uranus-muted-text);
             margin: 0;
         }
     }
@@ -309,7 +309,7 @@ onBeforeUnmount(() => {
 
 .invite-detail-row dt {
     font-size: 0.85rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .invite-detail-row dd {

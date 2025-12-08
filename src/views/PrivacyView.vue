@@ -7,7 +7,7 @@
         <h2>{{ t('privacy_overview_title') }}</h2>
         <h3>{{ t('privacy_general_info_title') }}</h3>
         <p>{{ t('privacy_general_info_text') }}</p>
-        
+
         <h3>{{ t('privacy_data_collection_title') }}</h3>
         <p>{{ t('privacy_data_collection_text') }}</p>
         <p><strong>{{ t('privacy_automatic_data_title') }}</strong></p>
@@ -32,10 +32,10 @@
 
       <section class="privacy-section">
         <h2>{{ t('privacy_general_mandatory_title') }}</h2>
-        
+
         <h3>{{ t('privacy_data_protection_title') }}</h3>
         <p>{{ t('privacy_data_protection_text') }}</p>
-        
+
         <h3>{{ t('privacy_responsible_party_title') }}</h3>
         <p>{{ t('privacy_responsible_party_text') }}</p>
         <p>
@@ -48,7 +48,7 @@
           {{ t('imprint_phone') }}: <a :href="`tel:${phone}`">{{ phone }}</a><br>
           {{ t('imprint_email') }}: <a :href="`mailto:${email}`">{{ email }}</a>
         </p>
-        
+
         <h3>{{ t('privacy_data_protection_officer_title') }}</h3>
         <p>{{ t('privacy_data_protection_officer_text') }}</p>
         <p v-if="dataProtectionOfficer">
@@ -60,35 +60,35 @@
         <p v-else>
           {{ t('privacy_no_officer_required') }}
         </p>
-        
+
         <h3>{{ t('privacy_storage_duration_title') }}</h3>
         <p>{{ t('privacy_storage_duration_text') }}</p>
-        
+
         <h3>{{ t('privacy_legal_basis_title') }}</h3>
         <p>{{ t('privacy_legal_basis_text') }}</p>
-        
+
         <h3>{{ t('privacy_revoke_consent_title') }}</h3>
         <p>{{ t('privacy_revoke_consent_text') }}</p>
-        
+
         <h3>{{ t('privacy_right_to_object_title') }}</h3>
         <p>{{ t('privacy_right_to_object_text') }}</p>
-        
+
         <h3>{{ t('privacy_right_to_complain_title') }}</h3>
         <p>{{ t('privacy_right_to_complain_text') }}</p>
-        
+
         <h3>{{ t('privacy_data_portability_title') }}</h3>
         <p>{{ t('privacy_data_portability_text') }}</p>
-        
+
         <h3>{{ t('privacy_right_to_information_title') }}</h3>
         <p>{{ t('privacy_right_to_information_text') }}</p>
       </section>
 
       <section class="privacy-section">
         <h2>{{ t('privacy_data_collection_website_title') }}</h2>
-        
+
         <h3>{{ t('privacy_cookies_title') }}</h3>
         <p>{{ t('privacy_cookies_text') }}</p>
-        
+
         <h3>{{ t('privacy_server_log_files_title') }}</h3>
         <p>{{ t('privacy_server_log_files_text') }}</p>
         <ul>
@@ -100,10 +100,10 @@
           <li>{{ t('privacy_log_ip') }}</li>
         </ul>
         <p>{{ t('privacy_server_log_legal_basis') }}</p>
-        
+
         <h3>{{ t('privacy_contact_form_title') }}</h3>
         <p>{{ t('privacy_contact_form_text') }}</p>
-        
+
         <h3>{{ t('privacy_registration_title') }}</h3>
         <p>{{ t('privacy_registration_text') }}</p>
       </section>
@@ -115,10 +115,10 @@
 
       <section class="privacy-section">
         <h2>{{ t('privacy_plugins_tools_title') }}</h2>
-        
+
         <h3>{{ t('privacy_fonts_title') }}</h3>
         <p>{{ t('privacy_fonts_text') }}</p>
-        
+
         <h3>{{ t('privacy_maps_title') }}</h3>
         <p>{{ t('privacy_maps_text') }}</p>
       </section>
@@ -249,7 +249,7 @@ ul {
 
 .privacy-update-info {
   font-size: 0.9rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-style: italic;
   margin-top: 3rem;
   padding-top: 1rem;

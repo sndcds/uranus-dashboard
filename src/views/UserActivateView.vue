@@ -120,7 +120,7 @@ onMounted(() => {
     p {
         margin: 0;
         font-size: 0.95rem;
-        color: var(--muted-text);
+        color: var(--uranus-muted-text);
     }
 }
 
@@ -150,7 +150,7 @@ onMounted(() => {
         }
 
         p {
-            color: var(--muted-text);
+            color: var(--uranus-muted-text);
             font-size: 0.95rem;
         }
     }
@@ -178,7 +178,7 @@ onMounted(() => {
 
         .redirect-message {
             font-size: 0.9rem;
-            color: var(--muted-text);
+            color: var(--uranus-muted-text);
             margin: 0;
         }
     }

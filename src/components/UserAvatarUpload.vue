@@ -353,7 +353,7 @@ onBeforeUnmount(() => {
 .profile-photo-panel__label {
     font-size: 0.85rem;
     font-weight: 700;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     text-transform: uppercase;
     letter-spacing: 0.08em;
 }
@@ -406,12 +406,12 @@ onBeforeUnmount(() => {
 .profile-photo-initial {
     font-size: clamp(2.5rem, 8vw, 3.25rem);
     font-weight: 700;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .profile-photo-placeholder__hint {
     font-size: 0.85rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     text-align: center;
 }
 
@@ -424,7 +424,6 @@ onBeforeUnmount(() => {
 }
 
 .profile-upload {
-    @include form-secondary-button($padding-y: 0.65rem, $padding-x: 1.4rem);
     cursor: pointer;
 }
 
@@ -441,7 +440,7 @@ onBeforeUnmount(() => {
 .profile-remove {
     border: none;
     background: transparent;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-weight: 600;
     cursor: pointer;
     padding: 0.65rem 0.75rem;
@@ -462,7 +461,7 @@ onBeforeUnmount(() => {
 .profile-photo-hint {
     margin: 0;
     font-size: 0.85rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     line-height: 1.5;
     text-align: center;
 }

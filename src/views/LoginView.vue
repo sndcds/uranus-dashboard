@@ -62,8 +62,8 @@ import { useTokenStore } from '@/store/tokenStore'
 import { useUserStore } from '@/store/userStore'
 import { useThemeStore } from '@/store/themeStore'
 
-import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
-import UranusPasswordInput from "@/components/uranus/UranusPasswordInput.vue";
+import UranusTextInput from '@/components/ui/UranusTextInput.vue'
+import UranusPasswordInput from "@/components/ui/UranusPasswordInput.vue";
 
 const { t } = useI18n()
 const router = useRouter()
@@ -87,8 +87,8 @@ const error = ref<string | null>(null)
 const isSubmitting = ref(false)
 
 const fieldErrors = reactive({
-    email: null as string | null,
-    password: null as string | null,
+  email: undefined as string | undefined,
+  password: undefined as string | undefined,
 })
 
 const loginSubtitle = computed(() => t('login_subtitle'))
@@ -111,7 +111,7 @@ watch(email, (value) => {
     if (fieldErrors.email && value.trim()) {
         const trimmed = value.trim()
         if (isValidEmail(trimmed)) {
-            fieldErrors.email = null
+            fieldErrors.email = undefined
             if (error.value === fieldErrors.email) {
                 error.value = null
             }
@@ -121,7 +121,7 @@ watch(email, (value) => {
 
 watch(password, (value) => {
     if (fieldErrors.password && value.trim()) {
-        fieldErrors.password = null
+        fieldErrors.password = undefined
         if (error.value === fieldErrors.password) {
             error.value = null
         }
@@ -130,8 +130,8 @@ watch(password, (value) => {
 
 const login = async () => {
     error.value = null
-    fieldErrors.email = null
-    fieldErrors.password = null
+    fieldErrors.email = undefined
+    fieldErrors.password = undefined
 
     const trimmedEmail = email.value.trim()
     const trimmedPassword = password.value.trim()
@@ -158,30 +158,32 @@ const login = async () => {
         const { data, status } = await apiFetch<LoginResponse>('/api/admin/login', {
             method: 'POST',
             body: JSON.stringify({
-                email: trimmedEmail,
-                password: trimmedPassword,
+              email: trimmedEmail,
+              password: trimmedPassword,
             }),
         })
+
+        console.log(JSON.stringify(data, null, 2))
+        console.log("status:", status)
+        console.log("data.message:", data.message)
+        console.log("data.accessToken:", data.access_token)
+        console.log("data.refreshToken:", data.refresh_token)
 
         if (status === 200 && data.message === 'login successful' && data.access_token && data.refresh_token) {
             tokenStore.setTokens(data.access_token, data.refresh_token)
             if (data.user_id) {
                 userStore.setUserId(data.user_id)
             }
-
             if (data.display_name) {
                 userStore.setDisplayName(data.display_name)
             }
-
             if (data.locale) {
                 selectedLocale.value = data.locale
 
             }
-
             if (data.theme) {
                 themeStore.setTheme(data.theme)
             }
-
             const redirectTarget = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
             router.replace(redirectTarget)
         } else {
@@ -255,7 +257,7 @@ const login = async () => {
     justify-content: center;
     gap: 0.5rem;
     font-size: 0.95rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     margin-top: 1.5rem;
 
     a {

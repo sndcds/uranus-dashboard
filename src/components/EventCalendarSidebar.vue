@@ -447,7 +447,7 @@ const resetFilters = () => {
 
 .calendar-sidebar__header p {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-size: 0.95rem;
     line-height: 1.5;
 }
@@ -461,13 +461,13 @@ const resetFilters = () => {
 .calendar-sidebar__label {
     font-weight: 600;
     font-size: 0.9rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .calendar-sidebar__sublabel {
     font-weight: 600;
     font-size: 0.85rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .calendar-sidebar__section input,
@@ -722,7 +722,7 @@ const resetFilters = () => {
     display: flex;
     justify-content: space-between;
     font-size: 0.75rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     margin-top: 0.25rem;
 }
 

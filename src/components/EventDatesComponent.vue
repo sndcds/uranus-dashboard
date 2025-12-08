@@ -66,10 +66,10 @@ import { ref, watch, inject, nextTick, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import UranusDateInput from "@/components/uranus/UranusDateInput.vue"
-import UranusTimeInput from "@/components/uranus/UranusTimeInput.vue"
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
-import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue"
+import UranusDateInput from "@/components/ui/UranusDateInput.vue"
+import UranusTimeInput from "@/components/ui/UranusTimeInput.vue"
+import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
+import UranusInlineSectionLayout from "@/components/ui/UranusInlineSectionLayout.vue"
 
 interface ChoosableVenue { id: number; name: string }
 interface ChoosableSpace { id: number; name: string }
@@ -196,7 +196,7 @@ defineExpose({ validate })
   justify-content: space-between;
   align-items: center;
   font-size: 0.9rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .badge {
@@ -235,7 +235,6 @@ defineExpose({ validate })
 }
 
 .form-field {
-  @include form-group();
 }
 
 .form-field--checkbox {
@@ -298,7 +297,6 @@ defineExpose({ validate })
 }
 
 .secondary {
-  @include form-secondary-button();
 }
 
 @media (max-width: 540px) {

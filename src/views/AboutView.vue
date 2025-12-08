@@ -189,7 +189,7 @@ const appVersion = import.meta.env.VITE_APP_VERSION || '1.0.0'
 
 .about-header__subtitle {
   margin: 0;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-size: clamp(1rem, 2.5vw, 1.2rem);
   line-height: 1.6;
 }
@@ -265,7 +265,7 @@ const appVersion = import.meta.env.VITE_APP_VERSION || '1.0.0'
     margin: 0;
     font-size: 0.95rem;
     line-height: 1.6;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
   }
 }
 
@@ -403,7 +403,7 @@ const appVersion = import.meta.env.VITE_APP_VERSION || '1.0.0'
   h3 {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     margin: 0 0 0.5rem 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;

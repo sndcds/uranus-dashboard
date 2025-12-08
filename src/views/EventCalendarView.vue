@@ -257,7 +257,7 @@ const compactViewLabel = computed(() => t('events_calendar_compact_view'))
 const tilesViewLabel = computed(() => t('events_calendar_tiles_view'))
 const dailyGroupingLabel = computed(() => t('events_calendar_daily_grouping'))
 const monthlyGroupingLabel = computed(() => t('events_calendar_monthly_grouping'))
-const allEventsLabel = computed(() => t('events_calendar_all_events'))
+const allEventsLabel = computed(() => t('all_events'))
 
 // Date field behaviour
 const tempStartDate = ref<string | null>(null)
@@ -918,7 +918,7 @@ const onAddressSearch = async (payload: AddressSearchPayload) => {
 
     try {
         const result = await fetchCoordinatesForAddress(query, 1)
-        
+
         if (!result) {
             loadError.value = t('events_calendar_address_not_found')
             return
@@ -946,7 +946,7 @@ const onAddressSearch = async (payload: AddressSearchPayload) => {
 
 const onRadiusSlideEnd = async () => {
     isRadiusSliding.value = false
-    
+
     // Trigger reload if we have coordinates
     if (userLatitude.value !== null && userLongitude.value !== null) {
         await loadEvents({ preserveSelection: true })
@@ -1104,7 +1104,7 @@ onBeforeUnmount(() => {
         padding: 0.4rem 0.75rem;
         border: 1px solid var(--border-soft);
         background: var(--card-bg, #fff);
-        color: var(--muted-text);
+        color: var(--uranus-muted-text);
         border-radius: 6px;
         font-size: 0.85rem;
         font-weight: 500;
@@ -1165,7 +1165,7 @@ onBeforeUnmount(() => {
     padding: 0.4rem 0.85rem;
     border: 1px solid var(--border-soft);
     background: var(--card-bg, #fff);
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     border-radius: 6px;
     font-size: 0.85rem;
     font-weight: 500;
@@ -1195,7 +1195,7 @@ onBeforeUnmount(() => {
 .calendar-load-more-indicator {
     margin-top: 1rem;
     text-align: center;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-size: 0.85rem;
 }
 

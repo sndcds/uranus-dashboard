@@ -4,6 +4,7 @@ import type { ThemeMode } from '@/utils/theme'
 
 let refreshPromise: Promise<boolean> | null = null;
 
+// Use snake case here!
 export interface LoginResponse {
     message: string;
     user_id?: string;

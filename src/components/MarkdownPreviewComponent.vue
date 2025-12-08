@@ -1,5 +1,5 @@
 <template>
-    <div class="markdown-preview" v-html="renderedContent"></div>
+  <div class="markdown-preview" v-html="renderedContent"></div>
 </template>
 
 <script setup lang="ts">
@@ -94,7 +94,7 @@ const renderedContent = computed(() => {
 }
 
 :deep(.markdown-preview .empty) {
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-style: italic;
 }
 */

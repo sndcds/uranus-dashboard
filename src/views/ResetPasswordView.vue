@@ -115,7 +115,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api'
 
-import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
+import UranusFieldLabel from '@/components/ui/UranusFieldLabel.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -267,7 +267,6 @@ const handleSubmit = async () => {
 
 <style scoped lang="scss">
 .auth-page {
-    @include form-page($justify: center, $padding: clamp(2rem, 6vw, 3rem));
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -276,7 +275,6 @@ const handleSubmit = async () => {
 }
 
 .auth-card {
-    @include form-card(420px, clamp(2rem, 4vw, 2.75rem), clamp(1.5rem, 3vw, 2rem));
 }
 
 .auth-header {
@@ -295,7 +293,7 @@ const handleSubmit = async () => {
     p {
         margin: 0;
         font-size: 0.95rem;
-        color: var(--muted-text);
+        color: var(--uranus-muted-text);
     }
 }
 
@@ -341,7 +339,7 @@ const handleSubmit = async () => {
 .password-toggle__icon {
     width: 1.1rem;
     height: 1.1rem;
-    fill: var(--muted-text, #475569);
+    fill: var(--uranus-muted-text, #475569);
 }
 
 .form-actions {
@@ -374,7 +372,7 @@ const handleSubmit = async () => {
     justify-content: center;
     gap: 0.5rem;
     font-size: 0.95rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     margin-top: 1.5rem;
 
     a {

@@ -26,7 +26,7 @@ import { computed, onMounted, ref, watch, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
+import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
 
 // Models
 const countryModel = defineModel<string>('countryCode', { default: '' })

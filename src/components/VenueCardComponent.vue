@@ -85,8 +85,8 @@ import { useI18n } from "vue-i18n"
 import { apiFetch } from '@/api'
 
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
-import UranusCard from "@/components/uranus/UranusCard.vue";
-import UranusIconAction from "@/components/uranus/UranusIconAction.vue";
+import UranusCard from "@/components/ui/UranusCard.vue";
+import UranusIconAction from "@/components/ui/UranusIconAction.vue";
 
 const { t } = useI18n()
 

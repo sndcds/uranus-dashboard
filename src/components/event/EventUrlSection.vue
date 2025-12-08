@@ -60,12 +60,12 @@
 
           <UranusInlineActionBar>
             <UranusInlineCancelButton
-                :label="t('button_cancel')"
+                :label="t('cancel')"
                 :onClick="cancelEditingLinks"
             />
 
             <UranusInlineOKButton
-                :label="t('button_save')"
+                :label="t('save')"
                 :disabled="isSaving || !draftLinks.length"
                 :onClick="saveLinks"
             />
@@ -74,7 +74,7 @@
 
           <div class="event-url-section__actions">
                 <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingLinks">
-                    {{ t('form_cancel') }}
+                    {{ t('cancel') }}
                 </button>
                 <button type="button" class="uranus-inline-save-button" @click="saveLinks"
                     :disabled="isSaving || !draftLinks.length">
@@ -107,11 +107,11 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
-import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
-import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue";
-import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue";
-import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue";
+import UranusInlineEditLabel from "@/components/ui/UranusInlineEditLabel.vue"
+import UranusInlineEditSection from "@/components/ui/UranusInlineEditSection.vue";
+import UranusInlineCancelButton from "@/components/ui/UranusInlineCancelButton.vue";
+import UranusInlineActionBar from "@/components/ui/UranusInlineActionBar.vue";
+import UranusInlineOKButton from "@/components/ui/UranusInlineOKButton.vue";
 
 interface Props {
     eventId: number
@@ -314,7 +314,6 @@ onMounted(() => {
 }
 
 .form-field {
-    @include form-group();
 }
 
 .form-actions {
@@ -325,7 +324,6 @@ onMounted(() => {
 
 .add-link-button,
 .cancel-edit-button {
-    @include form-secondary-button();
     font-size: 0.9rem;
     padding: 0.5rem 1rem;
     margin-bottom: 1rem;
@@ -369,7 +367,7 @@ onMounted(() => {
 }
 
 .link-type {
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .link-actions {
@@ -422,7 +420,7 @@ onMounted(() => {
 
 .event-url-section__empty {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-size: 0.95rem;
 }
 
@@ -441,7 +439,6 @@ onMounted(() => {
 }
 
 .error-message {
-    @include form-feedback-error();
     text-align: center;
 }
 </style>

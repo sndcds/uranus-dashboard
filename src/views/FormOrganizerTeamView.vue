@@ -189,9 +189,9 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
-import UranusFieldLabel from '@/components/uranus/UranusFieldLabel.vue'
-import UranusTextInput from '@/components/uranus/UranusTextInput.vue'
-import UranusFormRow from '@/components/uranus/UranusFormRow.vue'
+import UranusFieldLabel from '@/components/ui/UranusFieldLabel.vue'
+import UranusTextInput from '@/components/ui/UranusTextInput.vue'
+import UranusFormRow from '@/components/ui/UranusFormRow.vue'
 
 interface OrganizerTeamRole {
     id: number
@@ -580,7 +580,7 @@ onMounted(() => {
 
 .team-card__meta {
     margin: 0.25rem 0 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-size: 0.9rem;
 }
 
@@ -595,7 +595,7 @@ onMounted(() => {
     flex-direction: column;
     gap: 0.4rem;
     font-size: 0.875rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     min-width: 200px;
 }
 
@@ -604,7 +604,7 @@ onMounted(() => {
     flex-direction: column;
     gap: 0.4rem;
     font-size: 0.9rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .team-form {
@@ -662,7 +662,7 @@ onMounted(() => {
 
 .team-member__email {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-size: 0.9rem;
 }
 
@@ -677,7 +677,7 @@ onMounted(() => {
 }
 
 .team-member__meta {
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-size: 0.85rem;
 }
 
@@ -694,7 +694,7 @@ onMounted(() => {
     border-radius: 16px;
     padding: 1rem;
     text-align: center;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .team-empty--compact {
@@ -722,7 +722,7 @@ onMounted(() => {
 .team-pending__expires {
     margin: 0.15rem 0 0;
     font-size: 0.85rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
 }
 
 .team-pending-list {

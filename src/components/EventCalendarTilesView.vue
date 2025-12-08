@@ -105,7 +105,7 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
 }
 
 .calendar-state--loading {
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .calendar-state--error {
@@ -113,7 +113,7 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
 }
 
 .calendar-state--empty {
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .calendar-events-tiles {

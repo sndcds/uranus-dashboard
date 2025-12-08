@@ -82,10 +82,10 @@ import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue"
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
-import UranusFormRow from "@/components/uranus/UranusFormRow.vue"
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
-import UranusDateInput from "@/components/uranus/UranusDateInput.vue"
+import UranusTextInput from "@/components/ui/UranusTextInput.vue"
+import UranusFormRow from "@/components/ui/UranusFormRow.vue"
+import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
+import UranusDateInput from "@/components/ui/UranusDateInput.vue"
 
 interface LatLngLiteral {
     lat: number

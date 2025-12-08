@@ -1,43 +1,42 @@
 <template>
   <div v-if="event" class="event-layout">
     <UranusCard>
-
       <EventHeaderSection class="uranus-hover-section" :event-id="event.id" :title="event.title"
-        :subtitle="event.subtitle" @updated="loadEvent" />
+                          :subtitle="event.subtitle" @updated="loadEvent" />
 
       <EventImageUploadComponent v-model:image="eventImage" v-model:alt-text="imageAltText"
-        v-model:copyright="imageCopyright" v-model:license="imageLicense" v-model:created-by="imageCreatedBy"
-        :event-id="eventId" :max-size="5 * 1024 * 1024" :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
-        :existing-image-id="event.image_id" :existing-image-url="existingImagePreviewUrl"
-        :upload-url="`/api/admin/event/${eventId}/image`" :delete-url="`/api/admin/event/${eventId}/image`"
-        :get-url="`/api/admin/event/${eventId}/image`" @updated="loadEvent" />
+                                 v-model:copyright="imageCopyright" v-model:license="imageLicense" v-model:created-by="imageCreatedBy"
+                                 :event-id="eventId" :max-size="5 * 1024 * 1024" :accepted-types="['image/jpeg', 'image/png', 'image/webp']"
+                                 :existing-image-id="event.image_id" :existing-image-url="existingImagePreviewUrl"
+                                 :upload-url="`/api/admin/event/${eventId}/image`" :delete-url="`/api/admin/event/${eventId}/image`"
+                                 :get-url="`/api/admin/event/${eventId}/image`" @updated="loadEvent" />
     </UranusCard>
 
     <UranusCard>
       <EventVenueSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
-        :venue-name="event.venue_name" :venue-street="event.venue_street ?? ''"
-        :venue-house-number="event.venue_house_number ?? ''" :venue-postal-code="event.venue_postal_code ?? ''"
-        :venue-city="event.venue_city ?? ''" :space-id="event.space_id" :space-name="event.space_name ?? ''"
-        :space-building-level="event.space_building_level !== null ? String(event.space_building_level) : null"
-        :space-seating-capacity="event.space_seating_capacity" :space-total-capacity="event.space_total_capacity"
-        @updated="loadEvent" />
+                         :venue-name="event.venue_name" :venue-street="event.venue_street ?? ''"
+                         :venue-house-number="event.venue_house_number ?? ''" :venue-postal-code="event.venue_postal_code ?? ''"
+                         :venue-city="event.venue_city ?? ''" :space-id="event.space_id" :space-name="event.space_name ?? ''"
+                         :space-building-level="event.space_building_level !== null ? String(event.space_building_level) : null"
+                         :space-seating-capacity="event.space_seating_capacity" :space-total-capacity="event.space_total_capacity"
+                         @updated="loadEvent" />
 
       <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);" />
 
       <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
-        :space-id="event.space_id" :event-dates="eventSchedulePayload" :space-name="event.space_name ?? ''"
-        @updated="loadEvent" />
+                            :space-id="event.space_id" :event-dates="eventSchedulePayload" :space-name="event.space_name ?? ''"
+                            @updated="loadEvent" />
 
       <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);" />
 
       <EventReleaseSection :event-id="event.id" :release-status-id="event.release_status_id"
-        :release-date="event.release_date" :locale="locale" @updated="loadEvent" />
+                           :release-date="event.release_date" :locale="locale" @updated="loadEvent" />
     </UranusCard>
 
     <UranusCard>
       <EventDescriptionSection :event-id="event.id" :description="event.description"
-        :participation-info="event.participation_info" :meeting-point="event.meeting_point"
-        :event-types="event.event_types" :languages="event.languages" :locale="locale" @updated="loadEvent" />
+                               :participation-info="event.participation_info" :meeting-point="event.meeting_point"
+                               :event-types="event.event_types" :languages="event.languages" :locale="locale" @updated="loadEvent" />
     </UranusCard>
 
     <UranusCard>
@@ -46,12 +45,12 @@
 
     <UranusCard>
       <EventTeaserSection :event-id="event.id" :teaser-text="event.teaser_text" :tags="event.tags" class="event-teaser"
-        @updated="loadEvent" />
+                          @updated="loadEvent" />
     </UranusCard>
 
     <UranusCard>
       <LocationMapComponent :latitude="event.venue_lat" :longitude="event.venue_lon" :zoom="18" :selectable="false"
-        class="event-map" />
+                            class="event-map" />
     </UranusCard>
 
   </div>
@@ -78,8 +77,8 @@ import EventScheduleSection from '@/components/event/EventScheduleSection.vue'
 import EventReleaseSection from '@/components/event/EventReleaseSection.vue'
 import EventLanguageSection from "@/components/event/EventLanguageSection.vue"
 import EventTypeSection from "@/components/event/EventTypeSection.vue"
-import UranusCard from "@/components/uranus/UranusCard.vue"
-import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue"
+import UranusCard from "@/components/ui/UranusCard.vue"
+import UranusInlineSectionLayout from "@/components/ui/UranusInlineSectionLayout.vue"
 
 const envApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 const apiBase = envApiUrl
@@ -206,13 +205,13 @@ const primaryEventDate = computed<EventDate | null>(() => {
 })
 
 const dateFormatter = computed(
-  () =>
-    new Intl.DateTimeFormat(locale.value, {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+    () =>
+        new Intl.DateTimeFormat(locale.value, {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })
 )
 
 const timeFormatter = computed(() => new Intl.DateTimeFormat(locale.value, { hour: '2-digit', minute: '2-digit' }))
@@ -377,13 +376,13 @@ const mapEventImage = (raw: unknown): EventImageDetail | null => {
   const record = raw as Record<string, unknown>
   const imageId = toNumberOrNull(record.image_id ?? record.id ?? record.imageId ?? record.main_image_id)
   const urlCandidate =
-    toNullableString(
-      record.url ??
-      record.image_url ??
-      record.path ??
-      record.src ??
-      (typeof record.image === 'string' ? record.image : null)
-    ) ?? null
+      toNullableString(
+          record.url ??
+          record.image_url ??
+          record.path ??
+          record.src ??
+          (typeof record.image === 'string' ? record.image : null)
+      ) ?? null
 
   return {
     id: imageId,
@@ -401,28 +400,28 @@ const mapLanguageCodes = (raw: unknown): string[] => {
   if (!raw) return []
   const source = Array.isArray(raw) ? raw : []
   return source
-    .map((item) => {
-      if (typeof item === 'string') {
-        const trimmed = item.trim()
-        return trimmed.length ? trimmed : null
-      }
-      if (item && typeof item === 'object') {
-        const record = item as Record<string, unknown>
-        const candidates = [
-          record.code,
-          record.id,
-          record.language_code,
-          record.language,
-        ]
-        for (const candidate of candidates) {
-          if (typeof candidate === 'string' && candidate.trim().length) {
-            return candidate.trim()
+      .map((item) => {
+        if (typeof item === 'string') {
+          const trimmed = item.trim()
+          return trimmed.length ? trimmed : null
+        }
+        if (item && typeof item === 'object') {
+          const record = item as Record<string, unknown>
+          const candidates = [
+            record.code,
+            record.id,
+            record.language_code,
+            record.language,
+          ]
+          for (const candidate of candidates) {
+            if (typeof candidate === 'string' && candidate.trim().length) {
+              return candidate.trim()
+            }
           }
         }
-      }
-      return null
-    })
-    .filter((value): value is string => value !== null)
+        return null
+      })
+      .filter((value): value is string => value !== null)
 }
 
 const mapTagList = (raw: unknown): string[] => {
@@ -430,29 +429,29 @@ const mapTagList = (raw: unknown): string[] => {
   const source = Array.isArray(raw) ? raw : []
   const normalize = (value: string) => value.replace(/\s+/g, ' ').trim()
   return Array.from(
-    new Set(
-      source
-        .map((item) => {
-          if (typeof item === 'string') {
-            const trimmed = normalize(item)
-            return trimmed.length ? trimmed : null
-          }
-          if (item && typeof item === 'object') {
-            const record = item as Record<string, unknown>
-            const candidates = [record.tag, record.name, record.label, record.id]
-            for (const candidate of candidates) {
-              if (typeof candidate === 'string') {
-                const trimmed = normalize(candidate)
-                if (trimmed.length) {
-                  return trimmed
+      new Set(
+          source
+              .map((item) => {
+                if (typeof item === 'string') {
+                  const trimmed = normalize(item)
+                  return trimmed.length ? trimmed : null
                 }
-              }
-            }
-          }
-          return null
-        })
-        .filter((tag): tag is string => tag !== null)
-    )
+                if (item && typeof item === 'object') {
+                  const record = item as Record<string, unknown>
+                  const candidates = [record.tag, record.name, record.label, record.id]
+                  for (const candidate of candidates) {
+                    if (typeof candidate === 'string') {
+                      const trimmed = normalize(candidate)
+                      if (trimmed.length) {
+                        return trimmed
+                      }
+                    }
+                  }
+                }
+                return null
+              })
+              .filter((tag): tag is string => tag !== null)
+      )
   )
 }
 
@@ -463,19 +462,19 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
   if (id === null) return null
 
   const eventTypes = Array.isArray(record.event_types)
-    ? (record.event_types as unknown[]).map(mapEventType).filter(Boolean) as EventType[]
-    : []
+      ? (record.event_types as unknown[]).map(mapEventType).filter(Boolean) as EventType[]
+      : []
 
   const eventDates = Array.isArray(record.event_dates)
-    ? (record.event_dates as unknown[]).map(mapEventDate).filter(Boolean) as EventDate[]
-    : []
+      ? (record.event_dates as unknown[]).map(mapEventDate).filter(Boolean) as EventDate[]
+      : []
 
   const eventUrls = Array.isArray(record.event_urls)
-    ? (record.event_urls as unknown[]).map(mapEventUrl).filter(Boolean) as EventUrl[]
-    : []
+      ? (record.event_urls as unknown[]).map(mapEventUrl).filter(Boolean) as EventUrl[]
+      : []
 
   const languageCodes = mapLanguageCodes(
-    (record.languages ?? record.language_codes ?? record.event_languages) as unknown
+      (record.languages ?? record.language_codes ?? record.event_languages) as unknown
   )
 
   const primary = eventDates.find((entry) => entry.start_date || entry.start_time || entry.entry_time || entry.end_date || entry.end_time) ?? null
@@ -502,12 +501,12 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
     image_focus_y: toNumberOrNull(record.image_focus_y),
     image_license_id: toNumberOrNull(record.image_license_id),
     image_url: toNullableString(
-      record.image_url ??
-      record.main_image_url ??
-      (typeof record.image === 'string' ? record.image : null) ??
-      (record.image && typeof record.image === 'object'
-        ? (record.image as Record<string, unknown>).url
-        : null)
+        record.image_url ??
+        record.main_image_url ??
+        (typeof record.image === 'string' ? record.image : null) ??
+        (record.image && typeof record.image === 'object'
+            ? (record.image as Record<string, unknown>).url
+            : null)
     ),
     has_main_image: toBoolean(record.has_main_image ?? record.hasMainImage ?? record.main_image_exists),
     venue_id: toNumberOrNull(record.venue_id),
@@ -683,7 +682,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   font-size: 1rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   padding: 2rem 1rem;
 }
 

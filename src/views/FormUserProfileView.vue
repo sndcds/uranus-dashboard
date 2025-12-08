@@ -102,9 +102,9 @@ import UserAvatarUpload from '@/components/UserAvatarUpload.vue'
 import type { ThemeMode } from '@/utils/theme'
 import { apiFetch } from '@/api'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
-import UranusFormRow from "@/components/uranus/UranusFormRow.vue"
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
+import UranusTextInput from "@/components/ui/UranusTextInput.vue"
+import UranusFormRow from "@/components/ui/UranusFormRow.vue"
+import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
 import { use } from 'marked'
 
 interface UserProfilePayload {
@@ -345,7 +345,7 @@ const handleAvatarUpdated = () => {
     background: var(--surface-primary, var(--input-bg));
     display: grid;
     place-items: center;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-weight: 600;
 }
 
@@ -396,7 +396,7 @@ const handleAvatarUpdated = () => {
 
 .profile-preferences__header p {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     font-size: 0.9rem;
     line-height: 1.5;
 }
@@ -425,15 +425,6 @@ const handleAvatarUpdated = () => {
 }
 
 .feedback {
-    @include form-feedback($text-align: center);
-
-    &.feedback--error {
-        @include form-feedback-error();
-    }
-
-    &.feedback--success {
-        @include form-feedback-success();
-    }
 }
 
 .fade-enter-active,

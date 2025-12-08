@@ -138,7 +138,7 @@
 
           <UranusInlineActionBar>
             <UranusInlineCancelButton
-                :label="t('button_cancel')"
+                :label="t('cancel')"
                 :disabled="isSaving"
                 :onClick="cancelEdit"
             />
@@ -486,14 +486,14 @@ const formatFileSize = (bytes: number): string => {
 
 // Cleanup on unmount
 import { onUnmounted } from 'vue'
-import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
-import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue"
-import UranusTextInput from "@/components/uranus/UranusTextInput.vue"
-import UranusFieldLabel from "@/components/uranus/UranusFieldLabel.vue"
-import UranusInlineActionBar from "@/components/uranus/UranusInlineActionBar.vue"
-import UranusInlineCancelButton from "@/components/uranus/UranusInlineCancelButton.vue"
-import UranusInlineOKButton from "@/components/uranus/UranusInlineOKButton.vue"
-import UranusInlineSectionLayout from "@/components/uranus/UranusInlineSectionLayout.vue";
+import UranusInlineEditLabel from "@/components/ui/UranusInlineEditLabel.vue"
+import UranusInlineEditSection from "@/components/ui/UranusInlineEditSection.vue"
+import UranusTextInput from "@/components/ui/UranusTextInput.vue"
+import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
+import UranusInlineActionBar from "@/components/ui/UranusInlineActionBar.vue"
+import UranusInlineCancelButton from "@/components/ui/UranusInlineCancelButton.vue"
+import UranusInlineOKButton from "@/components/ui/UranusInlineOKButton.vue"
+import UranusInlineSectionLayout from "@/components/ui/UranusInlineSectionLayout.vue";
 onUnmounted(() => {
     clearPreview()
 })
@@ -704,7 +704,7 @@ const saveImage = async () => {
 }
 
 .event-image-upload__icon {
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     opacity: 0.7;
     transition: all 0.2s ease;
 
@@ -724,7 +724,7 @@ const saveImage = async () => {
     }
 
     .event-image-upload__subtitle {
-        color: var(--muted-text);
+        color: var(--uranus-muted-text);
         margin: 0;
         font-size: clamp(0.9rem, 2.5vw, 1rem);
         line-height: 1.4;
@@ -817,14 +817,10 @@ const saveImage = async () => {
 }
 
 .form-feedback-error {
-    @include form-feedback();
-    @include form-feedback-error();
     text-align: center;
 }
 
 .event-image-upload__field {
-    @include form-group();
-
     &--full-width {
         grid-column: 1 / -1;
     }

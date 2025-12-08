@@ -56,7 +56,7 @@
 
       <section class="imprint-section">
         <h2>{{ t('imprint_disclaimer_title') }}</h2>
-        
+
         <h3>{{ t('imprint_liability_content_title') }}</h3>
         <p>{{ t('imprint_liability_content_text') }}</p>
 
@@ -71,7 +71,7 @@
         <h2>{{ t('imprint_dispute_resolution_title') }}</h2>
         <p>{{ t('imprint_dispute_resolution_text') }}</p>
         <p>
-          {{ t('imprint_odr_platform') }}: 
+          {{ t('imprint_odr_platform') }}:
           <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">
             https://ec.europa.eu/consumers/odr/
           </a>
@@ -181,7 +181,7 @@ p {
 
 .imprint-small-text {
   font-size: 0.9rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-style: italic;
 }
 

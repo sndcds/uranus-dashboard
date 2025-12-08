@@ -23,10 +23,10 @@
                     :placeholder="t('event_teaser_placeholder')" />
                 <div class="event-teaser__actions">
                     <button type="button" class="uranus-inline-cancel-button" @click="cancelEditing">
-                        {{ t('form_cancel') }}
+                        {{ t('cancel') }}
                     </button>
                     <button type="button" class="uranus-inline-save-button" :disabled="isSaving" @click="saveTeaser">
-                        <span v-if="!isSaving">{{ t('form_save') }}</span>
+                        <span v-if="!isSaving">{{ t('save') }}</span>
                         <span v-else>{{ t('saving') }}</span>
                     </button>
                 </div>
@@ -54,8 +54,8 @@ import { apiFetch } from '@/api'
 import EventImageUploadComponent from '@/components/event/EventImageUploadComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import EventTagsSection from '@/components/event/EventTagsSection.vue'
-import UranusInlineEditLabel from "@/components/uranus/UranusInlineEditLabel.vue"
-import UranusInlineEditSection from "@/components/uranus/UranusInlineEditSection.vue";
+import UranusInlineEditLabel from "@/components/ui/UranusInlineEditLabel.vue"
+import UranusInlineEditSection from "@/components/ui/UranusInlineEditSection.vue";
 
 const props = defineProps<{
     eventId: number

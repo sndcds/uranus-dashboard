@@ -54,7 +54,7 @@
     <template #actions>
       <div class="modal-actions">
         <button type="button" @click="$emit('cancel')" class="uranus-secondary-button">
-          {{ t('form_cancel') }}
+          {{ t('cancel') }}
         </button>
         <button
           type="submit"

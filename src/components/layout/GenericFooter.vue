@@ -8,9 +8,9 @@
           <span class="generic-layout__footer-text">
             &copy; {{ currentYear }} Uranus
           </span>
-          <a 
-            href="https://github.com/sndcds/uranus-dashboard" 
-            target="_blank" 
+          <a
+            href="https://github.com/sndcds/uranus-dashboard"
+            target="_blank"
             rel="noopener noreferrer"
             class="generic-layout__footer-github"
             :aria-label="t('github_repository')"
@@ -87,16 +87,16 @@ const currentYear = computed(() => new Date().getFullYear())
 
 .generic-layout__footer-text {
     font-size: 0.75rem;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     white-space: nowrap;
 }
 
 .generic-layout__footer-github {
     display: flex;
     align-items: center;
-    color: var(--muted-text);
+    color: var(--uranus-muted-text);
     transition: color 0.2s ease;
-    
+
     &:hover {
         color: var(--accent-primary);
     }

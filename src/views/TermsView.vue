@@ -246,7 +246,7 @@ ul {
 
 .terms-update-info {
   font-size: 0.9rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-style: italic;
   margin-top: 3rem;
   padding-top: 1rem;

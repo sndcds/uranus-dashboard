@@ -482,7 +482,7 @@ defineExpose({
   padding: 0.9rem 1rem;
   border-radius: 4px;
   border: 1px solid transparent;
-  background: var(--surface-muted);
+  background: var(--uranus-surface-muted);
   color: inherit;
   cursor: pointer;
   transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
@@ -527,13 +527,13 @@ defineExpose({
 
 .message-card__timestamp {
   font-size: 0.8rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .message-card__preview {
   margin: 0;
   font-size: 0.9rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .message-list__loading,
@@ -541,13 +541,13 @@ defineExpose({
   margin: 0;
   padding: 0.85rem 1rem;
   border-radius: 0.85rem;
-  background: var(--surface-muted);
-  color: var(--muted-text);
+  background: var(--uranus-surface-muted);
+  color: var(--uranus-muted-text);
   font-size: 0.9rem;
 }
 
 .message-detail {
-  background: var(--surface-muted);
+  background: var(--uranus-surface-muted);
   border-radius: 8px;
   padding: clamp(1rem, 2vw, 1.5rem);
   min-height: 260px;
@@ -577,7 +577,7 @@ defineExpose({
 
 .message-detail__timestamp {
   font-size: 0.85rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .message-detail__meta {
@@ -597,7 +597,7 @@ defineExpose({
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .message-detail__meta dd {
@@ -615,7 +615,7 @@ defineExpose({
 .message-detail__updated {
   margin: 0;
   font-size: 0.85rem;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
 }
 
 .message-detail__text {
@@ -636,7 +636,7 @@ defineExpose({
   display: grid;
   place-items: center;
   text-align: center;
-  color: var(--muted-text);
+  color: var(--uranus-muted-text);
   font-size: 0.95rem;
 }
 
