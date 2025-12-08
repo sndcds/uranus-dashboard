@@ -1,8 +1,5 @@
 <template>
   <div class="uranus-main-layout">
-    <UranusBlob/>
-    <JSONAdminFetch api-path="/api/admin/event/create" />
-
     <DashboardHeroComponent
         :title="t('dashboard')"
         :subtitle="t('dashboard_description')"
