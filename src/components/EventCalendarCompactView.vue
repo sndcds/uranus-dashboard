@@ -10,10 +10,10 @@
       <span>{{ emptyLabel }}</span>
     </div>
     <div v-else class="calendar-events-compact">
-      <article v-for="event in filteredEvents" :key="`${event.id}-${event.event_date_id}`" class="calendar-event-compact">
+      <article v-for="(event, index) in filteredEvents" :key="event.renderKey || index" class="calendar-event-compact">
         <div
             class="calendar-event-compact__summary"
-            @click="toggleEvent(event.id, event.event_date_id, $event)"
+            @click="toggleEvent(event, $event)"
         >
           <div class="calendar-event-compact__time">
             <span class="calendar-event-compact__date-badge">
@@ -48,15 +48,15 @@
           </div>
         </div>
         <div class="calendar-event-compact__icon">
-          <span :class="{ 'is-expanded': expandedEventId === `${event.id}-${event.event_date_id}` }">▼</span>
+          <span :class="{ 'is-expanded': expandedEventId === getEventKey(event) }">▼</span>
         </div>
       </div>
       <div
-          v-if="expandedEventId === `${event.id}-${event.event_date_id}`"
+          v-if="expandedEventId === getEventKey(event)"
           class="calendar-event-compact__details"
       >
         <div
-            v-if="loadingEventId === `${event.id}-${event.event_date_id}`"
+            v-if="loadingEventId === getEventKey(event)"
             class="calendar-event-compact__loading"
         >
           {{ detailLoadingLabel }}
@@ -174,6 +174,7 @@ interface CalendarEvent {
 interface AugmentedEvent extends CalendarEvent {
     startDateTime: number
     typeLabels: string[]
+    renderKey: string
 }
 
 interface EventUrl {
@@ -264,10 +265,11 @@ const eventDetails = ref<EventDetails | null>(null)
 const eventDetailsError = ref<string | null>(null)
 const formattedDescription = ref<string>('')
 
-const getEventKey = (eventId: number, eventDateId: number) => `${eventId}-${eventDateId}`
+const getEventKey = (event: AugmentedEvent) => event.renderKey || `${event.id}-${event.event_date_id}`
 
-const toggleEvent = async (eventId: number, eventDateId: number, event: MouseEvent) => {
-    const eventKey = getEventKey(eventId, eventDateId)
+const toggleEvent = async (eventData: AugmentedEvent, event: MouseEvent) => {
+    const eventKey = getEventKey(eventData)
+    const { id, event_date_id } = eventData
 
     if (expandedEventId.value === eventKey) {
         // Collapse if already expanded
@@ -293,7 +295,7 @@ const toggleEvent = async (eventId: number, eventDateId: number, event: MouseEve
     }
 
     try {
-        const response = await apiFetch<EventDetails>(`/api/event/${eventId}/date/${eventDateId}`)
+        const response = await apiFetch<EventDetails>(`/api/event/${id}/date/${event_date_id}`)
         eventDetails.value = response.data
 
         // Convert markdown to HTML

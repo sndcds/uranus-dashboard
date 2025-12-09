@@ -10,7 +10,7 @@
       <span>{{ emptyLabel }}</span>
     </div>
     <div v-else class="calendar-events-tiles">
-      <article v-for="event in filteredEvents" :key="`${event.id}-${event.event_date_id}`" class="calendar-tile">
+      <article v-for="(event, index) in filteredEvents" :key="event.renderKey || index" class="calendar-tile">
         <router-link :to="`/event/${event.id}/date/${event.event_date_id}`">
           <div class="calendar-tile__image-container">
             <img v-if="event.image_path" :src="event.image_path.includes('?')
@@ -70,6 +70,7 @@ interface CalendarEvent {
 interface AugmentedEvent extends CalendarEvent {
   startDateTime: number
   typeLabels: string[]
+  renderKey: string
 }
 
 interface Props {

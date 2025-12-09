@@ -10,13 +10,13 @@
             <span>{{ emptyLabel }}</span>
         </div>
         <div v-else class="calendar-groups">
-            <section v-for="group in groupedEvents" :key="group.date" class="calendar-group">
+            <section v-for="(group, groupIndex) in groupedEvents" :key="group.key || `group-${groupIndex}`" class="calendar-group">
                 <header class="calendar-group__header">
                     <h2>{{ group.formattedDate }}</h2>
                     <p>{{ group.weekday }}</p>
                 </header>
                 <div class="calendar-group__events">
-                    <article v-for="event in group.events" :key="`${event.id}-${event.event_date_id}`" class="calendar-card">
+                    <article v-for="(event, eventIndex) in group.events" :key="event.renderKey || eventIndex" class="calendar-card">
                         <router-link :to="`/event/${event.id}/date/${event.event_date_id}`" class="calendar-card__link">
                             <div class="calendar-card__image-wrapper">
                                 <img v-if="event.image_path"
@@ -103,9 +103,11 @@ interface CalendarEvent {
 interface AugmentedEvent extends CalendarEvent {
     startDateTime: number
     typeLabels: string[]
+    renderKey: string
 }
 
 interface GroupedEvents {
+    key: string
     date: string
     formattedDate: string
     weekday: string

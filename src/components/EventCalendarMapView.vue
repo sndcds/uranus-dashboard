@@ -48,6 +48,7 @@ interface CalendarEvent {
 interface AugmentedEvent extends CalendarEvent {
     startDateTime: number
     typeLabels: string[]
+    renderKey: string
 }
 
 const props = defineProps<{

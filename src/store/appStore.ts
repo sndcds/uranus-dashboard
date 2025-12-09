@@ -8,6 +8,7 @@ export interface CalendarFiltersState {
     selectedType: string
     activeSelectedType: number | string | null
     selectedVenue: EventVenueSummary | null
+    selectedOrganizer: EventOrganizerSummary | null
     showMyLocation: boolean
     userLatitude: number | null
     userLongitude: number | null
@@ -21,6 +22,13 @@ export interface EventVenueSummary {
     eventDateCount: number
 }
 
+export interface EventOrganizerSummary {
+    id: number
+    name: string
+    city?: string
+    eventDateCount: number
+}
+
 const getDefaultCalendarFilters = (): CalendarFiltersState => ({
     searchQuery: '',
     selectedDate: null,
@@ -28,6 +36,7 @@ const getDefaultCalendarFilters = (): CalendarFiltersState => ({
     selectedType: 'all',
     activeSelectedType: 'all',
     selectedVenue: null,
+    selectedOrganizer: null,
     showMyLocation: false,
     userLatitude: null,
     userLongitude: null,

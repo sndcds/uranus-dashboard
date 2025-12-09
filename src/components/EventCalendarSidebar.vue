@@ -13,15 +13,23 @@
 
         <div class="calendar-sidebar__section calendar-sidebar__section--types">
             <label class="calendar-sidebar__label" for="venue-select">{{ t('events_calendar_venue_label') }}</label>
-            <select
-                id="venue-select"
-                v-model="selectedVenueModel"
-                :disabled="isLoading || !props.venueCountOptions.length"
-                class="calendar-sidebar__select"
-            >
+            <select id="venue-select" v-model="selectedVenueModel" :disabled="isLoading || !venueOptions.length"
+                class="calendar-sidebar__select">
                 <option value="">{{ t('events_calendar_venue_all_option') }}</option>
-                <option v-for="venue in props.venueCountOptions" :key="venue.id" :value="venue.id.toString()">
-                    {{ venue.name }}, {{ venue.city }} ({{ venue.event_date_count }})
+                <option v-for="venue in venueOptions" :key="venue.id" :value="venue.id.toString()">
+                    {{ venue.name }}, {{ venue.city }} ({{ venue.event_date_count ?? venue.eventDateCount ?? 0 }})
+                </option>
+            </select>
+        </div>
+
+        <div class="calendar-sidebar__section calendar-sidebar__section--types">
+            <label class="calendar-sidebar__label" for="organizer-select">{{ t('events_calendar_organizer_label')
+                }}</label>
+            <select id="organizer-select" v-model="selectedOrganizerModel"
+                :disabled="isLoading || !organizerCountOptions.length" class="calendar-sidebar__select">
+                <option value="">{{ t('events_calendar_organizer_all_option') }}</option>
+                <option v-for="organizer in organizerCountOptions" :key="organizer.id" :value="organizer.id.toString()">
+                    {{ organizer.name }}, {{ organizer.city }} ({{ organizer.event_date_count }})
                 </option>
             </select>
         </div>
@@ -29,15 +37,9 @@
         <div class="calendar-sidebar__section calendar-sidebar__section--dates">
             <label class="calendar-sidebar__label" :for="dateId">{{ dateLabel }}</label>
             <div class="calendar-sidebar__date-range-picker" ref="dateRangePickerRef">
-                <button
-                    :id="dateId"
-                    type="button"
-                    class="calendar-sidebar__date-range-trigger"
-                    :disabled="isLoading"
-                    :aria-expanded="isDatePickerOpen ? 'true' : 'false'"
-                    aria-haspopup="dialog"
-                    @click="toggleDatePicker"
-                >
+                <button :id="dateId" type="button" class="calendar-sidebar__date-range-trigger" :disabled="isLoading"
+                    :aria-expanded="isDatePickerOpen ? 'true' : 'false'" aria-haspopup="dialog"
+                    @click="toggleDatePicker">
                     <span class="calendar-sidebar__date-range-text">{{ dateRangeDisplay }}</span>
                     <span class="calendar-sidebar__date-range-chevron" aria-hidden="true">▾</span>
                 </button>
@@ -45,30 +47,16 @@
                 <transition name="fade">
                     <div v-if="isDatePickerOpen" class="calendar-sidebar__date-range-popover" role="dialog"
                         :aria-labelledby="dateId">
-                        <DateRangeCalendar
-                            :start="datePickerStart || null"
-                            :end="datePickerEnd || null"
-                            :locale="activeLocale"
-                            :previous-month-label="previousMonthLabel"
-                            :next-month-label="nextMonthLabel"
-                            @update:start="onDatePickerStartUpdate"
-                            @update:end="onDatePickerEndUpdate"
-                        />
+                        <DateRangeCalendar :start="datePickerStart || null" :end="datePickerEnd || null"
+                            :locale="activeLocale" :previous-month-label="previousMonthLabel"
+                            :next-month-label="nextMonthLabel" @update:start="onDatePickerStartUpdate"
+                            @update:end="onDatePickerEndUpdate" />
                         <div class="calendar-sidebar__date-range-actions">
-                            <button
-                                type="button"
-                                class="calendar-btn calendar-btn--ghost"
-                                :disabled="isLoading"
-                                @click="onClearDateRange"
-                            >
+                            <button type="button" class="calendar-btn calendar-btn--ghost" :disabled="isLoading"
+                                @click="onClearDateRange">
                                 {{ clearDateRangeLabel }}
                             </button>
-                            <button
-                                type="button"
-                                class="calendar-btn"
-                                :disabled="isLoading"
-                                @click="applyDateRange"
-                            >
+                            <button type="button" class="calendar-btn" :disabled="isLoading" @click="applyDateRange">
                                 {{ applyDateRangeLabel }}
                             </button>
                         </div>
@@ -112,20 +100,10 @@
                     {{ radiusLabel }}: {{ radiusModel }} km
                 </label>
 
-                <input
-                    id="radius-slider"
-                    type="range"
-                    v-model.number="radiusModel"
-                    :min="radiusMin"
-                    :max="radiusMax"
-                    :step="radiusStep"
-                    :disabled="isLoading"
-                    @mousedown="emit('radius-slide-start')"
-                    @mouseup="emit('radius-slide-end')"
-                    @touchstart="emit('radius-slide-start')"
-                    @touchend="emit('radius-slide-end')"
-                    class="calendar-sidebar__range-slider"
-                />
+                <input id="radius-slider" type="range" v-model.number="radiusModel" :min="radiusMin" :max="radiusMax"
+                    :step="radiusStep" :disabled="isLoading" @mousedown="emit('radius-slide-start')"
+                    @mouseup="emit('radius-slide-end')" @touchstart="emit('radius-slide-start')"
+                    @touchend="emit('radius-slide-end')" class="calendar-sidebar__range-slider" />
                 <div class="calendar-sidebar__range-labels">
                     <span>{{ radiusMin }} km</span>
                     <span>{{ radiusMax }} km</span>
@@ -146,11 +124,14 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DateRangeCalendar from '@/components/DateRangeCalendar.vue'
+import type { EventVenueSummary } from '@/store/appStore'
 
-interface VenueOption {
+type VenueOption = EventVenueSummary & { event_date_count?: number }
+
+interface OrganizerOption {
     id: number
     name: string
-    city: string
+    city?: string
     event_date_count: number
 }
 
@@ -163,6 +144,8 @@ interface Props {
     selectedDate: string | null
     selectedEndDate: string | null
     selectedVenue: VenueOption | null
+    selectedOrganizer: OrganizerOption | null
+    organizerCountOptions: OrganizerOption[] | null
     tempStartDate: string | null
     tempEndDate: string | null
     isLoading: boolean
@@ -189,6 +172,7 @@ interface Emits {
     (e: 'reset-filters'): void
     (e: 'address-search', payload: { query: string; disableMyLocation: boolean }): void
     (e: 'selected-venue', venue: VenueOption | null): void
+    (e: 'selected-organizer', organizer: OrganizerOption | null): void
 }
 
 const props = defineProps<Props>()
@@ -225,6 +209,14 @@ const radiusModel = computed({
     }
 })
 
+const venueOptions = computed(() => (props.venueCountOptions ?? []).map((venue) => ({
+    ...venue,
+    event_date_count: venue.event_date_count ?? venue.eventDateCount ?? 0,
+    eventDateCount: venue.eventDateCount ?? venue.event_date_count ?? 0,
+})))
+
+const organizerCountOptions = computed(() => props.organizerCountOptions ?? [])
+
 const selectedVenueModel = computed({
     get: () => props.selectedVenue?.id?.toString() ?? '',
     set: (value: string) => {
@@ -239,8 +231,27 @@ const selectedVenueModel = computed({
             return
         }
 
-        const venue = props.venueCountOptions.find((item) => item.id === id) ?? null
+        const venue = venueOptions.value.find((item) => item.id === id) ?? null
         emit('selected-venue', venue)
+    }
+})
+
+const selectedOrganizerModel = computed({
+    get: () => props.selectedOrganizer?.id?.toString() ?? '',
+    set: (value: string) => {
+        if (!value) {
+            emit('selected-organizer', null)
+            return
+        }
+
+        const id = Number(value)
+        if (Number.isNaN(id)) {
+            emit('selected-organizer', null)
+            return
+        }
+
+        const organizer = organizerCountOptions.value.find((item) => item.id === id) ?? null
+        emit('selected-organizer', organizer)
     }
 })
 
