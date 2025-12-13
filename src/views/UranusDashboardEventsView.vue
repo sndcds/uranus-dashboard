@@ -129,12 +129,13 @@ const removeEventCard = async ({ eventId, eventDateId, deleteSeries }: DeleteEve
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 520px));
   gap: var(--uranus-grid-gap);
-  max-width: calc(560px * 3 + var(--uranus-grid-gap) * 2); /* optional max width for large screens */
+  max-width: calc(560px * 3 + var(--uranus-grid-gap) * 2);
+  align-items: stretch;
 }
 
 .uranus-dashboard-event-card-grid > * {
-  width: 100%;       /* fill the cell */
   display: flex;
-  flex-direction: column;
+  height: 100%;
+  flex-direction: column; // top-aligned content
 }
 </style>
