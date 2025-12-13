@@ -4,7 +4,7 @@
             <h2 id="dashboard-todo-heading" class="todo-panel__title">
                 {{ todoListTitle }}
             </h2>
-            <button type="button" class="uranus-button" @click="startAddingTodo" :disabled="todoLoading">
+            <button type="button" class="uranus-secondary-button" @click="startAddingTodo" :disabled="todoLoading">
                 {{ addTodoLabel }}
             </button>
         </div>
@@ -33,11 +33,11 @@
             />
 
             <section class="uranus-form-action-footer">
-                <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingTodo"
+                <button type="button" class="uranus-cancel-button" @click="cancelEditingTodo"
                     :disabled="todoSaving">
                     {{ t('cancel') }}
                 </button>
-                <button type="submit" class="uranus-inline-save-button" :disabled="isSaveDisabled">
+                <button type="submit" class="uranus-save-button" :disabled="isSaveDisabled">
                     <span v-if="!todoSaving">{{ t('save') }}</span>
                     <span v-else>{{ t('saving') }}</span>
                 </button>
@@ -100,11 +100,11 @@
                                 />
 
                                 <section class="uranus-form-action-footer">
-                                    <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingTodo"
+                                    <button type="button" class="uranus-cancel-button" @click="cancelEditingTodo"
                                         :disabled="todoSaving">
                                         {{ t('cancel') }}
                                     </button>
-                                    <button type="submit" class="uranus-inline-save-button" :disabled="isSaveDisabled">
+                                    <button type="submit" class="uranus-save-button" :disabled="isSaveDisabled">
                                         <span v-if="!todoSaving">{{ t('save') }}</span>
                                         <span v-else>{{ t('saving') }}</span>
                                     </button>
@@ -626,7 +626,7 @@ defineExpose({
         align-items: stretch;
     }
 
-    .uranus-inline-save-button {
+    .uranus-save-button {
         width: 100%;
         justify-content: center;
     }

@@ -29,6 +29,7 @@ function mapEventDate(raw: unknown): UranusEventDate | null {
     const r = raw as Record<string, unknown>;
     return new UranusEventDate(
         toNumberOrNull(r.event_date_id),
+        toNumberOrNull(r.date_venue_id),
         toNumberOrNull(r.venue_id),
         toNullableString(r.venue_name),
         toNumberOrNull(r.space_id),

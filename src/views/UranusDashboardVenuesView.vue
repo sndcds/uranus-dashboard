@@ -17,7 +17,7 @@
 
     <div v-else class="uranus-main-layout">
       <UranusDashboardActionBar>
-        <router-link :to="`/admin/organizer/${organizerId}/venue/create`" class="uranus-button">
+        <router-link :to="`/admin/organizer/${organizerId}/venue/create`" class="uranus-secondary-button">
           {{ t('add_new_venue') }}
         </router-link>
       </UranusDashboardActionBar>
@@ -27,7 +27,6 @@
         <p class="form-feedback-error">{{ error }}</p>
       </div>
 
-      <!-- Organizer Content -->
       <div v-if="organizer" class="organizer-venue-view__content">
         <!-- Stats -->
         <!--div class="uranus-card">
@@ -37,7 +36,7 @@
 
         <!-- Venue Cards Grid -->
         <div class="organizer-venue-view__grid">
-          <VenueCardComponent
+          <UranusVenueCard
             v-for="venue in organizer.venues"
             :key="venue.venue_id"
             :venue="venue"
@@ -56,7 +55,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useAppStore } from '@/store/appStore'
 
-import VenueCardComponent from '@/components/VenueCardComponent.vue'
+import UranusVenueCard from '@/components/venue/UranusVenueCard.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue"
 

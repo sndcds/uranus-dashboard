@@ -101,23 +101,31 @@ export function uranusPriceText(
     currency?: string | null
 ): string {
     const resolvedLocale = locale ?? 'en';
-    const resolvedCurrency = currency ?? '';
+    const hasCurrency = !!currency; // true if currency is provided
 
-    const formatter = new Intl.NumberFormat(resolvedLocale, {
+    const options: Intl.NumberFormatOptions = {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-        style: currency ? 'currency' : 'decimal',
-        currency: resolvedCurrency,
-    });
+        style: hasCurrency ? 'currency' : 'decimal',
+    };
 
-    if (minPrice != undefined && maxPrice == undefined) {
+    if (hasCurrency && currency) {
+        options.currency = currency; // only set currency if provided
+    }
+
+    const formatter = new Intl.NumberFormat(resolvedLocale, options);
+
+    if (minPrice !== undefined && maxPrice === undefined) {
         return t('price_from_amount', { price: formatter.format(minPrice) });
     }
-    if (minPrice == undefined && maxPrice != undefined) {
+    if (minPrice === undefined && maxPrice !== undefined) {
         return t('price_to_amount', { price: formatter.format(maxPrice) });
     }
-    if (minPrice != undefined && maxPrice != undefined) {
-        return t('price_range', { from: formatter.format(minPrice), to: formatter.format(maxPrice) });
+    if (minPrice !== undefined && maxPrice !== undefined) {
+        return t('price_range', {
+            from: formatter.format(minPrice),
+            to: formatter.format(maxPrice)
+        });
     }
     return '';
 }

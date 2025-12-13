@@ -1,7 +1,7 @@
 <template>
   <button
       type="button"
-      class="uranus-inline-cancel-button"
+      class="uranus-cancel-button"
       :disabled="disabled"
       @click="onClick"
       :aria-label="label"
@@ -26,15 +26,15 @@ defineProps({
 <style scoped lang="scss">
 
 /* Keyboard focus */
-.uranus-inline-cancel-button:focus {
+.uranus-cancel-button:focus {
   outline: none; /* remove default outline */
   border-color: var(--uranus-focus-border-color);
   box-shadow: 0 0 0 1px var(--uranus-focus-border-color);
 }
 
 /* Disabled */
-.uranus-inline-cancel-button:disabled,
-.uranus-inline-cancel-button[aria-disabled="true"] {
+.uranus-cancel-button:disabled,
+.uranus-cancel-button[aria-disabled="true"] {
   opacity: 0.5;
   cursor: not-allowed;
 }

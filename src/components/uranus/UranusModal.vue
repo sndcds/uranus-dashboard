@@ -81,7 +81,7 @@ const hasHeaderContent = computed(
 .uranus-modal__overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.55);
+  background: var(--uranus-backdrop-color);
   display: flex;
   align-items: center;
   justify-content: center;

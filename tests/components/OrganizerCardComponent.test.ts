@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 import { createPinia, setActivePinia } from 'pinia'
-import OrganizerCardComponent from '../../src/components/OrganizerCardComponent.vue'
+import UranusOrganizerCard from '../../src/components/organizer/UranusOrganizerCard.vue'
 import { useAppStore } from '../../src/store/appStore'
 
 const i18n = createI18n({
@@ -49,7 +49,7 @@ interface Organizer {
   venues: Venue[]
 }
 
-describe('OrganizerCardComponent', () => {
+describe('UranusOrganizerCard', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   })
@@ -80,7 +80,7 @@ describe('OrganizerCardComponent', () => {
   }
 
   const createWrapper = (organizer: Organizer = mockOrganizer) => {
-    return mount(OrganizerCardComponent, {
+    return mount(UranusOrganizerCard, {
       props: { organizer },
       global: {
         plugins: [i18n, router],
@@ -116,7 +116,7 @@ describe('OrganizerCardComponent', () => {
     it('shows "Active" when organizer is active', () => {
       const appStore = useAppStore()
       appStore.setOrganizerId(1)
-      
+
       const wrapper = createWrapper()
       const buttons = wrapper.findAll('button')
       const activateButton = buttons[1] // Second button is the activate button
@@ -126,7 +126,7 @@ describe('OrganizerCardComponent', () => {
     it('shows "Activate" when organizer is not active', () => {
       const appStore = useAppStore()
       appStore.setOrganizerId(999) // Different organizer
-      
+
       const wrapper = createWrapper()
       const buttons = wrapper.findAll('button')
       const activateButton = buttons[1] // Second button is the activate button
@@ -136,7 +136,7 @@ describe('OrganizerCardComponent', () => {
     it('applies active class to card when organizer is active', () => {
       const appStore = useAppStore()
       appStore.setOrganizerId(1)
-      
+
       const wrapper = createWrapper()
       expect(wrapper.find('.organizer-card--active').exists()).toBe(true)
     })
@@ -144,7 +144,7 @@ describe('OrganizerCardComponent', () => {
     it('does not apply active class when organizer is not active', () => {
       const appStore = useAppStore()
       appStore.setOrganizerId(999)
-      
+
       const wrapper = createWrapper()
       expect(wrapper.find('.organizer-card--active').exists()).toBe(false)
     })
@@ -152,7 +152,7 @@ describe('OrganizerCardComponent', () => {
     it('applies active class to button when organizer is active', () => {
       const appStore = useAppStore()
       appStore.setOrganizerId(1)
-      
+
       const wrapper = createWrapper()
       const buttons = wrapper.findAll('button')
       const activateButton = buttons[1] // Second button is the activate button
@@ -166,9 +166,9 @@ describe('OrganizerCardComponent', () => {
       const wrapper = createWrapper()
       const buttons = wrapper.findAll('button')
       const activateButton = buttons[1] // Second button is the activate button
-      
+
       await activateButton.trigger('click')
-      
+
       expect(appStore.organizerId).toBe(1)
     })
 
@@ -176,12 +176,12 @@ describe('OrganizerCardComponent', () => {
       const wrapper = createWrapper()
       const buttons = wrapper.findAll('button')
       const activateButton = buttons[1] // Second button is the activate button
-      
+
       expect(activateButton.text()).toBe('Activate')
-      
+
       await activateButton.trigger('click')
       await wrapper.vm.$nextTick()
-      
+
       expect(activateButton.text()).toBe('Active')
     })
 
@@ -189,15 +189,15 @@ describe('OrganizerCardComponent', () => {
       const appStore = useAppStore()
       // First activate organizer 1
       appStore.setOrganizerId(1)
-      
+
       // Create wrapper for organizer 2
       const organizer2 = { ...mockOrganizer, organizer_id: 2, organizer_name: 'Organizer 2' }
       const wrapper = createWrapper(organizer2)
       const buttons = wrapper.findAll('button')
       const activateButton = buttons[1] // Second button is the activate button
-      
+
       await activateButton.trigger('click')
-      
+
       expect(appStore.organizerId).toBe(2)
     })
   })
@@ -206,45 +206,45 @@ describe('OrganizerCardComponent', () => {
     it('activates organizer on button click', async () => {
       const appStore = useAppStore()
       appStore.setOrganizerId(999)
-      
+
       const wrapper = createWrapper()
       const button = wrapper.findAll('button')[1]
-      
+
       await button.trigger('click')
-      
+
       expect(appStore.organizerId).toBe(1)
     })
 
     it('updates button text after activation', async () => {
       const appStore = useAppStore()
       appStore.setOrganizerId(999)
-      
+
       const wrapper = createWrapper()
       const button = wrapper.findAll('button')[1]
-      
+
       expect(button.text()).toBe('Activate')
-      
+
       await button.trigger('click')
       await wrapper.vm.$nextTick()
-      
+
       expect(button.text()).toBe('Active')
     })
 
     it('can activate different organizer', async () => {
       const appStore = useAppStore()
       appStore.setOrganizerId(1)
-      
+
       const organizer2: Organizer = {
         ...mockOrganizer,
         organizer_id: 2,
         organizer_name: 'Second Organizer',
       }
-      
+
       const wrapper = createWrapper(organizer2)
       const button = wrapper.findAll('button')[1]
-      
+
       await button.trigger('click')
-      
+
       expect(appStore.organizerId).toBe(2)
     })
   })
@@ -258,7 +258,7 @@ describe('OrganizerCardComponent', () => {
     it('displays correct table headers', () => {
       const wrapper = createWrapper()
       const headers = wrapper.findAll('th')
-      
+
       expect(headers).toHaveLength(3)
       expect(headers[0].text()).toBe('Venue')
       expect(headers[1].text()).toBe('Spaces')
@@ -267,10 +267,10 @@ describe('OrganizerCardComponent', () => {
 
     it('displays all venues in table', () => {
       const wrapper = createWrapper()
-      const rows = wrapper.findAll('tbody tr').filter(row => 
+      const rows = wrapper.findAll('tbody tr').filter(row =>
         !row.classes().includes('organizer-card__table-row--total')
       )
-      
+
       expect(rows).toHaveLength(2)
       expect(rows[0].text()).toContain('Main Venue')
       expect(rows[1].text()).toContain('Secondary Venue')
@@ -278,26 +278,26 @@ describe('OrganizerCardComponent', () => {
 
     it('displays venue space counts', () => {
       const wrapper = createWrapper()
-      const rows = wrapper.findAll('tbody tr').filter(row => 
+      const rows = wrapper.findAll('tbody tr').filter(row =>
         !row.classes().includes('organizer-card__table-row--total')
       )
-      
+
       const cells1 = rows[0].findAll('td')
       expect(cells1[1].text()).toBe('2') // Main Venue has 2 spaces
-      
+
       const cells2 = rows[1].findAll('td')
       expect(cells2[1].text()).toBe('1') // Secondary Venue has 1 space
     })
 
     it('displays venue event counts', () => {
       const wrapper = createWrapper()
-      const rows = wrapper.findAll('tbody tr').filter(row => 
+      const rows = wrapper.findAll('tbody tr').filter(row =>
         !row.classes().includes('organizer-card__table-row--total')
       )
-      
+
       const cells1 = rows[0].findAll('td')
       expect(cells1[2].text()).toBe('5')
-      
+
       const cells2 = rows[1].findAll('td')
       expect(cells2[2].text()).toBe('5')
     })
@@ -305,7 +305,7 @@ describe('OrganizerCardComponent', () => {
     it('displays total row with correct count', () => {
       const wrapper = createWrapper()
       const totalRow = wrapper.find('.organizer-card__table-row--total')
-      
+
       expect(totalRow.exists()).toBe(true)
       expect(totalRow.text()).toContain('Total')
       expect(totalRow.text()).toContain('10')
@@ -320,9 +320,9 @@ describe('OrganizerCardComponent', () => {
         total_upcoming_events: 0,
         venues: [],
       }
-      
+
       const wrapper = createWrapper(emptyOrganizer)
-      
+
       expect(wrapper.find('table').exists()).toBe(false)
       expect(wrapper.find('.organizer-card__empty').exists()).toBe(true)
       expect(wrapper.text()).toContain('No venues found')
@@ -335,7 +335,7 @@ describe('OrganizerCardComponent', () => {
         total_upcoming_events: 0,
         venues: [],
       }
-      
+
       const wrapper = createWrapper(emptyOrganizer)
       expect(wrapper.find('.organizer-card__table').exists()).toBe(false)
     })
@@ -356,12 +356,12 @@ describe('OrganizerCardComponent', () => {
           },
         ],
       }
-      
+
       const wrapper = createWrapper(organizer)
-      const rows = wrapper.findAll('tbody tr').filter(row => 
+      const rows = wrapper.findAll('tbody tr').filter(row =>
         !row.classes().includes('organizer-card__table-row--total')
       )
-      
+
       const cells = rows[0].findAll('td')
       expect(cells[1].text()).toBe('0')
     })
@@ -372,7 +372,7 @@ describe('OrganizerCardComponent', () => {
         space_name: `Space ${i + 1}`,
         upcoming_event_count: i,
       }))
-      
+
       const organizer: Organizer = {
         organizer_id: 5,
         organizer_name: 'Test',
@@ -386,12 +386,12 @@ describe('OrganizerCardComponent', () => {
           },
         ],
       }
-      
+
       const wrapper = createWrapper(organizer)
-      const rows = wrapper.findAll('tbody tr').filter(row => 
+      const rows = wrapper.findAll('tbody tr').filter(row =>
         !row.classes().includes('organizer-card__table-row--total')
       )
-      
+
       const cells = rows[0].findAll('td')
       expect(cells[1].text()).toBe('10')
     })
@@ -410,7 +410,7 @@ describe('OrganizerCardComponent', () => {
           },
         ],
       }
-      
+
       const wrapper = createWrapper(organizer)
       const totalRow = wrapper.find('.organizer-card__table-row--total')
       expect(totalRow.text()).toContain('0')
@@ -423,7 +423,7 @@ describe('OrganizerCardComponent', () => {
         ...mockOrganizer,
         organizer_name: 'Café & Bar "The Stage"',
       }
-      
+
       const wrapper = createWrapper(organizer)
       expect(wrapper.find('h2').text()).toBe('Café & Bar "The Stage"')
     })
@@ -440,7 +440,7 @@ describe('OrganizerCardComponent', () => {
           },
         ],
       }
-      
+
       const wrapper = createWrapper(organizer)
       expect(wrapper.text()).toContain('Hall #1 (Main)')
     })
@@ -455,7 +455,7 @@ describe('OrganizerCardComponent', () => {
     it('displays ribbon label when active', () => {
       const appStore = useAppStore()
       appStore.setOrganizerId(1)
-      
+
       const wrapper = createWrapper()
       // The component applies the active class which adds the ribbon via CSS
       expect(wrapper.classes()).toContain('organizer-card--active')
@@ -478,7 +478,7 @@ describe('OrganizerCardComponent', () => {
         ...mockOrganizer,
         organizer_id: 42,
       }
-      
+
       const wrapper = createWrapper(organizer)
       const editLink = wrapper.find('a')
       expect(editLink.attributes('href')).toContain('/admin/organizer/42/edit')
@@ -512,7 +512,7 @@ describe('OrganizerCardComponent', () => {
           },
         ],
       }
-      
+
       const wrapper = createWrapper(organizer)
       const totalRow = wrapper.find('.organizer-card__table-row--total')
       expect(totalRow.text()).toContain('15')
@@ -525,19 +525,19 @@ describe('OrganizerCardComponent', () => {
         upcoming_event_count: i + 1,
         spaces: [],
       }))
-      
+
       const organizer: Organizer = {
         organizer_id: 8,
         organizer_name: 'Many Venues',
         total_upcoming_events: 15,
         venues,
       }
-      
+
       const wrapper = createWrapper(organizer)
-      const rows = wrapper.findAll('tbody tr').filter(row => 
+      const rows = wrapper.findAll('tbody tr').filter(row =>
         !row.classes().includes('organizer-card__table-row--total')
       )
-      
+
       expect(rows).toHaveLength(5)
     })
   })

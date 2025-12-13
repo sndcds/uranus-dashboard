@@ -1,6 +1,5 @@
 <template>
     <UranusCard>
-    <UranusCardHeader :title="t('event_section_basic')" />
 
         <div class="event-section__form">
             <EventTitleFieldsComponent

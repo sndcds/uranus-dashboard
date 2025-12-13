@@ -7,7 +7,6 @@
     <UranusCard class="uranus-modal-card">
       <!-- Title -->
       <h2>{{ localImageMeta.id ? t('edit_event_image') : t('add_event_image') }}</h2>
-
       <!-- Image preview -->
       <div class="uranus-image-preview" @click="triggerFileSelect">
         <img v-if="localImageMeta.url" :src="localImageMeta.url" class="uranus-preview-img" />
@@ -191,7 +190,7 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background: var(--uranus-backdrop-color);
   display: flex;
   align-items: center;
   justify-content: center;

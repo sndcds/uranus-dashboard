@@ -5,7 +5,7 @@
         :subtitle="t('event_form_subtitle')"
     />
 
-    <EventForm
+    <UranusAddEventForm
         ref="eventFormRef"
         :submit-label="t('event_submit_button')"
         :loading="isSubmitting"
@@ -27,7 +27,7 @@ import { apiFetch, deepClean } from '@/api'
 import { useAppStore } from '@/store/appStore'
 
 import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
-import EventForm, { type EventFormSubmitPayload } from '@/components/EventForm.vue'
+import UranusAddEventForm from '@/components/event/UranusAddEventForm.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const router = useRouter()
@@ -40,7 +40,7 @@ interface ChoosableVenue {
     country_code: string
 }
 
-const eventFormRef = ref<InstanceType<typeof EventForm> | null>(null)
+const eventFormRef = ref<InstanceType<typeof UranusAddEventForm> | null>(null)
 const isSubmitting = ref(false)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
@@ -63,39 +63,7 @@ onMounted(() => {
     void loadChoosableVenues()
 })
 
-const handleSubmit = async (payload: EventFormSubmitPayload) => {
-    if (isSubmitting.value) {
-        return
-    }
-
-    error.value = null
-    success.value = null
-    isSubmitting.value = true
-
-    try {
-        const { status, data } = await apiFetch('/api/admin/event/create', {
-            method: 'POST',
-            body: JSON.stringify(deepClean(payload)),
-        })
-
-        if (status >= 200 && status < 300) {
-            success.value = t('event_submit_success')
-            router.push(`/admin/event/${(data as any).event_id}`)
-        } else {
-            error.value = t('event_submit_error', { status })
-        }
-    } catch (err: unknown) {
-        if (typeof err === 'object' && err && 'data' in err) {
-            const e = err as { data?: { error?: string } }
-            error.value = e.data?.error || t('event_submit_error_generic')
-        } else if (err instanceof Error) {
-            error.value = err.message
-        } else {
-            error.value = t('event_submit_error_generic')
-        }
-    } finally {
-        isSubmitting.value = false
-    }
+const handleSubmit = async () => {
 }
 
 const clearError = () => {

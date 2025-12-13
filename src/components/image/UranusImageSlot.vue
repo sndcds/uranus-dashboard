@@ -88,7 +88,7 @@ function removeImage() {
   display: flex;
   gap: 0.4rem;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.4s ease;
 }
 
 .image-wrapper:hover .hover-actions {
@@ -96,18 +96,19 @@ function removeImage() {
 }
 
 .hover-actions button {
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--uranus-ia-inline-color);
+  opacity: 0.8;
   color: #fff;
   border: none;
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   backdrop-filter: blur(2px);
-  transition: background 0.2s;
+  transition: background 0.4s;
 }
 
 .hover-actions button:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--uranus-ia-inline-color-light1);
 }
 
 .image-index {

@@ -73,41 +73,24 @@ const modeClass = computed(() => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  padding: 4px;
-  transition: background 0.2s ease;
+  opacity: 0.6;
+  transition: all 0.4s ease;
+  color: var(--uranus-ia-inline-color);
 
   &.clickable {
     cursor: pointer;
   }
 
-  &.edit {
-    color: var(--uranus-card-color);
-    &:hover {
-      color: var(--accent-primary, #2563eb);
-      background-color: rgba(37, 99, 235, 0.1);
-    }
-  }
-
-  &.delete {
-    color: var(--uranus-card-color);
-    &:hover {
-      color: var(--danger, #b91c1c);
-      background-color: rgba(185, 28, 28, 0.1);
-    }
-  }
-
-  &.add {
-    color: var(--uranus-card-color);
-    &:hover {
-      color: var(--warning, #f59e0b);
-      background-color: rgba(245, 158, 11, 0.1);
-    }
+  &:hover {
+    opacity: 1;
+    background-color: var(--uranus-ia-inline-color);
+    color: white;
   }
 
   svg {
     display: block;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
   }
 }
 </style>

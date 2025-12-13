@@ -4,7 +4,7 @@ import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 import { createPinia, setActivePinia } from 'pinia'
 import { useAppStore } from '../../src/store/appStore'
-import FormEventView from '../../src/views/FormEventView.vue'
+import UranusDashboardAddEventView from '../../src/views/UranusDashboardAddEventView.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -93,7 +93,7 @@ const mockEventPayload = {
   ],
 }
 
-describe('FormEventView', () => {
+describe('UranusDashboardAddEventView', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     const appStore = useAppStore()
@@ -102,7 +102,7 @@ describe('FormEventView', () => {
   })
 
   it('renders page title and subtitle', () => {
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -119,8 +119,8 @@ describe('FormEventView', () => {
     expect(wrapper.text()).toContain('Fill in the event details')
   })
 
-  it('passes organizer ID from store to EventForm', () => {
-    const wrapper = mount(FormEventView, {
+  it('passes organizer ID from store to UranusAddEventForm', () => {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -146,7 +146,7 @@ describe('FormEventView', () => {
       status: 201
     })
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -179,7 +179,7 @@ describe('FormEventView', () => {
       status: 201
     })
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -208,7 +208,7 @@ describe('FormEventView', () => {
       status: 201
     })
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -227,7 +227,7 @@ describe('FormEventView', () => {
     eventForm.vm.$emit('submit', mockEventPayload)
     await flushPromises()
 
-    // Success message is passed to EventForm component
+    // Success message is passed to UranusAddEventForm component
     expect(eventForm.props('successMessage')).toBe('Event created successfully')
   })
 
@@ -238,7 +238,7 @@ describe('FormEventView', () => {
       status: 400
     })
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -266,7 +266,7 @@ describe('FormEventView', () => {
       data: { error: 'Custom error message' }
     })
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -292,7 +292,7 @@ describe('FormEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue(new Error('Network error'))
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -318,7 +318,7 @@ describe('FormEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue('Unknown error')
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -344,7 +344,7 @@ describe('FormEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue(new Error('Network error'))
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -370,7 +370,7 @@ describe('FormEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue('Unknown error')
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -396,7 +396,7 @@ describe('FormEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue(new Error('Test error'))
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -427,7 +427,7 @@ describe('FormEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -455,7 +455,7 @@ describe('FormEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(FormEventView, {
+    const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {

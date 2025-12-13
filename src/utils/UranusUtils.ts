@@ -1,4 +1,4 @@
-import type {UranusEventType} from "@/models/UranusEventModel.ts";
+import {UranusEventDate, type UranusEventType} from "@/models/UranusEventModel.ts";
 
 export function toNumberOrNull(value: unknown): number | null {
     if (typeof value === 'number' && Number.isFinite(value)) {
@@ -140,13 +140,23 @@ export const uranusFormatEventDateTime = (
     const formatDateLocalized = (dateStr: string) => {
         const date = new Date(dateStr)
         if (isNaN(date.getTime())) return dateStr
-        return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(date)
+
+        return new Intl.DateTimeFormat(locale, {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        }).format(date)
     }
 
     const formatTimeLocalized = (timeStr: string) => {
-        const date = new Date(timeStr)
+        const date = new Date(`1970-01-01T${timeStr}`)
         if (isNaN(date.getTime())) return timeStr
-        return new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(date)
+
+        return new Intl.DateTimeFormat(locale, {
+            hour: '2-digit',
+            minute: '2-digit'
+        }).format(date)
     }
 
     const isSingleDay = !endDate || startDate === endDate
@@ -163,8 +173,12 @@ export const uranusFormatEventDateTime = (
 
         return timeStr ? `${dateStr}, ${timeStr}` : dateStr
     } else {
-        const startStr = `${formatDateLocalized(startDate)}${startTime ? ', ' + formatTimeLocalized(startTime) : ''}`
-        const endStr = `${formatDateLocalized(endDate!)}${endTime ? ', ' + formatTimeLocalized(endTime) : ''}`
+        const startStr =
+            `${formatDateLocalized(startDate)}${startTime ? ', ' + formatTimeLocalized(startTime) : ''}`
+
+        const endStr =
+            `${formatDateLocalized(endDate!)}${endTime ? ', ' + formatTimeLocalized(endTime) : ''}`
+
         return `${startStr} – ${endStr}`
     }
 }
@@ -174,4 +188,63 @@ export const uranusEventTypeGenreString = (type: UranusEventType) => {
         return `${type.typeName} / ${type.genreName}`
     }
     return type.typeName || ''
+}
+
+
+const formatDate = (dateStr: string, locale: string) => {
+    const date = new Date(dateStr)
+    if (isNaN(date.getTime())) return dateStr
+
+    return new Intl.DateTimeFormat(locale, {
+        weekday: 'short',   // <--- ADD WEEKDAY
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    }).format(date)
+}
+
+
+export const formatTime = (timeStr: string | null, locale: string) => {
+    if (!timeStr) return ''
+    const [hours, minutes] = timeStr.split(':').map(Number)
+    const date = new Date()
+    date.setHours(hours ?? 0, minutes ?? 0, 0, 0)
+    const intlTime = new Intl.DateTimeFormat(locale || 'de', {
+        hour: '2-digit',
+        minute: '2-digit',
+    })
+    return intlTime.format(date)
+}
+
+export const formatEventDateTime = (date: UranusEventDate, locale: string) => {
+    if (!date || !date.startDate) return null
+
+    // Local formatter that includes weekday
+    const formatDateWithWeekday = (d: string) => formatDate(d, locale)
+
+    const isSingleDay = !date.endDate || date.startDate === date.endDate
+
+    if (isSingleDay) {
+        const dateStr = formatDateWithWeekday(date.startDate)
+        let timeStr = ''
+
+        if (date.startTime && date.endTime) {
+            timeStr = `${formatTime(date.startTime, locale)} - ${formatTime(date.endTime, locale)}`
+        } else if (date.startTime) {
+            timeStr = formatTime(date.startTime, locale)
+        }
+
+        return {
+            date: dateStr,
+            time: timeStr
+        }
+    } else {
+        // Multi-day event
+        return {
+            startDate: formatDateWithWeekday(date.startDate),
+            startTime: date.startTime ? formatTime(date.startTime, locale) : '',
+            endDate: date.endDate ? formatDateWithWeekday(date.endDate) : '',
+            endTime: date.endTime ? formatTime(date.endTime, locale) : ''
+        }
+    }
 }

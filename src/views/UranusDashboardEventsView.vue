@@ -5,7 +5,7 @@
         :subtitle="t('events_subtitle')" />
 
     <UranusDashboardActionBar v-if="canAddEvent">
-      <router-link :to="`/admin/organizer/${organizerId}/event/create`" class="uranus-button">
+      <router-link :to="`/admin/organizer/${organizerId}/event/create`" class="uranus-secondary-button">
         {{ t('add_new_event') }}
       </router-link>
     </UranusDashboardActionBar>
@@ -78,7 +78,9 @@ const fetchEvents = async () => {
       }
 
       // Map snake_case → camelCase using mapEvent
-      events.value = rawEvents.map((e) => mapDashboardEventData(e))
+      events.value = rawEvents
+          .map((e) => mapDashboardEventData(e))
+          .filter((e): e is UranusEventBase => e != null)
     } else {
       error.value = t('events_fetch_failed', { status })
       events.value = []
@@ -125,16 +127,14 @@ const removeEventCard = async ({ eventId, eventDateId, deleteSeries }: DeleteEve
 <style scoped lang="scss">
 .uranus-dashboard-event-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(360px, 520px));
   gap: var(--uranus-grid-gap);
-  justify-items: stretch;
-  align-items: stretch;
+  max-width: calc(560px * 3 + var(--uranus-grid-gap) * 2); /* optional max width for large screens */
 }
 
 .uranus-dashboard-event-card-grid > * {
+  width: 100%;       /* fill the cell */
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
 }
 </style>

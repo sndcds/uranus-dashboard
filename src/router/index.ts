@@ -3,15 +3,15 @@ import { useTokenStore } from '@/store/tokenStore'
 
 import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
-import OrganizerDashboardView from '@/views/OrganizerDashboardView.vue'
+import UranusDashboardOrganizersView from '@/views/UranusDashboardOrganizersView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import FormOrganizerCreateView from '@/views/FormOrganizerCreateView.vue'
-import OrganizerVenueView from '@/views/OrganizerVenueView.vue'
+import UranusDashboardVenuesView from '@/views/UranusDashboardVenuesView.vue'
 import SignupView from '@/views/SignupView.vue'
 import FormVenueCreateView from '@/views/FormVenueCreateView.vue'
 import FormSpaceView from '@/views/FormSpaceView.vue'
 import UranusDashboardEventsView from '@/views/UranusDashboardEventsView.vue'
-import FormEventView from '@/views/FormEventView.vue'
+import UranusDashboardAddEventView from '@/views/UranusDashboardAddEventView.vue'
 import UranusEventEditorView from '@/views/UranusEventEditorView.vue'
 import UserPermissionView from '@/views/UserPermissionView.vue'
 import FormUserProfileView from '@/views/FormUserProfileView.vue'
@@ -55,7 +55,7 @@ const routes = [
             {
                 path: 'organizers',
                 name: 'admin-organizers',
-                component: OrganizerDashboardView,
+                component: UranusDashboardOrganizersView,
             },
             {
                 path: 'settings',
@@ -100,7 +100,7 @@ const routes = [
             {
                 path: 'organizer/:id/venues',
                 name: 'admin-venues',
-                component: OrganizerVenueView,
+                component: UranusDashboardVenuesView,
             },
             {
                 path: 'organizer/venues/empty',
@@ -120,7 +120,7 @@ const routes = [
             {
                 path: 'organizer/:id/event/create',
                 name: 'admin-create-event',
-                component: FormEventView,
+                component: UranusDashboardAddEventView,
             },
             {
                 path: 'event/:id',

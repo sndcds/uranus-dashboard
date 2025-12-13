@@ -53,14 +53,15 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, provide, computed} from "vue";
+import { onMounted, ref, provide, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from "@/api.ts";
 import { mapEventData } from "@/utils/UranusEventDetailMapper.ts"
-import UranusEditEventTitle from "@/components/event/UranusEditEventTitle.vue";
-import {type UranusEventDetail, UranusImageMeta} from '@/models/UranusEventModel.ts'
+import { type UranusEventDetail, UranusImageMeta } from '@/models/UranusEventModel.ts'
+
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import UranusEditEventTitle from "@/components/event/UranusEditEventTitle.vue";
 import UranusEditEventDescription from "@/components/event/UranusEditEventDescription.vue";
 import UranusEditEventTypes from "@/components/event/UranusEditEventTypes.vue";
 import UranusCard from "@/components/ui/UranusCard.vue";

@@ -63,6 +63,7 @@
   --uranus-event-release-color-deferred: #ffffff;
   --uranus-event-release-background-deferred: #5b51e1;
 
+  --uranus-backdrop-color: rgba(15, 23, 42, 0.5);
 
   // Accent tokens shared across layouts
   --accent-primary: #4f46e5;
@@ -102,7 +103,7 @@
   --uranus-inline-edit-border-radius: 4px;
   --uranus-form-field-border-radius: 6px;
   --uranus-tiny-border-radius: 4px;
-  --uranus-input-height: 2.4em;
+  --uranus-input-height: 44px;
 
     --uranus-notify-info-color: #a2bae8;
     --uranus-notify-warning-color: #fdee89;
@@ -206,16 +207,21 @@ a {
   text-decoration: none;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
   font-weight: 600;
   color: var(--color-text);
+}
+
+p, span {
+  color: var(--color-text);
+}
+
+hr {
+  width: 100%;
+  border-bottom: 1px solid var(--uranus-bg-color-l2);
+  margin: 0;
 }
 
 header {
@@ -339,22 +345,6 @@ $button-text-color: #333;
   border-bottom: 1px solid #ddd;
   /* Optional bottom line */
 }
-
-// Shared form layout tokens
-$uranus-form-card-shadow: var(--card-shadow);
-$uranus-form-card-radius: 24px;
-$uranus-form-control-border: var(--input-border);
-$uranus-form-control-background: var(--input-bg);
-$uranus-form-control-color: var(--color-text);
-$uranus-form-control-placeholder: var(--uranus-muted-text);
-$uranus-form-focus-border: var(--accent-primary);
-$uranus-form-focus-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-$uranus-form-primary-gradient: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-$uranus-form-secondary-border: rgba(79, 70, 229, 0.35);
-$uranus-form-secondary-hover: var(--accent-muted);
-$uranus-form-select-icon: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%2363748B'/%3E%3C/svg%3E");
-$uranus-form-select-icon-active: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.646 6.646a.5.5 0 0 1 .708 0L8 10.293l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708z' fill='%234856FF'/%3E%3C/svg%3E");
-
 
 @media (max-width: 600px) {
   .uranus-inline-edit-button {

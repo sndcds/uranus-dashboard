@@ -1,9 +1,12 @@
+<!--
+  UranusDashboardOrganizersView.vue
+-->
 <template>
     <div class="uranus-main-layout" style="max-width: 1600px;">
         <DashboardHeroComponent :title="t('organizers')" :subtitle="t('organizers_overview_subtitle')" />
 
         <UranusDashboardActionBar>
-            <router-link to="/admin/organizer/create" class="uranus-button">
+            <router-link to="/admin/organizer/create" class="uranus-secondary-button">
                 {{ t('create_organizer') }}
             </router-link>
         </UranusDashboardActionBar>
@@ -21,7 +24,7 @@
 
     <!-- Organizer Cards Grid -->
     <div class="organizer-grid">
-      <OrganizerCardComponent
+      <UranusOrganizerCard
           v-for="organizer in organizers"
           :key="organizer.organizer_id"
           :organizer="organizer"
@@ -36,32 +39,23 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import OrganizerCardComponent from '@/components/OrganizerCardComponent.vue'
+import UranusOrganizerCard from '@/components/organizer/UranusOrganizerCard.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
 
 const { t } = useI18n()
 
-interface Space {
-  space_id: number
-  space_name: string
-  upcoming_event_count: number
-}
-
-interface Venue {
-  venue_id: number
-  venue_name: string
-  upcoming_event_count: number
-  spaces: Space[]
-}
-
 interface Organizer {
   organizer_id: number
   organizer_name: string
+  organizer_city: string | null
+  organizer_country_code: string | null
   total_upcoming_events: number
-  can_delete_organizer: boolean
+  venue_count: number
+  space_count: number
   can_edit_organizer: boolean
-  venues: Venue[]
+  can_delete_organizer: boolean
+  can_manage_team: boolean
 }
 
 const organizers = ref<Organizer[]>([])
@@ -73,8 +67,9 @@ const handleOrganizerDeleted = (organizerId: number) => {
 
 onMounted(async () => {
   try {
-    const { data } = await apiFetch<Organizer[]>('/api/admin/organizer/dashboard')
-    organizers.value = data || []
+    // Updated to reflect the new API shape
+    const { data } = await apiFetch<{ organizers: Organizer[] }>('/api/admin/organizer/dashboard')
+    organizers.value = data?.organizers || []
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
@@ -88,10 +83,12 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .organizer-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 500px));
-    grid-auto-rows: auto;
-    gap: var(--uranus-grid-gap);
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 500px));
+  grid-auto-rows: auto;
+  gap: var(--uranus-grid-gap);
+  max-width: var(--uranus-dashboard-content-width);
 }
 
 

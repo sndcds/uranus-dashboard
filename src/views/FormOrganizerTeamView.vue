@@ -73,14 +73,14 @@
                             </div>
 
                             <div class="team-member__actions">
-                                <button class="uranus-secondary-button uranus-secondary-button--danger"
+                                <button class="uranus-tertiary-button"
                                     :disabled="memberActionId === member.user_id" @click="removeMember(member)">
                                     <span v-if="memberActionId === member.user_id">{{ t('organizer_team_removing') }}</span>
                                     <span v-else>{{ t('organizer_team_remove_member_button') }}</span>
                                 </button>
                                 <router-link
                                     :to="`/admin/organizer/${organizerId}/member/${member.user_id}/permission`"
-                                    class="uranus-secondary-button">
+                                    class="uranus-tertiary-button">
                                     {{ t('organizer_member_permission_edit_button') }}
                                 </router-link>
                             </div>

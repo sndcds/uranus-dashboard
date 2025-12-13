@@ -1,6 +1,8 @@
 .uranus-button,
-.uranus-inline-save-button,
-.uranus-inline-cancel-button {
+.uranus-secondary-button,
+.uranus-tertiary-button,
+.uranus-save-button,
+.uranus-cancel-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -13,7 +15,7 @@
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.4s ease;
 
   &:hover:not(:disabled) {
     background: var(--uranus-ia-color-dark1);
@@ -30,35 +32,61 @@
   }
 }
 
-.uranus-inline-save-button,
-.uranus-inline-cancel-button {
+.uranus-secondary-button,
+.uranus-tertiary-button {
+  background: transparent;
+  border: 2px solid var(--uranus-ia-color);
+  color: var(--uranus-ia-color-dark1);
+  padding: 0.4rem 1rem;
+
+  &:hover:not(:disabled) {
+    background: var(--uranus-ia-color);
+    color: white;
+  }
+
+  &--active {
+    background: var(--uranus-ia-color);
+    color: white;
+    cursor: default;
+    &:hover {
+    }
+  }
+}
+
+.uranus-tertiary-button {
+  font-size: 0.9rem;
+  padding: 0.3rem 0.9rem;
+  border-width: 1px;
+}
+
+
+.uranus-save-button,
+.uranus-cancel-button {
   font-size: 0.9rem;
   font-weight: 700;
   padding: 0.6em 1em;
 }
 
-.uranus-inline-save-button {
+.uranus-save-button {
   background: transparent;
   border: 2px solid #39d190;
   color: #39d190;
   &:hover:not(:disabled) {
-    color: white;
     background: #39d190;
+    color: white;
   }
 }
 
-
-.uranus-inline-cancel-button {
+.uranus-cancel-button {
   background: transparent;
   border: 2px solid #ff6358;
   color: #ff6358;
   &:hover:not(:disabled) {
-    color: white;
     background: #ff6358;
+    color: white;
   }
 }
 
-.uranus-secondary-button,
 .uranus-inline-edit-button {
   display: inline-flex;
   align-items: center;
@@ -95,7 +123,6 @@
     background: var(--uranus-ia-inline-color);
     color: white;
     cursor: default;
-
     &:hover {
     }
   }

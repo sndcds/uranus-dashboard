@@ -1,7 +1,5 @@
 <!--
   UranusDashboardEventCard.vue
-
-  Represents one Event as a Card in the Events Dashboard View.
 -->
 <template>
   <UranusCard class="uranus-dashboard-event-card">
@@ -9,14 +7,14 @@
       <div class="uranus-dashboard-event-card-layout">
         <img
             class="uranus-dashboard-event-card-image"
-            v-if="props.event.imageId"
-            :src="buildPlutoPreviewImageUrl(props.event.imageId)"
-            :alt="props.event.eventTitle" />
+            v-if="props.event.imageIds[0]"
+            :src="buildPlutoPreviewImageUrl(props.event.imageIds[0])"
+            :alt="props.event.title" />
 
         <div>
-          <h3>{{ props.event.eventTitle }}</h3>
+          <h3>{{ props.event.title }}</h3>
           <span>{{ uranusFormatEventDateTime(props.event.startDate, props.event.startTime, props.event.endDate, props.event.endTime, locale) }} </span><br>
-          <span>{{ props.event.eventOrganizerName }}</span><br>
+          <span>{{ props.event.organizerName }}</span><br>
           <span>{{ props.event.venueName }}
             <template v-if="hasSpace">
               / {{ props.event.spaceName }}
@@ -27,15 +25,16 @@
         <span class="uranus-dashboard-chip-wrapper">
           <span
               class="uranus-dashboard-chip tiny"
-              v-for="eventType in props.event.eventTypes"
-              :key="eventType.typeId!">
+              v-for="eventType in props.event.eventTypes ?? []"
+              :key="eventType?.typeId ?? ''"
+          >
             {{ uranusEventTypeGenreString(eventType) }}
           </span>
         </span>
 
         <div class="uranus-dashboard-event-card-actions">
           <button
-              class="uranus-secondary-button"
+              class="uranus-tertiary-button"
               v-if="props.event.canDeleteEvent"
               @click.prevent.stop="requestDelete(props.event)">
             {{ t('delete_event') }}
@@ -113,7 +112,7 @@ const requestDelete = (event: UranusEventBase) => {
     return
   }
   pendingDeleteId.value = event.eventId
-  pendingDeleteTitle.value = event.eventTitle
+  pendingDeleteTitle.value = event.title
   pendingTimeSeriesCount.value = event.timeSeries ?? 1
   pendingEventDateId.value = event.eventDateId
   deleteError.value = ''
@@ -186,15 +185,15 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
   flex-direction: column;
   position: relative;
   margin-top: auto;
-  padding: 8px;
+  padding: 16px;
   padding-bottom: 40px;
+  overflow: hidden;
 }
 
 .uranus-dashboard-event-card-layout {
   display: flex;
   flex-direction: column;
   gap: 6px;
-
   span {
     font-size: 0.9em;
   }

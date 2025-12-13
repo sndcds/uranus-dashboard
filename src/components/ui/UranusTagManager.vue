@@ -41,7 +41,7 @@
         <div class="tag-manager__actions">
           <button
               type="button"
-              class="uranus-inline-cancel-button"
+              class="uranus-cancel-button"
               @click="cancelEditing"
               :disabled="isSaving"
           >
@@ -50,7 +50,7 @@
 
           <button
               type="button"
-              class="uranus-inline-save-button"
+              class="uranus-save-button"
               :disabled="isSaving"
               @click="handleSave"
           >

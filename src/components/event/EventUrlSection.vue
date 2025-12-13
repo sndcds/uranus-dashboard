@@ -73,10 +73,10 @@
 
 
           <div class="event-url-section__actions">
-                <button type="button" class="uranus-inline-cancel-button" @click="cancelEditingLinks">
+                <button type="button" class="uranus-cancel-button" @click="cancelEditingLinks">
                     {{ t('cancel') }}
                 </button>
-                <button type="button" class="uranus-inline-save-button" @click="saveLinks"
+                <button type="button" class="uranus-save-button" @click="saveLinks"
                     :disabled="isSaving || !draftLinks.length">
                     <span v-if="!isSaving">{{ t('event_links_save') }}</span>
                     <span v-else>{{ t('saving') }}</span>

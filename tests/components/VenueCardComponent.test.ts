@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 
-import VenueCardComponent from '../../src/components/VenueCardComponent.vue'
+import UranusVenueCard from '../../src/components/venue/UranusVenueCard.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -45,7 +45,7 @@ interface Venue {
   can_edit_space?: boolean
 }
 
-describe('VenueCardComponent', () => {
+describe('UranusVenueCard', () => {
   const mockVenue: Venue = {
     venue_id: 1,
     venue_name: 'Test Venue',
@@ -57,7 +57,7 @@ describe('VenueCardComponent', () => {
   }
 
   const createWrapper = (venue: Venue = mockVenue, organizerId = 100) => {
-    return mount(VenueCardComponent, {
+    return mount(UranusVenueCard, {
       props: {
         venue,
         organizerId,
@@ -139,7 +139,7 @@ describe('VenueCardComponent', () => {
         ],
       }
       const wrapper = createWrapper(venue)
-      
+
       expect(wrapper.text()).toContain('Main Hall')
       expect(wrapper.text()).toContain('Studio A')
       expect(wrapper.text()).not.toContain('No spaces available')
@@ -153,7 +153,7 @@ describe('VenueCardComponent', () => {
         ],
       }
       const wrapper = createWrapper(venue)
-      
+
       expect(wrapper.text()).toContain('7')
     })
 
@@ -167,12 +167,12 @@ describe('VenueCardComponent', () => {
         ],
       }
       const wrapper = createWrapper(venue, 789)
-      
-      const editLinks = wrapper.findAll('a[href*="/space/"]').filter(link => 
+
+      const editLinks = wrapper.findAll('a[href*="/space/"]').filter(link =>
         link.attributes('href')?.includes('/edit')
       )
       expect(editLinks.length).toBe(2)
-      
+
       expect(editLinks[0].attributes('href')).toContain('/admin/organizer/789/venue/1/space/10/edit')
       expect(editLinks[1].attributes('href')).toContain('/admin/organizer/789/venue/1/space/20/edit')
     })
@@ -186,8 +186,8 @@ describe('VenueCardComponent', () => {
         ],
       }
       const wrapper = createWrapper(venue)
-      
-      const editSpaceLinks = wrapper.findAll('a').filter(link => 
+
+      const editSpaceLinks = wrapper.findAll('a').filter(link =>
         link.text() === 'Edit Space'
       )
       expect(editSpaceLinks.length).toBe(0)
@@ -205,7 +205,7 @@ describe('VenueCardComponent', () => {
         ],
       }
       const wrapper = createWrapper(venue)
-      
+
       const listItems = wrapper.findAll('li')
       expect(listItems).toHaveLength(3)
       expect(listItems[0].text()).toContain('Space 1')
@@ -221,7 +221,7 @@ describe('VenueCardComponent', () => {
         ],
       }
       const wrapper = createWrapper(venue)
-      
+
       expect(wrapper.text()).toContain('Empty Space')
       expect(wrapper.text()).toContain('0')
     })
@@ -256,7 +256,7 @@ describe('VenueCardComponent', () => {
         can_edit_space: false,
       }
       const wrapper = createWrapper(venue)
-      
+
       expect(wrapper.find('a[href*="/venue/1/edit"]').exists()).toBe(false)
       expect(wrapper.find('a[href*="/space/create"]').exists()).toBe(false)
     })
@@ -272,7 +272,7 @@ describe('VenueCardComponent', () => {
         ],
       }
       const wrapper = createWrapper(venue)
-      
+
       expect(wrapper.find('a[href*="/venue/1/edit"]').exists()).toBe(true)
       expect(wrapper.find('a[href*="/space/create"]').exists()).toBe(true)
       expect(wrapper.find('a[href*="/space/1/edit"]').exists()).toBe(true)
@@ -330,7 +330,7 @@ describe('VenueCardComponent', () => {
       }))
       const venue = { ...mockVenue, spaces: manySpaces }
       const wrapper = createWrapper(venue)
-      
+
       const listItems = wrapper.findAll('li')
       expect(listItems).toHaveLength(20)
     })

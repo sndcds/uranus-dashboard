@@ -44,6 +44,7 @@ export class UranusVenueSpaceSelection {
 export class UranusEventDate {
     constructor(
         public eventDateId: number | null = null,
+        public dateVenueId: number | null = null,
         public venueId: number | null = null,
         public venueName: string | null = null,
         public spaceId: number | null = null,

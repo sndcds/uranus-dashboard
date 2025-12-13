@@ -1,24 +1,35 @@
 <template>
   <UranusCard custom-style="width:100%;">
-    <header>
-      <div>
-        <h2>{{ venue.venue_name }}
-          <UranusIconAction
-              mode="edit"
-              v-if="venue.can_edit_venue"
-              :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
-          />
-          <UranusIconAction
-              mode="delete"
-              :onClick="() => requestDelete(venue)"
-          />
-        </h2>
-      </div>
-      <p>
-        <span>{{ venue.upcoming_event_count }}</span>
-        <span>&nbsp;{{ t('events') }}</span>
-      </p>
-    </header>
+
+    <div>
+      <h2>{{ venue.venue_name }}</h2>
+      <span>
+        {{t('events') }}: {{ venue.upcoming_event_count }}
+      </span>
+    </div>
+
+    <div class="uranus-card-button-container">
+
+      <UranusButton
+          v-if="venue.can_edit_event"
+          :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
+          icon="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.004 1.004 0 0 0 0-1.42l-2.34-2.34a1.004 1.004 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"
+          variant="uranus-button"
+          class="uranus-tertiary-button"
+      >
+        {{ t('edit_organizer') }}
+      </UranusButton>
+
+      <UranusButton
+          v-if="venue.can_delete_event"
+          icon="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+          variant="uranus-button"
+          class="uranus-tertiary-button"
+          @click="onDeleteEvent(venue)"
+      >
+        {{ t('delete_organizer') }}
+      </UranusButton>
+    </div>
 
     <section>
       <div>
@@ -82,11 +93,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from "vue-i18n"
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 import UranusCard from "@/components/ui/UranusCard.vue";
 import UranusIconAction from "@/components/ui/UranusIconAction.vue";
+import UranusButton from "@/components/ui/UranusButton.vue";
 
 const { t } = useI18n()
 
@@ -133,7 +145,7 @@ const isDeletingSpace = ref(false)
 const pendingSpaceId = ref<number | null>(null)
 const pendingSpaceName = ref('')
 
-const requestDelete = (venue: Venue) => {
+const onDeleteEvent = (venue: Venue) => {
   if (!venue.can_delete_venue) return
   pendingVenueId.value = venue.venue_id
   pendingVenueName.value = venue.venue_name
@@ -226,4 +238,7 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
     isDeletingSpace.value = false
   }
 }
+</script>
+
+<script setup lang="ts">
 </script>

@@ -139,7 +139,7 @@ const loadAvatar = async () => {
     isLoadingAvatar.value = true
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/${userId}/avatar/64`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/${userId}/avatar/256`, {
             method: 'GET',
             headers: Object.keys(headers).length ? headers : undefined,
             cache: 'no-store',
@@ -375,7 +375,8 @@ onBeforeUnmount(() => {
 .profile-photo-wrapper--has-image {
     border-style: solid;
     border-color: transparent;
-    box-shadow: 0 18px 38px rgba(31, 41, 55, 0.14);
+  border: 2px solid var(--uranus-card-border-color);
+    // box-shadow: 0 18px 38px rgba(31, 41, 55, 0.14);
 }
 
 .profile-photo-wrapper--dragover {

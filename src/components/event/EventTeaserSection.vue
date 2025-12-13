@@ -22,10 +22,10 @@
                 <MarkdownEditorComponent v-model="editedTeaser" class="event-teaser__markdown"
                     :placeholder="t('event_teaser_placeholder')" />
                 <div class="event-teaser__actions">
-                    <button type="button" class="uranus-inline-cancel-button" @click="cancelEditing">
+                    <button type="button" class="uranus-cancel-button" @click="cancelEditing">
                         {{ t('cancel') }}
                     </button>
-                    <button type="button" class="uranus-inline-save-button" :disabled="isSaving" @click="saveTeaser">
+                    <button type="button" class="uranus-save-button" :disabled="isSaving" @click="saveTeaser">
                         <span v-if="!isSaving">{{ t('save') }}</span>
                         <span v-else>{{ t('saving') }}</span>
                     </button>

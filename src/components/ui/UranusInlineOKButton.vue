@@ -1,13 +1,13 @@
 <template>
   <button
       type="button"
-      class="uranus-inline-save-button"
+      class="uranus-save-button"
       :disabled="disabled"
       @click="onClick"
       :aria-label="loading ? busyLabel : label"
   >
-    <span v-if="!loading">{{ label }}</span>
-    <span v-else>{{ busyLabel }}</span>
+    <template v-if="!loading">{{ label }}</template>
+    <template v-else>{{ busyLabel }}</template>
   </button>
 </template>
 
@@ -29,15 +29,15 @@ defineProps({
 <style scoped lang="scss">
 
 /* Keyboard focus */
-.uranus-inline-save-button:focus {
+.uranus-save-button:focus {
   outline: none; /* remove default outline */
   border-color: var(--uranus-focus-border-color);
   box-shadow: 0 0 0 1px var(--uranus-focus-border-color);
 }
 
 /* Disabled */
-.uranus-inline-save-button:disabled,
-.uranus-inline-save-button[aria-disabled="true"] {
+.uranus-save-button:disabled,
+.uranus-save-button[aria-disabled="true"] {
   opacity: 0.5;
   cursor: not-allowed;
 }
