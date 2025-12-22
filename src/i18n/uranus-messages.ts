@@ -1497,7 +1497,7 @@ const uranusI18nMessages = {
         time: 'kl.',
         begin: "Start",
         preview: 'Vis',
-        edit: 'Bearbejd',
+        edit: 'Rediger',
         visitor_nav_login: 'Log ind',
         visitor_nav_signup: 'Tilmeld',
         visitor_footer_imprint: 'Impressum',

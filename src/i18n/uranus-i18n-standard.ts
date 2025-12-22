@@ -36,6 +36,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Delete',
         da: 'Slet',
     },
+    image_by: {
+        de: 'Bild',
+        en: 'Image',
+        da: 'Billede',
+    },
     name: {
         de: 'Name',
         en: 'Name',

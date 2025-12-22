@@ -59,6 +59,13 @@
   display: block;
 }
 
+.uranus-public-event-image-caption {
+  display: block;
+  width: 100%;
+  font-size: 0.9rem;
+  padding: 8px 4px;
+}
+
 .event-detail-hero__subtitle {
   margin: 1rem 0 0;
   font-size: clamp(1.25rem, 3vw, 1.5rem);
@@ -128,6 +135,7 @@
 
 
 .uranus-public-event-detail-tags,
+.uranus-public-event-language-tags,
 .uranus-public-event-language-tags {
   display: flex;
   flex-wrap: wrap;
@@ -135,20 +143,28 @@
 }
 
 .uranus-public-event-detail-tag,
-.uranus-public-event-language-tag {
+.uranus-public-event-language-tag,
+.uranus-public-event-tag {
   display: inline-flex;
   align-items: center;
   padding: 0.1rem 0.6rem;
   border-radius: 3px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.uranus-public-event-detail-tag {
   background: var(--uranus-event-tag-background);
   color: var(--uranus-event-tag-color);
-  font-weight: 600;
-  font-size: 0.95rem;
 }
 
 .uranus-public-event-language-tag {
   background: var(--uranus-language-tag-background);
   color: var(--uranus-language-tag-color);
+}
+
+.uranus-public-event-tag {
+  padding: 0.1rem 0.4rem;
 }
 
 

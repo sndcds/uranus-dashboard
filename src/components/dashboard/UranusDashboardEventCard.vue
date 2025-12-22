@@ -3,57 +3,64 @@
 -->
 <template>
   <UranusCard class="uranus-dashboard-event-card">
-    <router-link v-if="props.event.canEditEvent" :to="`/admin/event/${props.event.eventId}`">
-      <div class="uranus-dashboard-event-card-layout">
-        <img
-            class="uranus-dashboard-event-card-image"
-            v-if="props.event.imageIds[0]"
-            :src="buildPlutoPreviewImageUrl(props.event.imageIds[0])"
-            :alt="props.event.title" />
+    <div class="uranus-dashboard-event-card-layout">
+      <img
+          class="uranus-dashboard-event-card-image"
+          v-if="props.event.imageIds[0]"
+          :src="buildPlutoPreviewImageUrl(props.event.imageIds[0])"
+          :alt="props.event.title" />
 
-        <div>
-          <h3>{{ props.event.title }}</h3>
-          <span>{{ uranusFormatEventDateTime(props.event.startDate, props.event.startTime, props.event.endDate, props.event.endTime, locale) }} </span><br>
-          <span>{{ props.event.organizationName }}</span><br>
-          <span v-if="hasVenue">{{ props.event.venueName }}
-            <template v-if="hasSpace">
-              / {{ props.event.spaceName }}
-            </template>
-          </span>
-          <span v-else-if="hasLocation">
-            {{ props.event.locationName }}
-          </span>
-        </div>
-
-        <span class="uranus-dashboard-chip-wrapper">
-          <span
-              class="uranus-dashboard-chip tiny"
-              v-for="eventType in props.event.eventTypes ?? []"
-              :key="eventType?.typeId ?? ''"
-          >
-            {{ uranusEventTypeGenreString(eventType) }}
-          </span>
+      <div>
+        <h3>{{ props.event.title }}</h3>
+        <span>{{ uranusFormatEventDateTime(props.event.startDate, props.event.startTime, props.event.endDate, props.event.endTime, locale) }} </span><br>
+        <span>{{ props.event.organizationName }}</span><br>
+        <span v-if="hasVenue">{{ props.event.venueName }}
+          <template v-if="hasSpace">
+            / {{ props.event.spaceName }}
+          </template>
         </span>
-
-        <div class="uranus-dashboard-event-card-actions">
-          <UranusButton
-              v-if="props.event.canDeleteEvent"
-              class="uranus-tertiary-button"
-              icon="delete"
-              @click.prevent.stop="requestDelete(props.event)"
-          >
-            {{ t('delete') }}
-          </UranusButton>
-        </div>
-      </div>
-      <!--UranusEventReleaseChip :releaseDisplay="props.event.releaseStatusName" size="big" /-->
-      <div class="_status-box">
-        <UranusEventReleaseChip :releaseStatusId="props.event.releaseStatusId" :tiny="true"/>
-        <span v-if="props.event.timeSeries > 1">
-          {{ props.event.timeSeriesIndex }} {{ t('one_of_n') }} {{ props.event.timeSeries }}
+        <span v-else-if="hasLocation">
+          {{ props.event.locationName }}
         </span>
       </div>
-    </router-link>
+
+      <span class="uranus-dashboard-chip-wrapper">
+        <span
+            class="uranus-dashboard-chip tiny"
+            v-for="eventType in props.event.eventTypes ?? []"
+            :key="eventType?.typeId ?? ''"
+        >
+          {{ uranusEventTypeGenreString(eventType) }}
+        </span>
+      </span>
+
+      <div class="uranus-dashboard-event-card-actions">
+        <UranusButton
+            v-if="props.event.canEditEvent"
+            class="uranus-tertiary-button"
+            icon="edit"
+            :to="`/admin/event/${props.event.eventId}`"
+        >
+          {{ t('edit') }}
+        </UranusButton>
+
+        <UranusButton
+            v-if="props.event.canDeleteEvent"
+            class="uranus-tertiary-button"
+            icon="delete"
+            @click.prevent.stop="requestDelete(props.event)"
+        >
+          {{ t('delete') }}
+        </UranusButton>
+      </div>
+    </div>
+    <!--UranusEventReleaseChip :releaseDisplay="props.event.releaseStatusName" size="big" /-->
+    <div class="_status-box">
+      <UranusEventReleaseChip :releaseStatusId="props.event.releaseStatusId" :tiny="true"/>
+      <span v-if="props.event.timeSeries > 1">
+        {{ props.event.timeSeriesIndex }} {{ t('one_of_n') }} {{ props.event.timeSeries }}
+      </span>
+    </div>
   </UranusCard>
 
   <PasswordConfirmModal
@@ -193,7 +200,7 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
   position: relative;
   margin-top: auto;
   padding: 16px;
-  padding-bottom: 40px;
+  padding-bottom: 48px;
   overflow: hidden;
 }
 
@@ -218,8 +225,8 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
 .uranus-dashboard-event-card-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 10px;
-  gap: 12px;
+  margin-top: 20px;
+  gap: 4px;
   position: absolute;
   bottom: 0;
   left: 0;

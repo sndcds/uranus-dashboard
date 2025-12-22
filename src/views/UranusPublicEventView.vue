@@ -17,18 +17,20 @@
       <section class="uranus-public-event-main">
 
         <!-- Main image -->
-        <div v-if="event.imageUrl" class="uranus-public-event-image-frame">
-          <img
-              :src="event.imageUrl.includes('?')
-                ? `${event.imageUrl}&ratio=16:9&width=1280`
-                : `${event.imageUrl}?ratio=16:9&width=1280`"
-              :alt="event.imageAltText ?? event.title ?? ''"
-              class="uranus-public-event-image"
-          />
+        <div>
+          <div v-if="event.imageUrl" class="uranus-public-event-image-frame">
+            <img
+                :src="event.imageUrl.includes('?')
+                  ? `${event.imageUrl}&ratio=16:9&width=1280`
+                  : `${event.imageUrl}?ratio=16:9&width=1280`"
+                :alt="event.imageAltText ?? event.title ?? ''"
+                class="uranus-public-event-image"
+            />
+          </div>
+          <span v-if="buildImageCredit()" class="uranus-public-event-image-caption">
+            {{ buildImageCredit() }}
+          </span>
         </div>
-        <span>
-          © {{ event.imageCopyright }} / {{ event.imageCreatorName }}
-        </span>
 
         <!-- Title area -->
         <div class="uranus-public-section">
@@ -68,8 +70,8 @@
 
         <!-- Tags -->
         <div v-if="event.tags && event.tags.length">
-          <div class="uranus-public-event-language-tags">
-            <span v-for="tag in event.tags" :key="tag">
+          <div class="uranus-public-event-tags">
+            <span v-for="tag in event.tags" :key="tag" class="uranus-public-event-tag">
               #{{ tag }}
             </span>
           </div>
@@ -216,6 +218,20 @@ const isDownloadingIcs = ref(false)
 const loadingLabel = computed(() => t('loading'))
 
 // Helpers
+function buildImageCredit() {
+  const e = event.value
+  if (!e) return null
+  let parts = ''
+  if (e.imageCreatorName) {
+    parts += t('image_by') + ': ' + e.imageCreatorName
+  }
+  if (e.imageCopyright) {
+    if (e.imageCreatorName) { parts += ' ' }
+    parts += `© ${e.imageCopyright}`
+  }
+  return parts.length > 0 ? parts : null
+}
+
 const resolveRouteParam = (param: string | string[] | undefined) =>
   Array.isArray(param) ? param[0] : param
 
