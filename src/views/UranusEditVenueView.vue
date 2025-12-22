@@ -157,7 +157,7 @@ const loadVenueById = async (id: number) => {
 }
 
 const handleSubmit = async (formData: VenueFormSubmitPayload) => {
-    if (isSubmitting.value || venueId.value == null) {
+    if (isSubmitting.value) {
         return
     }
 

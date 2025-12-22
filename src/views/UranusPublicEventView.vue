@@ -22,7 +22,7 @@
               :src="event.imageUrl.includes('?')
                 ? `${event.imageUrl}&ratio=16:9&width=1280`
                 : `${event.imageUrl}?ratio=16:9&width=1280`"
-              :alt="event.title ?? t('event_image_alt_text')"
+              :alt="event.imageAltText ?? event.title ?? ''"
               class="uranus-public-event-image"
           />
         </div>
