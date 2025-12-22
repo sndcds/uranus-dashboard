@@ -1,10 +1,10 @@
 <template>
   <div class="uranus-public-page">
     <!-- Loading state -->
-    <div v-if="isLoading" class="uranus-public-state-info--loading">
+    <div v-if="showLoading" class="uranus-public-state-info--loading">
       <span>{{ loadingLabel }}</span>
     </div>
-
+    
     <!-- Error state -->
     <div v-else-if="loadError" class="uranus-public-state-info--alert">
       <span>{{ loadError }}</span>
@@ -196,14 +196,6 @@ import UranusPublicEventFurtherDates from "@/components/event/UranusPublicEventF
 
 const route = useRoute()
 
-// Watch for changes in route params
-watch(
-    () => [route.params.id, route.params.eventDateId],
-    () => {
-      loadEvent() // reload the event whenever id/date changes
-    }
-)
-
 const { t, locale } = useI18n({ useScope: 'global' })
 const typeLookupStore = useEventTypeLookupStore()
 const languageLookupStore = useLanguageLookupStore()
@@ -212,10 +204,39 @@ const languageLookupStore = useLanguageLookupStore()
 const event = ref<UranusPublicEventDetail | null>(null)
 const eventDate = ref<UranusPublicEventDate | null>(null)
 const isLoading = ref(true)
+const showLoading = ref(false)
+const loadingLabel = computed(() => t('loading'))
 const loadError = ref<string | null>(null)
 const isDownloadingIcs = ref(false)
 
-const loadingLabel = computed(() => t('loading'))
+// Watch for changes in route params
+watch(
+    () => [route.params.id, route.params.eventDateId],
+    () => {
+      loadEvent() // reload the event whenever id/date changes
+    }
+)
+
+// Watch isLoading and delay the indicator
+watch(isLoading, (loading) => {
+  if (loading) {
+    // Delay showing the loader
+    const timeout = setTimeout(() => {
+      showLoading.value = true
+    }, 500)
+
+    // Clear the timeout if loading ends before 0.5s
+    const stopWatch = watch(isLoading, (l) => {
+      if (!l) {
+        clearTimeout(timeout)
+        showLoading.value = false
+        stopWatch() // stop this inner watcher
+      }
+    })
+  } else {
+    showLoading.value = false
+  }
+})
 
 // Helpers
 function buildImageCredit() {
