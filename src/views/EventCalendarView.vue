@@ -67,9 +67,9 @@
                 :is-geocoding-loading="isGeocodingLoading"
                 :user-latitude="userLatitude"
                 :venue-count-options="venueCountOptions"
-                :organizer-count-options="organizerCountOptions"
+                :organization-count-options="organizationCountOptions"
                 :selected-venue="selectedVenue"
-                :selected-organizer="selectedOrganizer"
+                :selected-organization="selectedOrganization"
                 @date-range-apply="onDateRangeApply"
                 @update:search-query="searchQuery = $event"
                 @update:show-my-location="setShowMyLocation"
@@ -80,7 +80,7 @@
                 @reset-filters="resetFilters"
                 @address-search="onAddressSearch"
                 @selected-venue="onSelectedVenue"
-                @selected-organizer="onSelectedOrganizer"
+                @selected-organization="onSelectedOrganization"
             />
 
             <EventCalendarDetailedView v-if="currentView === 'detailed'" :is-loading="isLoading" :load-error="loadError"
@@ -110,17 +110,19 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
-import { useAppStore, type EventVenueSummary, type EventOrganizerSummary } from '@/store/appStore'
+import { useAppStore, type EventVenueSummary, type EventOrganizationSummary } from '@/store/appStore'
 
 import EventCalendarSidebar from '@/components/EventCalendarSidebar.vue'
 import EventCalendarDetailedView from '@/components/EventCalendarDetailedView.vue'
 import EventCalendarCompactView from '@/components/EventCalendarCompactView.vue'
 import EventCalendarTilesView from '@/components/EventCalendarTilesView.vue'
 import EventCalendarMapView from '@/components/EventCalendarMapView.vue'
+import { useEventTypeLookupStore } from '@/store/eventTypesLookup'
+
 
 type VenueSummary = EventVenueSummary & { event_date_count?: number }
 
-type OrganizerSummary = EventOrganizerSummary & { event_date_count: number }
+type OrganizationSummary = EventOrganizationSummary & { event_date_count: number }
 
 interface CalendarEventType {
     genre_id: number | null
@@ -135,7 +137,7 @@ interface EventTypeSummary {
     count: number
 }
 
-interface OrganizerSummaryRaw {
+interface OrganizationSummaryRaw {
     id: number
     name: string
     event_date_count: number
@@ -153,7 +155,7 @@ interface EventSummariesResponse {
     total: number
     type_summary: EventTypeSummary[]
     venues_summary: EventVenueSummary[]
-    organizer_summary?: OrganizerSummaryRaw[]
+    organization_summary?: OrganizationSummaryRaw[]
 }
 
 interface CalendarEvent {
@@ -174,7 +176,7 @@ interface CalendarEvent {
     venue_house_number: string | null
     venue_postal_code: string | null
     event_types: CalendarEventType[] | null
-    organizer_name: string | null
+    organization_name: string | null
     venue_lat?: number | null
     venue_lon?: number | null
     venue_geometry?: unknown
@@ -204,7 +206,7 @@ const isLoading = ref(true)
 const loadError = ref<string | null>(null)
 const typeCountOptions = ref<EventTypeSummary[]>([])
 const venueCountOptions = ref<VenueSummary[]>([])
-const organizerCountOptions = ref<OrganizerSummary[]>([])
+const organizationCountOptions = ref<OrganizationSummary[]>([])
 const isInitialLoadComplete = ref(false)
 const suspendDateWatcher = ref(false)
 const suspendShowMyLocationWatcher = ref(false)
@@ -216,7 +218,7 @@ let isRestoringFilters = false
 const searchQuery = ref('')
 const selectedType = ref<'all' | string>('all')
 const selectedVenue = ref<VenueSummary | null>(null)
-const selectedOrganizer = ref<OrganizerSummary | null>(null)
+const selectedOrganization = ref<OrganizationSummary | null>(null)
 const selectedDate = ref<string | null>(null)
 const selectedEndDate = ref<string | null>(null)
 const showMyLocation = ref(false)
@@ -286,19 +288,19 @@ const toEventVenueSummary = (venue: VenueSummary | null): EventVenueSummary | nu
     }
 }
 
-const toEventOrganizerSummary = (organizer: OrganizerSummary | null): EventOrganizerSummary | null => {
-    if (!organizer) return null
+const toEventOrganizationSummary = (organization: OrganizationSummary | null): EventOrganizationSummary | null => {
+    if (!organization) return null
     return {
-        id: organizer.id,
-        name: organizer.name,
-        city: organizer.city,
-        eventDateCount: organizer.eventDateCount ?? organizer.event_date_count ?? 0,
+        id: organization.id,
+        name: organization.name,
+        city: organization.city,
+        eventDateCount: organization.eventDateCount ?? organization.event_date_count ?? 0,
     }
 }
 
-const normalizeOrganizers = (organizers: unknown): OrganizerSummary[] => {
-    if (!Array.isArray(organizers)) return []
-    return organizers
+const normalizeOrganizations = (organizations: unknown): OrganizationSummary[] => {
+    if (!Array.isArray(organizations)) return []
+    return organizations
         .map((item) => {
             if (!item || typeof item !== 'object') return null
             const raw = item as Record<string, unknown>
@@ -318,7 +320,7 @@ const normalizeOrganizers = (organizers: unknown): OrganizerSummary[] => {
                 eventDateCount: event_date_count,
             }
         })
-        .filter((item): item is OrganizerSummary => Boolean(item))
+        .filter((item): item is OrganizationSummary => Boolean(item))
 }
 
 const normalizeDateValue = (value: string | null) => {
@@ -476,8 +478,8 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
         params.set('venues', String(selectedVenue.value.id))
     }
 
-    if (selectedOrganizer.value?.id) {
-        params.set('organizers', String(selectedOrganizer.value.id))
+    if (selectedOrganization.value?.id) {
+        params.set('organizations', String(selectedOrganization.value.id))
     }
 
     // Add location coordinates and radius if available (from either geolocation or address search)
@@ -489,7 +491,7 @@ const buildApiEndpoint = (path: string, additionalParams?: Record<string, string
     }
 
     if (activeSelectedType.value !== null && activeSelectedType.value !== 'all') {
-        params.set('event_type', String(activeSelectedType.value))
+        params.set('event_types', String(activeSelectedType.value))
     }
 
     // Add any additional parameters
@@ -519,7 +521,7 @@ const filtersActive = computed(() => {
         selectedEndDate.value ||
         (selectedType.value !== 'all') ||
         selectedVenue.value ||
-        selectedOrganizer.value
+        selectedOrganization.value
     )
 })
 
@@ -531,12 +533,12 @@ const filteredEvents = computed(() => {
         list = list.filter((event) => event.typeLabels.includes(selectedType.value as string))
     }
 
-    // Fallback organizer filter (in case API does not filter by organizer)
-    if (selectedOrganizer.value?.id) {
+    // Fallback organization filter (in case API does not filter by organization)
+    if (selectedOrganization.value?.id) {
         list = list.filter((event) => {
-            // API events might expose organizer id/name differently; match by name as fallback
-            const name = event.organizer_name?.toLowerCase().trim()
-            const selectedName = selectedOrganizer.value?.name.toLowerCase().trim()
+            // API events might expose organization id/name differently; match by name as fallback
+            const name = event.organization_name?.toLowerCase().trim()
+            const selectedName = selectedOrganization.value?.name.toLowerCase().trim()
             return selectedName ? name === selectedName : true
         })
     }
@@ -722,7 +724,7 @@ const resetFilters = () => {
     searchQuery.value = ''
     selectedType.value = 'all'
     selectedVenue.value = null
-    selectedOrganizer.value = null
+    selectedOrganization.value = null
     clearDateFilters()
     setShowMyLocation(false)
     userLatitude.value = null
@@ -761,10 +763,10 @@ const applyFiltersFromStore = () => {
                 event_date_count: saved.selectedVenue.eventDateCount,
             }
             : null
-        selectedOrganizer.value = saved.selectedOrganizer
+        selectedOrganization.value = saved.selectedOrganization
             ? {
-                ...saved.selectedOrganizer,
-                event_date_count: saved.selectedOrganizer.eventDateCount,
+                ...saved.selectedOrganization,
+                event_date_count: saved.selectedOrganization.eventDateCount,
             }
             : null
         setShowMyLocation(Boolean(saved.showMyLocation), { silent: true })
@@ -797,20 +799,61 @@ const buildEventRenderKey = (event: CalendarEvent, index: number) => {
     return `${base}-${index}`
 }
 
-const hydrateEvents = (payload: CalendarEvent[], startIndex = 0): AugmentedEvent[] => {
-    return payload.map((event, index) => {
-        const typeLabels = Array.from(
-            new Set((event.event_types ?? []).map((type) => type.type_name).filter((name): name is string => Boolean(name)))
+const TYPE_LABELS: Record<number, string> = {
+  26: "Concert",
+  12: "Workshop",
+}
+
+const GENRE_LABELS: Record<number, string> = {
+  0: "General",
+  100: "Electronic",
+  92: "Experimental",
+  99: "Ambient",
+  98: "Noise",
+}
+
+const hydrateEvents = (
+    payload: CalendarEvent[],
+    startIndex = 0
+): AugmentedEvent[] => {
+  const typeStore = useEventTypeLookupStore()
+  const { locale } = useI18n()
+
+  return payload.map((event, index) => {
+    const lang = locale.value
+
+    // Resolve labels via lookup store
+    const typeLabels = Array.from(
+        new Set(
+            (event.event_types ?? [])
+                .map((t) => typeStore.typeName(lang, t.type_id))
+                .filter((name): name is string => Boolean(name))
         )
-        const startDateTime = buildStartDateTime(event.start_date, event.start_time)
-        const renderKey = buildEventRenderKey(event, startIndex + index)
-        return {
-            ...event,
-            typeLabels,
-            startDateTime,
-            renderKey,
-        }
-    })
+    )
+
+    const genreLabels = Array.from(
+        new Set(
+            (event.event_types ?? [])
+                .map((t) => typeStore.genreName(lang, t.genre_id))
+                .filter((name): name is string => Boolean(name))
+        )
+    )
+
+    const startDateTime = buildStartDateTime(
+        event.start_date,
+        event.start_time
+    )
+
+    const renderKey = buildEventRenderKey(event, startIndex + index)
+
+    return {
+      ...event,
+      typeLabels,
+      genreLabels,
+      startDateTime,
+      renderKey,
+    }
+  })
 }
 
 const setInitialDate = () => {
@@ -852,8 +895,8 @@ const onSelectedVenue = (venue: VenueSummary | null) => {
     void loadEvents({ preserveSelection: true })
 }
 
-const onSelectedOrganizer = (organizer: OrganizerSummary | null) => {
-    selectedOrganizer.value = organizer
+const onSelectedOrganization = (organization: OrganizationSummary | null) => {
+    selectedOrganization.value = organization
     void loadEvents({ preserveSelection: true })
 }
 
@@ -888,7 +931,7 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
             allEventsCount.value = data.total
             typeCountOptions.value = data.type_summary
             venueCountOptions.value = normalizeVenueSummaries(data.venues_summary || [])
-            organizerCountOptions.value = normalizeOrganizers(data.organizer_summary || [])
+            organizationCountOptions.value = normalizeOrganizations(data.organization_summary || [])
 
         }
     } catch (error: unknown) {
@@ -912,7 +955,6 @@ const loadEvents = async (options: LoadEventsOptions = {}) => {
             }
 
             paginationOffset.value = offset + incoming.length
-
             hasMoreEvents.value = incoming.length === EVENTS_PAGE_SIZE
 
             if (!append && !preserveSelection) {
@@ -994,7 +1036,7 @@ const onWindowScroll = () => {
 }
 
 const attachScrollListener = () => {
-    if (typeof window === 'undefined' || scrollListenerAttached) return
+  if (typeof window === 'undefined' || scrollListenerAttached) return
     window.addEventListener('scroll', onWindowScroll, { passive: true })
     scrollListenerAttached = true
 }
@@ -1006,18 +1048,17 @@ const detachScrollListener = () => {
 }
 
 onMounted(async () => {
-    attachScrollListener()
+  await loadEvents()
+  attachScrollListener()
 
-    await loadEvents()
+  if (pendingTypeFilterId.value !== null && pendingTypeFilterId.value !== 'all') {
+    await filterByType(pendingTypeFilterId.value)
+  }
 
-    if (pendingTypeFilterId.value !== null && pendingTypeFilterId.value !== 'all') {
-        await filterByType(pendingTypeFilterId.value)
-    }
-
-    pendingTypeFilterId.value = null
-    void nextTick(() => {
-        maybeLoadAdditionalEvents()
-    })
+  pendingTypeFilterId.value = null
+  void nextTick(() => {
+    maybeLoadAdditionalEvents()
+  })
 })
 
 const getUserLocation = () => {
@@ -1118,7 +1159,7 @@ watch(
         selectedType,
         activeSelectedType,
         selectedVenue,
-        selectedOrganizer,
+        selectedOrganization,
         showMyLocation,
         userLatitude,
         userLongitude,
@@ -1133,7 +1174,7 @@ watch(
             selectedType: selectedType.value,
             activeSelectedType: activeSelectedType.value,
             selectedVenue: toEventVenueSummary(selectedVenue.value),
-            selectedOrganizer: toEventOrganizerSummary(selectedOrganizer.value),
+            selectedOrganization: toEventOrganizationSummary(selectedOrganization.value),
             showMyLocation: showMyLocation.value,
             userLatitude: userLatitude.value,
             userLongitude: userLongitude.value,

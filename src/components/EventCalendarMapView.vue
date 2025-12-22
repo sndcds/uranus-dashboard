@@ -37,7 +37,7 @@ interface CalendarEvent {
     venue_postal_code: string | null
     venue_country?: string | null
     event_types: CalendarEventType[] | null
-    organizer_name: string | null
+    organization_name: string | null
     geometry?: unknown
     geojson?: unknown
     venue_geometry?: unknown
@@ -98,7 +98,7 @@ const buildFeature = (event: AugmentedEvent): Feature<Point> | null => {
             venue_address: buildAddress(event),
             venue_postal_code: event.venue_postal_code,
             venue_country: event.venue_country,
-            organizer_name: event.organizer_name,
+            organization_name: event.organization_name,
             event_types: (event.event_types ?? []).map((type) => type.type_name).filter(Boolean),
         }
     }

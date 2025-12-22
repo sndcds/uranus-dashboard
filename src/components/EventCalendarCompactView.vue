@@ -94,8 +94,8 @@
                   </template>
                 </template>
               </div>
-              <div v-if="eventDetails.organizer_name" class="calendar-event-compact__field">
-                <strong>{{ detailOrganizerLabel }}:</strong> {{ eventDetails.organizer_name }}
+              <div v-if="eventDetails.organization_name" class="calendar-event-compact__field">
+                <strong>{{ detailOrganizationLabel }}:</strong> {{ eventDetails.organization_name }}
               </div>
               <div v-if="eventDetails.date.spaceName" class="calendar-event-compact__field">
                 <strong>{{ detailSpaceLabel }}:</strong> {{ eventDetails.date.spaceName }}
@@ -168,7 +168,7 @@ interface CalendarEvent {
     venue_house_number: string | null
     venue_postal_code: string | null
     event_types: CalendarEventType[] | null
-    organizer_name: string | null
+    organization_name: string | null
 }
 
 interface AugmentedEvent extends CalendarEvent {
@@ -217,8 +217,8 @@ interface EventDetails {
     subtitle: string | null
     description: string | null
     teaser_text: string | null
-    organizer_id: number | null
-    organizer_name: string | null
+    organization_id: number | null
+    organization_name: string | null
     event_types: CalendarEventType[]
     event_urls: EventUrl[] | null
     languages: string[]
@@ -251,7 +251,7 @@ const loadingLabel = computed(() => t('events_calendar_loading'))
 const emptyLabel = computed(() => t('events_calendar_empty'))
 const detailLoadingLabel = computed(() => t('events_calendar_loading_details'))
 const detailDateLabel = computed(() => t('events_calendar_detail_date_label'))
-const detailOrganizerLabel = computed(() => t('events_calendar_detail_organizer_label'))
+const detailOrganizationLabel = computed(() => t('events_calendar_detail_organization_label'))
 const detailSpaceLabel = computed(() => t('events_calendar_detail_space_label'))
 const detailAddressLabel = computed(() => t('events_calendar_detail_address_label'))
 const detailLinksLabel = computed(() => t('events_calendar_detail_links_label'))

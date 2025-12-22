@@ -6,7 +6,7 @@
     <UranusInlineEditLabel
         :label-text="t('event_title')"
         :edit-button-text="t('edit')"
-        @edit-started="startEdit"
+        @edit-started="onStartEdit"
     />
 
     <!-- Edit form -->
@@ -32,8 +32,8 @@
       <UranusInlineEditActions
           :isSaving="isSaving"
           :canSave="canSave"
-          @save="save"
-          @cancel="cancelEdit"
+          @save="onSave"
+          @cancel="onCancel"
       />
 
     </UranusInlineSectionLayout>
@@ -85,21 +85,22 @@ const titleError = computed(() => {
   return ''
 })
 
-function startEdit() {
+function onStartEdit() {
   if (!event?.value) return
   draft.title = event.value.title
   draft.subtitle = event.value.subtitle ?? ''
   isEditing.value = true
 }
 
-function cancelEdit() {
+function onCancel() {
+  console.log("..................")
   if (!event?.value) return
   draft.title = event.value.title
   draft.subtitle = event.value.subtitle ?? ''
   isEditing.value = false
 }
 
-async function save() {
+async function onSave() {
   if (!event?.value) return
   isSaving.value = true
 

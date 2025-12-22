@@ -11,7 +11,7 @@
         :loading="isSubmitting"
         :error-message="error"
         :success-message="success"
-        :organizer-id="appStore.organizerId"
+        :organization-id="appStore.organizationId"
         @submit="handleSubmit"
         @clear-error="clearError"
     />

@@ -1,14 +1,19 @@
+<!--
+  UranusInlineEditActions.vue
+-->
 <template>
   <UranusInlineActionBar>
     <UranusInlineCancelButton
         :label="translatedCancelLabel"
-        :onClick="handleCancel"
+        :disabled="isSaving"
+        @click="emitCancel"
     />
-    <UranusInlineOKButton
+    <UranusInlineSaveButton
         :label="translatedSaveLabel"
         :busyLabel="translatedBusyLabel"
-        :onClick="handleSave"
         :disabled="!canSave || isSaving"
+        :loading="isSaving"
+        @click="emitSave"
     />
   </UranusInlineActionBar>
 </template>
@@ -17,8 +22,8 @@
 import { useI18n } from 'vue-i18n'
 import UranusInlineActionBar from "@/components/ui/UranusInlineActionBar.vue";
 import UranusInlineCancelButton from "@/components/ui/UranusInlineCancelButton.vue";
-import UranusInlineOKButton from "@/components/ui/UranusInlineOKButton.vue";
-import {computed} from "vue";
+import UranusInlineSaveButton from "@/components/ui/UranusInlineSaveButton.vue";
+import { computed } from "vue";
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -37,8 +42,13 @@ const translatedCancelLabel = computed(() => t('cancel'))
 const emit = defineEmits<{
   (e: 'save'): void;
   (e: 'cancel'): void;
-}>();
+}>()
 
-const handleSave = () => emit('save');
-const handleCancel = () => emit('cancel');
+const emitSave = () => {
+  emit('save')
+}
+
+const emitCancel = () => {
+  emit('cancel')
+}
 </script>

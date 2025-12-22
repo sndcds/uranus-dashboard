@@ -5,56 +5,56 @@
         :subtitle="t('events_subtitle')" />
 
     <UranusDashboardActionBar v-if="canAddEvent">
-      <router-link :to="`/admin/organizer/${organizerId}/event/create`" class="uranus-secondary-button">
+      <router-link
+          :to="`/admin/organization/${organizationId}/event/create`"
+          class="uranus-secondary-button"
+      >
         {{ t('add_new_event') }}
       </router-link>
     </UranusDashboardActionBar>
+    <span v-else>Warum du keine Events hinzufügen kannst</span> <!-- TODO: Hinsweis einfügen! -->
 
     <div class="uranus-dashboard-event-card-grid uranus-max-layout">
       <UranusDashboardEventCard
           v-for="event in events"
           :key="event.eventId"
-          :event="event as UranusEventBase"
+          :event="event"
       />
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, provide } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import UranusDashboardEventCard from '@/components/dashboard/UranusDashboardEventCard.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
-import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
-import {mapDashboardEventData} from "@/utils/UranusDashboardEventDataMapper.ts";
-import {UranusEventBase} from "@/models/UranusEventModel.ts";
-
-const apiBase = import.meta.env.VITE_API_URL
+import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue"
+import { mapDashboardEventData } from "@/utils/UranusDashboardEventDataMapper.ts"
+import { UranusEventBase } from "@/models/UranusEventModel.ts"
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
 
-const organizerId = Number(route.params.id)
+const organizationId = Number(route.params.id)
 
 const events = ref<UranusEventBase[]>([])
 const error = ref<string | null>(null)
 const isLoading = ref(false)
 const canAddEvent = ref(false)
 
-const loadOrganizerPermission = async () => {
-    try {
-        const { data } = await apiFetch<{ can_add_event: boolean }>(
-            `/api/admin/organizer/${organizerId}/event/permission`
-        )
-        canAddEvent.value = Boolean(data?.can_add_event)
-    } catch (err) {
-        console.error('Failed to load organizer permissions', err)
-        canAddEvent.value = false
-    }
+const loadOrganizationPermission = async () => {
+  try {
+    const { data } = await apiFetch<{ can_add_event: boolean }>(
+        `/api/admin/organization/${organizationId}/event/permission`
+    )
+    canAddEvent.value = Boolean(data?.can_add_event)
+  } catch {
+    canAddEvent.value = false
+  }
 }
 
 const fetchEvents = async () => {
@@ -62,38 +62,21 @@ const fetchEvents = async () => {
   error.value = null
 
   try {
-    const { data, status } = await apiFetch<
-        UranusEventBase[] | { events?: any[] } // raw API response
-    >(
-        `/api/admin/organizer/${organizerId}/events?lang=${locale.value}`
+    const { data } = await apiFetch(
+        `/api/admin/organization/${organizationId}/events?lang=${locale.value}`
     )
 
-    if (status >= 200 && status < 300) {
-      let rawEvents: any[] = []
+    const rawEvents = Array.isArray(data) ? data : []
+    events.value = rawEvents
+        .map(mapDashboardEventData)
+        .filter((e): e is UranusEventBase => e !== null)
 
-      if (Array.isArray(data)) {
-        rawEvents = data
-      } else if (data && typeof data === 'object' && Array.isArray(data.events)) {
-        rawEvents = data.events
-      }
+  } catch (err) {
+    error.value =
+        err instanceof Error
+            ? err.message
+            : t('events_fetch_failed_generic')
 
-      // Map snake_case → camelCase using mapEvent
-      events.value = rawEvents
-          .map((e) => mapDashboardEventData(e))
-          .filter((e): e is UranusEventBase => e != null)
-    } else {
-      error.value = t('events_fetch_failed', { status })
-      events.value = []
-    }
-  } catch (err: unknown) {
-    if (typeof err === 'object' && err && 'data' in err) {
-      const e = err as { data?: { error?: string } }
-      error.value = e.data?.error || t('events_fetch_failed_generic')
-    } else if (err instanceof Error) {
-      error.value = err.message
-    } else {
-      error.value = t('events_fetch_failed_generic')
-    }
     events.value = []
   } finally {
     isLoading.value = false
@@ -101,26 +84,32 @@ const fetchEvents = async () => {
 }
 
 onMounted(async () => {
-    await fetchEvents()
-    await loadOrganizerPermission()
+  await Promise.all([
+    fetchEvents(),
+    loadOrganizationPermission(),
+  ])
 })
 
 interface DeleteEventPayload {
-    eventId: number
-    eventDateId: number | null
-    deleteSeries: boolean
+  eventId: number
+  eventDateId: number | null
+  deleteSeries: boolean
 }
 
-const removeEventCard = async ({ eventId, eventDateId, deleteSeries }: DeleteEventPayload) => {
-    if (deleteSeries) {
-        events.value = events.value.filter(event => event.eventId !== eventId)
-    } else if (eventDateId !== null) {
-        events.value = events.value.filter(event => event.eventDateId !== eventDateId)
-    } else {
-        events.value = events.value.filter(event => event.eventId !== eventId)
-    }
+const removeEventCard = async ({
+                                 eventId,
+                                 eventDateId,
+                                 deleteSeries,
+                               }: DeleteEventPayload) => {
+  if (deleteSeries) {
+    events.value = events.value.filter(e => e.eventId !== eventId)
+  } else if (eventDateId !== null) {
+    events.value = events.value.filter(e => e.eventDateId !== eventDateId)
+  } else {
+    events.value = events.value.filter(e => e.eventId !== eventId)
+  }
 
-    await fetchEvents()
+  await fetchEvents()
 }
 </script>
 

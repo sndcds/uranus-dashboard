@@ -97,7 +97,7 @@ interface CalendarEvent {
     venue_house_number: string | null
     venue_postal_code: string | null
     event_types: CalendarEventType[] | null
-    organizer_name: string | null
+    organization_name: string | null
 }
 
 interface AugmentedEvent extends CalendarEvent {

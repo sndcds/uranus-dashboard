@@ -3,26 +3,25 @@ import { useTokenStore } from '@/store/tokenStore'
 
 import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
-import UranusDashboardOrganizersView from '@/views/UranusDashboardOrganizersView.vue'
+import UranusDashboardOrganizationsView from '@/views/UranusDashboardOrganizationsView.vue'
 import SettingsView from '@/views/SettingsView.vue'
-import FormOrganizerCreateView from '@/views/FormOrganizerCreateView.vue'
 import UranusDashboardVenuesView from '@/views/UranusDashboardVenuesView.vue'
 import SignupView from '@/views/SignupView.vue'
 import FormVenueCreateView from '@/views/FormVenueCreateView.vue'
 import FormSpaceView from '@/views/FormSpaceView.vue'
 import UranusDashboardEventsView from '@/views/UranusDashboardEventsView.vue'
 import UranusDashboardAddEventView from '@/views/UranusDashboardAddEventView.vue'
-import UranusEventEditorView from '@/views/UranusEventEditorView.vue'
+import UranusEditEventView from '@/views/UranusEditEventView.vue'
 import UserPermissionView from '@/views/UserPermissionView.vue'
 import FormUserProfileView from '@/views/FormUserProfileView.vue'
 import EventCalendarView from '@/views/EventCalendarView.vue'
-import FormOrganizerUpdateView from '@/views/FormOrganizerUpdateView.vue'
-import FormVenueUpdateView from '@/views/FormVenueUpdateView.vue'
+import UranusEditOrganizationView from '@/views/UranusEditOrganizationView.vue'
+import UranusEditVenueView from '@/views/UranusEditVenueView.vue'
 import ForgotPasswordView from '@/views/ForgotPasswordView.vue'
 import ResetPasswordView from '@/views/ResetPasswordView.vue'
 import MessageInboxView from '@/views/MessageInboxView.vue'
 import MessageSendView from '@/views/MessageSendView.vue'
-import EventDetailView from '@/views/EventDetailView.vue'
+import UranusPublicEventView from '@/views/UranusPublicEventView.vue'
 import ImprintView from '@/views/ImprintView.vue'
 import PrivacyView from '@/views/PrivacyView.vue'
 import TermsView from '@/views/TermsView.vue'
@@ -32,8 +31,9 @@ import EmptyVenuesView from '@/views/EmptyVenuesView.vue'
 import EmptyEventsView from '@/views/EmptyEventsView.vue'
 import UserActivateView from '@/views/UserActivateView.vue'
 import InviteActivateView from '@/views/InviteActivateView.vue'
-import FormOrganizerTeamView from '@/views/FormOrganizerTeamView.vue'
+import FormOrganizationTeamView from '@/views/FormOrganizationTeamView.vue'
 import MemberPermissionView from '@/views/MemberPermissionView.vue'
+import UranusCalendarView from '@/views/UranusCalendarView.vue'
 
 import GenericLayout from '@/components/layout/GenericLayout.vue'
 
@@ -53,9 +53,9 @@ const routes = [
                 component: DashboardView,
             },
             {
-                path: 'organizers',
-                name: 'admin-organizers',
-                component: UranusDashboardOrganizersView,
+                path: 'organizations',
+                name: 'admin-organizations',
+                component: UranusDashboardOrganizationsView,
             },
             {
                 path: 'settings',
@@ -63,69 +63,69 @@ const routes = [
                 component: SettingsView,
             },
             {
-                path: 'organizer/create',
-                name: 'admin-create-organizer',
-                component: FormOrganizerCreateView,
+                path: 'organization/create',
+                name: 'admin-create-organization',
+                component: UranusEditOrganizationView,
             },
             {
-                path: 'organizer/:id/edit',
-                name: 'admin-edit-organizer',
-                component: FormOrganizerUpdateView,
+                path: 'organization/:id/edit',
+                name: 'admin-edit-organization',
+                component: UranusEditOrganizationView,
             },
             {
-                path: 'organizer/:id/team',
-                name: 'admin-team-organizer',
-                component: FormOrganizerTeamView,
+                path: 'organization/:id/team',
+                name: 'admin-team-organization',
+                component: FormOrganizationTeamView,
             },
             {
-                path: 'organizer/:id/venue/create',
+                path: 'organization/:id/venue/create',
                 name: 'admin-create-venue',
-                component: FormVenueCreateView,
+                component: UranusEditVenueView,
             },
             {
-                path: 'organizer/:id/venue/:venueId/edit',
+                path: 'organization/:id/venue/:venueId/edit',
                 name: 'admin-edit-venue',
-                component: FormVenueUpdateView,
+                component: UranusEditVenueView,
             },
             {
-                path: 'organizer/:id/venue/:venueId/space/create',
+                path: 'organization/:id/venue/:venueId/space/create',
                 name: 'admin-create-space',
                 component: FormSpaceView,
             },
             {
-                path: 'organizer/:id/venue/:venueId/space/:spaceId/edit',
+                path: 'organization/:id/venue/:venueId/space/:spaceId/edit',
                 name: 'admin-edit-space',
                 component: FormSpaceView,
             },
             {
-                path: 'organizer/:id/venues',
+                path: 'organization/:id/venues',
                 name: 'admin-venues',
                 component: UranusDashboardVenuesView,
             },
             {
-                path: 'organizer/venues/empty',
+                path: 'organization/venues/empty',
                 name: 'admin-venues-empty',
                 component: EmptyVenuesView,
             },
             {
-                path: 'organizer/:id/events',
-                name: 'admin-organizer-events',
+                path: 'organization/:id/events',
+                name: 'admin-organization-events',
                 component: UranusDashboardEventsView,
             },
             {
-                path: 'organizer/events/empty',
+                path: 'organization/events/empty',
                 name: 'admin-events-empty',
                 component: EmptyEventsView,
             },
             {
-                path: 'organizer/:id/event/create',
+                path: 'organization/:id/event/create',
                 name: 'admin-create-event',
                 component: UranusDashboardAddEventView,
             },
             {
                 path: 'event/:id',
                 name: 'admin-event-details',
-                component: UranusEventEditorView,
+                component: UranusEditEventView,
             },
             {
                 path: 'user/permissions',
@@ -153,7 +153,7 @@ const routes = [
                 component: InviteActivateView,
             },
             {
-                path: 'organizer/:id/member/:memberId/permission',
+                path: 'organization/:id/member/:memberId/permission',
                 name: 'admin-edit-member-permission',
                 component: MemberPermissionView,
             }
@@ -166,12 +166,12 @@ const routes = [
             {
                 path: '',
                 name: 'events',
-                component: EventCalendarView,
+                component: UranusCalendarView,
             },
             {
                 path: 'event/:id/date/:eventDateId',
                 name: 'event-details',
-                component: EventDetailView,
+                component: UranusPublicEventView,
             },
             {
                 path: 'imprint',

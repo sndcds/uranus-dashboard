@@ -23,8 +23,8 @@ const i18n = createI18n({
 const router = createRouter({
   history: createMemoryHistory(),
   routes: [
-    { path: '/admin/organizer/:id/events', component: { template: '<div>Events</div>' } },
-    { path: '/admin/organizer/:organizerId/event/create', component: { template: '<div>Create</div>' } },
+    { path: '/admin/organization/:id/events', component: { template: '<div>Events</div>' } },
+    { path: '/admin/organization/:organizationId/event/create', component: { template: '<div>Create</div>' } },
     { path: '/admin/event/:id', component: { template: '<div>Event Detail</div>' } },
   ],
 })
@@ -61,8 +61,8 @@ describe('UranusDashboardEventsView', () => {
     vi.clearAllMocks()
   })
 
-  const createWrapper = async (organizerId = '1') => {
-    await router.push(`/admin/organizer/${organizerId}/events`)
+  const createWrapper = async (organizationId = '1') => {
+    await router.push(`/admin/organization/${organizationId}/events`)
     await router.isReady()
 
     return mount(UranusDashboardEventsView, {
@@ -93,7 +93,7 @@ describe('UranusDashboardEventsView', () => {
     const addButton = wrapper.find('a.uranus-button')
     expect(addButton.exists()).toBe(true)
     expect(addButton.text()).toBe('Add New Event')
-    expect(addButton.attributes('href')).toBe('/admin/organizer/1/event/create')
+    expect(addButton.attributes('href')).toBe('/admin/organization/1/event/create')
   })
 
   it('loads events on mount', async () => {
@@ -103,7 +103,7 @@ describe('UranusDashboardEventsView', () => {
     const wrapper = await createWrapper('123')
     await flushPromises()
 
-    expect(apiFetch).toHaveBeenCalledWith('/api/admin/organizer/123/events?start=2000-01-01')
+    expect(apiFetch).toHaveBeenCalledWith('/api/admin/organization/123/events?start=2000-01-01')
   })
 
   it('handles array response format', async () => {
@@ -146,7 +146,7 @@ describe('UranusDashboardEventsView', () => {
     const wrapper = await createWrapper()
 
     // Component should render and pass loading state to UranusDashboardEventCard
-    const eventsCard = wrapper.findComponent({ name: 'OrganizerEventsCard' })
+    const eventsCard = wrapper.findComponent({ name: 'OrganizationEventsCard' })
     expect(eventsCard.exists()).toBe(true)
   })
 

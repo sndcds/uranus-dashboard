@@ -94,7 +94,7 @@ const fieldErrors = reactive({
     password: null as string | null,
 })
 
-const signupSubtitle = computed(() => (te('signup_subtitle') ? t('signup_subtitle') : 'Create a new organizer account to get started.'))
+const signupSubtitle = computed(() => (te('signup_subtitle') ? t('signup_subtitle') : 'Create a new organization account to get started.'))
 const passwordFieldType = computed(() => (isPasswordVisible.value ? 'text' : 'password'))
 const passwordToggleLabel = computed(() =>
     isPasswordVisible.value
@@ -128,8 +128,8 @@ const isValidEmail = (value: string) => {
     return emailPattern.test(value)
 }
 
-const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
-const invalidEmailMessage = computed(() => (te('organizer_form_invalid_email') ? t('organizer_form_invalid_email') : 'Please provide a valid email address.'))
+const requiredFieldMessage = computed(() => (te('required_field') ? t('required_field') : 'This field is required'))
+const invalidEmailMessage = computed(() => (te('organization_form_invalid_email') ? t('organization_form_invalid_email') : 'Please provide a valid email address.'))
 const emailsDoNotMatchMessage = computed(() => (te('emails_do_not_match') ? t('emails_do_not_match') : 'Email addresses do not match'))
 
 watch(email, (value) => {

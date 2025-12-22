@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 import { createPinia, setActivePinia } from 'pinia'
-import UranusOrganizerCard from '../../src/components/organizer/UranusOrganizerCard.vue'
+import UranusOrganizationCard from '../../src/components/organization/UranusOrganizationCard.vue'
 import { useAppStore } from '../../src/store/appStore'
 
 const i18n = createI18n({
@@ -11,12 +11,12 @@ const i18n = createI18n({
   locale: 'en',
   messages: {
     en: {
-      edit_organizer: 'Edit Organizer',
-      delete_organizer: 'Delete Organizer',
-      organizer_active: 'Active',
-      organizer_activate: 'Activate',
-      confirm_delete_organizer: 'Delete Organizer?',
-      confirm_delete_organizer_description: 'Are you sure you want to delete this organizer?',
+      edit_organization: 'Edit Organization',
+      delete_organization: 'Delete Organization',
+      organization_active: 'Active',
+      organization_activate: 'Activate',
+      confirm_delete_organization: 'Delete Organization?',
+      confirm_delete_organization_description: 'Are you sure you want to delete this organization?',
       deleting: 'Deleting...',
     },
   },
@@ -25,7 +25,7 @@ const i18n = createI18n({
 const router = createRouter({
   history: createMemoryHistory(),
   routes: [
-    { path: '/admin/organizer/:organizerId/edit', component: { template: '<div>Edit</div>' } },
+    { path: '/admin/organization/:organizationId/edit', component: { template: '<div>Edit</div>' } },
   ],
 })
 
@@ -42,21 +42,21 @@ interface Venue {
   spaces: Space[]
 }
 
-interface Organizer {
-  organizer_id: number
-  organizer_name: string
+interface Organization {
+  organization_id: number
+  organization_name: string
   total_upcoming_events: number
   venues: Venue[]
 }
 
-describe('UranusOrganizerCard', () => {
+describe('UranusOrganizationCard', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   })
 
-  const mockOrganizer: Organizer = {
-    organizer_id: 1,
-    organizer_name: 'Test Organizer',
+  const mockOrganization: Organization = {
+    organization_id: 1,
+    organization_name: 'Test Organization',
     total_upcoming_events: 10,
     venues: [
       {
@@ -79,9 +79,9 @@ describe('UranusOrganizerCard', () => {
     ],
   }
 
-  const createWrapper = (organizer: Organizer = mockOrganizer) => {
-    return mount(UranusOrganizerCard, {
-      props: { organizer },
+  const createWrapper = (organization: Organization = mockOrganization) => {
+    return mount(UranusOrganizationCard, {
+      props: { organization },
       global: {
         plugins: [i18n, router],
       },
@@ -89,17 +89,17 @@ describe('UranusOrganizerCard', () => {
   }
 
   describe('Rendering', () => {
-    it('renders organizer name', () => {
+    it('renders organization name', () => {
       const wrapper = createWrapper()
-      expect(wrapper.find('h2').text()).toBe('Test Organizer')
+      expect(wrapper.find('h2').text()).toBe('Test Organization')
     })
 
-    it('renders edit organizer link', () => {
+    it('renders edit organization link', () => {
       const wrapper = createWrapper()
       const editLink = wrapper.find('a')
       expect(editLink.exists()).toBe(true)
-      expect(editLink.text()).toBe('Edit Organizer')
-      expect(editLink.attributes('href')).toContain('/admin/organizer/1/edit')
+      expect(editLink.text()).toBe('Edit Organization')
+      expect(editLink.attributes('href')).toContain('/admin/organization/1/edit')
     })
 
     it('renders activate button', () => {
@@ -113,9 +113,9 @@ describe('UranusOrganizerCard', () => {
   })
 
   describe('Active State', () => {
-    it('shows "Active" when organizer is active', () => {
+    it('shows "Active" when organization is active', () => {
       const appStore = useAppStore()
-      appStore.setOrganizerId(1)
+      appStore.setOrganizationId(1)
 
       const wrapper = createWrapper()
       const buttons = wrapper.findAll('button')
@@ -123,9 +123,9 @@ describe('UranusOrganizerCard', () => {
       expect(activateButton.text()).toBe('Active')
     })
 
-    it('shows "Activate" when organizer is not active', () => {
+    it('shows "Activate" when organization is not active', () => {
       const appStore = useAppStore()
-      appStore.setOrganizerId(999) // Different organizer
+      appStore.setOrganizationId(999) // Different organization
 
       const wrapper = createWrapper()
       const buttons = wrapper.findAll('button')
@@ -133,25 +133,25 @@ describe('UranusOrganizerCard', () => {
       expect(activateButton.text()).toBe('Activate')
     })
 
-    it('applies active class to card when organizer is active', () => {
+    it('applies active class to card when organization is active', () => {
       const appStore = useAppStore()
-      appStore.setOrganizerId(1)
+      appStore.setOrganizationId(1)
 
       const wrapper = createWrapper()
-      expect(wrapper.find('.organizer-card--active').exists()).toBe(true)
+      expect(wrapper.find('.organization-card--active').exists()).toBe(true)
     })
 
-    it('does not apply active class when organizer is not active', () => {
+    it('does not apply active class when organization is not active', () => {
       const appStore = useAppStore()
-      appStore.setOrganizerId(999)
+      appStore.setOrganizationId(999)
 
       const wrapper = createWrapper()
-      expect(wrapper.find('.organizer-card--active').exists()).toBe(false)
+      expect(wrapper.find('.organization-card--active').exists()).toBe(false)
     })
 
-    it('applies active class to button when organizer is active', () => {
+    it('applies active class to button when organization is active', () => {
       const appStore = useAppStore()
-      appStore.setOrganizerId(1)
+      appStore.setOrganizationId(1)
 
       const wrapper = createWrapper()
       const buttons = wrapper.findAll('button')
@@ -161,7 +161,7 @@ describe('UranusOrganizerCard', () => {
   })
 
   describe('Activate Functionality', () => {
-    it('activates organizer on button click', async () => {
+    it('activates organization on button click', async () => {
       const appStore = useAppStore()
       const wrapper = createWrapper()
       const buttons = wrapper.findAll('button')
@@ -169,7 +169,7 @@ describe('UranusOrganizerCard', () => {
 
       await activateButton.trigger('click')
 
-      expect(appStore.organizerId).toBe(1)
+      expect(appStore.organizationId).toBe(1)
     })
 
     it('updates button text after activation', async () => {
@@ -185,39 +185,39 @@ describe('UranusOrganizerCard', () => {
       expect(activateButton.text()).toBe('Active')
     })
 
-    it('can activate different organizer', async () => {
+    it('can activate different organization', async () => {
       const appStore = useAppStore()
-      // First activate organizer 1
-      appStore.setOrganizerId(1)
+      // First activate organization 1
+      appStore.setOrganizationId(1)
 
-      // Create wrapper for organizer 2
-      const organizer2 = { ...mockOrganizer, organizer_id: 2, organizer_name: 'Organizer 2' }
-      const wrapper = createWrapper(organizer2)
+      // Create wrapper for organization 2
+      const organization2 = { ...mockOrganization, organization_id: 2, organization_name: 'Organization 2' }
+      const wrapper = createWrapper(organization2)
       const buttons = wrapper.findAll('button')
       const activateButton = buttons[1] // Second button is the activate button
 
       await activateButton.trigger('click')
 
-      expect(appStore.organizerId).toBe(2)
+      expect(appStore.organizationId).toBe(2)
     })
   })
 
   describe('Activate Functionality', () => {
-    it('activates organizer on button click', async () => {
+    it('activates organization on button click', async () => {
       const appStore = useAppStore()
-      appStore.setOrganizerId(999)
+      appStore.setOrganizationId(999)
 
       const wrapper = createWrapper()
       const button = wrapper.findAll('button')[1]
 
       await button.trigger('click')
 
-      expect(appStore.organizerId).toBe(1)
+      expect(appStore.organizationId).toBe(1)
     })
 
     it('updates button text after activation', async () => {
       const appStore = useAppStore()
-      appStore.setOrganizerId(999)
+      appStore.setOrganizationId(999)
 
       const wrapper = createWrapper()
       const button = wrapper.findAll('button')[1]
@@ -230,22 +230,22 @@ describe('UranusOrganizerCard', () => {
       expect(button.text()).toBe('Active')
     })
 
-    it('can activate different organizer', async () => {
+    it('can activate different organization', async () => {
       const appStore = useAppStore()
-      appStore.setOrganizerId(1)
+      appStore.setOrganizationId(1)
 
-      const organizer2: Organizer = {
-        ...mockOrganizer,
-        organizer_id: 2,
-        organizer_name: 'Second Organizer',
+      const organization2: Organization = {
+        ...mockOrganization,
+        organization_id: 2,
+        organization_name: 'Second Organization',
       }
 
-      const wrapper = createWrapper(organizer2)
+      const wrapper = createWrapper(organization2)
       const button = wrapper.findAll('button')[1]
 
       await button.trigger('click')
 
-      expect(appStore.organizerId).toBe(2)
+      expect(appStore.organizationId).toBe(2)
     })
   })
 
@@ -268,7 +268,7 @@ describe('UranusOrganizerCard', () => {
     it('displays all venues in table', () => {
       const wrapper = createWrapper()
       const rows = wrapper.findAll('tbody tr').filter(row =>
-        !row.classes().includes('organizer-card__table-row--total')
+        !row.classes().includes('organization-card__table-row--total')
       )
 
       expect(rows).toHaveLength(2)
@@ -279,7 +279,7 @@ describe('UranusOrganizerCard', () => {
     it('displays venue space counts', () => {
       const wrapper = createWrapper()
       const rows = wrapper.findAll('tbody tr').filter(row =>
-        !row.classes().includes('organizer-card__table-row--total')
+        !row.classes().includes('organization-card__table-row--total')
       )
 
       const cells1 = rows[0].findAll('td')
@@ -292,7 +292,7 @@ describe('UranusOrganizerCard', () => {
     it('displays venue event counts', () => {
       const wrapper = createWrapper()
       const rows = wrapper.findAll('tbody tr').filter(row =>
-        !row.classes().includes('organizer-card__table-row--total')
+        !row.classes().includes('organization-card__table-row--total')
       )
 
       const cells1 = rows[0].findAll('td')
@@ -304,7 +304,7 @@ describe('UranusOrganizerCard', () => {
 
     it('displays total row with correct count', () => {
       const wrapper = createWrapper()
-      const totalRow = wrapper.find('.organizer-card__table-row--total')
+      const totalRow = wrapper.find('.organization-card__table-row--total')
 
       expect(totalRow.exists()).toBe(true)
       expect(totalRow.text()).toContain('Total')
@@ -314,38 +314,38 @@ describe('UranusOrganizerCard', () => {
 
   describe('Empty State', () => {
     it('displays empty message when no venues', () => {
-      const emptyOrganizer: Organizer = {
-        organizer_id: 3,
-        organizer_name: 'Empty Organizer',
+      const emptyOrganization: Organization = {
+        organization_id: 3,
+        organization_name: 'Empty Organization',
         total_upcoming_events: 0,
         venues: [],
       }
 
-      const wrapper = createWrapper(emptyOrganizer)
+      const wrapper = createWrapper(emptyOrganization)
 
       expect(wrapper.find('table').exists()).toBe(false)
-      expect(wrapper.find('.organizer-card__empty').exists()).toBe(true)
+      expect(wrapper.find('.organization-card__empty').exists()).toBe(true)
       expect(wrapper.text()).toContain('No venues found')
     })
 
     it('does not display table when no venues', () => {
-      const emptyOrganizer: Organizer = {
-        organizer_id: 3,
-        organizer_name: 'Empty Organizer',
+      const emptyOrganization: Organization = {
+        organization_id: 3,
+        organization_name: 'Empty Organization',
         total_upcoming_events: 0,
         venues: [],
       }
 
-      const wrapper = createWrapper(emptyOrganizer)
-      expect(wrapper.find('.organizer-card__table').exists()).toBe(false)
+      const wrapper = createWrapper(emptyOrganization)
+      expect(wrapper.find('.organization-card__table').exists()).toBe(false)
     })
   })
 
   describe('Venue Data Variations', () => {
     it('handles venue with no spaces', () => {
-      const organizer: Organizer = {
-        organizer_id: 4,
-        organizer_name: 'Test',
+      const organization: Organization = {
+        organization_id: 4,
+        organization_name: 'Test',
         total_upcoming_events: 3,
         venues: [
           {
@@ -357,9 +357,9 @@ describe('UranusOrganizerCard', () => {
         ],
       }
 
-      const wrapper = createWrapper(organizer)
+      const wrapper = createWrapper(organization)
       const rows = wrapper.findAll('tbody tr').filter(row =>
-        !row.classes().includes('organizer-card__table-row--total')
+        !row.classes().includes('organization-card__table-row--total')
       )
 
       const cells = rows[0].findAll('td')
@@ -373,9 +373,9 @@ describe('UranusOrganizerCard', () => {
         upcoming_event_count: i,
       }))
 
-      const organizer: Organizer = {
-        organizer_id: 5,
-        organizer_name: 'Test',
+      const organization: Organization = {
+        organization_id: 5,
+        organization_name: 'Test',
         total_upcoming_events: 45,
         venues: [
           {
@@ -387,9 +387,9 @@ describe('UranusOrganizerCard', () => {
         ],
       }
 
-      const wrapper = createWrapper(organizer)
+      const wrapper = createWrapper(organization)
       const rows = wrapper.findAll('tbody tr').filter(row =>
-        !row.classes().includes('organizer-card__table-row--total')
+        !row.classes().includes('organization-card__table-row--total')
       )
 
       const cells = rows[0].findAll('td')
@@ -397,9 +397,9 @@ describe('UranusOrganizerCard', () => {
     })
 
     it('handles zero event counts', () => {
-      const organizer: Organizer = {
-        organizer_id: 6,
-        organizer_name: 'Test',
+      const organization: Organization = {
+        organization_id: 6,
+        organization_name: 'Test',
         total_upcoming_events: 0,
         venues: [
           {
@@ -411,26 +411,26 @@ describe('UranusOrganizerCard', () => {
         ],
       }
 
-      const wrapper = createWrapper(organizer)
-      const totalRow = wrapper.find('.organizer-card__table-row--total')
+      const wrapper = createWrapper(organization)
+      const totalRow = wrapper.find('.organization-card__table-row--total')
       expect(totalRow.text()).toContain('0')
     })
   })
 
   describe('Special Characters', () => {
-    it('handles special characters in organizer name', () => {
-      const organizer: Organizer = {
-        ...mockOrganizer,
-        organizer_name: 'Café & Bar "The Stage"',
+    it('handles special characters in organization name', () => {
+      const organization: Organization = {
+        ...mockOrganization,
+        organization_name: 'Café & Bar "The Stage"',
       }
 
-      const wrapper = createWrapper(organizer)
+      const wrapper = createWrapper(organization)
       expect(wrapper.find('h2').text()).toBe('Café & Bar "The Stage"')
     })
 
     it('handles special characters in venue name', () => {
-      const organizer: Organizer = {
-        ...mockOrganizer,
+      const organization: Organization = {
+        ...mockOrganization,
         venues: [
           {
             venue_id: 501,
@@ -441,7 +441,7 @@ describe('UranusOrganizerCard', () => {
         ],
       }
 
-      const wrapper = createWrapper(organizer)
+      const wrapper = createWrapper(organization)
       expect(wrapper.text()).toContain('Hall #1 (Main)')
     })
   })
@@ -454,11 +454,11 @@ describe('UranusOrganizerCard', () => {
 
     it('displays ribbon label when active', () => {
       const appStore = useAppStore()
-      appStore.setOrganizerId(1)
+      appStore.setOrganizationId(1)
 
       const wrapper = createWrapper()
       // The component applies the active class which adds the ribbon via CSS
-      expect(wrapper.classes()).toContain('organizer-card--active')
+      expect(wrapper.classes()).toContain('organization-card--active')
     })
 
     it('has header element', () => {
@@ -468,28 +468,28 @@ describe('UranusOrganizerCard', () => {
 
     it('has button group section', () => {
       const wrapper = createWrapper()
-      expect(wrapper.find('.organizer-card__button-group').exists()).toBe(true)
+      expect(wrapper.find('.organization-card__button-group').exists()).toBe(true)
     })
   })
 
   describe('Navigation', () => {
-    it('generates correct edit link for different organizer IDs', () => {
-      const organizer: Organizer = {
-        ...mockOrganizer,
-        organizer_id: 42,
+    it('generates correct edit link for different organization IDs', () => {
+      const organization: Organization = {
+        ...mockOrganization,
+        organization_id: 42,
       }
 
-      const wrapper = createWrapper(organizer)
+      const wrapper = createWrapper(organization)
       const editLink = wrapper.find('a')
-      expect(editLink.attributes('href')).toContain('/admin/organizer/42/edit')
+      expect(editLink.attributes('href')).toContain('/admin/organization/42/edit')
     })
   })
 
   describe('Multiple Venues', () => {
     it('calculates total correctly with multiple venues', () => {
-      const organizer: Organizer = {
-        organizer_id: 7,
-        organizer_name: 'Multi Venue',
+      const organization: Organization = {
+        organization_id: 7,
+        organization_name: 'Multi Venue',
         total_upcoming_events: 15,
         venues: [
           {
@@ -513,8 +513,8 @@ describe('UranusOrganizerCard', () => {
         ],
       }
 
-      const wrapper = createWrapper(organizer)
-      const totalRow = wrapper.find('.organizer-card__table-row--total')
+      const wrapper = createWrapper(organization)
+      const totalRow = wrapper.find('.organization-card__table-row--total')
       expect(totalRow.text()).toContain('15')
     })
 
@@ -526,16 +526,16 @@ describe('UranusOrganizerCard', () => {
         spaces: [],
       }))
 
-      const organizer: Organizer = {
-        organizer_id: 8,
-        organizer_name: 'Many Venues',
+      const organization: Organization = {
+        organization_id: 8,
+        organization_name: 'Many Venues',
         total_upcoming_events: 15,
         venues,
       }
 
-      const wrapper = createWrapper(organizer)
+      const wrapper = createWrapper(organization)
       const rows = wrapper.findAll('tbody tr').filter(row =>
-        !row.classes().includes('organizer-card__table-row--total')
+        !row.classes().includes('organization-card__table-row--total')
       )
 
       expect(rows).toHaveLength(5)

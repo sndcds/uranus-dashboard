@@ -1,5 +1,5 @@
 <template>
-  <UranusFieldLabel id="url-type-select" :label="t('event_link_type')">
+  <UranusFieldLabel :label="t('event_url_type')">
     <select
         v-model="selectedId"
         class="_uranus-select"
@@ -7,11 +7,7 @@
         :disabled="isLoading"
     >
       <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-      <option
-          v-for="option in urlTypeOptions"
-          :key="option.key"
-          :value="option.key"
-      >
+      <option v-for="option in urlTypeOptions" :key="option.key" :value="option.key">
         {{ option.label }}
       </option>
     </select>
@@ -25,57 +21,52 @@ import { apiFetch } from "@/api.ts";
 import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue";
 
 // Props + v-model
-const props = defineProps<{
-  modelValue: string | null;
-}>();
-const emit = defineEmits<{
-  (e: "update:modelValue", value: number | null): void;
-}>();
+const props = defineProps<{ modelValue: number | null }>()
+const emit = defineEmits<{ (e: "update:modelValue", value: number | null): void }>()
 
-const { t, locale } = useI18n({ useScope: "global" });
+const { t, locale } = useI18n({ useScope: "global" })
 
-// State
-const isLoading = ref(false);
-const selectedId = ref<string | null>(props.modelValue ?? null);
-const options = ref<{ key: number; label: string }[]>([]);
+const isLoading = ref(false)
+const options = ref<{ key: number; label: string }[]>([])
+const selectedId = ref<number | null>(props.modelValue)
 
-// Watch parent updates
-watch(
-    () => props.modelValue,
-    (newVal) => {
-      selectedId.value = newVal ?? null;
-    }
-);
+// Dropdown options
+const urlTypeOptions = computed(() => options.value)
 
-// Computed dropdown options
-const urlTypeOptions = computed(() => options.value);
+// Watch modelValue & options to preselect
+watch([() => options.value, () => props.modelValue], () => {
+  selectedId.value = props.modelValue
+}, { immediate: true })
 
-// Emit integer or null on selection change
+
+// Emit new value when select changes
 function onSelect() {
-  emit("update:modelValue", selectedId.value !== null ? Number(selectedId.value) : null);
+  emit("update:modelValue", selectedId.value)
 }
 
 // Fetch options from API
 async function fetchOptions() {
-  isLoading.value = true;
+  isLoading.value = true
   try {
-    const { data } = await apiFetch(`/api/choosable-url-types/event?lang=${locale.value}`);
-    options.value = (Array.isArray(data) ? data : []).map((item: any) => ({
+    const { data } = await apiFetch(`/api/choosable-url-types/event?lang=${locale.value}`)
+    options.value = (Array.isArray(data) ? data : []).map(item => ({
       key: item.id ?? 0,
-      label: item.name ?? "",
-    }));
-    selectedId.value = props.modelValue ?? null;
+      label: item.name ?? ""
+    }))
+    // Ensure selectedId is valid
+    if (props.modelValue !== null && !options.value.find(opt => opt.key === props.modelValue)) {
+      selectedId.value = null
+    }
   } catch (err) {
-    console.error("Failed to fetch URL types:", err);
-    options.value = [];
-    selectedId.value = null;
+    console.error("Failed to fetch URL types:", err)
+    options.value = []
+    selectedId.value = null
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
 }
 
-// Fetch on mount
-onMounted(fetchOptions);
+onMounted(fetchOptions)
 </script>
 
 <style scoped lang="scss">

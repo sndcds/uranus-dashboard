@@ -118,7 +118,7 @@ const mockEvents = [
     venue_house_number: '123',
     venue_postal_code: '12345',
     event_types: [{ type_id: 1, type_name: 'Concert', genre_id: null, genre_name: null }],
-    organizer_name: 'Test Organizer',
+    organization_name: 'Test Organization',
   },
   {
     id: 2,
@@ -137,7 +137,7 @@ const mockEvents = [
     venue_house_number: null,
     venue_postal_code: null,
     event_types: [{ type_id: 2, type_name: 'Exhibition', genre_id: 1, genre_name: 'Art' }],
-    organizer_name: 'Another Organizer',
+    organization_name: 'Another Organization',
   },
 ]
 
@@ -209,7 +209,7 @@ describe('EventCalendarView', () => {
     await flushPromises()
 
     expect(wrapper.find('.calendar-state--error').exists()).toBe(true)
-    
+
     // Restore console.error
     consoleErrorSpy.mockRestore()
   })

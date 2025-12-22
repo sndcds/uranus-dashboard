@@ -143,7 +143,7 @@
                 :onClick="cancelEdit"
             />
 
-            <UranusInlineOKButton
+            <UranusInlineSaveButton
                 :label="okButtonLabel"
                 :busyLabel="okButtonLabel"
                 :disabled="isSaving || !canSave"
@@ -492,7 +492,7 @@ import UranusTextInput from "@/components/ui/UranusTextInput.vue"
 import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
 import UranusInlineActionBar from "@/components/ui/UranusInlineActionBar.vue"
 import UranusInlineCancelButton from "@/components/ui/UranusInlineCancelButton.vue"
-import UranusInlineOKButton from "@/components/ui/UranusInlineOKButton.vue"
+import UranusInlineSaveButton from "@/components/ui/UranusInlineSaveButton.vue"
 import UranusInlineSectionLayout from "@/components/ui/UranusInlineSectionLayout.vue";
 onUnmounted(() => {
     clearPreview()

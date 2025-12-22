@@ -88,7 +88,7 @@ type PermissionListResponse = Record<string, PermissionBitEntry[] | null | undef
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
 
-const organizerId = computed(() => {
+const organizationId = computed(() => {
   const raw = Number(route.params.id)
   return Number.isFinite(raw) ? raw : null
 })
@@ -100,11 +100,11 @@ const memberId = computed(() => {
 
 const pageSubtitle = computed(() => replaceInTemplate(t('user_permissions_subtitle'), {
   name: memberDisplayName.value ?? t('user_unknown'),
-  organization: organizerName.value ?? t('organizer_unknown'),
+  organization: organizationName.value ?? t('organization_unknown'),
 }))
 
 const entityTypeLabels = computed<Record<string, string>>(() => ({
-  organizer: t('user_permissions_type_organizer'),
+  organization: t('user_permissions_type_organization'),
   venue: t('user_permissions_type_venue'),
   space: t('user_permissions_type_space'),
   event: t('user_permissions_type_event'),
@@ -115,11 +115,11 @@ const error = ref<string | null>(null)
 const permissionGroups = ref<PermissionGroup[]>([])
 const selectedBits = ref<number[]>([])
 const memberDisplayName = ref<string | null>(null)
-const organizerName = ref<string | null>(null)
+const organizationName = ref<string | null>(null)
 const permissionMask = ref<number | null>(null)
 const isUpdatingBit = ref<number | null>(null)
 const updateError = ref<string | null>(null)
-const canModifyPermissions = computed(() => memberId.value != null && organizerId.value != null)
+const canModifyPermissions = computed(() => memberId.value != null && organizationId.value != null)
 
 const toMaskValue = (value: unknown): number | null => {
   if (typeof value === 'number' && Number.isFinite(value)) {
@@ -171,20 +171,20 @@ const loadMember = async () => {
   }
 }
 
-const loadOrganizer = async () => {
-  if (organizerId.value == null) {
+const loadOrganization = async () => {
+  if (organizationId.value == null) {
     return
   }
 
   try {
     const { data } = await apiFetch<{ name: string | null }>(
-      `/api/organizer/${organizerId.value}`
+      `/api/organization/${organizationId.value}`
     )
     if (data && data.name) {
-      organizerName.value = data.name
+      organizationName.value = data.name
     }
   } catch (err) {
-    console.error('Failed to load organizer details', err)
+    console.error('Failed to load organization details', err)
   }
 }
 
@@ -278,7 +278,7 @@ const updatePermission = async (
   updateError.value = null
 
   try {
-    await apiFetch(`/api/admin/organizer/${organizerId.value}/member/${memberId.value}/permission`, {
+    await apiFetch(`/api/admin/organization/${organizationId.value}/member/${memberId.value}/permission`, {
       method: 'PUT',
       body: JSON.stringify({ bit: entry.bit, enabled }),
     })
@@ -299,7 +299,7 @@ const updatePermission = async (
 const loadUserPermissions = async () => {
   if (
     memberId.value == null ||
-    organizerId.value == null ||
+    organizationId.value == null ||
     !permissionGroups.value.length
   ) {
     return
@@ -307,7 +307,7 @@ const loadUserPermissions = async () => {
 
   try {
     const { data } = await apiFetch<{ permissions?: number | string | null }>(
-      `/api/admin/user/${memberId.value}/organizer/${organizerId.value}/permissions`
+      `/api/admin/user/${memberId.value}/organization/${organizationId.value}/permissions`
     )
 
     const mask = toMaskValue(data?.permissions ?? null)
@@ -326,7 +326,7 @@ const loadUserPermissions = async () => {
 }
 
 watch(
-  () => [memberId.value, organizerId.value, locale.value],
+  () => [memberId.value, organizationId.value, locale.value],
   () => {
     void loadPermissions()
   }
@@ -334,7 +334,7 @@ watch(
 
 onMounted(() => {
   void loadPermissions()
-  void loadOrganizer()
+  void loadOrganization()
   void loadMember()
 })
 </script>

@@ -19,7 +19,7 @@
             </UranusFormRow>
 
             <UranusFormRow>
-                <RegionSelectorComponent v-if="showRegionSelector" v-model:country-code="countryCode"
+                <UranusRegionSelect v-if="showRegionSelector" v-model:country-code="countryCode"
                     v-model:state-code="stateCode" />
             </UranusFormRow>
         </section>
@@ -80,7 +80,7 @@ import { useI18n } from 'vue-i18n'
 
 import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
-import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
+import UranusRegionSelect from '@/components/selects/UranusRegionSelect.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue"
 import UranusTextInput from "@/components/ui/UranusTextInput.vue"
 import UranusFormRow from "@/components/ui/UranusFormRow.vue"
@@ -184,10 +184,10 @@ const localError = ref<string | null>(null)
 const mapHint = computed(() => t('venue_map_hint'))
 const descriptionPlaceholder = computed(() => t('venue_description_placeholder'))
 const descriptionLabelId = 'venue-description-label'
-const requiredFieldMessage = computed(() => t('event_error_required'))
-const missingRequiredMessage = computed(() => t('organizer_form_missing_required'))
-const invalidEmailMessage = computed(() => t('organizer_form_invalid_email'))
-const invalidWebsiteMessage = computed(() => t('organizer_form_invalid_website'))
+const requiredFieldMessage = computed(() => t('required_field'))
+const missingRequiredMessage = computed(() => t('organization_form_missing_required'))
+const invalidEmailMessage = computed(() => t('organization_form_invalid_email'))
+const invalidWebsiteMessage = computed(() => t('organization_form_invalid_website'))
 
 const displayError = computed(() => localError.value ?? props.errorMessage ?? null)
 const invalidDatesMessage = computed(() => t('venue_invalid_dates'))

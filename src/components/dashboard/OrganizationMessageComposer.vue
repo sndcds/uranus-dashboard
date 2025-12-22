@@ -1,6 +1,6 @@
 <template>
   <section class="composer-panel">
-    <div v-if="!selectedOrganizer" class="inbox-placeholder">
+    <div v-if="!selectedOrganization" class="inbox-placeholder">
       <p>{{ placeholderLabel }}</p>
     </div>
 
@@ -14,12 +14,12 @@
       <header class="message-form__header">
         <div class="message-recipient">
           <span class="message-recipient__label">{{ recipientLabel }}</span>
-          <strong class="message-recipient__name">{{ selectedOrganizer.name }}</strong>
-          <span v-if="selectedOrganizer.email" class="message-recipient__email">
-            {{ selectedOrganizer.email }}
+          <strong class="message-recipient__name">{{ selectedOrganization.name }}</strong>
+          <span v-if="selectedOrganization.email" class="message-recipient__email">
+            {{ selectedOrganization.email }}
           </span>
-          <span v-if="selectedOrganizerLocation" class="message-recipient__meta">
-            {{ selectedOrganizerLocation }}
+          <span v-if="selectedOrganizationLocation" class="message-recipient__meta">
+            {{ selectedOrganizationLocation }}
           </span>
         </div>
       </header>
@@ -82,15 +82,15 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-interface Organizer {
+interface Organization {
   id: string | number;
   name: string;
   email?: string;
 }
 
 const props = defineProps<{
-  selectedOrganizer: Organizer | null;
-  selectedOrganizerLocation: string | null;
+  selectedOrganization: Organization | null;
+  selectedOrganizationLocation: string | null;
 }>()
 
 const emit = defineEmits<{
@@ -128,7 +128,7 @@ const resetState = () => {
 }
 
 watch(
-  () => props.selectedOrganizer,
+  () => props.selectedOrganization,
   () => {
     resetState()
   }
@@ -158,7 +158,7 @@ const resolveErrorMessage = (err: unknown, fallback: string): string => {
 }
 
 const sendMessage = async () => {
-  if (!props.selectedOrganizer) {
+  if (!props.selectedOrganization) {
     return
   }
 
@@ -174,18 +174,18 @@ const sendMessage = async () => {
 
   try {
     const rawContextId =
-      typeof props.selectedOrganizer.id === 'number'
-        ? props.selectedOrganizer.id
-        : Number.parseInt(String(props.selectedOrganizer.id), 10)
+      typeof props.selectedOrganization.id === 'number'
+        ? props.selectedOrganization.id
+        : Number.parseInt(String(props.selectedOrganization.id), 10)
     const contextIdPayload =
       typeof rawContextId === 'number' && Number.isFinite(rawContextId)
         ? rawContextId
-        : props.selectedOrganizer.id
+        : props.selectedOrganization.id
 
     await apiFetch(`/api/admin/send-message`, {
       method: 'POST',
       body: JSON.stringify({
-        context: 'organizer',
+        context: 'organization',
         context_id: contextIdPayload,
         subject: messageSubject.value.trim(),
         message: messageBody.value.trim(),

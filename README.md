@@ -7,7 +7,7 @@
 Uranus Dashboard is a Vue 3 single-page application that helps cultural organisations run their events, venues, and spaces. The app offers a visitor-facing calendar as well as an authenticated workspace where editors can manage organisers, venues, event metadata, translations, and personal settings.
 
 > **Good to know**  
-> The UI expects a Uranus API server that exposes the `/api` endpoints used throughout the codebase (for example `/api/admin/login`, `/api/admin/organizer/:id`, `/api/admin/event/create`, …). You can still explore the UI without a backend, but data loads and mutations will fail.
+> The UI expects a Uranus API server that exposes the `/api` endpoints used throughout the codebase (for example `/api/admin/login`, `/api/admin/organization/:id`, `/api/admin/event/create`, …). You can still explore the UI without a backend, but data loads and mutations will fail.
 
 ## Feature Highlights
 
@@ -130,15 +130,15 @@ Test helpers, mocks, and specs live inside the `tests/` directory—see `tests/R
 ### Dashboard Workspace (authenticated)
 
 - **Dashboard home (`/`):** A welcome hero reminding users of key tasks.
-- **Organisers (`/organizers`):** List fetched from `/api/admin/organizer/dashboard`, with cards linking to create/update flows.
-- **Create & edit organiser (`/organizer/create`, `/organizer/:id/edit`):**
+- **Organisers (`/organizations`):** List fetched from `/api/admin/organization/dashboard`, with cards linking to create/update flows.
+- **Create & edit organiser (`/organization/create`, `/organization/:id/edit`):**
   - Forms capture legal form, country/state via live dropdowns (`/api/choosable-legal-forms`, `/api/choosable-countries`, `/api/choosable-states`).
   - Use the integrated Markdown editor for rich descriptions and the Leaflet map to refine coordinates.
   - Non-profit status is toggled via an accessible checkbox.
-- **Venues (`/organizer/:id/venues` and `/organizer/:id/venue/:venueId/edit`):**
+- **Venues (`/organization/:id/venues` and `/organization/:id/venue/:venueId/edit`):**
   - Reuses the shared `VenueForm.vue`, ensuring consistent layout between create and update flows.
   - Supports optional Markdown descriptions, opened/closed dates, website URLs without protocol prefixes, and geocoding.
-- **Spaces (`/organizer/:id/venue/:venueId/space/...`):**
+- **Spaces (`/organization/:id/venue/:venueId/space/...`):**
   - `FormSpaceView.vue` loads existing spaces when editing and submits updates through the admin API.
 - **Events:**
   - `EventDashboardView.vue` aggregates an organiser’s events.
@@ -157,12 +157,12 @@ Test helpers, mocks, and specs live inside the `tests/` directory—see `tests/R
 ### Personalisation & Persistence
 
 - **Theme switcher:** Stored via `useThemeStore`; selections persist in `localStorage` and update the DOM `data-theme` attribute (`light`/`dark`).
-- **Organizer selection memory:** `useAppStore` keeps the last chosen organiser ID to streamline event/venue creation.
+- **Organization selection memory:** `useAppStore` keeps the last chosen organiser ID to streamline event/venue creation.
 - **Locale persistence:** Vue I18n syncs with user preferences returned by the API after login.
 
 ## Internationalisation
 
-- Supported locales live in `src/i18n/index.ts` with German (`de`), English (`en`), and Danish (`da`) catalogues.
+- Supported locales live in `src/i18n/uranus-i18n-index.ts` with German (`de`), English (`en`), and Danish (`da`) catalogues.
 - Shared translation groups (e.g., authentication copy) are centralised for consistency.
 - Use `te('key')` in components when you must guard against missing translations.
 - To add a new language:

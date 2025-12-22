@@ -2,7 +2,7 @@
 <template>
   <UranusFieldLabel
       id="event-venue-space-select"
-      :label="t('event_place')"
+      :label="t('venue_place')"
       :required="props.required"
   >
     <select
@@ -29,6 +29,7 @@ import { useI18n } from "vue-i18n"
 import { apiFetch } from "@/api.ts"
 import type { UranusVenueSpaceSelection } from "@/models/UranusEventModel.ts"
 import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
+import { buildVenueSpaceKey } from "@/utils/UranusUtils.ts"
 
 const { t } = useI18n()
 
@@ -47,6 +48,7 @@ const emit = defineEmits<{
 // --- Local reactive model ---------------------------------------------------
 
 const localValue = reactive<UranusVenueSpaceSelection>({
+  dateVenueId: props.modelValue?.dateVenueId ?? null,
   venueId: props.modelValue?.venueId ?? null,
   spaceId: props.modelValue?.spaceId ?? null,
   venueName: props.modelValue?.venueName ?? null,
@@ -66,10 +68,19 @@ watch(
 // --- Options ---------------------------------------------------------------
 
 const options = ref<
-    { key: string; label: string; venue_id: number; space_id: number | null }[]
+    {
+      key: string
+      label: string
+      venue_id: number
+      space_id: number | null
+      dateVenueId: number
+      venue_name: string
+      space_name: string | null
+    }[]
 >([])
 
 const isLoading = ref(false)
+
 
 async function fetchVenueSpaceOptions() {
   isLoading.value = true
@@ -77,12 +88,15 @@ async function fetchVenueSpaceOptions() {
     const { data } = await apiFetch(`/api/admin/user/choosable-venues-spaces`)
 
     options.value = (Array.isArray(data) ? data : []).map((item) => ({
-      key: `${item.venue_id}_${item.space_id ?? "null"}`,
+      key: buildVenueSpaceKey(item.venue_id, item.space_id),
       label: item.space_name
           ? `${item.venue_name} / ${item.space_name}`
           : item.venue_name,
       venue_id: item.venue_id,
       space_id: item.space_id,
+      dateVenueId: item.venue_id,
+      venue_name: item.venue_name,
+      space_name: item.space_name ?? null,
     }))
   } catch (err) {
     console.error("Failed to fetch venue/space options:", err)
@@ -94,18 +108,16 @@ async function fetchVenueSpaceOptions() {
 
 onMounted(fetchVenueSpaceOptions)
 
-// --- Select Key (computed v-model) -----------------------------------------
-
 const selectedKey = computed({
   get(): string {
-    if (localValue.venueId == null) return ""
-    return `${localValue.venueId}_${localValue.spaceId ?? "null"}`
+    return buildVenueSpaceKey(localValue.venueId, localValue.spaceId)
   },
 
   set(newKey: string) {
     if (!newKey) {
       // Reset selection
       Object.assign(localValue, {
+        dateVenueId: null,
         venueId: null,
         spaceId: null,
         venueName: null,
@@ -115,27 +127,20 @@ const selectedKey = computed({
       return
     }
 
-    const [vStr, sStr] = newKey.split("_")
-    const venueId = Number(vStr)
-    const spaceId = sStr === "null" ? null : Number(sStr)
-
-    const found = options.value.find(
-        (o) => o.venue_id === venueId && o.space_id === spaceId
-    )
+    // Find the option by its string key (works for "venue" or "venue_space")
+    const found = options.value.find(o => o.key === newKey)
     if (!found) return
 
-    const hasSpace = found.space_id !== null
-    const [venueName, spaceName] = found.label.split(" / ")
-
     Object.assign(localValue, {
-      venueId,
-      spaceId,
-      venueName: venueName ?? null,
-      spaceName: hasSpace ? spaceName ?? null : null,
+      dateVenueId: found.dateVenueId,
+      venueId: found.venue_id,
+      spaceId: found.space_id,
+      venueName: found.venue_name ?? null,
+      spaceName: found.space_name ?? null
     })
 
     emit("update:modelValue", { ...localValue })
-  },
+  }
 })
 </script>
 

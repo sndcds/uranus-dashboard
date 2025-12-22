@@ -1,7 +1,10 @@
+<!--
+  UranusEditEventDate.vue
+-->
 <template>
   <div>
     <!-- Only display the event date, emit 'edit' when requested -->
-    <UranusEventDateDisplay
+    <UranusEditEventDateDisplay
         :event-date="props.eventDate"
         :can-edit="true"
         @edit="$emit('edit', props.eventDate)"
@@ -10,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import UranusEventDateDisplay from './UranusEventDateDisplay.vue'
+import UranusEditEventDateDisplay from './UranusEditEventDateDisplay.vue'
 import type { UranusEventDate } from '@/models/UranusEventModel.ts'
 
 const props = defineProps<{

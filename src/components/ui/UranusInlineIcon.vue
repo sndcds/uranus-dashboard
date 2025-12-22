@@ -5,7 +5,7 @@
   <component
       :is="to ? 'router-link' : 'span'"
       :to="to"
-      class="uranus-action-icon-wrapper"
+      class="uranus-inline-icon"
       :class="modeClass"
       :title="title"
       @click="handleClick"
@@ -65,32 +65,3 @@ const modeClass = computed(() => {
 })
 </script>
 
-<style scoped lang="scss">
-.uranus-action-icon-wrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  opacity: 0.6;
-  transition: all 0.4s ease;
-  color: var(--uranus-ia-inline-color);
-
-  &.clickable {
-    cursor: pointer;
-  }
-
-  &:hover {
-    opacity: 1;
-    background-color: var(--uranus-ia-inline-color);
-    color: white;
-  }
-
-  svg {
-    display: block;
-    width: 18px;
-    height: 18px;
-  }
-}
-</style>

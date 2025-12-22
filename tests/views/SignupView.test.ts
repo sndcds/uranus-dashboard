@@ -10,7 +10,7 @@ const i18n = createI18n({
   messages: {
     en: {
       signup: 'Sign Up',
-      signup_subtitle: 'Create a new organizer account to get started.',
+      signup_subtitle: 'Create a new organization account to get started.',
       email: 'Email',
       repeat_email: 'Repeat Email',
       password: 'Password',
@@ -19,7 +19,7 @@ const i18n = createI18n({
       have_account: 'Already have an account?',
       login: 'Log In',
       event_error_required: 'This field is required',
-      organizer_form_invalid_email: 'Please provide a valid email address.',
+      organization_form_invalid_email: 'Please provide a valid email address.',
       emails_do_not_match: 'Email addresses do not match',
       signup_failed: 'Signup failed',
       password_show_label: 'Show password',
@@ -69,7 +69,7 @@ describe('SignupView', () => {
       },
     })
 
-    expect(wrapper.text()).toContain('Create a new organizer account')
+    expect(wrapper.text()).toContain('Create a new organization account')
   })
 
   it('shows link to login page', () => {

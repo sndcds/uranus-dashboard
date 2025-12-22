@@ -11,10 +11,10 @@
             />
 
             <div class="event-section__grid">
-                <UranusFieldLabel id="organizer" :label="t('event_organizer_label')" required :error="errors.organizerId">
-                    <select id="organizer" v-model="basicInfo.organizerId">
+                <UranusFieldLabel id="organization" :label="t('event_organization_label')" required :error="errors.organizationId">
+                    <select id="organization" v-model="basicInfo.organizationId">
                         <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-                        <option v-for="org in organizers" :key="org.id" :value="org.id">
+                        <option v-for="org in organizations" :key="org.id" :value="org.id">
                             {{ org.name }}
                         </option>
                     </select>
@@ -82,7 +82,7 @@ const onSelectionUpdate = (selection: Selection[]) => {
 }
 
 const props = defineProps<{
-    organizerId: number | null
+    organizationId: number | null
     modelValue: EventBasicInfoModel
 }>()
 
@@ -101,7 +101,7 @@ interface SelectOption {
 const emptyBasicInfo = (): EventBasicInfoModel => ({
     title: '',
     subtitle: '',
-    organizerId: null,
+    organizationId: null,
     venueId: null,
     spaceId: null,
     typeGenrePairs: [],
@@ -110,12 +110,12 @@ const emptyBasicInfo = (): EventBasicInfoModel => ({
 const basicInfo = reactive<EventBasicInfoModel>(emptyBasicInfo())
 
 const venues = ref<SelectOption[]>([])
-const organizers = ref<SelectOption[]>([])
+const organizations = ref<SelectOption[]>([])
 const spaces = ref<SelectOption[]>([])
 const errors = reactive({
     title: null as string | null,
     subtitle: null as string | null,
-    organizerId: null as string | null,
+    organizationId: null as string | null,
     venueId: null as string | null,
     spaceId: null as string | null,
 })
@@ -137,36 +137,36 @@ watch(
 )
 
 watch(
-    () => props.organizerId,
+    () => props.organizationId,
     async (id) => {
-        await fetchOrganizers(id ?? null)
+        await fetchOrganizations(id ?? null)
         await fetchVenues(id ?? null)
         await fetchSpaces(basicInfo.venueId)
     },
     { immediate: true }
 )
 
-async function fetchOrganizers(contextId: number | null) {
+async function fetchOrganizations(contextId: number | null) {
     if (!contextId) {
-        organizers.value = []
-        basicInfo.organizerId = null
+        organizations.value = []
+        basicInfo.organizationId = null
         return
     }
 
     try {
         const { data } = await apiFetch<SelectOption[]>(
-            `/api/admin/user/choosable-event-organizers/organizer/${contextId}`
+            `/api/admin/user/choosable-event-organizations/organization/${contextId}`
         )
 
-        organizers.value = Array.isArray(data) ? data : []
+        organizations.value = Array.isArray(data) ? data : []
 
-        if (!organizers.value.find((org) => org.id === basicInfo.organizerId)) {
-            basicInfo.organizerId = null
+        if (!organizations.value.find((org) => org.id === basicInfo.organizationId)) {
+            basicInfo.organizationId = null
         }
     } catch (error) {
-        console.error('Failed to load organizers', error)
-        organizers.value = []
-        basicInfo.organizerId = null
+        console.error('Failed to load organizations', error)
+        organizations.value = []
+        basicInfo.organizationId = null
     }
 }
 
@@ -186,7 +186,7 @@ async function fetchVenues(contextId: number | null) {
     }
 
     try {
-        const { data } = await apiFetch<SelectOption[]>(`/api/choosable-venues/organizer/${contextId}`)
+        const { data } = await apiFetch<SelectOption[]>(`/api/choosable-venues/organization/${contextId}`)
         venues.value = Array.isArray(data) ? data : []
     } catch (error) {
         console.error('Failed to load venues', error)
@@ -231,8 +231,8 @@ async function fetchEventGenres(typeId: number): Promise<SelectOption[]> {
 }
 
 const validate = () => {
-    errors.title = basicInfo.title.trim() ? null : t('event_error_required')
-    errors.organizerId = basicInfo.organizerId ? null : t('event_error_required')
+    errors.title = basicInfo.title.trim() ? null : t('required_field')
+    errors.organizationId = basicInfo.organizationId ? null : t('required_field')
     errors.venueId = basicInfo.venueId ? null : t('event_error_required_optional')
 
     return Object.values(errors).every((msg) => !msg)
@@ -242,7 +242,7 @@ watch(
     basicInfo,
     () => {
         if (errors.title && basicInfo.title.trim()) errors.title = null
-        if (errors.organizerId && basicInfo.organizerId) errors.organizerId = null
+        if (errors.organizationId && basicInfo.organizationId) errors.organizationId = null
         if (errors.venueId && basicInfo.venueId) errors.venueId = null
     },
     { deep: true }

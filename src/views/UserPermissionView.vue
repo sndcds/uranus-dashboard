@@ -85,11 +85,11 @@ interface PermissionResponseEntity {
     add_space: boolean
     add_venue: boolean
     delete_event: boolean
-    delete_organizer: boolean
+    delete_organization: boolean
     delete_space: boolean
     delete_venue: boolean
     edit_event: boolean
-    edit_organizer: boolean
+    edit_organization: boolean
     edit_space: boolean
     edit_venue: boolean
     entity_id: number
@@ -112,8 +112,8 @@ type CapabilityKey =
     | 'add_venue'
     | 'edit_venue'
     | 'delete_venue'
-    | 'edit_organizer'
-    | 'delete_organizer'
+    | 'edit_organization'
+    | 'delete_organization'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -131,12 +131,12 @@ const capabilityList = computed<Array<{ key: CapabilityKey; label: string }>>(()
     { key: 'add_venue', label: t('user_permissions_add_venue') },
     { key: 'edit_venue', label: t('user_permissions_edit_venue') },
     { key: 'delete_venue', label: t('user_permissions_delete_venue') },
-    { key: 'edit_organizer', label: t('user_permissions_edit_organizer') },
-    { key: 'delete_organizer', label: t('user_permissions_delete_organizer') },
+    { key: 'edit_organization', label: t('user_permissions_edit_organization') },
+    { key: 'delete_organization', label: t('user_permissions_delete_organization') },
 ])
 
 const entityTypeLabels = computed<Record<string, string>>(() => ({
-    organizer: t('user_permissions_type_organizer'),
+    organization: t('user_permissions_type_organization'),
     venue: t('user_permissions_type_venue'),
     space: t('user_permissions_type_space'),
     event: t('user_permissions_type_event'),

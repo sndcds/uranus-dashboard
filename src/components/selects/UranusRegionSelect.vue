@@ -1,7 +1,19 @@
+<!--
+  UranusRegionSelect.vue
+-->
 <template>
-  <UranusFieldLabel :id="countrySelectId" :label="countryLabel" :required="true" :error="countryError">
-    <select v-model="countryModel" :id="countrySelectId" :disabled="countriesLoading" class="uranus-select"
-      :aria-required="true" :aria-invalid="countryError ? 'true' : 'false'">
+  <UranusFieldLabel
+      :id="countrySelectId"
+      :label="countryLabel"
+      :required="true"
+      :error="countryError">
+    <select
+        v-model="countryModel"
+        :id="countrySelectId"
+        :disabled="countriesLoading"
+        class="uranus-select"
+        :aria-required="true"
+        :aria-invalid="countryError ? 'true' : 'false'">
       <option value="" disabled>{{ countryPlaceholder }}</option>
       <option v-for="country in countries" :key="country.code" :value="country.code">
         {{ country.name }}
@@ -24,7 +36,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
 
@@ -49,13 +61,13 @@ const countrySelectId = `${baseFieldId}-country`
 const stateSelectId = `${baseFieldId}-state`
 
 // Labels and placeholders
-const countryLabel = computed(() => t('organizer_country_code'))
-const stateLabel = computed(() => t('organizer_state_code'))
+const countryLabel = computed(() => t('country'))
+const stateLabel = computed(() => t('state'))
 const countryPlaceholder = computed(() =>
-  te('organizer_country_placeholder') ? t('organizer_country_placeholder') : 'Select country'
+  te('organization_country_placeholder') ? t('organization_country_placeholder') : 'Select country'
 )
 const statePlaceholder = computed(() =>
-  te('organizer_state_placeholder') ? t('organizer_state_placeholder') : 'Select state'
+  te('organization_state_placeholder') ? t('organization_state_placeholder') : 'Select state'
 )
 
 // Optional error messages

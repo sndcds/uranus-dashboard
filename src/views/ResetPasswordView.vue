@@ -165,7 +165,7 @@ const getTokenFromRoute = () => {
     return typeof tokenParam === 'string' ? tokenParam.trim() : ''
 }
 
-const requiredFieldMessage = computed(() => t('event_error_required') || 'This field is required')
+const requiredFieldMessage = computed(() => t('required_field') || 'This field is required')
 const passwordMismatchMessage = computed(() => t('reset_password_mismatch') || 'Passwords do not match')
 
 watch(password, (value) => {

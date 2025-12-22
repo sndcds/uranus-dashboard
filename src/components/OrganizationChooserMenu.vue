@@ -1,14 +1,14 @@
 <template>
-    <div class="organizer-chooser-menu" ref="dropdownRef">
-        <label class="organizer-chooser-menu__label" :for="triggerId">
-            {{ t('organizers') }}
+    <div class="organization-chooser-menu" ref="dropdownRef">
+        <label class="organization-chooser-menu__label" :for="triggerId">
+            {{ t('organizations') }}
         </label>
-        <div class="organizer-chooser-menu__control" :data-open="isOpen" :data-loading="isLoading">
-            <button :id="triggerId" type="button" class="organizer-chooser-menu__trigger" aria-haspopup="menu"
-                :aria-expanded="isOpen" :aria-controls="menuId" :disabled="isLoading || !organizers.length"
+        <div class="organization-chooser-menu__control" :data-open="isOpen" :data-loading="isLoading">
+            <button :id="triggerId" type="button" class="organization-chooser-menu__trigger" aria-haspopup="menu"
+                :aria-expanded="isOpen" :aria-controls="menuId" :disabled="isLoading || !organizations.length"
                 @click="toggleDropdown" @keydown="handleTriggerKeydown" ref="triggerRef">
-                <span class="organizer-chooser-menu__trigger-label">{{ triggerLabel }}</span>
-                <span class="organizer-chooser-menu__icon" aria-hidden="true">
+                <span class="organization-chooser-menu__trigger-label">{{ triggerLabel }}</span>
+                <span class="organization-chooser-menu__icon" aria-hidden="true">
                     <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1 1L7 7L13 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                             stroke-linejoin="round" />
@@ -16,24 +16,24 @@
                 </span>
             </button>
 
-            <transition name="organizer-chooser-menu__dropdown">
-                <ul v-if="isOpen" :id="menuId" class="organizer-chooser-menu__dropdown" role="menu"
+            <transition name="organization-chooser-menu__dropdown">
+                <ul v-if="isOpen" :id="menuId" class="organization-chooser-menu__dropdown" role="menu"
                     :aria-labelledby="triggerId" @keydown="handleMenuKeydown">
-                    <li v-for="(org, index) in organizers" :key="org.organizer_id" class="organizer-chooser-menu__item">
-                        <button type="button" class="organizer-chooser-menu__item-btn" role="menuitemradio"
-                            :aria-checked="organizerId === org.organizer_id" :data-active="highlightedIndex === index"
-                            :data-selected="organizerId === org.organizer_id" @click="selectOrganizer(org.organizer_id)"
+                    <li v-for="(org, index) in organizations" :key="org.organization_id" class="organization-chooser-menu__item">
+                        <button type="button" class="organization-chooser-menu__item-btn" role="menuitemradio"
+                            :aria-checked="organizationId === org.organization_id" :data-active="highlightedIndex === index"
+                            :data-selected="organizationId === org.organization_id" @click="selectOrganization(org.organization_id)"
                             @mouseenter="highlightedIndex = index" @focus="highlightedIndex = index"
                             :ref="(el) => setItemRef(el, index)" tabindex="-1">
-                            <span class="organizer-chooser-menu__item-name">{{ org.organizer_name }}</span>
+                            <span class="organization-chooser-menu__item-name">{{ org.organization_name }}</span>
                         </button>
                     </li>
                 </ul>
             </transition>
         </div>
 
-        <p v-if="!isLoading && !organizers.length" class="organizer-chooser-menu__empty">
-            {{ t('no_organizers_help') }}
+        <p v-if="!isLoading && !organizations.length" class="organization-chooser-menu__empty">
+            {{ t('no_organizations_help') }}
         </p>
     </div>
 </template>
@@ -45,69 +45,69 @@ import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/appStore'
 import { apiFetch } from '@/api'
 
-interface Organizer {
-    organizer_id: number
-    organizer_name: string
+interface Organization {
+    organization_id: number
+    organization_name: string
 }
 
-const organizers = ref<Organizer[]>([])
+const organizations = ref<Organization[]>([])
 const isLoading = ref(true)
 const isOpen = ref(false)
 const highlightedIndex = ref(-1)
 const dropdownRef = ref<HTMLElement | null>(null)
 const triggerRef = ref<HTMLButtonElement | null>(null)
 const itemRefs = ref<(HTMLButtonElement | null)[]>([])
-const triggerId = 'organizer-chooser-menu-trigger'
-const menuId = 'organizer-chooser-menu-list'
+const triggerId = 'organization-chooser-menu-trigger'
+const menuId = 'organization-chooser-menu-list'
 
 const appStore = useAppStore()
 const { t } = useI18n({ useScope: 'global' })
 
-const organizerId = computed<number | null>({
-    get: () => appStore.organizerId,
+const organizationId = computed<number | null>({
+    get: () => appStore.organizationId,
     set: (val) => {
         if (val === null) {
-            appStore.setOrganizerId(null)
+            appStore.setOrganizationId(null)
             return
         }
 
         const parsed = Number(val)
-        appStore.setOrganizerId(Number.isNaN(parsed) ? null : parsed)
+        appStore.setOrganizationId(Number.isNaN(parsed) ? null : parsed)
     },
 })
 
-async function fetchOrganizers() {
+async function fetchOrganizations() {
     isLoading.value = true
     try {
-        const { data } = await apiFetch<Organizer[]>('/api/admin/choosable-organizers')
-        organizers.value = Array.isArray(data) ? data : []
+        const { data } = await apiFetch<Organization[]>('/api/admin/choosable-organizations')
+        organizations.value = Array.isArray(data) ? data : []
         syncHighlightedIndex()
-        if (!organizers.value.length) {
+        if (!organizations.value.length) {
             closeDropdown()
         }
     } catch (err) {
-        console.error('Failed to fetch organizers', err)
-        organizers.value = []
+        console.error('Failed to fetch organizations', err)
+        organizations.value = []
         closeDropdown()
     } finally {
         isLoading.value = false
     }
 }
 
-const selectedOrganizer = computed(() => {
-    if (organizerId.value === null) return null
-    return organizers.value.find((org) => org.organizer_id === organizerId.value) ?? null
+const selectedOrganization = computed(() => {
+    if (organizationId.value === null) return null
+    return organizations.value.find((org) => org.organization_id === organizationId.value) ?? null
 })
 
 const triggerLabel = computed(() => {
     if (isLoading.value) return t('loading')
-    if (selectedOrganizer.value) return selectedOrganizer.value.organizer_name
-    if (!organizers.value.length) return t('no_organizers_help')
+    if (selectedOrganization.value) return selectedOrganization.value.organization_name
+    if (!organizations.value.length) return t('no_organizations_help')
     return t('select_placeholder')
 })
 
 function toggleDropdown() {
-    if (isLoading.value || !organizers.value.length) return
+    if (isLoading.value || !organizations.value.length) return
     if (isOpen.value) {
         closeDropdown(true)
         return
@@ -136,8 +136,8 @@ function focusTriggerButton() {
     })
 }
 
-function selectOrganizer(id: number) {
-    organizerId.value = id
+function selectOrganization(id: number) {
+    organizationId.value = id
     closeDropdown(true)
 }
 
@@ -168,12 +168,12 @@ function handleMenuKeydown(event: KeyboardEvent) {
 
     if (event.key === 'ArrowDown') {
         event.preventDefault()
-        highlightedIndex.value = (highlightedIndex.value + 1) % organizers.value.length
+        highlightedIndex.value = (highlightedIndex.value + 1) % organizations.value.length
         focusHighlightedItem()
     } else if (event.key === 'ArrowUp') {
         event.preventDefault()
         highlightedIndex.value =
-            (highlightedIndex.value - 1 + organizers.value.length) % organizers.value.length
+            (highlightedIndex.value - 1 + organizations.value.length) % organizations.value.length
         focusHighlightedItem()
     } else if (event.key === 'Home') {
         event.preventDefault()
@@ -181,12 +181,12 @@ function handleMenuKeydown(event: KeyboardEvent) {
         focusHighlightedItem()
     } else if (event.key === 'End') {
         event.preventDefault()
-        highlightedIndex.value = organizers.value.length - 1
+        highlightedIndex.value = organizations.value.length - 1
         focusHighlightedItem()
     } else if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault()
-        const active = organizers.value[highlightedIndex.value]
-        if (active) selectOrganizer(active.organizer_id)
+        const active = organizations.value[highlightedIndex.value]
+        if (active) selectOrganization(active.organization_id)
     } else if (event.key === 'Escape') {
         closeDropdown(true)
     } else if (event.key === 'Tab') {
@@ -222,19 +222,19 @@ function resolveButtonElement(
 }
 
 function syncHighlightedIndex(reverse = false) {
-    if (!organizers.value.length) {
+    if (!organizations.value.length) {
         highlightedIndex.value = -1
         return
     }
 
-    const currentIndex = selectedOrganizer.value
-        ? organizers.value.findIndex((org) => org.organizer_id === selectedOrganizer.value?.organizer_id)
+    const currentIndex = selectedOrganization.value
+        ? organizations.value.findIndex((org) => org.organization_id === selectedOrganization.value?.organization_id)
         : -1
 
     if (currentIndex >= 0) {
         highlightedIndex.value = currentIndex
     } else {
-        highlightedIndex.value = reverse ? organizers.value.length - 1 : 0
+        highlightedIndex.value = reverse ? organizations.value.length - 1 : 0
     }
 }
 
@@ -251,7 +251,7 @@ function resetItemRefs() {
 }
 
 onMounted(() => {
-    fetchOrganizers()
+    fetchOrganizations()
     document.addEventListener('click', handleClickOutside)
 })
 
@@ -259,7 +259,7 @@ onBeforeUnmount(() => {
     document.removeEventListener('click', handleClickOutside)
 })
 
-watch(organizerId, () => {
+watch(organizationId, () => {
     if (isOpen.value) {
         syncHighlightedIndex()
     }
@@ -267,14 +267,14 @@ watch(organizerId, () => {
 </script>
 
 <style scoped lang="scss">
-.organizer-chooser-menu {
+.organization-chooser-menu {
     display: flex;
     flex-direction: column;
     gap: 0;
     width: 100%;
 }
 
-.organizer-chooser-menu__label {
+.organization-chooser-menu__label {
     padding: 0.5rem 1.1rem 0.5rem 1.5rem;
     font-weight: 600;
     color: var(--uranus-muted-text);
@@ -283,11 +283,11 @@ watch(organizerId, () => {
     text-transform: uppercase;
 }
 
-.organizer-chooser-menu__control {
+.organization-chooser-menu__control {
     position: relative;
 }
 
-.organizer-chooser-menu__trigger {
+.organization-chooser-menu__trigger {
     width: 100%;
     display: flex;
     align-items: center;
@@ -319,7 +319,7 @@ watch(organizerId, () => {
     }
 }
 
-.organizer-chooser-menu__trigger-label {
+.organization-chooser-menu__trigger-label {
     flex: 1;
     text-align: left;
     font-size: 0.98rem;
@@ -328,39 +328,39 @@ watch(organizerId, () => {
     text-overflow: ellipsis;
 }
 
-.organizer-chooser-menu__icon {
+.organization-chooser-menu__icon {
     display: inline-flex;
     align-items: center;
     color: var(--uranus-muted-text);
     transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.organizer-chooser-menu__control[data-open='true'] .organizer-chooser-menu__trigger {
+.organization-chooser-menu__control[data-open='true'] .organization-chooser-menu__trigger {
     background: var(--accent-muted);
     color: var(--color-text);
 }
 
-.organizer-chooser-menu__control[data-open='true'] .organizer-chooser-menu__icon {
+.organization-chooser-menu__control[data-open='true'] .organization-chooser-menu__icon {
     transform: rotate(180deg);
     color: var(--accent-primary);
 }
 
-.organizer-chooser-menu__control[data-loading='true'] .organizer-chooser-menu__icon {
-    animation: organizer-chooser-menu-spin 1s linear infinite;
+.organization-chooser-menu__control[data-loading='true'] .organization-chooser-menu__icon {
+    animation: organization-chooser-menu-spin 1s linear infinite;
 }
 
-.organizer-chooser-menu__dropdown-enter-active,
-.organizer-chooser-menu__dropdown-leave-active {
+.organization-chooser-menu__dropdown-enter-active,
+.organization-chooser-menu__dropdown-leave-active {
     transition: opacity 0.12s ease, transform 0.12s ease;
 }
 
-.organizer-chooser-menu__dropdown-enter-from,
-.organizer-chooser-menu__dropdown-leave-to {
+.organization-chooser-menu__dropdown-enter-from,
+.organization-chooser-menu__dropdown-leave-to {
     opacity: 0;
     transform: translateY(-6px);
 }
 
-.organizer-chooser-menu__dropdown {
+.organization-chooser-menu__dropdown {
   display: flex;
   flex-direction: column;
     margin: 0;
@@ -377,11 +377,11 @@ watch(organizerId, () => {
   gap: 4px;
 }
 
-.organizer-chooser-menu__item {
+.organization-chooser-menu__item {
     margin: 0;
 }
 
-.organizer-chooser-menu__item-btn {
+.organization-chooser-menu__item-btn {
     width: 100%;
     border: none;
     background: transparent;
@@ -413,13 +413,13 @@ watch(organizerId, () => {
     }
 }
 
-.organizer-chooser-menu__item-btn:focus-visible {
+.organization-chooser-menu__item-btn:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
     background: var(--accent-muted);
 }
 
-.organizer-chooser-menu__empty {
+.organization-chooser-menu__empty {
     margin: 0;
     padding: 0.75rem 1.1rem 0.75rem 1.5rem;
     font-size: 0.85rem;
@@ -427,7 +427,7 @@ watch(organizerId, () => {
     font-style: italic;
 }
 
-@keyframes organizer-chooser-menu-spin {
+@keyframes organization-chooser-menu-spin {
     0% {
         transform: rotate(0deg);
     }

@@ -1,121 +1,133 @@
 <template>
-    <section class="todo-panel" aria-labelledby="dashboard-todo-heading">
-        <div class="todo-panel__header">
-            <h2 id="dashboard-todo-heading" class="todo-panel__title">
-                {{ todoListTitle }}
-            </h2>
-            <button type="button" class="uranus-secondary-button" @click="startAddingTodo" :disabled="todoLoading">
-                {{ addTodoLabel }}
+  <section class="todo-panel" aria-labelledby="dashboard-todo-heading">
+    <div class="todo-panel__header">
+        <h2 id="dashboard-todo-heading" class="todo-panel__title">
+            {{ todoListTitle }}
+        </h2>
+        <button type="button" class="uranus-secondary-button" @click="startAddingTodo" :disabled="todoLoading">
+            {{ addTodoLabel }}
+        </button>
+    </div>
+
+    <transition name="fade">
+        <p v-if="todoError" class="todo-feedback todo-feedback--error" role="alert" aria-live="assertive">
+            {{ todoError }}
+        </p>
+    </transition>
+
+    <form v-if="isAddingTodo" class="uranus-form todo-editor" @submit.prevent="saveTodo">
+        <DashboardTodoFormFields
+            class="uranus-card"
+            id-prefix="todo-new"
+            v-model:title="todoDraft.title"
+            v-model:description="todoDraft.description"
+            v-model:due-date="todoDraft.dueDate"
+            :title-label="todoTitleLabel"
+            :title-placeholder="todoTitlePlaceholder"
+            :description-label="todoDescriptionLabel"
+            :description-placeholder="todoDescriptionPlaceholder"
+            :due-date-label="todoDueDateLabel"
+            :disabled="todoSaving"
+            :error="todoDraftError"
+            @escape="cancelEditingTodo"
+        />
+
+        <section class="uranus-form-action-footer">
+            <button type="button" class="uranus-cancel-button" @click="cancelEditingTodo"
+                :disabled="todoSaving">
+                {{ t('cancel') }}
             </button>
-        </div>
+            <button type="submit" class="uranus-save-button" :disabled="isSaveDisabled">
+                <span v-if="!todoSaving">{{ t('save') }}</span>
+                <span v-else>{{ t('saving') }}</span>
+            </button>
+        </section>
+    </form>
 
-        <transition name="fade">
-            <p v-if="todoError" class="todo-feedback todo-feedback--error" role="alert" aria-live="assertive">
-                {{ todoError }}
-            </p>
-        </transition>
+    <section class="uranus-card todo-list-card">
+      <ul class="todo-list" role="list" :aria-busy="todoLoading" :aria-label="todoListTitle">
+        <li v-if="todoLoading" class="todo-list__loading">
+          {{ loadingTodoLabel }}
+        </li>
+        <template v-else>
+          <li v-if="todos.length === 0" class="todo-list__empty">
+            {{ todoEmptyLabel }}
+          </li>
+          <li v-for="todo in todos" :key="todo.todo_id" class="todo-list__item">
+            <template v-if="editingTodoId !== todo.todo_id">
+                <article class="todo-item" :class="{ 'todo-item--completed': todo.completed }">
+                <div class="todo-item__header">
+                    <input type="checkbox" :id="`todo-${todo.todo_id}`" class="todo-item__checkbox"
+                        :checked="Boolean(todo.completed)" @change="toggleTodo(todo)" :disabled="todoLoading" />
+                    <label :for="`todo-${todo.todo_id}`" class="todo-item__label">
+                        {{ todo.title }}
+                    </label>
+                </div>
+                <p v-if="todo.description" class="todo-item__description">
+                    {{ todo.description }}
+                </p>
+                <p v-if="todo.dueDate" class="todo-item__due-date">
+                    {{ t('dashboard_todo_due') }}: {{ formatTodoDueDate(todo.dueDate) }}
+                </p>
+                <div class="todo-item__footer">
+                  <UranusButton
+                      class="uranus-tertiary-button"
+                      icon="edit"
+                      @click="startEditingTodo(todo)"
+                  >
+                    {{ t('edit') }}
+                  </UranusButton>
 
-        <form v-if="isAddingTodo" class="uranus-form todo-editor" @submit.prevent="saveTodo">
-            <DashboardTodoFormFields
-                class="uranus-card"
-                id-prefix="todo-new"
-                v-model:title="todoDraft.title"
-                v-model:description="todoDraft.description"
-                v-model:due-date="todoDraft.dueDate"
-                :title-label="todoTitleLabel"
-                :title-placeholder="todoTitlePlaceholder"
-                :description-label="todoDescriptionLabel"
-                :description-placeholder="todoDescriptionPlaceholder"
-                :due-date-label="todoDueDateLabel"
-                :disabled="todoSaving"
-                :error="todoDraftError"
-                @escape="cancelEditingTodo"
-            />
+                  <UranusButton
+                      class="uranus-tertiary-button"
+                      icon="delete"
+                      @click="deleteTodo(todo)"
+                  >
+                    {{ t('delete') }}
+                  </UranusButton>
+                </div>
+                </article>
+            </template>
+            <template v-else>
+              <form class="uranus-form todo-editor todo-editor--inline" @submit.prevent="saveTodo">
+                <DashboardTodoFormFields
+                    :id-prefix="`todo-${todo.todo_id}`"
+                    v-model:title="todoDraft.title"
+                    v-model:description="todoDraft.description"
+                    v-model:due-date="todoDraft.dueDate"
+                    :title-label="todoTitleLabel"
+                    :title-placeholder="todoTitlePlaceholder"
+                    :description-label="todoDescriptionLabel"
+                    :description-placeholder="todoDescriptionPlaceholder"
+                    :due-date-label="todoDueDateLabel"
+                    :disabled="todoSaving"
+                    :error="todoDraftError"
+                    @escape="cancelEditingTodo"
+                />
 
-            <section class="uranus-form-action-footer">
-                <button type="button" class="uranus-cancel-button" @click="cancelEditingTodo"
-                    :disabled="todoSaving">
+                <section class="uranus-form-action-footer">
+                  <button
+                      type="button"
+                      class="uranus-cancel-button"
+                      @click="cancelEditingTodo"
+                      :disabled="todoSaving">
                     {{ t('cancel') }}
-                </button>
-                <button type="submit" class="uranus-save-button" :disabled="isSaveDisabled">
+                  </button>
+                  <button
+                      type="submit"
+                      class="uranus-save-button"
+                      :disabled="isSaveDisabled">
                     <span v-if="!todoSaving">{{ t('save') }}</span>
                     <span v-else>{{ t('saving') }}</span>
-                </button>
-            </section>
-        </form>
-
-        <section class="uranus-card todo-list-card">
-            <ul class="todo-list" role="list" :aria-busy="todoLoading" :aria-label="todoListTitle">
-                <li v-if="todoLoading" class="todo-list__loading">
-                    {{ loadingTodoLabel }}
-                </li>
-                <template v-else>
-                    <li v-if="todos.length === 0" class="todo-list__empty">
-                        {{ todoEmptyLabel }}
-                    </li>
-                    <li v-for="todo in todos" :key="todo.todo_id" class="todo-list__item">
-                        <template v-if="editingTodoId !== todo.todo_id">
-                            <article class="todo-item" :class="{ 'todo-item--completed': todo.completed }">
-                            <div class="todo-item__header">
-                                <input type="checkbox" :id="`todo-${todo.todo_id}`" class="todo-item__checkbox"
-                                    :checked="Boolean(todo.completed)" @change="toggleTodo(todo)" :disabled="todoLoading" />
-                                <label :for="`todo-${todo.todo_id}`" class="todo-item__label">
-                                    {{ todo.title }}
-                                </label>
-                            </div>
-                            <p v-if="todo.description" class="todo-item__description">
-                                {{ todo.description }}
-                            </p>
-                            <p v-if="todo.dueDate" class="todo-item__due-date">
-                                {{ t('dashboard_todo_due') }}: {{ formatTodoDueDate(todo.dueDate) }}
-                            </p>
-                            <div class="todo-item__footer">
-                                <button type="button" class="uranus-secondary-button"
-                                    @click="startEditingTodo(todo)" :disabled="todoLoading" :aria-label="t('edit')">
-                                    {{ t('edit') }}
-                                </button>
-                                <button type="button"
-                                    class="uranus-secondary-button"
-                                    @click="deleteTodo(todo)" :disabled="todoLoading" :aria-label="t('delete')">
-                                    {{ t('delete') }}
-                                </button>
-                            </div>
-                            </article>
-                        </template>
-                        <template v-else>
-                            <form class="uranus-form todo-editor todo-editor--inline" @submit.prevent="saveTodo">
-                                <DashboardTodoFormFields
-                                    :id-prefix="`todo-${todo.todo_id}`"
-                                    v-model:title="todoDraft.title"
-                                    v-model:description="todoDraft.description"
-                                    v-model:due-date="todoDraft.dueDate"
-                                    :title-label="todoTitleLabel"
-                                    :title-placeholder="todoTitlePlaceholder"
-                                    :description-label="todoDescriptionLabel"
-                                    :description-placeholder="todoDescriptionPlaceholder"
-                                    :due-date-label="todoDueDateLabel"
-                                    :disabled="todoSaving"
-                                    :error="todoDraftError"
-                                    @escape="cancelEditingTodo"
-                                />
-
-                                <section class="uranus-form-action-footer">
-                                    <button type="button" class="uranus-cancel-button" @click="cancelEditingTodo"
-                                        :disabled="todoSaving">
-                                        {{ t('cancel') }}
-                                    </button>
-                                    <button type="submit" class="uranus-save-button" :disabled="isSaveDisabled">
-                                        <span v-if="!todoSaving">{{ t('save') }}</span>
-                                        <span v-else>{{ t('saving') }}</span>
-                                    </button>
-                                </section>
-                            </form>
-                        </template>
-                    </li>
-                </template>
-            </ul>
-        </section>
+                  </button>
+                </section>
+              </form>
+            </template>
+          </li>
+        </template>
+      </ul>
     </section>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -124,6 +136,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import DashboardTodoFormFields from '@/components/dashboard/DashboardTodoFormFields.vue'
+import UranusButton from "@/components/ui/UranusButton.vue";
 
 interface Todo {
     todo_id: number
@@ -478,7 +491,6 @@ defineExpose({
 .todo-list__empty {
     margin: 0;
     padding: 1rem;
-    border-radius: 8px;
     color: var(--uranus-low-contrast-color);
     font-size: 0.95rem;
     text-align: center;
@@ -491,16 +503,9 @@ defineExpose({
     flex-direction: column;
     gap: 0.75rem;
     padding: 1rem;
-    border-radius: 8px;
-    background: var(--uranus-bg-color);
-    border: 1px solid var(--uranus-disabled-color);
     transition: all 0.2s ease;
     width: 100%;
-
-    &:hover {
-        border-color: var(--uranus-ia-color);
-        box-shadow: 0 4px 12px rgba(0, 92, 230, 0.1);
-    }
+  border: 1px solid var(--uranus-disabled-color);
 }
 
 .todo-item__header {

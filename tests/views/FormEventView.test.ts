@@ -18,7 +18,7 @@ const i18n = createI18n({
       event_submit_error: 'Failed to create event (status: {status})',
       event_submit_error_generic: 'An error occurred while creating the event',
       event_section_basic: 'Basic Information',
-      event_organizer_label: 'Organizer',
+      event_organization_label: 'Organization',
       select_placeholder: 'Select...',
       venue: 'Venue',
       choose_event_type: 'Event Type',
@@ -68,7 +68,7 @@ const i18n = createI18n({
 const router = createRouter({
   history: createMemoryHistory(),
   routes: [
-    { path: '/admin/organizer/:organizerId/event/create', component: { template: '<div>Create</div>' } },
+    { path: '/admin/organization/:organizationId/event/create', component: { template: '<div>Create</div>' } },
     { path: '/admin/event/:id', component: { template: '<div>Event</div>' } },
   ],
 })
@@ -84,7 +84,7 @@ const mockEventPayload = {
   description: 'Event description',
   teaser_text: 'Teaser',
   venue_id: 1,
-  organizer_id: 1,
+  organization_id: 1,
   event_dates: [
     {
       start_date: '2025-11-15',
@@ -97,7 +97,7 @@ describe('UranusDashboardAddEventView', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     const appStore = useAppStore()
-    appStore.setOrganizerId(1)
+    appStore.setOrganizationId(1)
     vi.clearAllMocks()
   })
 
@@ -119,7 +119,7 @@ describe('UranusDashboardAddEventView', () => {
     expect(wrapper.text()).toContain('Fill in the event details')
   })
 
-  it('passes organizer ID from store to UranusAddEventForm', () => {
+  it('passes organization ID from store to UranusAddEventForm', () => {
     const wrapper = mount(UranusDashboardAddEventView, {
       global: {
         plugins: [i18n, router],
@@ -127,7 +127,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId'],
+            props: ['organizationId'],
           },
           DashboardHeroComponent: true,
         },
@@ -136,7 +136,7 @@ describe('UranusDashboardAddEventView', () => {
 
     const eventForm = wrapper.findComponent({ name: 'EventForm' })
     expect(eventForm.exists()).toBe(true)
-    expect(eventForm.props('organizerId')).toBe(1)
+    expect(eventForm.props('organizationId')).toBe(1)
   })
 
   it('handles form submission successfully', async () => {
@@ -154,7 +154,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -187,7 +187,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -216,7 +216,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -246,7 +246,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -274,7 +274,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -300,7 +300,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -326,7 +326,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -352,7 +352,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -378,7 +378,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -404,7 +404,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -435,7 +435,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },
@@ -463,7 +463,7 @@ describe('UranusDashboardAddEventView', () => {
           EventForm: {
             name: 'EventForm',
             template: '<div></div>',
-            props: ['organizerId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
+            props: ['organizationId', 'submitLabel', 'loading', 'errorMessage', 'successMessage'],
             emits: ['submit', 'clear-error'],
           },
         },

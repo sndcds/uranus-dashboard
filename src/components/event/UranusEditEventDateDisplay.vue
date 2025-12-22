@@ -1,3 +1,6 @@
+<!--
+  UranusEditEventDateDisplay.vue
+-->
 <template>
   <div
       class="uranus-event-date-display"
@@ -5,6 +8,7 @@
       @mouseleave="hovered = false"
   >
     <template v-if="formattedDate">
+      <!-- Date Display -->
       <div v-if="formattedDate.date">
         <span class="event-date">{{ formattedDate.date }}</span>
         <UranusInlineIcon
@@ -22,7 +26,6 @@
         <UranusInlineIcon
             v-if="canEdit"
             mode="edit"
-            class="icon"
             @click="$emit('edit')"
         />
         <br>
@@ -31,13 +34,10 @@
         <span v-if="formattedDate.endTime" class="event-time"> / {{ formattedDate.endTime }}</span>
       </div>
 
-      <span v-if="eventDate.dateVenueId" class="event-venue">
-        {{ eventDate.venueName }}
-        <template v-if="eventDate.spaceName">
-          / {{ eventDate.spaceName }}
-        </template>
+      <!-- Venue/Space Display -->
+      <span v-if="formattedVenueSpaceName != ''" class="event-venue">
+        {{ formattedVenueSpaceName }}
       </span>
-
     </template>
   </div>
 </template>
@@ -47,20 +47,30 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatEventDateTime } from '@/utils/UranusUtils.ts'
 import UranusInlineIcon from "@/components/ui/UranusInlineIcon.vue"
-import type {UranusEventDate} from "@/models/UranusEventModel.ts";
+import type { UranusEventDate } from "@/models/UranusEventModel.ts"
 
-const { t } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 
 const props = defineProps<{
   eventDate: UranusEventDate
 }>()
 
-const canEdit = computed(() => true )
+const canEdit = computed(() => true)
 const hovered = ref(false)
-const { locale } = useI18n({ useScope: 'global' })
 
 const formattedDate = computed(() => {
   return props.eventDate ? formatEventDateTime(props.eventDate, locale.value) : null
+})
+
+const formattedVenueSpaceName = computed(() => {
+  if (props.eventDate.dateVenueId != null) {
+     let name = props.eventDate.venueName ?? ''
+    if (props.eventDate.spaceId) {
+      name += ' / ' + props.eventDate.spaceName
+    }
+    return name
+  }
+  return '';
 })
 </script>
 

@@ -1,9 +1,12 @@
+<!--
+  UranusInlineSaveButton.view
+-->
 <template>
   <button
       type="button"
       class="uranus-save-button"
       :disabled="disabled"
-      @click="onClick"
+      @click="handleClick"
       :aria-label="loading ? busyLabel : label"
   >
     <template v-if="!loading">{{ label }}</template>
@@ -12,18 +15,24 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
+import { defineEmits, defineProps } from 'vue'
 
-defineProps({
+const props = defineProps({
   label: { type: String, default: 'Save' },
   busyLabel: { type: String, default: 'Saving...' },
   disabled: { type: Boolean, default: false },
   loading: { type: Boolean, default: false },
-  onClick: {
-    type: Function as PropType<(e: MouseEvent) => void>,
-    required: true
-  },
 })
+
+const emit = defineEmits<{
+  (e: 'save', event?: MouseEvent): void
+}>()
+
+function handleClick(e: MouseEvent) {
+  if (!props.disabled && !props.loading) {
+    emit('save', e)
+  }
+}
 </script>
 
 <style scoped lang="scss">

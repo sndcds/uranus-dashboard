@@ -13,7 +13,7 @@
     </UranusCard>
 
     <UranusCard>
-      <EventVenueSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
+      <EventVenueSection :event-id="event.id" :organization-id="event.organization_id" :venue-id="event.venue_id"
                          :venue-name="event.venue_name" :venue-street="event.venue_street ?? ''"
                          :venue-house-number="event.venue_house_number ?? ''" :venue-postal-code="event.venue_postal_code ?? ''"
                          :venue-city="event.venue_city ?? ''" :space-id="event.space_id" :space-name="event.space_name ?? ''"
@@ -23,7 +23,7 @@
 
       <hr style="width: 100%; border: 1px solid var(--uranus-bg-color-d2);" />
 
-      <EventScheduleSection :event-id="event.id" :organizer-id="event.organizer_id" :venue-id="event.venue_id"
+      <EventScheduleSection :event-id="event.id" :organization-id="event.organization_id" :venue-id="event.venue_id"
                             :space-id="event.space_id" :event-dates="eventSchedulePayload" :space-name="event.space_name ?? ''"
                             @updated="loadEvent" />
 
@@ -132,8 +132,8 @@ interface EventDetail {
   title: string
   subtitle: string | null
   description: string | null
-  organizer_id: number | null
-  organizer_name: string
+  organization_id: number | null
+  organization_name: string
   teaser_text: string | null
   participation_info: string | null
   meeting_point: string | null
@@ -484,8 +484,8 @@ const mapEventDetail = (raw: unknown): EventDetail | null => {
     title: toString(record.title),
     subtitle: toNullableString(record.subtitle),
     description: toNullableString(record.description),
-    organizer_id: toNumberOrNull(record.organizer_id),
-    organizer_name: toString(record.organizer_name),
+    organization_id: toNumberOrNull(record.organization_id),
+    organization_name: toString(record.organization_name),
     teaser_text: toNullableString(record.teaser_text),
     participation_info: toNullableString(record.participation_info),
     meeting_point: toNullableString(record.meeting_point),

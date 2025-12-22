@@ -31,8 +31,8 @@
             </div>
             <div class="feature-card">
               <div class="feature-icon">👥</div>
-              <h3>{{ t('about_feature_organizers_title') }}</h3>
-              <p>{{ t('about_feature_organizers_text') }}</p>
+              <h3>{{ t('about_feature_organizations_title') }}</h3>
+              <p>{{ t('about_feature_organizations_text') }}</p>
             </div>
             <div class="feature-card">
               <div class="feature-icon">🌐</div>

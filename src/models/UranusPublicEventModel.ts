@@ -1,0 +1,91 @@
+export class UranusPublicEventDetail {
+    constructor(
+        public eventId: number | null = null,
+
+        public title: string | null = null,
+        public subtitle: string | null = null,
+        public description: string | null = null,
+        public mainImageUrl: string | null = null,
+
+        public startDate: string | null = null,
+        public startTime: string | null = null,
+        public endDate: string | null = null,
+        public endTime: string | null = null,
+
+        public venueId: number | null = null,
+        public venueName: string | null = null,
+        public venueStreet: string | null = null,
+        public venueHouseNumber: string | null = null,
+        public venuePostalCode: string | null = null,
+        public venueCity: string | null = null,
+        public venueCountryCode: string | null = null,
+        public venueStateCode: string | null = null,
+        public venueLat: number | null = null,
+        public venueLon: number | null = null,
+        public venueUrl: string | null = null,
+
+        public spaceId: number | null = null,
+        public spaceName: string | null = null,
+        public spaceTotalCapacity: number | null = null,
+        public spaceSeatingCapacity: number | null = null,
+        public spaceBuildingLevel: number | null = null,
+        public spaceUrl: string | null = null,
+
+        public locationId: number | null = null,
+        public locationName: string | null = null,
+        public locationStreet: string | null = null,
+        public locationHouseNumber: string | null = null,
+        public locationPostalCode: string | null = null,
+        public locationCity: string | null = null,
+        public locationCountryCode: string | null = null,
+        public locationStateCode: string | null = null,
+        public locationLat: number | null = null,
+        public locationLon: number | null = null,
+
+        public organizationId: number | null = null,
+        public organizationName: string | null = null,
+        public organizationUrl: string | null = null,
+
+        public meetingPoint: string | null = null,
+        public languages: string[],
+        public tags: string[],
+        public eventTypes: { typeId: number; typeName: string; genreId?: number; genreName?: string | null }[],
+        public furtherDates: UranusPublicEventDate[],
+        public eventUrls: { id: number; title: string | null; url: string; urlType: string | null }[] = []
+    ) {}
+}
+
+export class UranusPublicEventDate {
+    constructor(
+        public eventId: number | null = null,
+        public dateId: number | null = null,
+        public startDate: string | null = null,
+        public startTime: string | null = null,
+        public endDate: string | null = null,
+        public endTime: string | null = null,
+        public entryTime: string | null = null,
+        public venueId: number | null = null,
+        public venueName: string | null = null,
+        public venueStreet: string | null = null,
+        public venueHouseNumber: string | null = null,
+        public venuePostalCode: string | null = null,
+        public venueCity: string | null = null,
+        public venueCountryCode: string | null = null,
+        public venueStateCode: string | null = null,
+        public venueLat: number | null = null,
+        public venueLon: number | null = null,
+        public venueUrl: string | null = null,
+        public spaceId: number | null = null,
+        public spaceName: string | null = null,
+        public locationId: number | null = null,
+        public locationName: string | null = null,
+        public locationStreet: string | null = null,
+        public locationHouseNumber: string | null = null,
+        public locationPostalCode: string | null = null,
+        public locationCity: string | null = null,
+        public locationCountryCode: string | null = null,
+        public locationStateCode: string | null = null,
+        public locationLat: number | null = null,
+        public locationLon: number | null = null,
+    ) {}
+}

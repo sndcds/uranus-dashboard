@@ -1,10 +1,10 @@
 <template>
-    <div class="uranus-main-layout organizer-team-view">
-        <DashboardHeroComponent :title="t('organizer_team_management')" :subtitle="t('organizer_team_management_description')" />
+    <div class="uranus-main-layout organization-team-view">
+        <DashboardHeroComponent :title="t('organization_team_management')" :subtitle="t('organization_team_management_description')" />
 
-        <section class="organizer-team">
+        <section class="organization-team">
             <div v-if="isLoading" class="team-state">
-                {{ t('organizer_team_loading') }}
+                {{ t('organization_team_loading') }}
             </div>
 
             <div v-else-if="loadError" class="team-state team-state--error" role="alert">
@@ -15,24 +15,24 @@
                 <article class="uranus-card uranus-form team-card team-card--members">
                     <header class="team-card__header">
                         <div>
-                            <h2>{{ t('organizer_team_members_title') }}</h2>
-                            <p class="team-card__meta">{{ t('organizer_team_members_count', { count: members.length }) }}</p>
+                            <h2>{{ t('organization_team_members_title') }}</h2>
+                            <p class="team-card__meta">{{ t('organization_team_members_count', { count: members.length }) }}</p>
                         </div>
                         <button v-if="searchQuery || roleFilter !== 'all'" class="uranus-secondary-button team-reset-button"
                             type="button" @click="resetFilters">
-                            {{ t('organizer_team_filters_reset') }}
+                            {{ t('organization_team_filters_reset') }}
                         </button>
                     </header>
 
                     <UranusFormRow class="team-toolbar">
-                        <UranusTextInput id="team-search" v-model="searchQuery" :placeholder="t('organizer_team_search_placeholder')"
-                            :label="t('organizer_team_search_label')" />
+                        <UranusTextInput id="team-search" v-model="searchQuery" :placeholder="t('organization_team_search_placeholder')"
+                            :label="t('organization_team_search_label')" />
 
                         <div class="uranus-textfield-wrapper team-role-filter">
                             <UranusFieldLabel id="team-role-filter-select"
-                                :label="t('organizer_team_role_filter_label')">
+                                :label="t('organization_team_role_filter_label')">
                                 <select id="team-role-filter-select" v-model="roleFilterModel" class="uranus-text-input">
-                                    <option value="all">{{ t('organizer_team_role_filter_all') }}</option>
+                                    <option value="all">{{ t('organization_team_role_filter_all') }}</option>
                                     <option v-for="role in roles" :key="role.id" :value="role.id">
                                         {{ role.name }}
                                     </option>
@@ -64,10 +64,10 @@
 
                                 <div class="team-member__meta">
                                     <span v-if="member.last_active_at">
-                                        {{ t('organizer_team_last_active', { time: formatRelativeTime(member.last_active_at) || formatDate(member.last_active_at) || t('organizer_team_date_unknown') }) }}
+                                        {{ t('organization_team_last_active', { time: formatRelativeTime(member.last_active_at) || formatDate(member.last_active_at) || t('organization_team_date_unknown') }) }}
                                     </span>
                                     <span v-else-if="member.joined_at">
-                                        {{ t('organizer_team_joined', { date: formatDate(member.joined_at) || t('organizer_team_date_unknown') }) }}
+                                        {{ t('organization_team_joined', { date: formatDate(member.joined_at) || t('organization_team_date_unknown') }) }}
                                     </span>
                                 </div>
                             </div>
@@ -75,28 +75,28 @@
                             <div class="team-member__actions">
                                 <button class="uranus-tertiary-button"
                                     :disabled="memberActionId === member.user_id" @click="removeMember(member)">
-                                    <span v-if="memberActionId === member.user_id">{{ t('organizer_team_removing') }}</span>
-                                    <span v-else>{{ t('organizer_team_remove_member_button') }}</span>
+                                    <span v-if="memberActionId === member.user_id">{{ t('organization_team_removing') }}</span>
+                                    <span v-else>{{ t('organization_team_remove_member_button') }}</span>
                                 </button>
                                 <router-link
-                                    :to="`/admin/organizer/${organizerId}/member/${member.user_id}/permission`"
+                                    :to="`/admin/organization/${organizationId}/member/${member.user_id}/permission`"
                                     class="uranus-tertiary-button">
-                                    {{ t('organizer_member_permission_edit_button') }}
+                                    {{ t('organization_member_permission_edit_button') }}
                                 </router-link>
                             </div>
                         </li>
                     </ul>
 
                     <div v-else class="team-empty">
-                        <p>{{ t('organizer_team_empty_members') }}</p>
+                        <p>{{ t('organization_team_empty_members') }}</p>
                     </div>
                 </article>
 
                 <article class="uranus-card team-card team-card--sidebar">
                     <header class="team-card__header">
                         <div>
-                            <h2>{{ t('organizer_team_section_invite_title') }}</h2>
-                            <p class="team-card__meta">{{ t('organizer_team_section_invite_description') }}</p>
+                            <h2>{{ t('organization_team_section_invite_title') }}</h2>
+                            <p class="team-card__meta">{{ t('organization_team_section_invite_description') }}</p>
                         </div>
                     </header>
 
@@ -114,10 +114,10 @@
 
                         <UranusFormRow>
                             <UranusTextInput id="invite-email" v-model="inviteEmail" type="email"
-                                :label="t('organizer_team_invite_email_label')" autocomplete="email" required />
+                                :label="t('organization_team_invite_email_label')" autocomplete="email" required />
                             <div class="uranus-textfield-wrapper team-role-select">
                                 <UranusFieldLabel id="team-invite-role-select"
-                                    :label="t('organizer_team_invite_role_label')" :required="true">
+                                    :label="t('organization_team_invite_role_label')" :required="true">
                                     <select id="team-invite-role-select" v-model="inviteRoleModel"
                                         class="uranus-text-input" :disabled="!roles.length" required>
                                         <option v-for="role in roles" :key="role.id" :value="role.id">
@@ -129,15 +129,15 @@
                         </UranusFormRow>
 
                         <button class="uranus-button" type="submit" :disabled="isInviting || !roles.length">
-                            <span v-if="!isInviting">{{ t('organizer_team_invite_button') }}</span>
-                            <span v-else>{{ t('organizer_team_inviting') }}</span>
+                            <span v-if="!isInviting">{{ t('organization_team_invite_button') }}</span>
+                            <span v-else>{{ t('organization_team_inviting') }}</span>
                         </button>
                     </form>
 
                     <section class="team-pending">
                         <header>
-                            <h3>{{ t('organizer_team_pending_title') }}</h3>
-                            <p class="team-card__meta">{{ t('organizer_team_pending_description') }}</p>
+                            <h3>{{ t('organization_team_pending_title') }}</h3>
+                            <p class="team-card__meta">{{ t('organization_team_pending_description') }}</p>
                         </header>
 
                         <transition name="fade">
@@ -154,26 +154,26 @@
                                         <span>{{ invite.role_name }}</span>
                                         <span>·</span>
                                         <span>
-                                            {{ t('organizer_team_invite_sent', { date: formatDate(invite.invited_at) || t('organizer_team_date_unknown') }) }}
+                                            {{ t('organization_team_invite_sent', { date: formatDate(invite.invited_at) || t('organization_team_date_unknown') }) }}
                                         </span>
                                     </p>
                                     <p v-if="invite.expires_at" class="team-pending__expires">
-                                        {{ t('organizer_team_invite_expires', {
+                                        {{ t('organization_team_invite_expires', {
                                             time: formatRelativeTime(invite.expires_at) || formatDate(invite.expires_at) ||
-                                                t('organizer_team_date_unknown')
+                                                t('organization_team_date_unknown')
                                         }) }}
                                     </p>
                                 </div>
                                 <button class="uranus-secondary-button" type="button"
                                     :disabled="inviteActionId === invite.invite_id" @click="cancelInvite(invite)">
-                                    <span v-if="inviteActionId === invite.invite_id">{{ t('organizer_team_removing') }}</span>
-                                    <span v-else>{{ t('organizer_team_pending_cancel') }}</span>
+                                    <span v-if="inviteActionId === invite.invite_id">{{ t('organization_team_removing') }}</span>
+                                    <span v-else>{{ t('organization_team_pending_cancel') }}</span>
                                 </button>
                             </li>
                         </ul>
 
                         <div v-else class="team-empty team-empty--compact">
-                            <p>{{ t('organizer_team_pending_empty') }}</p>
+                            <p>{{ t('organization_team_pending_empty') }}</p>
                         </div>
                     </section>
                 </article>
@@ -193,13 +193,13 @@ import UranusFieldLabel from '@/components/ui/UranusFieldLabel.vue'
 import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusFormRow from '@/components/ui/UranusFormRow.vue'
 
-interface OrganizerTeamRole {
+interface OrganizationTeamRole {
     id: number
     name: string
     description?: string | null
 }
 
-interface OrganizerTeamMember {
+interface OrganizationTeamMember {
     user_id: number
     display_name: string | null
     email: string
@@ -210,7 +210,7 @@ interface OrganizerTeamMember {
     joined_at?: string | null
 }
 
-interface OrganizerTeamInvitation {
+interface OrganizationTeamInvitation {
     user_id: number
     email: string
     role_id: number | null
@@ -220,25 +220,25 @@ interface OrganizerTeamInvitation {
     expires_at?: string | null
 }
 
-interface OrganizerTeamResponse {
-    members?: OrganizerTeamMember[]
-    invitations?: OrganizerTeamInvitation[]
-    roles?: OrganizerTeamRole[]
+interface OrganizationTeamResponse {
+    members?: OrganizationTeamMember[]
+    invitations?: OrganizationTeamInvitation[]
+    roles?: OrganizationTeamRole[]
 }
 
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
 
-const organizerId = computed(() => {
+const organizationId = computed(() => {
     const raw = Number(route.params.id)
     return Number.isFinite(raw) ? raw : null
 })
 
 const isLoading = ref(true)
 const loadError = ref<string | null>(null)
-const members = ref<OrganizerTeamMember[]>([])
-const invitations = ref<OrganizerTeamInvitation[]>([])
-const roles = ref<OrganizerTeamRole[]>([])
+const members = ref<OrganizationTeamMember[]>([])
+const invitations = ref<OrganizationTeamInvitation[]>([])
+const roles = ref<OrganizationTeamRole[]>([])
 
 const searchQuery = ref('')
 const roleFilter = ref<'all' | number>('all')
@@ -349,8 +349,8 @@ const resetFilters = () => {
 }
 
 const loadTeam = async () => {
-    if (!organizerId.value) {
-        loadError.value = t('organizer_team_load_error')
+    if (!organizationId.value) {
+        loadError.value = t('organization_team_load_error')
         isLoading.value = false
         return
     }
@@ -361,8 +361,8 @@ const loadTeam = async () => {
     inviteActionError.value = null
 
     try {
-        const { data } = await apiFetch<OrganizerTeamResponse>(
-            `/api/admin/organizer/${organizerId.value}/team?lang=${locale.value}`
+        const { data } = await apiFetch<OrganizationTeamResponse>(
+            `/api/admin/organization/${organizationId.value}/team?lang=${locale.value}`
         )
 
         members.value = Array.isArray(data?.members) ? data.members : []
@@ -371,19 +371,19 @@ const loadTeam = async () => {
     } catch (err) {
         console.error('Failed to load team', err)
         loadError.value =
-            err instanceof Error && err.message ? err.message : t('organizer_team_load_error')
+            err instanceof Error && err.message ? err.message : t('organization_team_load_error')
     } finally {
         isLoading.value = false
     }
 }
 
-const removeMember = async (member: OrganizerTeamMember) => {
-    if (!organizerId.value) return
+const removeMember = async (member: OrganizationTeamMember) => {
+    if (!organizationId.value) return
 
     memberActionError.value = null
 
     const confirmed = window.confirm(
-        t('organizer_team_remove_member_confirm', {
+        t('organization_team_remove_member_confirm', {
             name: member.display_name || member.email,
         })
     )
@@ -395,7 +395,7 @@ const removeMember = async (member: OrganizerTeamMember) => {
     memberActionId.value = member.user_id
 
     try {
-        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/member/${member.user_id}`, {
+        await apiFetch(`/api/admin/organization/${organizationId.value}/team/member/${member.user_id}`, {
             method: 'DELETE',
         })
 
@@ -405,15 +405,15 @@ const removeMember = async (member: OrganizerTeamMember) => {
         memberActionError.value =
             err instanceof Error && err.message
                 ? err.message
-                : t('organizer_team_remove_member_error')
+                : t('organization_team_remove_member_error')
     } finally {
         memberActionId.value = null
     }
 }
 
 const submitInvite = async () => {
-    if (!organizerId.value || !inviteRoleId.value) {
-        inviteError.value = t('organizer_team_invite_role_required')
+    if (!organizationId.value || !inviteRoleId.value) {
+        inviteError.value = t('organization_team_invite_role_required')
         return
     }
 
@@ -423,43 +423,43 @@ const submitInvite = async () => {
     inviteSuccess.value = null
 
     if (!email) {
-        inviteError.value = t('organizer_team_invite_email_required')
+        inviteError.value = t('organization_team_invite_email_required')
         return
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailPattern.test(email)) {
-        inviteError.value = t('organizer_team_invite_email_invalid')
+        inviteError.value = t('organization_team_invite_email_invalid')
         return
     }
 
     isInviting.value = true
 
     try {
-        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/invite?lang=${locale.value}`, {
+        await apiFetch(`/api/admin/organization/${organizationId.value}/team/invite?lang=${locale.value}`, {
             method: 'POST',
             body: JSON.stringify({ email, role_id: inviteRoleId.value }),
         })
 
         inviteEmail.value = ''
-        inviteSuccess.value = t('organizer_team_invite_success', { email })
+        inviteSuccess.value = t('organization_team_invite_success', { email })
         await loadTeam()
     } catch (err) {
         console.error('Failed to invite member', err)
         inviteError.value =
-            err instanceof Error && err.message ? err.message : t('organizer_team_invite_error')
+            err instanceof Error && err.message ? err.message : t('organization_team_invite_error')
     } finally {
         isInviting.value = false
     }
 }
 
-const cancelInvite = async (invite: OrganizerTeamInvitation) => {
-    if (!organizerId.value) return
+const cancelInvite = async (invite: OrganizationTeamInvitation) => {
+    if (!organizationId.value) return
 
     inviteActionError.value = null
 
     const confirmed = window.confirm(
-        t('organizer_team_pending_cancel_confirm', { email: invite.email })
+        t('organization_team_pending_cancel_confirm', { email: invite.email })
     )
 
     if (!confirmed) {
@@ -469,7 +469,7 @@ const cancelInvite = async (invite: OrganizerTeamInvitation) => {
     inviteActionId.value = invite.user_id
 
     try {
-        await apiFetch(`/api/admin/organizer/${organizerId.value}/team/member/${invite.user_id}`, {
+        await apiFetch(`/api/admin/organization/${organizationId.value}/team/member/${invite.user_id}`, {
                 method: 'DELETE',
             }
         )
@@ -482,14 +482,14 @@ const cancelInvite = async (invite: OrganizerTeamInvitation) => {
         inviteActionError.value =
             err instanceof Error && err.message
                 ? err.message
-                : t('organizer_team_pending_cancel_error')
+                : t('organization_team_pending_cancel_error')
     } finally {
         inviteActionId.value = null
     }
 }
 
 watch(
-    () => organizerId.value,
+    () => organizationId.value,
     (next, prev) => {
         if (next && next !== prev) {
             void loadTeam()
@@ -513,17 +513,17 @@ watch(
 )
 
 onMounted(() => {
-    if (organizerId.value) {
+    if (organizationId.value) {
         void loadTeam()
     } else {
         isLoading.value = false
-        loadError.value = t('organizer_team_load_error')
+        loadError.value = t('organization_team_load_error')
     }
 })
 </script>
 
 <style scoped lang="scss">
-.organizer-team {
+.organization-team {
     display: flex;
     flex-direction: column;
     gap: clamp(1rem, 2vw, 1.5rem);

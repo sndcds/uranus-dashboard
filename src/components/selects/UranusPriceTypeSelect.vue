@@ -1,3 +1,6 @@
+<!--
+  UranusPriceTypeSelect.vue
+-->
 <template>
   <UranusFieldLabel id="price-type-select" :label="t('price_types')">
     <select

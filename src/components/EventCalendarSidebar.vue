@@ -1,11 +1,9 @@
+<!--
+  EventCalendarSidebar.vue
+-->
 <template>
     <aside class="calendar-sidebar">
-        <div class="calendar-sidebar__header">
-            <h2>{{ filtersTitle }}</h2>
-            <p>{{ filtersSubtitle }}</p>
-        </div>
-
-        <div class="calendar-sidebar__section calendar-sidebar__section--search">
+       <div class="calendar-sidebar__section calendar-sidebar__section--search">
             <label class="calendar-sidebar__label" :for="searchId">{{ searchLabel }}</label>
             <input type="search" v-model="searchQueryModel" :id="searchId" :placeholder="searchPlaceholder"
                 :disabled="isLoading" @keyup.enter="onSearchEnter" />
@@ -23,13 +21,13 @@
         </div>
 
         <div class="calendar-sidebar__section calendar-sidebar__section--types">
-            <label class="calendar-sidebar__label" for="organizer-select">{{ t('events_calendar_organizer_label')
+            <label class="calendar-sidebar__label" for="organization-select">{{ t('events_calendar_organization_label')
                 }}</label>
-            <select id="organizer-select" v-model="selectedOrganizerModel"
-                :disabled="isLoading || !organizerCountOptions.length" class="calendar-sidebar__select">
-                <option value="">{{ t('events_calendar_organizer_all_option') }}</option>
-                <option v-for="organizer in organizerCountOptions" :key="organizer.id" :value="organizer.id.toString()">
-                    {{ organizer.name }}, {{ organizer.city }} ({{ organizer.event_date_count }})
+            <select id="organization-select" v-model="selectedOrganizationModel"
+                :disabled="isLoading || !organizationCountOptions.length" class="calendar-sidebar__select">
+                <option value="">{{ t('events_calendar_organization_all_option') }}</option>
+                <option v-for="organization in organizationCountOptions" :key="organization.id" :value="organization.id.toString()">
+                    {{ organization.name }}, {{ organization.city }} ({{ organization.event_date_count }})
                 </option>
             </select>
         </div>
@@ -128,7 +126,7 @@ import type { EventVenueSummary } from '@/store/appStore'
 
 type VenueOption = EventVenueSummary & { event_date_count?: number }
 
-interface OrganizerOption {
+interface OrganizationOption {
     id: number
     name: string
     city?: string
@@ -144,8 +142,8 @@ interface Props {
     selectedDate: string | null
     selectedEndDate: string | null
     selectedVenue: VenueOption | null
-    selectedOrganizer: OrganizerOption | null
-    organizerCountOptions: OrganizerOption[] | null
+    selectedOrganization: OrganizationOption | null
+    organizationCountOptions: OrganizationOption[] | null
     tempStartDate: string | null
     tempEndDate: string | null
     isLoading: boolean
@@ -172,7 +170,7 @@ interface Emits {
     (e: 'reset-filters'): void
     (e: 'address-search', payload: { query: string; disableMyLocation: boolean }): void
     (e: 'selected-venue', venue: VenueOption | null): void
-    (e: 'selected-organizer', organizer: OrganizerOption | null): void
+    (e: 'selected-organization', organization: OrganizationOption | null): void
 }
 
 const props = defineProps<Props>()
@@ -215,7 +213,7 @@ const venueOptions = computed(() => (props.venueCountOptions ?? []).map((venue) 
     eventDateCount: venue.eventDateCount ?? venue.event_date_count ?? 0,
 })))
 
-const organizerCountOptions = computed(() => props.organizerCountOptions ?? [])
+const organizationCountOptions = computed(() => props.organizationCountOptions ?? [])
 
 const selectedVenueModel = computed({
     get: () => props.selectedVenue?.id?.toString() ?? '',
@@ -236,22 +234,22 @@ const selectedVenueModel = computed({
     }
 })
 
-const selectedOrganizerModel = computed({
-    get: () => props.selectedOrganizer?.id?.toString() ?? '',
+const selectedOrganizationModel = computed({
+    get: () => props.selectedOrganization?.id?.toString() ?? '',
     set: (value: string) => {
         if (!value) {
-            emit('selected-organizer', null)
+            emit('selected-organization', null)
             return
         }
 
         const id = Number(value)
         if (Number.isNaN(id)) {
-            emit('selected-organizer', null)
+            emit('selected-organization', null)
             return
         }
 
-        const organizer = organizerCountOptions.value.find((item) => item.id === id) ?? null
-        emit('selected-organizer', organizer)
+        const organization = organizationCountOptions.value.find((item) => item.id === id) ?? null
+        emit('selected-organization', organization)
     }
 })
 
@@ -435,7 +433,7 @@ const resetFilters = () => {
     flex-direction: column;
     gap: clamp(1.25rem, 2.5vw, 1.75rem);
     background: var(--card-bg, #fff);
-    border-radius: 12px;
+    // border-radius: 12px;
     padding: clamp(1.25rem, 3vw, 1.75rem);
     border: 0px solid var(--border-soft);
     position: sticky;

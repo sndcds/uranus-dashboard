@@ -2,16 +2,16 @@
   <div class="uranus-main-layout">
     <DashboardHeroComponent
       :title="t('venues')"
-      :subtitle="t('organizers_overview_subtitle')"
+      :subtitle="t('organizations_overview_subtitle')"
     />
 
     <div class="empty-state">
       <div class="uranus-card">
         <div class="empty-state-content">
-          <h3>{{ t('no_organizer_selected') }}</h3>
-          <p>{{ t('no_organizer_selected_description') }}</p>
-          <router-link to="/admin/organizers" class="uranus-button">
-            {{ t('go_to_organizers') }}
+          <h3>{{ t('no_organization_selected') }}</h3>
+          <p>{{ t('no_organization_selected_description') }}</p>
+          <router-link to="/admin/organizations" class="uranus-button">
+            {{ t('go_to_organizations') }}
           </router-link>
         </div>
       </div>

@@ -1,12 +1,11 @@
 .uranus-value-info {
   display: flex;
-  justify-content: space-between; // label on the left, value on the right
-  align-items: center;           // vertically center
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 0.5rem;
   color: #333;
   border: 1px solid #e1e1e1;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;         // optional for spacing
+  padding: 0.5rem 1rem;
 }
 
 .uranus-value-info-label {
@@ -14,7 +13,7 @@
 }
 
 .uranus-value-info-value {
-  text-align: right;             // ensure text is right-aligned
+  text-align: right;
 }
 
 .uranus-not-set-info {

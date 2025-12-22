@@ -20,7 +20,7 @@ const i18n = createI18n({
       need_account: "Don't have an account?",
       signup: 'Sign Up',
       event_error_required: 'This field is required',
-      organizer_form_invalid_email: 'Please provide a valid email address.',
+      organization_form_invalid_email: 'Please provide a valid email address.',
       invalid_credentials: 'Invalid credentials',
       login_failed: 'Login failed',
       password_show_label: 'Show password',

@@ -2,67 +2,93 @@
   UranusEditEventDates.vue
 -->
 <template>
-  <div>
+
+  <UranusInlineEditSection>
     <!-- Event Dates List -->
-    <template v-for="(date, index) in draft.eventDates" :key="index">
-      <hr v-if="index > 0" />
-      <UranusEventDateDisplay
+    <template v-for="date in event?.eventDates ?? []" :key="date.eventDateId ?? null">
+      <UranusEditEventDateDisplay
           :event-date="date"
           :can-edit="true"
-          @edit="openModal(index)"
+          @edit="onOpenModal(date)"
       />
     </template>
 
-    <!-- Add new event date -->
-    <button class="uranus-tertiary-button" @click="addEventDate">
-      {{ t('add_event_date') }}
-    </button>
+    <div style="margin-top: 8px;">
+      <button class="uranus-inline-edit-button" @click="addEventDate">
+        {{ t('event_add_date') }}
+      </button>
+    </div>
+  </UranusInlineEditSection>
 
-    <!-- Modal Overlay -->
-    <UranusModal :show="editingIndex !== null" @close="cancelEdit" :title="t('edit_event_date')">
-      <div class="uranus-form" v-if="editingDate">
-        <UranusFormRow>
-          <UranusEventVenueSpaceSelect
-              v-model="editingDate.venueSpace"
-              :selectLabel="t('event_venue_space_as_event')"
-              :required="false"
-          />
-        </UranusFormRow>
-
-        <UranusFormRow>
-          <UranusDateInput id="start-date" v-model="editingDate.eventDate.startDate" :label="t('event_start_date')" required />
-          <UranusTimeInput id="start-time" v-model="editingDate.eventDate.startTime" :label="t('event_start_time')" required />
-        </UranusFormRow>
-
-        <UranusFormRow>
-          <UranusDateInput id="end-date" v-model="editingDate.eventDate.endDate" :label="t('event_end_date')" />
-          <UranusTimeInput id="end-time" v-model="editingDate.eventDate.endTime" :label="t('event_end_time')" />
-        </UranusFormRow>
-
-        <UranusFormRow>
-          <UranusTimeInput id="entry-time" v-model="editingDate.eventDate.entryTime" :label="t('event_entry_time')" />
-          <UranusCheckboxButton id="all-day" v-model="editingDate.eventDate.allDay" :label="t('event_schedule_all_day')" />
-        </UranusFormRow>
-      </div>
-
-      <UranusInlineSectionLayout v-if="editingDate">
-        <UranusInlineEditActions
-            :isSaving="isSaving"
-            :canSave="canSave"
-            @save="saveModal"
-            @cancel="cancelEdit"
+  <!-- Modal Overlay -->
+  <UranusModal
+      :show="editingDate !== null"
+      :title="t('event_edit_date')"
+      @close="onCancelEdit"
+  >
+    <div class="uranus-form" v-if="editingDate">
+      <UranusFormRow>
+        <UranusEventVenueSpaceSelect
+            v-model="editingDate.venueSpace"
+            :selectLabel="t('event_venue_space_as_event')"
+            :required="false"
         />
-      </UranusInlineSectionLayout>
-    </UranusModal>
-  </div>
+      </UranusFormRow>
+
+      <UranusFormRow>
+        <UranusDateInput
+            id="start-date"
+            v-model="editingDate.eventDate.startDate"
+            :label="t('event_start_date')"
+            required />
+        <UranusTimeInput
+            id="start-time"
+            v-model="editingDate.eventDate.startTime"
+            :label="t('event_start_time')"
+            required />
+      </UranusFormRow>
+
+      <UranusFormRow>
+        <UranusDateInput
+            id="end-date"
+            v-model="editingDate.eventDate.endDate"
+            :label="t('event_end_date')" />
+        <UranusTimeInput
+            id="end-time"
+            v-model="editingDate.eventDate.endTime"
+            :label="t('event_end_time')" />
+      </UranusFormRow>
+
+      <UranusFormRow>
+        <UranusTimeInput
+            id="entry-time"
+            v-model="editingDate.eventDate.entryTime"
+            :label="t('event_entry_time')" />
+        <UranusCheckboxButton
+            id="all-day"
+            v-model="editingDate.eventDate.allDay"
+            :label="t('event_schedule_all_day')" />
+      </UranusFormRow>
+    </div>
+
+    <UranusInlineSectionLayout v-if="editingDate">
+      <UranusInlineEditActions
+          :isSaving="isSaving"
+          :canSave="canSave"
+          @save="onSaveModal"
+          @cancel="onCancelEdit"
+      />
+    </UranusInlineSectionLayout>
+  </UranusModal>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, inject, type Ref, nextTick } from 'vue'
+import { ref, inject, computed, nextTick } from 'vue'
+import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-import { type UranusEventDate, type UranusEventDetail, type UranusVenueSpaceSelection } from '@/models/UranusEventModel.ts'
-import UranusEventDateDisplay from '@/components/event/UranusEventDateDisplay.vue'
+import { apiFetch } from '@/api.ts'
+import type { UranusEventDetail, UranusEventDate, UranusVenueSpaceSelection } from '@/models/UranusEventModel.ts'
+import UranusEditEventDateDisplay from '@/components/event/UranusEditEventDateDisplay.vue'
 import UranusModal from '@/components/uranus/UranusModal.vue'
 import UranusFormRow from '@/components/ui/UranusFormRow.vue'
 import UranusEventVenueSpaceSelect from '@/components/event/UranusEventVenueSpaceSelect.vue'
@@ -71,16 +97,12 @@ import UranusTimeInput from '@/components/ui/UranusTimeInput.vue'
 import UranusCheckboxButton from '@/components/ui/UranusCheckboxButton.vue'
 import UranusInlineSectionLayout from '@/components/ui/UranusInlineSectionLayout.vue'
 import UranusInlineEditActions from '@/components/ui/UranusInlineEditActions.vue'
-import { apiFetch } from '@/api.ts'
+import UranusButton from "@/components/ui/UranusButton.vue";
+import UranusInlineEditSection from "@/components/ui/UranusInlineEditSection.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const event = inject<Ref<UranusEventDetail | null>>('event')
 
-const draft = reactive({
-  eventDates: event?.value?.eventDates ? [...event.value.eventDates] : []
-})
-
-const editingIndex = ref<number | null>(null)
 const editingDate = ref<{
   eventDate: UranusEventDate
   venueSpace: UranusVenueSpaceSelection
@@ -88,52 +110,29 @@ const editingDate = ref<{
 
 const isSaving = ref(false)
 const canSave = computed(() => !isSaving.value)
+const eventDates = computed(() => event?.value?.eventDates ?? [])
 
-/**
- * Sorting helper
- */
-function sortEventDates(a: UranusEventDate, b: UranusEventDate) {
-  const aDate = new Date(`${a.startDate ?? ''}T${a.startTime || '00:00'}`)
-  const bDate = new Date(`${b.startDate ?? ''}T${b.startTime || '00:00'}`)
-  return aDate.getTime() - bDate.getTime()
-}
-
-/**
- * Open modal for editing
- */
-function openModal(index: number) {
-  const date = draft.eventDates[index]!
+function onOpenModal(date: UranusEventDate) {
   editingDate.value = {
     eventDate: { ...date },
     venueSpace: {
-      venueId: date.venueId ?? null,
+      dateVenueId: date.dateVenueId,
+      venueId: date.dateVenueId,
       spaceId: date.spaceId ?? null,
-      venueName: date.venueName ?? null,
-      spaceName: date.spaceName ?? null
+      venueName: date.venueName ?? '',
+      spaceName: date.spaceName ?? ''
     }
   }
-
-  if (!date.dateVenueId) {
-    editingDate.value.venueSpace.venueId = null
-    editingDate.value.venueSpace.spaceId = null
-  }
-
-  editingIndex.value = index
 }
 
-/**
- * Cancel modal
- */
-function cancelEdit() {
-  editingIndex.value = null
+function onCancelEdit() {
   editingDate.value = null
 }
 
-/**
- * Add a new event date, keeping the list sorted
- */
 function addEventDate() {
+  if (!event?.value) return
   const newDate: UranusEventDate = {
+    eventId: null,
     eventDateId: null,
     dateVenueId: null,
     startDate: null,
@@ -144,30 +143,19 @@ function addEventDate() {
     allDay: false,
     venueId: null,
     spaceId: null,
+    venueName: '',
+    spaceName: '',
     duration: null,
     visitorInfoFlags: null,
-    venueName: null,
-    spaceName: null,
-    locationId: null
+    locationId: null,
   }
 
-  // Determine insertion index based on sorting
-  let insertIndex = draft.eventDates.findIndex(d => sortEventDates(newDate, d) < 0)
-  if (insertIndex === -1) {
-    draft.eventDates.push(newDate)
-    insertIndex = draft.eventDates.length - 1
-  } else {
-    draft.eventDates.splice(insertIndex, 0, newDate)
-  }
-
-  nextTick(() => openModal(insertIndex))
+  event.value.eventDates.push(newDate)
+  nextTick(() => onOpenModal(newDate))
 }
 
-/**
- * Save edited or new event date
- */
-async function saveModal() {
-  if (editingIndex.value === null || !editingDate.value || !event?.value) return
+async function onSaveModal() {
+  if (!editingDate.value || !event?.value) return
   isSaving.value = true
 
   const payload = {
@@ -190,18 +178,24 @@ async function saveModal() {
       body: JSON.stringify(payload)
     })
 
-    // Update the draft array
-    draft.eventDates[editingIndex.value] = {
-      ...editingDate.value.eventDate,
-      ...editingDate.value.venueSpace
+    // --- Replace the date object in the array for reactivity ---
+    const index = event.value.eventDates.findIndex(
+        d => d.eventDateId === editingDate.value!.eventDate.eventDateId
+    )
+
+    if (index !== -1) {
+      event.value.eventDates[index] = {
+        ...editingDate.value.eventDate,
+        dateVenueId: editingDate.value.venueSpace.dateVenueId,
+        venueId: editingDate.value.venueSpace.venueId,
+        spaceId: editingDate.value.venueSpace.spaceId,
+        venueName: editingDate.value.venueSpace.venueName ?? '',
+        spaceName: editingDate.value.venueSpace.spaceName ?? ''
+      }
     }
 
-    // Keep list sorted
-    draft.eventDates.sort(sortEventDates)
-
-    cancelEdit()
-  } catch (err) {
-    console.error('Failed to save event date:', err)
+    // Close the modal
+    onCancelEdit()
   } finally {
     isSaving.value = false
   }

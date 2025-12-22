@@ -7,10 +7,21 @@
 @use 'uranus_value_info';
 @use './_markdown_editor.scss';
 @use 'uranus_inline_editor';
+@use 'uranus_public';
 
 
 :root {
   color-scheme: light;
+
+  --uranus-event-tag-background: rgba(86, 80, 188, 0.16);
+  --uranus-event-tag-color: rgb(86, 80, 188);
+  --uranus-language-tag-background: rgba(69, 181, 141, 0.18);
+  --uranus-language-tag-color: rgb(56, 126, 107);
+
+  --uranus-public-link-color: #4f46e5;
+  --uranus-public-link-hover-color: #7c6eef;
+
+
 
   // Base typography & text colors
   --font-brand: 'Space Grotesk', 'Inter', sans-serif;
@@ -82,7 +93,7 @@
   --uranus-card-background-color: var(--card-bg);
   --uranus-card-color: var(--color-text);
   --uranus-card-border-color: #eee;
-  --uranus-card-border-radius: 12px;
+  --uranus-card-border-radius: 0px;
 
   // Application chrome
   --uranus-bg-color: #f5f7fb;
@@ -100,9 +111,9 @@
   --uranus-grid-gap: 12px;
   --uranus-card-gap: 8px;
   --uranus-default-text-padding: 6px 12px;
-  --uranus-inline-edit-border-radius: 4px;
-  --uranus-form-field-border-radius: 6px;
-  --uranus-tiny-border-radius: 4px;
+  --uranus-inline-edit-border-radius: 0px;
+  --uranus-form-field-border-radius: 0px;
+  --uranus-tiny-border-radius: 0px;
   --uranus-input-height: 44px;
 
     --uranus-notify-info-color: #a2bae8;

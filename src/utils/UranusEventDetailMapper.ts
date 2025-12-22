@@ -1,33 +1,164 @@
 import {
-    toNumberOrNull,
-    toNullableString,
-    toBoolean
-} from "@/utils/UranusUtils.ts";
-import {
     UranusEventDetail,
     UranusEventType,
     UranusEventDate,
     UranusEventUrl,
-    UranusEventLocation
-} from "@/models/UranusEventModel.ts";
+    UranusEventLocation,
+} from '@/models/UranusEventModel.ts'
+import { toNumberOrNull, toString, toNullableString } from './UranusUtils.ts'
 
-/** Map a single raw event type */
-function mapEventType(raw: unknown): UranusEventType | null {
-    if (!raw || typeof raw !== "object") return null;
-    const r = raw as Record<string, unknown>;
-    return new UranusEventType(
-        toNumberOrNull(r.type_id),
-        toNullableString(r.type_name),
-        toNumberOrNull(r.genre_id),
-        toNullableString(r.genre_name)
-    );
+export const mapEventDetailData = (raw: unknown): UranusEventDetail | null => {
+    if (!raw || typeof raw !== 'object') return null
+    const r = raw as Record<string, unknown>
+
+    // Event ID
+    const eventId = toNumberOrNull(r.event_id)
+    if (eventId === null) return null
+
+    // First event date ID (if multiple dates exist)
+    const firstEventDate = Array.isArray(r.event_dates) && r.event_dates[0] ? r.event_dates[0] : null
+    const eventDateId = firstEventDate ? toNumberOrNull(firstEventDate.event_date_id) : null
+
+    // Event types
+    const eventTypes: UranusEventType[] | null = Array.isArray(r.event_types)
+        ? r.event_types.map(mapEventType).filter((et): et is UranusEventType => et !== null)
+        : []
+
+    // Image IDs (always 8 slots)
+    const imageIds: (number | null)[] = [
+        r.image1_id, r.image2_id, r.image3_id, r.image4_id,
+        r.image_some_16_9_id, r.image_some_1_1_id,
+        r.image_some_4_5_id, r.image_some_9_16_id,
+    ].map(toNumberOrNull)
+
+    const toBooleanOrNull = (v: unknown): boolean | null => v != null ? Boolean(v) : null
+
+    // Title / subtitle
+    const title = toString(r.title)
+    const subtitle = toNullableString(r.subtitle)
+
+    // Organization
+    const organizationId = toNumberOrNull(r.organization_id) ?? 0
+    const organizationName = toString(r.organization_name)
+
+    // Dates / times
+    const startDate = firstEventDate ? toString(firstEventDate.start_date) : toString(r.start_date)
+    const startTime = firstEventDate ? toString(firstEventDate.start_time) : toString(r.start_time)
+    const endDate = firstEventDate ? toNullableString(firstEventDate.end_date) : toNullableString(r.end_date)
+    const endTime = firstEventDate ? toNullableString(firstEventDate.end_time) : toNullableString(r.end_time)
+
+    // Venue & space (fall back to firstEventDate)
+    /*
+    const venueId = toNumberOrNull(r.venue_id ?? firstEventDate?.venue_id)
+    const venueName = toNullableString(r.venue_name ?? firstEventDate?.venue_name)
+    const venueLon = toNumberOrNull(r.venue_lon ?? firstEventDate?.venue_lon)
+    const venueLat = toNumberOrNull(r.venue_lat ?? firstEventDate?.venue_lat)
+    const spaceId = toNumberOrNull(r.space_id ?? firstEventDate?.space_id)
+    const spaceName = toNullableString(r.space_name ?? firstEventDate?.space_name)
+    const spaceBuildingLevel = toNumberOrNull(r.space_building_level ?? firstEventDate?.space_building_level)
+    const spaceSeatingCapacity = toNumberOrNull(r.space_seating_capacity ?? firstEventDate?.space_seating_capacity)
+    const spaceTotalCapacity = toNumberOrNull(r.space_total_capacity ?? firstEventDate?.space_total_capacity)
+     */
+
+    const venueId = toNumberOrNull(r.venue_id)
+    const venueName = toNullableString(r.venue_name)
+    const venueLon = toNumberOrNull(r.venue_lon)
+    const venueLat = toNumberOrNull(r.venue_lat)
+    const spaceId = toNumberOrNull(r.space_id)
+    const spaceName = toNullableString(r.space_name)
+    const spaceBuildingLevel = toNumberOrNull(r.space_building_level)
+    const spaceSeatingCapacity = toNumberOrNull(r.space_seating_capacity)
+    const spaceTotalCapacity = toNumberOrNull(r.space_total_capacity)
+
+    // Construct UranusEventDetail
+    return new UranusEventDetail({
+        eventId,
+        eventDateId,
+        title,
+        subtitle,
+        organizationId,
+        organizationName,
+        startDate,
+        startTime,
+        endDate,
+        endTime,
+        venueId,
+        venueName,
+        venueLon,
+        venueLat,
+        spaceId,
+        spaceName,
+        spaceBuildingLevel,
+        spaceSeatingCapacity,
+        spaceTotalCapacity,
+        eventTypes,
+        imageIds,
+        releaseStatusId: toNumberOrNull(r.release_status_id),
+        releaseStatusName: toNullableString(r.release_status_name),
+        releaseDate: toNullableString(r.release_date),
+        canEditEvent: Boolean(r.can_edit_event),
+        canDeleteEvent: Boolean(r.can_delete_event),
+        canReleaseEvent: Boolean(r.can_release_event),
+        timeSeriesIndex: toNumberOrNull(r.time_series_index) ?? 0,
+        timeSeries: toNumberOrNull(r.time_series) ?? 0,
+        description: toNullableString(r.description),
+        teaserText: toNullableString(r.teaser_text),
+        participationInfo: toNullableString(r.participation_info),
+        meetingPoint: toNullableString(r.meeting_point),
+        minAge: toNumberOrNull(r.min_age),
+        maxAge: toNumberOrNull(r.max_age),
+        maxAttendees: toNumberOrNull(r.max_attendees),
+        priceTypeId: toNumberOrNull(r.price_type_id),
+        minPrice: toNumberOrNull(r.min_price),
+        maxPrice: toNumberOrNull(r.max_price),
+        ticketAdvance: toBooleanOrNull(r.ticket_advance),
+        ticketRequired: toBooleanOrNull(r.ticket_required),
+        registrationRequired: toBooleanOrNull(r.registration_required),
+        currencyCode: toNullableString(r.currency_code),
+        currencyName: toNullableString(r.currency_name),
+        occasionTypeId: toNumberOrNull(r.occasion_type_id),
+        onlineEventUrl: toNullableString(r.online_event_url),
+        sourceUrl: toNullableString(r.source_url),
+        custom: toNullableString(r.custom),
+        style: toNullableString(r.style),
+        languages: Array.isArray(r.languages) ? r.languages.map(String) : [],
+        eventDates: Array.isArray(r.event_dates)
+            ? r.event_dates.map(mapEventDate).filter((d): d is UranusEventDate => d !== null)
+            : [],
+        eventUrls: Array.isArray(r.event_urls)
+            ? r.event_urls.map(mapEventUrl).filter((u): u is UranusEventUrl => u !== null)
+            : [],
+        venueStreet: toNullableString(r.venue_street),
+        venueHouseNumber: toNullableString(r.venue_house_number),
+        venuePostalCode: toNullableString(r.venue_postal_code),
+        venueCity: toNullableString(r.venue_city),
+        releaseStatusOverrideId: toNumberOrNull(r.release_status_override_id),
+        releaseDateOverride: toNullableString(r.release_date_override),
+        location: mapEventLocation(r),
+        entryTime: toNullableString(r.entry_time),
+        tags: Array.isArray(r.tags) ? r.tags.map(String) : [],
+    })
 }
 
-/** Map a single raw event date */
-function mapEventDate(raw: unknown): UranusEventDate | null {
-    if (!raw || typeof raw !== "object") return null;
-    const r = raw as Record<string, unknown>;
+/** Helper functions */
+const mapEventType = (raw: unknown): UranusEventType | null => {
+    if (!raw || typeof raw !== 'object') return null
+    const r = raw as Record<string, unknown>
+    const typeId = toNumberOrNull(r.type_id)
+    if (typeId === null) return null
+    return {
+        typeId,
+        typeName: toString(r.type_name),
+        genreId: toNumberOrNull(r.genre_id),
+        genreName: toNullableString(r.genre_name),
+    }
+}
+
+const mapEventDate = (raw: unknown): UranusEventDate | null => {
+    if (!raw || typeof raw !== 'object') return null
+    const r = raw as Record<string, unknown>
     return new UranusEventDate(
+        toNumberOrNull(r.event_id),
         toNumberOrNull(r.event_date_id),
         toNumberOrNull(r.date_venue_id),
         toNumberOrNull(r.venue_id),
@@ -40,156 +171,37 @@ function mapEventDate(raw: unknown): UranusEventDate | null {
         toNullableString(r.end_date),
         toNullableString(r.end_time),
         toNullableString(r.entry_time),
-        toBoolean(r.all_day),
+        Boolean(r.all_day),
         toNumberOrNull(r.duration),
-        toNumberOrNull(r.visitor_info_flags)
-    );
+        toNumberOrNull(r.visitor_info_flags),
+    )
 }
 
-/** Map a single raw event URL */
-function mapEventUrl(raw: unknown): UranusEventUrl | null {
-    if (!raw || typeof raw !== "object") return null;
-    const r = raw as Record<string, unknown>;
-    const url = toNullableString(r.url);
-    if (!url) return null;
+const mapEventUrl = (raw: unknown): UranusEventUrl | null => {
+    if (!raw || typeof raw !== 'object') return null
+    const r = raw as Record<string, unknown>
     return new UranusEventUrl(
         toNumberOrNull(r.id),
         toNullableString(r.title),
-        url,
-        toNullableString(r.url_type)
-    );
+        toNullableString(r.url),
+        toNumberOrNull(r.url_type),
+    )
 }
 
-/** Map language codes to string array */
-function mapLanguageCodes(raw: unknown): string[] {
-    if (!raw) return [];
-    const source = Array.isArray(raw) ? raw : [];
-    return source
-        .map((item) => {
-            if (typeof item === "string") return item.trim() || null;
-            if (item && typeof item === "object") {
-                const r = item as Record<string, unknown>;
-                const candidate =
-                    r.code ?? r.id ?? r.language_code ?? r.language ?? null;
-                return typeof candidate === "string" ? candidate.trim() : null;
-            }
-            return null;
-        })
-        .filter((v): v is string => v !== null);
-}
+export const mapEventLocation = (raw: Record<string, unknown> | null | undefined): UranusEventLocation | null => {
+    if (!raw) return null
 
-/** Map raw API data to UranusEventDetail */
-export function mapEventData(raw: unknown): UranusEventDetail | null {
-    if (!raw || typeof raw !== "object") return null;
-    const record = raw as Record<string, unknown>;
-
-    const eventId = toNumberOrNull(record.event_id);
-    if (eventId === null) return null;
-
-    // Map arrays
-    const eventTypes: UranusEventType[] = Array.isArray(record.event_types)
-        ? (record.event_types as unknown[])
-            .map(mapEventType)
-            .filter((v): v is UranusEventType => v !== null)
-        : [];
-
-    const eventDates: UranusEventDate[] = Array.isArray(record.event_dates)
-        ? (record.event_dates as unknown[])
-            .map(mapEventDate)
-            .filter((v): v is UranusEventDate => v !== null)
-        : [];
-
-    const eventUrls: UranusEventUrl[] = Array.isArray(record.event_urls)
-        ? (record.event_urls as unknown[])
-            .map(mapEventUrl)
-            .filter((v): v is UranusEventUrl => v !== null)
-        : [];
-
-    const languageCodes: string[] = mapLanguageCodes(
-        record.languages ?? record.language_codes ?? record.event_languages
-    );
-
-    // Location
-    const location = new UranusEventLocation(
-        toNumberOrNull(record.location_id),
-        toNullableString(record.location_name),
-        toNullableString(record.location_street),
-        toNullableString(record.location_house_number),
-        toNullableString(record.location_postal_code),
-        toNullableString(record.location_city),
-        toNullableString(record.location_country_code),
-        toNullableString(record.location_state_code),
-        toNumberOrNull(record.location_latitude),
-        toNumberOrNull(record.location_longitude)
-    );
-
-    // Build 8 image IDs array
-    const imageIds: (number | null)[] = Array.from({ length: 8 }, (_, i) =>
-        toNumberOrNull(record[`image${i + 1}_id`])
-    );
-
-    // Corrected constructor argument order (matches UranusEventBase)
-    return new UranusEventDetail(
-        eventId,
-        toNumberOrNull(record.organizer_id) ?? 0,
-        toNullableString(record.organizer_name) ?? '',
-        toNumberOrNull(record.event_date_id) ?? 0,
-        toNullableString(record.title) ?? '',
-        toNullableString(record.subtitle),
-        toNullableString(record.start_date) ?? "",
-        toNullableString(record.start_time) ?? "",
-        toNullableString(record.end_date),
-        toNullableString(record.end_time),
-        toNumberOrNull(record.venue_id),
-        toNullableString(record.venue_name),
-        toNumberOrNull(record.venue_lon),
-        toNumberOrNull(record.venue_lat),
-        toNullableString(record.space_name),
-        eventTypes,
-        imageIds,
-        toNumberOrNull(record.release_status_id),
-        toNullableString(record.release_status_name),
-        toNullableString(record.release_date),
-        toBoolean(record.can_edit_event),
-        toBoolean(record.can_delete_event),
-        toBoolean(record.can_release_event),
-        toNumberOrNull(record.time_series_index) ?? 0,
-        toNumberOrNull(record.time_series) ?? 0,
-        // Extra UranusEventDetail fields
-        toNullableString(record.description),
-        toNullableString(record.teaser_text),
-        toNullableString(record.participation_info),
-        toNullableString(record.meeting_point),
-        toNumberOrNull(record.min_age),
-        toNumberOrNull(record.max_age),
-        toNumberOrNull(record.max_attendees),
-        toNumberOrNull(record.price_type_id),
-        toNumberOrNull(record.min_price),
-        toNumberOrNull(record.max_price),
-        toBoolean(record.ticket_advance),
-        toBoolean(record.ticket_required),
-        toBoolean(record.registration_required),
-        toNullableString(record.currency_code),
-        toNullableString(record.currency_name),
-        toNumberOrNull(record.occasion_type_id),
-        toNullableString(record.online_event_url),
-        toNullableString(record.source_url),
-        toNullableString(record.custom),
-        toNullableString(record.style),
-        languageCodes,
-        eventDates,
-        eventUrls,
-        toNullableString(record.venue_street),
-        toNullableString(record.venue_house_number),
-        toNullableString(record.venue_postal_code),
-        toNullableString(record.venue_city),
-        toNumberOrNull(record.space_building_level),
-        toNumberOrNull(record.space_seating_capacity),
-        toNumberOrNull(record.space_total_capacity),
-        location,
-        toNullableString(record.entry_time),
-        Array.isArray(record.tags) ? (record.tags as string[]) : [],
-        toNumberOrNull(record.release_status_override_id),
-        toNullableString(record.release_date_override)
-    );
+    return new UranusEventLocation({
+        id: null,
+        name: toNullableString(raw.location_name),
+        street: toNullableString(raw.location_street),
+        houseNumber: toNullableString(raw.location_house_number),
+        postalCode: toNullableString(raw.location_postal_code),
+        city: toNullableString(raw.location_city),
+        countryCode: toNullableString(raw.location_country_code),
+        stateCode: toNullableString(raw.location_state_code),
+        latitude: raw.venue_lat != null ? Number(raw.venue_lat) : null,
+        longitude: raw.venue_lon != null ? Number(raw.venue_lon) : null,
+        description: toNullableString(raw.location_description),
+    })
 }

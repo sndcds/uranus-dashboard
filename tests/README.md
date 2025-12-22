@@ -39,7 +39,7 @@ tests/
 │   ├── EventCalendarSidebar.test.ts
 │   ├── MarkdownEditorComponent.test.ts
 │   ├── MarkdownPreviewComponent.test.ts
-│   ├── OrganizerCardComponent.test.ts
+│   ├── OrganizationCardComponent.test.ts
 │   ├── SidebarOptionComponent.test.ts
 │   └── VenueCardComponent.test.ts
 ├── views/                              # View integration tests
@@ -84,11 +84,11 @@ tests/
   - ✅ Empty state display
   - ✅ Edge cases (malformed markdown, long content)
 
-- **OrganizerCardComponent** (98% coverage)
-  - ✅ Organizer information display
+- **OrganizationCardComponent** (98% coverage)
+  - ✅ Organization information display
   - ✅ Venue and space statistics table
   - ✅ Active/inactive state management
-  - ✅ Organizer activation
+  - ✅ Organization activation
   - ✅ Route generation for edit actions
   - ✅ Empty state when no venues
   - ✅ Total event count calculation

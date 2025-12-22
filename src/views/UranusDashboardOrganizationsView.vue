@@ -1,34 +1,34 @@
 <!--
-  UranusDashboardOrganizersView.vue
+  UranusDashboardOrganizationsView.vue
 -->
 <template>
     <div class="uranus-main-layout" style="max-width: 1600px;">
-        <DashboardHeroComponent :title="t('organizers')" :subtitle="t('organizers_overview_subtitle')" />
+        <DashboardHeroComponent :title="t('organizations')" :subtitle="t('organizations_dashboard_description')" />
 
         <UranusDashboardActionBar>
-            <router-link to="/admin/organizer/create" class="uranus-secondary-button">
-                {{ t('create_organizer') }}
+            <router-link to="/admin/organization/create" class="uranus-secondary-button">
+                {{ t('create_organization') }}
             </router-link>
         </UranusDashboardActionBar>
 
         <!-- Empty State Message -->
-        <div v-if="!organizers.length" class="organizer-dashboard-view__empty">
-            <p class="organizer-dashboard-view__empty-text">{{ t('no_organizers_help') }}</p>
+        <div v-if="!organizations.length" class="organization-dashboard-view__empty">
+            <p class="organization-dashboard-view__empty-text">{{ t('no_organizations_help') }}</p>
         </div>
 
 
     <!-- Error Message -->
-    <div v-if="error" class="organizer-dashboard-view__error">
+    <div v-if="error" class="organization-dashboard-view__error">
       <p class="form-feedback-error">{{ error }}</p>
     </div>
 
-    <!-- Organizer Cards Grid -->
-    <div class="organizer-grid">
-      <UranusOrganizerCard
-          v-for="organizer in organizers"
-          :key="organizer.organizer_id"
-          :organizer="organizer"
-          @deleted="handleOrganizerDeleted"
+    <!-- Organization Cards Grid -->
+    <div class="organization-grid">
+      <UranusOrganizationCard
+          v-for="organization in organizations"
+          :key="organization.organization_id"
+          :organization="organization"
+          @deleted="handleOrganizationDeleted"
       />
     </div>
   </div>
@@ -39,37 +39,37 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import UranusOrganizerCard from '@/components/organizer/UranusOrganizerCard.vue'
+import UranusOrganizationCard from '@/components/organization/UranusOrganizationCard.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
 
 const { t } = useI18n()
 
-interface Organizer {
-  organizer_id: number
-  organizer_name: string
-  organizer_city: string | null
-  organizer_country_code: string | null
+interface Organization {
+  organization_id: number
+  organization_name: string
+  organization_city: string | null
+  organization_country_code: string | null
   total_upcoming_events: number
   venue_count: number
   space_count: number
-  can_edit_organizer: boolean
-  can_delete_organizer: boolean
+  can_edit_organization: boolean
+  can_delete_organization: boolean
   can_manage_team: boolean
 }
 
-const organizers = ref<Organizer[]>([])
+const organizations = ref<Organization[]>([])
 const error = ref<string | null>(null)
 
-const handleOrganizerDeleted = (organizerId: number) => {
-  organizers.value = organizers.value.filter(org => org.organizer_id !== organizerId)
+const handleOrganizationDeleted = (organizationId: number) => {
+  organizations.value = organizations.value.filter(org => org.organization_id !== organizationId)
 }
 
 onMounted(async () => {
   try {
     // Updated to reflect the new API shape
-    const { data } = await apiFetch<{ organizers: Organizer[] }>('/api/admin/organizer/dashboard')
-    organizers.value = data?.organizers || []
+    const { data } = await apiFetch<{ organizations: Organization[] }>('/api/admin/organization/dashboard')
+    organizations.value = data?.organizations || []
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
@@ -82,7 +82,7 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
-.organizer-grid {
+.organization-grid {
   display: flex;
   flex-direction: column;
   grid-template-columns: repeat(auto-fill, minmax(360px, 500px));
@@ -93,13 +93,13 @@ onMounted(async () => {
 
 
 // Empty state
-.organizer-dashboard-view__empty {
+.organization-dashboard-view__empty {
   width: 100%;
   max-width: 600px;
   text-align: center;
 }
 
-.organizer-dashboard-view__empty-text {
+.organization-dashboard-view__empty-text {
   margin: 0;
   font-size: clamp(1rem, 2.5vw, 1.2rem);
   color: var(--uranus-muted-text);
@@ -107,7 +107,7 @@ onMounted(async () => {
 }
 
 // Error feedback
-.organizer-dashboard-view__error {
+.organization-dashboard-view__error {
   width: 100%;
   max-width: 600px;
 }

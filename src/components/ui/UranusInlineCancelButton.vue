@@ -1,9 +1,12 @@
+<!--
+  UranusInlineCancelButton.view
+-->
 <template>
   <button
       type="button"
       class="uranus-cancel-button"
       :disabled="disabled"
-      @click="onClick"
+      @click="handleClick"
       :aria-label="label"
   >
     {{ label }}
@@ -11,16 +14,22 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from "vue";
+import { defineEmits, defineProps } from 'vue'
 
-defineProps({
+const props = defineProps({
   label: { type: String, default: 'Cancel' },
   disabled: { type: Boolean, default: false },
-  onClick: {
-    type: Function as PropType<(e: MouseEvent) => void>,
-    required: true
-  }
 })
+
+const emit = defineEmits<{
+  (e: 'cancel', event?: MouseEvent): void
+}>()
+
+function handleClick(e: MouseEvent) {
+  if (!props.disabled) {
+    emit('cancel', e)
+  }
+}
 </script>
 
 <style scoped lang="scss">

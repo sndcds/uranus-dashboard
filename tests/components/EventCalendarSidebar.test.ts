@@ -12,7 +12,7 @@ const i18n = createI18n({
       events_calendar_filters_title: 'Filter events',
       events_calendar_filters_subtitle: 'Use search, date range, and categories to focus the calendar.',
       events_calendar_search_label: 'Search events',
-      events_calendar_search_placeholder: 'Search by title, organizer, or location…',
+      events_calendar_search_placeholder: 'Search by title, organization, or location…',
       events_calendar_date_label: 'Choose a date',
       events_calendar_end_date_label: 'End date',
       events_calendar_all_dates: 'All dates',

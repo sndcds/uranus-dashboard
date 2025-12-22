@@ -14,11 +14,14 @@
         <div>
           <h3>{{ props.event.title }}</h3>
           <span>{{ uranusFormatEventDateTime(props.event.startDate, props.event.startTime, props.event.endDate, props.event.endTime, locale) }} </span><br>
-          <span>{{ props.event.organizerName }}</span><br>
-          <span>{{ props.event.venueName }}
+          <span>{{ props.event.organizationName }}</span><br>
+          <span v-if="hasVenue">{{ props.event.venueName }}
             <template v-if="hasSpace">
               / {{ props.event.spaceName }}
             </template>
+          </span>
+          <span v-else-if="hasLocation">
+            {{ props.event.locationName }}
           </span>
         </div>
 
@@ -33,12 +36,14 @@
         </span>
 
         <div class="uranus-dashboard-event-card-actions">
-          <button
-              class="uranus-tertiary-button"
+          <UranusButton
               v-if="props.event.canDeleteEvent"
-              @click.prevent.stop="requestDelete(props.event)">
-            {{ t('delete_event') }}
-          </button>
+              class="uranus-tertiary-button"
+              icon="delete"
+              @click.prevent.stop="requestDelete(props.event)"
+          >
+            {{ t('delete') }}
+          </UranusButton>
         </div>
       </div>
       <!--UranusEventReleaseChip :releaseDisplay="props.event.releaseStatusName" size="big" /-->
@@ -78,6 +83,8 @@ import { type UranusEventBase } from '@/models/UranusEventModel.ts'
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 import UranusCard from "@/components/ui/UranusCard.vue";
 import UranusEventReleaseChip from "@/components/ui/UranusEventReleaseChip.vue";
+import UranusIconAction from "@/components/ui/UranusIconAction.vue";
+import UranusButton from "@/components/ui/UranusButton.vue";
 
 const emit = defineEmits<{
   deleted: [payload: { eventId: number; eventDateId: number | null; deleteSeries: boolean }]
@@ -103,9 +110,9 @@ const pendingDeleteTitle = ref('')
 const pendingTimeSeriesCount = ref(1)
 const pendingEventDateId = ref<number | null>(null)
 
-const hasSpace = computed(() =>
-    props.event.spaceName && props.event.spaceName.trim() !== ''
-)
+const hasVenue = computed(() => props.event.venueId)
+const hasSpace = computed(() => props.event.spaceId)
+const hasLocation = computed(() => props.event.locationId)
 
 const requestDelete = (event: UranusEventBase) => {
   if (!event.canDeleteEvent) {

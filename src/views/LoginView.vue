@@ -104,8 +104,8 @@ const isValidEmail = (value: string) => {
     return emailPattern.test(value)
 }
 
-const requiredFieldMessage = computed(() => t('event_error_required'))
-const invalidEmailMessage = computed(() => t('organizer_form_invalid_email'))
+const requiredFieldMessage = computed(() => t('required_field'))
+const invalidEmailMessage = computed(() => t('organization_form_invalid_email'))
 
 watch(email, (value) => {
     if (fieldErrors.email && value.trim()) {

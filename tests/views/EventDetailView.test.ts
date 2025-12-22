@@ -3,7 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 
-import EventDetailView from '../../src/views/EventDetailView.vue'
+import UranusPublicEventView from '../../src/views/UranusPublicEventView.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -24,8 +24,8 @@ const i18n = createI18n({
       dashboard_todo_due: 'Duration',
       location: 'Location',
       space: 'Space',
-      organizer: 'Organizer',
-      organizers: 'Organizer',
+      organization: 'Organization',
+      organizations: 'Organization',
       space_details_title: 'Space Details',
       space_total_capacity: 'Total Capacity',
       space_seating_capacity: 'Seated Capacity',
@@ -99,8 +99,8 @@ const mockEvent = {
   image_focus_y: 0,
   image_id: 80,
   languages: ['de', 'en'],
-  organizer_name: 'Test Organizer',
-  organizer_id: 111,
+  organization_name: 'Test Organization',
+  organization_id: 111,
   event_types: [
     { type_id: 12, type_name: 'Exhibition', genre_id: 1, genre_name: 'Art' },
   ],
@@ -132,7 +132,7 @@ const mockEvent = {
   event_dates: [mockEventDate],
 }
 
-describe('EventDetailView', () => {
+describe('UranusPublicEventView', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     router.push('/event/424/date/100')
@@ -142,7 +142,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -156,7 +156,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -173,7 +173,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue(new Error('API Error'))
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -188,7 +188,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -205,7 +205,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -223,7 +223,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -242,7 +242,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -258,7 +258,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [router, i18n],
       },
@@ -281,7 +281,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -300,7 +300,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -314,11 +314,11 @@ describe('EventDetailView', () => {
     expect(wrapper.text()).toContain('2nd Floor')
   })
 
-  it('displays organizer information', async () => {
+  it('displays organization information', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -326,14 +326,14 @@ describe('EventDetailView', () => {
 
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Test Organizer')
+    expect(wrapper.text()).toContain('Test Organization')
   })
 
   it('displays external links correctly', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -353,7 +353,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [router, i18n],
       },
@@ -393,7 +393,7 @@ describe('EventDetailView', () => {
     }
     vi.mocked(apiFetch).mockResolvedValue({ data: minimalEvent, status: 200 })
 
-    const wrapper = mount(EventDetailView, {
+    const wrapper = mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },
@@ -411,7 +411,7 @@ describe('EventDetailView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: mockEvent, status: 200 })
 
-    mount(EventDetailView, {
+    mount(UranusPublicEventView, {
       global: {
         plugins: [i18n, router],
       },

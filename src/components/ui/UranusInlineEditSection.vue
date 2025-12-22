@@ -10,8 +10,8 @@
 
 <script setup>
 const props = defineProps({
-    customClass: { type: String, default: '' }, // extra CSS classes
-    customStyle: { type: [String, Object], default: '' }, // inline styles
+    customClass: { type: String, default: '' },
+    customStyle: { type: [String, Object], default: '' },
     active: { type: Boolean, default: false }
 })
 </script>

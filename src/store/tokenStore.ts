@@ -86,16 +86,16 @@ export const useTokenStore = defineStore('token', () => {
   const applyTokenClear = () => {
     accessToken.value = null
     refreshToken.value = null
-    
+
     // Clear user store
     const userStore = useUserStore()
     userStore.clearUserId()
     userStore.clearDisplayName()
     userStore.clearEmailAddress()
-    
+
     // Clear app store
     const appStore = useAppStore()
-    appStore.clearOrganizerId()
+    appStore.clearOrganizationId()
   }
 
   function clearTokens(options?: { broadcast?: boolean }) {

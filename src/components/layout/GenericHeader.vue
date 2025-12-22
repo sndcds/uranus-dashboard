@@ -607,27 +607,28 @@ onUnmounted(() => {
 }
 
 .generic-header__user-trigger {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.375rem;
-    background: none;
-    border: 1px solid var(--border-soft);
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem;
+  background: none;
+  // border: 1px solid var(--border-soft);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--color-text);
 
-    &:hover {
-        background: var(--uranus-surface-muted);
-        border-color: var(--border-soft);
-    }
+  &:hover {
+    background: var(--uranus-surface-muted);
+    border-color: var(--border-soft);
+  }
 
-    @media (max-width: 640px) {
-        .generic-header__user-name {
-            display: none;
-        }
+  @media (max-width: 640px) {
+    .generic-header__user-name {
+      display: none;
     }
+  }
 }
 
 .generic-header__user-avatar,

@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, type Ref, inject, defineExpose } from 'vue'
+import { ref, type Ref, inject } from 'vue'
 import UranusImageSlot from '@/components/image/UranusImageSlot.vue'
 import { buildPlutoPreviewImageUrl } from '@/utils/UranusUtils'
 import type { UranusEventDetail } from "@/models/UranusEventModel.ts";

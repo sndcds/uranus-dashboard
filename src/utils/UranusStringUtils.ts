@@ -1,3 +1,7 @@
+export function capitalizeFirst(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
 export function uranusCombineTwoPartString(s1: string | null, s2: string | null): string {
     const s1Normalized = s1 ?? "";
     if (!s2 || s2.trim() === "") {
@@ -116,13 +120,13 @@ export function uranusPriceText(
     const formatter = new Intl.NumberFormat(resolvedLocale, options);
 
     if (minPrice !== undefined && maxPrice === undefined) {
-        return t('price_from_amount', { price: formatter.format(minPrice) });
+        return t('price_from_sentence', { price: formatter.format(minPrice) });
     }
     if (minPrice === undefined && maxPrice !== undefined) {
-        return t('price_to_amount', { price: formatter.format(maxPrice) });
+        return t('price_to_sentence', { price: formatter.format(maxPrice) });
     }
     if (minPrice !== undefined && maxPrice !== undefined) {
-        return t('price_range', {
+        return t('price_range_sentence', {
             from: formatter.format(minPrice),
             to: formatter.format(maxPrice)
         });

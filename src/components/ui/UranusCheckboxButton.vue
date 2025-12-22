@@ -59,7 +59,6 @@ defineEmits<{
   border-radius: var(--uranus-form-field-border-radius);
   cursor: pointer;
   user-select: none;
-  background: white;
   transition: all 0.2s ease;
 
   input {
@@ -77,7 +76,6 @@ defineEmits<{
     justify-content: center;
     border: 2px solid var(--uranus-ia-inline-color);
     border-radius: 0.25rem;
-    background: #ffffff;
     transition: all 0.2s ease;
   }
 
@@ -95,7 +93,6 @@ defineEmits<{
   .label-text {
     font-size: 0.95rem;
     font-weight: 500;
-    color: #111827;
   }
 }
 </style>

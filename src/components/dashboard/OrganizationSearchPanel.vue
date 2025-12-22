@@ -2,13 +2,13 @@
   <section class="uranus-card">
     <h2 class="inbox-sidebar__title">{{ inboxTitle }}</h2>
 
-    <form class="organizer-search" @submit.prevent="searchOrganizers" novalidate>
-      <label class="organizer-search__label" for="organizer-search-input">
+    <form class="organization-search" @submit.prevent="searchOrganizations" novalidate>
+      <label class="organization-search__label" for="organization-search-input">
         {{ searchLabel }}
       </label>
-      <div class="organizer-search__controls">
+      <div class="organization-search__controls">
         <input
-          id="organizer-search-input"
+          id="organization-search-input"
           v-model="searchTerm"
           type="search"
           :placeholder="searchPlaceholder"
@@ -34,28 +34,28 @@
     </transition>
 
     <ul
-      class="organizer-results"
+      class="organization-results"
       role="listbox"
       :aria-busy="isSearching"
       :aria-label="searchResultsLabel"
     >
-      <li v-for="organizer in organizers" :key="organizer.id">
+      <li v-for="organization in organizations" :key="organization.id">
         <button
           type="button"
-          class="organizer-item"
-          :class="{ 'organizer-item--active': organizer.id === selectedOrganizerId }"
-          @click="selectOrganizer(organizer)"
-          :aria-pressed="organizer.id === selectedOrganizerId"
+          class="organization-item"
+          :class="{ 'organization-item--active': organization.id === selectedOrganizationId }"
+          @click="selectOrganization(organization)"
+          :aria-pressed="organization.id === selectedOrganizationId"
         >
-          <span class="organizer-item__name">{{ organizer.name }}</span>
-          <span v-if="organizer.email" class="organizer-item__email">{{ organizer.email }}</span>
-          <span v-if="formatLocation(organizer)" class="organizer-item__meta">
-            {{ formatLocation(organizer) }}
+          <span class="organization-item__name">{{ organization.name }}</span>
+          <span v-if="organization.email" class="organization-item__email">{{ organization.email }}</span>
+          <span v-if="formatLocation(organization)" class="organization-item__meta">
+            {{ formatLocation(organization) }}
           </span>
         </button>
       </li>
-      <li v-if="!isSearching && hasSearched && organizers.length === 0">
-        <p class="organizer-results__empty">{{ noResultsLabel }}</p>
+      <li v-if="!isSearching && hasSearched && organizations.length === 0">
+        <p class="organization-results__empty">{{ noResultsLabel }}</p>
       </li>
     </ul>
   </section>
@@ -66,7 +66,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-interface Organizer {
+interface Organization {
   id: string | number;
   name: string;
   email?: string;
@@ -75,18 +75,18 @@ interface Organizer {
 }
 
 const props = defineProps<{
-  selectedOrganizerId: string | number | null;
+  selectedOrganizationId: string | number | null;
 }>()
 
 const emit = defineEmits<{
-  select: [Organizer];
-  'state-change': [{ searchTerm: string; organizers: Organizer[]; hasSearched: boolean }];
+  select: [Organization];
+  'state-change': [{ searchTerm: string; organizations: Organization[]; hasSearched: boolean }];
 }>()
 
 const { t } = useI18n()
 
 const searchTerm = ref('')
-const organizers = ref<Organizer[]>([])
+const organizations = ref<Organization[]>([])
 const isSearching = ref(false)
 const hasSearched = ref(false)
 const searchError = ref<string | null>(null)
@@ -102,19 +102,19 @@ const searchErrorFallback = computed(() => t('message_search_error'))
 
 const isSearchDisabled = computed(() => isSearching.value || searchTerm.value.trim().length === 0)
 
-const formatLocation = (organizer: Organizer | null | undefined): string | null => {
-  if (!organizer) {
+const formatLocation = (organization: Organization | null | undefined): string | null => {
+  if (!organization) {
     return null
   }
 
   const parts: string[] = []
 
-  if (organizer.city) {
-    parts.push(organizer.city)
+  if (organization.city) {
+    parts.push(organization.city)
   }
 
-  if (organizer.countryCode) {
-    parts.push(organizer.countryCode)
+  if (organization.countryCode) {
+    parts.push(organization.countryCode)
   }
 
   if (parts.length === 0) {
@@ -124,15 +124,15 @@ const formatLocation = (organizer: Organizer | null | undefined): string | null 
   return parts.join(', ')
 }
 
-const normalizeOrganizers = (payload: unknown): Organizer[] => {
+const normalizeOrganizations = (payload: unknown): Organization[] => {
   const items: unknown[] = []
 
   if (Array.isArray(payload)) {
     items.push(...payload)
   } else if (payload && typeof payload === 'object') {
     const obj = payload as Record<string, unknown>
-    if (Array.isArray(obj.organizers)) {
-      items.push(...obj.organizers)
+    if (Array.isArray(obj.organizations)) {
+      items.push(...obj.organizations)
     } else if (Array.isArray(obj.data)) {
       items.push(...obj.data)
     }
@@ -144,7 +144,7 @@ const normalizeOrganizers = (payload: unknown): Organizer[] => {
         return null
       }
       const raw = entry as Record<string, unknown>
-      const idCandidate = raw.id ?? raw.uuid ?? raw.organizer_id ?? raw.slug
+      const idCandidate = raw.id ?? raw.uuid ?? raw.organization_id ?? raw.slug
       const nameCandidate = raw.name ?? raw.display_name ?? raw.title
       const emailCandidate = raw.email ?? raw.contact_email
 
@@ -152,7 +152,7 @@ const normalizeOrganizers = (payload: unknown): Organizer[] => {
         return null
       }
 
-      const normalized: Organizer = {
+      const normalized: Organization = {
         id: typeof idCandidate === 'string' || typeof idCandidate === 'number' ? idCandidate : String(idCandidate),
         name: typeof nameCandidate === 'string' ? nameCandidate : String(nameCandidate),
       }
@@ -174,7 +174,7 @@ const normalizeOrganizers = (payload: unknown): Organizer[] => {
 
       return normalized
     })
-    .filter((entry): entry is Organizer => Boolean(entry))
+    .filter((entry): entry is Organization => Boolean(entry))
 }
 
 const resolveErrorMessage = (err: unknown, fallback: string): string => {
@@ -203,17 +203,17 @@ const resolveErrorMessage = (err: unknown, fallback: string): string => {
 const emitState = () => {
   emit('state-change', {
     searchTerm: searchTerm.value,
-    organizers: organizers.value.slice(),
+    organizations: organizations.value.slice(),
     hasSearched: hasSearched.value,
   })
 }
 
-const searchOrganizers = async () => {
+const searchOrganizations = async () => {
   const query = searchTerm.value.trim()
 
   if (!query) {
     searchError.value = null
-    organizers.value = []
+    organizations.value = []
     hasSearched.value = false
     emitState()
     return
@@ -223,12 +223,12 @@ const searchOrganizers = async () => {
   isSearching.value = true
 
   try {
-    const endpoint = `/api/organizers?search=${encodeURIComponent(query)}`
+    const endpoint = `/api/organizations?search=${encodeURIComponent(query)}`
     const { data } = await apiFetch<unknown>(endpoint)
-    organizers.value = normalizeOrganizers(data) ?? []
+    organizations.value = normalizeOrganizations(data) ?? []
   } catch (err: unknown) {
     searchError.value = resolveErrorMessage(err, searchErrorFallback.value)
-    organizers.value = []
+    organizations.value = []
   } finally {
     isSearching.value = false
     hasSearched.value = true
@@ -236,18 +236,18 @@ const searchOrganizers = async () => {
   }
 }
 
-const selectOrganizer = (organizer: Organizer) => {
-  emit('select', organizer)
+const selectOrganization = (organization: Organization) => {
+  emit('select', organization)
   emitState()
 }
 
-const restoreOrganizers = (initial: Organizer[]) => {
-  organizers.value = initial
+const restoreOrganizations = (initial: Organization[]) => {
+  organizations.value = initial
   emitState()
 }
 
 defineExpose({
-  restoreOrganizers,
+  restoreOrganizations,
   setSearchTerm: (value: string) => {
     searchTerm.value = value
     emitState()
@@ -257,7 +257,7 @@ defineExpose({
     hasSearched.value = value
     emitState()
   },
-  getOrganizers: () => organizers.value.slice(),
+  getOrganizations: () => organizations.value.slice(),
   getHasSearched: () => hasSearched.value,
 })
 </script>
@@ -269,26 +269,26 @@ defineExpose({
   margin-bottom: 1.25rem;
 }
 
-.organizer-search {
+.organization-search {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   margin-bottom: 1rem;
 }
 
-.organizer-search__label {
+.organization-search__label {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--uranus-muted-text);
 }
 
-.organizer-search__controls {
+.organization-search__controls {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.organizer-search__controls input {
+.organization-search__controls input {
   flex: 1;
   padding: 0.7rem 1rem;
   border-radius: 0.85rem;
@@ -298,13 +298,13 @@ defineExpose({
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.organizer-search__controls input:focus-visible {
+.organization-search__controls input:focus-visible {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
   outline: none;
 }
 
-.organizer-search__controls button {
+.organization-search__controls button {
   border: none;
   border-radius: 0.85rem;
   padding: 0.7rem 1.4rem;
@@ -315,19 +315,19 @@ defineExpose({
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 }
 
-.organizer-search__controls button:hover:not(:disabled) {
+.organization-search__controls button:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
 }
 
-.organizer-search__controls button:disabled {
+.organization-search__controls button:disabled {
   opacity: 0.65;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
-.organizer-results {
+.organization-results {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -339,14 +339,14 @@ defineExpose({
   padding-right: 0.25rem;
 }
 
-.organizer-results__empty {
+.organization-results__empty {
   margin: 0;
   padding: 0.75rem;
   font-size: 0.9rem;
   color: var(--uranus-muted-text);
 }
 
-.organizer-item {
+.organization-item {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -362,28 +362,28 @@ defineExpose({
   text-align: left;
 }
 
-.organizer-item__name {
+.organization-item__name {
   font-weight: 600;
   font-size: 0.95rem;
 }
 
-.organizer-item__email {
+.organization-item__email {
   font-size: 0.85rem;
   color: var(--uranus-muted-text);
 }
 
-.organizer-item__meta {
+.organization-item__meta {
   font-size: 0.8rem;
   color: var(--uranus-muted-text);
 }
 
-.organizer-item:hover {
+.organization-item:hover {
   transform: translateY(-1px);
   border-color: var(--accent-primary);
   background: rgba(79, 70, 229, 0.12);
 }
 
-.organizer-item--active {
+.organization-item--active {
   border-color: var(--accent-primary);
   background: rgba(79, 70, 229, 0.18);
 }

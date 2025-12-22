@@ -15,7 +15,7 @@
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.4s ease;
+  transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
     background: var(--uranus-ia-color-dark1);
@@ -126,4 +126,24 @@
     &:hover {
     }
   }
+}
+
+.uranus-button-base {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  border-radius: 0px;
+  background-color: #f4f4f6;
+  color: #333340;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.uranus-button-icon {
+  width: 1.2em;
+  height: 1.2em;
+  flex-shrink: 0;
 }

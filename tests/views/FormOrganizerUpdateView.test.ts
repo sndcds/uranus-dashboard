@@ -3,18 +3,18 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 import { createPinia, setActivePinia } from 'pinia'
-import FormOrganizerUpdateView from '../../src/views/FormOrganizerUpdateView.vue'
+import UranusEditOrganizationView from '../../src/views/UranusEditOrganizationView.vue'
 
 const i18n = createI18n({
   legacy: false,
   locale: 'en',
   messages: {
     en: {
-      edit_organizer: 'Edit Organizer',
-      organizer_edit_description: 'Update organizer details',
-      update_organizer: 'Update Organizer',
-      organizer_name: 'Organizer Name',
-      organizer_address_addition: 'Address Addition',
+      edit_organization: 'Edit Organization',
+      organization_edit_description: 'Update organization details',
+      update_organization: 'Update Organization',
+      organization_name: 'Organization Name',
+      organization_address_addition: 'Address Addition',
       street: 'Street',
       house_number: 'Number',
       postal_code: 'Postal Code',
@@ -24,20 +24,20 @@ const i18n = createI18n({
       website: 'Website',
       description: 'Description',
       geo_location: 'Location',
-      organizer_map_hint: 'Click on the map to set location',
-      organizer_map_no_selection: 'No location selected',
-      organizer_description_placeholder: 'Enter description...',
-      organizer_legal_form_placeholder: 'Select legal form',
-      organizer_holding_id: 'Holding Organizer ID',
-      organizer_legal_form_id: 'Legal Form',
-      organizer_nonprofit: 'Non-profit organization',
+      organization_map_hint: 'Click on the map to set location',
+      organization_map_no_selection: 'No location selected',
+      organization_description_placeholder: 'Enter description...',
+      organization_legal_form_placeholder: 'Select legal form',
+      organization_holding_id: 'Holding Organization ID',
+      organization_legal_form_id: 'Legal Form',
+      organization_nonprofit: 'Non-profit organization',
       event_error_required: 'This field is required',
-      organizer_form_missing_required: 'Please fill in all required fields',
-      organizer_form_invalid_email: 'Please enter a valid email address',
-      organizer_form_invalid_website: 'Please enter a valid website URL',
-      organizer_updated: 'Organizer updated successfully',
-      organizer_load_error: 'Failed to load organizer',
-      failed_to_update_organizer: 'Failed to update organizer',
+      organization_form_missing_required: 'Please fill in all required fields',
+      organization_form_invalid_email: 'Please enter a valid email address',
+      organization_form_invalid_website: 'Please enter a valid website URL',
+      organization_updated: 'Organization updated successfully',
+      organization_load_error: 'Failed to load organization',
+      failed_to_update_organization: 'Failed to update organization',
       unknown_error: 'An unknown error occurred',
     },
   },
@@ -46,7 +46,7 @@ const i18n = createI18n({
 const router = createRouter({
   history: createMemoryHistory(),
   routes: [
-    { path: '/admin/organizer/:id/edit', component: { template: '<div>Edit</div>' } },
+    { path: '/admin/organization/:id/edit', component: { template: '<div>Edit</div>' } },
   ],
 })
 
@@ -56,9 +56,9 @@ vi.mock('../../src/api', () => ({
   fetchCoordinatesForAddress: vi.fn(),
 }))
 
-const mockOrganizer = {
-  organizer_id: 1,
-  name: 'Test Organizer',
+const mockOrganization = {
+  organization_id: 1,
+  name: 'Test Organization',
   address_addition: 'Building A',
   street: 'Main Street',
   house_number: '123',
@@ -67,7 +67,7 @@ const mockOrganizer = {
   state_code: 'SH',
   country_code: 'DE',
   description: 'Test description',
-  holding_organizer_id: 5,
+  holding_organization_id: 5,
   legal_form_id: 2,
   nonprofit: true,
   contact_email: 'test@example.com',
@@ -84,33 +84,33 @@ const mockLegalForms = [
 ]
 
 // Helper to setup standard API mocks
-const setupApiMocks = async (organizerData = mockOrganizer) => {
+const setupApiMocks = async (organizationData = mockOrganization) => {
   const { apiFetch, fetchCoordinatesForAddress } = await import('../../src/api')
-  
+
   vi.mocked(apiFetch).mockImplementation((url: string) => {
-    if (url.includes('/api/admin/organizer/')) {
-      return Promise.resolve({ data: organizerData, status: 200 })
+    if (url.includes('/api/admin/organization/')) {
+      return Promise.resolve({ data: organizationData, status: 200 })
     }
     if (url.includes('/api/choosable-legal-forms')) {
       return Promise.resolve({ data: mockLegalForms, status: 200 })
     }
     return Promise.resolve({ data: null, status: 404 })
   })
-  
+
   vi.mocked(fetchCoordinatesForAddress).mockResolvedValue({ lat: '54.7833', lon: '9.4333' })
 }
 
-describe('FormOrganizerUpdateView', () => {
+describe('UranusEditOrganizationView', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
   })
 
-  const createWrapper = async (organizerId = '1') => {
-    await router.push(`/admin/organizer/${organizerId}/edit`)
+  const createWrapper = async (organizationId = '1') => {
+    await router.push(`/admin/organization/${organizationId}/edit`)
     await router.isReady()
 
-    return mount(FormOrganizerUpdateView, {
+    return mount(UranusEditOrganizationView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -135,17 +135,17 @@ describe('FormOrganizerUpdateView', () => {
 
     // Check for form elements instead since DashboardHeroComponent is stubbed
     expect(wrapper.find('form').exists()).toBe(true)
-    expect(wrapper.find('#organizer_name').exists()).toBe(true)
+    expect(wrapper.find('#organization_name').exists()).toBe(true)
   })
 
-  it('loads organizer data on mount', async () => {
+  it('loads organization data on mount', async () => {
     await setupApiMocks()
     const { apiFetch } = await import('../../src/api')
 
     await createWrapper('42')
     await flushPromises()
 
-    expect(apiFetch).toHaveBeenCalledWith('/api/admin/organizer/42')
+    expect(apiFetch).toHaveBeenCalledWith('/api/admin/organization/42')
   })
 
   it('loads legal forms on mount', async () => {
@@ -164,8 +164,8 @@ describe('FormOrganizerUpdateView', () => {
     const wrapper = await createWrapper()
     await flushPromises()
 
-    const nameInput = wrapper.find('#organizer_name')
-    expect((nameInput.element as HTMLInputElement).value).toBe('Test Organizer')
+    const nameInput = wrapper.find('#organization_name')
+    expect((nameInput.element as HTMLInputElement).value).toBe('Test Organization')
 
     const streetInput = wrapper.find('#street')
     expect((streetInput.element as HTMLInputElement).value).toBe('Main Street')
@@ -174,17 +174,17 @@ describe('FormOrganizerUpdateView', () => {
     expect((emailInput.element as HTMLInputElement).value).toBe('test@example.com')
   })
 
-  it('populates location from organizer data', async () => {
+  it('populates location from organization data', async () => {
     await setupApiMocks()
 
     const wrapper = await createWrapper()
     await flushPromises()
 
-    // Location should be set from organizer data
+    // Location should be set from organization data
     expect(wrapper.html()).toContain('54.7833')
   })
 
-  it('displays organizer load error', async () => {
+  it('displays organization load error', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation((url: string) => {
       if (url.includes('/api/choosable-legal-forms')) {
@@ -196,24 +196,24 @@ describe('FormOrganizerUpdateView', () => {
     const wrapper = await createWrapper()
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Failed to load organizer')
+    expect(wrapper.text()).toContain('Failed to load organization')
   })
 
-  it('handles organizer with null values', async () => {
-    const organizerWithNulls = {
-      ...mockOrganizer,
+  it('handles organization with null values', async () => {
+    const organizationWithNulls = {
+      ...mockOrganization,
       address_addition: null,
       description: null,
-      holding_organizer_id: null,
+      holding_organization_id: null,
       contact_phone: null,
     }
-    
-    await setupApiMocks(organizerWithNulls)
+
+    await setupApiMocks(organizationWithNulls)
 
     const wrapper = await createWrapper()
     await flushPromises()
 
-    expect(wrapper.find('#organizer_name').exists()).toBe(true)
+    expect(wrapper.find('#organization_name').exists()).toBe(true)
   })
 
   it('validates required fields', async () => {
@@ -222,7 +222,7 @@ describe('FormOrganizerUpdateView', () => {
     const wrapper = await createWrapper()
     await flushPromises()
 
-    await wrapper.find('#organizer_name').setValue('')
+    await wrapper.find('#organization_name').setValue('')
     await wrapper.find('#street').setValue('')
     await wrapper.find('#city').setValue('')
 
@@ -273,7 +273,7 @@ describe('FormOrganizerUpdateView', () => {
     const wrapper = await createWrapper('42')
     await flushPromises()
 
-    await wrapper.find('#organizer_name').setValue('Updated Organizer')
+    await wrapper.find('#organization_name').setValue('Updated Organization')
 
     // Manually trigger submit since button is type="button" (appears to be a component bug)
     const form = wrapper.find('form')
@@ -282,7 +282,7 @@ describe('FormOrganizerUpdateView', () => {
 
     // Since the button doesn't actually submit, just verify the form exists and was rendered
     expect(wrapper.find('form').exists()).toBe(true)
-    expect(wrapper.find('#organizer_name').exists()).toBe(true)
+    expect(wrapper.find('#organization_name').exists()).toBe(true)
   })
 
   it('includes all fields in update payload', async () => {
@@ -298,7 +298,7 @@ describe('FormOrganizerUpdateView', () => {
     // Since button is type="button", form submission doesn't work in tests
     // Just verify the form structure is correct
     expect(form.exists()).toBe(true)
-    expect(wrapper.find('#organizer_name').exists()).toBe(true)
+    expect(wrapper.find('#organization_name').exists()).toBe(true)
     expect(wrapper.find('#street').exists()).toBe(true)
     expect(wrapper.find('#house_number').exists()).toBe(true)
   })
@@ -355,19 +355,19 @@ describe('FormOrganizerUpdateView', () => {
     const wrapper = await createWrapper()
     await flushPromises()
 
-    const nameInput = wrapper.find('#organizer_name')
+    const nameInput = wrapper.find('#organization_name')
     await nameInput.setValue('')
     await nameInput.setValue('Valid Name')
 
     expect(wrapper.find('form').exists()).toBe(true)
   })
 
-  it('loads organizer data on mount', async () => {
+  it('loads organization data on mount', async () => {
     const { apiFetch } = await import('../../src/api')
-    
+
     vi.mocked(apiFetch).mockImplementation((url: string) => {
-      if (url.includes('/api/admin/organizer/')) {
-        return Promise.resolve({ data: mockOrganizer, status: 200 })
+      if (url.includes('/api/admin/organization/')) {
+        return Promise.resolve({ data: mockOrganization, status: 200 })
       }
       if (url.includes('/api/choosable-legal-forms')) {
         return Promise.resolve({ data: mockLegalForms, status: 200 })
@@ -378,15 +378,15 @@ describe('FormOrganizerUpdateView', () => {
     await createWrapper('42')
     await flushPromises()
 
-    expect(apiFetch).toHaveBeenCalledWith('/api/admin/organizer/42')
+    expect(apiFetch).toHaveBeenCalledWith('/api/admin/organization/42')
   })
 
   it('loads legal forms on mount', async () => {
     const { apiFetch } = await import('../../src/api')
-    
+
     vi.mocked(apiFetch).mockImplementation((url: string) => {
-      if (url.includes('/api/admin/organizer/')) {
-        return Promise.resolve({ data: mockOrganizer, status: 200 })
+      if (url.includes('/api/admin/organization/')) {
+        return Promise.resolve({ data: mockOrganization, status: 200 })
       }
       if (url.includes('/api/choosable-legal-forms')) {
         return Promise.resolve({ data: mockLegalForms, status: 200 })
@@ -403,14 +403,14 @@ describe('FormOrganizerUpdateView', () => {
   it('populates form fields with loaded data', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
 
     const wrapper = await createWrapper()
     await flushPromises()
 
-    const nameInput = wrapper.find('#organizer_name')
-    expect((nameInput.element as HTMLInputElement).value).toBe('Test Organizer')
+    const nameInput = wrapper.find('#organization_name')
+    expect((nameInput.element as HTMLInputElement).value).toBe('Test Organization')
 
     const streetInput = wrapper.find('#street')
     expect((streetInput.element as HTMLInputElement).value).toBe('Main Street')
@@ -419,10 +419,10 @@ describe('FormOrganizerUpdateView', () => {
     expect((emailInput.element as HTMLInputElement).value).toBe('test@example.com')
   })
 
-  it('populates location from organizer data', async () => {
+  it('populates location from organization data', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
 
     const wrapper = await createWrapper()
@@ -434,7 +434,7 @@ describe('FormOrganizerUpdateView', () => {
     }
   })
 
-  it('displays loading error when organizer not found', async () => {
+  it('displays loading error when organization not found', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch)
       .mockRejectedValueOnce(new Error('Not found'))
@@ -443,24 +443,24 @@ describe('FormOrganizerUpdateView', () => {
     const wrapper = await createWrapper()
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Failed to load organizer')
+    expect(wrapper.text()).toContain('Failed to load organization')
   })
 
-  it('handles organizer with null optional fields', async () => {
+  it('handles organization with null optional fields', async () => {
     const { apiFetch } = await import('../../src/api')
-    const organizerWithNulls = {
-      ...mockOrganizer,
+    const organizationWithNulls = {
+      ...mockOrganization,
       address_addition: null,
       description: null,
       contact_email: null,
       website_url: null,
       contact_phone: null,
-      holding_organizer_id: null,
+      holding_organization_id: null,
       legal_form_id: null,
     }
 
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: organizerWithNulls, status: 200 })
+      .mockResolvedValueOnce({ data: organizationWithNulls, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
 
     const wrapper = await createWrapper()
@@ -473,7 +473,7 @@ describe('FormOrganizerUpdateView', () => {
   it('renders legal forms in dropdown', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
 
     const wrapper = await createWrapper()
@@ -481,7 +481,7 @@ describe('FormOrganizerUpdateView', () => {
 
     const select = wrapper.find('#legal_form_id')
     const options = select.findAll('option')
-    
+
     // Should have placeholder + 3 legal forms
     expect(options.length).toBeGreaterThanOrEqual(3)
   })
@@ -489,14 +489,14 @@ describe('FormOrganizerUpdateView', () => {
   it('validates required fields on submit', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
 
     const wrapper = await createWrapper()
     await flushPromises()
 
     // Clear required field
-    await wrapper.find('#organizer_name').setValue('')
+    await wrapper.find('#organization_name').setValue('')
 
     const form = wrapper.find('form')
     await form.trigger('submit')
@@ -508,7 +508,7 @@ describe('FormOrganizerUpdateView', () => {
   it('validates email format', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
 
     const wrapper = await createWrapper()
@@ -526,7 +526,7 @@ describe('FormOrganizerUpdateView', () => {
   it('validates website URL format', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
 
     const wrapper = await createWrapper()
@@ -543,11 +543,11 @@ describe('FormOrganizerUpdateView', () => {
 
   it('submits update with valid data', async () => {
     const { apiFetch, fetchCoordinatesForAddress } = await import('../../src/api')
-    
+
     // Mock apiFetch to return different values based on the endpoint
     vi.mocked(apiFetch).mockImplementation((url: string) => {
-      if (url.includes('/api/admin/organizer/')) {
-        return Promise.resolve({ data: mockOrganizer, status: 200 })
+      if (url.includes('/api/admin/organization/')) {
+        return Promise.resolve({ data: mockOrganization, status: 200 })
       }
       if (url.includes('/api/choosable-legal-forms')) {
         return Promise.resolve({ data: mockLegalForms, status: 200 })
@@ -559,7 +559,7 @@ describe('FormOrganizerUpdateView', () => {
     const wrapper = await createWrapper('42')
     await flushPromises()
 
-    await wrapper.find('#organizer_name').setValue('Updated Organizer')
+    await wrapper.find('#organization_name').setValue('Updated Organization')
 
     // Manually trigger submit since button is type="button" (appears to be a component bug)
     const form = wrapper.find('form')
@@ -568,13 +568,13 @@ describe('FormOrganizerUpdateView', () => {
 
     // Since the button doesn't actually submit, just verify the form exists and was rendered
     expect(wrapper.find('form').exists()).toBe(true)
-    expect(wrapper.find('#organizer_name').exists()).toBe(true)
+    expect(wrapper.find('#organization_name').exists()).toBe(true)
   })
 
   it('includes all fields in update payload', async () => {
     const { apiFetch, fetchCoordinatesForAddress } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
     vi.mocked(fetchCoordinatesForAddress).mockResolvedValue({ lat: '54.7833', lon: '9.4333' })
 
@@ -588,7 +588,7 @@ describe('FormOrganizerUpdateView', () => {
     // Since button is type="button", form submission doesn't work in tests
     // Just verify the form structure is correct
     expect(form.exists()).toBe(true)
-    expect(wrapper.find('#organizer_name').exists()).toBe(true)
+    expect(wrapper.find('#organization_name').exists()).toBe(true)
     expect(wrapper.find('#street').exists()).toBe(true)
     expect(wrapper.find('#house_number').exists()).toBe(true)
   })
@@ -596,7 +596,7 @@ describe('FormOrganizerUpdateView', () => {
   it('displays success message after update', async () => {
     const { apiFetch, fetchCoordinatesForAddress } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
       .mockResolvedValueOnce({ data: {}, status: 200 })
     vi.mocked(fetchCoordinatesForAddress).mockResolvedValue({ lat: '54.7833', lon: '9.4333' })
@@ -608,13 +608,13 @@ describe('FormOrganizerUpdateView', () => {
     await form.trigger('submit')
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Organizer updated successfully')
+    expect(wrapper.text()).toContain('Organization updated successfully')
   })
 
   it('handles update API error', async () => {
     const { apiFetch, fetchCoordinatesForAddress } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
       .mockRejectedValueOnce({ data: { error: 'Database error' } })
     vi.mocked(fetchCoordinatesForAddress).mockResolvedValue({ lat: '54.7833', lon: '9.4333' })
@@ -631,10 +631,10 @@ describe('FormOrganizerUpdateView', () => {
 
   it('fetches coordinates from Nominatim when location not set', async () => {
     const { apiFetch, fetchCoordinatesForAddress } = await import('../../src/api')
-    const organizerWithoutLocation = { ...mockOrganizer, latitude: null, longitude: null }
-    
+    const organizationWithoutLocation = { ...mockOrganization, latitude: null, longitude: null }
+
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: organizerWithoutLocation, status: 200 })
+      .mockResolvedValueOnce({ data: organizationWithoutLocation, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
       .mockResolvedValueOnce({ data: {}, status: 200 })
     vi.mocked(fetchCoordinatesForAddress).mockResolvedValue({ lat: '54.7833', lon: '9.4333' })
@@ -652,28 +652,28 @@ describe('FormOrganizerUpdateView', () => {
   it('handles nonprofit checkbox correctly', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
 
     const wrapper = await createWrapper()
     await flushPromises()
 
-    const checkbox = wrapper.find('#organizer-nonprofit-checkbox')
+    const checkbox = wrapper.find('#organization-nonprofit-checkbox')
     expect((checkbox.element as HTMLInputElement).checked).toBe(true)
   })
 
   it('clears field errors when valid input is entered', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch)
-      .mockResolvedValueOnce({ data: mockOrganizer, status: 200 })
+      .mockResolvedValueOnce({ data: mockOrganization, status: 200 })
       .mockResolvedValueOnce({ data: mockLegalForms, status: 200 })
 
     const wrapper = await createWrapper()
     await flushPromises()
 
     // Clear required field to trigger error
-    await wrapper.find('#organizer_name').setValue('')
-    
+    await wrapper.find('#organization_name').setValue('')
+
     const form = wrapper.find('form')
     await form.trigger('submit')
     await flushPromises()
@@ -681,11 +681,11 @@ describe('FormOrganizerUpdateView', () => {
     expect(wrapper.text()).toContain('Please fill in all required fields')
 
     // Fill the field again
-    await wrapper.find('#organizer_name').setValue('Test Organizer')
+    await wrapper.find('#organization_name').setValue('Test Organization')
     await flushPromises()
 
     // Error message should eventually clear (watchers handle this)
-    const nameInput = wrapper.findComponent({ ref: 'organizer_name' })
+    const nameInput = wrapper.findComponent({ ref: 'organization_name' })
     if (nameInput.exists()) {
       expect(nameInput.props('error')).toBeNull()
     }

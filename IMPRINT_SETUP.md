@@ -91,7 +91,7 @@ Make sure to:
 
 ## Internationalization
 
-The imprint supports multiple languages (German, English, Danish). The text content is managed via the i18n system in `/src/i18n/index.ts`.
+The imprint supports multiple languages (German, English, Danish). The text content is managed via the i18n system in `/src/i18n/uranus-i18n-index.ts`.
 
 ## TypeScript Support
 

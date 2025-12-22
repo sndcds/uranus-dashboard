@@ -31,6 +31,7 @@ export class UranusEventType {
  */
 export class UranusVenueSpaceSelection {
     constructor(
+        public dateVenueId: number | null = null,
         public venueId: number | null = null,
         public spaceId: number | null = null,
         public venueName: string | null = null,
@@ -43,6 +44,7 @@ export class UranusVenueSpaceSelection {
  */
 export class UranusEventDate {
     constructor(
+        public eventId: number | null = null,
         public eventDateId: number | null = null,
         public dateVenueId: number | null = null,
         public venueId: number | null = null,
@@ -69,7 +71,7 @@ export class UranusEventUrl {
         public id: number | null = null,
         public title: string | null = null,
         public url: string | null = null,
-        public urlType: string | null = null,
+        public urlType: number | null = null,
     ) {}
 }
 
@@ -77,149 +79,304 @@ export class UranusEventUrl {
  * Represents a single URL used in an Event.
  */
 export class UranusEventLocation {
-    constructor(
-        public id: number | null = null,
-        public name: string | null = null,
-        public street: string | null = null,
-        public houseNumber: string | null = null,
-        public postalCode: string | null = null,
-        public city: string | null = null,
-        public countryCode: string | null = null,
-        public stateCode: string | null = null,
-        public latitude: number | null = null,
-        public longitude: number | null = null,
-    ) {}
+    id: number | null
+    name: string | null
+    street: string | null
+    houseNumber: string | null
+    postalCode: string | null
+    city: string | null
+    countryCode: string | null
+    stateCode: string | null
+    latitude: number | null
+    longitude: number | null
+    description: string | null
+
+    constructor(props: Partial<UranusEventLocation> = {}) {
+        this.id = props.id ?? null
+        this.name = props.name ?? null
+        this.street = props.street ?? null
+        this.houseNumber = props.houseNumber ?? null
+        this.postalCode = props.postalCode ?? null
+        this.city = props.city ?? null
+        this.countryCode = props.countryCode ?? null
+        this.stateCode = props.stateCode ?? null
+        this.latitude = props.latitude ?? null
+        this.longitude = props.longitude ?? null
+        this.description = props.description ?? null
+    }
+}
+
+export interface UranusEventBaseProps {
+    eventId: number
+    eventDateId?: number | null
+
+    title: string
+    subtitle?: string | null
+
+    organizationId: number
+    organizationName: string
+
+    startDate: string
+    startTime: string
+    endDate?: string | null
+    endTime?: string | null
+
+    venueId?: number | null
+    venueName?: string | null
+    spaceId?: number | null
+    spaceName?: string | null
+    locationId?: number | null
+    locationName?: string | null
+
+    venueLon?: number | null
+    venueLat?: number | null
+
+    eventTypes?: UranusEventType[] | null
+    imageIds?: (number | null)[]
+
+    releaseStatusId?: number | null
+    releaseStatusName?: string | null
+    releaseDate?: string | null
+
+    canEditEvent?: boolean
+    canDeleteEvent?: boolean
+    canReleaseEvent?: boolean
+
+    timeSeriesIndex?: number
+    timeSeries?: number
 }
 
 /**
  * Represents the details of an Event in the Uranus Dashboard.
  */
 export class UranusEventBase {
-    constructor(
-        public eventId: number,
-        public eventDateId: number | null = null,
-        public title: string,
-        public subtitle: string | null = null,
-        public organizerId: number,
-        public organizerName: string,
-        public startDate: string,
-        public startTime: string,
-        public endDate: string | null = null,
-        public endTime: string | null = null,
-        public venueId: number | null = null,
-        public venueName: string | null = null,
-        public venueLon: number | null = null,
-        public venueLat: number | null = null,
-        public spaceName?: string | null,
-        public eventTypes: UranusEventType[] | null = null,
-        public imageIds: (number | null)[] = Array(8).fill(null),
-        public releaseStatusId: number | null = null,
-        public releaseStatusName: string | null = null,
-        public releaseDate: string | null = null,
-        public canEditEvent: boolean = false,
-        public canDeleteEvent: boolean = false,
-        public canReleaseEvent: boolean = false,
-        public timeSeriesIndex: number = 0,
-        public timeSeries: number = 0,
-    ) {}
+    eventId: number
+    eventDateId: number | null
+
+    title: string
+    subtitle: string | null
+
+    organizationId: number
+    organizationName: string
+
+    startDate: string
+    startTime: string
+    endDate: string | null
+    endTime: string | null
+
+    venueId: number | null
+    venueName: string | null
+    spaceId: number | null
+    spaceName: string | null
+    locationId: number | null
+    locationName: string | null
+
+    venueLon: number | null
+    venueLat: number | null
+
+    eventTypes: UranusEventType[] | null
+    imageIds: (number | null)[]
+
+    releaseStatusId: number | null
+    releaseStatusName: string | null
+    releaseDate: string | null
+
+    canEditEvent: boolean
+    canDeleteEvent: boolean
+    canReleaseEvent: boolean
+
+    timeSeriesIndex: number
+    timeSeries: number
+
+    constructor(props: UranusEventBaseProps) {
+        this.eventId = props.eventId
+        this.eventDateId = props.eventDateId ?? null
+
+        this.title = props.title
+        this.subtitle = props.subtitle ?? null
+
+        this.organizationId = props.organizationId
+        this.organizationName = props.organizationName
+
+        this.startDate = props.startDate
+        this.startTime = props.startTime
+        this.endDate = props.endDate ?? null
+        this.endTime = props.endTime ?? null
+
+        this.venueId = props.venueId ?? null
+        this.venueName = props.venueName ?? null
+        this.spaceId = props.spaceId ?? null
+        this.spaceName = props.spaceName ?? null
+        this.locationId = props.locationId ?? null
+        this.locationName = props.locationName ?? null
+
+        this.venueLon = props.venueLon ?? null
+        this.venueLat = props.venueLat ?? null
+
+        this.eventTypes = props.eventTypes ?? null
+        this.imageIds = props.imageIds ?? Array(8).fill(null)
+
+        this.releaseStatusId = props.releaseStatusId ?? null
+        this.releaseStatusName = props.releaseStatusName ?? null
+        this.releaseDate = props.releaseDate ?? null
+
+        this.canEditEvent = props.canEditEvent ?? false
+        this.canDeleteEvent = props.canDeleteEvent ?? false
+        this.canReleaseEvent = props.canReleaseEvent ?? false
+
+        this.timeSeriesIndex = props.timeSeriesIndex ?? 0
+        this.timeSeries = props.timeSeries ?? 0
+    }
 }
 
-/**
- * Represents full details of an event for the Event Editor.
- */
-export class UranusEventDetail extends UranusEventBase {
-    constructor(
-        // Base class properties
-        eventId: number,
-        organizerId: number,
-        organizerName: string,
-        eventDateId: number | null,
-        title: string,
-        subtitle: string | null,
-        startDate: string,
-        startTime: string,
-        endDate: string | null,
-        endTime: string | null,
-        venueId: number | null,
-        venueName: string | null,
-        venueLon: number | null,
-        venueLat: number | null,
-        spaceName?: string | null,
-        eventTypes: UranusEventType[] | null = null,
-        imageIds: (number | null)[] = Array(8).fill(null),
-        releaseStatusId: number | null = null,
-        releaseStatusName: string | null = null,
-        releaseDate: string | null = null,
-        canEditEvent: boolean = false,
-        canDeleteEvent: boolean = false,
-        canReleaseEvent: boolean = false,
-        timeSeriesIndex: number = 0,
-        timeSeries: number = 0,
+export interface UranusEventDetailProps extends UranusEventBaseProps {
+    description?: string | null
+    teaserText?: string | null
+    participationInfo?: string | null
+    meetingPoint?: string | null
 
-        // Extra properties for detail
-        public description: string | null = null,
-        public teaserText: string | null = null,
-        public participationInfo: string | null = null,
-        public meetingPoint: string | null = null,
-        public minAge: number | null = null,
-        public maxAge: number | null = null,
-        public maxAttendees: number | null = null,
-        public priceTypeId: number | null = null,
-        public minPrice: number | null = null,
-        public maxPrice: number | null = null,
-        public ticketAdvance: boolean | null = null,
-        public ticketRequired: boolean | null = null,
-        public registrationRequired: boolean | null = null,
-        public currencyCode: string | null = null,
-        public currencyName: string | null = null,
-        public occasionTypeId: number | null = null,
-        public onlineEventUrl: string | null = null,
-        public sourceUrl: string | null = null,
-        public custom: string | null = null,
-        public style: string | null = null,
-        public languages: string[] = [],
-        public eventDates: UranusEventDate[] = [],
-        public eventUrls: UranusEventUrl[] = [],
-        public venueStreet: string | null = null,
-        public venueHouseNumber: string | null = null,
-        public venuePostalCode: string | null = null,
-        public venueCity: string | null = null,
-        public spaceBuildingLevel: number | null = null,
-        public spaceSeatingCapacity: number | null = null,
-        public spaceTotalCapacity: number | null = null,
-        public location: UranusEventLocation | null = null,
-        public entryTime: string | null = null,
-        public tags?: string[] | null,
-        public releaseStatusOverrideId?: number | null,
-        public releaseDateOverride?: string | null,
-    ) {
-        super(
-            eventId,
-            eventDateId,
-            title,
-            subtitle,
-            organizerId,
-            organizerName,
-            startDate,
-            startTime,
-            endDate,
-            endTime,
-            venueId,
-            venueName,
-            venueLon,
-            venueLat,
-            spaceName,
-            eventTypes,
-            imageIds,
-            releaseStatusId,
-            releaseStatusName,
-            releaseDate,
-            canEditEvent,
-            canDeleteEvent,
-            canReleaseEvent,
-            timeSeriesIndex,
-            timeSeries
-        )
+    minAge?: number | null
+    maxAge?: number | null
+    maxAttendees?: number | null
+
+    priceTypeId?: number | null
+    minPrice?: number | null
+    maxPrice?: number | null
+
+    ticketAdvance?: boolean | null
+    ticketRequired?: boolean | null
+    registrationRequired?: boolean | null
+
+    currencyCode?: string | null
+    currencyName?: string | null
+    occasionTypeId?: number | null
+
+    onlineEventUrl?: string | null
+    sourceUrl?: string | null
+
+    custom?: string | null
+    style?: string | null
+
+    languages?: string[]
+    eventDates?: UranusEventDate[]
+    eventUrls?: UranusEventUrl[]
+
+    venueStreet?: string | null
+    venueHouseNumber?: string | null
+    venuePostalCode?: string | null
+    venueCity?: string | null
+
+    spaceBuildingLevel?: number | null
+    spaceSeatingCapacity?: number | null
+    spaceTotalCapacity?: number | null
+
+    location?: UranusEventLocation | null
+    entryTime?: string | null
+
+    tags?: string[] | null
+    releaseStatusOverrideId?: number | null
+    releaseDateOverride?: string | null
+}
+
+
+
+export class UranusEventDetail extends UranusEventBase {
+    description: string | null
+    teaserText: string | null
+    participationInfo: string | null
+    meetingPoint: string | null
+
+    minAge: number | null
+    maxAge: number | null
+    maxAttendees: number | null
+
+    priceTypeId: number | null
+    minPrice: number | null
+    maxPrice: number | null
+
+    ticketAdvance: boolean | null
+    ticketRequired: boolean | null
+    registrationRequired: boolean | null
+
+    currencyCode: string | null
+    currencyName: string | null
+    occasionTypeId: number | null
+
+    onlineEventUrl: string | null
+    sourceUrl: string | null
+
+    custom: string | null
+    style: string | null
+
+    languages: string[]
+    eventDates: UranusEventDate[]
+    eventUrls: UranusEventUrl[]
+
+    venueStreet: string | null
+    venueHouseNumber: string | null
+    venuePostalCode: string | null
+    venueCity: string | null
+
+    spaceBuildingLevel: number | null
+    spaceSeatingCapacity: number | null
+    spaceTotalCapacity: number | null
+
+    location: UranusEventLocation | null
+    entryTime: string | null
+
+    tags: string[] | null
+    releaseStatusOverrideId: number | null
+    releaseDateOverride: string | null
+
+    constructor(props: UranusEventDetailProps) {
+        super(props)
+
+        this.description = props.description ?? null
+        this.teaserText = props.teaserText ?? null
+        this.participationInfo = props.participationInfo ?? null
+        this.meetingPoint = props.meetingPoint ?? null
+
+        this.minAge = props.minAge ?? null
+        this.maxAge = props.maxAge ?? null
+        this.maxAttendees = props.maxAttendees ?? null
+
+        this.priceTypeId = props.priceTypeId ?? null
+        this.minPrice = props.minPrice ?? null
+        this.maxPrice = props.maxPrice ?? null
+
+        this.ticketAdvance = props.ticketAdvance ?? null
+        this.ticketRequired = props.ticketRequired ?? null
+        this.registrationRequired = props.registrationRequired ?? null
+
+        this.currencyCode = props.currencyCode ?? null
+        this.currencyName = props.currencyName ?? null
+        this.occasionTypeId = props.occasionTypeId ?? null
+
+        this.onlineEventUrl = props.onlineEventUrl ?? null
+        this.sourceUrl = props.sourceUrl ?? null
+
+        this.custom = props.custom ?? null
+        this.style = props.style ?? null
+
+        this.languages = props.languages ?? []
+        this.eventDates = props.eventDates ?? []
+        this.eventUrls = props.eventUrls ?? []
+
+        this.venueStreet = props.venueStreet ?? null
+        this.venueHouseNumber = props.venueHouseNumber ?? null
+        this.venuePostalCode = props.venuePostalCode ?? null
+        this.venueCity = props.venueCity ?? null
+
+        this.spaceBuildingLevel = props.spaceBuildingLevel ?? null
+        this.spaceSeatingCapacity = props.spaceSeatingCapacity ?? null
+        this.spaceTotalCapacity = props.spaceTotalCapacity ?? null
+
+        this.location = props.location ?? null
+        this.entryTime = props.entryTime ?? null
+
+        this.tags = props.tags ?? null
+        this.releaseStatusOverrideId = props.releaseStatusOverrideId ?? null
+        this.releaseDateOverride = props.releaseDateOverride ?? null
     }
 }
 

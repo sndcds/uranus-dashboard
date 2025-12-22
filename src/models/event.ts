@@ -8,7 +8,7 @@ export interface EventTypeGenrePair {
 export interface EventBasicInfoModel {
     title: string
     subtitle: string
-    organizerId: number | null
+    organizationId: number | null
     venueId: number | null
     spaceId: number | null
     typeGenrePairs: EventTypeGenrePair[]

@@ -8,7 +8,7 @@ export interface CalendarFiltersState {
     selectedType: string
     activeSelectedType: number | string | null
     selectedVenue: EventVenueSummary | null
-    selectedOrganizer: EventOrganizerSummary | null
+    selectedOrganization: EventOrganizationSummary | null
     showMyLocation: boolean
     userLatitude: number | null
     userLongitude: number | null
@@ -22,7 +22,7 @@ export interface EventVenueSummary {
     eventDateCount: number
 }
 
-export interface EventOrganizerSummary {
+export interface EventOrganizationSummary {
     id: number
     name: string
     city?: string
@@ -36,7 +36,7 @@ const getDefaultCalendarFilters = (): CalendarFiltersState => ({
     selectedType: 'all',
     activeSelectedType: 'all',
     selectedVenue: null,
-    selectedOrganizer: null,
+    selectedOrganization: null,
     showMyLocation: false,
     userLatitude: null,
     userLongitude: null,
@@ -45,19 +45,19 @@ const getDefaultCalendarFilters = (): CalendarFiltersState => ({
 
 export const useAppStore = defineStore('app', () => {
     // State
-    const organizerId = ref<number | null>(null)
-    const organizerName = ref<string | null>(null)
+    const organizationId = ref<number | null>(null)
+    const organizationName = ref<string | null>(null)
     const eventViewMode = ref<'detailed' | 'compact' | 'tiles' | 'map'>('detailed')
     const eventGroupingMode = ref<'daily' | 'monthly'>('daily')
     const calendarFilters = ref<CalendarFiltersState>(getDefaultCalendarFilters())
 
     // Actions
-    function setOrganizerId(id: number | null) {
-        organizerId.value = id
+    function setOrganizationId(id: number | null) {
+        organizationId.value = id
     }
 
-    function setOrganizerName(name: string | null) {
-        organizerName.value = name
+    function setOrganizationName(name: string | null) {
+        organizationName.value = name
     }
 
     function setViewMode(mode: 'detailed' | 'compact' | 'tiles' | 'map') {
@@ -79,24 +79,24 @@ export const useAppStore = defineStore('app', () => {
         calendarFilters.value = getDefaultCalendarFilters()
     }
 
-    function clearOrganizerId() {
-        organizerId.value = null
-        organizerName.value = null
+    function clearOrganizationId() {
+        organizationId.value = null
+        organizationName.value = null
     }
 
     return {
-        organizerId,
-        organizerName,
+        organizationId,
+        organizationName,
         eventViewMode,
         eventGroupingMode,
         calendarFilters,
-        setOrganizerId,
-        setOrganizerName,
+        setOrganizationId,
+        setOrganizationName,
         setViewMode,
         setGroupingMode,
         updateCalendarFilters,
         resetCalendarFilters,
-        clearOrganizerId
+        clearOrganizationId
     }
 }, {
     persist: true

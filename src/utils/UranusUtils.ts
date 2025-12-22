@@ -248,3 +248,9 @@ export const formatEventDateTime = (date: UranusEventDate, locale: string) => {
         }
     }
 }
+
+export function buildVenueSpaceKey(venue_id: number | null, space_id: number | null): string {
+    if (venue_id === null || venue_id === undefined) return ""
+    if (space_id === null || space_id === undefined) return `${venue_id}`
+    return `${venue_id}_${space_id}`
+}

@@ -13,7 +13,7 @@
           <span class="generic-sidebar__nav-text">{{ t('dashboard') }}</span>
         </router-link>
 
-        <router-link to="/admin/organizers" class="generic-sidebar__nav-item"
+        <router-link to="/admin/organizations" class="generic-sidebar__nav-item"
           active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,7 +22,7 @@
                 fill="currentColor" />
             </svg>
           </span>
-          <span class="generic-sidebar__nav-text">{{ t('organizers') }}</span>
+          <span class="generic-sidebar__nav-text">{{ t('organizations') }}</span>
         </router-link>
 
         <router-link :to="venuesRoute" class="generic-sidebar__nav-item"
@@ -142,17 +142,17 @@ const handleLinkClick = () => {
   emit('close')
 }
 
-// Dynamic routes based on organizerId
+// Dynamic routes based on organizationId
 const venuesRoute = computed(() => {
-  return appStore.organizerId
-    ? `/admin/organizer/${appStore.organizerId}/venues`
-    : '/admin/organizer/venues/empty'
+  return appStore.organizationId
+    ? `/admin/organization/${appStore.organizationId}/venues`
+    : '/admin/organization/venues/empty'
 })
 
 const eventsRoute = computed(() => {
-  return appStore.organizerId
-    ? `/admin/organizer/${appStore.organizerId}/events`
-    : '/admin/organizer/events/empty'
+  return appStore.organizationId
+    ? `/admin/organization/${appStore.organizationId}/events`
+    : '/admin/organization/events/empty'
 })
 </script>
 

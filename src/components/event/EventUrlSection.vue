@@ -8,7 +8,7 @@
             <div class="add-link-form">
                 <div class="form-grid">
                     <div class="form-field">
-                        <label for="link-type">{{ t('event_link_type') }}</label>
+                        <label for="link-type">{{ t('event_url_type') }}</label>
                         <select id="link-type" v-model="newLink.url_type">
                             <option value="">{{ t('event_link_type_select') }}</option>
                             <option v-for="option in urlTypeOptions" :key="option.value" :value="option.value">
@@ -64,7 +64,7 @@
                 :onClick="cancelEditingLinks"
             />
 
-            <UranusInlineOKButton
+            <UranusInlineSaveButton
                 :label="t('save')"
                 :disabled="isSaving || !draftLinks.length"
                 :onClick="saveLinks"
@@ -111,7 +111,7 @@ import UranusInlineEditLabel from "@/components/ui/UranusInlineEditLabel.vue"
 import UranusInlineEditSection from "@/components/ui/UranusInlineEditSection.vue";
 import UranusInlineCancelButton from "@/components/ui/UranusInlineCancelButton.vue";
 import UranusInlineActionBar from "@/components/ui/UranusInlineActionBar.vue";
-import UranusInlineOKButton from "@/components/ui/UranusInlineOKButton.vue";
+import UranusInlineSaveButton from "@/components/ui/UranusInlineSaveButton.vue";
 
 interface Props {
     eventId: number

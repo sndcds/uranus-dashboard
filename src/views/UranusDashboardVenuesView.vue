@@ -2,45 +2,46 @@
   <div class="uranus-main-layout">
     <DashboardHeroComponent :title="t('venues')" :subtitle="t('venues_description')" />
 
-    <!-- No Organizer Selected Message -->
-    <div v-if="!organizerId" class="organizer-venue-view__no-organizer">
+    <!-- No Organization Selected Message -->
+    <div v-if="!organizationId" class="organization-venue-view__no-organization">
       <div class="uranus-card">
-        <div class="no-organizer-content">
-          <h3>{{ t('no_organizer_selected') }}</h3>
-          <p>{{ t('no_organizer_selected_description') }}</p>
-          <router-link to="/admin/organizer" class="uranus-button">
-            {{ t('go_to_organizers') }}
+        <div class="no-organization-content">
+          <h3>{{ t('no_organization_selected') }}</h3>
+          <p>{{ t('no_organization_selected_description') }}</p>
+          <router-link to="/admin/organization" class="uranus-button">
+            {{ t('go_to_organizations') }}
           </router-link>
         </div>
       </div>
     </div>
 
     <div v-else class="uranus-main-layout">
-      <UranusDashboardActionBar>
-        <router-link :to="`/admin/organizer/${organizerId}/venue/create`" class="uranus-secondary-button">
-          {{ t('add_new_venue') }}
+      <UranusDashboardActionBar v-if="organization?.can_add_venue">
+        <router-link :to="`/admin/organization/${organizationId}/venue/create`" class="uranus-secondary-button">
+          {{ t('venue_add') }}
         </router-link>
       </UranusDashboardActionBar>
+      <span v-else>Warum du keine Spielstätten hinzufügen kannst</span> <!-- TODO: Hinsweis einfügen! -->
 
       <!-- Error Message -->
-      <div v-if="error" class="organizer-venue-view__error">
+      <div v-if="error" class="organization-venue-view__error">
         <p class="form-feedback-error">{{ error }}</p>
       </div>
 
-      <div v-if="organizer" class="organizer-venue-view__content">
+      <div v-if="organization" class="organization-venue-view__content">
         <!-- Stats -->
         <!--div class="uranus-card">
-          <h2 v-if="organizer">{{ organizer.organizer_name }}</h2>
-          <p>{{ t('total_events') }}: {{ organizer.total_upcoming_events }}</p>
+          <h2 v-if="organization">{{ organization.organization_name }}</h2>
+          <p>{{ t('total_events') }}: {{ organization.total_upcoming_events }}</p>
         </div-->
 
         <!-- Venue Cards Grid -->
-        <div class="organizer-venue-view__grid">
+        <div class="organization-venue-view__grid">
           <UranusVenueCard
-            v-for="venue in organizer.venues"
+            v-for="venue in organization.venues"
             :key="venue.venue_id"
             :venue="venue"
-            :organizerId="organizerId || 0"
+            :organizationId="organizationId || 0"
             @deleted="handleVenueDeleted"
           />
         </div>
@@ -62,10 +63,10 @@ import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionB
 const { t } = useI18n()
 const appStore = useAppStore()
 
-// Make organizerId reactive from the store
-const organizerId = computed({
-  get: () => appStore.organizerId,
-  set: (val: number | null) => appStore.setOrganizerId(val),
+// Make organizationId reactive from the store
+const organizationId = computed({
+  get: () => appStore.organizationId,
+  set: (val: number | null) => appStore.setOrganizationId(val),
 })
 
 interface Space {
@@ -91,51 +92,54 @@ interface Venue {
   can_release_event?: boolean
 }
 
-interface Organizer {
-  organizer_id: number
-  organizer_name: string
-  can_edit_organizer?: boolean
-  can_delete_organizer?: boolean
+interface Organization {
+  organization_id: number
+  organization_name: string
+  can_edit_organization?: boolean
+  can_delete_organization?: boolean
+  can_add_venue?: boolean
+  can_add_space?: boolean
+  can_add_event?: boolean
   total_upcoming_events: number
   venues: Venue[]
 }
 
-const organizer = ref<Organizer | null>(null)
+const organization = ref<Organization | null>(null)
 const error = ref<string | null>(null)
 
 const handleVenueDeleted = (venueId: number) => {
-  if (!organizer.value) {
+  if (!organization.value) {
     return
   }
-  organizer.value = {
-    ...organizer.value,
-    venues: organizer.value.venues.filter((venue) => venue.venue_id !== venueId),
+  organization.value = {
+    ...organization.value,
+    venues: organization.value.venues.filter((venue) => venue.venue_id !== venueId),
   }
 }
 
-// Watch for changes in organizerId and fetch organizer data
+// Watch for changes in organizationId and fetch organization data
 watch(
-  organizerId,
+  organizationId,
   async (id) => {
     if (id === null) {
-      organizer.value = null
+      organization.value = null
       return
     }
 
     try {
-      const response = await apiFetch<Organizer>(
-        `/api/admin/organizer/${id}/venues`
+      const response = await apiFetch<Organization>(
+        `/api/admin/organization/${id}/venues`
       )
-      organizer.value = response.data
+      organization.value = response.data
       error.value = null
     } catch (err: unknown) {
       if (typeof err === 'object' && err && 'data' in err) {
         const e = err as { data?: { error?: string } }
-        error.value = e.data?.error || 'Failed to load organizer venues'
+        error.value = e.data?.error || 'Failed to load organization venues'
       } else {
         error.value = 'Unknown error'
       }
-      organizer.value = null
+      organization.value = null
     }
   },
   { immediate: true } // fetch on initial load
@@ -144,7 +148,7 @@ watch(
 
 <style scoped lang="scss">
 // Error feedback
-.organizer-venue-view__error {
+.organization-venue-view__error {
   width: 100%;
   max-width: 600px;
 }
@@ -153,7 +157,7 @@ watch(
 }
 
 // Content section
-.organizer-venue-view__content {
+.organization-venue-view__content {
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -163,7 +167,7 @@ watch(
 
 // Stats section
 // Venue cards grid
-.organizer-venue-view__grid {
+.organization-venue-view__grid {
   display: flex;
   flex-direction: column;
   gap: var(--uranus-grid-gap);
@@ -176,15 +180,15 @@ watch(
 @media (min-width: 1280px) {
 }
 
-// No organizer selected message
-.organizer-venue-view__no-organizer {
+// No organization selected message
+.organization-venue-view__no-organization {
   width: 100%;
   max-width: 600px;
   margin: 2rem auto;
   padding: 0 1rem;
 }
 
-.no-organizer-content {
+.no-organization-content {
   text-align: center;
   padding: 2rem 1rem;
   display: flex;

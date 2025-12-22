@@ -34,8 +34,8 @@ const mockEvent = {
   title: 'Test Event',
   subtitle: 'Event Subtitle',
   description: 'Event description',
-  organizer_id: 1,
-  organizer_name: 'Test Organizer',
+  organization_id: 1,
+  organization_name: 'Test Organization',
   teaser_text: 'Teaser text',
   participation_info: 'Participation info',
   meeting_point: 'Meeting point',
@@ -164,7 +164,7 @@ describe('EventView', () => {
   it('displays error message on API failure', async () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue(new Error('API Error'))
-    
+
     // Suppress console.error for this test since the component logs the error
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
@@ -172,7 +172,7 @@ describe('EventView', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain('Failed to load event')
-    
+
     consoleErrorSpy.mockRestore()
   })
 
@@ -222,22 +222,22 @@ describe('EventView', () => {
 
   it('loads event image details when has_main_image is true', async () => {
     const { apiFetch } = await import('../../src/api')
-    const eventWithImageFlag = { 
-      ...mockEvent, 
+    const eventWithImageFlag = {
+      ...mockEvent,
       has_main_image: true,
       image_id: null,
       image_url: null
     }
-    
+
     vi.mocked(apiFetch)
       .mockResolvedValueOnce({ data: eventWithImageFlag, status: 200 })
-      .mockResolvedValueOnce({ 
-        data: { 
-          id: 1, 
+      .mockResolvedValueOnce({
+        data: {
+          id: 1,
           url: 'https://example.com/loaded-image.jpg',
           alt_text: 'Loaded alt text'
-        }, 
-        status: 200 
+        },
+        status: 200
       })
 
     const wrapper = await createWrapper()

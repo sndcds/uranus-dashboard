@@ -208,9 +208,9 @@ const fieldErrors = reactive({
 
 const localError = ref<string | null>(null)
 
-const requiredFieldMessage = computed(() => (te('event_error_required') ? t('event_error_required') : 'This field is required'))
-const missingRequiredMessage = computed(() => (te('organizer_form_missing_required') ? t('organizer_form_missing_required') : 'Please complete all required fields.'))
-const invalidWebsiteMessage = computed(() => (te('organizer_form_invalid_website') ? t('organizer_form_invalid_website') : 'Please provide a valid website URL.'))
+const requiredFieldMessage = computed(() => (te('required_field') ? t('required_field') : 'This field is required'))
+const missingRequiredMessage = computed(() => (te('organization_form_missing_required') ? t('organization_form_missing_required') : 'Please complete all required fields.'))
+const invalidWebsiteMessage = computed(() => (te('organization_form_invalid_website') ? t('organization_form_invalid_website') : 'Please provide a valid website URL.'))
 
 const displayError = computed(() => localError.value ?? props.errorMessage ?? null)
 

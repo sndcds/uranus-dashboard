@@ -28,11 +28,11 @@
   - Table and list support
   - HTML escaping
   
-- **OrganizerCardComponent.test.ts** - 31 tests
-  - Organizer information display
+- **OrganizationCardComponent.test.ts** - 31 tests
+  - Organization information display
   - Venue/space statistics
   - Active state management
-  - Organizer activation
+  - Organization activation
   
 - **SidebarOptionComponent.test.ts** - 27 tests
   - Label and icon rendering
@@ -95,7 +95,7 @@
 - SidebarOptionComponent
 - MarkdownPreviewComponent
 - VenueCardComponent
-- OrganizerCardComponent
+- OrganizationCardComponent
 - EventCalendarSidebar
 
 ### Good Coverage (85-95%)
@@ -181,14 +181,14 @@ expect(wrapper.find('.loaded').exists()).toBe(true)
 ### Potential Additional Tests
 1. **More Components:**
    - SidebarComponent (complex with user menu)
-   - OrganizerCardComponent
+   - OrganizationCardComponent
    - LocationMapComponent
    - TagListComponent
 
 2. **More Views:**
    - DashboardView
    - FormEventView
-   - FormOrganizerView
+   - FormOrganizationView
    - SettingsView
 
 3. **More Integration:**

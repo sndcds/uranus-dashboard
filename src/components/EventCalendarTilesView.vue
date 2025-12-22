@@ -64,7 +64,7 @@ interface CalendarEvent {
   venue_house_number: string | null
   venue_postal_code: string | null
   event_types: CalendarEventType[] | null
-  organizer_name: string | null
+  organization_name: string | null
 }
 
 interface AugmentedEvent extends CalendarEvent {
@@ -129,13 +129,13 @@ const emptyLabel = computed(() => t('events_calendar_empty'))
   background: var(--uranus-bg-color);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
-  border-radius: var(--uranus-card-border-radius);
+  // border-radius: var(--uranus-card-border-radius);
   overflow: hidden;
 }
 
 .calendar-tile:hover {
   transform: translate(-2px, -4px);
-  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
 }
 
 .calendar-tile__image-container {

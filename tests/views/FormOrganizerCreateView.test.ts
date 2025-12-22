@@ -3,16 +3,16 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 import { createPinia, setActivePinia } from 'pinia'
-import FormOrganizerCreateView from '../../src/views/FormOrganizerCreateView.vue'
+import FormOrganizationCreateView from '../../src/views/FormOrganizationCreateView.vue'
 
 const i18n = createI18n({
   legacy: false,
   locale: 'en',
   messages: {
     en: {
-      create_organizer: 'Create Organizer',
-      organizer_create_description: 'Fill in organizer details',
-      organizer_name: 'Organizer Name',
+      create_organization: 'Create Organization',
+      organization_create_description: 'Fill in organization details',
+      organization_name: 'Organization Name',
       street: 'Street',
       house_number: 'Number',
       postal_code: 'Postal Code',
@@ -21,14 +21,14 @@ const i18n = createI18n({
       phone: 'Phone',
       website: 'Website',
       geo_location: 'Location',
-      organizer_map_hint: 'Click on the map to set location',
-      organizer_map_no_selection: 'No location selected',
+      organization_map_hint: 'Click on the map to set location',
+      organization_map_no_selection: 'No location selected',
       event_error_required: 'This field is required',
-      organizer_form_missing_required: 'Please fill in all required fields',
-      organizer_form_invalid_email: 'Please enter a valid email address',
-      organizer_form_invalid_website: 'Please enter a valid website URL',
-      organizer_created: 'Organizer created successfully',
-      failed_to_create_organizer: 'Failed to create organizer',
+      organization_form_missing_required: 'Please fill in all required fields',
+      organization_form_invalid_email: 'Please enter a valid email address',
+      organization_form_invalid_website: 'Please enter a valid website URL',
+      organization_created: 'Organization created successfully',
+      failed_to_create_organization: 'Failed to create organization',
       unknown_error: 'An unknown error occurred',
     },
   },
@@ -37,8 +37,8 @@ const i18n = createI18n({
 const router = createRouter({
   history: createMemoryHistory(),
   routes: [
-    { path: '/admin/organizer/create', component: { template: '<div>Create</div>' } },
-    { path: '/admin/organizers', component: { template: '<div>List</div>' } },
+    { path: '/admin/organization/create', component: { template: '<div>Create</div>' } },
+    { path: '/admin/organizations', component: { template: '<div>List</div>' } },
   ],
 })
 
@@ -48,14 +48,14 @@ vi.mock('../../src/api', () => ({
   fetchCoordinatesForAddress: vi.fn(),
 }))
 
-describe('FormOrganizerCreateView', () => {
+describe('FormOrganizationCreateView', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
   })
 
   it('renders page title and subtitle', () => {
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -66,12 +66,12 @@ describe('FormOrganizerCreateView', () => {
     })
 
     // Check for form button text instead since DashboardHeroComponent is stubbed
-    expect(wrapper.find('button[type="submit"]').text()).toBe('Create Organizer')
+    expect(wrapper.find('button[type="submit"]').text()).toBe('Create Organization')
     expect(wrapper.find('form').exists()).toBe(true)
   })
 
   it('renders all required form fields', () => {
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -81,7 +81,7 @@ describe('FormOrganizerCreateView', () => {
       },
     })
 
-    expect(wrapper.find('#organizer_name').exists()).toBe(true)
+    expect(wrapper.find('#organization_name').exists()).toBe(true)
     expect(wrapper.find('#street').exists()).toBe(true)
     expect(wrapper.find('#house_number').exists()).toBe(true)
     expect(wrapper.find('#postal_code').exists()).toBe(true)
@@ -89,7 +89,7 @@ describe('FormOrganizerCreateView', () => {
   })
 
   it('renders optional form fields', () => {
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -105,7 +105,7 @@ describe('FormOrganizerCreateView', () => {
   })
 
   it('shows validation errors for missing required fields', async () => {
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -123,7 +123,7 @@ describe('FormOrganizerCreateView', () => {
   })
 
   it('validates email format', async () => {
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -134,12 +134,12 @@ describe('FormOrganizerCreateView', () => {
     })
 
     // Fill required fields
-    await wrapper.find('#organizer_name').setValue('Test Organizer')
+    await wrapper.find('#organization_name').setValue('Test Organization')
     await wrapper.find('#street').setValue('Main Street')
     await wrapper.find('#house_number').setValue('123')
     await wrapper.find('#postal_code').setValue('12345')
     await wrapper.find('#city').setValue('Test City')
-    
+
     // Set invalid email
     await wrapper.find('#email').setValue('invalid-email')
 
@@ -151,7 +151,7 @@ describe('FormOrganizerCreateView', () => {
   })
 
   it('validates website URL format', async () => {
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -162,12 +162,12 @@ describe('FormOrganizerCreateView', () => {
     })
 
     // Fill required fields
-    await wrapper.find('#organizer_name').setValue('Test Organizer')
+    await wrapper.find('#organization_name').setValue('Test Organization')
     await wrapper.find('#street').setValue('Main Street')
     await wrapper.find('#house_number').setValue('123')
     await wrapper.find('#postal_code').setValue('12345')
     await wrapper.find('#city').setValue('Test City')
-    
+
     // Set invalid website
     await wrapper.find('#website').setValue('invalid url')
 
@@ -183,7 +183,7 @@ describe('FormOrganizerCreateView', () => {
     vi.mocked(apiFetch).mockResolvedValue({ data: {}, status: 201 })
     vi.mocked(fetchCoordinatesForAddress).mockResolvedValue({ lat: '54.7833', lon: '9.4333' })
 
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -193,7 +193,7 @@ describe('FormOrganizerCreateView', () => {
       },
     })
 
-    await wrapper.find('#organizer_name').setValue('Test Organizer')
+    await wrapper.find('#organization_name').setValue('Test Organization')
     await wrapper.find('#street').setValue('Main Street')
     await wrapper.find('#house_number').setValue('123')
     await wrapper.find('#postal_code').setValue('12345')
@@ -206,7 +206,7 @@ describe('FormOrganizerCreateView', () => {
     await form.trigger('submit')
     await flushPromises()
 
-    expect(apiFetch).toHaveBeenCalledWith('/api/admin/organizer/create', expect.objectContaining({
+    expect(apiFetch).toHaveBeenCalledWith('/api/admin/organization/create', expect.objectContaining({
       method: 'POST',
     }))
   })
@@ -215,7 +215,7 @@ describe('FormOrganizerCreateView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: {}, status: 201 })
 
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -232,7 +232,7 @@ describe('FormOrganizerCreateView', () => {
       },
     })
 
-    await wrapper.find('#organizer_name').setValue('Test Organizer')
+    await wrapper.find('#organization_name').setValue('Test Organization')
     await wrapper.find('#street').setValue('Main Street')
     await wrapper.find('#house_number').setValue('123')
     await wrapper.find('#postal_code').setValue('12345')
@@ -253,7 +253,7 @@ describe('FormOrganizerCreateView', () => {
     vi.mocked(apiFetch).mockResolvedValue({ data: {}, status: 201 })
     vi.mocked(fetchCoordinatesForAddress).mockResolvedValue({ lat: '54.7833', lon: '9.4333' })
 
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -263,7 +263,7 @@ describe('FormOrganizerCreateView', () => {
       },
     })
 
-    await wrapper.find('#organizer_name').setValue('Test Organizer')
+    await wrapper.find('#organization_name').setValue('Test Organization')
     await wrapper.find('#street').setValue('Main Street')
     await wrapper.find('#house_number').setValue('123')
     await wrapper.find('#postal_code').setValue('12345')
@@ -276,12 +276,12 @@ describe('FormOrganizerCreateView', () => {
     expect(fetchCoordinatesForAddress).toHaveBeenCalledWith('Main Street 123 12345 Test City')
   })
 
-  it('navigates to organizers list after successful creation', async () => {
+  it('navigates to organizations list after successful creation', async () => {
     const { apiFetch, fetchCoordinatesForAddress } = await import('../../src/api')
     vi.mocked(apiFetch).mockResolvedValue({ data: {}, status: 201 })
     vi.mocked(fetchCoordinatesForAddress).mockResolvedValue({ lat: '54.7833', lon: '9.4333' })
 
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -291,7 +291,7 @@ describe('FormOrganizerCreateView', () => {
       },
     })
 
-    await wrapper.find('#organizer_name').setValue('Test Organizer')
+    await wrapper.find('#organization_name').setValue('Test Organization')
     await wrapper.find('#street').setValue('Main Street')
     await wrapper.find('#house_number').setValue('123')
     await wrapper.find('#postal_code').setValue('12345')
@@ -302,7 +302,7 @@ describe('FormOrganizerCreateView', () => {
     await flushPromises()
 
     // Check that navigation was attempted by checking if success message is shown
-    expect(wrapper.text()).toContain('Organizer created successfully')
+    expect(wrapper.text()).toContain('Organization created successfully')
   })
 
   it('displays success message after creation', async () => {
@@ -310,7 +310,7 @@ describe('FormOrganizerCreateView', () => {
     vi.mocked(apiFetch).mockResolvedValue({ data: {}, status: 201 })
     vi.mocked(fetchCoordinatesForAddress).mockResolvedValue({ lat: '54.7833', lon: '9.4333' })
 
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -320,7 +320,7 @@ describe('FormOrganizerCreateView', () => {
       },
     })
 
-    await wrapper.find('#organizer_name').setValue('Test Organizer')
+    await wrapper.find('#organization_name').setValue('Test Organization')
     await wrapper.find('#street').setValue('Main Street')
     await wrapper.find('#house_number').setValue('123')
     await wrapper.find('#postal_code').setValue('12345')
@@ -330,7 +330,7 @@ describe('FormOrganizerCreateView', () => {
     await form.trigger('submit')
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Organizer created successfully')
+    expect(wrapper.text()).toContain('Organization created successfully')
   })
 
   it('handles API error', async () => {
@@ -338,7 +338,7 @@ describe('FormOrganizerCreateView', () => {
     vi.mocked(apiFetch).mockRejectedValue({ data: { error: 'Database error' } })
     vi.mocked(fetchCoordinatesForAddress).mockResolvedValue({ lat: '54.7833', lon: '9.4333' })
 
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -348,7 +348,7 @@ describe('FormOrganizerCreateView', () => {
       },
     })
 
-    await wrapper.find('#organizer_name').setValue('Test Organizer')
+    await wrapper.find('#organization_name').setValue('Test Organization')
     await wrapper.find('#street').setValue('Main Street')
     await wrapper.find('#house_number').setValue('123')
     await wrapper.find('#postal_code').setValue('12345')
@@ -362,7 +362,7 @@ describe('FormOrganizerCreateView', () => {
   })
 
   it('clears field errors when valid input is entered', async () => {
-    const wrapper = mount(FormOrganizerCreateView, {
+    const wrapper = mount(FormOrganizationCreateView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -380,11 +380,11 @@ describe('FormOrganizerCreateView', () => {
     expect(wrapper.text()).toContain('Please fill in all required fields')
 
     // Fill in a field
-    await wrapper.find('#organizer_name').setValue('Test Organizer')
+    await wrapper.find('#organization_name').setValue('Test Organization')
     await flushPromises()
 
     // Field-specific error should be cleared
-    const nameInput = wrapper.findComponent({ ref: 'organizer_name' })
+    const nameInput = wrapper.findComponent({ ref: 'organization_name' })
     if (nameInput.exists()) {
       expect(nameInput.props('error')).toBeNull()
     }

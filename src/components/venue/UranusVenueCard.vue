@@ -12,32 +12,30 @@
 
       <UranusButton
           v-if="venue.can_edit_event"
-          :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/edit`"
-          icon="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.004 1.004 0 0 0 0-1.42l-2.34-2.34a1.004 1.004 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"
-          variant="uranus-button"
+          :to="`/admin/organization/${organizationId}/venue/${venue.venue_id}/edit`"
+          icon="edit"
           class="uranus-tertiary-button"
       >
-        {{ t('edit_organizer') }}
+        {{ t('edit_organization') }}
       </UranusButton>
 
       <UranusButton
           v-if="venue.can_delete_event"
-          icon="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
-          variant="uranus-button"
+          icon="delete"
           class="uranus-tertiary-button"
           @click="onDeleteEvent(venue)"
       >
-        {{ t('delete_organizer') }}
+        {{ t('delete_organization') }}
       </UranusButton>
     </div>
 
     <section>
       <div>
-        <h3>{{ t('spaces') }}
+        <h3>{{ t('venue_spaces') }}
           <UranusIconAction
               mode="add"
               v-if="venue.can_edit_venue"
-              :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/space/create`"
+              :to="`/admin/organization/${organizationId}/venue/${venue.venue_id}/space/create`"
           />
         </h3>
       </div>
@@ -50,7 +48,7 @@
                 <UranusIconAction
                     mode="edit"
                     v-if="venue.can_edit_space"
-                    :to="`/admin/organizer/${organizerId}/venue/${venue.venue_id}/space/${space.space_id}/edit`"
+                    :to="`/admin/organization/${organizationId}/venue/${venue.venue_id}/space/${space.space_id}/edit`"
                 />
                 <UranusIconAction
                     mode="delete"
@@ -68,7 +66,7 @@
       :show="showDeleteModal"
       :title="t('confirm_delete_venue')"
       :description="t('confirm_delete_venue_description', { name: pendingVenueName })"
-      :confirm-text="t('delete_venue')"
+      :confirm-text="t('venue_delete')"
       :loading-text="t('deleting')"
       :error="deleteError"
       :is-submitting="isDeleting"
@@ -104,7 +102,7 @@ const { t } = useI18n()
 
 const props = defineProps<{
   venue: Venue
-  organizerId: number
+  organizationId: number
 }>()
 
 const emit = defineEmits<{

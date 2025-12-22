@@ -76,12 +76,12 @@
       <UranusInlineActionBar style="margin-top:12px;">
         <UranusInlineCancelButton
             :label="t('cancel')"
-            :onClick="cancel"
+            :onClick="onCancel"
         />
 
-        <UranusInlineOKButton
+        <UranusInlineSaveButton
             :label="t('save')"
-            :onClick="save"
+            :onClick="onSave"
         />
       </UranusInlineActionBar>
     </UranusCard>
@@ -97,7 +97,7 @@ import UranusCard from '@/components/ui/UranusCard.vue'
 import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusFormRow from "@/components/ui/UranusFormRow.vue";
 import { buildPlutoEditImageUrl } from "@/utils/UranusUtils.ts";
-import UranusInlineOKButton from "@/components/ui/UranusInlineOKButton.vue";
+import UranusInlineSaveButton from "@/components/ui/UranusInlineSaveButton.vue";
 import UranusInlineCancelButton from "@/components/ui/UranusInlineCancelButton.vue";
 import UranusInlineActionBar from "@/components/ui/UranusInlineActionBar.vue";
 import UranusTextarea from "@/components/ui/UranusTextarea.vue";
@@ -117,7 +117,7 @@ const descriptionValue = computed({
 
 const emit = defineEmits<{
   (e: 'close'): void
-  (e: 'saved', imageMeta: UranusImageMeta, file: File | null, imageIndex: number | null): void
+  (e: 'save', imageMeta: UranusImageMeta, file: File | null, imageIndex: number | null): void
 }>()
 
 const { t } = useI18n()
@@ -171,12 +171,12 @@ function onFileSelected(e: Event) {
   reader.readAsDataURL(file)
 }
 
-function cancel() {
+function onCancel() {
   emit('close')
 }
 
-function save() {
-  emit('saved', localImageMeta, localImageFile.value, props.imageIndex)
+function onSave() {
+  emit('save', localImageMeta, localImageFile.value, props.imageIndex)
 }
 
 onMounted(() => {
@@ -200,6 +200,7 @@ onMounted(() => {
 .uranus-modal-card {
   width: 90%;
   max-width: 600px;
+  border-radius: 16px;
   padding: var(--uranus-dialog-padding);
 }
 

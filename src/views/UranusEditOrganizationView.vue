@@ -1,94 +1,139 @@
+<!--
+  UranusEditOrganizationView.vue
+-->
 <template>
-    <div class="uranus-main-layout">
-        <DashboardHeroComponent :title="t('edit_organizer')" :subtitle="organizerDescription" />
+  <div class="uranus-main-layout">
+    <DashboardHeroComponent
+        :title="t('organization')"
+        :subtitle="t('organization_edit_description')" />
+    #{{ organizationId }}
 
-        <form class="uranus-form" @submit.prevent="submitForm" novalidate>
-            <section class="uranus-card">
-                <UranusTextInput id="organizer_name" size="big" required v-model="organizerName"
-                    :label="t('organizer_name')" :error="fieldErrors.organizerName" />
-                <UranusTextInput id="address_addition" v-model="addressAddition"
-                    :label="t('organizer_address_addition')" />
+    <form class="uranus-form" @submit.prevent="onSubmitForm" novalidate>
+      <UranusCard>
+        <UranusTextInput
+            id="organization_name"
+            size="big"
+            required
+            v-model="organizationName"
+            :label="t('organization_name')"
+            :error="fieldErrors.organizationName"
+        />
 
-                <UranusFormRow>
-                    <UranusTextInput id="street" required :flex=3 v-model="street" :label="t('street')"
-                        :error="fieldErrors.street" />
-                    <UranusTextInput id="house_number" required v-model="houseNumber" :label="t('house_number')"
-                        :error="fieldErrors.houseNumber" />
-                </UranusFormRow>
+        <UranusFormRow>
+          <UranusLegalFormSelect v-model="legalFormId" />
 
-                <UranusFormRow>
-                    <UranusTextInput id="postal_code" required v-model="postalCode" :label="t('postal_code')"
-                        :error="fieldErrors.postalCode" />
-                    <UranusTextInput id="city" required :flex=3 v-model="city" :label="t('city')"
-                        :error="fieldErrors.city" />
-                </UranusFormRow>
+          <UranusCheckboxButton
+              id="nonprofitId"
+              v-model="nonprofit"
+              :label="t('nonprofit')"
+          />
 
-                <UranusFormRow>
-                    <RegionSelectorComponent v-model:country-code="countryCode" v-model:state-code="stateCode" />
-                </UranusFormRow>
+        </UranusFormRow>
+      </UranusCard>
 
-                <UranusFormRow>
-                    <UranusTextInput id="email" v-model="email" :label="t('email')" :error="fieldErrors.email" />
-                    <UranusTextInput id="phone" v-model="phone" :label="t('phone')" :error="fieldErrors.phone" />
-                </UranusFormRow>
+      <UranusCard>
+        <UranusFormRow>
+          <UranusTextInput
+              id="street"
+              required
+              :flex=3
+              v-model="street"
+              :label="t('street')"
+              :error="fieldErrors.street"
+          />
 
-                <UranusTextInput id="website" v-model="website" :label="t('website')" :error="fieldErrors.website" />
+          <UranusTextInput
+              id="house_number"
+              required
+              v-model="houseNumber"
+              :label="t('house_number')"
+              :error="fieldErrors.houseNumber"
+          />
+        </UranusFormRow>
 
-                <UranusFieldLabel :id="descriptionLabelId" :label="t('description')" :error="fieldErrors.description">
-                    <MarkdownEditorComponent v-model="description" class="organizer-description-editor"
-                        :aria-labelledby="descriptionLabelId" :placeholder="descriptionPlaceholder" />
-                </UranusFieldLabel>
+        <UranusTextInput
+            id="address_addition"
+            v-model="addressAddition"
+            :label="t('address_addition')"
+        />
 
-                <div class="form-group">
-                    <label for="holding_organizer_id">
-                        {{ labelMessage('organizer_holding_id') }}
-                    </label>
-                    <input v-model="holdingOrganizerId" id="holding_organizer_id" type="text" inputmode="numeric" />
-                </div>
+        <UranusFormRow>
+          <UranusTextInput
+              id="postal_code"
+              required
+              v-model="postalCode"
+              :label="t('postal_code')"
+              :error="fieldErrors.postalCode"
+          />
 
-                <div class="form-group">
-                    <label for="legal_form_id">
-                        {{ labelMessage('organizer_legal_form_id') }}
-                    </label>
-                    <select v-model="legalFormId" id="legal_form_id" :disabled="legalFormsLoading">
-                        <option value="" disabled>
-                            {{ legalFormPlaceholder }}
-                        </option>
-                        <option v-for="form in legalForms" :key="form.id" :value="String(form.id)">
-                            {{ form.name }}
-                        </option>
-                    </select>
-                </div>
+          <UranusTextInput
+              id="city"
+              required
+              :flex=3
+              v-model="city"
+              :label="t('city')"
+              :error="fieldErrors.city"
+          />
+        </UranusFormRow>
 
-                <div class="form-group nonprofit-checkbox">
-                    <input :id="nonprofitId" type="checkbox" v-model="nonprofit" />
-                    <label :for="nonprofitId">{{ labelMessage('organizer_nonprofit') }}</label>
-                </div>
+        <UranusFormRow>
+          <UranusRegionSelect v-model:country-code="countryCode" v-model:state-code="stateCode" />
+        </UranusFormRow>
 
-                <aside class="">
-                    <LocationMapComponent v-model="location" :zoom="13" :selectable="true">
-                        <template #footer>
-                            {{ mapHint }}
-                        </template>
-                    </LocationMapComponent>
-                    <ValueInfoComponent :label="t('geo_location')" :value="locationSummary" />
-                </aside>
-            </section>
+        <div class="uranus-label-text">Geografische Position</div>
+        <UranusMapLocationPicker
+            v-model="location"
+            :zoom="12"
+            :selectable="true"
+        />
 
-            <div class="form-actions">
-                <button type="submit" class="uranus-button" :disabled="isSubmitting">
-                    {{ submitButtonLabel }}
-                </button>
-            </div>
-        </form>
+        <ValueInfoComponent :label="t('geo_location')" :value="locationSummary" />
+      </UranusCard>
 
-        <transition name="fade">
-            <p v-if="error" class="feedback feedback--error">{{ error }}</p>
-        </transition>
-        <transition name="fade">
-            <p v-if="success" class="feedback feedback--success">{{ success }}</p>
-        </transition>
-    </div>
+      <UranusCard>
+
+        <UranusFormRow>
+          <UranusTextInput id="email" v-model="email" :label="t('email')" :error="fieldErrors.email" />
+          <UranusTextInput id="phone" v-model="phone" :label="t('phone')" :error="fieldErrors.phone" />
+        </UranusFormRow>
+
+        <UranusTextInput id="website" v-model="website" :label="t('website')" :error="fieldErrors.website" />
+
+        <UranusFieldLabel
+            :id="descriptionLabelId"
+            :label="t('description')"
+            :error="fieldErrors.description">
+          <MarkdownEditorComponent
+              v-model="description"
+              class="organization-description-editor"
+              :aria-labelledby="descriptionLabelId"
+              :placeholder="descriptionPlaceholder"
+          />
+        </UranusFieldLabel>
+
+        <div class="form-group">
+          <label for="holding_organization_id">
+            {{ labelMessage('organization_holding_id') }}
+          </label>
+          <input v-model="holdingOrganizationId" id="holding_organization_id" type="text" inputmode="numeric" />
+        </div>
+      </UranusCard>
+
+
+      <div class="form-actions">
+        <button type="submit" class="uranus-button" :disabled="isSubmitting">
+          {{ submitButtonLabel }}
+        </button>
+      </div>
+    </form>
+
+    <transition name="fade">
+      <p v-if="error" class="feedback feedback--error">{{ error }}</p>
+    </transition>
+    <transition name="fade">
+      <p v-if="success" class="feedback feedback--success">{{ success }}</p>
+    </transition>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -97,14 +142,18 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
-import LocationMapComponent from '@/components/LocationMapComponent.vue'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
-import RegionSelectorComponent from '@/components/RegionSelectorComponent.vue'
+import UranusRegionSelect from '@/components/selects/UranusRegionSelect.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue"
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import UranusTextInput from "@/components/ui/UranusTextInput.vue"
 import UranusFormRow from "@/components/ui/UranusFormRow.vue"
 import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
+import UranusCard from "@/components/ui/UranusCard.vue";
+import UranusCheckboxButton from "@/components/ui/UranusCheckboxButton.vue";
+import UranusLegalFormSelect from "@/components/selects/UranusLegalFormSelect.vue";
+import UranusMapLocationPicker from "@/components/UranusMapLocationPicker.vue";
+import {uranusUrlParamToInt} from "@/utils/UranusUrlUtils.ts";
 
 interface LatLngLiteral {
     lat: number
@@ -115,7 +164,7 @@ const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
-const organizerName = ref('')
+const organizationName = ref('')
 const addressAddition = ref('')
 const street = ref('')
 const houseNumber = ref('')
@@ -127,7 +176,7 @@ const email = ref('')
 const website = ref('')
 const phone = ref('')
 const description = ref('')
-const holdingOrganizerId = ref('')
+const holdingOrganizationId = ref('')
 const legalFormId = ref('')
 const nonprofit = ref(false)
 const location = ref<LatLngLiteral | null>(null)
@@ -135,7 +184,7 @@ const error = ref<string | null>(null)
 const success = ref<string | null>(null)
 const isSubmitting = ref(false)
 const fieldErrors = reactive({
-    organizerName: null as string | null,
+    organizationName: null as string | null,
     street: null as string | null,
     houseNumber: null as string | null,
     postalCode: null as string | null,
@@ -146,30 +195,28 @@ const fieldErrors = reactive({
     description: null as string | null,
 })
 
-const organizerDescription = computed(() => t('organizer_edit_description'))
-const mapHint = computed(() => t('organizer_map_hint'))
-const requiredFieldMessage = computed(() => t('event_error_required'))
-const missingRequiredMessage = computed(() => t('organizer_form_missing_required'))
-const invalidEmailMessage = computed(() => t('organizer_form_invalid_email'))
-const invalidWebsiteMessage = computed(() => t('organizer_form_invalid_website'))
-const organizerLoadErrorMessage = computed(() => t('organizer_load_error'))
-const descriptionPlaceholder = computed(() => t('organizer_description_placeholder'))
-const legalFormPlaceholder = computed(() => t('organizer_legal_form_placeholder'))
+const requiredFieldMessage = computed(() => t('required_field'))
+const missingRequiredMessage = computed(() => t('organization_form_missing_required'))
+const invalidEmailMessage = computed(() => t('organization_form_invalid_email'))
+const invalidWebsiteMessage = computed(() => t('organization_form_invalid_website'))
+const organizationLoadErrorMessage = computed(() => t('organization_load_error'))
+const descriptionPlaceholder = computed(() => t('organization_description_placeholder'))
+
 const locationSummary = computed(() => {
     if (!location.value) {
-        return t('organizer_map_no_selection')
+        return t('organization_map_no_selection')
     }
     const { lat, lng } = location.value
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`
 })
 
 const labelMessage = (key: string) => t(key)
-const descriptionLabelId = 'organizer-description-label'
+const descriptionLabelId = 'organization-description-label'
 
-interface OrganizerResponse {
-    organizer_id?: number
+interface OrganizationResponse {
+    organization_id?: number
     name?: string
-    organizer_name?: string
+    organization_name?: string
     address_addition?: string | null
     street?: string | null
     house_number?: string | null
@@ -178,7 +225,7 @@ interface OrganizerResponse {
     state_code?: string | null
     country_code?: string | null
     description?: string | null
-    holding_organizer_id?: number | string | null
+    holding_organization_id?: number | string | null
     legal_form_id?: number | string | null
     nonprofit?: boolean | null
     contact_email?: string | null
@@ -197,69 +244,10 @@ interface LegalFormResponse {
 
 const legalForms = ref<Array<{ id: number; name: string }>>([])
 const legalFormsLoading = ref(false)
-const toOrganizerId = (value: unknown): number | null => {
-    if (Array.isArray(value)) {
-        const [first] = value
-        return toOrganizerId(first)
-    }
-    if (typeof value !== 'string') {
-        return null
-    }
-    const trimmed = value.trim()
-    if (!trimmed.length) {
-        return null
-    }
-    const parsed = Number(trimmed)
-    return Number.isFinite(parsed) ? parsed : null
-}
 
-const organizerId = computed(() => toOrganizerId(route.params.id))
-const submitButtonLabel = computed(() => t('update_organizer'))
-const isLoadingOrganizer = ref(false)
-
-const loadLegalForms = async () => {
-    if (legalFormsLoading.value) {
-        return
-    }
-
-    legalFormsLoading.value = true
-
-    try {
-        const { data } = await apiFetch<LegalFormResponse[]>(`/api/choosable-legal-forms?lang=${locale.value}`)
-        if (Array.isArray(data)) {
-            legalForms.value = data
-                .map((item) => {
-                    const rawId = item.legal_form_id
-                    const id = typeof rawId === 'number' ? rawId : Number(rawId)
-                    if (!Number.isFinite(id)) {
-                        return null
-                    }
-                    const rawLabel = item.legal_form_name ?? ''
-                    const label = typeof rawLabel === 'string' ? rawLabel.trim() : ''
-                    return { id, name: label.length ? label : String(id) }
-                })
-                .filter((value): value is { id: number; name: string } => Boolean(value))
-
-            const currentValue = legalFormId.value.trim()
-            if (currentValue.length) {
-                const numeric = Number(currentValue)
-                if (
-                    Number.isFinite(numeric) &&
-                    !legalForms.value.some((form) => form.id === numeric)
-                ) {
-                    legalForms.value.push({ id: numeric, name: String(currentValue) })
-                }
-            }
-        } else {
-            legalForms.value = []
-        }
-    } catch (err) {
-        legalForms.value = []
-        console.error('Failed to load legal forms', err)
-    } finally {
-        legalFormsLoading.value = false
-    }
-}
+const organizationId = computed(() => uranusUrlParamToInt(route.params.id))
+const submitButtonLabel = computed(() => t('update_organization'))
+const isLoadingOrganization = ref(false)
 
 const toNumberOrNull = (value: string): number | null => {
     if (!value.trim().length) {
@@ -269,10 +257,8 @@ const toNumberOrNull = (value: string): number | null => {
     return Number.isFinite(parsed) ? parsed : null
 }
 
-const nonprofitId = 'organizer-nonprofit-checkbox'
-
-const loadOrganizerById = async (id: number) => {
-    if (isLoadingOrganizer.value) {
+const loadOrganizationById = async (id: number) => {
+    if (isLoadingOrganization.value) {
         return
     }
 
@@ -281,16 +267,16 @@ const loadOrganizerById = async (id: number) => {
     Object.keys(fieldErrors).forEach((key) => {
         fieldErrors[key as keyof typeof fieldErrors] = null
     })
-    isLoadingOrganizer.value = true
+    isLoadingOrganization.value = true
 
     try {
-        const { data } = await apiFetch<OrganizerResponse>(`/api/admin/organizer/${id}`)
+        const { data } = await apiFetch<OrganizationResponse>(`/api/admin/organization/${id}`)
         if (!data) {
-            throw new Error('Organizer not found')
+            throw new Error('Organization not found')
         }
 
-        const organizerNameValue = data.name ?? data.organizer_name ?? ''
-        organizerName.value = typeof organizerNameValue === 'string' ? organizerNameValue : ''
+        const organizationNameValue = data.name ?? data.organization_name ?? ''
+        organizationName.value = typeof organizationNameValue === 'string' ? organizationNameValue : ''
 
         addressAddition.value = typeof data.address_addition === 'string' ? data.address_addition : ''
         street.value = typeof data.street === 'string' ? data.street : ''
@@ -305,10 +291,10 @@ const loadOrganizerById = async (id: number) => {
         stateCode.value = incomingState
         description.value = typeof data.description === 'string' ? data.description : ''
 
-        if (typeof data.holding_organizer_id === 'number' || (typeof data.holding_organizer_id === 'string' && data.holding_organizer_id.trim().length)) {
-            holdingOrganizerId.value = String(data.holding_organizer_id).trim()
+        if (typeof data.holding_organization_id === 'number' || (typeof data.holding_organization_id === 'string' && data.holding_organization_id.trim().length)) {
+            holdingOrganizationId.value = String(data.holding_organization_id).trim()
         } else {
-            holdingOrganizerId.value = ''
+            holdingOrganizationId.value = ''
         }
 
         if (typeof data.legal_form_id === 'number' || (typeof data.legal_form_id === 'string' && data.legal_form_id.trim().length)) {
@@ -336,28 +322,27 @@ const loadOrganizerById = async (id: number) => {
     } catch (err: unknown) {
         if (typeof err === 'object' && err && 'data' in err) {
             const e = err as { data?: { error?: string } }
-            error.value = e.data?.error || organizerLoadErrorMessage.value
+            error.value = e.data?.error || organizationLoadErrorMessage.value
         } else {
-            error.value = organizerLoadErrorMessage.value
+            error.value = organizationLoadErrorMessage.value
         }
     } finally {
-        isLoadingOrganizer.value = false
+        isLoadingOrganization.value = false
     }
 }
 
 watch(
-    organizerId,
+    organizationId,
     (id) => {
         if (id == null) {
             return
         }
-        loadOrganizerById(id)
+        loadOrganizationById(id)
     },
     { immediate: true }
 )
 
 onMounted(() => {
-    loadLegalForms()
 })
 
 const isValidEmail = (value: string) => {
@@ -378,7 +363,7 @@ const isValidUrl = (value: string) => {
     }
 }
 
-const submitForm = async () => {
+const onSubmitForm = async () => {
     if (isSubmitting.value) {
         return
     }
@@ -390,7 +375,7 @@ const submitForm = async () => {
         fieldErrors[key as keyof typeof fieldErrors] = null
     })
 
-    const trimmedName = organizerName.value.trim()
+    const trimmedName = organizationName.value.trim()
     const trimmedAddressAddition = addressAddition.value.trim()
     const trimmedStreet = street.value.trim()
     const trimmedHouseNumber = houseNumber.value.trim()
@@ -402,10 +387,10 @@ const submitForm = async () => {
     const trimmedPhone = phone.value.trim()
     const trimmedWebsite = website.value.trim()
     const trimmedDescription = description.value.trim()
-    const trimmedHoldingOrganizerId = holdingOrganizerId.value.trim()
+    const trimmedHoldingOrganizationId = holdingOrganizationId.value.trim()
     const trimmedLegalFormId = legalFormId.value.trim()
 
-    fieldErrors.organizerName = trimmedName ? null : requiredFieldMessage.value
+    fieldErrors.organizationName = trimmedName ? null : requiredFieldMessage.value
     fieldErrors.street = trimmedStreet ? null : requiredFieldMessage.value
     fieldErrors.houseNumber = trimmedHouseNumber ? null : requiredFieldMessage.value
     fieldErrors.postalCode = trimmedPostalCode ? null : requiredFieldMessage.value
@@ -419,7 +404,7 @@ const submitForm = async () => {
         ? (isValidUrl(trimmedWebsite) ? null : invalidWebsiteMessage.value)
         : null
 
-    const hasMissingRequired = [fieldErrors.organizerName, fieldErrors.street, fieldErrors.houseNumber, fieldErrors.postalCode, fieldErrors.city].some((value) => Boolean(value))
+    const hasMissingRequired = [fieldErrors.organizationName, fieldErrors.street, fieldErrors.houseNumber, fieldErrors.postalCode, fieldErrors.city].some((value) => Boolean(value))
     const emailInvalid = Boolean(fieldErrors.email)
     const websiteInvalid = Boolean(fieldErrors.website)
 
@@ -457,8 +442,8 @@ const submitForm = async () => {
         payload.country_code = trimmedCountryCode.length ? trimmedCountryCode : null
         payload.description = trimmedDescription.length ? trimmedDescription : null
 
-        const holdingIdValue = toNumberOrNull(trimmedHoldingOrganizerId)
-        payload.holding_organizer_id = holdingIdValue
+        const holdingIdValue = toNumberOrNull(trimmedHoldingOrganizationId)
+        payload.holding_organization_id = holdingIdValue
 
         const legalFormValue = toNumberOrNull(trimmedLegalFormId)
         payload.legal_form_id = legalFormValue
@@ -482,26 +467,31 @@ const submitForm = async () => {
             }
         }
 
-        if (organizerId.value == null) {
-            throw new Error('Organizer ID missing for update')
-        }
+      let apiUrl = '/api/admin/organization'
+      if (organizationId.value) {
+        apiUrl += `/${organizationId.value}`
+      }
 
-        const { status } = await apiFetch(`/api/admin/organizer/${organizerId.value}`, {
-            method: 'PUT',
-            body: JSON.stringify(payload),
-        })
+      console.log("apiUrl:", apiUrl)
+      console.log("payload:", JSON.stringify(payload))
+
+      const { status } = await apiFetch(apiUrl, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+      })
 
         if (status >= 200 && status < 300) {
-            success.value = t('organizer_updated')
-            router.push(`/admin/organizers`)
+            success.value = t('organization_updated')
+            router.push(`/admin/organizations`)
         } else {
             throw new Error('Unexpected status code')
         }
     } catch (err: unknown) {
+      console.log("err:", err)
         success.value = null
         if (typeof err === 'object' && err && 'data' in err) {
             const e = err as { data?: { error?: string } }
-            error.value = e.data?.error || t('failed_to_update_organizer')
+            error.value = e.data?.error || t('failed_to_update_organization')
         } else {
             error.value = t('unknown_error')
         }
@@ -512,16 +502,16 @@ const submitForm = async () => {
 
 const clearMissingRequiredMessage = () => {
     if (error.value === missingRequiredMessage.value) {
-        const stillHasRequiredError = [fieldErrors.organizerName, fieldErrors.street, fieldErrors.houseNumber, fieldErrors.postalCode, fieldErrors.city].some((value) => Boolean(value))
+        const stillHasRequiredError = [fieldErrors.organizationName, fieldErrors.street, fieldErrors.houseNumber, fieldErrors.postalCode, fieldErrors.city].some((value) => Boolean(value))
         if (!stillHasRequiredError) {
             error.value = null
         }
     }
 }
 
-watch(organizerName, (value) => {
-    if (fieldErrors.organizerName && value.trim()) {
-        fieldErrors.organizerName = null
+watch(organizationName, (value) => {
+    if (fieldErrors.organizationName && value.trim()) {
+        fieldErrors.organizationName = null
         clearMissingRequiredMessage()
     }
 })

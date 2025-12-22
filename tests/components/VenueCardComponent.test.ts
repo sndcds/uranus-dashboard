@@ -23,9 +23,9 @@ const i18n = createI18n({
 const router = createRouter({
   history: createMemoryHistory(),
   routes: [
-    { path: '/admin/organizer/:organizerId/venue/:venueId/edit', component: { template: '<div>Edit Venue</div>' } },
-    { path: '/admin/organizer/:organizerId/venue/:venueId/space/create', component: { template: '<div>Create Space</div>' } },
-    { path: '/admin/organizer/:organizerId/venue/:venueId/space/:spaceId/edit', component: { template: '<div>Edit Space</div>' } },
+    { path: '/admin/organization/:organizationId/venue/:venueId/edit', component: { template: '<div>Edit Venue</div>' } },
+    { path: '/admin/organization/:organizationId/venue/:venueId/space/create', component: { template: '<div>Create Space</div>' } },
+    { path: '/admin/organization/:organizationId/venue/:venueId/space/:spaceId/edit', component: { template: '<div>Edit Space</div>' } },
   ],
 })
 
@@ -56,11 +56,11 @@ describe('UranusVenueCard', () => {
     can_edit_space: true,
   }
 
-  const createWrapper = (venue: Venue = mockVenue, organizerId = 100) => {
+  const createWrapper = (venue: Venue = mockVenue, organizationId = 100) => {
     return mount(UranusVenueCard, {
       props: {
         venue,
-        organizerId,
+        organizationId,
       },
       global: {
         plugins: [i18n, router],
@@ -96,7 +96,7 @@ describe('UranusVenueCard', () => {
   it('generates correct edit venue route', () => {
     const wrapper = createWrapper(mockVenue, 123)
     const editLink = wrapper.find('a[href*="/venue/1/edit"]')
-    expect(editLink.attributes('href')).toContain('/admin/organizer/123/venue/1/edit')
+    expect(editLink.attributes('href')).toContain('/admin/organization/123/venue/1/edit')
   })
 
   describe('Spaces Section', () => {
@@ -122,7 +122,7 @@ describe('UranusVenueCard', () => {
     it('generates correct add space route', () => {
       const wrapper = createWrapper(mockVenue, 456)
       const addLink = wrapper.find('a[href*="/space/create"]')
-      expect(addLink.attributes('href')).toContain('/admin/organizer/456/venue/1/space/create')
+      expect(addLink.attributes('href')).toContain('/admin/organization/456/venue/1/space/create')
     })
 
     it('displays empty state when no spaces', () => {
@@ -173,8 +173,8 @@ describe('UranusVenueCard', () => {
       )
       expect(editLinks.length).toBe(2)
 
-      expect(editLinks[0].attributes('href')).toContain('/admin/organizer/789/venue/1/space/10/edit')
-      expect(editLinks[1].attributes('href')).toContain('/admin/organizer/789/venue/1/space/20/edit')
+      expect(editLinks[0].attributes('href')).toContain('/admin/organization/789/venue/1/space/10/edit')
+      expect(editLinks[1].attributes('href')).toContain('/admin/organization/789/venue/1/space/20/edit')
     })
 
     it('hides edit space buttons when not permitted', () => {

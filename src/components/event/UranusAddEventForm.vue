@@ -21,6 +21,13 @@ UranusAddEventForm.vue
         :label="t('event_subtitle_label')"
     />
 
+    <UranusTextarea
+        id="description"
+        v-model.trim="draft.description"
+        :label="t('event_description_label')"
+        required
+    />
+
     <UranusFormRow>
       <UranusDateInput
           id="startDate"
@@ -102,9 +109,9 @@ UranusAddEventForm.vue
 import { ref, reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+import { useRouter } from 'vue-router'
 
 import type { UranusVenueSpaceSelection, UranusEventLocation } from '@/models/UranusEventModel'
-
 import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusFormRow from '@/components/ui/UranusFormRow.vue'
 import UranusTabCard from '@/components/ui/UranusTabCard.vue'
@@ -113,8 +120,10 @@ import UranusInlineEditActions from '@/components/ui/UranusInlineEditActions.vue
 import UranusCard from "@/components/ui/UranusCard.vue";
 import UranusDateInput from "@/components/ui/UranusDateInput.vue";
 import UranusTimeInput from "@/components/ui/UranusTimeInput.vue";
+import UranusTextarea from "@/components/ui/UranusTextarea.vue";
 
 const { t } = useI18n({ useScope: 'global' })
+const router = useRouter()
 
 const isSaving = ref(false)
 const activeCard = ref(0) // 0 = Venue, 1 = Location
@@ -125,12 +134,13 @@ const cards = [
 ]
 
 const props = defineProps({
-  organizerId: { type: [Number, null], required: true },
+  organizationId: { type: [Number, null], required: true },
 })
 
 const draft = reactive<{
   title: string | undefined
   subtitle: string
+  description: string
   startDate: string | undefined,
   startTime: string | undefined,
   venueId: number | null
@@ -150,6 +160,7 @@ const draft = reactive<{
 }>({
   title: '',
   subtitle: '',
+  description: '',
   startDate: undefined,
   startTime: undefined,
   venueId: null,
@@ -196,10 +207,10 @@ async function save() {
 
   try {
     const payload: Record<string, any> = {
-      organizer_id: props.organizerId,
+      organization_id: props.organizationId,
       title: draft.title.trim(),
-      description: draft.subtitle?.trim() || null,
-
+      subtitle: draft.subtitle?.trim() || null,
+      description: draft.description?.trim() || null,
       dates: [
         {
           start_date: draft.startDate,
@@ -223,12 +234,15 @@ async function save() {
       }
     }
 
-    await apiFetch('/api/admin/event/create', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    })
+    const response = await apiFetch<{ event_id: number }>(
+        '/api/admin/event/create',
+        {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        }
+    )
 
-    // success handling here
+    router.push(`/admin/event/${response.data.event_id}`)
 
   } catch (err) {
     console.error('Failed to create event', err)

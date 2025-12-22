@@ -26,7 +26,7 @@
             <ul class="event-card__details">
               <li class="event-card__title">
                 <h3>{{ notification.event_title }}</h3>
-                <p>{{ notification.organizer_name }}</p>
+                <p>{{ notification.organization_name }}</p>
               </li>
               <li>
                 <span class="event-card__value">
@@ -46,9 +46,13 @@
               </li>
             </ul>
             <p class="event-actions">
-              <router-link :to="`/admin/event/${notification.event_id}`" class="uranus-secondary-button">
-                {{ t('edit_event') }}
-              </router-link>
+              <UranusButton
+                  icon="edit"
+                  class="uranus-tertiary-button"
+                  :to="`/admin/event/${notification.event_id}`"
+              >
+                {{ t('edit') }}
+              </UranusButton>
             </p>
           </router-link>
         </article>
@@ -61,12 +65,13 @@
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
+import UranusButton from "@/components/ui/UranusButton.vue";
 
 interface Notification {
   event_id: number
   event_title: string
-  organizer_id: number
-  organizer_name: string
+  organization_id: number
+  organization_name: string
   release_date: string
   release_status_id: number | null
   release_status_name?: string | null

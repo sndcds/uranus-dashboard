@@ -94,7 +94,7 @@ Die Datenschutzerklärung ist ein **Template** und sollte an Ihre spezifischen G
 
 ## Mehrsprachigkeit
 
-Die Datenschutzerklärung unterstützt mehrere Sprachen (Deutsch, Englisch, Dänisch). Die Textinhalte werden über das i18n-System in `/src/i18n/index.ts` verwaltet.
+Die Datenschutzerklärung unterstützt mehrere Sprachen (Deutsch, Englisch, Dänisch). Die Textinhalte werden über das i18n-System in `/src/i18n/uranus-i18n-index.ts` verwaltet.
 
 ## TypeScript-Unterstützung
 

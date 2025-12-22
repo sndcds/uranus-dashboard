@@ -4,7 +4,7 @@
 <template>
   <UranusInlineEditSection :active="isEditing">
     <UranusInlineEditLabel
-        :label-text="t('event_place')"
+        :label-text="t('venue_place')"
         :edit-button-text="t('edit')"
         @edit-started="startEdit"
     />
@@ -17,7 +17,6 @@
           v-model:active="activeCard"
           @active-card-change="onCardChange"
       >
-
         <template #card-0>
           <UranusFormRow>
             <UranusEventVenueSpaceSelect
@@ -62,6 +61,7 @@
                 :label="t('city')"
             />
           </UranusFormRow>
+
           <UranusFormRow>
             <UranusTextInput
                 id="location-lon"
@@ -81,8 +81,8 @@
       <UranusInlineEditActions
           :isSaving="isSaving"
           :canSave="canSave"
-          @save="save"
-          @cancel="cancelEdit"
+          @save="onSave"
+          @cancel="onCancelEdit"
       />
 
     </UranusInlineSectionLayout>
@@ -111,12 +111,15 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, computed, inject, type Ref, nextTick} from 'vue'
-import {apiFetch} from "@/api.ts";
-import {useI18n} from "vue-i18n";
+import { ref, reactive, computed, inject, type Ref, nextTick, watchEffect } from 'vue'
+import { useI18n } from "vue-i18n";
+import { apiFetch } from "@/api.ts";
 
-import type {UranusEventDetail, UranusEventLocation, UranusVenueSpaceSelection} from "@/models/UranusEventModel.ts";
-import UranusCard from "@/components/ui/UranusCard.vue";
+import type {
+  UranusEventDetail,
+  UranusEventLocation,
+  UranusVenueSpaceSelection }
+  from "@/models/UranusEventModel.ts";
 import UranusInlineEditSection from "@/components/ui/UranusInlineEditSection.vue";
 import UranusInlineEditLabel from "@/components/ui/UranusInlineEditLabel.vue";
 import UranusInlineEditActions from "@/components/ui/UranusInlineEditActions.vue";
@@ -153,6 +156,7 @@ const draft = reactive<{
     venueName: event?.value?.venueName ?? null,
     spaceId: event?.value?.spaceId ?? null,
     spaceName: event?.value?.spaceName ?? null,
+    dateVenueId: null
   },
   location: {
     id: event?.value?.location?.id ?? null,
@@ -168,6 +172,31 @@ const draft = reactive<{
   }
 })
 
+/*
+watchEffect(() => {
+  if (!event?.value) return
+
+  // Venue space
+  draft.venueSpace.venueId = event.value.venueId ?? null
+  draft.venueSpace.venueName = event.value.venueName ?? null
+  draft.venueSpace.spaceId = event.value.spaceId ?? null
+  draft.venueSpace.spaceName = event.value.spaceName ?? null
+  draft.venueSpace.dateVenueId = null
+
+  // Custom location
+  draft.location.id = event.value.location?.id ?? null
+  draft.location.name = event.value.location?.name ?? ''
+  draft.location.street = event.value.location?.street ?? ''
+  draft.location.houseNumber = event.value.location?.houseNumber ?? ''
+  draft.location.postalCode = event.value.location?.postalCode ?? ''
+  draft.location.city = event.value.location?.city ?? ''
+  draft.location.countryCode = event.value.location?.countryCode ?? ''
+  draft.location.stateCode = event.value.location?.stateCode ?? ''
+  draft.location.latitude = event.value.location?.latitude ?? null
+  draft.location.longitude = event.value.location?.longitude ?? null
+})
+*/
+
 const props = defineProps<{
   titleError?: string | null
 }>()
@@ -181,12 +210,12 @@ async function startEdit() {
   isEditing.value = true
 }
 
-function cancelEdit() {
+function onCancelEdit() {
   if (!event?.value) return
   isEditing.value = false
 }
 
-async function save() {
+async function onSave() {
   if (!event?.value) return
   isSaving.value = true
   let useVenueSpace = activeCard.value === 0;

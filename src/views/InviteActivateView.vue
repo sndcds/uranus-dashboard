@@ -24,8 +24,8 @@
 
                     <dl class="invite-details" v-if="inviteInfo">
                         <div class="invite-detail-row">
-                            <dt>{{ t('invite_activate_organizer_label') }}</dt>
-                            <dd>{{ inviteInfo.organizer_name }}</dd>
+                            <dt>{{ t('invite_activate_organization_label') }}</dt>
+                            <dd>{{ inviteInfo.organization_name }}</dd>
                         </div>
                         <div v-if="inviteInfo.role_name" class="invite-detail-row">
                             <dt>{{ t('invite_activate_role_label') }}</dt>
@@ -64,8 +64,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api'
 
 interface InviteAcceptResponse {
-    organizer_id: number
-    organizer_name: string
+    organization_id: number
+    organization_name: string
     role_name?: string | null
     invited_by?: string | null
 }
@@ -86,24 +86,24 @@ const successMessage = computed(() => {
     if (!inviteInfo.value) return ''
     if (inviteInfo.value.role_name) {
         return t('invite_activate_success_body_role', {
-            organizer: inviteInfo.value.organizer_name,
+            organization: inviteInfo.value.organization_name,
             role: inviteInfo.value.role_name,
         })
     }
 
     return t('invite_activate_success_body', {
-        organizer: inviteInfo.value.organizer_name,
+        organization: inviteInfo.value.organization_name,
     })
 })
 
 const goToTeam = () => {
-    const organizerId = inviteInfo.value?.organizer_id
-    if (!organizerId) {
+    const organizationId = inviteInfo.value?.organization_id
+    if (!organizationId) {
         router.push('/admin/dashboard')
         return
     }
 
-    router.push(`/admin/organizer/${organizerId}/team`)
+    router.push(`/admin/organization/${organizationId}/team`)
 }
 
 const startRedirectCountdown = () => {
@@ -132,7 +132,7 @@ const acceptInvite = async () => {
     errorMessage.value = null
 
     try {
-        const { data } = await apiFetch<InviteAcceptResponse>('/api/admin/organizer/team/invite/accept', {
+        const { data } = await apiFetch<InviteAcceptResponse>('/api/admin/organization/team/invite/accept', {
             method: 'POST',
             body: JSON.stringify({ token }),
         })

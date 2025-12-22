@@ -24,7 +24,7 @@ interface LatLngLiteral {
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
-const organizerId = Number(route.params.id)
+const organizationId = Number(route.params.id)
 const venueFormRef = ref<InstanceType<typeof VenueForm> | null>(null)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
@@ -180,7 +180,7 @@ const handleSubmit = async (formData: VenueFormSubmitPayload) => {
             closed_at: formData.closedAt,
             country_code: formData.countryCode,
             state_code: formData.stateCode,
-            organizer_id: organizerId,
+            organization_id: organizationId,
         }
 
         let coords: LatLngLiteral | null = formData.location
@@ -213,7 +213,7 @@ const handleSubmit = async (formData: VenueFormSubmitPayload) => {
 
         if (status >= 200 && status < 300) {
             success.value = t('venue_updated')
-            router.push(`/admin/organizer/${organizerId}/venues`)
+            router.push(`/admin/organization/${organizationId}/venues`)
         } else {
             throw new Error('Unexpected status code')
         }

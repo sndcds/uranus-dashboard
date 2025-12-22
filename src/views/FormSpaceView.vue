@@ -28,7 +28,7 @@ const router = useRouter()
 const { t } = useI18n()
 
 const venueId = Number(route.params.venueId)
-const organizerId = Number(route.params.id)
+const organizationId = Number(route.params.id)
 
 const toSpaceId = (value: unknown): number | null => {
     if (Array.isArray(value)) {
@@ -131,14 +131,23 @@ async function loadSpace() {
 }
 
 async function handleSubmit(payload: SpaceFormSubmitPayload) {
-    isSubmitting.value = true
-    errorMessage.value = null
-    successMessage.value = null
+  isSubmitting.value = true
+  errorMessage.value = null
+  successMessage.value = null
 
-    const finalPayload = {
-        ...payload,
-        venue_id: venueId,
-    }
+  const finalPayload = {
+    name: payload.name,
+    total_capacity: payload.totalCapacity,
+    seating_capacity: payload.seatingCapacity,
+    building_level: payload.buildingLevel,
+    space_type_id: payload.spaceTypeId,
+    website_url: payload.websiteUrl,
+    description: payload.description,
+    accessibility_summary: payload.accessibilitySummary,
+    accessibility_flags: payload.accessibilityFlags,
+    venue_id: venueId,
+  }
+
 
     try {
         const endpoint = isEditMode.value && spaceId != null
@@ -155,9 +164,9 @@ async function handleSubmit(payload: SpaceFormSubmitPayload) {
             successMessage.value = t(isEditMode.value ? 'space_updated_success' : 'space_created_success')
 
             // Navigate back to the venues list
-            if (Number.isFinite(organizerId)) {
+            if (Number.isFinite(organizationId)) {
                 setTimeout(() => {
-                    router.push(`/admin/organizer/${organizerId}/venues`)
+                    router.push(`/admin/organization/${organizationId}/venues`)
                 }, 1000)
             }
         } else {
