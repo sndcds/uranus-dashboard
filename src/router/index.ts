@@ -10,7 +10,7 @@ import SignupView from '@/views/SignupView.vue'
 import FormVenueCreateView from '@/views/FormVenueCreateView.vue'
 import FormSpaceView from '@/views/FormSpaceView.vue'
 import UranusDashboardEventsView from '@/views/UranusDashboardEventsView.vue'
-import UranusDashboardAddEventView from '@/views/UranusDashboardAddEventView.vue'
+import UranusCreateEventView from '@/views/UranusCreateEventView.vue'
 import UranusEditEventView from '@/views/UranusEditEventView.vue'
 import UserPermissionView from '@/views/UserPermissionView.vue'
 import FormUserProfileView from '@/views/FormUserProfileView.vue'
@@ -120,7 +120,7 @@ const routes = [
             {
                 path: 'organization/:id/event/create',
                 name: 'admin-create-event',
-                component: UranusDashboardAddEventView,
+                component: UranusCreateEventView,
             },
             {
                 path: 'event/:id',

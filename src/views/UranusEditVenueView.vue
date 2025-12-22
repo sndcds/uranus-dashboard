@@ -183,6 +183,8 @@ const handleSubmit = async (formData: VenueFormSubmitPayload) => {
             organization_id: organizationId,
         }
 
+        console.log("payload:", JSON.stringify(payload, null, 2))
+
         let coords: LatLngLiteral | null = formData.location
 
         if (!coords) {

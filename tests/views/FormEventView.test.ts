@@ -4,7 +4,7 @@ import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 import { createPinia, setActivePinia } from 'pinia'
 import { useAppStore } from '../../src/store/appStore'
-import UranusDashboardAddEventView from '../../src/views/UranusDashboardAddEventView.vue'
+import UranusCreateEventView from '../../src/views/UranusCreateEventView.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -93,7 +93,7 @@ const mockEventPayload = {
   ],
 }
 
-describe('UranusDashboardAddEventView', () => {
+describe('UranusCreateEventView', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     const appStore = useAppStore()
@@ -102,7 +102,7 @@ describe('UranusDashboardAddEventView', () => {
   })
 
   it('renders page title and subtitle', () => {
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -120,7 +120,7 @@ describe('UranusDashboardAddEventView', () => {
   })
 
   it('passes organization ID from store to UranusAddEventForm', () => {
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -146,7 +146,7 @@ describe('UranusDashboardAddEventView', () => {
       status: 201
     })
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -179,7 +179,7 @@ describe('UranusDashboardAddEventView', () => {
       status: 201
     })
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -208,7 +208,7 @@ describe('UranusDashboardAddEventView', () => {
       status: 201
     })
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -238,7 +238,7 @@ describe('UranusDashboardAddEventView', () => {
       status: 400
     })
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -266,7 +266,7 @@ describe('UranusDashboardAddEventView', () => {
       data: { error: 'Custom error message' }
     })
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -292,7 +292,7 @@ describe('UranusDashboardAddEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue(new Error('Network error'))
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -318,7 +318,7 @@ describe('UranusDashboardAddEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue('Unknown error')
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -344,7 +344,7 @@ describe('UranusDashboardAddEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue(new Error('Network error'))
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -370,7 +370,7 @@ describe('UranusDashboardAddEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue('Unknown error')
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -396,7 +396,7 @@ describe('UranusDashboardAddEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue(new Error('Test error'))
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -427,7 +427,7 @@ describe('UranusDashboardAddEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {
@@ -455,7 +455,7 @@ describe('UranusDashboardAddEventView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(UranusDashboardAddEventView, {
+    const wrapper = mount(UranusCreateEventView, {
       global: {
         plugins: [i18n, router],
         stubs: {

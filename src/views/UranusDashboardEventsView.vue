@@ -4,7 +4,7 @@
         :title="t('events_title')"
         :subtitle="t('events_subtitle')" />
 
-    <UranusDashboardActionBar v-if="canAddEvent">
+    <UranusDashboardActionBar v-if="!isLoading && canAddEvent">
       <router-link
           :to="`/admin/organization/${organizationId}/event/create`"
           class="uranus-secondary-button"
@@ -12,7 +12,9 @@
         {{ t('add_new_event') }}
       </router-link>
     </UranusDashboardActionBar>
-    <span v-else>Warum du keine Events hinzufügen kannst</span> <!-- TODO: Hinsweis einfügen! -->
+    <span v-else-if="!isLoading && !canAddEvent">
+      Warum du keine Events hinzufügen kannst
+    </span> <!-- TODO: Hinsweis einfügen! -->
 
     <div class="uranus-dashboard-event-card-grid uranus-max-layout">
       <UranusDashboardEventCard
@@ -43,7 +45,7 @@ const organizationId = Number(route.params.id)
 
 const events = ref<UranusEventBase[]>([])
 const error = ref<string | null>(null)
-const isLoading = ref(false)
+const isLoading = ref(true)
 const canAddEvent = ref(false)
 
 const loadOrganizationPermission = async () => {

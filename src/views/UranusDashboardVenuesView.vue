@@ -16,12 +16,16 @@
     </div>
 
     <div v-else class="uranus-main-layout">
-      <UranusDashboardActionBar v-if="organization?.can_add_venue">
+      <UranusDashboardActionBar
+          v-if="organization && organization.can_add_venue"
+      >
         <router-link :to="`/admin/organization/${organizationId}/venue/create`" class="uranus-secondary-button">
           {{ t('venue_add') }}
         </router-link>
       </UranusDashboardActionBar>
-      <span v-else>Warum du keine Spielstätten hinzufügen kannst</span> <!-- TODO: Hinsweis einfügen! -->
+      <span v-else-if="organization && !organization.can_add_venue">
+        Warum du keine Spielstätten hinzufügen kannst
+      </span> <!-- TODO: Hinsweis einfügen! -->
 
       <!-- Error Message -->
       <div v-if="error" class="organization-venue-view__error">
@@ -29,20 +33,13 @@
       </div>
 
       <div v-if="organization" class="organization-venue-view__content">
-        <!-- Stats -->
-        <!--div class="uranus-card">
-          <h2 v-if="organization">{{ organization.organization_name }}</h2>
-          <p>{{ t('total_events') }}: {{ organization.total_upcoming_events }}</p>
-        </div-->
-
-        <!-- Venue Cards Grid -->
         <div class="organization-venue-view__grid">
           <UranusVenueCard
-            v-for="venue in organization.venues"
-            :key="venue.venue_id"
-            :venue="venue"
-            :organizationId="organizationId || 0"
-            @deleted="handleVenueDeleted"
+              v-for="venue in organization.venues"
+              :key="venue.venue_id"
+              :venue="venue"
+              :organizationId="organizationId || 0"
+              @deleted="handleVenueDeleted"
           />
         </div>
       </div>
@@ -119,30 +116,30 @@ const handleVenueDeleted = (venueId: number) => {
 
 // Watch for changes in organizationId and fetch organization data
 watch(
-  organizationId,
-  async (id) => {
-    if (id === null) {
-      organization.value = null
-      return
-    }
-
-    try {
-      const response = await apiFetch<Organization>(
-        `/api/admin/organization/${id}/venues`
-      )
-      organization.value = response.data
-      error.value = null
-    } catch (err: unknown) {
-      if (typeof err === 'object' && err && 'data' in err) {
-        const e = err as { data?: { error?: string } }
-        error.value = e.data?.error || 'Failed to load organization venues'
-      } else {
-        error.value = 'Unknown error'
+    organizationId,
+    async (id) => {
+      if (id === null) {
+        organization.value = null
+        return
       }
-      organization.value = null
-    }
-  },
-  { immediate: true } // fetch on initial load
+
+      try {
+        const response = await apiFetch<Organization>(
+            `/api/admin/organization/${id}/venues`
+        )
+        organization.value = response.data
+        error.value = null
+      } catch (err: unknown) {
+        if (typeof err === 'object' && err && 'data' in err) {
+          const e = err as { data?: { error?: string } }
+          error.value = e.data?.error || 'Failed to load organization venues'
+        } else {
+          error.value = 'Unknown error'
+        }
+        organization.value = null
+      }
+    },
+    { immediate: true } // fetch on initial load
 )
 </script>
 
