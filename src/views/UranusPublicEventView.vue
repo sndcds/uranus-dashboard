@@ -17,15 +17,18 @@
       <section class="uranus-public-event-main">
 
         <!-- Main image -->
-        <div v-if="event.mainImageUrl" class="uranus-public-event-image-frame">
+        <div v-if="event.imageUrl" class="uranus-public-event-image-frame">
           <img
-              :src="event.mainImageUrl.includes('?')
-                ? `${event.mainImageUrl}&ratio=16:9&width=1280`
-                : `${event.mainImageUrl}?ratio=16:9&width=1280`"
+              :src="event.imageUrl.includes('?')
+                ? `${event.imageUrl}&ratio=16:9&width=1280`
+                : `${event.imageUrl}?ratio=16:9&width=1280`"
               :alt="event.title ?? t('event_image_alt_text')"
               class="uranus-public-event-image"
           />
         </div>
+        <span>
+          © {{ event.imageCopyright }} / {{ event.imageCreatorName }}
+        </span>
 
         <!-- Title area -->
         <div class="uranus-public-section">

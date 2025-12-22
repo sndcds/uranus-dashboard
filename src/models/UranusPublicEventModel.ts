@@ -5,7 +5,11 @@ export class UranusPublicEventDetail {
         public title: string | null = null,
         public subtitle: string | null = null,
         public description: string | null = null,
-        public mainImageUrl: string | null = null,
+        public imageUrl: string | null = null,
+        public imageAltText: string | null = null,
+        public imageCreatorName: string | null = null,
+        public imageCopyright: string | null = null,
+        public imageLicenseId: string | null = null,
 
         public startDate: string | null = null,
         public startTime: string | null = null,
