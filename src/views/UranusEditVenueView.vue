@@ -206,7 +206,12 @@ const handleSubmit = async (formData: VenueFormSubmitPayload) => {
             payload.longitude = coords.lng
         }
 
-        const { status } = await apiFetch(`/api/admin/venue/${venueId.value}`, {
+        let apiUrl = '/api/admin/venue'
+        if (venueId.value) {
+          apiUrl += `/${venueId.value}`
+        }
+
+        const { status } = await apiFetch(apiUrl, {
             method: 'PUT',
             body: JSON.stringify(payload),
         })

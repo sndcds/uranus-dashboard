@@ -472,9 +472,6 @@ const onSubmitForm = async () => {
         apiUrl += `/${organizationId.value}`
       }
 
-      console.log("apiUrl:", apiUrl)
-      console.log("payload:", JSON.stringify(payload))
-
       const { status } = await apiFetch(apiUrl, {
         method: 'PUT',
         body: JSON.stringify(payload),
