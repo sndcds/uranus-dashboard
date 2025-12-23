@@ -29,7 +29,6 @@ const uranusI18nMessages = {
         ...event.de,
 
         organization_unknown: 'Unbekannter Veranstalter',
-        empty_input_field_message: 'Eingabe erforderlich\n',
 
         one_of_n: 'von',
         price_types: 'Preisarten',
@@ -665,7 +664,6 @@ const uranusI18nMessages = {
 
         edit_event: 'Edit event',
 
-        empty_input_field_message: 'Text is required',
         one_of_n: 'of',
         price_types: 'Price types',
         occasion: 'Occasion',
@@ -1293,8 +1291,6 @@ const uranusI18nMessages = {
 
 
         organization_unknown: 'Ukendt arrangør',
-
-        empty_input_field_message: 'Tekst kræves',
         one_of_n: 'af',
         price_types: 'Pristyper',
         min_price: 'Mindste pris',

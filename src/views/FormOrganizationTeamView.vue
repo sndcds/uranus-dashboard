@@ -73,16 +73,23 @@
                             </div>
 
                             <div class="team-member__actions">
-                                <button class="uranus-tertiary-button"
-                                    :disabled="memberActionId === member.user_id" @click="removeMember(member)">
-                                    <span v-if="memberActionId === member.user_id">{{ t('organization_team_removing') }}</span>
-                                    <span v-else>{{ t('organization_team_remove_member_button') }}</span>
-                                </button>
-                                <router-link
-                                    :to="`/admin/organization/${organizationId}/member/${member.user_id}/permission`"
-                                    class="uranus-tertiary-button">
-                                    {{ t('organization_member_permission_edit_button') }}
-                                </router-link>
+                              <UranusButton
+                                  v-if="true"
+                                  class="uranus-tertiary-button"
+                                  icon="delete"
+                                  @click.prevent.stop="removeMember(member)"
+                              >
+                                {{ t('delete') }}
+                              </UranusButton>
+
+                              <UranusButton
+                                  v-if="true"
+                                  class="uranus-tertiary-button"
+                                  icon="edit"
+                                  :to="`/admin/organization/${organizationId}/member/${member.member_id}/permission`"
+                              >
+                                {{ t('edit') }}
+                              </UranusButton>
                             </div>
                         </li>
                     </ul>
@@ -192,6 +199,7 @@ import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
 import UranusFieldLabel from '@/components/ui/UranusFieldLabel.vue'
 import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusFormRow from '@/components/ui/UranusFormRow.vue'
+import UranusButton from "@/components/ui/UranusButton.vue";
 
 interface OrganizationTeamRole {
     id: number
@@ -200,24 +208,25 @@ interface OrganizationTeamRole {
 }
 
 interface OrganizationTeamMember {
-    user_id: number
-    display_name: string | null
-    email: string
-    role_id: number | null
-    role_name: string
-    avatar_url?: string | null
-    last_active_at?: string | null
-    joined_at?: string | null
+  member_id: number
+  user_id: number
+  display_name: string | null
+  email: string
+  role_id: number | null
+  role_name: string
+  avatar_url?: string | null
+  last_active_at?: string | null
+  joined_at?: string | null
 }
 
 interface OrganizationTeamInvitation {
-    user_id: number
-    email: string
-    role_id: number | null
-    role_name: string
-    invited_by?: string | null
-    invited_at?: string | null
-    expires_at?: string | null
+  user_id: number
+  email: string
+  role_id: number | null
+  role_name: string
+  invited_by?: string | null
+  invited_at?: string | null
+  expires_at?: string | null
 }
 
 interface OrganizationTeamResponse {

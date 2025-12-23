@@ -48,15 +48,10 @@ const error = ref<string | null>(null)
 const isLoading = ref(true)
 const canAddEvent = ref(false)
 
-const loadOrganizationPermission = async () => {
-  try {
-    const { data } = await apiFetch<{ can_add_event: boolean }>(
-        `/api/admin/organization/${organizationId}/event/permission`
-    )
-    canAddEvent.value = Boolean(data?.can_add_event)
-  } catch {
-    canAddEvent.value = false
-  }
+
+interface EventsApiResponse {
+  can_add_event: boolean
+  events: unknown[] // replace with your UranusEventBase[] if you have the type
 }
 
 const fetchEvents = async () => {
@@ -64,22 +59,24 @@ const fetchEvents = async () => {
   error.value = null
 
   try {
-    const { data } = await apiFetch(
+    const { data } = await apiFetch<EventsApiResponse>(
         `/api/admin/organization/${organizationId}/events?lang=${locale.value}`
     )
 
-    const rawEvents = Array.isArray(data) ? data : []
+    // Extract the permission flag
+    canAddEvent.value = !!data?.can_add_event
+
+    // Normalize events array
+    const rawEvents = Array.isArray(data?.events) ? data.events : []
     events.value = rawEvents
         .map(mapDashboardEventData)
         .filter((e): e is UranusEventBase => e !== null)
 
   } catch (err) {
     error.value =
-        err instanceof Error
-            ? err.message
-            : t('events_fetch_failed_generic')
-
+        err instanceof Error ? err.message : t('events_fetch_failed_generic')
     events.value = []
+    canAddEvent.value = false
   } finally {
     isLoading.value = false
   }
@@ -88,7 +85,6 @@ const fetchEvents = async () => {
 onMounted(async () => {
   await Promise.all([
     fetchEvents(),
-    loadOrganizationPermission(),
   ])
 })
 

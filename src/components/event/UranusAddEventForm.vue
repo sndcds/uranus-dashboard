@@ -25,6 +25,7 @@ UranusAddEventForm.vue
         id="description"
         v-model.trim="draft.description"
         :label="t('event_description_label')"
+        :error="descriptionError"
         required
     />
 
@@ -33,12 +34,16 @@ UranusAddEventForm.vue
           id="startDate"
           v-model.trim="draft.startDate"
           :label="t('start_date_label')"
+          :error="startDateError"
+          required
       />
 
       <UranusTimeInput
           id="startTime"
           v-model.trim="draft.startTime"
           :label="t('start_time_label')"
+          :error="startTimeError"
+          required
       />
     </UranusFormRow>
 
@@ -54,7 +59,8 @@ UranusAddEventForm.vue
           <UranusEventVenueSpaceSelect
               v-model="draft.venueSpace"
               :selectLabel="t('event_no_venue_space_selected')"
-              :required="true"
+              required
+              :error="venueOrLocationError"
           />
         </UranusFormRow>
       </template>
@@ -66,6 +72,7 @@ UranusAddEventForm.vue
             v-model.trim="draft.locationName"
             :label="t('venue_name')"
             required
+            :error="venueOrLocationError"
         />
         <UranusFormRow>
           <UranusTextInput
@@ -95,11 +102,19 @@ UranusAddEventForm.vue
     </UranusTabCard>
 
     <!-- Actions -->
-    <UranusInlineEditActions
-        :isSaving="isSaving"
-        :canSave="canSave"
-        @save="save"
-    />
+    <UranusInlineActionBar>
+      <UranusInlineCancelButton
+          :label="t('cancel')"
+          :disabled="isSaving"
+          @click="onCancel"
+      />
+      <UranusInlineSaveButton
+          :label="t('save')"
+          :disabled="!canSave || isSaving"
+          :loading="isSaving"
+          @click="onSave"
+      />
+    </UranusInlineActionBar>
 
   </div>
   </UranusCard>
@@ -116,11 +131,13 @@ import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusFormRow from '@/components/ui/UranusFormRow.vue'
 import UranusTabCard from '@/components/ui/UranusTabCard.vue'
 import UranusEventVenueSpaceSelect from '@/components/event/UranusEventVenueSpaceSelect.vue'
-import UranusInlineEditActions from '@/components/ui/UranusInlineEditActions.vue'
 import UranusCard from "@/components/ui/UranusCard.vue";
 import UranusDateInput from "@/components/ui/UranusDateInput.vue";
 import UranusTimeInput from "@/components/ui/UranusTimeInput.vue";
 import UranusTextarea from "@/components/ui/UranusTextarea.vue";
+import UranusInlineSaveButton from "@/components/ui/UranusInlineSaveButton.vue";
+import UranusInlineCancelButton from "@/components/ui/UranusInlineCancelButton.vue";
+import UranusInlineActionBar from "@/components/ui/UranusInlineActionBar.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const router = useRouter()
@@ -177,6 +194,7 @@ const draft = reactive<{
   locationLatitude: null,
   locationLongitude: null,
   venueSpace: {
+    dateVenueId: null,
     venueId: null,
     spaceId: null,
     venueName: null,
@@ -186,20 +204,80 @@ const draft = reactive<{
 
 /* Validation */
 const titleError = computed(() => {
-  if (draft.title && !draft.title.trim()) {
-    return t('empty_input_field_message')
+  if (!draft.title || !draft.title.trim()) {
+    return t('input_required')
+  }
+  return ''
+})
+
+const descriptionError = computed(() => {
+  if (!draft.description || !draft.description.trim()) {
+    return t('input_required')
+  }
+  return ''
+})
+
+const startDateError = computed(() => {
+  if (!draft.startDate) {
+    return t('input_required')
+  }
+  // Optional: validate date format
+  const isValid = /^\d{4}-\d{2}-\d{2}$/.test(draft.startDate)
+  if (!isValid) {
+    return t('invalid_date_format_message')
+  }
+
+  return ''
+})
+
+const startTimeError = computed(() => {
+  if (!draft.startTime) {
+    return t('input_required')
+  }
+
+  // Regex for HH:MM 24-hour format
+  const isValid = /^([01]\d|2[0-3]):([0-5]\d)$/.test(draft.startTime)
+  if (!isValid) {
+    return t('invalid_time_format_message')
+  }
+
+  return ''
+})
+
+/* Validation for Venue / Location */
+const venueOrLocationError = computed(() => {
+  if (activeCard.value === 0) {
+    // Venue mode: check if a venue is selected
+    if (!draft.venueSpace.venueId) {
+      return t('input_required')
+    }
+  } else {
+    // Custom location mode: check if a location name is provided
+    if (!draft.locationName || !draft.locationName.trim()) {
+      return t('input_required')
+    }
   }
   return ''
 })
 
 const canSave = computed(() => {
   if (isSaving.value) return false
+  if (
+      titleError.value ||
+      descriptionError.value ||
+      startDateError.value ||
+      startTimeError.value ||
+      venueOrLocationError.value
+  ) return false
   return true
-  if (titleError.value) return false
 })
 
-/* Save */
-async function save() {
+async function onCancel() {
+  const organizationId = 9 // or get it dynamically
+  await router.push(`/admin/organization/${organizationId}/events`)
+}
+
+async function onSave() {
   if (!canSave.value) return
 
   isSaving.value = true
@@ -234,6 +312,8 @@ async function save() {
       }
     }
 
+    console.log(JSON.stringify(payload, null, 2))
+
     const response = await apiFetch<{ event_id: number }>(
         '/api/admin/event/create',
         {
@@ -245,7 +325,7 @@ async function save() {
     router.push(`/admin/event/${response.data.event_id}`)
 
   } catch (err) {
-    console.error('Failed to create event', err)
+    console.log(JSON.stringify(err, null, 2))
   } finally {
     isSaving.value = false
   }

@@ -80,7 +80,7 @@ const props = defineProps<{
 const titleError = computed(() => {
   if (props.titleError) return props.titleError
   if (!draft.title || draft.title.trim() === '') {
-    return t('empty_input_field_message')
+    return t('input_required')
   }
   return ''
 })

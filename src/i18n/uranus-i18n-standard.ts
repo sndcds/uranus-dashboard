@@ -156,4 +156,9 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Non-profit',
         da: 'Almennyttig',
     },
+    input_required: {
+        de: 'Pflichtfeld',
+        en: 'required',
+        da: 'påkrævet',
+    },
 }

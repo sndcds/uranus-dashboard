@@ -1,6 +1,14 @@
+<!--
+  UranusOrganizationMemberPermissionView.vue
+
+  View and manage permissions for a user who is a member of an organization.
+  Allows enabling or disabling individual permission bits via checkboxes.
+-->
 <template>
   <div class="uranus-main-layout member-permission-view">
     <DashboardHeroComponent :title="t('permissions')" :subtitle="pageSubtitle" />
+
+    memberId: {{ memberId }}
 
     <transition name="fade">
       <p v-if="updateError" class="feedback feedback--error" role="alert">
@@ -65,9 +73,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-
 import { replaceInTemplate } from '@/utils/UranusStringUtils.ts'
-
 import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
 import UranusCard from '@/components/ui/UranusCard.vue'
 
@@ -89,7 +95,7 @@ const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
 
 const organizationId = computed(() => {
-  const raw = Number(route.params.id)
+  const raw = Number(route.params.organizationId)
   return Number.isFinite(raw) ? raw : null
 })
 
@@ -306,9 +312,15 @@ const loadUserPermissions = async () => {
   }
 
   try {
-    const { data } = await apiFetch<{ permissions?: number | string | null }>(
-      `/api/admin/user/${memberId.value}/organization/${organizationId.value}/permissions`
+    const { data } = await apiFetch<{
+      permissions?: number | string | null;
+      user_display_name?: string;
+      user_id?: number
+    }>(
+        `/api/admin/organization/${organizationId.value}/member/${memberId.value}/permissions`
     )
+
+    memberDisplayName.value = data?.user_display_name ?? ''
 
     const mask = toMaskValue(data?.permissions ?? null)
     if (mask == null) {

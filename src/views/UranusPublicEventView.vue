@@ -1,10 +1,11 @@
 <template>
+
   <div class="uranus-public-page">
     <!-- Loading state -->
     <div v-if="showLoading" class="uranus-public-state-info--loading">
       <span>{{ loadingLabel }}</span>
     </div>
-    
+
     <!-- Error state -->
     <div v-else-if="loadError" class="uranus-public-state-info--alert">
       <span>{{ loadError }}</span>

@@ -32,7 +32,7 @@ import EmptyEventsView from '@/views/EmptyEventsView.vue'
 import UserActivateView from '@/views/UserActivateView.vue'
 import InviteActivateView from '@/views/InviteActivateView.vue'
 import FormOrganizationTeamView from '@/views/FormOrganizationTeamView.vue'
-import MemberPermissionView from '@/views/MemberPermissionView.vue'
+import UranusOrganizationMemberPermissionView from '@/views/UranusOrganizationMemberPermissionView.vue'
 import UranusCalendarView from '@/views/UranusCalendarView.vue'
 
 import GenericLayout from '@/components/layout/GenericLayout.vue'
@@ -153,9 +153,9 @@ const routes = [
                 component: InviteActivateView,
             },
             {
-                path: 'organization/:id/member/:memberId/permission',
+                path: 'organization/:organizationId/member/:memberId/permission',
                 name: 'admin-edit-member-permission',
-                component: MemberPermissionView,
+                component: UranusOrganizationMemberPermissionView,
             }
         ],
     },
