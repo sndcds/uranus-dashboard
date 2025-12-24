@@ -26,14 +26,14 @@
               to="/map"
               class="generic-header__nav-link"
               active-class="generic-header__nav-link--active">
-            {{ t('visitor_nav_map') }}
+            {{ t('nav_map') }}
           </router-link>
 
           <router-link
               to="/about"
               class="generic-header__nav-link"
               active-class="generic-header__nav-link--active">
-            {{ t('visitor_nav_about') }}
+            {{ t('nav_about') }}
           </router-link>
 
           <!-- FILTER MENU ITEM -->

@@ -1,10 +1,11 @@
 import { event } from './_event.ts'
-import { type UranusLocaleKey, type UranusTranslationBlock } from "@/i18n/uranus-i18n-index.ts";
-import { uranusI18nStandardTranslations } from "@/i18n/uranus-i18n-standard.ts";
-import { uranusI18nUserTranslations } from "@/i18n/uranus-i18n-user.ts";
-import { uranusI18nOrganizationTranslations } from "@/i18n/uranus-i18n-organization.ts";
-import { uranusI18nVenueTranslations } from "@/i18n/uranus-i18n-venue.ts";
-import { uranusI18nEventTranslations } from "@/i18n/uranus-i18n-event.ts";
+import { type UranusLocaleKey, type UranusTranslationBlock } from "@/i18n/uranus-i18n-index";
+import { uranusI18nStandardTranslations } from "@/i18n/uranus-i18n-standard";
+import { uranusI18nNavigationTranslations } from "@/i18n/uranus-i18n-navigation";
+import { uranusI18nUserTranslations } from "@/i18n/uranus-i18n-user";
+import { uranusI18nOrganizationTranslations } from "@/i18n/uranus-i18n-organization";
+import { uranusI18nVenueTranslations } from "@/i18n/uranus-i18n-venue";
+import { uranusI18nEventTranslations } from "@/i18n/uranus-i18n-event";
 
 // Safe: always define this function first
 export const uranusI18nForLocale = <K extends string>(
@@ -22,6 +23,7 @@ export const uranusI18nForLocale = <K extends string>(
 const uranusI18nMessages = {
     de: {
         ...uranusI18nForLocale(uranusI18nStandardTranslations, 'de'),
+        ...uranusI18nForLocale(uranusI18nNavigationTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nUserTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nVenueTranslations, 'de'),
@@ -233,11 +235,6 @@ const uranusI18nMessages = {
         settings: 'Einstellungen',
         preview: 'Vorschau',
         edit: 'Bearbeiten',
-        visitor_nav_login: 'Anmelden',
-        visitor_nav_signup: 'Registrieren',
-        visitor_footer_imprint: 'Impressum',
-        visitor_footer_terms: 'Nutzungsbedingungen',
-        visitor_footer_privacy: 'Datenschutz',
         details: 'Details',
         dashboard: 'Dashboard',
         organizations: 'Organisationen',
@@ -612,7 +609,6 @@ const uranusI18nMessages = {
         terms_contact_title: '14. Kontakt',
         terms_contact_text: 'Bei Fragen zu diesen Nutzungsbedingungen oder zur Plattform können Sie uns unter folgenden Kontaktdaten erreichen:',
         terms_last_updated: 'Stand',
-        about_title: 'Über uns',
         about_subtitle: 'Ihre Plattform für Kultur- und Veranstaltungsmanagement',
         about_mission_title: 'Unsere Mission',
         about_mission_text: 'Wir schaffen eine offene und zugängliche Plattform, die es Veranstaltern ermöglicht, ihre Events professionell zu verwalten und einem breiten Publikum zugänglich zu machen. Unser Ziel ist es, die Kulturlandschaft zu bereichern und die Sichtbarkeit von Veranstaltungen zu erhöhen.',
@@ -646,12 +642,10 @@ const uranusI18nMessages = {
         about_contact_email: 'E-Mail senden',
         about_visit_website: 'Website besuchen',
         about_version: 'Version',
-        visitor_nav_about: 'Über uns',
-        visitor_nav_map: 'Karte',
-        visitor_footer_docs: 'Dokumentation'
     },
     en: {
         ...uranusI18nForLocale(uranusI18nStandardTranslations, 'en'),
+        ...uranusI18nForLocale(uranusI18nNavigationTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nUserTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nVenueTranslations, 'en'),
@@ -867,11 +861,6 @@ const uranusI18nMessages = {
         settings: 'Settings',
         preview: 'Preview',
         edit: 'Edit',
-        visitor_nav_login: 'Log in',
-        visitor_nav_signup: 'Sign up',
-        visitor_footer_imprint: 'Imprint',
-        visitor_footer_terms: 'Terms of Use',
-        visitor_footer_privacy: 'Privacy Policy',
         details: 'Details',
         dashboard: 'Dashboard',
         organizations: 'Organizations',
@@ -1243,7 +1232,6 @@ const uranusI18nMessages = {
         terms_contact_title: '14. Contact',
         terms_contact_text: 'If you have questions about these Terms of Use or the platform, you can reach us at the following contact details:',
         terms_last_updated: 'Last updated',
-        about_title: 'About Us',
         about_subtitle: 'Your platform for culture and event management',
         about_mission_title: 'Our Mission',
         about_mission_text: 'We create an open and accessible platform that enables organizations to professionally manage their events and make them accessible to a wide audience. Our goal is to enrich the cultural landscape and increase the visibility of events.',
@@ -1277,12 +1265,10 @@ const uranusI18nMessages = {
         about_contact_email: 'Send Email',
         about_visit_website: 'Visit Website',
         about_version: 'Version',
-        visitor_nav_about: 'About Us',
-        visitor_nav_map: 'Event Map',
-        visitor_footer_docs: 'Documentation',
     },
     da: {
         ...uranusI18nForLocale(uranusI18nStandardTranslations, 'da'),
+        ...uranusI18nForLocale(uranusI18nNavigationTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nUserTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nVenueTranslations, 'da'),
@@ -1494,11 +1480,6 @@ const uranusI18nMessages = {
         begin: "Start",
         preview: 'Vis',
         edit: 'Rediger',
-        visitor_nav_login: 'Log ind',
-        visitor_nav_signup: 'Tilmeld',
-        visitor_footer_imprint: 'Impressum',
-        visitor_footer_terms: 'Brugsbetingelser',
-        visitor_footer_privacy: 'Privatlivspolitik',
         settings: 'Indstillinger',
         details: 'detaljer',
         organizations: 'Organisationer',
@@ -1864,7 +1845,6 @@ const uranusI18nMessages = {
         terms_contact_title: '14. Kontakt',
         terms_contact_text: 'Hvis du har spørgsmål om disse brugsbetingelser eller platformen, kan du kontakte os på følgende kontaktoplysninger:',
         terms_last_updated: 'Senest opdateret',
-        about_title: 'Om os',
         about_subtitle: 'Din platform til kultur- og arrangementsstyring',
         about_mission_title: 'Vores mission',
         about_mission_text: 'Vi skaber en åben og tilgængelig platform, der gør det muligt for arrangører at professionelt administrere deres arrangementer og gøre dem tilgængelige for et bredt publikum. Vores mål er at berige kulturlandskabet og øge synligheden af arrangementer.',
@@ -1898,9 +1878,6 @@ const uranusI18nMessages = {
         about_contact_email: 'Send e-mail',
         about_visit_website: 'Besøg hjemmeside',
         about_version: 'Version',
-        visitor_nav_about: 'Om os',
-        visitor_nav_map: 'Kort',
-        visitor_footer_docs: 'Dokumentation',
     },
 }
 

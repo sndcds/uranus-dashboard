@@ -20,20 +20,20 @@
             </svg>
           </a>
           <a href="https://sndcds.github.io/uranus-docs/" target="_blank" rel="noopener noreferrer" class="generic-layout__footer-text">
-            {{ t('visitor_footer_docs') }}
+            {{ t('nav_documentation') }}
           </a>
         </div>
 
         <!-- Right side - Navigation links -->
         <nav class="generic-layout__footer-nav">
           <router-link to="/imprint" class="generic-layout__footer-link">
-            {{ t('visitor_footer_imprint') }}
+            {{ t('nav_imprint') }}
           </router-link>
           <router-link to="/privacy" class="generic-layout__footer-link">
-            {{ t('visitor_footer_privacy') }}
+            {{ t('nav_privacy') }}
           </router-link>
           <router-link to="/terms" class="generic-layout__footer-link">
-            {{ t('visitor_footer_terms') }}
+            {{ t('nav_terms_of_use') }}
           </router-link>
         </nav>
       </div>
@@ -62,7 +62,6 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .generic-layout__footer-container {
-    max-width: 1280px;
     margin: 0 auto;
 }
 

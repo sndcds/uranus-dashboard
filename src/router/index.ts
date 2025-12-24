@@ -34,8 +34,11 @@ import InviteActivateView from '@/views/InviteActivateView.vue'
 import FormOrganizationTeamView from '@/views/FormOrganizationTeamView.vue'
 import UranusOrganizationMemberPermissionView from '@/views/UranusOrganizationMemberPermissionView.vue'
 import UranusCalendarView from '@/views/UranusCalendarView.vue'
+import UranusEventSlideshowView from '@/views/UranusEventSlideshowView.vue'
+
 
 import GenericLayout from '@/components/layout/GenericLayout.vue'
+import UranusBlankLayout from '@/components/layout/UranusBlankLayout.vue'
 
 const routes = [
     {
@@ -158,6 +161,11 @@ const routes = [
                 component: UranusOrganizationMemberPermissionView,
             }
         ],
+    },
+    {
+        path: '/slideshow',
+        name: 'event-slideshow',
+        component: UranusEventSlideshowView,
     },
     {
         path: '/',

@@ -26,6 +26,11 @@
           <!-- Hover overlay -->
           <div class="calendar-overlay"></div>
         </div>
+
+        <div></div>
+        <div></div>
+        <div></div>
+
       </div>
 
       <!-- Infinite scroll trigger -->
@@ -155,8 +160,13 @@ const loadEvents = async () => {
       }
     }
 
+    // Append searchQuery if it exists
     if (searchQuery.value) {
-      params.set("search", searchQuery.value)
+      // Use `append` with key/value split or append raw string
+      const searchParams = new URLSearchParams(searchQuery.value)
+      searchParams.forEach((value, key) => {
+        params.set(key, value) // merge into main params
+      })
     }
 
     const { data } = await apiFetch<{
