@@ -9,7 +9,6 @@
       </defs>
       <path ref="path" fill="url(#gradient)" />
     </svg>
-    <p>Hover!</p>
   </div>
 </template>
 

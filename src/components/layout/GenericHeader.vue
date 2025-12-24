@@ -216,15 +216,14 @@
       </div>
     </div>
     <!-- Filter panel -->
+
     <div
         :class="['generic-header__filter-panel', { 'generic-header__filter-panel--open': isFilterOpen }]"
     >
-
-      <div class="generic-header__filter-content">
-        <!-- Your filter slots / components go here -->
-        <slot name="filters">
-          <p>{{ t('no_filters_defined') }}</p>
-        </slot>
+      <div class="filters">
+        <!-- this renders whatever page sets -->
+        <component v-if="eventsFilterStore.content" :is="eventsFilterStore.content" />
+        <span v-else>no_filters_defined</span>
       </div>
     </div>
   </header>
@@ -240,12 +239,14 @@ import { applyTheme } from '@/utils/theme'
 import { useUserStore } from '@/store/userStore'
 
 import UranusLogo from '@/components/ui/UranusLogo.vue'
+import { useEventsFilterStore } from '@/store/eventsFilterStore'
 
 const { t, locale } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const tokenStore = useTokenStore()
 const userStore = useUserStore()
+const eventsFilterStore = useEventsFilterStore()
 
 const emit = defineEmits<{
     'toggle-sidebar': []

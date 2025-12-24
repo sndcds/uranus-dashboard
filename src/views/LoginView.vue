@@ -1,55 +1,53 @@
 <template>
-    <div class="auth-page">
-        <div class="uranus-card">
-            <header class="auth-header">
-                <h1>{{ t('login') }}</h1>
-                <p>{{ loginSubtitle }}</p>
-            </header>
+  <div class="auth-page">
+    <div class="uranus-card">
+      <header class="auth-header">
+        <h1>{{ t('login') }}</h1>
+        <p>{{ loginSubtitle }}</p>
+      </header>
 
-            <form class="uranus-form" @submit.prevent="login" :aria-busy="isSubmitting" novalidate>
-                <UranusTextInput
-                    id="login-email"
-                    v-model="email"
-                    type="email"
-                    :label="t('email')"
-                    :error="fieldErrors.email"
-                    required
-                />
+      <form class="uranus-form" @submit.prevent="login" :aria-busy="isSubmitting" novalidate>
+        <UranusTextInput
+            v-model="email"
+            type="email"
+            id="login-email"
+            required
+            :label="t('email')"
+            :error="fieldErrors.email"
+        />
 
-                <UranusPasswordInput
-                    id="login-password"
-                    label="Password"
-                    v-model="password"
-                    :required="true"
-                    :error="fieldErrors.password"
-                    size="normal"
-                    flex="1"
-                />
+        <UranusPasswordInput
+            v-model="password"
+            id="login-password"
+            required
+            label="t('password')"
+            :error="fieldErrors.password"
+        />
 
-                <div class="forgot-password-link">
-                    <router-link to="/app/forgot-password">{{ t('forgot_password') }}</router-link>
-                </div>
-
-                <transition name="fade">
-                    <p v-if="displayError" class="feedback feedback--error" role="alert" aria-live="assertive">
-                        {{ displayError }}
-                    </p>
-                </transition>
-
-                <div class="form-actions">
-                    <button class="uranus-button" type="submit" :disabled="isSubmitting">
-                        <span v-if="!isSubmitting">{{ t('login_cta') }}</span>
-                        <span v-else>{{ t('login_loading') }}</span>
-                    </button>
-                </div>
-            </form>
-
-            <footer class="auth-footer">
-                <span>{{ t('need_account') }}</span>
-                <router-link to="/app/signup">{{ t('signup') }}</router-link>
-            </footer>
+        <div class="forgot-password-link">
+          <router-link to="/app/forgot-password">{{ t('forgot_password') }}</router-link>
         </div>
+
+        <transition name="fade">
+          <p v-if="displayError" class="feedback feedback--error" role="alert" aria-live="assertive">
+            {{ displayError }}
+          </p>
+        </transition>
+
+        <div class="form-actions">
+          <button class="uranus-secondary-button" type="submit" :disabled="isSubmitting">
+            <template v-if="!isSubmitting">{{ t('login_cta') }}</template>
+            <template v-else>{{ t('login_loading') }}</template>
+          </button>
+        </div>
+      </form>
+
+      <footer class="auth-footer">
+          <span>{{ t('need_account') }}</span>
+          <router-link to="/app/signup">{{ t('signup') }}</router-link>
+      </footer>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -64,6 +62,8 @@ import { useThemeStore } from '@/store/themeStore'
 
 import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusPasswordInput from "@/components/ui/UranusPasswordInput.vue";
+import UranusBlob from "@/components/uranus/UranusBlob.vue";
+import UranusButton from "@/components/ui/UranusButton.vue";
 
 const { t } = useI18n()
 const router = useRouter()

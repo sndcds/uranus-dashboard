@@ -1,5 +1,5 @@
 <template>
-    <div class="uranus-textfield-wrapper" :style="{ flex: flexValue }">
+    <div class="uranus-textfield-wrapper">
         <UranusFieldLabel
             :id="id"
             :label="label"
@@ -87,18 +87,19 @@ const sizeClass = computed(() => {
 const autocompleteValue = computed(() => props.autocomplete)
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
 .input-with-toggle {
-    position: relative;
-    display: flex;
-    align-items: center;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .input-with-toggle input {
-    flex: 1;
-    width: 100%;
-    padding-right: 2.5rem; /* space for eye button */
-    box-sizing: border-box;
+  flex: 1;
+  width: 100%;
+  padding-right: 2.5rem;
+  box-sizing: border-box;
 }
 
 .password-toggle {

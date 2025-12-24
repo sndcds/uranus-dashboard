@@ -44,11 +44,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from "vue"
+import { h, ref, defineComponent, computed, onMounted, onBeforeUnmount, watch } from "vue"
 import { useRouter } from "vue-router"
 import { apiFetch } from "@/api.ts"
+import { useEventsFilterStore } from '@/store/eventsFilterStore'
 
 const router = useRouter()
+
+const eventsFilterStore = useEventsFilterStore()
+const searchQuery = ref('')
+
+const CalendarFilter = defineComponent({
+  setup() {
+    return () => h('input', {
+      type: 'text',
+      placeholder: 'Search events...',
+      class: 'filter-textfield',
+      value: searchQuery.value,
+      onInput: (e: Event) => {
+        const target = e.target as HTMLInputElement
+        searchQuery.value = target.value
+      }
+    })
+  }
+})
+
+onMounted(() => {
+  eventsFilterStore.content = CalendarFilter
+})
+
+onBeforeUnmount(() => {
+  eventsFilterStore.content = null
+})
+
 
 /* -------------------- Types -------------------- */
 
@@ -97,7 +125,18 @@ const hasMore = computed(() => {
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 
-/* -------------------- Methods -------------------- */
+
+let searchTimeout: number | null = null
+
+watch(searchQuery, () => {
+  if (searchTimeout) clearTimeout(searchTimeout)
+
+  searchTimeout = window.setTimeout(() => {
+    offset.value = 0
+    events.value = []
+    loadEvents()
+  }, 300)
+})
 
 const loadEvents = async () => {
   console.log("loadEvents() called", { offset: offset.value, limit, hasMore: hasMore.value })
@@ -110,11 +149,15 @@ const loadEvents = async () => {
   try {
     const params = new URLSearchParams({
       offset: offset.value.toString(),
-      limit: limit.toString(),
+      limit: limit.toString()
     })
 
+    const queryString = searchQuery.value
+        ? `${params.toString()}&${searchQuery.value}`
+        : params.toString()
+
     console.log("Fetching API with params:", params.toString())
-    const { data } = await apiFetch<EventsResponse>(`/api/events?${params}`)
+    const { data } = await apiFetch<EventsResponse>(`/api/events?${queryString}`)
 
     if (data) {
       console.log("Loaded events:", data.events.length, "total:", data.total)
@@ -197,6 +240,7 @@ onBeforeUnmount(() => {
   cursor: pointer;
   overflow: hidden;
   background: #fff;
+  width: 100%;
   transition: transform 0.25s ease;
 }
 
@@ -260,7 +304,6 @@ onBeforeUnmount(() => {
   color: #666;
 }
 
-
 @media (max-width: 640px) {
   .calendar-layout > .calendar-card:first-child,
   .calendar-layout > .calendar-card:nth-child(6) {
@@ -268,5 +311,16 @@ onBeforeUnmount(() => {
     grid-row: span 1;
     font-size: 1rem;
   }
+}
+</style>
+
+<style lang="scss">
+.filter-textfield {
+  margin: 10px;
+  font-size: 1.4rem;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: calc(100% - 20px);
 }
 </style>
