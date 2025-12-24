@@ -113,10 +113,12 @@ interface EventsResponse {
 /* -------------------- State -------------------- */
 
 const events = ref<CalendarEvent[]>([])
-const offset = ref(0)
 const limit = 10
 const total = ref(200) // TODO: !!!
 const loading = ref(false)
+
+const lastEventStartAt = ref<string | null>(null)
+const lastEventDateId = ref<number | null>(null)
 
 const hasMore = computed(() => {
   return total.value === 0 || events.value.length < total.value
@@ -132,38 +134,44 @@ watch(searchQuery, () => {
   if (searchTimeout) clearTimeout(searchTimeout)
 
   searchTimeout = window.setTimeout(() => {
-    offset.value = 0
     events.value = []
+    lastEventStartAt.value = null
+    lastEventDateId.value = null
     loadEvents()
   }, 300)
 })
 
 const loadEvents = async () => {
-  console.log("loadEvents() called", { offset: offset.value, limit, hasMore: hasMore.value })
-  if (loading.value || !hasMore.value) {
-    console.log("loadEvents() skipped", { loading: loading.value, hasMore: hasMore.value })
-    return
-  }
-
+  if (loading.value) return
   loading.value = true
+
   try {
-    const params = new URLSearchParams({
-      offset: offset.value.toString(),
-      limit: limit.toString()
-    })
+    const params = new URLSearchParams({ limit: limit.toString() })
 
-    const queryString = searchQuery.value
-        ? `${params.toString()}&${searchQuery.value}`
-        : params.toString()
+    if (lastEventStartAt.value) {
+      params.set("last_event_start_at", lastEventStartAt.value)
+      if (lastEventDateId.value !== null) {
+        params.set("last_event_date_id", lastEventDateId.value.toString())
+      }
+    }
 
-    console.log("Fetching API with params:", params.toString())
-    const { data } = await apiFetch<EventsResponse>(`/api/events?${queryString}`)
+    if (searchQuery.value) {
+      params.set("search", searchQuery.value)
+    }
 
-    if (data) {
-      console.log("Loaded events:", data.events.length, "total:", data.total)
+    const { data } = await apiFetch<{
+      events: CalendarEvent[]
+      last_event_start_at: string
+      last_event_date_id: number
+      total: number
+    }>(`/api/events?${params.toString()}`)
+
+    if (data?.events.length) {
       events.value.push(...data.events)
-      total.value = 200 // data.total, TODO: !!!
-      offset.value += data.events.length
+
+      // update cursor
+      lastEventStartAt.value = data.last_event_start_at
+      lastEventDateId.value = data.last_event_date_id
     }
   } catch (err) {
     console.error("Failed to load events:", err)
