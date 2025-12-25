@@ -21,7 +21,7 @@
 
       <div class="slide-text date-venue" :style="randomTextStyle(2)">
         <div class="slide-text-inner">
-          {{ date }} — {{ venue }}
+          {{ date }} / {{ venue }}
         </div>
       </div>
     </div>
@@ -91,7 +91,7 @@ function hexToRgba(hex: string, alpha: number) {
   left: 0;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 3px;
   align-items: flex-start;
 }
 
@@ -99,10 +99,11 @@ function hexToRgba(hex: string, alpha: number) {
   font-size: 3vw;
   transform: translateX(-160%);
   animation: slideInLeft 1s forwards 0.3s;
+  display: block;
 }
 
 .slide-text-inner {
-  padding: 0rem 3rem;           /* now the padding is applied properly */
+  padding: 0 1rem;
 }
 
 .title {
@@ -111,17 +112,13 @@ function hexToRgba(hex: string, alpha: number) {
 }
 
 .subtitle {
-  animation: slideInLeft 1s forwards 0.6s; /* duration + delay */
+  animation: slideInLeft 1s forwards 0.4s;
 }
 
 .date-venue {
-  animation: slideInLeft 1s forwards 0.9s;
+  animation: slideInLeft 1s forwards 0.5s;
 }
 
-@keyframes slideInLeft { to { transform: translateX(0); } }
+@keyframes slideInLeft { to { transform: translateX(0px); } }
 
-@keyframes slideInRight {
-  from { transform: translateX(100vw); }
-  to { transform: translateX(0); }
-}
 </style>

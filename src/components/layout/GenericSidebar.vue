@@ -108,7 +108,7 @@
                 fill="currentColor" />
             </svg>
           </span>
-          <span class="generic-sidebar__nav-text">{{ t('visitor_nav_login') }}</span>
+          <span class="generic-sidebar__nav-text">{{ t('nav_login') }}</span>
         </router-link>
       </template>
     </nav>

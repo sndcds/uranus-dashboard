@@ -96,16 +96,12 @@ async function loadEvent(
     const mapped = mapPublicEvent(data)
     if (!mapped) throw new Error('Event not found')
 
-    const mainDate =
-        mapped.furtherDates.find(d => d.dateId === eventDateId) ??
-        mapped.furtherDates[0]
-
     return {
       imageUrl: buildImageUrl(mapped),
       title: mapped.title ?? '',
       subtitle: mapped.subtitle ?? '',
-      venue: mainDate?.venueName ?? '',
-      date: mainDate ? formatDate(mainDate) : ''
+      venue: mapped.venueName ?? '',
+      date: mapped.startDate ?? ''
     }
   } catch (err) {
     console.error(err)

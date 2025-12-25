@@ -49,7 +49,7 @@
               to="/app/login"
               class="generic-header__nav-link"
               active-class="generic-header__nav-link--active">
-            {{ t('visitor_nav_login') }}
+            {{ t('nav_login') }}
           </router-link>
         </nav>
         <nav v-else class="generic-header__nav">
