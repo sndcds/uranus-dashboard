@@ -1,7 +1,7 @@
 <template>
   <div class="uranus-notification" :class="notificationTypeClass">
     <div class="notification-title">
-      <h3>{{ title }}</h3>
+      {{ title }}
     </div>
     <div class="notification-content">
       <p class="notification-text" v-html="text"></p>
@@ -62,15 +62,14 @@ const notificationTypeClass = computed(() => {
   display: flex;
   flex-direction: column;
   padding: 0;
-  border-radius: var(--uranus-card-border-radius);
   margin-bottom: 1rem;
   align-items: flex-start;
   gap: 1rem;
-  font-family: sans-serif;
-  border: 2px solid transparent; /* default border */
+  border: 2px solid transparent;
+  border-radius: 12px;
   color: var(--uranus-card-color);
   background: var(--uranus-card-background-color);
-  max-width: var(--uranus-dashboard-content-width);
+  max-width: var(--uranus-notification-max-width);
   overflow: hidden;
 
   .notification-title {
@@ -88,8 +87,8 @@ const notificationTypeClass = computed(() => {
   .notification-actions {
     display: flex;
     width: 100%;
-    justify-content: flex-start;
-    padding: var(--uranus-default-text-padding);
+    justify-content: flex-end;
+    padding: 16px;
   }
 
   /* Border colors */
@@ -126,8 +125,8 @@ const notificationTypeClass = computed(() => {
   .notification-button {
     display: inline-block;
     padding: 0.4rem 0.75rem;
-    border-radius: 4px;
-    background-color: #f0f0f0; /* neutral button */
+    border: 2px solid #333;
+    border-radius: 99px;
     color: #333;
     text-decoration: none;
     font-size: 0.9rem;

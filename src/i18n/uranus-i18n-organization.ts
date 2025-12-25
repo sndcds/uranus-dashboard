@@ -21,4 +21,14 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         en: 'Review and update your organization details.',
         da: 'Gennemse og opdater oplysningerne om din arrangør.',
     },
+    organization_no_membership_message: {
+        de: 'Du hast noch keine Organisation für die du agieren kannst. Erstelle eine Organisation oder bitte eine andere Organisation dich ins Team einzuladen',
+        en: 'You don’t have an organization to act for yet. Create an organization or ask another organization to invite you to the team.',
+        da: 'Du har endnu ingen organisation, som du kan handle for. Opret en organisation eller bed en anden organisation om at invitere dig til teamet.',
+    },
+    organization_select_legal_form: {
+        de: 'Wähle eine Organisationsform',
+        en: 'Select legal form',
+        da: 'Vælg en organisationsform',
+    }
 }

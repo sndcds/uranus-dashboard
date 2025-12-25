@@ -111,12 +111,12 @@
           />
         </UranusFieldLabel>
 
-        <div class="form-group">
+        <!--div class="form-group"> TODO:
           <label for="holding_organization_id">
             {{ labelMessage('organization_holding_id') }}
           </label>
           <input v-model="holdingOrganizationId" id="holding_organization_id" type="text" inputmode="numeric" />
-        </div>
+        </div-->
       </UranusCard>
 
 
@@ -246,7 +246,7 @@ const legalForms = ref<Array<{ id: number; name: string }>>([])
 const legalFormsLoading = ref(false)
 
 const organizationId = computed(() => uranusUrlParamToInt(route.params.id))
-const submitButtonLabel = computed(() => t('update_organization'))
+const submitButtonLabel = computed(() => t('save'))
 const isLoadingOrganization = ref(false)
 
 const toNumberOrNull = (value: string): number | null => {

@@ -26,6 +26,7 @@ import ImprintView from '@/views/ImprintView.vue'
 import PrivacyView from '@/views/PrivacyView.vue'
 import TermsView from '@/views/TermsView.vue'
 import AboutView from '@/views/AboutView.vue'
+import FirstStepsView from '@/views/FirstStepsView.vue'
 import MapView from '@/views/MapView.vue'
 import EmptyVenuesView from '@/views/EmptyVenuesView.vue'
 import EmptyEventsView from '@/views/EmptyEventsView.vue'
@@ -200,6 +201,11 @@ const routes = [
                 path: 'about',
                 name: 'about',
                 component: AboutView,
+            },
+            {
+                path: 'first-steps',
+                name: 'first-steps',
+                component: FirstStepsView,
             },
             {
                 path: 'map',

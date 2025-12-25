@@ -2,19 +2,24 @@
   UranusDashboardOrganizationsView.vue
 -->
 <template>
-    <div class="uranus-main-layout" style="max-width: 1600px;">
-        <DashboardHeroComponent :title="t('organizations')" :subtitle="t('organizations_dashboard_description')" />
+  <div class="uranus-main-layout" style="max-width: 1600px;">
+    <DashboardHeroComponent :title="t('organizations')" :subtitle="t('organizations_dashboard_description')" />
 
-        <UranusDashboardActionBar>
-            <router-link to="/admin/organization/create" class="uranus-secondary-button">
-                {{ t('create_organization') }}
-            </router-link>
-        </UranusDashboardActionBar>
+    <!-- Empty State Message -->
+    <UranusNotification
+        v-if="!loading && !organizations.length"
+        type="warning"
+        :title="t('notification')"
+        :text="t('organization_no_membership_message')"
+        :button-text="t('show_manual_page')"
+        button-link="/help/permissions"
+    />
 
-        <!-- Empty State Message -->
-        <div v-if="!organizations.length" class="organization-dashboard-view__empty">
-            <p class="organization-dashboard-view__empty-text">{{ t('no_organizations_help') }}</p>
-        </div>
+    <UranusDashboardActionBar>
+      <router-link to="/admin/organization/create" class="uranus-secondary-button">
+        {{ t('create_organization') }}
+      </router-link>
+    </UranusDashboardActionBar>
 
 
     <!-- Error Message -->
@@ -42,6 +47,7 @@ import { apiFetch } from '@/api'
 import UranusOrganizationCard from '@/components/organization/UranusOrganizationCard.vue'
 import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
+import UranusNotification from "@/components/ui/UranusNotification.vue";
 
 const { t } = useI18n()
 
@@ -59,6 +65,7 @@ interface Organization {
 }
 
 const organizations = ref<Organization[]>([])
+const loading = ref(true)
 const error = ref<string | null>(null)
 
 const handleOrganizationDeleted = (organizationId: number) => {
@@ -67,7 +74,6 @@ const handleOrganizationDeleted = (organizationId: number) => {
 
 onMounted(async () => {
   try {
-    // Updated to reflect the new API shape
     const { data } = await apiFetch<{ organizations: Organization[] }>('/api/admin/organization/dashboard')
     organizations.value = data?.organizations || []
   } catch (err: unknown) {
@@ -77,6 +83,9 @@ onMounted(async () => {
     } else {
       error.value = 'Unknown error'
     }
+  }
+  finally {
+    loading.value = false
   }
 })
 </script>
@@ -110,9 +119,6 @@ onMounted(async () => {
 .organization-dashboard-view__error {
   width: 100%;
   max-width: 600px;
-}
-
-.form-feedback-error {
 }
 
 </style>

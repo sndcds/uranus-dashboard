@@ -44,7 +44,7 @@ function labelMessage(key: string) {
   return t(key);
 }
 
-const legalFormPlaceholder = t("select_legal_form");
+const legalFormPlaceholder = t("organization_select_legal_form");
 
 /* ------------------------------------------------------------------
  * Props + v-model

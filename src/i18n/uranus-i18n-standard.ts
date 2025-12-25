@@ -1,6 +1,11 @@
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleKey, string>> = {
+    notification: {
+        de: 'Hinweis',
+        en: 'Notification',
+        da: 'Bemærk',
+    },
     yes: {
         de: 'Ja',
         en: 'Yes',
