@@ -212,8 +212,6 @@ async function onSave() {
       occasion_type_id: draft.occasionTypeId,
     }
 
-    console.log(payload)
-
     await apiFetch(`/api/admin/event/${eventId.value}/participation-infos`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },

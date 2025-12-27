@@ -126,6 +126,8 @@ export function uranusPriceText(
         return t('price_to_sentence', { price: formatter.format(maxPrice) });
     }
     if (minPrice !== undefined && maxPrice !== undefined) {
+        console.log(t('price_range_sentence')); // is the key there in production?
+        console.log(minPrice, maxPrice);
         return t('price_range_sentence', {
             from: formatter.format(minPrice),
             to: formatter.format(maxPrice)
