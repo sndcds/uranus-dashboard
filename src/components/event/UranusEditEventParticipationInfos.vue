@@ -124,7 +124,8 @@ import UranusEventOccasionSelect from "@/components/selects/UranusEventOccasionS
 import { uranusAgeText, uranusPriceText } from '@/utils/UranusStringUtils.ts'
 import UranusNumberInput from "@/components/ui/UranusNumberInput.vue";
 
-const { t, locale } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
+const { locale } = useI18n({ useScope: 'global' })
 
 const event = inject<Ref<UranusEventDetail | null>>('event')
 const eventId = computed(() => event?.value?.eventId)

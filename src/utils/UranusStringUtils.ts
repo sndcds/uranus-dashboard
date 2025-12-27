@@ -81,31 +81,39 @@ export function replaceInTemplate<T extends Record<string, unknown>>(
 }
 
 export function uranusAgeText(
-    t: (key: string, values?: Record<string, unknown>) => string,
+    t: (key: string) => string,
     minAge: number | undefined,
     maxAge: number | undefined
 ): string {
-    if (minAge != undefined && maxAge == undefined) {
-        return t('from_age_sentence', { age: minAge })
+    if (minAge !== undefined && maxAge === undefined) {
+        const template = t('from_age_sentence'); // e.g. "From {age}"
+        return template.replace('{age}', minAge.toString());
     }
-    if (minAge == undefined && maxAge != undefined) {
-        return t('to_age_sentence', { age: maxAge })
+
+    if (minAge === undefined && maxAge !== undefined) {
+        const template = t('to_age_sentence'); // e.g. "Up to {age}"
+        return template.replace('{age}', maxAge.toString());
     }
-    if (minAge != undefined && maxAge != undefined) {
-        return t('age_range_sentence', { from: minAge, to: maxAge })
+
+    if (minAge !== undefined && maxAge !== undefined) {
+        const template = t('age_range_sentence'); // e.g. "{from} – {to}"
+        return template
+            .replace('{from}', minAge.toString())
+            .replace('{to}', maxAge.toString());
     }
-    return ''
+
+    return '';
 }
 
 export function uranusPriceText(
-    t: (key: string, values?: Record<string, unknown>) => string,
+    t: (key: string) => string,
     minPrice: number | undefined,
     maxPrice: number | undefined,
     locale: string | null,
     currency?: string | null
 ): string {
     const resolvedLocale = locale ?? 'en';
-    const hasCurrency = !!currency; // true if currency is provided
+    const hasCurrency = !!currency;
 
     const options: Intl.NumberFormatOptions = {
         minimumFractionDigits: 2,
@@ -114,22 +122,27 @@ export function uranusPriceText(
     };
 
     if (hasCurrency && currency) {
-        options.currency = currency; // only set currency if provided
+        options.currency = currency;
     }
 
     const formatter = new Intl.NumberFormat(resolvedLocale, options);
 
     if (minPrice !== undefined && maxPrice === undefined) {
-        return t('price_from_sentence', { price: formatter.format(minPrice) });
+        const template = t('price_from_sentence'); // e.g. "From {price}"
+        return template.replace('{price}', formatter.format(minPrice));
     }
+
     if (minPrice === undefined && maxPrice !== undefined) {
-        return t('price_to_sentence', { price: formatter.format(maxPrice) });
+        const template = t('price_to_sentence'); // e.g. "Up to {price}"
+        return template.replace('{price}', formatter.format(maxPrice));
     }
+
     if (minPrice !== undefined && maxPrice !== undefined) {
-        return t('price_range_sentence', {
-            from: formatter.format(minPrice),
-            to: formatter.format(maxPrice)
-        });
+        const template = t('price_range_sentence'); // e.g. "{from} – {to}"
+        return template
+            .replace('{from}', formatter.format(minPrice))
+            .replace('{to}', formatter.format(maxPrice));
     }
+
     return '';
 }
