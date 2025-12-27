@@ -16,7 +16,6 @@ export const uranusI18n = createI18n({
     legacy: false,
     locale: initialLocale,
     fallbackLocale: 'en',
-    messageSyntax: 'plain',
     messages: uranusI18nMessages,
 })
 
