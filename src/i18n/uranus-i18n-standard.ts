@@ -1,6 +1,16 @@
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleKey, string>> = {
+    error_incomplete_data: {
+        de: 'Unvollständige Daten',
+        en: 'Incomplete data',
+        da: 'Ufuldstændige data',
+    },
+    error_fetch_data_failed: {
+        de: 'Fehler beim Laden der Daten',
+        en: 'Error loading data',
+        da: 'Fejl ved indlæsning af data',
+    },
     notification: {
         de: 'Hinweis',
         en: 'Notification',
@@ -16,10 +26,25 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'No',
         da: 'Nej',
     },
+    title: {
+      de: 'Titel',
+      en: 'Title',
+      da: 'Overskrift',
+    },
+    subtitle: {
+        de: 'Untertitel',
+        en: 'Subtitle',
+        da: 'Underoverskrift',
+    },
     ok: {
         de: 'OK',
         en: 'OK',
         da: 'OK',
+    },
+    edit: {
+        de: 'Bearbeiten',
+        en: 'Edit',
+        da: 'Rediger',
     },
     cancel: {
         de: 'Abbrechen',
@@ -40,6 +65,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Löschen',
         en: 'Delete',
         da: 'Slet',
+    },
+    loading: {
+        de: 'Laden…',
+        en: 'Loading…',
+        da: 'Indlæser…',
     },
     image_by: {
         de: 'Bild',
@@ -141,7 +171,7 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Website',
         da: 'Hjemmeside',
     },
-    show_on_map: {
+    show_map: {
         de: 'Karte anzeigen',
         en: 'Show map',
         da: 'Vis kort',
@@ -150,6 +180,41 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Barrierefreiheit',
         en: 'Accessibility',
         da: 'Tilgængelighed',
+    },
+    currency: {
+        de: 'Währung',
+        en: 'Currency',
+        da: 'Valuta',
+    },
+    price_from_sentence: {
+        de: 'Mindestpreis: {price}',
+        en: 'Minimum price: {price}',
+        da: 'Laveste pris: {price}',
+    },
+    price_to_sentence: {
+        de: 'Höchstpreis: {price}',
+        en: 'Maximum price: {price}',
+        da: 'Højeste pris: {price}',
+    },
+    price_range_sentence: {
+        de: '{from} – {to}',
+        en: '{from} – {to}',
+        da: '{from} – {to}',
+    },
+    from_age_sentence: {
+        de: 'Ab {age} Jahren',
+        en: 'From {age} years',
+        da: 'Fra {age} år',
+    },
+    to_age_sentence: {
+        de: 'Bis {age} Jahren',
+        en: 'Up to {age} years',
+        da: 'Op til {age} år',
+    },
+    age_range_sentence: {
+        de: 'Von {from} bis {to} Jahren',
+        en: 'From {from} to {to} years',
+        da: 'Fra {from} til {to} år',
     },
     legal_form: {
         de: 'Rechtsform',
@@ -165,5 +230,15 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Pflichtfeld',
         en: 'required',
         da: 'påkrævet',
+    },
+    download_ics: {
+        de: 'Datum speichern',
+        en: 'Save date',
+        da: 'Gem dato',
+    },
+    download_ics_error: {
+        de: 'Kalenderdatei konnte nicht heruntergeladen werden.',
+        en: 'Could not download the calendar file.',
+        da: 'Kunne ikke downloade kalenderfilen.',
     },
 }

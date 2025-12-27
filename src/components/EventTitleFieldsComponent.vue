@@ -1,17 +1,15 @@
 <template>
     <UranusTextInput :id="titleId"
                      v-model="localTitle"
-                     :label="t('event_title_label')"
+                     :label="t('title')"
                      :error="titleError"
-                     :placeholder="t('event_title_placeholder')"
                      size="big"
                      required
     />
 
     <UranusTextInput :id="subtitleId"
                      v-model="localSubtitle"
-                     :label="t('event_subtitle_label')"
-                     :placeholder="t('event_subtitle_placeholder')"
+                     :label="t('subtitle')"
     />
 </template>
 

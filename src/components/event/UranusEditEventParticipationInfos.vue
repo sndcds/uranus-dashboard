@@ -4,7 +4,7 @@
 <template>
   <UranusInlineEditSection :active="isEditing">
     <UranusInlineEditLabel
-        :label-text="t('event_participation_information')"
+        :label-text="t('event_participation_info')"
         :edit-button-text="t('edit')"
         @edit-started="onStartEdit"
     />
@@ -15,70 +15,63 @@
         <UranusTextarea
             id="participation_info"
             v-model.trim="draft.participationInfo"
-            :label="t('info_text')"
-            placeholder="Participation info"
+            :label="t('event_participation_info_text')"
         />
 
         <UranusTextarea
             id="meeting_point"
             v-model.trim="draft.meetingPoint"
-            :label="t('meeting_point')"
-            placeholder="Meeting point"
+            :label="t('event_meeting_point')"
         />
       </UranusInlineSectionLayout>
 
       <UranusInlineSectionLayout>
         <div class="uranus-grid-4">
-          <UranusTextInput
+          <UranusNumberInput
               id="min_age"
               v-model.number="draft.minAge"
-              type="number"
-              :label="t('min_age')"
+              :label="t('event_min_age')"
           />
-          <UranusTextInput
+          <UranusNumberInput
               id="max_age"
               v-model.number="draft.maxAge"
-              type="number"
-              :label="t('max_age')"
+              :label="t('event_max_age')"
           />
-          <UranusTextInput
+          <UranusNumberInput
               id="max_attendees"
               v-model.number="draft.maxAttendees"
-              type="number"
-              :label="t('max_attendees')"
+              :label="t('event_max_attendees')"
           />
         </div>
 
         <div class="uranus-grid-4">
           <UranusPriceTypeSelect v-model="draft.priceTypeId" />
           <UranusCurrencySelect v-model="draft.currencyCode" />
-          <UranusTextInput
+          <UranusNumberInput
               id="min_price"
               v-model.number="draft.minPrice"
-              type="number"
-              :label="t('min_price')"
+              :label="t('event_min_price')"
           />
-          <UranusTextInput
+          <UranusNumberInput
               id="max_price"
               v-model.number="draft.maxPrice"
-              type="number"
-              :label="t('max_price')"
+              :label="t('event_max_price')"
           />
           <UranusEventOccasionSelect v-model="draft.occasionTypeId" />
           <UranusCheckboxButton
               id="ticket_advance"
               v-model="draft.ticketAdvance"
-              :label="t('ticket_advance')"
+              :label="t('event_ticket_advance')"
           />
           <UranusCheckboxButton
               id="ticket_required"
               v-model="draft.ticketRequired"
-              :label="t('ticket_required')"
+              :label="t('event_ticket_required')"
           />
           <UranusCheckboxButton
               id="registration_required"
               v-model="draft.registrationRequired"
-              :label="t('registration_required')"
+              :label="t('event_registration_required')"
           />
         </div>
 
@@ -93,21 +86,21 @@
 
     <!-- Display mode -->
     <div v-else>
-      <span><strong>{{ t('age') }}:</strong> {{ ageDescription }}</span><br>
-      <span><strong>{{ t('max_attendees') }}:</strong> {{ event?.maxAttendees }}</span><br>
-      <span><strong>{{ t('price') }}:</strong> {{ priceDescription }}</span><br>
-      <span><strong>{{ t('ticket_advance') }}:</strong> {{ event?.ticketAdvance ? capitalizeFirst(t('yes')) : capitalizeFirst(t('no')) }}</span><br>
-      <span><strong>{{ t('ticket_required') }}:</strong> {{ event?.ticketRequired ? capitalizeFirst(t('yes')) : capitalizeFirst(t('no')) }}</span><br>
-      <span><strong>{{ t('registration_required') }}:</strong> {{ event?.registrationRequired ? capitalizeFirst(t('yes')) : capitalizeFirst(t('no')) }}</span><br>
+      <span><strong>{{ t('event_age') }}:</strong> {{ ageDescription }}</span><br>
+      <span><strong>{{ t('event_max_attendees') }}:</strong> {{ event?.maxAttendees }}</span><br>
+      <span><strong>{{ t('event_price') }}:</strong> {{ priceDescription }}</span><br>
+      <span><strong>{{ t('event_ticket_advance') }}:</strong> {{ event?.ticketAdvance ? capitalizeFirst(t('yes')) : capitalizeFirst(t('no')) }}</span><br>
+      <span><strong>{{ t('event_ticket_required') }}:</strong> {{ event?.ticketRequired ? capitalizeFirst(t('yes')) : capitalizeFirst(t('no')) }}</span><br>
+      <span><strong>{{ t('event_registration_required') }}:</strong> {{ event?.registrationRequired ? capitalizeFirst(t('yes')) : capitalizeFirst(t('no')) }}</span><br>
 
-      <p><strong>{{ t('info_text') }}:</strong><br>
+      <p><strong>{{ t('event_participation_info_text') }}:</strong><br>
         {{ draft.participationInfo }}
       </p>
-      <p><strong>{{ t('meeting_point') }}:</strong><br>
+      <p><strong>{{ t('event_meeting_point') }}:</strong><br>
         {{ event?.meetingPoint }}
       </p>
-      <p><strong>{{ t('price_type') }}:</strong> {{ priceTypeText }}</p>
-      <p><strong>{{ t('occasion_type') }}:</strong> {{ event?.occasionTypeId }}</p>
+      <p><strong>{{ t('event_price_type') }}:</strong> {{ priceTypeText }}</p>
+      <p><strong>{{ t('event_occasion_type') }}:</strong> {{ event?.occasionTypeId }}</p>
     </div>
   </UranusInlineEditSection>
 </template>
@@ -129,6 +122,7 @@ import UranusPriceTypeSelect from "@/components/selects/UranusPriceTypeSelect.vu
 import UranusCurrencySelect from "@/components/selects/UranusCurrencySelect.vue";
 import UranusEventOccasionSelect from "@/components/selects/UranusEventOccasionSelect.vue";
 import { uranusAgeText, uranusPriceText } from '@/utils/UranusStringUtils.ts'
+import UranusNumberInput from "@/components/ui/UranusNumberInput.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -144,10 +138,10 @@ const priceTypeText = computed(() => {
   if (!event?.value) return ''
 
   switch (event.value.priceTypeId) {
-    case 0: return t('price_type_not_specified')
-    case 1: return t('price_type_regular')
-    case 2: return t('price_type_free')
-    case 3: return t('price_type_donation')
+    case 0: return t('event_price_type_not_specified')
+    case 1: return t('event_price_type_regular')
+    case 2: return t('event_price_type_free')
+    case 3: return t('event_price_type_donation')
     default: return ''
   }
 })
@@ -193,21 +187,24 @@ function onCancel() {
   isEditing.value = false
 }
 
+const toNullOrNumber = (v: number | undefined): number | null => v === undefined ? null : v
+const toNullOrFloat = (v: number | undefined | null): number | null => v == null ? null : v
+
 async function onSave() {
   if (!event?.value) return
   isSaving.value = true
 
   try {
     // --- API payload (snake_case) ---
-    const apiPayload = {
+    const payload = {
       participation_info: draft.participationInfo,
       meeting_point: draft.meetingPoint,
-      min_age: draft.minAge,
-      max_age: draft.maxAge,
-      max_attendees: draft.maxAttendees,
+      min_age: toNullOrNumber(draft.minAge),
+      max_age: toNullOrNumber(draft.maxAge),
+      max_attendees: toNullOrNumber(draft.maxAttendees),
       price_type_id: draft.priceTypeId,
-      min_price: draft.minPrice,
-      max_price: draft.maxPrice,
+      min_price: toNullOrFloat(draft.minPrice),
+      max_price: toNullOrFloat(draft.maxPrice),
       currency_code: draft.currencyCode,
       ticket_advance: draft.ticketAdvance,
       ticket_required: draft.ticketRequired,
@@ -215,10 +212,12 @@ async function onSave() {
       occasion_type_id: draft.occasionTypeId,
     }
 
+    console.log(payload)
+
     await apiFetch(`/api/admin/event/${eventId.value}/participation-infos`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(apiPayload),
+      body: JSON.stringify(payload),
     })
 
     // Update UI model

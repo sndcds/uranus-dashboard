@@ -129,13 +129,13 @@
                     :class="{ 'generic-header__dropdown-option--active': currentLocale === 'de' }">
                   Deutsch
                 </button>
+                <button @click.stop="setLanguage('da')" class="generic-header__dropdown-option"
+                        :class="{ 'generic-header__dropdown-option--active': currentLocale === 'da' }">
+                  Dansk
+                </button>
                 <button @click.stop="setLanguage('en')" class="generic-header__dropdown-option"
                   :class="{ 'generic-header__dropdown-option--active': currentLocale === 'en' }">
                   English
-                </button>
-                <button @click.stop="setLanguage('da')" class="generic-header__dropdown-option"
-                  :class="{ 'generic-header__dropdown-option--active': currentLocale === 'da' }">
-                  Dansk
                 </button>
               </div>
             </div>

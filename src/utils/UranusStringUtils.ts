@@ -86,13 +86,13 @@ export function uranusAgeText(
     maxAge: number | undefined
 ): string {
     if (minAge != undefined && maxAge == undefined) {
-        return t('from_age', { age: minAge })
+        return t('from_age_sentence', { age: minAge })
     }
     if (minAge == undefined && maxAge != undefined) {
-        return t('to_age', { age: maxAge })
+        return t('to_age_sentence', { age: maxAge })
     }
     if (minAge != undefined && maxAge != undefined) {
-        return t('age_range', { from: minAge, to: maxAge })
+        return t('age_range_sentence', { from: minAge, to: maxAge })
     }
     return ''
 }

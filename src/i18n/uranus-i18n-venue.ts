@@ -36,4 +36,14 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Delete venue',
         da: 'Slet spillested',
     },
+    venue_name: {
+        de: 'Name der Spielstätte',
+        en: 'Venue Name',
+        da: 'Navn på spillested',
+    },
+    custom_location: {
+        de: 'Benutzerdefinierter Ort',
+        en: 'Custom location',
+        da: 'Brugerdefineret sted',
+    },
 }

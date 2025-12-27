@@ -15,7 +15,6 @@
       <MarkdownEditorComponent
           ref="markdownEditorRef"
           v-model="draft.description"
-          :placeholder="t('event_description_placeholder')"
       />
 
       <UranusInlineEditActions
@@ -72,7 +71,7 @@ const props = defineProps<{
 const descriptionError = computed(() => {
   if (props.descriptionError) return props.descriptionError
   if (!draft.description || draft.description.trim() === '') {
-    return t('empty_text_message')
+    return t('event_description_required');
   }
   return ''
 })

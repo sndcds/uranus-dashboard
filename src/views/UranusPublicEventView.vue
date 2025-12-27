@@ -143,7 +143,7 @@
             <svg width="20px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
               <path d="M29.664,1.531L29.411,1.579L20.823,4.907L11.177,1.531L2.11,4.587C1.769,4.687 1.532,5 1.531,5.355L1.531,29.664C1.531,30.111 1.889,30.469 2.336,30.469L2.589,30.421L11.177,27.093L20.823,30.469L29.89,27.413C30.231,27.313 30.468,27 30.469,26.645L30.469,2.336C30.469,2.335 30.469,2.334 30.469,2.333C30.469,1.893 30.107,1.531 29.667,1.531C29.666,1.531 29.665,1.531 29.664,1.531M12.783,5.501L19.217,7.753L19.217,26.499L12.783,24.247L12.783,5.501M4.748,7.093L9.571,5.469L9.571,24.28L4.748,26.145L4.748,7.094M27.252,24.907L22.429,26.531L22.429,7.738L27.252,5.874L27.252,24.907Z" style="fill-rule:nonzero;"/>
             </svg>
-            {{ t('show_on_map') }}
+            {{ t('show_map') }}
           </button>
 
           <button
@@ -306,7 +306,7 @@ const loadEvent = async () => {
 
     const mappedEvent = mapPublicEvent(data)
     if (!mappedEvent) {
-      loadError.value = t('event_load_error')
+      loadError.value = t('error_incomplete_data')
       return
     }
 
@@ -345,7 +345,7 @@ const loadEvent = async () => {
             mappedEvent.locationLon,
         )
   } catch (error: unknown) {
-    loadError.value = error instanceof Error ? error.message : t('event_load_error')
+    loadError.value = error instanceof Error ? error.message : t('error_fetch_data_failed')
   } finally {
     isLoading.value = false
   }

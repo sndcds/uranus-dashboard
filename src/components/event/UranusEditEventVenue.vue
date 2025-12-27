@@ -21,7 +21,7 @@
           <UranusFormRow>
             <UranusEventVenueSpaceSelect
                 v-model="draft.venueSpace"
-                :selectLabel="t('event_no_venue_space_selected')"
+                :selectLabel="t('event_without_venue')"
                 :required="true"
                 @update:model-value="onUpdateVenueSpaceSelection"
             />

@@ -9,7 +9,7 @@ UranusAddEventForm.vue
     <UranusTextInput
         id="title"
         v-model.trim="draft.title"
-        :label="t('event_title_label')"
+        :label="t('title')"
         :error="titleError"
         size="big"
         required
@@ -18,7 +18,7 @@ UranusAddEventForm.vue
     <UranusTextInput
         id="subtitle"
         v-model.trim="draft.subtitle"
-        :label="t('event_subtitle_label')"
+        :label="t('subtitle')"
     />
 
     <UranusTextarea
@@ -58,7 +58,7 @@ UranusAddEventForm.vue
         <UranusFormRow>
           <UranusEventVenueSpaceSelect
               v-model="draft.venueSpace"
-              :selectLabel="t('event_no_venue_space_selected')"
+              :selectLabel="t('event_without_venue')"
               required
               :error="venueOrLocationError"
           />

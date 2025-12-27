@@ -1,7 +1,7 @@
 <template>
   <div class="uranus-main-layout">
     <DashboardHeroComponent
-        :title="t('event_form_title')"
+        :title="t('add_new_event_title')"
         :subtitle="t('event_form_subtitle')"
     />
 
@@ -54,7 +54,7 @@ const loadChoosableVenues = async () => {
         error.value = null
     } catch (err) {
         console.error(err)
-        error.value = t('choosable_venues_load_error')
+        error.value = t('error_fetch_data_failed')
         choosableVenues.value = []
     }
 }

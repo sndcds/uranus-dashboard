@@ -104,7 +104,7 @@ async function loadEvent() {
 
     const mapped = mapEventDetailData(data)
     if (!mapped) {
-      errorMessage.value = t('error_event_not_found')
+      errorMessage.value = t('error_incomplete_data')
       return
     }
 

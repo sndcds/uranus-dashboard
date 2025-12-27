@@ -4,7 +4,7 @@
 <template>
   <UranusInlineEditSection :active="isEditing">
     <UranusInlineEditLabel
-        :label-text="t('event_title')"
+        :label-text="t('title')"
         :edit-button-text="t('edit')"
         @edit-started="onStartEdit"
     />
@@ -15,9 +15,8 @@
       <UranusTextInput
           id="titleId"
           v-model.trim="draft.title"
-          :label="t('event_title_label')"
+          :label="t('title')"
           :error="titleError"
-          :placeholder="t('event_title_placeholder')"
           size="big"
           required
       />
@@ -25,8 +24,7 @@
       <UranusTextInput
           id="subtitleId"
           v-model.trim="draft.subtitle"
-          :label="t('event_subtitle_label')"
-          :placeholder="t('event_subtitle_placeholder')"
+          :label="t('subtitle')"
       />
 
       <UranusInlineEditActions

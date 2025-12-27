@@ -30,7 +30,7 @@
               </li>
               <li>
                 <span class="event-card__value">
-                  {{ t('release_date') }} · {{ formatDate(notification.release_date) }}
+                  {{ t('event_release_date') }} · {{ formatDate(notification.release_date) }}
                 </span>
               </li>
               <li>
@@ -134,7 +134,7 @@ const formatReleaseStatus = (notification: Notification) => {
 
 const formatReleaseCountdown = (days: number | null) => {
   if (days === null || Number.isNaN(days)) {
-    return `${t('release_date')}: —`
+    return `${t('event_release_date')}: —`
   }
   if (days === 0) {
     return t('today')
