@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useTokenStore } from '@/store/tokenStore'
 
 import UranusDashboardView from '@/views/UranusDashboardView.vue'
-import UranusDashboardTodoListView from '@/views/UranusDashboardTodoListView.vue'
+import UranusDashboardTodosView from '@/views/UranusDashboardTodosView.vue'
 import LoginView from '@/views/LoginView.vue'
 import UranusDashboardOrganizationsView from '@/views/UranusDashboardOrganizationsView.vue'
 import SettingsView from '@/views/SettingsView.vue'
@@ -60,7 +60,7 @@ const routes = [
             {
                 path: 'todo-list',
                 name: 'admin-todo-list',
-                component: UranusDashboardTodoListView,
+                component: UranusDashboardTodosView,
             },
             {
                 path: 'organizations',

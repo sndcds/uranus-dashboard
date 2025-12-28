@@ -68,7 +68,7 @@ const notificationTypeClass = computed(() => {
   border: 2px solid transparent;
   border-radius: 12px;
   color: var(--uranus-card-color);
-  background: var(--uranus-card-background-color);
+  background: var(--uranus-card-bg);
   max-width: var(--uranus-notification-max-width);
   overflow: hidden;
 

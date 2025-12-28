@@ -35,23 +35,23 @@
       </span>
 
       <div class="uranus-dashboard-event-card-actions">
-        <UranusButton
+        <UranusDashboardButton
             v-if="props.event.canEditEvent"
-            class="uranus-tertiary-button"
+            class="uranus-button tiny"
             icon="edit"
             :to="`/admin/event/${props.event.eventId}`"
         >
           {{ t('edit') }}
-        </UranusButton>
+        </UranusDashboardButton>
 
-        <UranusButton
+        <UranusDashboardButton
             v-if="props.event.canDeleteEvent"
-            class="uranus-tertiary-button"
+            class="uranus-button tiny"
             icon="delete"
             @click.prevent.stop="requestDelete(props.event)"
         >
           {{ t('delete') }}
-        </UranusButton>
+        </UranusDashboardButton>
       </div>
     </div>
     <!--UranusEventReleaseChip :releaseDisplay="props.event.releaseStatusName" size="big" /-->
@@ -91,7 +91,7 @@ import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 import UranusCard from "@/components/ui/UranusCard.vue";
 import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
 import UranusIconAction from "@/components/ui/UranusIconAction.vue";
-import UranusButton from "@/components/ui/UranusButton.vue";
+import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";
 
 const emit = defineEmits<{
   deleted: [payload: { eventId: number; eventDateId: number | null; deleteSeries: boolean }]

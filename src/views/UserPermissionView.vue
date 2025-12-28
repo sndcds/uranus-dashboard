@@ -232,7 +232,7 @@ onMounted(() => {
 }
 
 .permission-card {
-    background-color: var(--uranus-card-background-color);
+    background-color: var(--uranus-card-bg);
     border: 1px solid rgba(148, 163, 184, 0.25);
     border-radius: 16px;
     padding: clamp(1rem, 2vw, 1.5rem);

@@ -19,12 +19,15 @@
       <UranusDashboardActionBar
           v-if="organization && organization.can_add_venue"
       >
-        <router-link :to="`/admin/organization/${organizationId}/venue/create`" class="uranus-secondary-button">
+        <router-link
+            :to="`/admin/organization/${organizationId}/venue/create`"
+            class="uranus-action-button">
           {{ t('venue_add') }}
         </router-link>
       </UranusDashboardActionBar>
 
       <UranusDashboardInfo
+          v-else
           title="Warum kann ich keine Spielstätten hinzufügen?"
           text="<p>Dir fehlen die erforderlichen Zugriffsrechte.<br>Diese werden von der Organisation vergeben, zu der die Spielstätte ghört.</p>"
           url="https://sndcds.github.io/uranus-docs/"

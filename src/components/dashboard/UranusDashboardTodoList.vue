@@ -1,66 +1,84 @@
+<!--
+  UranusDashboardTodoList.vue
+-->
 <template>
-  <section class="todo-panel" aria-labelledby="dashboard-todo-heading">
-    <div class="todo-panel__header">
-        <h2 id="dashboard-todo-heading" class="todo-panel__title">
-            {{ todoListTitle }}
-        </h2>
-        <button type="button" class="uranus-secondary-button" @click="startAddingTodo" :disabled="todoLoading">
-            {{ addTodoLabel }}
-        </button>
+  <UranusDashboardActionBar>
+    <div
+        class="uranus-action-button"
+        :disabled="todoLoading"
+        @click="startAddingTodo"
+    >
+      {{ t('dashboard_todo_add') }}
     </div>
+  </UranusDashboardActionBar>
 
+  <section class="todo-panel">
     <transition name="fade">
-        <p v-if="todoError" class="todo-feedback todo-feedback--error" role="alert" aria-live="assertive">
-            {{ todoError }}
-        </p>
+      <p v-if="todoError" class="todo-feedback todo-feedback--error" role="alert" aria-live="assertive">
+        {{ todoError }}
+      </p>
     </transition>
 
     <form v-if="isAddingTodo" class="uranus-form todo-editor" @submit.prevent="saveTodo">
-        <DashboardTodoFormFields
-            class="uranus-card"
-            id-prefix="todo-new"
-            v-model:title="todoDraft.title"
-            v-model:description="todoDraft.description"
-            v-model:due-date="todoDraft.dueDate"
-            :title-label="todoTitleLabel"
-            :title-placeholder="todoTitlePlaceholder"
-            :description-label="todoDescriptionLabel"
-            :description-placeholder="todoDescriptionPlaceholder"
-            :due-date-label="todoDueDateLabel"
-            :disabled="todoSaving"
-            :error="todoDraftError"
-            @escape="cancelEditingTodo"
-        />
+      <DashboardTodoFormFields
+          class="uranus-card"
+          id-prefix="todo-new"
+          v-model:title="todoDraft.title"
+          v-model:description="todoDraft.description"
+          v-model:due-date="todoDraft.dueDate"
+          :title-label="todoTitleLabel"
+          :title-placeholder="todoTitlePlaceholder"
+          :description-label="todoDescriptionLabel"
+          :description-placeholder="todoDescriptionPlaceholder"
+          :due-date-label="todoDueDateLabel"
+          :disabled="todoSaving"
+          :error="todoDraftError"
+          @escape="cancelEditingTodo"
+      />
 
-        <section class="uranus-form-action-footer">
-            <button type="button" class="uranus-cancel-button" @click="cancelEditingTodo"
-                :disabled="todoSaving">
-                {{ t('cancel') }}
-            </button>
-            <button type="submit" class="uranus-save-button" :disabled="isSaveDisabled">
-                <span v-if="!todoSaving">{{ t('save') }}</span>
-                <span v-else>{{ t('saving') }}</span>
-            </button>
-        </section>
+      <section class="uranus-form-action-footer">
+        <button
+            class="uranus-cancel-button"
+            @click="cancelEditingTodo"
+            :disabled="todoSaving">
+          {{ t('cancel') }}
+        </button>
+        <button
+            class="uranus-save-button"
+            :disabled="isSaveDisabled">
+          <template v-if="!todoSaving">{{ t('save') }}</template>
+          <template v-else>{{ t('saving') }}</template>
+        </button>
+      </section>
     </form>
 
-    <section class="uranus-card todo-list-card">
+    <section>
       <ul class="todo-list" role="list" :aria-busy="todoLoading" :aria-label="todoListTitle">
         <li v-if="todoLoading" class="todo-list__loading">
           {{ loadingTodoLabel }}
         </li>
         <template v-else>
-          <li v-if="todos.length === 0" class="todo-list__empty">
+          <div v-if="todos.length === 0" class="todo-list__empty">
             {{ todoEmptyLabel }}
-          </li>
-          <li v-for="todo in todos" :key="todo.todo_id" class="todo-list__item">
+          </div>
+          <UranusCard v-for="todo in todos" :key="todo.todo_id" class="todo-list-item">
             <template v-if="editingTodoId !== todo.todo_id">
-                <article class="todo-item" :class="{ 'todo-item--completed': todo.completed }">
+                <!--article
+                    class="todo-item"
+                    :class="{ 'todo-item--completed':
+                    todo.completed }"
+                -->
                 <div class="todo-item__header">
-                    <input type="checkbox" :id="`todo-${todo.todo_id}`" class="todo-item__checkbox"
-                        :checked="Boolean(todo.completed)" @change="toggleTodo(todo)" :disabled="todoLoading" />
+                  <input
+                      type="checkbox"
+                      :id="`todo-${todo.todo_id}`"
+                      class="todo-item__checkbox"
+                      :checked="Boolean(todo.completed)"
+                      :disabled="todoLoading"
+                      @change="toggleTodo(todo)"
+                  />
                     <label :for="`todo-${todo.todo_id}`" class="todo-item__label">
-                        {{ todo.title }}
+                      {{ todo.title }}
                     </label>
                 </div>
                 <p v-if="todo.description" class="todo-item__description">
@@ -70,23 +88,23 @@
                     {{ t('dashboard_todo_due') }}: {{ formatTodoDueDate(todo.dueDate) }}
                 </p>
                 <div class="todo-item__footer">
-                  <UranusButton
-                      class="uranus-tertiary-button"
+                  <UranusDashboardButton
+                      class="uranus-button"
                       icon="edit"
                       @click="startEditingTodo(todo)"
                   >
                     {{ t('edit') }}
-                  </UranusButton>
+                  </UranusDashboardButton>
 
-                  <UranusButton
-                      class="uranus-tertiary-button"
+                  <UranusDashboardButton
+                      class="uranus-button"
                       icon="delete"
                       @click="deleteTodo(todo)"
                   >
                     {{ t('delete') }}
-                  </UranusButton>
+                  </UranusDashboardButton>
                 </div>
-                </article>
+                <!--/article-->
             </template>
             <template v-else>
               <form class="uranus-form todo-editor todo-editor--inline" @submit.prevent="saveTodo">
@@ -107,23 +125,21 @@
 
                 <section class="uranus-form-action-footer">
                   <button
-                      type="button"
                       class="uranus-cancel-button"
                       @click="cancelEditingTodo"
                       :disabled="todoSaving">
                     {{ t('cancel') }}
                   </button>
                   <button
-                      type="submit"
                       class="uranus-save-button"
                       :disabled="isSaveDisabled">
-                    <span v-if="!todoSaving">{{ t('save') }}</span>
-                    <span v-else>{{ t('saving') }}</span>
+                    <template v-if="!todoSaving">{{ t('save') }}</template>
+                    <template v-else>{{ t('saving') }}</template>
                   </button>
                 </section>
               </form>
             </template>
-          </li>
+          </UranusCard>
         </template>
       </ul>
     </section>
@@ -135,8 +151,10 @@ import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
+import UranusCard from "@/components/ui/UranusCard.vue";
 import DashboardTodoFormFields from '@/components/dashboard/DashboardTodoFormFields.vue'
-import UranusButton from "@/components/ui/UranusButton.vue";
+import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";
+import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
 
 interface Todo {
     todo_id: number
@@ -166,7 +184,6 @@ const currentEditingTodo = ref<Todo | null>(null)
 const todoDraft = ref<TodoDraft>({ title: '', description: '', dueDate: '' })
 
 const todoListTitle = computed(() => t('dashboard_todo_list_title'))
-const addTodoLabel = computed(() => t('dashboard_todo_add'))
 const loadingTodoLabel = computed(() => t('dashboard_todo_loading'))
 const todoEmptyLabel = computed(() => t('dashboard_todo_empty'))
 const todoTitleLabel = computed(() => t('dashboard_todo_title'))
@@ -451,9 +468,9 @@ defineExpose({
 
 <style scoped lang="scss">
 .todo-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .todo-panel__header {
@@ -461,7 +478,7 @@ defineExpose({
     justify-content: space-between;
     align-items: flex-start;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.4rem;
 }
 
 .todo-panel__title {
@@ -477,13 +494,13 @@ defineExpose({
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.4rem;
 }
 
-.todo-list__item {
+.todo-list-item {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.4rem;
     margin: 0;
 }
 
@@ -499,13 +516,12 @@ defineExpose({
 }
 
 .todo-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1rem;
-    transition: all 0.2s ease;
-    width: 100%;
-  border: 1px solid var(--uranus-disabled-color);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+  width: 100%;
 }
 
 .todo-item__header {
@@ -515,15 +531,15 @@ defineExpose({
 }
 
 .todo-item__checkbox {
-    cursor: pointer;
-    width: 1.2rem;
-    height: 1.2rem;
-    flex-shrink: 0;
+  cursor: pointer;
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
 
-    &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
 .todo-item__label {
@@ -552,13 +568,17 @@ defineExpose({
     display: flex;
     gap: 0.5rem;
     justify-content: flex-end;
-    opacity: 0;
+    opacity: 1;
     pointer-events: none;
     transition: opacity 0.2s ease;
 }
 
-.todo-list__item:hover .todo-item__footer,
-.todo-list__item:focus-within .todo-item__footer {
+.todo-list-item .button {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.todo-list-item:hover, .button {
     opacity: 1;
     pointer-events: auto;
 }

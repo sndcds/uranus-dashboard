@@ -13,6 +13,21 @@
 :root {
   color-scheme: light;
 
+  --uranus-color: #01182e;
+  --uranus-bg: #F1F4F9;
+  --uranus-bg-d1: #F4F7FA;
+  --uranus-bg-d2: #E3EBF2;
+  --uranus-dashboard-bg: var(--uranus-bg);
+  --uranus-card-bg: #ffffff;
+  --uranus-button-color: var(--uranus-color);
+  --uranus-button-bg: var(--uranus-bg-d1);
+  --uranus-button-hover-color: var(--uranus-color);
+  --uranus-button-hover-bg: var(--uranus-bg-d2);
+  --uranus-button-active-color: #ffffff;
+  --uranus-button-active-bg: #1a34dc;
+
+
+
   --uranus-event-tag-background: rgba(86, 80, 188, 0.16);
   --uranus-event-tag-color: rgb(86, 80, 188);
   --uranus-language-tag-background: rgba(69, 181, 141, 0.18);
@@ -90,20 +105,14 @@
   --surface-primary: #ffffff;
 
   --surface-hover: rgba(15, 23, 42, 0.06);
-  --uranus-card-background-color: var(--card-bg);
   --uranus-card-color: var(--color-text);
   --uranus-card-border-color: #eee;
   --uranus-card-border-radius: 0px;
 
   // Application chrome
-  --uranus-bg-color: #f5f7fb;
-  --uranus-bg-color-d1: #e4e9f5;
-  --uranus-bg-color-d2: #d5ddeb;
-  --uranus-color: var(--color-text);
   --uranus-disabled-color: #c7cedd;
   --uranus-low-contrast-color: #c6c6c6;
   --uranus-medium-contrast-color: #666666;
-  --uranus-dashboard-bg-color: #e3e9f7;
   --uranus-dashboard-content-width: 1024px;
   --uranus-notification-max-width: 640px;
   --uranus-menu-active-color: #0f172a;
@@ -152,6 +161,23 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
+
+  --uranus-color: #eef6ff;
+  --uranus-bg: #01182e;
+  --uranus-bg-d1: #022445;
+  --uranus-bg-d2: #032F59;
+  --uranus-bg-d3: #033977;
+  --uranus-dashboard-bg: var(--uranus-bg);
+  --uranus-card-bg: var(--uranus-bg-d1);
+  --uranus-button-color: var(--uranus-color);
+  --uranus-button-bg: var(--uranus-bg-d2);
+  --uranus-button-hover-color: var(--uranus-color);
+  --uranus-button-hover-bg: var(--uranus-bg-d3);
+
+
+
+
+
   --color-bg: #050b16;
   --color-text: #f1f5f9;
   --color-text-primary: #f8fafc;
@@ -176,17 +202,9 @@
   --border-soft: rgba(148, 163, 184, 0.35);
   --border-color: #1f2a44;
 
-  --uranus-bg-color: #050b16;
-  --uranus-bg-color-d1: #0f172a;
-  --uranus-bg-color-d2: #1e293b;
-  --uranus-color: var(--color-text);
   --uranus-disabled-color: #4f5a74;
   --uranus-low-contrast-color: #4b5563;
   --uranus-medium-contrast-color: #cbd5f5;
-  --uranus-dashboard-bg-color: #050b16;
-  --uranus-card-background-color: var(--card-bg);
-  --uranus-card-color: var(--color-text);
-  --uranus-card-border-color: #333;
 
   --uranus-menu-active-color: #e2e8f0;
   --uranus-menu-active-bg: rgba(99, 102, 241, 0.35);

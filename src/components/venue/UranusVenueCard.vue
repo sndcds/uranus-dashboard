@@ -10,23 +10,23 @@
 
     <div class="uranus-card-button-container">
 
-      <UranusButton
+      <UranusDashboardButton
           v-if="venue.can_edit_event"
-          :to="`/admin/organization/${organizationId}/venue/${venue.venue_id}/edit`"
+          class="uranus-button tiny"
           icon="edit"
-          class="uranus-tertiary-button"
+          :to="`/admin/organization/${organizationId}/venue/${venue.venue_id}/edit`"
       >
         {{ t('edit_organization') }}
-      </UranusButton>
+      </UranusDashboardButton>
 
-      <UranusButton
+      <UranusDashboardButton
           v-if="venue.can_delete_event"
+          class="uranus-button tiny"
           icon="delete"
-          class="uranus-tertiary-button"
           @click="onDeleteEvent(venue)"
       >
         {{ t('delete_organization') }}
-      </UranusButton>
+      </UranusDashboardButton>
     </div>
 
     <section>
@@ -96,7 +96,7 @@ import { apiFetch } from '@/api.ts'
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 import UranusCard from "@/components/ui/UranusCard.vue";
 import UranusIconAction from "@/components/ui/UranusIconAction.vue";
-import UranusButton from "@/components/ui/UranusButton.vue";
+import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";
 
 const { t } = useI18n()
 

@@ -6,15 +6,20 @@
 
     <UranusDashboardActionBar v-if="!isLoading && canAddEvent">
       <router-link
+          class="uranus-action-button"
           :to="`/admin/organization/${organizationId}/event/create`"
-          class="uranus-secondary-button"
       >
         {{ t('add_new_event') }}
       </router-link>
     </UranusDashboardActionBar>
-    <span v-else-if="!isLoading && !canAddEvent">
-      Warum du keine Events hinzufügen kannst
-    </span> <!-- TODO: Hinsweis einfügen! -->
+
+    <UranusDashboardInfo
+        v-else
+        title="Warum kann ich keine Events hinzufügen?"
+        text="<p>Dir fehlen die erforderlichen Zugriffsrechte.</p>"
+        url="https://sndcds.github.io/uranus-docs/"
+        link-label="Dokumentation"
+    />
 
     <div class="uranus-dashboard-card-grid uranus-max-layout">
       <UranusDashboardEventCard
@@ -37,6 +42,7 @@ import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue"
 import { mapDashboardEventData } from "@/utils/UranusDashboardEventDataMapper.ts"
 import { UranusEventBase } from "@/models/UranusEventModel.ts"
+import UranusDashboardInfo from "@/components/dashboard/UranusDashboardInfo.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()

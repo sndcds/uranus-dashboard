@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
-import DashboardTodoListComponent from '@/components/dashboard/DashboardTodoListComponent.vue'
+import UranusDashboardTodoList from '@/components/dashboard/UranusDashboardTodoList.vue'
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardNotifications from '@/components/dashboard/UranusDashboardNotifications.vue'
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";

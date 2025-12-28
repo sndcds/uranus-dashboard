@@ -19,7 +19,9 @@
     />
 
     <UranusDashboardActionBar>
-      <router-link to="/admin/organization/create" class="uranus-secondary-button">
+      <router-link
+          to="/admin/organization/create"
+          class="uranus-action-button">
         {{ t('create_organization') }}
       </router-link>
     </UranusDashboardActionBar>

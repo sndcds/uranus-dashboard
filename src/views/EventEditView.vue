@@ -653,7 +653,7 @@ onMounted(() => {
   padding: 16px;
   max-width: 1280px;
   border-radius: var(--uranus-card-border-radius);
-  background: var(--uranus-card-background-color);
+  background: var(--uranus-card-bg);
 }
 
 .event-layout {

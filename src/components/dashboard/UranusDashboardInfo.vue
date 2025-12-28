@@ -59,7 +59,7 @@ const toggle = () => {
 
 <style scoped>
 .uranus-dashboard-info {
-  background: var(--uranus-card-background-color);
+  background: var(--uranus-card-bg);
   padding: 0.75rem 1rem;
 }
 

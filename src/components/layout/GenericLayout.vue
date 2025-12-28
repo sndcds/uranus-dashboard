@@ -91,7 +91,7 @@ const closeSidebar = () => {
 }
 
 .generic-layout__content {
-    background-color: var(--uranus-bg-color-d1);
+    background-color: var(--uranus-dashboard-bg);
     flex: 1;
     padding: 2rem;
     max-width: 100%;

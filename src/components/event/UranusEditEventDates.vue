@@ -97,7 +97,7 @@ import UranusTimeInput from '@/components/ui/UranusTimeInput.vue'
 import UranusCheckboxButton from '@/components/ui/UranusCheckboxButton.vue'
 import UranusInlineSectionLayout from '@/components/ui/UranusInlineSectionLayout.vue'
 import UranusInlineEditActions from '@/components/ui/UranusInlineEditActions.vue'
-import UranusButton from "@/components/ui/UranusButton.vue";
+import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";
 import UranusInlineEditSection from "@/components/ui/UranusInlineEditSection.vue";
 
 const { t } = useI18n({ useScope: 'global' })

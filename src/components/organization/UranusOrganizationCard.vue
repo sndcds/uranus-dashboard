@@ -15,39 +15,40 @@
 
     <div class="uranus-card-button-container">
       <button
-          class="uranus-tertiary-button"
-          :class="{ 'uranus-tertiary-button--active': appStore.organizationId === organization.organization_id }"
+          class="uranus-button tiny"
+          style="min-width:100px;"
+          :class="{ 'active': appStore.organizationId === organization.organization_id }"
           @click="assignOrganization(organization.organization_id)"
       >
         {{ appStore.organizationId === organization.organization_id ? t('organization_active') : t('organization_activate') }}
       </button>
 
-      <UranusButton
+      <UranusDashboardButton
           v-if="organization.can_edit_organization"
+          class="uranus-button tiny"
           :to="`/admin/organization/${organization.organization_id}/edit`"
           icon="edit"
-          class="uranus-tertiary-button"
       >
         {{ t('edit_organization') }}
-      </UranusButton>
+      </UranusDashboardButton>
 
-      <UranusButton
+      <UranusDashboardButton
           v-if="organization.can_delete_organization"
+          class="uranus-button tiny"
           icon="delete"
-          class="uranus-tertiary-button"
           @click="deleteOrganization(organization.organization_id)"
       >
         {{ t('delete_organization') }}
-      </UranusButton>
+      </UranusDashboardButton>
 
-      <UranusButton
+      <UranusDashboardButton
           v-if="organization.can_manage_team"
+          class="uranus-button tiny"
           icon="team"
-          class="uranus-tertiary-button"
           :to="`/admin/organization/${organization.organization_id}/team`"
       >
         {{ t('manage_team') }}
-      </UranusButton>
+      </UranusDashboardButton>
     </div>
 
 
@@ -73,7 +74,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
-import UranusButton from "@/components/ui/UranusButton.vue";
+import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";
 import UranusNumberDisplay from "@/components/ui/UranusNumberDisplay.vue";
 
 const appStore = useAppStore()

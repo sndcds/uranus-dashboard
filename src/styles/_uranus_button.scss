@@ -1,70 +1,47 @@
-.uranus-button,
-.uranus-secondary-button,
-.uranus-tertiary-button,
-.uranus-save-button,
-.uranus-cancel-button {
+// Default Uranus Dashboard Button
+.uranus-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.4rem 1.4rem;
-  border-radius: 999px;
-  color: var(--uranus-bg-color);
-  background: var(--uranus-ia-color);
+  gap: 0.5rem;
   border: none;
-  font-size: 1rem;
-  font-weight: 500;
-  text-decoration: none;
+  padding: 0.3rem 0.8rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  border-radius: 2px;
+  background: var(--uranus-button-bg);
+  color: var(--uranus-button-color);
+  text-decoration: none;
+  transition: all 0.1s ease;
 
-  &:hover:not(:disabled) {
-    background: var(--uranus-ia-color-dark1);
+  &:hover {
+    background: var(--uranus-button-hover-bg);
+    color: var(--uranus-button-hover-color);
   }
 
-  &:focus-visible {
-    outline: none;
+  &.tiny {
+    font-size: 0.9rem;
+    padding: 0.2rem 0.4rem;
   }
 
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.75;
-    transform: none;
-  }
-}
-
-.uranus-secondary-button,
-.uranus-tertiary-button {
-  background: transparent;
-  border: 2px solid var(--uranus-ia-color);
-  color: var(--uranus-ia-color-dark1);
-  padding: 0.4rem 1rem;
-
-  &:hover:not(:disabled) {
-    background: var(--uranus-ia-color);
-    color: white;
-  }
-
-  &--active {
-    background: var(--uranus-ia-color);
-    color: white;
-    cursor: default;
-    &:hover {
-    }
+  &.active {
+    color: var(--uranus-button-active-color);
+    background: var(--uranus-button-active-bg);
   }
 }
 
-.uranus-tertiary-button {
-  font-size: 0.9rem;
-  padding: 0.3rem 0.9rem;
-  border-width: 1px;
+.uranus-button-icon {
+  width: 1.2em;
+  height: 1.2em;
+  flex-shrink: 0;
 }
-
 
 .uranus-save-button,
 .uranus-cancel-button {
   font-size: 0.9rem;
   font-weight: 700;
   padding: 0.6em 1em;
+  border-radius: 99px;
+  transition: all 0.1s ease;
 }
 
 .uranus-save-button {
@@ -87,7 +64,73 @@
   }
 }
 
-.uranus-inline-edit-button {
+
+
+.uranus-action-button,
+.xuranus-secondary-button,
+.xuranus-tertiary-button,
+.xuranus-save-button,
+.xuranus-cancel-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 1.4rem;
+  border-radius: 999px;
+  color: var(--uranus-button-active-bg);
+  border: 2px solid var(--uranus-button-active-bg);
+  background-color: transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: var(--uranus-button-active-color);
+    background-color: var(--uranus-button-active-bg);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+    transform: none;
+  }
+}
+
+.xuranus-secondary-button,
+.xuranus-tertiary-button {
+  background: transparent;
+  border: 2px solid var(--uranus-ia-color);
+  color: var(--uranus-ia-color-dark1);
+  padding: 0.4rem 1rem;
+
+  &:hover:not(:disabled) {
+    background: var(--uranus-ia-color);
+    color: white;
+  }
+
+  &--active {
+    background: var(--uranus-ia-color);
+    color: white;
+    cursor: default;
+    &:hover {
+    }
+  }
+}
+
+.xuranus-tertiary-button {
+  font-size: 0.9rem;
+  padding: 0.3rem 0.9rem;
+  border-width: 1px;
+}
+
+
+
+.xuranus-inline-edit-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -126,24 +169,4 @@
     &:hover {
     }
   }
-}
-
-.uranus-button-base {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: none;
-  padding: 0.3rem 0.8rem;
-  cursor: pointer;
-  border-radius: 0px;
-  background-color: #f4f4f6;
-  color: #333340;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.uranus-button-icon {
-  width: 1.2em;
-  height: 1.2em;
-  flex-shrink: 0;
 }

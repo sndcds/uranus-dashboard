@@ -63,7 +63,7 @@ import { useThemeStore } from '@/store/themeStore'
 import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusPasswordInput from "@/components/ui/UranusPasswordInput.vue";
 import UranusBlob from "@/components/uranus/UranusBlob.vue";
-import UranusButton from "@/components/ui/UranusButton.vue";
+import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";
 
 const { t } = useI18n()
 const router = useRouter()
