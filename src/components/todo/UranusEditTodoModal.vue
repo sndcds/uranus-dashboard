@@ -5,32 +5,40 @@
       @close="onCancel"
   >
     <!-- BODY -->
-    <form @submit.prevent="onSubmit">
-      <UranusTextInput
-          id="todo_title"
-          v-model="form.title"
-          :label="t('title')"
-          required
-      />
+    <form class="uranus-form" @submit.prevent="onSubmit">
+      <UranusFormRow>
+        <UranusTextInput
+            id="todo_title"
+            v-model="form.title"
+            :label="t('title')"
+            required
+        />
+      </UranusFormRow>
 
-      <UranusTextarea
-          id="todo_description"
-          v-model="form.description"
-          :label="t('description')"
-      />
+      <UranusFormRow>
+        <UranusTextarea
+            id="todo_description"
+            v-model="form.description"
+            :label="t('description')"
+        />
+      </UranusFormRow>
 
-      <UranusTextInput
-          id="todo_due_date"
-          v-model="form.due_date"
-          type="date"
-          :label="t('due_date')"
-      />
+      <UranusFormRow>
+        <UranusTextInput
+            id="todo_due_date"
+            v-model="form.due_date"
+            type="date"
+            :label="t('due_date')"
+        />
+      </UranusFormRow>
 
-      <UranusCheckboxButton
-          id="todo_completed"
-          v-model="form.completed"
-          :label="t('completed')"
-      />
+      <UranusFormRow>
+        <UranusCheckboxButton
+            id="todo_completed"
+            v-model="form.completed"
+            :label="t('completed')"
+        />
+      </UranusFormRow>
 
       <p v-if="error" class="form-feedback-error">{{ error }}</p>
     </form>
@@ -68,6 +76,7 @@ import UranusModal from '@/components/uranus/UranusModal.vue'
 import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusTextarea from '@/components/ui/UranusTextarea.vue'
 import UranusCheckboxButton from '@/components/ui/UranusCheckboxButton.vue'
+import UranusFormRow from "@/components/ui/UranusFormRow.vue";
 
 interface Todo {
   todo_id: number
