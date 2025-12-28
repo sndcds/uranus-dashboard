@@ -1,6 +1,6 @@
 <template>
   <div class="uranus-main-layout">
-    <DashboardHeroComponent
+    <UranusDashboardHero
         :title="t('user_messages_send')"
         :subtitle="t('dummy')"
     />
@@ -30,7 +30,7 @@ import { useI18n } from 'vue-i18n'
 
 import OrganizationMessageComposer from '@/components/dashboard/OrganizationMessageComposer.vue'
 import OrganizationSearchPanel from '@/components/dashboard/OrganizationSearchPanel.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue";
 
 interface Organization {
   id: string | number;

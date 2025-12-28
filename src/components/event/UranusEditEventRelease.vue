@@ -46,7 +46,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import UranusInlineEditSection from "@/components/ui/UranusInlineEditSection.vue"
 import UranusInlineEditLabel from "@/components/ui/UranusInlineEditLabel.vue"
-import UranusEventReleaseChip from "@/components/ui/UranusEventReleaseChip.vue"
+import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue"
 import type { UranusEventDetail } from "@/models/UranusEventModel.ts"
 import UranusInlineActionBar from "@/components/ui/UranusInlineActionBar.vue";
 import UranusInlineEditActions from "@/components/ui/UranusInlineEditActions.vue";

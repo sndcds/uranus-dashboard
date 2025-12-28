@@ -133,7 +133,7 @@ describe('UranusEditOrganizationView', () => {
     const wrapper = await createWrapper()
     await flushPromises()
 
-    // Check for form elements instead since DashboardHeroComponent is stubbed
+    // Check for form elements instead since UranusDashboardHero is stubbed
     expect(wrapper.find('form').exists()).toBe(true)
     expect(wrapper.find('#organization_name').exists()).toBe(true)
   })

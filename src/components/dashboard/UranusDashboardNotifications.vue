@@ -1,3 +1,6 @@
+<!--
+  UranusDashboardNotifications.vue
+-->
 <template>
   <section>
     <h2 class="section-title">{{ t('notifications') }}</h2>
@@ -13,48 +16,39 @@
       <div v-else-if="!notifications.length" class="events-feedback">
         {{ t('notifications_empty') }}
       </div>
-      <div v-else class="events-list">
-        <article v-for="notification in notifications" :key="notification.event_id">
-          <router-link :to="`/admin/event/${notification.event_id}`" class="uranus-card notification-card">
-            <span
-              v-if="notification.release_status_name || notification.release_status_id"
-              class="release-status-chip"
-              :class="releaseStatusClass(notification.release_status_id)"
+      <div v-else class="uranus-dashboard-card-grid uranus-max-layout">
+        <article
+            v-for="notification in notifications"
+            :key="notification.event_id"
+            class="uranus-card notification-card"
+        >
+          <UranusEventReleaseChip :releaseStatusId="notification.release_status_id" />
+          <ul class="event-card__details">
+            <li class="event-card__title">
+              <h3>{{ notification.event_title }}</h3>
+              <span>{{ t('event_organizer') }}: {{ notification.organization_name }}</span>
+            </li>
+            <li>
+              <span class="event-card__value">
+                {{ t('event_starts') }}: {{ formatDate(notification.earliest_event_date) }}
+                {{ formatEventCountdown(notification.days_until_event) }}
+              </span>
+            </li>
+            <li>
+              <span class="event-card__value">
+                {{ t('event_release_date') }}: {{ formatReleaseCountdown(notification.days_until_release) }}
+              </span>
+            </li>
+          </ul>
+          <p class="event-actions">
+            <UranusButton
+                icon="edit"
+                class="uranus-tertiary-button"
+                :to="`/admin/event/${notification.event_id}`"
             >
-              {{ formatReleaseStatus(notification) }}
-            </span>
-            <ul class="event-card__details">
-              <li class="event-card__title">
-                <h3>{{ notification.event_title }}</h3>
-                <p>{{ notification.organization_name }}</p>
-              </li>
-              <li>
-                <span class="event-card__value">
-                  {{ t('event_release_date') }} · {{ formatDate(notification.release_date) }}
-                </span>
-              </li>
-              <li>
-                <span class="event-card__value">
-                  {{ formatReleaseCountdown(notification.days_until_release) }}
-                </span>
-              </li>
-              <li>
-                <span class="event-card__value">
-                  {{ t('event_starts') }} · {{ formatDate(notification.earliest_event_date) }}
-                  <span class="event-card__value--muted">{{ formatEventCountdown(notification.days_until_event) }}</span>
-                </span>
-              </li>
-            </ul>
-            <p class="event-actions">
-              <UranusButton
-                  icon="edit"
-                  class="uranus-tertiary-button"
-                  :to="`/admin/event/${notification.event_id}`"
-              >
-                {{ t('edit') }}
-              </UranusButton>
-            </p>
-          </router-link>
+              {{ t('edit') }}
+            </UranusButton>
+          </p>
         </article>
       </div>
     </div>
@@ -66,6 +60,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import UranusButton from "@/components/ui/UranusButton.vue";
+import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
 
 interface Notification {
   event_id: number
@@ -105,22 +100,6 @@ const formatDate = (value: string) => {
   }
 }
 
-const releaseStatusClass = (statusId: number | null | undefined) => {
-  switch (statusId) {
-    case 1:
-      return 'release-status-chip--red'
-    case 2:
-      return 'release-status-chip--orange'
-    case 3:
-      return 'release-status-chip--green'
-    case 4:
-      return 'release-status-chip--blue'
-    case 5:
-      return 'release-status-chip--pink'
-    default:
-      return ''
-  }
-}
 
 const formatReleaseStatus = (notification: Notification) => {
   if (notification.release_status_name && notification.release_status_name.trim().length > 0) {
@@ -134,7 +113,7 @@ const formatReleaseStatus = (notification: Notification) => {
 
 const formatReleaseCountdown = (days: number | null) => {
   if (days === null || Number.isNaN(days)) {
-    return `${t('event_release_date')}: —`
+    return `${t('not_specified')}`
   }
   if (days === 0) {
     return t('today')
@@ -202,47 +181,6 @@ onMounted(() => {
   height: 100%;
 }
 
-.release-status-chip {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  display: inline-flex;
-  align-items: center;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  background: var(--uranus-surface-muted);
-  color: var(--color-text);
-  font-weight: 600;
-  font-size: 0.75rem;
-  letter-spacing: 0.02em;
-  // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-  &--red {
-    background: #fee2e2;
-    color: #991b1b;
-  }
-
-  &--orange {
-    background: #ffedd5;
-    color: #9a3412;
-  }
-
-  &--green {
-    background: #dcfce7;
-    color: #166534;
-  }
-
-  &--blue {
-    background: #dbeafe;
-    color: #1e40af;
-  }
-
-  &--pink {
-    background: #fce7f3;
-    color: #9d174d;
-  }
-}
-
 .event-actions {
   margin-top: 0;
   margin-bottom: 0;
@@ -261,19 +199,15 @@ onMounted(() => {
 
 .event-card__title h3 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.4rem;
 }
 
 .event-card__title p {
   margin: 0.15rem 0 0;
-  font-size: 0.85rem;
-  color: var(--uranus-muted-text);
 }
 
 .event-card__value {
   display: block;
-  margin-top: 0.75rem;
-  font-size: 0.95rem;
 }
 
 .event-card__value--muted {

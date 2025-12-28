@@ -283,13 +283,25 @@ $button-text-color: #333;
   }
 }
 
-
 .uranus-dashboard-hero {
   display: flex;
   flex-direction: column;
   align-items: start;
   width: 100%;
-  padding: 18px;
+}
+
+.uranus-dashboard-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 520px));
+  gap: var(--uranus-grid-gap);
+  max-width: calc(560px * 3 + var(--uranus-grid-gap) * 2);
+  align-items: stretch;
+}
+
+.uranus-dashboard-card-grid > * {
+  display: flex;
+  height: 100%;
+  flex-direction: column; // top-aligned content
 }
 
 .uranus-vertical-flex {

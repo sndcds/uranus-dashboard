@@ -1,6 +1,6 @@
 <template>
   <div class="uranus-main-layout">
-    <DashboardHeroComponent
+    <UranusDashboardHero
         :title="t('user_messages_inbox')"
         :subtitle="t('dummy')"
     />
@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import InboxMessagesPanel from '@/components/dashboard/InboxMessagesPanel.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue";
 
 const { t } = useI18n()
 </script>

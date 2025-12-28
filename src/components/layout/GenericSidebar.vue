@@ -1,8 +1,12 @@
 <template>
-  <aside class="generic-sidebar" :class="{ 'generic-sidebar--open': isOpen, 'generic-sidebar--admin': isAdminPage }">
+  <aside
+      class="generic-sidebar"
+      :class="{ 'generic-sidebar--open': isOpen, 'generic-sidebar--admin': isAdminPage }"
+  >
     <nav class="generic-sidebar__nav">
       <!-- Admin Navigation -->
       <template v-if="isAdminPage">
+
         <router-link to="/admin/dashboard" class="generic-sidebar__nav-item"
           active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
@@ -10,7 +14,20 @@
               <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor" />
             </svg>
           </span>
-          <span class="generic-sidebar__nav-text">{{ t('dashboard') }}</span>
+          <span class="generic-sidebar__nav-text">{{ t('nav_dashboard') }}</span>
+        </router-link>
+
+        <router-link
+            to="/admin/todo-list"
+            class="generic-sidebar__nav-item"
+            active-class="generic-sidebar__nav-item--active"
+            @click="handleLinkClick">
+          <span class="generic-sidebar__nav-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor" />
+            </svg>
+          </span>
+          <span class="generic-sidebar__nav-text">{{ t('nav_todo_list') }}</span>
         </router-link>
 
         <router-link to="/admin/organizations" class="generic-sidebar__nav-item"
@@ -22,7 +39,7 @@
                 fill="currentColor" />
             </svg>
           </span>
-          <span class="generic-sidebar__nav-text">{{ t('organizations') }}</span>
+          <span class="generic-sidebar__nav-text">{{ t('nav_organizations') }}</span>
         </router-link>
 
         <router-link :to="venuesRoute" class="generic-sidebar__nav-item"
@@ -32,7 +49,7 @@
               <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" fill="currentColor" />
             </svg>
           </span>
-          <span class="generic-sidebar__nav-text">{{ t('venues') }}</span>
+          <span class="generic-sidebar__nav-text">{{ t('nav_venues') }}</span>
         </router-link>
 
         <router-link :to="eventsRoute" class="generic-sidebar__nav-item"
@@ -44,7 +61,7 @@
                 fill="currentColor" />
             </svg>
           </span>
-          <span class="generic-sidebar__nav-text">{{ t('events') }}</span>
+          <span class="generic-sidebar__nav-text">{{ t('nav_events') }}</span>
         </router-link>
 
         <!--router-link to="/admin/settings" class="generic-sidebar__nav-item"
@@ -200,6 +217,7 @@ const eventsRoute = computed(() => {
   flex-direction: column;
   gap: 0.25rem;
   padding: 0 0.75rem;
+  overflow: hidden;
 }
 
 .generic-sidebar__nav-item {

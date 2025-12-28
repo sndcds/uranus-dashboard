@@ -1,6 +1,6 @@
 <template>
     <div class="uranus-main-layout">
-        <DashboardHeroComponent :title="t('user_permissions_title')" :subtitle="t('user_permissions_subtitle')" />
+        <UranusDashboardHero :title="t('user_permissions_title')" :subtitle="t('user_permissions_subtitle')" />
 
         <div v-if="isLoading" class="user-permissions__status">
             {{ t('user_permissions_loading') }}
@@ -77,7 +77,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusNotification from "@/components/ui/UranusNotification.vue";
 
 interface PermissionResponseEntity {

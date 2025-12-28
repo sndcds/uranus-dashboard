@@ -6,15 +6,15 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         en: 'Organization',
         da: 'Organisation',
     },
+    organizations: {
+        de: 'Organisationen',
+        en: 'Organizations',
+        da: 'Organisationer',
+    },
     organization_name: {
         de: 'Organisationsname',
         en: 'Organization name',
         da: 'Organisationsnavn',
-    },
-    organizations_dashboard_description: {
-        de: 'Verwalte deine Organisationen.',
-        en: 'Manage your organizations.',
-        da: 'Administrer dine organisationer.',
     },
     organization_edit_description: {
         de: 'Überprüfe und aktualisiere die Daten deiner Organisation.',

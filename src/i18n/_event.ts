@@ -4,13 +4,6 @@ export const event = {
         event_select_venue_or_space: 'Spielstätte und Raum wählen',
         event_venue_space_as_event: 'Übergeordnete Spielstätte verwenden',
 
-        event_release_draft: 'Entwurf',
-        event_release_review: 'Korrektur',
-        event_release_released: 'Veröffentlicht',
-        event_release_cancelled: 'Abgesagt',
-        event_release_deferred: 'Verschoben',
-        event_release_status_label: 'Veröffentlichungsstatus',
-
         edit_event_image: 'Bild bearbeiten',
         add_event_image: 'Bild hinzufügen',
         alt_text: 'Alternativtext',
@@ -20,7 +13,6 @@ export const event = {
         license: 'Lizenz',
         focus_x: 'Fokus X-Wert',
         focus_y: 'Fokus Y-Wert',
-
 
         event_dates_and_times_title: 'Termine & Zeiten',
         event_dates_and_times_subtitle: 'Plane die einzelnen Termine und Zeiten deines Events',
@@ -152,13 +144,6 @@ export const event = {
         event_select_venue_or_space: 'Select venue and space',
         event_venue_space_as_event: 'Use global venue setting',
 
-        event_release_draft: 'Draft',
-        event_release_review: 'Review',
-        event_release_released: 'Released',
-        event_release_cancelled: 'Cancelled',
-        event_release_deferred: 'Deferred',
-        event_release_status_label: 'Release status',
-
         edit_event_image: 'Edit Image',
         add_event_image: 'Add Image',
         alt_text: 'Alt text',
@@ -168,7 +153,6 @@ export const event = {
         license: 'Lizense',
         focus_x: 'Focus x-value',
         focus_y: 'Focus y-value',
-
 
         event_start: 'Event Start',
         event_end: 'Event End',
@@ -302,13 +286,6 @@ export const event = {
         show_event_page: 'Se hele arrangementet',
         event_select_venue_or_space: 'Vælg spillested og lokalitet',
         event_venue_space_as_event: 'Brug overordnet spillested',
-
-        event_release_draft: 'Udkast',
-        event_release_review: 'Korrektur',
-        event_release_released: 'Udgivet',
-        event_release_cancelled: 'Aflyst',
-        event_release_deferred: 'Udsat',
-        event_release_status_label: 'Udgivelsesstatus',
 
         edit_event_image: 'Rediger billede',
         add_event_image: 'Tiljøj billede',

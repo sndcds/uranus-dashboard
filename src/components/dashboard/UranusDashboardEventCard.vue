@@ -89,7 +89,7 @@ import {
 import { type UranusEventBase } from '@/models/UranusEventModel.ts'
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 import UranusCard from "@/components/ui/UranusCard.vue";
-import UranusEventReleaseChip from "@/components/ui/UranusEventReleaseChip.vue";
+import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
 import UranusIconAction from "@/components/ui/UranusIconAction.vue";
 import UranusButton from "@/components/ui/UranusButton.vue";
 

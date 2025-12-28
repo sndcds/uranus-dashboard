@@ -1,6 +1,6 @@
 <template>
     <div class="uranus-main-layout organization-team-view">
-        <DashboardHeroComponent :title="t('organization_team_management')" :subtitle="t('organization_team_management_description')" />
+        <UranusDashboardHero :title="t('organization_team_management')" :subtitle="t('organization_team_management_description')" />
 
         <section class="organization-team">
             <div v-if="isLoading" class="team-state">
@@ -195,7 +195,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
+import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
 import UranusFieldLabel from '@/components/ui/UranusFieldLabel.vue'
 import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusFormRow from '@/components/ui/UranusFormRow.vue'

@@ -1,6 +1,6 @@
 <template>
   <div class="uranus-main-layout">
-    <DashboardHeroComponent
+    <UranusDashboardHero
       :title="t('events')"
       :subtitle="t('events_subtitle')"
     />
@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
-import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
+import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
 
 const { t } = useI18n()
 </script>

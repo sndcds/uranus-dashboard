@@ -1,6 +1,6 @@
 <template>
     <div class="uranus-main-layout">
-        <DashboardHeroComponent :title="t('update_venue')" :subtitle="venueDescription" />
+        <UranusDashboardHero :title="t('update_venue')" :subtitle="venueDescription" />
         <VenueForm ref="venueFormRef" :submit-label="t('update_venue')" :loading="isSubmitting || isLoadingVenue"
             :error-message="error" :success-message="success" :initial-values="formInitialValues" @submit="handleSubmit"
             :show-description="true" :show-date-fields="true" @clear-error="clearError" />
@@ -14,7 +14,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 
 import VenueForm, { type VenueFormInitialValues, type VenueFormSubmitPayload } from '@/components/VenueForm.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 
 interface LatLngLiteral {
     lat: number

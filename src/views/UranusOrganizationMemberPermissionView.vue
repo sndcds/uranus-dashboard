@@ -6,7 +6,7 @@
 -->
 <template>
   <div class="uranus-main-layout member-permission-view">
-    <DashboardHeroComponent :title="t('permissions')" :subtitle="pageSubtitle" />
+    <UranusDashboardHero :title="t('permissions')" :subtitle="pageSubtitle" />
 
     memberId: {{ memberId }}
 
@@ -74,7 +74,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { replaceInTemplate } from '@/utils/UranusStringUtils.ts'
-import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
+import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
 import UranusCard from '@/components/ui/UranusCard.vue'
 
 interface PermissionBitEntry {

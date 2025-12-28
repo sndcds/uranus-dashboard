@@ -41,5 +41,30 @@ export const uranusI18nNavigationTranslations: Record<string, Record<UranusLocal
         en: 'Privacy Policy',
         da: 'Privatlivspolitik'
     },
+    nav_dashboard: {
+        de: 'Dashboard',
+        en: 'Dashboard',
+        da: 'Dashboard'
+    },
+    nav_todo_list: {
+        de: 'Aufgaben',
+        en: 'Todo',
+        da: 'Opgaver'
+    },
+    nav_organizations: {
+        de: 'Organisationen',
+        en: 'Organizations',
+        da: 'Organisationer'
+    },
+    nav_venues: {
+        de: 'Spielstätten',
+        en: 'Venues',
+        da: 'Spillesteder'
+    },
+    nav_events: {
+        de: 'Events',
+        en: 'Events',
+        da: 'Arrangementer'
+    },
 }
 

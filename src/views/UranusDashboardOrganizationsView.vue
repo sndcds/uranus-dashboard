@@ -3,7 +3,10 @@
 -->
 <template>
   <div class="uranus-main-layout" style="max-width: 1600px;">
-    <DashboardHeroComponent :title="t('organizations')" :subtitle="t('organizations_dashboard_description')" />
+    <UranusDashboardHero
+        :title="t('organizations')"
+        :subtitle="t('dashboard_organizations_hero_description')"
+    />
 
     <!-- Empty State Message -->
     <UranusNotification
@@ -45,7 +48,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import UranusOrganizationCard from '@/components/organization/UranusOrganizationCard.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
 import UranusNotification from "@/components/ui/UranusNotification.vue";
 

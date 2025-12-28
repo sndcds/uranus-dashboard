@@ -1,6 +1,6 @@
 <template>
     <div class="uranus-main-layout">
-        <DashboardHeroComponent :title="title" :subtitle="subtitle" />
+        <UranusDashboardHero :title="title" :subtitle="subtitle" />
 
         <SpaceForm
             :submit-label="submitLabel"
@@ -20,7 +20,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
-import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
+import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
 import SpaceForm, { type SpaceFormInitialValues, type SpaceFormSubmitPayload } from '@/components/SpaceForm.vue'
 
 const route = useRoute()

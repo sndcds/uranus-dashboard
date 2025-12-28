@@ -1,6 +1,6 @@
 <template>
   <div class="uranus-main-layout">
-    <DashboardHeroComponent
+    <UranusDashboardHero
         :title="t('add_new_event_title')"
         :subtitle="t('event_form_subtitle')"
     />
@@ -26,7 +26,7 @@ import { useRouter } from 'vue-router'
 import { apiFetch, deepClean } from '@/api'
 import { useAppStore } from '@/store/appStore'
 
-import DashboardHeroComponent from '@/components/DashboardHeroComponent.vue'
+import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
 import UranusAddEventForm from '@/components/event/UranusAddEventForm.vue'
 
 const { t } = useI18n({ useScope: 'global' })

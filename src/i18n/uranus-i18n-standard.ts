@@ -26,6 +26,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'No',
         da: 'Nej',
     },
+    not_specified: {
+        de: 'Nicht angegeben',
+        en: 'Not specified',
+        da: 'Ikke angivet',
+    },
     title: {
       de: 'Titel',
       en: 'Title',
@@ -165,6 +170,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'E-Mail',
         en: 'email',
         da: 'e-mail',
+    },
+    password: {
+        de: 'Passwort',
+        en: 'Password',
+        da: 'Adgangskode',
     },
     website: {
         de: 'Homepage',

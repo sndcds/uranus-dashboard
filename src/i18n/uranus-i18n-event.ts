@@ -280,5 +280,35 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Eine Beschreibung ist erforderlich',
         en: 'A description is required',
         da: 'En beskrivelse er påkrævet',
-    }
+    },
+    event_release_draft: {
+        de: 'Entwurf',
+        en: 'Draft',
+        da: 'Udkast',
+    },
+    event_release_review: {
+        de: 'Korrektur',
+        en: 'Review',
+        da: 'Korrektur',
+    },
+    event_release_released: {
+        de: 'Veröffentlicht',
+        en: 'Released',
+        da: 'Udgivet',
+    },
+    event_release_cancelled: {
+        de: 'Abgesagt',
+        en: 'Cancelled',
+        da: 'Aflyst',
+    },
+    event_release_deferred: {
+        de: 'Verschoben',
+        en: 'Deferred',
+        da: 'Udsat',
+    },
+    event_release_status_label: {
+        de: 'Veröffentlichungsstatus',
+        en: 'Release status',
+        da: 'Udgivelsesstatus',
+    },
 }

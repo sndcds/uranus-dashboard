@@ -1,6 +1,6 @@
 <template>
   <div class="uranus-max-layout">
-    <DashboardHeroComponent
+    <UranusDashboardHero
         :title="t('events_title')"
         :subtitle="t('events_subtitle')" />
 
@@ -16,7 +16,7 @@
       Warum du keine Events hinzufügen kannst
     </span> <!-- TODO: Hinsweis einfügen! -->
 
-    <div class="uranus-dashboard-event-card-grid uranus-max-layout">
+    <div class="uranus-dashboard-card-grid uranus-max-layout">
       <UranusDashboardEventCard
           v-for="event in events"
           :key="event.eventId"
@@ -33,7 +33,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import UranusDashboardEventCard from '@/components/dashboard/UranusDashboardEventCard.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue"
 import { mapDashboardEventData } from "@/utils/UranusDashboardEventDataMapper.ts"
 import { UranusEventBase } from "@/models/UranusEventModel.ts"
@@ -110,19 +110,3 @@ const removeEventCard = async ({
   await fetchEvents()
 }
 </script>
-
-<style scoped lang="scss">
-.uranus-dashboard-event-card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 520px));
-  gap: var(--uranus-grid-gap);
-  max-width: calc(560px * 3 + var(--uranus-grid-gap) * 2);
-  align-items: stretch;
-}
-
-.uranus-dashboard-event-card-grid > * {
-  display: flex;
-  height: 100%;
-  flex-direction: column; // top-aligned content
-}
-</style>

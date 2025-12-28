@@ -3,7 +3,7 @@
 -->
 <template>
   <div v-if="event" class="uranus-main-layout uranus-inline-layout">
-    <DashboardHeroComponent :title="t('edit_event')" />
+    <UranusDashboardHero :title="t('edit_event')" />
     <span>Edit event #{{ eventId }}</span>
 
     <UranusCard>
@@ -63,7 +63,7 @@ import { apiFetch } from "@/api.ts";
 import { mapEventDetailData } from "@/utils/UranusEventDetailMapper.ts"
 import { type UranusEventDetail, UranusImageMeta } from '@/models/UranusEventModel.ts'
 
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue";
 import UranusEditEventTitle from "@/components/event/UranusEditEventTitle.vue";
 import UranusEditEventDescription from "@/components/event/UranusEditEventDescription.vue";
 import UranusEditEventTypes from "@/components/event/UranusEditEventTypes.vue";

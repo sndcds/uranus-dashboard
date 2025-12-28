@@ -3,7 +3,7 @@
 -->
 <template>
   <div class="uranus-main-layout">
-    <DashboardHeroComponent
+    <UranusDashboardHero
         :title="t('organization')"
         :subtitle="t('organization_edit_description')" />
     #{{ organizationId }}
@@ -145,7 +145,7 @@ import { apiFetch, fetchCoordinatesForAddress } from '@/api'
 import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
 import UranusRegionSelect from '@/components/selects/UranusRegionSelect.vue'
 import ValueInfoComponent from "@/components/ValueInfoComponent.vue"
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusTextInput from "@/components/ui/UranusTextInput.vue"
 import UranusFormRow from "@/components/ui/UranusFormRow.vue"
 import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"

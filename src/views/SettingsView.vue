@@ -1,6 +1,6 @@
 <template>
   <div class="uranus-main-layout">
-    <DashboardHeroComponent
+    <UranusDashboardHero
         :title="t('settings')"
         :subtitle="heroSubtitle"
     />
@@ -19,7 +19,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue";
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue";
 
 const { t, te } = useI18n({ useScope: 'global' })
 

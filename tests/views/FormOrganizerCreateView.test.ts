@@ -65,7 +65,7 @@ describe('FormOrganizationCreateView', () => {
       },
     })
 
-    // Check for form button text instead since DashboardHeroComponent is stubbed
+    // Check for form button text instead since UranusDashboardHero is stubbed
     expect(wrapper.find('button[type="submit"]').text()).toBe('Create Organization')
     expect(wrapper.find('form').exists()).toBe(true)
   })

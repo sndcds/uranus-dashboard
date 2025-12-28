@@ -1,6 +1,6 @@
 <template>
     <div class="uranus-main-layout">
-        <DashboardHeroComponent :title="heroTitle" :subtitle="heroSubtitle" />
+        <UranusDashboardHero :title="heroTitle" :subtitle="heroSubtitle" />
 
         <section class="uranus-card">
             <transition name="fade">
@@ -101,7 +101,7 @@ import { useUserStore } from '@/store/userStore'
 import UserAvatarUpload from '@/components/UserAvatarUpload.vue'
 import type { ThemeMode } from '@/utils/theme'
 import { apiFetch } from '@/api'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusTextInput from "@/components/ui/UranusTextInput.vue"
 import UranusFormRow from "@/components/ui/UranusFormRow.vue"
 import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"

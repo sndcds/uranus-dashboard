@@ -1,3 +1,6 @@
+<!--
+  UranusEventReleaseChip.vue
+-->
 <template>
   <div v-if="releaseStatusId" :class="['event-meta__row', sizeClass]">
     <span

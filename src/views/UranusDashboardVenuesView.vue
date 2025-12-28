@@ -1,6 +1,6 @@
 <template>
   <div class="uranus-main-layout">
-    <DashboardHeroComponent :title="t('venues')" :subtitle="t('venues_description')" />
+    <UranusDashboardHero :title="t('venues')" :subtitle="t('venues_description')" />
 
     <!-- No Organization Selected Message -->
     <div v-if="!organizationId" class="organization-venue-view__no-organization">
@@ -23,9 +23,14 @@
           {{ t('venue_add') }}
         </router-link>
       </UranusDashboardActionBar>
-      <span v-else-if="organization && !organization.can_add_venue">
-        Warum du keine Spielstätten hinzufügen kannst
-      </span> <!-- TODO: Hinsweis einfügen! -->
+
+      <UranusDashboardInfo
+          title="Warum kann ich keine Spielstätten hinzufügen?"
+          text="<p>Dir fehlen die erforderlichen Zugriffsrechte.<br>Diese werden von der Organisation vergeben, zu der die Spielstätte ghört.</p>"
+          url="https://sndcds.github.io/uranus-docs/"
+          link-label="Dokumentation"
+      />
+
 
       <!-- Error Message -->
       <div v-if="error" class="organization-venue-view__error">
@@ -54,8 +59,9 @@ import { apiFetch } from '@/api'
 import { useAppStore } from '@/store/appStore'
 
 import UranusVenueCard from '@/components/venue/UranusVenueCard.vue'
-import DashboardHeroComponent from "@/components/DashboardHeroComponent.vue"
+import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue"
+import UranusDashboardInfo from "@/components/dashboard/UranusDashboardInfo.vue";
 
 const { t } = useI18n()
 const appStore = useAppStore()
