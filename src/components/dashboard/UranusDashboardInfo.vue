@@ -61,6 +61,7 @@ const toggle = () => {
 .uranus-dashboard-info {
   background: var(--uranus-card-bg);
   padding: 0.75rem 1rem;
+  max-width: var(--uranus-notification-max-width);
 }
 
 .header {

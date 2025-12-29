@@ -21,6 +21,10 @@
             <h3>{{ event.title }}</h3>
             <span>{{ event.start_date }} {{ event.start_time || '' }}</span>
             <span>{{ event.venue_name }}, {{ event.venue_city }}</span>
+            <UranusEventReleaseChip
+                v-if="(event.release_status_id ?? 0) > 3"
+                :releaseStatusId="event.release_status_id"
+            />
           </div>
 
           <!-- Hover overlay -->
@@ -53,6 +57,7 @@ import { h, ref, defineComponent, computed, onMounted, onBeforeUnmount, watch } 
 import { useRouter } from "vue-router"
 import { apiFetch } from "@/api.ts"
 import { useEventsFilterStore } from '@/store/eventsFilterStore'
+import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
 
 const router = useRouter()
 
@@ -107,7 +112,8 @@ interface CalendarEvent {
   venue_name: string | null
   venue_city: string | null
   event_types: CalendarEventType[] | null
-  organization_name: string | null
+  organization_name: string | null,
+  release_status_id: number | null
 }
 
 interface EventsResponse {

@@ -146,15 +146,11 @@ const handleLinkClick = () => {
 
 // Dynamic routes based on organizationId
 const venuesRoute = computed(() => {
-  return appStore.organizationId
-    ? `/admin/organization/${appStore.organizationId}/venues`
-    : '/admin/organization/venues/empty'
+  return `/admin/organization/${appStore.organizationId}/venues`
 })
 
 const eventsRoute = computed(() => {
-  return appStore.organizationId
-    ? `/admin/organization/${appStore.organizationId}/events`
-    : '/admin/organization/events/empty'
+  return `/admin/organization/${appStore.organizationId}/events`
 })
 </script>
 
