@@ -47,6 +47,11 @@ export const uranusI18nDashboardTranslations: Record<string, Record<UranusLocale
         en: 'You have no tasks at the moment.',
         da: 'Du har ingen opgaver i øjeblikket.',
     },
+    add_todo: {
+        de: 'Aufgabe erstellen',
+        en: 'Create task',
+        da: 'Ny opgave',
+    },
     edit_todo: {
         de: 'Aufgabe bearbeiten',
         en: 'Edit task',

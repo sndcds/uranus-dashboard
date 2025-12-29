@@ -1,3 +1,6 @@
+<!--
+  UranusDashboardTodosView.vue
+-->
 <template>
   <div class="uranus-main-layout" style="max-width: 1600px;">
     <UranusDashboardHero
@@ -13,6 +16,15 @@
         :text="t('todo_empty_message')"
     />
 
+    <UranusDashboardActionBar>
+      <div
+          class="uranus-action-button"
+          @click="openCreate"
+      >
+        {{ t('add_todo') }}
+      </div>
+    </UranusDashboardActionBar>
+
     <!-- Error -->
     <div v-if="error" class="todo-dashboard-view__error">
       <p class="form-feedback-error">{{ error }}</p>
@@ -22,13 +34,20 @@
     <div class="todo-list" v-if="!loading && todos.length">
       <UranusTodoListItem
           v-for="todo in todos"
-          :key="todo.todo_id"
+          :key="todo.id"
           :todo="todo"
           @updated="updateTodo"
           @deleted="deleteTodo"
       />
     </div>
   </div>
+
+  <UranusEditTodoModal
+      :show="showCreateModal"
+      :todo="null"
+      @close="showCreateModal = false"
+      @updated="createTodo"
+  />
 </template>
 
 <script setup lang="ts">
@@ -39,11 +58,14 @@ import { apiFetch } from '@/api'
 import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/components/ui/UranusNotification.vue'
 import UranusTodoListItem from '@/components/todo/UranusTodoListItem.vue'
+import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
+import UranusButton from "@/components/ui/UranusButton.vue";
+import UranusEditTodoModal from "@/components/todo/UranusEditTodoModal.vue";
 
 const { t } = useI18n()
 
 interface Todo {
-  todo_id: number
+  id: number
   title: string
   description: string | null
   due_date: string | null
@@ -53,6 +75,7 @@ interface Todo {
 const todos = ref<Todo[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
+const showCreateModal = ref(false)
 
 onMounted(async () => {
   try {
@@ -70,15 +93,23 @@ onMounted(async () => {
   }
 })
 
+const openCreate = () => {
+  showCreateModal.value = true
+}
+
+const createTodo = (todo: Todo) => {
+  todos.value = [todo, ...todos.value]
+}
+
 const updateTodo = (updated: Todo) => {
   console.log("What:", JSON.stringify(updated, null, 2))
   todos.value = todos.value.map(t =>
-      t.todo_id === updated.todo_id ? { ...updated } : t
+      t.id === updated.id ? { ...updated } : t
   )
 }
 
 const deleteTodo = (todoId: number) => {
-  todos.value = todos.value.filter(t => t.todo_id !== todoId)
+  todos.value = todos.value.filter(t => t.id !== todoId)
 }
 </script>
 

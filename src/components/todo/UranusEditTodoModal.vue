@@ -1,7 +1,11 @@
+<!--
+  UranusEditTodoModal.vue
+-->
 <template>
   <UranusModal
       :show="show"
-      :title="t('edit_todo')"
+      :title="props.todo ? t('edit_todo') : t('add_todo')"
+      :close-on-backdrop="false"
       @close="onCancel"
   >
     <!-- BODY -->
@@ -79,7 +83,7 @@ import UranusCheckboxButton from '@/components/ui/UranusCheckboxButton.vue'
 import UranusFormRow from "@/components/ui/UranusFormRow.vue";
 
 interface Todo {
-  todo_id: number
+  id: number
   title: string
   description: string | null
   due_date: string | null
@@ -130,26 +134,28 @@ const onCancel = () => {
 }
 
 const onSubmit = async () => {
-  if (!props.todo) return
-
   saving.value = true
   error.value = ''
 
   try {
-    const updatedTodo: Todo = {
-      todo_id: props.todo.todo_id,
+    const payload: Todo = {
+      id: props.todo ? props.todo.id : -1,
       title: form.title,
       description: form.description || null,
       due_date: form.due_date || null,
       completed: form.completed,
     }
 
-    await apiFetch(`/api/admin/todo/${props.todo.todo_id}`, {
+    const { data } = await apiFetch<{ id: number }>(`/api/admin/todo`, {
       method: 'PUT',
-      body: JSON.stringify(updatedTodo),
+      body: JSON.stringify(payload),
     })
 
-    emit('updated', { ...updatedTodo }) // notify parent
+    if (props.todo) {
+      payload.id = data.id;
+    }
+
+    emit('updated', { ...payload })
     emit('close')
   } catch {
     error.value = t('failed_to_save_todo')

@@ -1,3 +1,6 @@
+<!--
+  UranusTodoListItem.vue
+-->
 <template>
   <div class="todo-list-item" :class="{ completed: todo.completed }">
     <div class="todo-main">
@@ -52,7 +55,7 @@ import UranusEditTodoModal from '@/components/todo/UranusEditTodoModal.vue'
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 
 interface Todo {
-  todo_id: number
+  id: number
   title: string
   description: string | null
   due_date: string | null
@@ -100,11 +103,11 @@ const confirmDelete = async ({ password }: { password: string }) => {
   deleteError.value = ''
 
   try {
-    await apiFetch(`/api/admin/todo/${props.todo.todo_id}`, {
+    await apiFetch(`/api/admin/todo/${props.todo.id}`, {
       method: 'DELETE',
       body: JSON.stringify({ password }),
     })
-    emit('deleted', props.todo.todo_id)
+    emit('deleted', props.todo.id)
     cancelDelete()
   } catch {
     deleteError.value = t('failed_to_delete_todo')
