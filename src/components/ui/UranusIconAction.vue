@@ -1,6 +1,4 @@
-<!--
-  UranusIconAction.vue
--->
+<!-- UranusIconAction.vue -->
 <template>
   <component
       :is="to ? 'router-link' : 'span'"
@@ -10,26 +8,29 @@
       :title="title"
       @click="handleClick"
   >
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        :class="`${mode}-icon`"
-    >
-      <path :d="iconPath" />
-    </svg>
+    <component
+        v-if="IconComponent"
+        :is="IconComponent"
+        class="icon-svg"
+    />
     <slot />
   </component>
 </template>
 
 <script setup lang="ts">
-import {computed} from "vue";
+import { computed } from "vue";
+
+// Import SVGs as Vue components
+import EditIcon from '@/assets/icons/edit.svg'
+import DeleteIcon from '@/assets/icons/delete.svg'
+import AddIcon from '@/assets/icons/add.svg'
+import OrganizationIcon from '@/assets/icons/organization.svg'
 
 const props = defineProps<{
   title?: string
   to?: string
   onClick?: () => void
-  mode?: 'edit' | 'delete' | 'add'
+  mode?: 'edit' | 'delete' | 'add' | 'organization'
 }>()
 
 const emit = defineEmits<{
@@ -43,26 +44,24 @@ const handleClick = () => {
   }
 }
 
-const iconPath = computed(() => {
+// Map modes to imported SVG components
+const IconComponent = computed(() => {
   switch (props.mode) {
-    case 'delete':
-      return 'M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z'
-    case 'add':
-      return 'M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z'
+    case 'delete': return DeleteIcon
+    case 'add': return AddIcon
+    case 'organization': return OrganizationIcon
     case 'edit':
-    default:
-      return 'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.004 1.004 0 0 0 0-1.42l-2.34-2.34a1.004 1.004 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z'
+    default: return EditIcon
   }
 })
 
-const modeClass = computed(() => {
-  return {
-    delete: props.mode === 'delete',
-    add: props.mode === 'add',
-    edit: props.mode === 'edit',
-    clickable: !!props.onClick
-  }
-})
+const modeClass = computed(() => ({
+  delete: props.mode === 'delete',
+  add: props.mode === 'add',
+  edit: props.mode === 'edit',
+  organization: props.mode === 'organization',
+  clickable: !!props.onClick
+}))
 </script>
 
 <style scoped lang="scss">
@@ -70,8 +69,8 @@ const modeClass = computed(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   padding: 4px;
   transition: background 0.2s ease;
@@ -104,10 +103,18 @@ const modeClass = computed(() => {
     }
   }
 
-  svg {
-    display: block;
-    width: 16px;
-    height: 16px;
+  &.organization {
+    color: var(--uranus-card-color);
+    &:hover {
+      color: var(--accent-secondary, #10b981);
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+  }
+
+  .icon-svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
   }
 }
 </style>

@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import svgLoader from 'vite-svg-loader'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
@@ -11,11 +12,14 @@ export default defineConfig(({ mode }) => {
     const apiTarget = env.VITE_API_URL
 
     return {
-        plugins: [vue()],
+        plugins: [
+            vue(),
+            svgLoader(),
+        ],
         define: {
             __VUE_I18N_FULL_INSTALL__: true,
-            __VUE_I18N_LEGACY_API__: true,       // 👈 wichtig für $t / Legacy
-            __INTLIFY_JIT_COMPILATION__: true,   // 👈 JIT-Compiler einschalten (Prod)
+            __VUE_I18N_LEGACY_API__: true,
+            __INTLIFY_JIT_COMPILATION__: true,
             __INTLIFY_DROP_MESSAGE_COMPILER__: false,
             __INTLIFY_PROD_DEVTOOLS__: false,
         },

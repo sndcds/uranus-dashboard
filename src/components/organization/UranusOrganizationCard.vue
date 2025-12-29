@@ -44,7 +44,7 @@
       <UranusDashboardButton
           v-if="organization.can_manage_team"
           class="uranus-button tiny"
-          icon="team"
+          icon="organization"
           :to="`/admin/organization/${organization.organization_id}/team`"
       >
         {{ t('manage_team') }}

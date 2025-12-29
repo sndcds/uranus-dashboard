@@ -5,13 +5,13 @@
   justify-content: center;
   gap: 0.5rem;
   border: none;
-  padding: 0.3rem 0.8rem;
   cursor: pointer;
   border-radius: 2px;
   background: var(--uranus-button-bg);
   color: var(--uranus-button-color);
   text-decoration: none;
   transition: all 0.1s ease;
+  padding: 0.4rem 0.8rem !important;
 
   &:hover {
     background: var(--uranus-button-hover-bg);
@@ -30,8 +30,8 @@
 }
 
 .uranus-button-icon {
-  width: 1.2em;
-  height: 1.2em;
+  width: 1.4em;
+  height: 1.4em;
   flex-shrink: 0;
 }
 
