@@ -106,6 +106,11 @@
         />
       </UranusFormRow>
 
+      <UranusFormRow>
+        <UranusDateInput id="start-date" v-model="filter.startDate" :label="t('calendar_filter_start_date')" />
+        <UranusDateInput id="end-date" v-model="filter.endDate" :label="t('calendar_filter_end_date')" />
+      </UranusFormRow>
+
       <UranusInlineEditActions
           :isSaving="isSavingFilter"
           :canSave="canSaveFilter"
@@ -131,6 +136,7 @@ import UranusFormRow from "@/components/ui/UranusFormRow.vue";
 import UranusInlineEditActions from "@/components/ui/UranusInlineEditActions.vue";
 import UranusTextInput from "@/components/ui/UranusTextInput.vue";
 import { urlParamsSetIfPresent } from "@/utils/UranusUtils.ts";
+import UranusDateInput from "@/components/ui/UranusDateInput.vue";
 
 const router = useRouter()
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -215,13 +221,14 @@ const getTypeName = (typeId: number) =>
 interface CalendarEventsFilter {
   search: string
   city: string
+  startDate?: string
+  endDate?: string
 }
 
 /* -------------------- State -------------------- */
 
 const events = ref<CalendarEvent[]>([])
-const limit = 10
-const total = ref(200) // TODO: !!!
+const limit = 32
 const loading = ref(false)
 const isSavingFilter = ref(false)
 const canSaveFilter = ref(true)
@@ -232,11 +239,9 @@ const lastEventDateId = ref<number | null>(null)
 // Use reactive state for your filter object
 const filter = ref<CalendarEventsFilter>({
   search: '',
-  city: ''
-})
-
-const hasMore = computed(() => {
-  return total.value === 0 || events.value.length < total.value
+  city: '',
+  startDate: '',
+  endDate: ''
 })
 
 const canResetFilterMore = computed(() => {
@@ -282,12 +287,13 @@ const loadEvents = async (resetObserver = false) => {
     }
     urlParamsSetIfPresent(params, 'search', filter.value.search)
     urlParamsSetIfPresent(params, 'city', filter.value.city)
+    urlParamsSetIfPresent(params, 'start', filter.value.startDate)
+    urlParamsSetIfPresent(params, 'end', filter.value.endDate)
 
     const { data } = await apiFetch<{
       events: CalendarEvent[]
       last_event_start_at: string
       last_event_date_id: number
-      total: number
     }>(`/api/events?${params.toString()}`)
 
     if (data?.events.length) {
@@ -297,8 +303,6 @@ const loadEvents = async (resetObserver = false) => {
       lastEventStartAt.value = data.last_event_start_at
       lastEventDateId.value = data.last_event_date_id
     }
-
-    total.value = data.total ?? 0
 
     // Fetch type summary
     const response = await apiFetch<{ summary: TypeSummaryEntry[] }>("/api/events/type-summary")
@@ -375,6 +379,8 @@ const onSaveFilter = async () => {
   lastEventStartAt.value = null
   lastEventDateId.value = null
 
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+
   try {
     await loadEvents()
   } finally {
@@ -394,7 +400,6 @@ const onResetFilter = () => {
   events.value = []
   lastEventStartAt.value = null
   lastEventDateId.value = null
-  total.value = 0
 
   window.scrollTo({ top: 0, behavior: 'smooth' })
 

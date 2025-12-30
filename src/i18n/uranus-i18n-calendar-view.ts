@@ -21,6 +21,16 @@ export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLoc
         en: 'City',
         da: 'By',
     },
+    calendar_filter_start_date: {
+        de: 'Datum ab',
+        en: 'Start date',
+        da: 'Start dato',
+    },
+    calendar_filter_end_date: {
+        de: 'Datum bis',
+        en: 'End date',
+        da: 'Slutdato',
+    },
     calendar_filter_button_label: {
         de: 'Filter',
         en: 'Filter',
