@@ -254,3 +254,14 @@ export function buildVenueSpaceKey(venue_id: number | null, space_id: number | n
     if (space_id === null || space_id === undefined) return `${venue_id}`
     return `${venue_id}_${space_id}`
 }
+
+
+export function urlParamsSetIfPresent(
+    params: URLSearchParams,
+    key: string,
+    value: string | null | undefined
+) {
+    if (value?.trim()) {
+        params.set(key, value)
+    }
+}

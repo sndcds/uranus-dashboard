@@ -5,15 +5,15 @@
       <div class="calendar-settings">
         <div class="calendar-filter-buttons">
           <button class="filter-button" @click="showFilterModal = true">
-            {{ t('filter_button_label') }}
+            {{ t('calendar_filter_button_label') }}
           </button>
 
           <button
               class="reset-filter-button"
               @click="onResetFilter"
-              :disabled="!filter.search"
+              :disabled="!canResetFilterMore"
           >
-            {{ t('reset_button_label') }}
+            {{ t('calendar_filter_reset_button_label') }}
           </button>
         </div>
 
@@ -82,14 +82,27 @@
       :title="t('calendar_filter_settings_title')"
       @close="showFilterModal = false"
       show>
-    <div class="uranus-form">
+    <form
+        class="uranus-form"
+        @submit.prevent="onSaveFilter"
+        novalidate
+    >
       <UranusFormRow>
         <UranusTextInput
-            id="url-input"
+            id="search-input"
             v-model="filter.search!"
             :label="t('calendar_filter_search_label')"
             :placeholder="t('calendar_filter_search_placeholder')"
-            required
+            @keydown.enter.prevent="onSaveFilter"
+        />
+      </UranusFormRow>
+
+      <UranusFormRow>
+        <UranusTextInput
+            id="city-input"
+            v-model="filter.city!"
+            :label="t('calendar_filter_city_label')"
+            @keydown.enter.prevent="onSaveFilter"
         />
       </UranusFormRow>
 
@@ -99,7 +112,7 @@
           @save="onSaveFilter"
           @cancel="onCancelFilter"
       />
-    </div>
+    </form>
 
   </UranusModal>
 
@@ -108,15 +121,16 @@
 <script setup lang="ts">
 import { h, ref, defineComponent, computed, onMounted, onBeforeUnmount, watch } from "vue"
 import { useRouter } from "vue-router"
-import {useI18n} from "vue-i18n";
+import { useI18n } from "vue-i18n";
 import { apiFetch } from "@/api.ts"
 import UranusModal from '@/components/uranus/UranusModal.vue'
 import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
 import { useEventsFilterStore } from '@/store/eventsFilterStore'
-import {useEventTypeLookupStore} from "@/store/eventTypesLookup.ts";
+import { useEventTypeLookupStore } from "@/store/eventTypesLookup.ts";
 import UranusFormRow from "@/components/ui/UranusFormRow.vue";
 import UranusInlineEditActions from "@/components/ui/UranusInlineEditActions.vue";
 import UranusTextInput from "@/components/ui/UranusTextInput.vue";
+import { urlParamsSetIfPresent } from "@/utils/UranusUtils.ts";
 
 const router = useRouter()
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -189,13 +203,6 @@ interface CalendarEvent {
   release_status_id: number | null
 }
 
-/*
-interface EventsResponse {
-  events: CalendarEvent[]
-  total: number
-}
-*/
-
 interface TypeSummaryEntry {
   type_id: number;
   date_count: number;
@@ -207,6 +214,7 @@ const getTypeName = (typeId: number) =>
 
 interface CalendarEventsFilter {
   search: string
+  city: string
 }
 
 /* -------------------- State -------------------- */
@@ -223,12 +231,18 @@ const lastEventDateId = ref<number | null>(null)
 
 // Use reactive state for your filter object
 const filter = ref<CalendarEventsFilter>({
-  search: ''
+  search: '',
+  city: ''
 })
 
 const hasMore = computed(() => {
   return total.value === 0 || events.value.length < total.value
 })
+
+const canResetFilterMore = computed(() => {
+  return filter.value.search || filter.value.city
+})
+
 
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
@@ -246,6 +260,7 @@ watch(searchQuery, () => {
     loadEvents()
   }, 300)
 })
+
 
 const loadEvents = async (resetObserver = false) => {
   if (loading.value) return
@@ -265,10 +280,8 @@ const loadEvents = async (resetObserver = false) => {
         params.set("last_event_date_id", lastEventDateId.value.toString())
       }
     }
-
-    if (filter.value.search) {
-      params.set("search", filter.value.search)
-    }
+    urlParamsSetIfPresent(params, 'search', filter.value.search)
+    urlParamsSetIfPresent(params, 'city', filter.value.city)
 
     const { data } = await apiFetch<{
       events: CalendarEvent[]
@@ -369,10 +382,13 @@ const onSaveFilter = async () => {
   }
 }
 
-const onCancelFilter = () => {}
+const onCancelFilter = () => {
+  showFilterModal.value = false
+}
 
 const onResetFilter = () => {
   filter.value.search = ''
+  filter.value.city = ''
 
   // Reset the event list and pagination cursors
   events.value = []

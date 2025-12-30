@@ -15,6 +15,21 @@ export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLoc
         de: 'Wonach suchst du?',
         en: 'What are you looking for?',
         da: 'Hvad søger du?',
+    },
+    calendar_filter_city_label: {
+        de: 'Stadt',
+        en: 'City',
+        da: 'By',
+    },
+    calendar_filter_button_label: {
+        de: 'Filter',
+        en: 'Filter',
+        da: 'Filter',
+    },
+    calendar_filter_reset_button_label: {
+        de: 'Filter zurücksetzen',
+        en: 'Reset filter',
+        da: 'Nultil filter',
     }
 }
 

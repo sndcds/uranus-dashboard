@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
+import { computed, useSlots, onMounted, onBeforeUnmount } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -53,12 +53,14 @@ const props = withDefaults(
     description?: string
     maxWidth?: string
     closeOnBackdrop?: boolean
+    closeOnEscape?: boolean
   }>(),
   {
     title: '',
     description: '',
     maxWidth: '500px',
     closeOnBackdrop: false,
+    closeOnEscape: true,
   }
 )
 
@@ -70,11 +72,24 @@ const handleBackdropClick = () => {
   }
 }
 
+const handleKeydown = (e: KeyboardEvent) => {
+  if (props.closeOnEscape && e.key === 'Escape') {
+    emit('close')
+  }
+}
 const slots = useSlots()
 
 const hasHeaderContent = computed(
   () => !!props.title || !!props.description
 )
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <style scoped lang="scss">
