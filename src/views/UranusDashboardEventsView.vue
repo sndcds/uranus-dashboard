@@ -14,7 +14,7 @@
     </UranusDashboardActionBar>
 
     <UranusDashboardInfo
-        v-else
+        v-else-if="!isLoading"
         title="Warum kann ich keine Events hinzufügen?"
         text="<p>Dir fehlen die erforderlichen Zugriffsrechte.</p>"
         url="https://sndcds.github.io/uranus-docs/"

@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <div v-else class="uranus-main-layout">
+    <div v-else-if="!isLoading" class="uranus-main-layout">
       <UranusDashboardActionBar
           v-if="organization && organization.can_add_venue"
       >
@@ -110,6 +110,7 @@ interface Organization {
   venues: Venue[]
 }
 
+const isLoading = ref(true)
 const organization = ref<Organization | null>(null)
 const error = ref<string | null>(null)
 
@@ -127,8 +128,10 @@ const handleVenueDeleted = (venueId: number) => {
 watch(
     organizationId,
     async (id) => {
+      isLoading.value = true
       if (id === null) {
         organization.value = null
+        isLoading.value = false
         return
       }
 
@@ -146,9 +149,11 @@ watch(
           error.value = 'Unknown error'
         }
         organization.value = null
+      } finally {
+        isLoading.value = false
       }
     },
-    { immediate: true } // fetch on initial load
+    { immediate: true }
 )
 </script>
 

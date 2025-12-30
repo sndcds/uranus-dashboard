@@ -10,7 +10,7 @@
 
     <!-- Empty State Message -->
     <UranusNotification
-        v-if="!loading && !organizations.length"
+        v-if="!isLoading && organizations.length === 0"
         type="warning"
         :title="t('notification')"
         :text="t('organization_no_membership_message')"
@@ -70,7 +70,7 @@ interface Organization {
 }
 
 const organizations = ref<Organization[]>([])
-const loading = ref(true)
+const isLoading = ref(true)
 const error = ref<string | null>(null)
 
 const handleOrganizationDeleted = (organizationId: number) => {
@@ -90,7 +90,7 @@ onMounted(async () => {
     }
   }
   finally {
-    loading.value = false
+    isLoading.value = false
   }
 })
 </script>
