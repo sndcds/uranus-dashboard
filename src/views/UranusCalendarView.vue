@@ -3,17 +3,28 @@
     <div class="calendar-body">
 
       <div class="calendar-settings">
-        <button class="filter-button" @click="showFilterModal = true">
-          Filters
-        </button>
+        <div class="calendar-filter-buttons">
+          <button class="filter-button" @click="showFilterModal = true">
+            {{ t('filter_button_label') }}
+          </button>
+
+          <button
+              class="reset-filter-button"
+              @click="onResetFilter"
+              :disabled="!filter.search"
+          >
+            {{ t('reset_button_label') }}
+          </button>
+        </div>
+
         <div class="calendar-type-chips">
-        <span
-            v-for="entry in typeSummary"
-            :key="entry.type_id"
-            class="type-chip"
-        >
-          {{ getTypeName(entry.type_id) }} ({{ entry.date_count }})
-        </span>
+          <span
+              v-for="entry in typeSummary"
+              :key="entry.type_id"
+              class="type-chip"
+          >
+            {{ getTypeName(entry.type_id) }} ({{ entry.date_count }})
+          </span>
         </div>
       </div>
 
@@ -237,9 +248,14 @@ watch(searchQuery, () => {
   }, 300)
 })
 
-const loadEvents = async () => {
+const loadEvents = async (resetObserver = false) => {
   if (loading.value) return
   loading.value = true
+
+  // Temporarily disconnect observer if resetting
+  if (resetObserver && observer) {
+    observer.disconnect()
+  }
 
   try {
     const params = new URLSearchParams({ limit: limit.toString() })
@@ -270,7 +286,9 @@ const loadEvents = async () => {
       lastEventDateId.value = data.last_event_date_id
     }
 
-    // Fetching type summary
+    total.value = data.total ?? 0
+
+    // Fetch type summary
     const response = await apiFetch<{ summary: TypeSummaryEntry[] }>("/api/events/type-summary")
     typeSummary.value = response.data.summary || []
 
@@ -278,6 +296,11 @@ const loadEvents = async () => {
     console.error("Failed to load events:", err)
   } finally {
     loading.value = false
+
+    // Reconnect observer after first page
+    if (resetObserver && observer && loadMoreTrigger.value) {
+      observer.observe(loadMoreTrigger.value)
+    }
   }
 }
 
@@ -349,6 +372,21 @@ const onSaveFilter = async () => {
 
 const onCancelFilter = () => {}
 
+const onResetFilter = () => {
+  filter.value.search = ''
+
+  // Reset the event list and pagination cursors
+  events.value = []
+  lastEventStartAt.value = null
+  lastEventDateId.value = null
+  total.value = 0
+
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+
+  // Reload events and reset observer
+  loadEvents(true)
+}
+
 onBeforeUnmount(() => {
   observer?.disconnect()
 })
@@ -378,13 +416,6 @@ onBeforeUnmount(() => {
   transform: translateY(-3px);
 }
 
-.calendar-settings-top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
 .filter-button {
   background-color: #333;
   color: #fff;
@@ -395,10 +426,28 @@ onBeforeUnmount(() => {
   font-size: 0.9rem;
 
   &:hover {
-    background-color: #fc0;
+    background-color: #555;
   }
 }
 
+.reset-filter-button {
+  background-color: #eee;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  &:hover:enabled {
+    background-color: #ddd;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
 
 /* Featured cards */
 .calendar-layout > .calendar-card:first-child,
@@ -439,6 +488,31 @@ onBeforeUnmount(() => {
   border-bottom: 1px solid #eee;
   min-height: 100px;
   background: var(--uranus-dashboard-bg);
+  // background: mistyrose;
+}
+
+.calendar-filter-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  // background: greenyellow;
+}
+
+.calendar-type-chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  // background: #ccffcc;
+}
+
+.type-chip {
+  background-color: #fff;
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  cursor: default;
+  user-select: none;
 }
 
 /* Hover overlay */
@@ -457,22 +531,6 @@ onBeforeUnmount(() => {
 
 .calendar-card:hover .calendar-overlay {
   opacity: 1;
-}
-
-.calendar-type-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.type-chip {
-  background-color: #fff;
-  padding: 4px 8px;
-  border-radius: 16px;
-  font-size: 0.9rem;
-  cursor: default;
-  user-select: none;
 }
 
 /* Infinite scroll helpers */
