@@ -3,6 +3,9 @@
     <div class="calendar-body">
 
       <div class="calendar-settings">
+        <button class="filter-button" @click="showFilterModal = true">
+          Filters
+        </button>
         <div class="calendar-type-chips">
         <span
             v-for="entry in typeSummary"
@@ -61,20 +64,55 @@
 
     </div>
   </div>
+
+  <!-- Modal -->
+  <UranusModal
+      v-if="showFilterModal"
+      :title="t('event_calendar_filter_settings')"
+      @close="showFilterModal = false"
+      show>
+    <div class="uranus-form">
+      <UranusFormRow>
+        <UranusTextInput
+            id="url-input"
+            v-model="filter.search!"
+            :label="t('event_url')"
+            placeholder="https://example.com"
+            required
+        />
+      </UranusFormRow>
+
+      <UranusInlineEditActions
+          :isSaving="isSavingFilter"
+          :canSave="canSaveFilter"
+          @save="onSaveFilter"
+          @cancel="onCancelFilter"
+      />
+    </div>
+
+  </UranusModal>
+
 </template>
 
 <script setup lang="ts">
 import { h, ref, defineComponent, computed, onMounted, onBeforeUnmount, watch } from "vue"
 import { useRouter } from "vue-router"
-import { apiFetch } from "@/api.ts"
-import { useEventsFilterStore } from '@/store/eventsFilterStore'
-import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
-import {useEventTypeLookupStore} from "@/store/eventTypesLookup.ts";
 import {useI18n} from "vue-i18n";
+import { apiFetch } from "@/api.ts"
+import UranusModal from '@/components/uranus/UranusModal.vue'
+import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
+import { useEventsFilterStore } from '@/store/eventsFilterStore'
+import {useEventTypeLookupStore} from "@/store/eventTypesLookup.ts";
+import UranusFormRow from "@/components/ui/UranusFormRow.vue";
+import UranusInlineEditActions from "@/components/ui/UranusInlineEditActions.vue";
+import UranusTextInput from "@/components/ui/UranusTextInput.vue";
+import UranusEventLinkTypeSelect from "@/components/selects/UranusEventLinkTypeSelect.vue";
 
 const router = useRouter()
 const { t, locale } = useI18n({ useScope: 'global' })
 
+
+const showFilterModal = ref(false)
 const eventsFilterStore = useEventsFilterStore()
 const searchQuery = ref('')
 
@@ -103,6 +141,15 @@ onBeforeUnmount(() => {
   eventsFilterStore.content = null
 })
 
+
+const applyFilters = () => {
+  showFilterModal.value = false
+  // Call your loadEvents() or update filters here
+  events.value = []
+  lastEventStartAt.value = null
+  lastEventDateId.value = null
+  loadEvents()
+}
 
 /* -------------------- Types -------------------- */
 
@@ -148,15 +195,26 @@ const typeSummary = ref<TypeSummaryEntry[]>([])
 const getTypeName = (typeId: number) =>
     typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
 
+interface CalendarEventsFilter {
+  search: string
+}
+
 /* -------------------- State -------------------- */
 
 const events = ref<CalendarEvent[]>([])
 const limit = 10
 const total = ref(200) // TODO: !!!
 const loading = ref(false)
+const isSavingFilter = ref(false)
+const canSaveFilter = ref(true)
 
 const lastEventStartAt = ref<string | null>(null)
 const lastEventDateId = ref<number | null>(null)
+
+// Use reactive state for your filter object
+const filter = ref<CalendarEventsFilter>({
+  search: ''
+})
 
 const hasMore = computed(() => {
   return total.value === 0 || events.value.length < total.value
@@ -193,13 +251,8 @@ const loadEvents = async () => {
       }
     }
 
-    // Append searchQuery if it exists
-    if (searchQuery.value) {
-      // Use `append` with key/value split or append raw string
-      const searchParams = new URLSearchParams(searchQuery.value)
-      searchParams.forEach((value, key) => {
-        params.set(key, value) // merge into main params
-      })
+    if (filter.value.search) {
+      params.set("search", filter.value.search)
     }
 
     const { data } = await apiFetch<{
@@ -275,6 +328,27 @@ onMounted(async () => {
   }
 })
 
+
+/* Filtering */
+
+const onSaveFilter = async () => {
+  showFilterModal.value = false
+  isSavingFilter.value = true
+
+  // Reset events and pagination
+  events.value = []
+  lastEventStartAt.value = null
+  lastEventDateId.value = null
+
+  try {
+    await loadEvents()
+  } finally {
+    isSavingFilter.value = false
+  }
+}
+
+const onCancelFilter = () => {}
+
 onBeforeUnmount(() => {
   observer?.disconnect()
 })
@@ -304,6 +378,28 @@ onBeforeUnmount(() => {
   transform: translateY(-3px);
 }
 
+.calendar-settings-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  &:hover {
+    background-color: #fc0;
+  }
+}
+
+
 /* Featured cards */
 .calendar-layout > .calendar-card:first-child,
 .calendar-layout > .calendar-card:nth-child(6) {
@@ -332,10 +428,13 @@ onBeforeUnmount(() => {
 }
 
 .calendar-settings {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
   position: sticky;
-  top: 80px; /* distance from the top of the scroll container */
-  z-index: 10; /* make sure it stays above other elements */
-  background: #fff; /* keep background opaque */
+  top: 80px;
+  z-index: 10;
   padding: 12px 16px;
   border-bottom: 1px solid #eee;
   min-height: 100px;

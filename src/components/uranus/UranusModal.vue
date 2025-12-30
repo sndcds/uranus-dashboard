@@ -58,7 +58,7 @@ const props = withDefaults(
     title: '',
     description: '',
     maxWidth: '500px',
-    closeOnBackdrop: true,
+    closeOnBackdrop: false,
   }
 )
 
