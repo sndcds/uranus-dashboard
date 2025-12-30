@@ -1,6 +1,7 @@
 export class UranusPublicEventDetail {
     constructor(
         public eventId: number | null = null,
+        public releaseStatusId: number | null = null,
 
         public title: string | null = null,
         public subtitle: string | null = null,
@@ -62,6 +63,7 @@ export class UranusPublicEventDetail {
 export class UranusPublicEventDate {
     constructor(
         public eventId: number | null = null,
+        public releaseStatusId: number | null = null,
         public dateId: number | null = null,
         public startDate: string | null = null,
         public startTime: string | null = null,

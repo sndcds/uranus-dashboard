@@ -12,6 +12,7 @@ export const mapPublicEvent = (raw: any): UranusPublicEventDetail | null => {
     const furtherDates: UranusPublicEventDate[] = Array.isArray(raw.further_dates)
         ? raw.further_dates.map((fd: any) => new UranusPublicEventDate(
             fd.event_id ?? null,
+            fd.release_status_id ?? null,
             fd.event_date_id ?? null,
             fd.start_date ?? null,
             fd.start_time ?? null,
@@ -63,6 +64,7 @@ export const mapPublicEvent = (raw: any): UranusPublicEventDetail | null => {
 
     return new UranusPublicEventDetail(
         raw.event_id ?? null,
+        raw.release_status_id ?? null,
         raw.title ?? null,
         raw.subtitle ?? null,
         raw.description ?? null,

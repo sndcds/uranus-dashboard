@@ -41,6 +41,10 @@
               class="uranus-public-section--subtitle">
             {{ event.subtitle }}
           </h2>
+          <UranusEventReleaseChip
+              v-if="(event.releaseStatusId ?? 0) > 3"
+              :releaseStatusId="event.releaseStatusId"
+          />
         </div>
 
         <!-- Event types and genres -->
@@ -194,6 +198,7 @@ import { UranusPublicEventDetail, UranusPublicEventDate } from '@/models/UranusP
 import { mapPublicEvent } from '@/utils/UranusPublicEventMapper.ts'
 import UranusPublicEventLocationDisplay from "@/components/event/UranusPublicEventLocationDisplay.vue";
 import UranusPublicEventFurtherDates from "@/components/event/UranusPublicEventFurtherDates.vue";
+import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
 
 const route = useRoute()
 
@@ -314,6 +319,7 @@ const loadEvent = async () => {
     eventDate.value = mappedEvent.furtherDates.find(fd => fd.dateId === Number(eventDateId))
         ?? new UranusPublicEventDate(
             mappedEvent.eventId,
+            mappedEvent.releaseStatusId,
             Number(eventDateId),
             mappedEvent.startDate,
             mappedEvent.startTime,

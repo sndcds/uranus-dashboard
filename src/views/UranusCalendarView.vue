@@ -2,6 +2,18 @@
   <div class="calendar-page">
     <div class="calendar-body">
 
+      <div class="calendar-settings">
+        <div class="calendar-type-chips">
+        <span
+            v-for="entry in typeSummary"
+            :key="entry.type_id"
+            class="type-chip"
+        >
+          {{ getTypeName(entry.type_id) }} ({{ entry.date_count }})
+        </span>
+        </div>
+      </div>
+
       <div v-if="events.length === 0 && !loading">
         No events to display
       </div>
@@ -31,9 +43,8 @@
           <div class="calendar-overlay"></div>
         </div>
 
-        <div></div>
-        <div></div>
-        <div></div>
+        <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->
+        <div></div><div></div><div></div>
 
       </div>
 
@@ -58,11 +69,16 @@ import { useRouter } from "vue-router"
 import { apiFetch } from "@/api.ts"
 import { useEventsFilterStore } from '@/store/eventsFilterStore'
 import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
+import {useEventTypeLookupStore} from "@/store/eventTypesLookup.ts";
+import {useI18n} from "vue-i18n";
 
 const router = useRouter()
+const { t, locale } = useI18n({ useScope: 'global' })
 
 const eventsFilterStore = useEventsFilterStore()
 const searchQuery = ref('')
+
+const typeLookupStore = useEventTypeLookupStore()
 
 const CalendarFilter = defineComponent({
   setup() {
@@ -116,10 +132,21 @@ interface CalendarEvent {
   release_status_id: number | null
 }
 
+/*
 interface EventsResponse {
   events: CalendarEvent[]
   total: number
 }
+*/
+
+interface TypeSummaryEntry {
+  type_id: number;
+  date_count: number;
+}
+
+const typeSummary = ref<TypeSummaryEntry[]>([])
+const getTypeName = (typeId: number) =>
+    typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
 
 /* -------------------- State -------------------- */
 
@@ -189,6 +216,11 @@ const loadEvents = async () => {
       lastEventStartAt.value = data.last_event_start_at
       lastEventDateId.value = data.last_event_date_id
     }
+
+    // Fetching type summary
+    const response = await apiFetch<{ summary: TypeSummaryEntry[] }>("/api/events/type-summary")
+    typeSummary.value = response.data.summary || []
+
   } catch (err) {
     console.error("Failed to load events:", err)
   } finally {
@@ -225,7 +257,7 @@ onMounted(async () => {
   observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
-        if (entry?.isIntersecting) {  // optional chaining
+        if (entry?.isIntersecting) {  // Optional chaining
           console.log("Triggering loadEvents() from observer")
           loadEvents()
         }
@@ -299,6 +331,17 @@ onBeforeUnmount(() => {
   gap: 4px;
 }
 
+.calendar-settings {
+  position: sticky;
+  top: 80px; /* distance from the top of the scroll container */
+  z-index: 10; /* make sure it stays above other elements */
+  background: #fff; /* keep background opaque */
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  min-height: 100px;
+  background: var(--uranus-dashboard-bg);
+}
+
 /* Hover overlay */
 .calendar-overlay {
   position: absolute;
@@ -315,6 +358,22 @@ onBeforeUnmount(() => {
 
 .calendar-card:hover .calendar-overlay {
   opacity: 1;
+}
+
+.calendar-type-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.type-chip {
+  background-color: #fff;
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  cursor: default;
+  user-select: none;
 }
 
 /* Infinite scroll helpers */

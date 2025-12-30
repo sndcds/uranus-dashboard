@@ -36,14 +36,6 @@
             {{ t('nav_about') }}
           </router-link>
 
-          <!-- FILTER MENU ITEM -->
-          <button
-              class="generic-header__nav-link"
-              :class="{ 'generic-header__nav-link--active': isFilterOpen }"
-              @click="toggleFilter">
-            {{ t('filters') }}
-          </button>
-
           <router-link
               v-if="!tokenStore.isAuthenticated"
               to="/app/login"
@@ -215,17 +207,6 @@
         </div>
       </div>
     </div>
-    <!-- Filter panel -->
-
-    <div
-        :class="['generic-header__filter-panel', { 'generic-header__filter-panel--open': isFilterOpen }]"
-    >
-      <div class="filters">
-        <!-- this renders whatever page sets -->
-        <component v-if="eventsFilterStore.content" :is="eventsFilterStore.content" />
-        <span v-else>no_filters_defined</span>
-      </div>
-    </div>
   </header>
 </template>
 
@@ -255,16 +236,6 @@ const emit = defineEmits<{
 const isUserMenuOpen = ref(false)
 const isSettingsMenuOpen = ref(false)
 
-const isFilterOpen = ref(false)
-
-const toggleFilter = () => {
-  isFilterOpen.value = !isFilterOpen.value
-  // Optionally close other menus
-  if (isFilterOpen.value) {
-    isUserMenuOpen.value = false
-    isSettingsMenuOpen.value = false
-  }
-}
 
 // Theme and locale
 const currentTheme = ref<'light' | 'dark'>('light')
@@ -815,39 +786,4 @@ onUnmounted(() => {
   }
 }
 
-.generic-header__filter-panel {
-  width: 100%;
-  background: var(--surface-primary);
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  transition: max-height 0.6s ease-in-out, opacity 0.6s ease-in-out;
-  z-index: 900;
-}
-
-.generic-header__filter-panel--open {
-  max-height: 400px; /* adjust based on content */
-  opacity: 1;
-}
-
-.generic-header__filter-panel[v-cloak],
-.generic-header__filter-panel[style*="display: none"] {
-  max-height: 0;
-  opacity: 0;
-}
-
-.generic-header__filter-panel[style*="display: block"] {
-  max-height: 400px; /* adjust as needed */
-  opacity: 1;
-}
-
-.generic-header__filter-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  height: 200px;
-  gap: 16px;
-}
 </style>
