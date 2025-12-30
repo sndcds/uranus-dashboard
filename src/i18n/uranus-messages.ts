@@ -7,6 +7,7 @@ import { uranusI18nUserTranslations } from "@/i18n/uranus-i18n-user";
 import { uranusI18nOrganizationTranslations } from "@/i18n/uranus-i18n-organization";
 import { uranusI18nVenueTranslations } from "@/i18n/uranus-i18n-venue";
 import { uranusI18nEventTranslations } from "@/i18n/uranus-i18n-event";
+import { uranusI18nCalendarViewTranslations } from "@/i18n/uranus-i18n-calendar-view";
 
 // Safe: always define this function first
 export const uranusI18nForLocale = <K extends string>(
@@ -30,6 +31,7 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nVenueTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'de'),
+        ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'de'),
         ...event.de,
 
         organization_unknown: 'Unbekannter Veranstalter',
@@ -614,6 +616,7 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nVenueTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'en'),
+        ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'en'),
         ...event.en,
 
 
@@ -1201,6 +1204,7 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nVenueTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'da'),
+        ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'da'),
         ...event.da,
 
 

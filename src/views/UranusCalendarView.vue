@@ -79,7 +79,7 @@
   <!-- Modal -->
   <UranusModal
       v-if="showFilterModal"
-      :title="t('event_calendar_filter_settings')"
+      :title="t('calendar_filter_settings_title')"
       @close="showFilterModal = false"
       show>
     <div class="uranus-form">
@@ -87,8 +87,8 @@
         <UranusTextInput
             id="url-input"
             v-model="filter.search!"
-            :label="t('event_url')"
-            placeholder="https://example.com"
+            :label="t('calendar_filter_search_label')"
+            :placeholder="t('calendar_filter_search_placeholder')"
             required
         />
       </UranusFormRow>
@@ -117,7 +117,6 @@ import {useEventTypeLookupStore} from "@/store/eventTypesLookup.ts";
 import UranusFormRow from "@/components/ui/UranusFormRow.vue";
 import UranusInlineEditActions from "@/components/ui/UranusInlineEditActions.vue";
 import UranusTextInput from "@/components/ui/UranusTextInput.vue";
-import UranusEventLinkTypeSelect from "@/components/selects/UranusEventLinkTypeSelect.vue";
 
 const router = useRouter()
 const { t, locale } = useI18n({ useScope: 'global' })
