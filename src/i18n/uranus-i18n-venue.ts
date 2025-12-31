@@ -46,4 +46,19 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Custom location',
         da: 'Brugerdefineret sted',
     },
+    notification_cant_see_venues_title: {
+        de: 'Warum kann ich keine Spielstätten sehen?',
+        en: 'Why can’t I see any venues?',
+        da: 'Hvorfor kan jeg ikke se nogen spillesteder?',
+    },
+    notification_cant_see_venues_message: {
+        de: '<p>Wähle eine <strong>Organisation</strong> für die du Spielstätten verwalten möchtest.</p>',
+        en: '<p>Select an <strong>organization</strong> for which you want to manage venues.</p>',
+        da: '<p>Vælg en <strong>organisation</strong>, som du vil administrere spillesteder for.</p>',
+    },
+    notification_cant_see_venues_action: {
+        de: 'Zu den Organisationen',
+        en: 'Go to Organizations',
+        da: 'Til organisationerne',
+    },
 }

@@ -311,4 +311,19 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Release status',
         da: 'Udgivelsesstatus',
     },
+    notification_cant_see_events_title: {
+        de: 'Warum kann ich keine Events sehen?',
+        en: 'Why can’t I see any events?',
+        da: 'Hvorfor kan jeg ikke se nogen arrangementer?',
+    },
+    notification_cant_see_events_message: {
+        de: '<p>Wähle eine <strong>Organisation</strong> für die du Events verwalten möchtest.</p>',
+        en: '<p>Select an <strong>organization</strong> for which you want to manage events.</p>',
+        da: '<p>Vælg en <strong>organisation</strong>, som du vil administrere arrangementer for.</p>',
+    },
+    notification_cant_see_events_action: {
+        de: 'Zu den Organisationen',
+        en: 'Go to Organizations',
+        da: 'Til organisationerne',
+    },
 }

@@ -4,42 +4,45 @@
         :title="t('events_title')"
         :subtitle="t('events_subtitle')" />
 
-    <UranusDashboardActionBar v-if="!isLoading && canAddEvent">
-      <router-link
-          class="uranus-action-button"
-          :to="`/admin/organization/${organizationId}/event/create`"
-      >
-        {{ t('add_new_event') }}
-      </router-link>
-    </UranusDashboardActionBar>
-
     <!-- No Organization Selected Message -->
     <UranusNotification
         v-if="!organizationId"
         type="info"
     >
       <template #title>
-        Warum kann ich keine Events hinzufügen?
+        {{ t('notification_cant_see_events_title') }}
       </template>
-
       <template #default>
-        <p>Wähle eine Organisation für die du Events erstellen möchtest.</p>
+        <div v-html="t('notification_cant_see_events_message')"></div>
       </template>
-
       <template #actions>
         <RouterLink to="/admin/organizations" class="notification-button">
-          Zu den Organisationen
+          {{ t('notification_cant_see_events_action') }}
         </RouterLink>
       </template>
     </UranusNotification>
 
-    <div class="uranus-dashboard-card-grid uranus-max-layout">
-      <UranusDashboardEventCard
-          v-for="event in events"
-          :key="event.eventId"
-          :event="event"
-      />
-    </div>
+    <template v-else>
+      <UranusDashboardActionBar v-if="!isLoading && canAddEvent">
+        <router-link
+            class="uranus-action-button"
+            :to="`/admin/organization/${organizationId}/event/create`"
+        >
+          {{ t('add_new_event') }}
+        </router-link>
+      </UranusDashboardActionBar>
+
+      <div
+          v-if="organizationId"
+          class="uranus-dashboard-card-grid uranus-max-layout"
+      >
+        <UranusDashboardEventCard
+            v-for="event in events"
+            :key="event.eventId"
+            :event="event"
+        />
+      </div>
+    </template>
   </div>
 </template>
 

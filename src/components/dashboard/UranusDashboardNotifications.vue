@@ -229,7 +229,6 @@ onMounted(() => {
 }
 
 .events-feedback {
-  text-align: center;
   color: var(--uranus-muted-text);
   font-weight: 500;
   padding: 1rem 0;

@@ -2,63 +2,51 @@
   <div class="uranus-main-layout">
     <UranusDashboardHero :title="t('venues')" :subtitle="t('venues_description')" />
 
-    <!-- No Organization Selected Message -->
-    <UranusNotification
-        v-if="!organizationId"
-        type="info"
-    >
+    <UranusNotification v-if="!organizationId" type="info">
+      <!-- No Organization Selected Message -->
       <template #title>
-        Warum kann ich keine Spielstätten sehen?
+        {{ t('notification_cant_see_venues_title') }}
       </template>
-
       <template #default>
-        <p>Wähle eine Organisation für die du Spielstätten verwalten möchtest.</p>
+        <div v-html="t('notification_cant_see_venues_message')"></div>
       </template>
-
       <template #actions>
         <RouterLink to="/admin/organizations" class="notification-button">
-          Zu den Organisationen
+          {{ t('notification_cant_see_venues_action') }}
         </RouterLink>
       </template>
     </UranusNotification>
 
-    <div v-else-if="!isLoading" class="uranus-main-layout">
-      <UranusDashboardActionBar
-          v-if="organization && organization.can_add_venue"
-      >
-        <router-link
-            :to="`/admin/organization/${organizationId}/venue/create`"
-            class="uranus-action-button">
-          {{ t('venue_add') }}
-        </router-link>
-      </UranusDashboardActionBar>
+    <template v-else>
+      <div v-if="!isLoading" class="uranus-main-layout">
+        <UranusDashboardActionBar
+            v-if="organization && organization.can_add_venue"
+        >
+          <router-link
+              :to="`/admin/organization/${organizationId}/venue/create`"
+              class="uranus-action-button">
+            {{ t('venue_add') }}
+          </router-link>
+        </UranusDashboardActionBar>
 
-      <UranusDashboardInfo
-          v-else
-          title="Warum kann ich keine Spielstätten hinzufügen?"
-          text="<p>Dir fehlen die erforderlichen Zugriffsrechte.<br>Diese werden von der Organisation vergeben, zu der die Spielstätte ghört.</p>"
-          url="https://sndcds.github.io/uranus-docs/"
-          link-label="Dokumentation"
-      />
+        <!-- Error Message, Todo: Implement errors -->
+        <div v-if="error" class="organization-venue-view__error">
+          <p class="form-feedback-error">{{ error }}</p>
+        </div>
 
-
-      <!-- Error Message -->
-      <div v-if="error" class="organization-venue-view__error">
-        <p class="form-feedback-error">{{ error }}</p>
-      </div>
-
-      <div v-if="organization" class="organization-venue-view__content">
-        <div class="organization-venue-view__grid">
-          <UranusVenueCard
-              v-for="venue in organization.venues"
-              :key="venue.venue_id"
-              :venue="venue"
-              :organizationId="organizationId || 0"
-              @deleted="handleVenueDeleted"
-          />
+        <div v-if="organization" class="organization-venue-view__content">
+          <div class="organization-venue-view__grid">
+            <UranusVenueCard
+                v-for="venue in organization.venues"
+                :key="venue.venue_id"
+                :venue="venue"
+                :organizationId="organizationId || 0"
+                @deleted="handleVenueDeleted"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
