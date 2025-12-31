@@ -47,11 +47,10 @@
       <p v-if="error" class="form-feedback-error">{{ error }}</p>
     </form>
 
-    <!-- ACTIONS -->
     <template #actions>
       <button
           type="button"
-          class="uranus-button uranus-button--secondary"
+          class="uranus-button uranus-cancel-button"
           @click="onCancel"
           :disabled="saving"
       >
@@ -60,12 +59,12 @@
 
       <button
           type="submit"
-          class="uranus-button uranus-button--primary"
+          class="uranus-button uranus-ok-button"
           @click="onSubmit"
           :disabled="saving"
       >
-        <span v-if="saving">{{ t('saving') }}...</span>
-        <span v-else>{{ t('save') }}</span>
+        <template v-if="saving">{{ t('saving') }}...</template>
+        <template v-else>{{ t('save') }}</template>
       </button>
     </template>
   </UranusModal>

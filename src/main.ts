@@ -2,13 +2,14 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { createPinia } from 'pinia'
 import { uranusI18n } from './i18n/uranus-i18n-index.ts'
-import router from './router'
+import router from './router/index.ts'
 
-import { SUPPORTED_UI_LANGUAGES } from '@/store/constants'
-import { useThemeStore } from '@/store/themeStore'
-import { useLanguageLookupStore } from '@/store/languageLookup'
-import { useUrlTypeLookupStore } from '@/store/urlTypesLookup'
-import { useEventTypeLookupStore } from '@/store/eventTypesLookup'
+import { SUPPORTED_UI_LANGUAGES } from '@/store/constants.ts'
+import { useThemeStore } from '@/store/themeStore.ts'
+import { useLanguageLookupStore } from '@/store/languageLookup.ts'
+import { useUrlTypeLookupStore } from '@/store/urlTypesLookup.ts'
+import { useEventTypeLookupStore } from '@/store/eventTypesLookup.ts'
+
 
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import '@/styles/global.scss'
@@ -33,5 +34,6 @@ await eventUrlTypeLookupStore.load('event', [...SUPPORTED_UI_LANGUAGES])
 
 const eventTypeLookupStore = useEventTypeLookupStore()
 await eventTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES])
+
 
 app.mount('#app')

@@ -35,6 +35,8 @@ export class UranusPublicEventDetail {
         public spaceSeatingCapacity: number | null = null,
         public spaceBuildingLevel: number | null = null,
         public spaceUrl: string | null = null,
+        public spaceAccFlags: number | null = null,
+        public spaceAccSummary: string | null = null,
 
         public locationId: number | null = null,
         public locationName: string | null = null,
@@ -83,6 +85,8 @@ export class UranusPublicEventDate {
         public venueUrl: string | null = null,
         public spaceId: number | null = null,
         public spaceName: string | null = null,
+        public spaceAccFlags: number | null = null,
+        public spaceAccSummary: string | null = null,
         public locationId: number | null = null,
         public locationName: string | null = null,
         public locationStreet: string | null = null,

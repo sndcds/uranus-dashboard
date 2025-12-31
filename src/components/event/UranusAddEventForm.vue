@@ -5,7 +5,6 @@ UranusAddEventForm.vue
   <UranusCard>
   <div class="uranus-form">
 
-    <!-- Title -->
     <UranusTextInput
         id="title"
         v-model.trim="draft.title"

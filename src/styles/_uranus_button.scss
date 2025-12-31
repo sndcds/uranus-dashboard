@@ -35,7 +35,7 @@
   flex-shrink: 0;
 }
 
-.uranus-save-button,
+.uranus-ok-button,
 .uranus-cancel-button {
   font-size: 0.9rem;
   font-weight: 700;
@@ -44,7 +44,7 @@
   transition: all 0.1s ease;
 }
 
-.uranus-save-button {
+.uranus-ok-button {
   background: transparent;
   border: 2px solid #39d190;
   color: #39d190;
@@ -52,6 +52,19 @@
     background: #39d190;
     color: white;
   }
+}
+
+.uranus-ok-button:focus {
+  outline: none;
+  border-color: var(--uranus-focus-border-color);
+  box-shadow: 0 0 0 1px var(--uranus-focus-border-color);
+}
+
+/* Disabled */
+.uranus-ok-button:disabled,
+.uranus-ok-button[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .uranus-cancel-button {

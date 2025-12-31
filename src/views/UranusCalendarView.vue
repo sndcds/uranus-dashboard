@@ -245,7 +245,7 @@ const filter = ref<CalendarEventsFilter>({
 })
 
 const canResetFilterMore = computed(() => {
-  return filter.value.search || filter.value.city
+  return filter.value.search || filter.value.city || filter.value.startDate || filter.value.endDate
 })
 
 
@@ -395,6 +395,8 @@ const onCancelFilter = () => {
 const onResetFilter = () => {
   filter.value.search = ''
   filter.value.city = ''
+  filter.value.startDate = ''
+  filter.value.endDate = ''
 
   // Reset the event list and pagination cursors
   events.value = []

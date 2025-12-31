@@ -44,7 +44,7 @@
           {{ t('cancel') }}
         </button>
         <button
-            class="uranus-save-button"
+            class="uranus-ok-button"
             :disabled="isSaveDisabled">
           <template v-if="!todoSaving">{{ t('save') }}</template>
           <template v-else>{{ t('saving') }}</template>
@@ -131,7 +131,7 @@
                     {{ t('cancel') }}
                   </button>
                   <button
-                      class="uranus-save-button"
+                      class="uranus-ok-button"
                       :disabled="isSaveDisabled">
                     <template v-if="!todoSaving">{{ t('save') }}</template>
                     <template v-else>{{ t('saving') }}</template>

@@ -2,7 +2,10 @@
   <div class="uranus-main-layout">
     <UranusDashboardHero :title="t('venues')" :subtitle="t('venues_description')" />
 
-    <UranusNotification v-if="!organizationId" type="info">
+    <UranusNotification
+        v-if="!organizationId"
+        type="info"
+    >
       <!-- No Organization Selected Message -->
       <template #title>
         {{ t('notification_cant_see_venues_title') }}
@@ -59,7 +62,6 @@ import { useAppStore } from '@/store/appStore'
 import UranusVenueCard from '@/components/venue/UranusVenueCard.vue'
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue"
-import UranusDashboardInfo from "@/components/dashboard/UranusDashboardInfo.vue";
 import UranusNotification from "@/components/ui/UranusNotification.vue";
 
 const { t } = useI18n()

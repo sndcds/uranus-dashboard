@@ -2,7 +2,7 @@
     <div class="uranus-main-layout">
         <UranusDashboardHero :title="title" :subtitle="subtitle" />
 
-        <SpaceForm
+        <UranusSpaceEditForm
             :submit-label="submitLabel"
             :loading="isSubmitting"
             :error-message="errorMessage"
@@ -21,7 +21,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 
 import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
-import SpaceForm, { type SpaceFormInitialValues, type SpaceFormSubmitPayload } from '@/components/SpaceForm.vue'
+import UranusSpaceEditForm, { type SpaceFormInitialValues, type SpaceFormSubmitPayload } from '@/components/UranusSpaceEditForm.vue'
 
 const route = useRoute()
 const router = useRouter()

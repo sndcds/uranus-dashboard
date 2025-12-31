@@ -102,7 +102,7 @@
       <!-- Right Column - Sidebar -->
       <aside class="event-detail-sidebar">
 
-        <div v-if="event.eventId && eventDate?.dateId" class="uranus-public-section">
+        <div v-if="event.eventId && eventDate?.dateId" class="uranus-public-info-section">
 
           <!-- Date & Time -->
           <UranusPublicEventDateTimeDisplay
@@ -138,11 +138,22 @@
               :dates="event.furtherDates"
           />
 
+          <div v-if="selectedAccessibilityLabels.length" class="uranus-public-tight-section">
+            <svg width="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+              <g transform="matrix(1.23077,0,0,1.23077,-2.30769,-2.76923)">
+                <path d="M11.25,5.25C11.25,6.078 10.578,6.75 9.75,6.75C8.922,6.75 8.25,6.078 8.25,5.25C8.25,4.422 8.922,3.75 9.75,3.75C10.578,3.75 11.25,4.422 11.25,5.25ZM12.75,5.25C12.75,6.648 11.794,7.822 10.5,8.155L10.5,9.75L15.375,9.75L15.375,11.25L10.5,11.25L10.5,14.25L17.865,14.25L18.615,18L19.5,18L19.5,19.5L17.385,19.5L16.635,15.75L15.75,15.75C15.75,19.064 13.064,21.75 9.75,21.75C6.436,21.75 3.75,19.064 3.75,15.75C3.75,12.69 6.04,10.166 9,9.796L9,8.155C7.706,7.822 6.75,6.648 6.75,5.25C6.75,3.593 8.093,2.25 9.75,2.25C11.407,2.25 12.75,3.593 12.75,5.25ZM9,15.75L14.25,15.75C14.25,18.235 12.235,20.25 9.75,20.25C7.265,20.25 5.25,18.235 5.25,15.75C5.25,13.52 6.872,11.669 9,11.312L9,15.75Z"/>
+              </g>
+            </svg>
+            <p class="uranus-public-info-label">{{ t('space_accessibility') }}:</p>
+            <p v-for="label in selectedAccessibilityLabels" :key="label">
+              {{ t(label) }}
+            </p>
+          </div>
+
           <button
               v-if="hasLonLat"
               type="button"
               class="uranus-public-detail-link"
-              :disabled="isDownloadingIcs"
               @click="onShowOnMap">
             <svg width="20px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
               <path d="M29.664,1.531L29.411,1.579L20.823,4.907L11.177,1.531L2.11,4.587C1.769,4.687 1.532,5 1.531,5.355L1.531,29.664C1.531,30.111 1.889,30.469 2.336,30.469L2.589,30.421L11.177,27.093L20.823,30.469L29.89,27.413C30.231,27.313 30.468,27 30.469,26.645L30.469,2.336C30.469,2.335 30.469,2.334 30.469,2.333C30.469,1.893 30.107,1.531 29.667,1.531C29.666,1.531 29.665,1.531 29.664,1.531M12.783,5.501L19.217,7.753L19.217,26.499L12.783,24.247L12.783,5.501M4.748,7.093L9.571,5.469L9.571,24.28L4.748,26.145L4.748,7.094M27.252,24.907L22.429,26.531L22.429,7.738L27.252,5.874L27.252,24.907Z" style="fill-rule:nonzero;"/>
@@ -151,23 +162,9 @@
           </button>
 
           <button
-              type="button"
-              class="uranus-public-detail-link"
-              :disabled="isDownloadingIcs"
-              @click="onShowAccessibility">
-            <svg width="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-              <g transform="matrix(1.23077,0,0,1.23077,-2.30769,-2.76923)">
-                <path d="M11.25,5.25C11.25,6.078 10.578,6.75 9.75,6.75C8.922,6.75 8.25,6.078 8.25,5.25C8.25,4.422 8.922,3.75 9.75,3.75C10.578,3.75 11.25,4.422 11.25,5.25ZM12.75,5.25C12.75,6.648 11.794,7.822 10.5,8.155L10.5,9.75L15.375,9.75L15.375,11.25L10.5,11.25L10.5,14.25L17.865,14.25L18.615,18L19.5,18L19.5,19.5L17.385,19.5L16.635,15.75L15.75,15.75C15.75,19.064 13.064,21.75 9.75,21.75C6.436,21.75 3.75,19.064 3.75,15.75C3.75,12.69 6.04,10.166 9,9.796L9,8.155C7.706,7.822 6.75,6.648 6.75,5.25C6.75,3.593 8.093,2.25 9.75,2.25C11.407,2.25 12.75,3.593 12.75,5.25ZM9,15.75L14.25,15.75C14.25,18.235 12.235,20.25 9.75,20.25C7.265,20.25 5.25,18.235 5.25,15.75C5.25,13.52 6.872,11.669 9,11.312L9,15.75Z"/>
-              </g>
-            </svg>
-            {{ t('accessibility') }}
-          </button>
-
-          <button
               v-if="event.eventId && eventDate?.dateId"
               type="button"
               class="uranus-public-detail-link"
-              :disabled="isDownloadingIcs"
               @click="onDownloadIcs">
             <svg width="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <g transform="matrix(0.294848,0,0,0.303202,-229.662,-293.77)">
@@ -199,6 +196,7 @@ import { mapPublicEvent } from '@/utils/UranusPublicEventMapper.ts'
 import UranusPublicEventLocationDisplay from "@/components/event/UranusPublicEventLocationDisplay.vue";
 import UranusPublicEventFurtherDates from "@/components/event/UranusPublicEventFurtherDates.vue";
 import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
+import { uranusI18nAccessibilityFlags } from '@/i18n/uranus-i18n-accessibility.ts'
 
 const route = useRoute()
 
@@ -242,6 +240,25 @@ watch(isLoading, (loading) => {
   } else {
     showLoading.value = false
   }
+})
+
+const selectedAccessibilityLabels = computed(() => {
+  if (!event.value?.spaceAccFlags) return []
+
+  const mask = event.value.spaceAccFlags
+  const labels: string[] = []
+
+  uranusI18nAccessibilityFlags.forEach(topic => {
+    topic.flags.forEach(flag => {
+      const flagValue = 2 ** Number(flag.id)
+      if ((mask & flagValue) === flagValue) {
+        // Use i18n if you have translations, otherwise show snake_case
+        labels.push(t(flag.name))
+      }
+    })
+  })
+
+  return labels
 })
 
 // Helpers
@@ -339,6 +356,8 @@ const loadEvent = async () => {
             mappedEvent.venueUrl,
             mappedEvent.spaceId,
             mappedEvent.spaceName,
+            mappedEvent.spaceAccFlags ?? null,
+            mappedEvent.spaceAccSummary ?? null,
             mappedEvent.locationId,
             mappedEvent.locationName,
             mappedEvent.locationStreet,

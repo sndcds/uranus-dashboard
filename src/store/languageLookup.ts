@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 export interface LanguageEntry {
     id: string   // e.g. "de"

@@ -57,7 +57,6 @@ import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue"
 import { mapDashboardEventData } from "@/utils/UranusDashboardEventDataMapper.ts"
 import { UranusEventBase } from "@/models/UranusEventModel.ts"
-import UranusDashboardInfo from "@/components/dashboard/UranusDashboardInfo.vue";
 import UranusNotification from "@/components/ui/UranusNotification.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })

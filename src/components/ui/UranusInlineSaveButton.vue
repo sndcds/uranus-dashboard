@@ -4,7 +4,7 @@
 <template>
   <button
       type="button"
-      class="uranus-save-button"
+      class="uranus-ok-button"
       :disabled="disabled"
       @click="handleClick"
       :aria-label="loading ? busyLabel : label"
@@ -35,19 +35,3 @@ function handleClick(e: MouseEvent) {
 }
 </script>
 
-<style scoped lang="scss">
-
-/* Keyboard focus */
-.uranus-save-button:focus {
-  outline: none; /* remove default outline */
-  border-color: var(--uranus-focus-border-color);
-  box-shadow: 0 0 0 1px var(--uranus-focus-border-color);
-}
-
-/* Disabled */
-.uranus-save-button:disabled,
-.uranus-save-button[aria-disabled="true"] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-</style>

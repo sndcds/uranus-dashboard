@@ -121,7 +121,7 @@
 
 
       <div class="form-actions">
-        <button type="submit" class="uranus-button" :disabled="isSubmitting">
+        <button type="submit" class="uranus-ok-button" :disabled="isSubmitting">
           {{ submitButtonLabel }}
         </button>
       </div>

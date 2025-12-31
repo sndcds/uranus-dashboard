@@ -468,7 +468,7 @@ watch(
   flex-direction: column;
   font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--text-primary);
-  background: var(--uranus-bg-color);
+  background: var(--uranus-bg);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -517,7 +517,7 @@ watch(
 
 .generic-info-window__body {
   padding: 12px 16px 4px;
-  background: var(--uranus-bg-color);
+  background: var(--uranus-bg);
 }
 
 .generic-info-window__meta {
@@ -557,7 +557,7 @@ watch(
 
 .generic-info-window__action--route {
   background: var(--uranus-ia-color-light2);
-  color: var(--uranus-bg-color);
+  color: var(--uranus-bg);
 }
 
 .generic-info-window__action--route:hover {
@@ -565,11 +565,11 @@ watch(
 }
 
 .generic-info-window__action--details {
-  background: var(--uranus-bg-color-d1);
+  background: var(--uranus-bg-d1);
   color: var(--text-primary);
 }
 
 .generic-info-window__action--details:hover {
-  background: var(--uranus-bg-color-d2);
+  background: var(--uranus-bg-d2);
 }
 </style>

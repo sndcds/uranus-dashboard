@@ -10,7 +10,7 @@
   "compilerOptions": {
     "target": "ESNext",              // Modern JS output
     "module": "ESNext",              // Needed for import.meta
-    "moduleResolution": "Node",      // Node-style module resolution
+    "moduleResolution": "Node16",    // Node-style module resolution
     "strict": true,                  // Enable strict type checking
     "baseUrl": ".",                  // Allow absolute imports
     "paths": {

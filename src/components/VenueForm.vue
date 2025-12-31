@@ -61,7 +61,7 @@
         </section>
 
         <section class="uranus-form-action-footer">
-            <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
+            <button class="uranus-ok-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
         </section>
 
     </form>

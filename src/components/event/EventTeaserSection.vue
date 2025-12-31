@@ -25,7 +25,7 @@
                     <button type="button" class="uranus-cancel-button" @click="cancelEditing">
                         {{ t('cancel') }}
                     </button>
-                    <button type="button" class="uranus-save-button" :disabled="isSaving" @click="saveTeaser">
+                    <button type="button" class="uranus-ok-button" :disabled="isSaving" @click="saveTeaser">
                         <span v-if="!isSaving">{{ t('save') }}</span>
                         <span v-else>{{ t('saving') }}</span>
                     </button>

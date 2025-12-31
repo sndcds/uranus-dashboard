@@ -8,6 +8,7 @@ export const mapPublicEvent = (raw: any): UranusPublicEventDetail | null => {
 
     const mainDate = raw.date
     if (!mainDate) return null
+    console.log("mainDate:", JSON.stringify(mainDate, null, 2))
 
     const furtherDates: UranusPublicEventDate[] = Array.isArray(raw.further_dates)
         ? raw.further_dates.map((fd: any) => new UranusPublicEventDate(
@@ -32,6 +33,8 @@ export const mapPublicEvent = (raw: any): UranusPublicEventDetail | null => {
             fd.venue_url ?? null,
             fd.space_id ?? null,
             fd.space_name ?? null,
+            fd.space_acc_flags ?? null,
+            fd.space_acc_summary ?? null,
             fd.location_id ?? null,
             fd.location_name ?? null,
             fd.location_street ?? null,
@@ -94,6 +97,8 @@ export const mapPublicEvent = (raw: any): UranusPublicEventDetail | null => {
         mainDate.space_seating_capacity ?? null,
         mainDate.space_building_level ?? null,
         mainDate.space_url ?? null,
+        mainDate.space_acc_flags ?? null,
+        mainDate.space_acc_summary ?? null,
         raw.location_id ?? null,
         raw.location_name ?? null,
         raw.location_street ?? null,
