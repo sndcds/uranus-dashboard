@@ -105,6 +105,7 @@
 }
 
 .uranus-public-section {
+
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -118,11 +119,13 @@
     // margin-bottom: 1rem;
     font-size: 1.5rem;
     font-weight: 700;
+    margin-bottom: 1.4rem;
   }
   h3 {
     // margin-bottom: 0.75rem;
     font-size: 1.2rem;
     font-weight: 600;
+    margin-bottom: 1.4rem;
   }
 
   &--subtitle {
@@ -176,9 +179,6 @@
 }
 
 .uranus-public-event-description {
-  line-height: 1.5rem;
-  font-size: 1rem;
-
   p {
     margin: 0 0 1rem 0;
   }

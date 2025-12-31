@@ -20,7 +20,7 @@
             v-model="password"
             id="login-password"
             required
-            label="t('password')"
+            :label="t('password')"
             :error="fieldErrors.password"
         />
 

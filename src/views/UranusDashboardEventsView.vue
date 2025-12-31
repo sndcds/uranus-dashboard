@@ -13,13 +13,25 @@
       </router-link>
     </UranusDashboardActionBar>
 
-    <UranusDashboardInfo
-        v-else-if="!isLoading"
-        title="Warum kann ich keine Events hinzufügen?"
-        text="<p>Dir fehlen die erforderlichen Zugriffsrechte.</p>"
-        url="https://sndcds.github.io/uranus-docs/"
-        link-label="Dokumentation"
-    />
+    <!-- No Organization Selected Message -->
+    <UranusNotification
+        v-if="!organizationId"
+        type="info"
+    >
+      <template #title>
+        Warum kann ich keine Events hinzufügen?
+      </template>
+
+      <template #default>
+        <p>Wähle eine Organisation für die du Events erstellen möchtest.</p>
+      </template>
+
+      <template #actions>
+        <RouterLink to="/admin/organizations" class="notification-button">
+          Zu den Organisationen
+        </RouterLink>
+      </template>
+    </UranusNotification>
 
     <div class="uranus-dashboard-card-grid uranus-max-layout">
       <UranusDashboardEventCard
@@ -43,6 +55,7 @@ import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionB
 import { mapDashboardEventData } from "@/utils/UranusDashboardEventDataMapper.ts"
 import { UranusEventBase } from "@/models/UranusEventModel.ts"
 import UranusDashboardInfo from "@/components/dashboard/UranusDashboardInfo.vue";
+import UranusNotification from "@/components/ui/UranusNotification.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()

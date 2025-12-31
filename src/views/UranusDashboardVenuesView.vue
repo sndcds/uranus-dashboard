@@ -3,17 +3,24 @@
     <UranusDashboardHero :title="t('venues')" :subtitle="t('venues_description')" />
 
     <!-- No Organization Selected Message -->
-    <div v-if="!organizationId" class="organization-venue-view__no-organization">
-      <div class="uranus-card">
-        <div class="no-organization-content">
-          <h3>{{ t('no_organization_selected') }}</h3>
-          <p>{{ t('no_organization_selected_description') }}</p>
-          <router-link to="/admin/organization" class="uranus-button">
-            {{ t('go_to_organizations') }}
-          </router-link>
-        </div>
-      </div>
-    </div>
+    <UranusNotification
+        v-if="!organizationId"
+        type="info"
+    >
+      <template #title>
+        Warum kann ich keine Spielstätten sehen?
+      </template>
+
+      <template #default>
+        <p>Wähle eine Organisation für die du Spielstätten verwalten möchtest.</p>
+      </template>
+
+      <template #actions>
+        <RouterLink to="/admin/organizations" class="notification-button">
+          Zu den Organisationen
+        </RouterLink>
+      </template>
+    </UranusNotification>
 
     <div v-else-if="!isLoading" class="uranus-main-layout">
       <UranusDashboardActionBar
@@ -65,6 +72,7 @@ import UranusVenueCard from '@/components/venue/UranusVenueCard.vue'
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue"
 import UranusDashboardInfo from "@/components/dashboard/UranusDashboardInfo.vue";
+import UranusNotification from "@/components/ui/UranusNotification.vue";
 
 const { t } = useI18n()
 const appStore = useAppStore()

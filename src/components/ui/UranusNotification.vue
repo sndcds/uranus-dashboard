@@ -1,19 +1,20 @@
 <template>
   <div class="uranus-notification" :class="notificationTypeClass">
-    <div class="notification-title">
-      {{ title }}
+    <div class="notification-header">
+      <div v-if="$slots.icon" class="notification-icon">
+        <slot name="icon" />
+      </div>
+      <div class="notification-title">
+        <slot name="title" />
+      </div>
     </div>
+
     <div class="notification-content">
-      <p class="notification-text" v-html="text"></p>
+      <slot />
     </div>
-    <div class="notification-actions">
-      <a
-          v-if="buttonText && buttonLink"
-          :href="buttonLink"
-          class="notification-button"
-      >
-        {{ buttonText }}
-      </a>
+
+    <div v-if="$slots.actions" class="notification-actions">
+      <slot name="actions" />
     </div>
   </div>
 </template>
@@ -24,117 +25,12 @@ import { computed } from 'vue'
 const props = defineProps({
   type: {
     type: String,
-    default: 'info', // info | warning | error
-    validator: (value: string) => ['info', 'warning', 'error'].includes(value),
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  text: {
-    type: String,
-    required: true,
-  },
-  buttonText: {
-    type: String,
-    default: null,
-  },
-  buttonLink: {
-    type: String,
-    default: null,
+    default: 'info',
+    validator: (v: string) => ['info', 'warning', 'error'].includes(v),
   },
 })
 
 const notificationTypeClass = computed(() => {
-  switch (props.type) {
-    case 'warning':
-      return 'notification-type-warning'
-    case 'error':
-      return 'notification-type-error'
-    default:
-      return 'notification-type-info'
-  }
+  return `notification-type-${props.type}`
 })
 </script>
-
-<style scoped lang="scss">
-.uranus-notification {
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  margin-bottom: 1rem;
-  align-items: flex-start;
-  gap: 1rem;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  color: var(--uranus-card-color);
-  background: var(--uranus-card-bg);
-  max-width: var(--uranus-notification-max-width);
-  overflow: hidden;
-
-  .notification-title {
-    width: 100%;
-    padding: var(--uranus-default-text-padding);
-  }
-
-  .notification-content {
-    padding: var(--uranus-default-text-padding);
-    p {
-      font-size: 1em;
-    }
-  }
-
-  .notification-actions {
-    display: flex;
-    width: 100%;
-    justify-content: flex-end;
-    padding: 16px;
-  }
-
-  /* Border colors */
-  &.notification-type-info {
-    border-color: var(--uranus-notify-info-color);
-    .notification-title {
-      background: var(--uranus-notify-info-color);
-    }
-  }
-  &.notification-type-warning {
-    border-color: var(--uranus-notify-warning-color);
-    .notification-title {
-      background: var(--uranus-notify-warning-color);
-    }
-  }
-  &.notification-type-error {
-    border-color: var(--uranus-notify-error-color);
-    .notification-title {
-      background: var(--uranus-notify-error-color);
-    }
-  }
-
-  .notification-title {
-    margin: 0 0 0.25rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
-
-  .notification-text {
-    margin: 0 0 0.5rem;
-    font-size: 0.95rem;
-  }
-
-  .notification-button {
-    display: inline-block;
-    padding: 0.4rem 0.75rem;
-    border: 2px solid #333;
-    border-radius: 99px;
-    color: #333;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
-
-    &:hover {
-      background-color: #e0e0e0;
-    }
-  }
-}
-</style>
