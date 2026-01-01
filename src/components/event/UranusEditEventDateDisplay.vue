@@ -1,6 +1,4 @@
-<!--
-  UranusEditEventDateDisplay.vue
--->
+<!-- UranusEditEventDateDisplay.vue -->
 <template>
   <div
       class="uranus-event-date-display"
@@ -11,23 +9,29 @@
       <!-- Date Display -->
       <div v-if="formattedDate.date">
         <span class="event-date">{{ formattedDate.date }}</span>
+
+        <!-- Edit/Delete Icons -->
         <UranusInlineIcon
             v-if="canEdit"
             mode="edit"
             class="icon"
-            @click="$emit('edit')"
+            @click.native="onEdit"
         />
+        <UranusInlineIcon
+            v-if="canDelete"
+            mode="delete"
+            class="icon"
+            @click.native="onDelete"
+        />
+
         <br>
         <span v-if="formattedDate.time" class="event-time">{{ formattedDate.time }}</span>
       </div>
 
       <div v-else>
         <span class="event-date">{{ formattedDate.startDate }}</span>
-        <UranusInlineIcon
-            v-if="canEdit"
-            mode="edit"
-            @click="$emit('edit')"
-        />
+        <UranusInlineIcon v-if="canEdit" mode="edit" class="icon" @click.native="onEdit" />
+        <UranusInlineIcon v-if="canDelete" mode="delete" class="icon" @click.native="onDelete" />
         <br>
         <span v-if="formattedDate.startTime" class="event-time">{{ formattedDate.startTime }}</span>
         &nbsp;–&nbsp;<span class="event-time">{{ formattedDate.endDate }}</span>
@@ -35,7 +39,7 @@
       </div>
 
       <!-- Venue/Space Display -->
-      <span v-if="formattedVenueSpaceName != ''" class="event-venue">
+      <span v-if="formattedVenueSpaceName !== ''" class="event-venue">
         {{ formattedVenueSpaceName }}
       </span>
     </template>
@@ -55,23 +59,40 @@ const props = defineProps<{
   eventDate: UranusEventDate
 }>()
 
-const canEdit = computed(() => true)
+const emits = defineEmits<{
+  (e: 'edit'): void
+  (e: 'delete'): void
+}>()
+
+const canEdit = computed(() => true) // TODO: replace with permissions
+const canDelete = computed(() => true) // TODO: replace with permissions
 const hovered = ref(false)
 
-const formattedDate = computed(() => {
-  return props.eventDate ? formatEventDateTime(props.eventDate, locale.value) : null
-})
+const formattedDate = computed(() =>
+    props.eventDate ? formatEventDateTime(props.eventDate, locale.value) : null
+)
 
 const formattedVenueSpaceName = computed(() => {
   if (props.eventDate.dateVenueId != null) {
-     let name = props.eventDate.venueName ?? ''
+    let name = props.eventDate.venueName ?? ''
     if (props.eventDate.spaceId) {
       name += ' / ' + props.eventDate.spaceName
     }
     return name
   }
-  return '';
+  return ''
 })
+
+// --- Wrapper functions to handle native click ---
+function onEdit(event: MouseEvent) {
+  event.stopPropagation() // prevent double alert
+  emits('edit')
+}
+
+function onDelete(event: MouseEvent) {
+  event.stopPropagation() // prevent double alert
+  emits('delete')
+}
 </script>
 
 <style scoped>

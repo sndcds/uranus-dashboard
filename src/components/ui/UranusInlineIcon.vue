@@ -1,6 +1,3 @@
-<!--
-  UranusIconAction.vue
--->
 <template>
   <component
       :is="to ? 'router-link' : 'span'"
@@ -23,26 +20,41 @@
 </template>
 
 <script setup lang="ts">
-import {computed} from "vue";
+import { computed } from 'vue'
 
+/**
+ * Props:
+ * - title: optional tooltip
+ * - to: optional router link
+ * - mode: 'edit' | 'delete' | 'add'
+ */
 const props = defineProps<{
   title?: string
   to?: string
-  onClick?: () => void
   mode?: 'edit' | 'delete' | 'add'
 }>()
 
+/**
+ * Emits:
+ * - 'click' with the native MouseEvent
+ */
 const emit = defineEmits<{
-  (e: 'click'): void
+  (e: 'click', event: MouseEvent): void
 }>()
 
-const handleClick = () => {
-  if (props.onClick) {
-    props.onClick()
-    emit('click')
-  }
+/**
+ * Click handler
+ * - Stops propagation
+ * - Emits native MouseEvent
+ */
+function handleClick(event: MouseEvent) {
+  event.stopPropagation()
+  emit('click', event)
 }
 
+/**
+ * Determine which SVG path to use
+ */
 const iconPath = computed(() => {
   switch (props.mode) {
     case 'delete':
@@ -55,13 +67,25 @@ const iconPath = computed(() => {
   }
 })
 
-const modeClass = computed(() => {
-  return {
-    delete: props.mode === 'delete',
-    add: props.mode === 'add',
-    edit: props.mode === 'edit',
-    clickable: !!props.onClick
-  }
-})
+/**
+ * CSS classes for styling
+ */
+const modeClass = computed(() => ({
+  delete: props.mode === 'delete',
+  add: props.mode === 'add',
+  edit: props.mode === 'edit',
+  clickable: true
+}))
 </script>
 
+<style scoped>
+.uranus-inline-icon {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.uranus-inline-icon svg {
+  width: 1em;
+  height: 1em;
+}
+</style>

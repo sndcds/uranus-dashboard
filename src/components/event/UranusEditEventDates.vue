@@ -5,11 +5,12 @@
 
   <UranusInlineEditSection>
     <!-- Event Dates List -->
-    <template v-for="date in event?.eventDates ?? []" :key="date.eventDateId ?? null">
+    <template v-for="date in event?.eventDates ?? []" :key="date.eventDateId ?? date._uid">
       <UranusEditEventDateDisplay
           :event-date="date"
           :can-edit="true"
           @edit="onOpenModal(date)"
+          @delete="onDelete(date)"
       />
     </template>
 
@@ -103,6 +104,8 @@ import UranusInlineEditSection from "@/components/ui/UranusInlineEditSection.vue
 const { t } = useI18n({ useScope: 'global' })
 const event = inject<Ref<UranusEventDetail | null>>('event')
 
+const nextDateUid = ref(1)
+
 const editingDate = ref<{
   eventDate: UranusEventDate
   venueSpace: UranusVenueSpaceSelection
@@ -141,13 +144,53 @@ function onOpenModal(date: UranusEventDate) {
   }
 }
 
+async function onDelete(date: UranusEventDate) {
+  if (!event?.value) return
+
+  // Unsaved (new) date → just remove locally
+  if (!date.eventDateId) {
+    event.value.eventDates = event.value.eventDates.filter(d => d !== date)
+    return
+  }
+
+  // Confirm deletion
+  const confirmed = window.confirm(
+      t('event_date_delete_confirm') ?? 'Delete this date?'
+  )
+  if (!confirmed) return
+
+  isSaving.value = true
+
+  try {
+    await apiFetch(
+        `/api/admin/event/${event.value.eventId}/date/${date.eventDateId}`,
+        { method: 'DELETE' }
+    )
+
+    // Remove locally (reactive)
+    event.value.eventDates = event.value.eventDates.filter(
+        d => d.eventDateId !== date.eventDateId
+    )
+
+    // Close modal if deleting the currently edited date
+    if (editingDate.value?.eventDate.eventDateId === date.eventDateId) {
+      onCancelEdit()
+    }
+
+    sortEventDatesAsc()
+  } finally {
+    isSaving.value = false
+  }
+}
+
 function onCancelEdit() {
   editingDate.value = null
 }
 
 function addEventDate() {
   if (!event?.value) return
-  const newDate: UranusEventDate = {
+  const newDate: UranusEventDate & { _uid: number } = {
+    _uid: nextDateUid.value++,
     eventId: null,
     eventDateId: null,
     dateVenueId: null,

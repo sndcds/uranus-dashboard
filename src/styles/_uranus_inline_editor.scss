@@ -30,9 +30,48 @@
 }
 
 
+
+
 .uranus-inline-edit-button {
-  padding: 0.2rem 0.5rem;
-  opacity: 0.0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  color: var(--uranus-ia-inline-color);
+  background-color: transparent;
+  border: 1px solid var(--uranus-ia-inline-color-light2);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+
+  &:hover:not(:disabled):not(&--active) {
+    color: var(--uranus-bg);
+    background-color: var(--uranus-ia-inline-color);
+    border: 1px solid var(--uranus-ia-inline-color);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+    transform: none;
+  }
+
+  // Active state for button
+  &--active {
+    background: var(--uranus-ia-inline-color);
+    color: white;
+    cursor: default;
+    &:hover {
+    }
+  }
 }
 
 .uranus-inline-icon {

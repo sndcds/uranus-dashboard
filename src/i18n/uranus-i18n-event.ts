@@ -326,4 +326,9 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Go to Organizations',
         da: 'Til organisationerne',
     },
+    event_date_delete_confirm: {
+        de: 'Möchtest du dieses Datum wirklich löschen?',
+        en: 'Are you sure you want to delete this date?',
+        da: 'Er du sikker på, at du vil slette denne dato?',
+    },
 }
