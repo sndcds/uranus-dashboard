@@ -245,14 +245,13 @@ watch(isLoading, (loading) => {
 const selectedAccessibilityLabels = computed(() => {
   if (!event.value?.spaceAccFlags) return []
 
-  const mask = event.value.spaceAccFlags
+  const mask = BigInt(event.value.spaceAccFlags) // <-- convert to BigInt
   const labels: string[] = []
 
   uranusI18nAccessibilityFlags.forEach(topic => {
     topic.flags.forEach(flag => {
-      const flagValue = 2 ** Number(flag.id)
+      const flagValue = 1n << BigInt(flag.id)  // <-- use BigInt
       if ((mask & flagValue) === flagValue) {
-        // Use i18n if you have translations, otherwise show snake_case
         labels.push(t(flag.name))
       }
     })

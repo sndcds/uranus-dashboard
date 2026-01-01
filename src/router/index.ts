@@ -8,7 +8,7 @@ import UranusDashboardOrganizationsView from '@/views/UranusDashboardOrganizatio
 import SettingsView from '@/views/SettingsView.vue'
 import UranusDashboardVenuesView from '@/views/UranusDashboardVenuesView.vue'
 import SignupView from '@/views/SignupView.vue'
-import FormSpaceView from '@/views/FormSpaceView.vue'
+import UranusSpaceEditView from '@/views/UranusSpaceEditView.vue'
 import UranusDashboardEventsView from '@/views/UranusDashboardEventsView.vue'
 import UranusCreateEventView from '@/views/UranusCreateEventView.vue'
 import UranusEditEventView from '@/views/UranusEditEventView.vue'
@@ -96,12 +96,12 @@ const routes = [
             {
                 path: 'organization/:id/venue/:venueId/space/create',
                 name: 'admin-create-space',
-                component: FormSpaceView,
+                component: UranusSpaceEditView,
             },
             {
                 path: 'organization/:id/venue/:venueId/space/:spaceId/edit',
                 name: 'admin-edit-space',
-                component: FormSpaceView,
+                component: UranusSpaceEditView,
             },
             {
                 path: 'organization/:id/venues',

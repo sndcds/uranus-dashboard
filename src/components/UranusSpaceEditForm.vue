@@ -151,7 +151,7 @@
                   <input
                       :id="`accessibility-flag-${flag.id}`"
                       type="checkbox"
-                      :value="2 ** Number(flag.id)"
+                      :value="1n << BigInt(flag.id)"
                       v-model="selectedAccessibilityFlags"
                   />
                   <div class="accessibility-flag__content">
@@ -169,12 +169,10 @@
         </fieldset>
       </div>
 
-
-
     </section>
 
     <div class="uranus-form-action-footer">
-      <button class="uranus-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
+      <button class="uranus-ok-button" type="submit" :disabled="loading">{{ submitLabel }}</button>
     </div>
   </form>
 
@@ -219,39 +217,41 @@ type AccessibilityFlagSource =
     | null
 
 export interface SpaceFormInitialValues {
-    name?: string
-    totalCapacity?: number
-    seatingCapacity?: number
-    buildingLevel?: number
-    spaceTypeId?: number | null
-    websiteUrl?: string
-    description?: string | null
-    accessibilitySummary?: string | null
-    accessibilityFlags?: number | null
+  id?: number
+  name?: string
+  totalCapacity?: number
+  seatingCapacity?: number
+  buildingLevel?: number
+  spaceTypeId?: number | null
+  websiteUrl?: string
+  description?: string | null
+  accessibilitySummary?: string | null
+  accessibilityFlags?: string | null
 }
 
 export interface SpaceFormSubmitPayload {
-    name: string
-    totalCapacity: number
-    seatingCapacity: number
-    buildingLevel: number
-    spaceTypeId: number
-    websiteUrl: string | null
-    description: string | null
-    accessibilitySummary: string | null
-    accessibilityFlags: number | null
+  spaceId?: number
+  name: string
+  totalCapacity: number
+  seatingCapacity: number
+  buildingLevel: number
+  spaceTypeId: number
+  websiteUrl: string | null
+  description: string | null
+  accessibilitySummary: string | null
+  accessibilityFlags: string | null
 }
 
 const props = withDefaults(defineProps<{
-    submitLabel: string
-    loading?: boolean
-    errorMessage?: string | null
-    successMessage?: string | null
-    initialValues?: SpaceFormInitialValues
+  submitLabel: string
+  loading?: boolean
+  errorMessage?: string | null
+  successMessage?: string | null
+  initialValues?: SpaceFormInitialValues
 }>(), {
-    loading: false,
-    errorMessage: null,
-    successMessage: null,
+  loading: false,
+  errorMessage: null,
+  successMessage: null,
 })
 
 const emit = defineEmits<{
@@ -261,6 +261,7 @@ const emit = defineEmits<{
 
 const { t, te, locale } = useI18n()
 
+const spaceId = ref<number | null>(null)
 const spaceName = ref('')
 const totalCapacity = ref(0)
 const seatingCapacity = ref(0)
@@ -271,7 +272,7 @@ const description = ref('')
 const accessibilitySummary = ref('')
 
 const spaceTypes = ref<Array<{ id: number; name: string }>>([])
-const selectedAccessibilityFlags = ref<number[]>([])
+const selectedAccessibilityFlags = ref<bigint[]>([])
 
 const fieldErrors = reactive({
     spaceName: null as string | null,
@@ -291,11 +292,6 @@ const missingRequiredMessage = computed(() => (te('organization_form_missing_req
 const invalidWebsiteMessage = computed(() => (te('organization_form_invalid_website') ? t('organization_form_invalid_website') : 'Please provide a valid website URL.'))
 
 const displayError = computed(() => localError.value ?? props.errorMessage ?? null)
-
-const accessibilityTopics = computed(() => {
-    void locale.value
-    return buildAccessibilityTopics(accessibilityFlags.value)
-})
 
 watch(
     selectedAccessibilityFlags,
@@ -353,186 +349,20 @@ const toFlagNumber = (value: unknown): number | null => {
     return null
 }
 
-function normalizeAccessibilityFlags(source: AccessibilityFlagSource): AccessibilityFlagOption[] {
-    const records: AccessibilityFlagRecord[] = []
-
-    const append = (collection: unknown) => {
-        if (Array.isArray(collection)) {
-            collection.forEach((item) => {
-                records.push((item ?? null) as AccessibilityFlagRecord)
-            })
-        }
-    }
-
-    if (Array.isArray(source)) {
-        append(source)
-    } else if (source && typeof source === 'object') {
-        const container = source as {
-            flags?: AccessibilityFlagRecord[]
-            data?: AccessibilityFlagRecord[]
-            accessibility_flags?: AccessibilityFlagRecord[]
-            accessibilityFlags?: AccessibilityFlagRecord[]
-        }
-        append(container.flags)
-        append(container.data)
-        append(container.accessibility_flags)
-        append(container.accessibilityFlags)
-
-        if (!container.flags && !container.data && !container.accessibility_flags && !container.accessibilityFlags) {
-            Object.values(source as Record<string, AccessibilityFlagRecord>).forEach((entry) => {
-                if (entry && typeof entry === 'object') {
-                    records.push(entry)
-                }
-            })
-        }
-    }
-
-    const dedupeMap = new Map<number, AccessibilityFlagOption>()
-
-    records.forEach((record, index) => {
-        const option = normalizeAccessibilityFlagRecord(record, index)
-        if (option) {
-            dedupeMap.set(option.id, option)
-        }
-    })
-
-    return Array.from(dedupeMap.values()).sort((a, b) => {
-        if (a.topicId === b.topicId) {
-            return a.order - b.order
-        }
-        return a.topicId - b.topicId
-    })
-}
-
-function normalizeAccessibilityFlagRecord(record: AccessibilityFlagRecord, order: number): AccessibilityFlagOption | null {
-    if (!record || typeof record !== 'object') {
-        return null
-    }
-
-    const idCandidate = toFlagNumber(record.id)
-    const topicCandidate =
-        toFlagNumber(record.topic_id) ??
-        toFlagNumber((record as { topicId?: unknown }).topicId)
-
-    if (idCandidate == null || topicCandidate == null) {
-        return null
-    }
-
-    const label = typeof record.name === 'string' && record.name.trim().length ? record.name.trim() : `Flag #${idCandidate}`
-    const description = typeof record.description === 'string' ? record.description.trim() : ''
-
-    const value = Math.pow(2, idCandidate)
-    if (!Number.isFinite(value)) {
-        return null
-    }
-
-    return {
-        id: idCandidate,
-        topicId: topicCandidate,
-        label,
-        description,
-        value,
-        order,
-    }
-}
-
-function buildAccessibilityTopics(flags: AccessibilityFlagOption[]): Array<{
-    id: number
-    title: string
-    description: string
-    flags: AccessibilityFlagOption[]
-}> {
-    if (!Array.isArray(flags) || !flags.length) {
-        return []
-    }
-
-    const grouped = new Map<number, AccessibilityFlagOption[]>()
-    flags.forEach((flag) => {
-        const topicId = flag.topicId
-        if (!grouped.has(topicId)) {
-            grouped.set(topicId, [])
-        }
-        grouped.get(topicId)!.push(flag)
-    })
-
-    const preferredOrder = [1, 2, 3, 4, 5, 6]
-
-    return Array.from(grouped.entries())
-        .map(([topicId, topicFlags]) => {
-            const copy = getAccessibilityTopicCopy(topicId)
-            return {
-                id: topicId,
-                title: copy.title,
-                description: copy.description,
-                flags: topicFlags.slice().sort((a, b) => a.order - b.order),
-            }
-        })
-        .sort((a, b) => {
-            const indexA = preferredOrder.indexOf(a.id)
-            const indexB = preferredOrder.indexOf(b.id)
-
-            if (indexA !== -1 || indexB !== -1) {
-                return (indexA === -1 ? Number.MAX_SAFE_INTEGER : indexA) -
-                    (indexB === -1 ? Number.MAX_SAFE_INTEGER : indexB)
-            }
-
-            return a.id - b.id
-        })
-}
-
-function getAccessibilityTopicCopy(topicId: number): { title: string; description: string } {
-    switch (topicId) {
-        case 1:
-            return {
-                title: t('space_accessibility_topic_1_title'),
-                description: t('space_accessibility_topic_1_description'),
-            }
-        case 2:
-            return {
-                title: t('space_accessibility_topic_2_title'),
-                description: t('space_accessibility_topic_2_description'),
-            }
-        case 3:
-            return {
-                title: t('space_accessibility_topic_3_title'),
-                description: t('space_accessibility_topic_3_description'),
-            }
-        case 4:
-            return {
-                title: t('space_accessibility_topic_4_title'),
-                description: t('space_accessibility_topic_4_description'),
-            }
-        case 5:
-            return {
-                title: t('space_accessibility_topic_5_title'),
-                description: t('space_accessibility_topic_5_description'),
-            }
-        case 6:
-            return {
-                title: t('space_accessibility_topic_6_title'),
-                description: t('space_accessibility_topic_6_description'),
-            }
-        default:
-            return {
-                title: t('space_accessibility_topic_generic_title', { id: topicId }),
-                description: '',
-            }
-    }
-}
-
-function applyAccessibilityFlagsFromMask(mask: number | null) {
-  if (!mask || mask <= 0) {
+function applyAccessibilityFlagsFromMask(mask: number | string | null) {
+  if (mask == null) {
     selectedAccessibilityFlags.value = []
     return
   }
 
-  const selection: number[] = []
+  const bigMask = BigInt(mask)
+  const selection: bigint[] = []
 
   uranusI18nAccessibilityFlags.forEach((topic) => {
     topic.flags.forEach((flag) => {
-      const flagValue = 2 ** Number(flag.id)
-      if ((mask & flagValue) === flagValue) {
-        selection.push(flagValue)
+      const bit = 1n << BigInt(flag.id)
+      if ((bigMask & bit) !== 0n) {
+        selection.push(bit)
       }
     })
   })
@@ -540,8 +370,11 @@ function applyAccessibilityFlagsFromMask(mask: number | null) {
   selectedAccessibilityFlags.value = selection
 }
 
-function computeAccessibilityFlagsMask(): number {
-    return selectedAccessibilityFlags.value.reduce((accumulator, current) => accumulator + current, 0)
+function computeAccessibilityFlagsMask(): bigint {
+  return selectedAccessibilityFlags.value.reduce(
+      (mask, bit) => mask | bit,
+      0n
+  )
 }
 
 const isValidUrl = (value: string) => {
@@ -556,33 +389,34 @@ const isValidUrl = (value: string) => {
 }
 
 const applyInitialValues = (values?: SpaceFormInitialValues) => {
-    spaceName.value = values?.name ?? ''
-    totalCapacity.value = values?.totalCapacity ?? 0
-    seatingCapacity.value = values?.seatingCapacity ?? 0
-    buildingLevel.value = values?.buildingLevel ?? 0
-    spaceTypeId.value = values?.spaceTypeId ?? null
-    websiteUrl.value = values?.websiteUrl ?? ''
-    description.value = values?.description ?? ''
-    accessibilitySummary.value = values?.accessibilitySummary ?? ''
+  spaceId.value = values?.id ?? null
+  spaceName.value = values?.name ?? ''
+  totalCapacity.value = values?.totalCapacity ?? 0
+  seatingCapacity.value = values?.seatingCapacity ?? 0
+  buildingLevel.value = values?.buildingLevel ?? 0
+  spaceTypeId.value = values?.spaceTypeId ?? null
+  websiteUrl.value = values?.websiteUrl ?? ''
+  description.value = values?.description ?? ''
+  accessibilitySummary.value = values?.accessibilitySummary ?? ''
 
-    if (values?.accessibilityFlags != null) {
-        applyAccessibilityFlagsFromMask(values.accessibilityFlags)
-    } else {
-        selectedAccessibilityFlags.value = []
-    }
+  if (values?.accessibilityFlags != null) {
+    applyAccessibilityFlagsFromMask(values.accessibilityFlags)
+  } else {
+    selectedAccessibilityFlags.value = []
+  }
 
-    Object.keys(fieldErrors).forEach((key) => {
-        fieldErrors[key as keyof typeof fieldErrors] = null
-    })
-    localError.value = null
+  Object.keys(fieldErrors).forEach((key) => {
+    fieldErrors[key as keyof typeof fieldErrors] = null
+  })
+  localError.value = null
 }
 
 watch(
-    () => props.initialValues,
-    (values) => {
-        applyInitialValues(values)
-    },
-    { immediate: true, deep: true }
+  () => props.initialValues,
+  (values) => {
+    applyInitialValues(values)
+  },
+  { immediate: true, deep: true }
 )
 
 const clearMissingRequiredMessage = () => {
@@ -656,15 +490,18 @@ const handleSubmit = () => {
     const accessibilityMask = computeAccessibilityFlagsMask()
 
     emit('submit', {
-        name: trimmedName,
-        totalCapacity: totalCapacity.value,
-        seatingCapacity: seatingCapacity.value,
-        buildingLevel: buildingLevel.value,
-        spaceTypeId: spaceTypeId.value,
-        websiteUrl: normalizedWebsite.length ? normalizedWebsite : null,
-        description: trimmedDescription.length ? trimmedDescription : null,
-        accessibilitySummary: trimmedAccessibilitySummary.length ? trimmedAccessibilitySummary : null,
-        accessibilityFlags: selectedAccessibilityFlags.value.length ? accessibilityMask : null,
+      ...(spaceId.value != null ? { spaceId: spaceId.value } : {}),
+      name: trimmedName,
+      totalCapacity: totalCapacity.value,
+      seatingCapacity: seatingCapacity.value,
+      buildingLevel: buildingLevel.value,
+      spaceTypeId: spaceTypeId.value,
+      websiteUrl: normalizedWebsite.length ? normalizedWebsite : null,
+      description: trimmedDescription.length ? trimmedDescription : null,
+      accessibilitySummary: trimmedAccessibilitySummary.length ? trimmedAccessibilitySummary : null,
+      accessibilityFlags: selectedAccessibilityFlags.value.length
+        ? accessibilityMask.toString()
+        : null,
     })
 }
 

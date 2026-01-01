@@ -6,6 +6,11 @@ export const uranusI18nAccessibilityTranslations: Record<string, Record<'en' | '
         de: 'Barrierefreiheit des Veranstaltungsorts',
         da: 'Tilgængelighed for lokalet',
     },
+    space_accessibility_summary: {
+        en: 'Accessibility summary',
+        de: 'Barrierefreiheits-Zusammenfassung',
+        da: 'Tilgængelighedsoversigt',
+    },
     physical_accessibility: {
         en: 'Physical Accessibility',
         de: 'Physische Barrierefreiheit',

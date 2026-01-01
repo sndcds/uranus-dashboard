@@ -7,8 +7,9 @@
     <UranusCard class="uranus-modal-card">
       <!-- Title -->
       <h2>{{ localImageMeta.id ? t('edit_event_image') : t('add_event_image') }}</h2>
+
       <!-- Image preview -->
-      <div class="uranus-image-preview" @click="triggerFileSelect">
+      <div class="uranus-image-preview" @click="onImageClick($event)">
         <img v-if="localImageMeta.url" :src="localImageMeta.url" class="uranus-preview-img" />
         <div v-else class="uranus-no-img">{{ t('click_to_upload') }}</div>
         <input
@@ -18,7 +19,12 @@
             class="uranus-hidden-file"
             @change="onFileSelected"
         />
+        <div v-if="localImageMeta.focusX !== null && localImageMeta.focusY !== null"
+             class="focus-point"
+             :style="{ left: `${localImageMeta.focusX * 100}%`, top: `${localImageMeta.focusY * 100}%`}">
+        </div>
       </div>
+
 
       <!-- Metadata fields -->
       <UranusFormRow>
@@ -154,6 +160,24 @@ function triggerFileSelect() {
   fileInput.value?.click()
 }
 
+function onImageClick(event: MouseEvent) {
+  if (event.metaKey) {
+    // Command+click → set focus point
+    const img = event.currentTarget as HTMLDivElement
+    const rect = img.getBoundingClientRect()
+
+    const x = (event.clientX - rect.left) / rect.width
+    const y = (event.clientY - rect.top) / rect.height
+
+    localImageMeta.focusX = Math.min(Math.max(x, 0), 1)
+    localImageMeta.focusY = Math.min(Math.max(y, 0), 1)
+    console.log('Focus point set:', localImageMeta.focusX, localImageMeta.focusY)
+  } else {
+    // Normal click → trigger file input
+    triggerFileSelect()
+  }
+}
+
 function onFileSelected(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0]
   if (!file) {
@@ -214,7 +238,7 @@ onMounted(() => {
   align-items: center;
   cursor: pointer;
   overflow: hidden;
-  background: var(--uranus-bg-color);
+  background: var(--uranus-bg);
   border-radius: var(--uranus-tiny-border-radius);
 }
 
@@ -255,4 +279,15 @@ onMounted(() => {
   justify-content: flex-end;
   gap: 0.5rem;
 }
+
+.focus-point {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 </style>

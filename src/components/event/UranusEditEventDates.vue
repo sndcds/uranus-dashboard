@@ -112,6 +112,22 @@ const isSaving = ref(false)
 const canSave = computed(() => !isSaving.value)
 const eventDates = computed(() => event?.value?.eventDates ?? [])
 
+function sortEventDatesAsc() {
+  if (!event?.value) return
+
+  event.value.eventDates.sort((a, b) => {
+    const aDate = a.startDate ?? ''
+    const bDate = b.startDate ?? ''
+    if (aDate !== bDate) {
+      return aDate.localeCompare(bDate)
+    }
+
+    const aTime = a.startTime ?? '00:00'
+    const bTime = b.startTime ?? '00:00'
+    return aTime.localeCompare(bTime)
+  })
+}
+
 function onOpenModal(date: UranusEventDate) {
   editingDate.value = {
     eventDate: { ...date },
@@ -195,6 +211,7 @@ async function onSaveModal() {
     }
 
     // Close the modal
+    sortEventDatesAsc()
     onCancelEdit()
   } finally {
     isSaving.value = false
