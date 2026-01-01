@@ -9,26 +9,23 @@
     <form :id="formId" @submit.prevent="handleSubmit" class="modal-form">
       <div v-if="timeSeries > 1" class="form-field">
         <span class="form-label">{{ t('delete_time_series_question') }}</span>
-        <div class="radio-group">
-          <label class="radio-option">
-            <input
-              type="radio"
-              value="single"
-              v-model="seriesChoice"
-              :name="`${formId}-time-series`"
-            />
-            <span>{{ t('delete_time_series_option_single') }}</span>
-          </label>
-          <label class="radio-option">
-            <input
-              type="radio"
-              value="series"
-              v-model="seriesChoice"
-              :name="`${formId}-time-series`"
-            />
-            <span>{{ t('delete_time_series_option_series', { count: timeSeries }) }}</span>
-          </label>
-        </div>
+
+        <UranusRadioButton
+            v-model="seriesChoice"
+            value="single"
+            name="time-series"
+        >
+          {{ t('delete_time_series_option_single') }}
+        </UranusRadioButton>
+
+        <UranusRadioButton
+            v-model="seriesChoice"
+            value="series"
+            name="time-series"
+        >
+          {{ t('delete_time_series_option_series', { count: timeSeries }) }}
+        </UranusRadioButton>
+
       </div>
 
       <div class="form-field">
@@ -53,14 +50,14 @@
 
     <template #actions>
       <div class="modal-actions">
-        <button type="button" @click="$emit('cancel')" class="uranus-secondary-button">
+        <button type="button" @click="$emit('cancel')" class="uranus-action-button">
           {{ t('cancel') }}
         </button>
         <button
           type="submit"
           :form="formId"
           :disabled="isSubmitting"
-          class="uranus-button uranus-button--danger"
+          class="uranus-action-button"
         >
           {{ isSubmitting ? loadingText : confirmText }}
         </button>
@@ -74,6 +71,7 @@ import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import UranusModal from '@/components/uranus/UranusModal.vue'
+import UranusRadioButton from "@/components/ui/UranusRadioButton.vue";
 
 const { t } = useI18n()
 

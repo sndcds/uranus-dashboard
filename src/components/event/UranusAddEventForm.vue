@@ -32,7 +32,7 @@ UranusAddEventForm.vue
       <UranusDateInput
           id="startDate"
           v-model.trim="draft.startDate"
-          :label="t('start_date_label')"
+          :label="t('event_start_date')"
           :error="startDateError"
           required
       />
@@ -40,7 +40,7 @@ UranusAddEventForm.vue
       <UranusTimeInput
           id="startTime"
           v-model.trim="draft.startTime"
-          :label="t('start_time_label')"
+          :label="t('event_start_time')"
           :error="startTimeError"
           required
       />

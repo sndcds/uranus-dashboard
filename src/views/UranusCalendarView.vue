@@ -267,29 +267,37 @@ watch(searchQuery, () => {
 })
 
 
-const loadEvents = async (resetObserver = false) => {
-  if (loading.value) return
-  loading.value = true
+const buildFilterParams = (paginationMode = false) => {
+  const params = new URLSearchParams()
 
-  // Temporarily disconnect observer if resetting
-  if (resetObserver && observer) {
-    observer.disconnect()
-  }
-
-  try {
-    const params = new URLSearchParams({ limit: limit.toString() })
-
+  if (paginationMode) {
+    params.set("limit", limit.toString())
     if (lastEventStartAt.value) {
       params.set("last_event_start_at", lastEventStartAt.value)
       if (lastEventDateId.value !== null) {
         params.set("last_event_date_id", lastEventDateId.value.toString())
       }
     }
-    urlParamsSetIfPresent(params, 'search', filter.value.search)
-    urlParamsSetIfPresent(params, 'city', filter.value.city)
-    urlParamsSetIfPresent(params, 'start', filter.value.startDate)
-    urlParamsSetIfPresent(params, 'end', filter.value.endDate)
+  }
 
+
+  urlParamsSetIfPresent(params, "search", filter.value.search)
+  urlParamsSetIfPresent(params, "city", filter.value.city)
+  urlParamsSetIfPresent(params, "start", filter.value.startDate)
+  urlParamsSetIfPresent(params, "end", filter.value.endDate)
+
+  return params
+}
+
+const loadEvents = async (resetObserver = false) => {
+  if (loading.value) return
+  loading.value = true
+
+  if (resetObserver && observer) observer.disconnect()
+
+  try {
+    // --- Fetch events ---
+    const params = buildFilterParams(true)
     const { data } = await apiFetch<{
       events: CalendarEvent[]
       last_event_start_at: string
@@ -298,22 +306,21 @@ const loadEvents = async (resetObserver = false) => {
 
     if (data?.events.length) {
       events.value.push(...data.events)
-
-      // update cursor
       lastEventStartAt.value = data.last_event_start_at
       lastEventDateId.value = data.last_event_date_id
     }
 
-    // Fetch type summary
-    const response = await apiFetch<{ summary: TypeSummaryEntry[] }>("/api/events/type-summary")
-    typeSummary.value = response.data.summary || []
+    // --- Fetch summary with same filters, but without limit ---
+    const summaryParams = buildFilterParams(false)
+    const summaryResponse = await apiFetch<{ summary: TypeSummaryEntry[] }>(
+        `/api/events/type-summary?${summaryParams.toString()}`
+    )
+    typeSummary.value = summaryResponse.data.summary || []
 
   } catch (err) {
     console.error("Failed to load events:", err)
   } finally {
     loading.value = false
-
-    // Reconnect observer after first page
     if (resetObserver && observer && loadMoreTrigger.value) {
       observer.observe(loadMoreTrigger.value)
     }
