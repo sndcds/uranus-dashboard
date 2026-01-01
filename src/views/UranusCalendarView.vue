@@ -44,8 +44,8 @@
           </div>
 
           <div class="calendar-text">
+            <span>{{ uranusFormatDateTime(event.start_date, event.start_time, locale) }}</span>
             <h3>{{ event.title }}</h3>
-            <span>{{ event.start_date }} {{ event.start_time || '' }}</span>
             <span>{{ event.venue_name }}, {{ event.venue_city }}</span>
             <UranusEventReleaseChip
                 v-if="(event.release_status_id ?? 0) > 3"
@@ -137,6 +137,7 @@ import UranusInlineEditActions from "@/components/ui/UranusInlineEditActions.vue
 import UranusTextInput from "@/components/ui/UranusTextInput.vue";
 import { urlParamsSetIfPresent } from "@/utils/UranusUtils.ts";
 import UranusDateInput from "@/components/ui/UranusDateInput.vue";
+import { uranusFormatDateTime } from "@/utils/UranusStringUtils.ts";
 
 const router = useRouter()
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -279,7 +280,6 @@ const buildFilterParams = (paginationMode = false) => {
       }
     }
   }
-
 
   urlParamsSetIfPresent(params, "search", filter.value.search)
   urlParamsSetIfPresent(params, "city", filter.value.city)

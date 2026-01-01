@@ -18,6 +18,16 @@ export function uranusFormatSimpleDate(input: string, locale = 'en') {
     return `${weekday} ${day}/${month}`;
 }
 
+
+export const uranusFormatDateTime = (dateStr: string, timeStr?: string | null, locale = 'en') => {
+    if (!dateStr) return ''
+    const dateTime = timeStr ? new Date(`${dateStr}T${timeStr}`) : new Date(dateStr)
+    return new Intl.DateTimeFormat(locale, {
+        dateStyle: 'short',
+        timeStyle: timeStr ? 'short' : undefined
+    }).format(dateTime)
+}
+
 export function uranusFormatFullDate(
     input: string | number | Date,
     locale: string = 'en'
