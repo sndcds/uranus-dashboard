@@ -31,7 +31,6 @@
             :key="eventType?.typeId ?? ''"
         >
           {{ eventTypeGenreString(eventType) }}
-          {{ eventType.typeId }} / {{ eventType.genreId }}
         </span>
       </span>
 
