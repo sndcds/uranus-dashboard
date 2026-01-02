@@ -3,23 +3,35 @@
 -->
 <template>
   <UranusFormRow>
-    <select v-model="selectedEventTypeId" class="_type-select">
+
+    <select v-model="selectedEventTypeId">
       <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-      <option v-for="eventType in eventTypeOptionsLocal" :key="eventType.id" :value="eventType.id">
+      <option
+          v-for="eventType in eventTypeOptions"
+          :key="eventType.id"
+          :value="eventType.id"
+      >
         {{ eventType.name }}
       </option>
     </select>
 
-    <select v-if="canSelectGenre" v-model="selectedGenreTypeId" class="_genre-select">
+    <select
+        v-if="canSelectGenre"
+        v-model="selectedGenreTypeId"
+    >
       <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-      <option v-for="genreType in genreTypeOptionsLocal" :key="genreType.id" :value="genreType.id">
+      <option
+          v-for="genreType in genreTypeOptions"
+          :key="genreType.id"
+          :value="genreType.id"
+      >
         {{ genreType.name }}
       </option>
     </select>
 
     <button
         v-if="canAddType"
-        class="uranus-secondary-button _button"
+        class="uranus-action-button"
         @click="onAddType"
     >
       {{ t('add') }}
@@ -49,40 +61,23 @@
 
 
 <script setup lang="ts">
-import { onMounted, ref, watch, computed } from "vue";
-import { useI18n } from "vue-i18n";
-import { apiFetch } from "@/api.ts";
-import { useEventTypeLookupStore } from '@/store/eventTypesLookup.ts'
-import type { UranusEventType } from "@/models/UranusEventModel.ts";
-import UranusFormRow from "@/components/ui/UranusFormRow.vue";
+import { ref, computed, watch, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useEventTypeLookupStore } from '@/store/eventTypesLookup'
+import type { UranusEventType } from '@/models/UranusEventModel'
+import UranusFormRow from '@/components/ui/UranusFormRow.vue'
 
+/* i18n */
 const { t, locale } = useI18n({ useScope: 'global' })
 
+/* store */
 const typeLookupStore = useEventTypeLookupStore()
-function formatTypeGenreItem(item: UranusEventType): string {
-  return  typeLookupStore.getTypeGenreName(item.typeId, item.genreId, locale.value)
-}
-const eventTypeOptionsLocal = computed(() => {
-  const langData = typeLookupStore.data[locale.value]
-  if (!langData) return []
-  return Object.values(langData.types)
-})
-const genreTypeOptionsLocal = computed(() => {
-  const langData = typeLookupStore.data[locale.value]
-  if (!langData || selectedEventTypeId.value == null) return []
-  const genresForType = langData.genres[selectedEventTypeId.value]
-  return genresForType
-      ? Object.entries(genresForType).map(([id, name]) => ({ id: Number(id), name }))
-      : []
+
+onMounted(async () => {
+  await typeLookupStore.load()
 })
 
-
-interface SelectOption {
-  id: number
-  name: string
-}
-
-// Props and v-model
+/* props / emits */
 const props = defineProps<{
   modelValue: UranusEventType[]
 }>()
@@ -91,104 +86,104 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: UranusEventType[]): void
 }>()
 
-// Local reactive copy
+/* local state */
 const draftTypeList = ref<UranusEventType[]>([...(props.modelValue ?? [])])
-const canRemoveChips = ref(true) // or false if you want read-only mode
-
-
-watch(locale, async (newLocale) => {
-  // Refetch event types for new locale
-  eventTypeOptionsLocal.value = await fetchEventTypes()
-
-  // If a type is already selected, refetch its genres
-  if (selectedEventTypeId.value != null) {
-    genreTypeOptionsLocal.value = await fetchGenreTypes(selectedEventTypeId.value)
-  }
-})
-
-onMounted(async () => {
-  eventTypeOptionsLocal.value = await fetchEventTypes()
-})
-
-async function fetchEventTypes(): Promise<SelectOption[]> {
-  const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-types?lang=${locale.value}`)
-  return Array.isArray(data) ? data : []
-}
-
-async function fetchGenreTypes(eventTypeId: number): Promise<SelectOption[]> {
-  const { data } = await apiFetch<SelectOption[]>(`/api/choosable-event-genres/event-type/${eventTypeId}?lang=${locale.value}`)
-  return Array.isArray(data) ? data : []
-}
-
 const selectedEventTypeId = ref<number | null>(null)
 const selectedGenreTypeId = ref<number | null>(null)
+
+const canRemoveChips = ref(true)
+
+/* ===== computed options from store ===== */
+
+const langData = computed(() => typeLookupStore.data[locale.value])
+
+const eventTypeOptions = computed(() => {
+  if (!langData.value) return []
+  return Object.values(langData.value.types)
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+})
+
+const genreTypeOptions = computed(() => {
+  if (!langData.value || selectedEventTypeId.value == null) return []
+
+  const genres = langData.value.genres[selectedEventTypeId.value]
+  if (!genres) return []
+
+  return Object.entries(genres)
+      .map(([id, name]) => ({ id: Number(id), name }))
+      .sort((a, b) => a.name.localeCompare(b.name))
+})
+
+/* ===== selection state ===== */
+
 const currentSelection = ref<UranusEventType>({
   typeId: null,
-  typeName: null,
   genreId: null,
-  genreName: null,
-})
-const canSelectGenre = ref<boolean>(false)
-const canAddType = ref<boolean>(false)
-
-
-watch(selectedEventTypeId, (newId) => {
-  const selectedEventType = eventTypeOptionsLocal.value.find(et => et.id === newId)
-  onEventTypeChange(selectedEventType)
 })
 
-watch(selectedGenreTypeId, (newId) => {
-  const selectedGenreType = genreTypeOptionsLocal.value.find(et => et.id === newId)
-  onGenreTypeChange(selectedGenreType)
-})
+const canSelectGenre = computed(() => genreTypeOptions.value.length > 0)
+const canAddType = computed(() => selectedEventTypeId.value != null)
 
-async function onEventTypeChange(eventType: SelectOption | undefined) {
-  if (!eventType) {
-    genreTypeOptionsLocal.value = []
+/* ===== watchers ===== */
+
+watch(selectedEventTypeId, (id) => {
+  if (id == null) {
+    currentSelection.value = {
+      typeId: null,
+      genreId: null,
+    }
+    selectedGenreTypeId.value = null
     return
   }
-  genreTypeOptionsLocal.value = await fetchGenreTypes(eventType.id)
-  currentSelection.value.typeId = eventType?.id
-  currentSelection.value.typeName = eventType?.name
+
+  currentSelection.value.typeId = id
+  selectedGenreTypeId.value = null
   currentSelection.value.genreId = null
-  currentSelection.value.genreName = null
-  canAddType.value = Number.isFinite(eventType.id)
-  canSelectGenre.value = genreTypeOptionsLocal.value.length > 0
-}
+})
 
-async function onGenreTypeChange(genreType: SelectOption | undefined) {
-  currentSelection.value.genreId = genreType?.id ?? null
-  currentSelection.value.genreName = genreType?.name ?? null
-}
+watch(selectedGenreTypeId, (id) => {
+  if (id == null || selectedEventTypeId.value == null) {
+    currentSelection.value.genreId = null
+    return
+  }
 
+  currentSelection.value.genreId = id
+})
+
+/* ===== actions ===== */
 
 const onAddType = () => {
   const copy = { ...currentSelection.value }
-  // Check if combination already exists
+
   const exists = draftTypeList.value.some(
       item =>
-          normalizeId(item.typeId) === normalizeId(copy.typeId) &&
-          normalizeId(item.genreId) === normalizeId(copy.genreId)
+          item.typeId === copy.typeId &&
+          item.genreId === copy.genreId
   )
+
   if (!exists) {
     draftTypeList.value.push(copy)
     emit('update:modelValue', draftTypeList.value)
   }
 }
 
-// Utility function for consistent comparison
-const normalizeId = (value: number | null | undefined) => {
-  if (value === null || value === undefined) return null
-  return Number.isFinite(value) ? value : null
-}
-
 function onRemoveType(key: string) {
   draftTypeList.value = draftTypeList.value.filter(
-      item => (item.typeId + '_' + item.genreId) !== key
+      item => `${item.typeId}_${item.genreId}` !== key
   )
   emit('update:modelValue', draftTypeList.value)
 }
 
+/* ===== formatting ===== */
+
+function formatTypeGenreItem(item: UranusEventType): string {
+  return typeLookupStore.getTypeGenreName(
+      item.typeId,
+      item.genreId,
+      locale.value
+  )
+}
 </script>
 
 <style scoped lang="scss">
@@ -201,7 +196,7 @@ function onRemoveType(key: string) {
   max-width: 250px;
 }
 
-._button {
+.uranus-action-button {
   flex: 0 0 auto;
   display: inline-flex;
   width: max-content;
@@ -210,6 +205,7 @@ function onRemoveType(key: string) {
   white-space: nowrap;
   align-items: center;
   justify-content: center;
+  border-radius: 3px;
 }
 
 </style>

@@ -33,6 +33,7 @@ const label = computed(() => {
   if (props.releaseStatusId === 3) return t('event_release_released')
   if (props.releaseStatusId === 4) return t('event_release_cancelled')
   if (props.releaseStatusId === 5) return t('event_release_deferred')
+  if (props.releaseStatusId === 6) return t('event_release_rescheduled')
   return ''
 })
 
@@ -42,6 +43,7 @@ const colorClass = computed(() => {
   if (props.releaseStatusId === 3) return 'released'
   if (props.releaseStatusId === 4) return 'cancelled'
   if (props.releaseStatusId === 5) return 'deferred'
+  if (props.releaseStatusId === 6) return 'rescheduled'
   return ''
 })
 
@@ -83,6 +85,10 @@ const date = computed(() => props.date ?? '')
 .deferred {
   color: var(--uranus-event-release-color-deferred);
   background: var(--uranus-event-release-background-deferred);
+}
+.rescheduled {
+  color: var(--uranus-event-release-color-rescheduled);
+  background: var(--uranus-event-release-background-rescheduled);
 }
 
 /* Variants */

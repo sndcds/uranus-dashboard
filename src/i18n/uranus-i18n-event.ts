@@ -306,6 +306,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Deferred',
         da: 'Udsat',
     },
+    event_release_rescheduled: {
+        de: 'Verlegt',
+        en: 'Reschreduled',
+        da: 'Flyttet',
+    },
     event_release_status_label: {
         de: 'Veröffentlichungsstatus',
         en: 'Release status',

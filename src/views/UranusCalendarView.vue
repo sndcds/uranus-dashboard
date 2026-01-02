@@ -51,6 +51,16 @@
                 v-if="(event.release_status_id ?? 0) > 3"
                 :releaseStatusId="event.release_status_id"
             />
+            <!-- Render only event types (no genres) -->
+            <div v-if="event.event_types && event.event_types.length" class="uranus-public-event-detail-tags">
+              <div
+                  v-for="typeId in getUniqueEventTypes(event.event_types)"
+                  :key="typeId"
+                  class="uranus-public-event-detail-tag"
+              >
+                {{ getTypeName(typeId) }}
+              </div>
+            </div>
           </div>
 
           <!-- Hover overlay -->
@@ -218,6 +228,13 @@ interface TypeSummaryEntry {
 const typeSummary = ref<TypeSummaryEntry[]>([])
 const getTypeName = (typeId: number) =>
     typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
+
+// Return unique type IDs from the event_types array
+const getUniqueEventTypes = (types: CalendarEventType[]): number[] => {
+  const unique = new Set<number>()
+  types.forEach(t => unique.add(t.type_id))
+  return Array.from(unique)
+}
 
 interface CalendarEventsFilter {
   search: string

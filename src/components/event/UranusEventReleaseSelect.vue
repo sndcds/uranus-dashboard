@@ -50,5 +50,6 @@ const releaseStatuses = computed(() => [
   { id: 3, label: t('event_release_released') },
   { id: 4, label: t('event_release_cancelled') },
   { id: 5, label: t('event_release_deferred') },
+  { id: 6, label: t('event_release_rescheduled') },
 ])
 </script>
