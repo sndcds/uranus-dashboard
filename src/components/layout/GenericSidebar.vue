@@ -78,7 +78,7 @@
               <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor" />
             </svg>
           </span>
-          <span class="generic-sidebar__nav-text">{{ t('events') }}</span>
+          <span class="generic-sidebar__nav-text">{{ t('nav_events') }}</span>
         </router-link>
         <router-link to="/map" class="generic-sidebar__nav-item" active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
@@ -88,7 +88,7 @@
                 fill="currentColor" />
             </svg>
           </span>
-          <span class="generic-sidebar__nav-text">{{ t('visitor_nav_map') }}</span>
+          <span class="generic-sidebar__nav-text">{{ t('nav_map') }}</span>
         </router-link>
 
         <router-link to="/about" class="generic-sidebar__nav-item" active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
@@ -98,7 +98,7 @@
                 fill="currentColor" />
             </svg>
           </span>
-          <span class="generic-sidebar__nav-text">{{ t('visitor_nav_about') }}</span>
+          <span class="generic-sidebar__nav-text">{{ t('nav_about') }}</span>
         </router-link>
 
         <router-link v-if="!tokenStore.isAuthenticated" to="/app/login" class="generic-sidebar__nav-item"

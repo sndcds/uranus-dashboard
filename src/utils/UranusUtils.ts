@@ -1,4 +1,5 @@
-import {UranusEventDate, type UranusEventType} from "@/models/UranusEventModel.ts";
+import { UranusEventDate, type UranusEventType } from "@/models/UranusEventModel.ts";
+import { useEventTypeLookupStore } from "@/store/eventTypesLookup.ts";
 
 export function toNumberOrNull(value: unknown): number | null {
     if (typeof value === 'number' && Number.isFinite(value)) {
@@ -182,14 +183,6 @@ export const uranusFormatEventDateTime = (
         return `${startStr} – ${endStr}`
     }
 }
-
-export const uranusEventTypeGenreString = (type: UranusEventType) => {
-    if (type.genreName) {
-        return `${type.typeName} / ${type.genreName}`
-    }
-    return type.typeName || ''
-}
-
 
 const formatDate = (dateStr: string, locale: string) => {
     const date = new Date(dateStr)

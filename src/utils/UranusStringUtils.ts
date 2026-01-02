@@ -2,14 +2,6 @@ export function capitalizeFirst(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export function uranusCombineTwoPartString(s1: string | null, s2: string | null): string {
-    const s1Normalized = s1 ?? "";
-    if (!s2 || s2.trim() === "") {
-        return s1Normalized;
-    }
-    return `${s1Normalized} / ${s2}`;
-}
-
 export function uranusFormatSimpleDate(input: string, locale = 'en') {
     const date = new Date(input);
     const weekday = date.toLocaleDateString(locale, { weekday: 'short' });

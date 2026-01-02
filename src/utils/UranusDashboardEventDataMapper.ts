@@ -92,8 +92,6 @@ const mapEventType = (raw: unknown): UranusEventType | null => {
 
     return new UranusEventType(
         typeId,
-        toString(r.type_name),
         toNumberOrNull(r.genre_id),
-        toNullableString(r.genre_name)
     )
 }

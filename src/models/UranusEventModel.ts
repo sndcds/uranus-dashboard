@@ -20,9 +20,7 @@ export class UranusImageMeta {
 export class UranusEventType {
     constructor(
         public typeId: number | null = null,
-        public typeName: string | null = null,
         public genreId: number | null = null,
-        public genreName: string | null = null,
     ) {}
 }
 
@@ -383,15 +381,12 @@ export class UranusEventDetail extends UranusEventBase {
 // Sorting function
 export function uranusSortEventTypes(types: UranusEventType[]): UranusEventType[] {
     return [...types].sort((a, b) => {
-        const typeA = a.typeName ?? ""
-        const typeB = b.typeName ?? ""
-        const genreA = a.genreName ?? ""
-        const genreB = b.genreName ?? ""
+        const typeA = a.typeId ?? -1
+        const typeB = b.typeId ?? -1
+        const genreA = a.genreId ?? -1
+        const genreB = b.genreId ?? -1
 
-        if (typeA < typeB) return -1
-        if (typeA > typeB) return 1
-        if (genreA < genreB) return -1
-        if (genreA > genreB) return 1
-        return 0
+        // Combine comparisons using subtraction
+        return (typeA - typeB) || (genreA - genreB)
     })
 }

@@ -56,10 +56,7 @@
                 v-for="type in event.eventTypes"
                 :key="`${type.typeId}-${type.genreId}`"
                 class="uranus-public-event-detail-tag">
-              {{ getTypeName(type.typeId) }}
-              <template v-if="type.genreId">
-                ·&nbsp;{{ getGenreName(type.genreId, type.typeId) }}
-              </template>
+              {{ getTypeGenreName(type.typeId, type.genreId!) }}
             </span>
           </div>
         </div>
@@ -146,7 +143,7 @@
             </svg>
             <p class="uranus-public-info-label">{{ t('space_accessibility') }}:</p>
             <p v-for="label in selectedAccessibilityLabels" :key="label">
-              {{ t(label) }}
+              {{ label }}
             </p>
           </div>
 
@@ -201,7 +198,11 @@ import { uranusI18nAccessibilityFlags } from '@/i18n/uranus-i18n-accessibility.t
 const route = useRoute()
 
 const { t, locale } = useI18n({ useScope: 'global' })
+
 const typeLookupStore = useEventTypeLookupStore()
+const getTypeGenreName = (typeId: number, genreId: number) => typeLookupStore.getTypeGenreName(typeId, genreId, locale.value)
+
+
 const languageLookupStore = useLanguageLookupStore()
 
 // State
@@ -278,11 +279,6 @@ function buildImageCredit() {
 const resolveRouteParam = (param: string | string[] | undefined) =>
   Array.isArray(param) ? param[0] : param
 
-const getTypeName = (typeId: number) =>
-    typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
-
-const getGenreName = (genreId: number | null, typeId: number) =>
-  genreId ? typeLookupStore.data[locale.value]?.genres?.[typeId]?.[genreId] ?? '' : ''
 
 const getLanguageName = (langCode: string) => {
   const map = languageLookupStore.data[locale.value]

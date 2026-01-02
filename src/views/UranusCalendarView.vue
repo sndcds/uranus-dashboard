@@ -54,7 +54,7 @@
           </div>
 
           <!-- Hover overlay -->
-          <div class="calendar-overlay"></div>
+          <!--div class="calendar-overlay"></div-->
         </div>
 
         <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->

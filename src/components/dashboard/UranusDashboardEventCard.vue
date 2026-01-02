@@ -30,7 +30,8 @@
             v-for="eventType in props.event.eventTypes ?? []"
             :key="eventType?.typeId ?? ''"
         >
-          {{ uranusEventTypeGenreString(eventType) }}
+          {{ eventTypeGenreString(eventType) }}
+          {{ eventType.typeId }} / {{ eventType.genreId }}
         </span>
       </span>
 
@@ -82,16 +83,16 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import {
   buildPlutoPreviewImageUrl,
-  uranusEventTypeGenreString,
   uranusFormatEventDateTime
 } from '@/utils/UranusUtils.ts'
 
-import { type UranusEventBase } from '@/models/UranusEventModel.ts'
+import { type UranusEventBase, type UranusEventType } from '@/models/UranusEventModel.ts'
 import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
 import UranusCard from "@/components/ui/UranusCard.vue";
 import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
 import UranusIconAction from "@/components/ui/UranusIconAction.vue";
 import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";
+import { useEventTypeLookupStore } from "@/store/eventTypesLookup.ts";
 
 const emit = defineEmits<{
   deleted: [payload: { eventId: number; eventDateId: number | null; deleteSeries: boolean }]
@@ -103,6 +104,12 @@ interface PasswordConfirmPayload {
 }
 
 const { t, locale } = useI18n({ useScope: 'global' })
+
+const typeLookupStore = useEventTypeLookupStore()
+
+const eventTypeGenreString = (type: UranusEventType) =>
+    computed(() => typeLookupStore.getTypeGenreName(type.typeId, type.genreId, locale.value))
+
 
 const props = defineProps<{ event: UranusEventBase }>()
 const error = ref<string | null>(null)

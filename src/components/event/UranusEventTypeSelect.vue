@@ -33,7 +33,7 @@
         class="uranus-dashboard-chip"
         :class="{ removable: canRemoveChips }"
     >
-      {{ uranusCombineTwoPartString(typeItem.typeName, typeItem.genreName) }}
+      {{ formatTypeGenreItem(typeItem) }}
 
       <span
           v-if="canRemoveChips"
@@ -49,23 +49,38 @@
 
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { apiFetch } from "@/api.ts";
+import { useEventTypeLookupStore } from '@/store/eventTypesLookup.ts'
 import type { UranusEventType } from "@/models/UranusEventModel.ts";
 import UranusFormRow from "@/components/ui/UranusFormRow.vue";
-import { uranusCombineTwoPartString } from "@/utils/UranusStringUtils.ts";
 
-const { t } = useI18n()
-const { locale } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
+
+const typeLookupStore = useEventTypeLookupStore()
+function formatTypeGenreItem(item: UranusEventType): string {
+  return  typeLookupStore.getTypeGenreName(item.typeId, item.genreId, locale.value)
+}
+const eventTypeOptionsLocal = computed(() => {
+  const langData = typeLookupStore.data[locale.value]
+  if (!langData) return []
+  return Object.values(langData.types)
+})
+const genreTypeOptionsLocal = computed(() => {
+  const langData = typeLookupStore.data[locale.value]
+  if (!langData || selectedEventTypeId.value == null) return []
+  const genresForType = langData.genres[selectedEventTypeId.value]
+  return genresForType
+      ? Object.entries(genresForType).map(([id, name]) => ({ id: Number(id), name }))
+      : []
+})
+
 
 interface SelectOption {
   id: number
   name: string
 }
-
-const eventTypeOptionsLocal = ref<SelectOption[]>([])
-const genreTypeOptionsLocal = ref<SelectOption[]>([])
 
 // Props and v-model
 const props = defineProps<{
@@ -80,6 +95,16 @@ const emit = defineEmits<{
 const draftTypeList = ref<UranusEventType[]>([...(props.modelValue ?? [])])
 const canRemoveChips = ref(true) // or false if you want read-only mode
 
+
+watch(locale, async (newLocale) => {
+  // Refetch event types for new locale
+  eventTypeOptionsLocal.value = await fetchEventTypes()
+
+  // If a type is already selected, refetch its genres
+  if (selectedEventTypeId.value != null) {
+    genreTypeOptionsLocal.value = await fetchGenreTypes(selectedEventTypeId.value)
+  }
+})
 
 onMounted(async () => {
   eventTypeOptionsLocal.value = await fetchEventTypes()
