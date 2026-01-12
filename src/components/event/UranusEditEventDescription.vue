@@ -12,7 +12,7 @@
     <!-- Edit form -->
     <UranusInlineSectionLayout v-if="isEditing">
 
-      <MarkdownEditorComponent
+      <UranusMarkdownEditor
           ref="markdownEditorRef"
           v-model="draft.description"
       />
@@ -28,7 +28,7 @@
 
     <!-- Read-only display -->
     <div v-else>
-      <MarkdownPreviewComponent v-if="draft.description" :value="draft.description" />
+      <UranusMarkdownPreview v-if="draft.description" :value="draft.description" />
     </div>
 
   </UranusInlineEditSection>
@@ -46,8 +46,8 @@ import UranusInlineEditLabel from "@/components/ui/UranusInlineEditLabel.vue";
 import UranusInlineEditActions from "@/components/ui/UranusInlineEditActions.vue";
 import UranusInlineSectionLayout from "@/components/ui/UranusInlineSectionLayout.vue";
 import UranusTextInput from "@/components/ui/UranusTextInput.vue";
-import MarkdownEditorComponent from "@/components/MarkdownEditorComponent.vue";
-import MarkdownPreviewComponent from "@/components/MarkdownPreviewComponent.vue";
+import UranusMarkdownEditor from "@/components/uranus/UranusMarkdownEditor.vue";
+import UranusMarkdownPreview from "@/components/uranus/UranusMarkdownPreview.vue";
 
 const markdownEditorRef = ref()
 

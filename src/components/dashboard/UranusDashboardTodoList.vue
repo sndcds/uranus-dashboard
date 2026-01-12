@@ -3,13 +3,9 @@
 -->
 <template>
   <UranusDashboardActionBar>
-    <div
-        class="uranus-action-button"
-        :disabled="todoLoading"
-        @click="startAddingTodo"
-    >
+    <UranusActionButton :disabled="todoLoading" @click="startAddingTodo">
       {{ t('dashboard_todo_add') }}
-    </div>
+    </UranusActionButton>
   </UranusDashboardActionBar>
 
   <section class="todo-panel">
@@ -20,7 +16,7 @@
     </transition>
 
     <form v-if="isAddingTodo" class="uranus-form todo-editor" @submit.prevent="saveTodo">
-      <DashboardTodoFormFields
+      <UranusDashboardTodoForm
           class="uranus-card"
           id-prefix="todo-new"
           v-model:title="todoDraft.title"
@@ -108,7 +104,7 @@
             </template>
             <template v-else>
               <form class="uranus-form todo-editor todo-editor--inline" @submit.prevent="saveTodo">
-                <DashboardTodoFormFields
+                <UranusDashboardTodoForm
                     :id-prefix="`todo-${todo.todo_id}`"
                     v-model:title="todoDraft.title"
                     v-model:description="todoDraft.description"
@@ -149,12 +145,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 import UranusCard from "@/components/ui/UranusCard.vue";
-import DashboardTodoFormFields from '@/components/dashboard/DashboardTodoFormFields.vue'
+import UranusDashboardTodoForm from '@/components/dashboard/UranusDashboardTodoForm.vue'
 import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
+import UranusActionButton from "@/components/ui/UranusActionButton.vue";
 
 interface Todo {
     todo_id: number

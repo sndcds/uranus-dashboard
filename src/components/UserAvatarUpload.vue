@@ -34,8 +34,7 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useUserStore } from '@/store/userStore'
 import { useTokenStore } from '@/store/tokenStore'
-import { apiFetch } from '@/api'
-import { onMounted } from 'vue'
+import { apiFetch } from '@/api.ts'
 
 
 const props = withDefaults(
@@ -450,7 +449,6 @@ onBeforeUnmount(() => {
 }
 
 .profile-remove:hover:not(:disabled) {
-    color: var(--color-text);
     background: rgba(148, 163, 184, 0.12);
 }
 

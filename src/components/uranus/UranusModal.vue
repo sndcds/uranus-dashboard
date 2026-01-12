@@ -15,7 +15,7 @@
             <slot name="header">
               <template v-if="hasHeaderContent">
                 <h3 v-if="title" class="uranus-modal__title">{{ title }}</h3>
-                <p v-if="description" class="uranus-modal__description">
+                <p v-if="description" class="uranus-modal-description">
                   {{ description }}
                 </p>
               </template>
@@ -130,14 +130,6 @@ onBeforeUnmount(() => {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text);
-}
-
-.uranus-modal__description {
-  margin: 0;
-  color: var(--uranus-muted-text);
-  font-size: 0.95rem;
-  line-height: 1.4;
 }
 
 .uranus-modal__close {
@@ -152,7 +144,6 @@ onBeforeUnmount(() => {
   color: var(--uranus-muted-text);
 
   &:hover {
-    color: var(--color-text);
   }
 }
 

@@ -82,7 +82,7 @@ const mockEventPayload = {
   title: 'Test Event',
   subtitle: 'Event Subtitle',
   description: 'Event description',
-  teaser_text: 'Teaser',
+  summary: 'Summary',
   venue_id: 1,
   organization_id: 1,
   event_dates: [

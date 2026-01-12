@@ -229,7 +229,7 @@ export class UranusEventBase {
 
 export interface UranusEventDetailProps extends UranusEventBaseProps {
     description?: string | null
-    teaserText?: string | null
+    summary?: string | null
     participationInfo?: string | null
     meetingPoint?: string | null
 
@@ -280,7 +280,7 @@ export interface UranusEventDetailProps extends UranusEventBaseProps {
 
 export class UranusEventDetail extends UranusEventBase {
     description: string | null
-    teaserText: string | null
+    summary: string | null
     participationInfo: string | null
     meetingPoint: string | null
 
@@ -330,7 +330,7 @@ export class UranusEventDetail extends UranusEventBase {
         super(props)
 
         this.description = props.description ?? null
-        this.teaserText = props.teaserText ?? null
+        this.summary = props.summary ?? null
         this.participationInfo = props.participationInfo ?? null
         this.meetingPoint = props.meetingPoint ?? null
 

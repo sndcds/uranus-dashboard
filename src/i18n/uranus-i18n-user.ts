@@ -139,17 +139,17 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
     user_permissions_add_event: {
         de: 'Event anlegen',
         en: 'Create event',
-        da: 'Opret arrangement',
+        da: 'Opret begivenhed',
     },
     user_permissions_edit_event: {
         de: 'Event bearbeiten',
         en: 'Edit event',
-        da: 'Rediger arrangement',
+        da: 'Rediger begivenhed',
     },
     user_permissions_delete_event: {
         de: 'Event löschen',
         en: 'Delete event',
-        da: 'Slet arrangement',
+        da: 'Slet begivenhed',
     },
     user_permissions_add_space: {
         de: 'Raum anlegen',
@@ -209,7 +209,7 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
     user_permissions_type_event: {
         de: 'Events',
         en: 'Events',
-        da: 'Arrangementer',
+        da: 'Begivenheder',
     },
     user_permissions_invalid_response: {
         de: 'Antwort konnte nicht verarbeitet werden.',
@@ -229,17 +229,17 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
     user_permissions_cannot_release: {
         de: 'Kann Events nicht veröffentlichen',
         en: 'Cannot release events',
-        da: 'Må ikke udgive arrangementer',
+        da: 'Må ikke udgive begivenheder',
     },
     user_permissions_can_view_insights: {
         de: 'Darf Event-Insights sehen',
         en: 'May view event insights',
-        da: 'Må se arrangementstatistik',
+        da: 'Må se begivenhedstatistik',
     },
     user_permissions_cannot_view_insights: {
         de: 'Kann Event-Insights nicht sehen',
         en: 'Cannot view event insights',
-        da: 'Må ikke se arrangementstatistik',
+        da: 'Må ikke se begivenhedstatistik',
     },
     user_permissions_flag_yes: {
         de: 'Ja',

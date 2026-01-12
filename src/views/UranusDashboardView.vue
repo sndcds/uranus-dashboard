@@ -22,7 +22,6 @@ import UranusDashboardTodoList from '@/components/dashboard/UranusDashboardTodoL
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardNotifications from '@/components/dashboard/UranusDashboardNotifications.vue'
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
-import JSONAdminFetch from "@/components/JSONAdminFetch.vue";
 import UranusBlob from "@/components/uranus/UranusBlob.vue";
 
 const { t } = useI18n()

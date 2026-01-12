@@ -83,7 +83,7 @@ const mockEvent = {
   event_id: 424,
   title: 'Test Event',
   subtitle: 'Event Subtitle',
-  teaser_text: 'This is a teaser',
+  summary: 'This is a summary',
   description: '## Description\n\nThis is a **markdown** description.',
   duration: '3 hours',
   has_main_image: true,
@@ -381,7 +381,7 @@ describe('UranusPublicEventView', () => {
     const minimalEvent = {
       ...mockEvent,
       subtitle: null,
-      teaser_text: null,
+      summary: null,
       description: null,
       languages: null,
       space_name: null,

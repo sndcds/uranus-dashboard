@@ -8,7 +8,6 @@
         v-for="date in dates"
         :key="date.dateId!"
         :to="`/event/${date.eventId}/date/${date.dateId}`"
-        class="uranus-public-further-dates__item"
     >
       {{ formatDate(date.startDate ?? '', locale) }}<br>
     </router-link>

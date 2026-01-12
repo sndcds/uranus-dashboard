@@ -19,11 +19,7 @@
     />
 
     <UranusDashboardActionBar>
-      <router-link
-          to="/admin/organization/create"
-          class="uranus-action-button">
-        {{ t('create_organization') }}
-      </router-link>
+      <UranusActionButton to="/admin/organization/create">{{ t('create_organization') }}</UranusActionButton>
     </UranusDashboardActionBar>
 
 
@@ -47,12 +43,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 import UranusOrganizationCard from '@/components/organization/UranusOrganizationCard.vue'
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
 import UranusNotification from "@/components/ui/UranusNotification.vue";
+import UranusActionButton from "@/components/ui/UranusActionButton.vue";
 
 const { t } = useI18n()
 

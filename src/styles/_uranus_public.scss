@@ -10,11 +10,12 @@
   }
 
   a {
-    color: var(--uranus-public-link-color);
+    color: var(--uranus-link-color);
     transition: color 0.2s ease;
-  }
-  a:hover {
-    color: var(--uranus-public-link-hover-color);
+
+    &:hover {
+      color: var(--uranus-link-color-hover);
+    }
   }
 }
 

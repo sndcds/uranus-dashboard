@@ -23,8 +23,8 @@
 import { onMounted, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { apiFetch, deepClean } from '@/api'
-import { useAppStore } from '@/store/appStore'
+import { apiFetch, deepClean } from '@/api.ts'
+import { useAppStore } from '@/store/appStore.ts'
 
 import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
 import UranusAddEventForm from '@/components/event/UranusAddEventForm.vue'

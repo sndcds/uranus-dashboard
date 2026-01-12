@@ -76,6 +76,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Loading…',
         da: 'Indlæser…',
     },
+    click_to_upload: {
+        de: 'Klicken zum Hochladen',
+        en: 'Click to upload',
+        da: 'Klik for at uploade',
+    },
     image_by: {
         de: 'Bild',
         en: 'Image',

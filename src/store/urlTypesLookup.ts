@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 /** One entry returned by the API */
 export interface UrlTypeEntry {

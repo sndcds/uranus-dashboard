@@ -31,7 +31,7 @@
     />
 
     <!-- Delete Modal -->
-    <PasswordConfirmModal
+    <UranusPasswordConfirmModal
         :show="showDeleteModal"
         :title="t('confirm_delete_todo')"
         :description="t('confirm_delete_todo_description', { name: todo.title })"
@@ -48,11 +48,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 import UranusIconAction from '@/components/ui/UranusIconAction.vue'
 import UranusEditTodoModal from '@/components/todo/UranusEditTodoModal.vue'
-import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
+import UranusPasswordConfirmModal from '@/components/uranus/UranusPasswordConfirmModal.vue'
 
 interface Todo {
   id: number
@@ -123,7 +123,7 @@ const confirmDelete = async ({ password }: { password: string }) => {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  background: #fff;
+  background: var(--uranus-bg-d1);
   border-radius: 6px;
 }
 
@@ -143,13 +143,13 @@ const confirmDelete = async ({ password }: { password: string }) => {
 
 .description {
   font-size: 0.9rem;
-  color: var(--uranus-muted-text);
+  color: var(--uranus-color);
   margin-top: 0.25rem;
 }
 
 .due-date {
   font-size: 0.85rem;
-  color: var(--uranus-muted-text);
+  color: var(--uranus-color);
 }
 
 .todo-actions {

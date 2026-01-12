@@ -63,7 +63,7 @@
     </div>
   </UranusCard>
 
-  <PasswordConfirmModal
+  <UranusPasswordConfirmModal
       :show="showDeleteModal"
       :title="t('confirm_delete_event')"
       :description="pendingDeleteTitle"
@@ -79,14 +79,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 import {
   buildPlutoPreviewImageUrl,
   uranusFormatEventDateTime
 } from '@/utils/UranusUtils.ts'
 
 import { type UranusEventBase, type UranusEventType } from '@/models/UranusEventModel.ts'
-import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
+import UranusPasswordConfirmModal from '@/components/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from "@/components/ui/UranusCard.vue";
 import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
 import UranusIconAction from "@/components/ui/UranusIconAction.vue";
@@ -258,7 +258,6 @@ const confirmDelete = async ({ password, deleteSeries }: PasswordConfirmPayload)
   padding: 0.35rem 0.75rem;
   border-radius: 999px;
   background: var(--uranus-surface-muted);
-  color: var(--color-text);
   font-weight: 600;
   font-size: 0.75rem;
   letter-spacing: 0.02em;

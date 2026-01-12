@@ -62,7 +62,7 @@
       <p v-else>{{ t('spaces_empty') }}</p>
     </section>
 
-    <PasswordConfirmModal
+    <UranusPasswordConfirmModal
       :show="showDeleteModal"
       :title="t('confirm_delete_venue')"
       :description="t('confirm_delete_venue_description', { name: pendingVenueName })"
@@ -74,7 +74,7 @@
       @cancel="cancelDelete"
     />
 
-    <PasswordConfirmModal
+    <UranusPasswordConfirmModal
       :show="showDeleteSpaceModal"
       :title="t('confirm_delete_space')"
       :description="t('confirm_delete_space_description', { name: pendingSpaceName })"
@@ -93,7 +93,7 @@ import { ref } from 'vue'
 import { useI18n } from "vue-i18n"
 import { apiFetch } from '@/api.ts'
 
-import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
+import UranusPasswordConfirmModal from '@/components/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from "@/components/ui/UranusCard.vue";
 import UranusIconAction from "@/components/ui/UranusIconAction.vue";
 import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";

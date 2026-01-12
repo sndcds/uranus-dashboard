@@ -72,7 +72,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 import { replaceInTemplate } from '@/utils/UranusStringUtils.ts'
 import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
 import UranusCard from '@/components/ui/UranusCard.vue'
@@ -158,23 +158,6 @@ const buildQuery = () => {
   }
   const query = params.toString()
   return query ? `?${query}` : ''
-}
-
-const loadMember = async () => {
-  if (memberId.value == null) {
-    return
-  }
-
-  try {
-    const { data } = await apiFetch<{ display_name: string | null }>(
-      `/api/admin/user/${memberId.value}`
-    )
-    if (data && data.display_name) {
-      memberDisplayName.value = data.display_name
-    }
-  } catch (err) {
-    console.error('Failed to load member details', err)
-  }
 }
 
 const loadOrganization = async () => {
@@ -347,7 +330,6 @@ watch(
 onMounted(() => {
   void loadPermissions()
   void loadOrganization()
-  void loadMember()
 })
 </script>
 
@@ -356,7 +338,6 @@ onMounted(() => {
   padding: 1rem;
   border-radius: 12px;
   background: rgba(79, 70, 229, 0.08);
-  color: var(--color-text);
   text-align: center;
 }
 

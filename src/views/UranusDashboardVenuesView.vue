@@ -25,11 +25,9 @@
         <UranusDashboardActionBar
             v-if="organization && organization.can_add_venue"
         >
-          <router-link
-              :to="`/admin/organization/${organizationId}/venue/create`"
-              class="uranus-action-button">
+          <UranusActionButton :to="`/admin/organization/${organizationId}/venue/create`">
             {{ t('venue_add') }}
-          </router-link>
+          </UranusActionButton>
         </UranusDashboardActionBar>
 
         <!-- Error Message, Todo: Implement errors -->
@@ -56,13 +54,14 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
-import { useAppStore } from '@/store/appStore'
+import { apiFetch } from '@/api.ts'
+import { useAppStore } from '@/store/appStore.ts'
 
 import UranusVenueCard from '@/components/venue/UranusVenueCard.vue'
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue"
 import UranusNotification from "@/components/ui/UranusNotification.vue";
+import UranusActionButton from "@/components/ui/UranusActionButton.vue";
 
 const { t } = useI18n()
 const appStore = useAppStore()
@@ -209,7 +208,6 @@ watch(
     margin: 0;
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-text);
   }
 
   p {

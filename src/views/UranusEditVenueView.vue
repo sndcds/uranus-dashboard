@@ -1,7 +1,7 @@
 <template>
     <div class="uranus-main-layout">
         <UranusDashboardHero :title="t('update_venue')" :subtitle="venueDescription" />
-        <VenueForm ref="venueFormRef" :submit-label="t('update_venue')" :loading="isSubmitting || isLoadingVenue"
+        <UranusVenueForm ref="venueFormRef" :submit-label="t('update_venue')" :loading="isSubmitting || isLoadingVenue"
             :error-message="error" :success-message="success" :initial-values="formInitialValues" @submit="handleSubmit"
             :show-description="true" :show-date-fields="true" @clear-error="clearError" />
     </div>
@@ -11,9 +11,9 @@
 import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { apiFetch, fetchCoordinatesForAddress } from '@/api'
+import { apiFetch, fetchCoordinatesForAddress } from '@/api.ts'
 
-import VenueForm, { type VenueFormInitialValues, type VenueFormSubmitPayload } from '@/components/VenueForm.vue'
+import UranusVenueForm, { type VenueFormInitialValues, type VenueFormSubmitPayload } from '@/components/venue/UranusVenueForm.vue'
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 
 interface LatLngLiteral {
@@ -25,7 +25,7 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const organizationId = Number(route.params.id)
-const venueFormRef = ref<InstanceType<typeof VenueForm> | null>(null)
+const venueFormRef = ref<InstanceType<typeof UranusVenueForm> | null>(null)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
 const isSubmitting = ref(false)

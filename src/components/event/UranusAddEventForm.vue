@@ -122,7 +122,7 @@ UranusAddEventForm.vue
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 import { useRouter } from 'vue-router'
 
 import type { UranusVenueSpaceSelection, UranusEventLocation } from '@/models/UranusEventModel'

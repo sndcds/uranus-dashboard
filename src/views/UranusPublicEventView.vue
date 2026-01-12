@@ -180,10 +180,10 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 import { marked } from 'marked'
-import { useEventTypeLookupStore } from '@/store/eventTypesLookup'
-import { useLanguageLookupStore } from '@/store/languageLookup'
+import { useEventTypeLookupStore } from '@/store/eventTypesLookup.ts'
+import { useLanguageLookupStore } from '@/store/languageLookup.ts'
 
 import UranusPublicEventDateTimeDisplay from "@/components/event/UranusPublicEventDateTimeDisplay.vue"
 import UranusPublicEventVenueDisplay from "@/components/event/UranusPublicEventVenueDisplay.vue"

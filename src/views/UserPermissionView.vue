@@ -76,7 +76,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusNotification from "@/components/ui/UranusNotification.vue";
 
@@ -187,7 +187,6 @@ onMounted(() => {
     padding: 1rem;
     border-radius: 12px;
     background: rgba(79, 70, 229, 0.08);
-    color: var(--color-text);
     text-align: center;
 }
 
@@ -217,7 +216,6 @@ onMounted(() => {
 
 .permission-group__title {
     margin: 0;
-    color: var(--color-text);
 }
 
 .permission-group__count {
@@ -276,7 +274,6 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     gap: 0.5rem;
-    color: var(--color-text);
 }
 
 .permission-card__flag {

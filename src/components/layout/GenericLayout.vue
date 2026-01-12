@@ -53,10 +53,10 @@ const closeSidebar = () => {
 
 <style scoped lang="scss">
 .generic-layout {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background: var(--surface-primary);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--uranus-nav-bg);
 }
 
 // Main Container

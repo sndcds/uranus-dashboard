@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
-import SignupView from '../../src/views/SignupView.vue'
+import UranusSignupView from '../../src/views/UranusSignupView.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -41,14 +41,14 @@ vi.mock('../../src/api', () => ({
   apiFetch: vi.fn(),
 }))
 
-describe('SignupView', () => {
+describe('UranusSignupView', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     router.push('/app/signup')
   })
 
   it('renders signup form with all fields', () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -63,7 +63,7 @@ describe('SignupView', () => {
   })
 
   it('displays subtitle text', () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -73,7 +73,7 @@ describe('SignupView', () => {
   })
 
   it('shows link to login page', () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -85,7 +85,7 @@ describe('SignupView', () => {
   })
 
   it('validates required email field', async () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -99,7 +99,7 @@ describe('SignupView', () => {
   })
 
   it('validates email format', async () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -116,7 +116,7 @@ describe('SignupView', () => {
   })
 
   it('validates required repeat email field', async () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -133,7 +133,7 @@ describe('SignupView', () => {
   })
 
   it('validates repeat email format', async () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -153,7 +153,7 @@ describe('SignupView', () => {
   })
 
   it('validates emails match', async () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -182,7 +182,7 @@ describe('SignupView', () => {
       status: 201,
     })
 
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -205,7 +205,7 @@ describe('SignupView', () => {
   })
 
   it('validates required password field', async () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -225,7 +225,7 @@ describe('SignupView', () => {
   })
 
   it('clears email error when valid email is entered', async () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -243,7 +243,7 @@ describe('SignupView', () => {
   })
 
   it('clears repeat email error when emails match', async () => {
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -275,7 +275,7 @@ describe('SignupView', () => {
       status: 201,
     })
 
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -313,7 +313,7 @@ describe('SignupView', () => {
       status: 201,
     })
 
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -344,7 +344,7 @@ describe('SignupView', () => {
       data: { error: 'Email already exists' },
     })
 
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -371,7 +371,7 @@ describe('SignupView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -400,7 +400,7 @@ describe('SignupView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -429,7 +429,7 @@ describe('SignupView', () => {
       status: 201,
     })
 
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },
@@ -464,7 +464,7 @@ describe('SignupView', () => {
       status: 400,
     })
 
-    const wrapper = mount(SignupView, {
+    const wrapper = mount(UranusSignupView, {
       global: {
         plugins: [i18n, router],
       },

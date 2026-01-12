@@ -21,7 +21,7 @@
 import { onMounted, computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
 import UranusSpaceEditForm, { type SpaceFormInitialValues, type SpaceFormSubmitPayload } from '@/components/UranusSpaceEditForm.vue'

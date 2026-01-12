@@ -17,19 +17,18 @@
   }
 
   input,
-  input[type="text"],
-  input[type="email"],
   textarea {
     font-size: 1rem;
     padding: 0.7rem 1.0rem 0.5rem 1.0rem;
     border-radius: var(--uranus-form-field-border-radius);
-    background: var(--uranus-input-bg-color);
+    background: var(--uranus-input-bg);
     color: var(--uranus-color);
-    border: 2px solid var(--uranus-input-border-color);
+    border: var(--uranus-input-border-width) solid var(--uranus-input-border-color);
+    appearance: none;
   }
 
   input[type="date"] {
-    font-weight: 900;
+    font-weight: 500;
   }
 
   textarea {
@@ -41,7 +40,7 @@
     margin: 0;
     font-weight: 400;
     font-size: 0.9rem;
-    color: var(--uranus-medium-contrast-color);
+    color: var(--uranus-color-dimmed);
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -51,8 +50,8 @@
     cursor: pointer;
     padding: 0.6rem 1.0rem;
     font-size: 1.0rem;
-    border: 2px solid var(--uranus-input-border-color);
-    background: var(--uranus-input-bg-color);
+    border: var(--uranus-input-border-width) solid var(--uranus-input-border-color);
+    background: var(--uranus-input-bg);
     border-radius: var(--uranus-form-field-border-radius);
     color: var(--uranus-color);
     height: var(--uranus-input-height);
@@ -64,13 +63,14 @@
   }
 }
 
-.uranus-inline-edit-section {
+.uranus-inline-edit-section,
+.uranus-form {
   input,
   input[type="text"],
   input[type="email"],
   select,
   textarea {
-    border: 2px solid var(--uranus-input-border-color);
+    border: var(--uranus-input-border-width) solid var(--uranus-input-border-color);
   }
 }
 
@@ -88,7 +88,7 @@ input.uranus-text-input {
 }
 
 .uranus-textarea {
-  @apply w-full border border-gray-300 rounded-md p-2;
+  @apply w-full border border-gray-300 rounded-md p-2; // TODO: Check!
   min-height: 4rem;
   resize: vertical;
 }
@@ -147,7 +147,7 @@ input.uranus-text-input {
 
 .uranus-input-required {
   color: #dc2626;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 /* Screen Reader only */
@@ -166,7 +166,7 @@ input.uranus-text-input {
   margin: 0.35rem 0 0;
   font-size: 0.85rem;
   color: #b91c1c;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 

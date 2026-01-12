@@ -37,8 +37,8 @@ function handleClick(e: MouseEvent) {
 /* Keyboard focus */
 .uranus-cancel-button:focus {
   outline: none; /* remove default outline */
-  border-color: var(--uranus-focus-border-color);
-  box-shadow: 0 0 0 1px var(--uranus-focus-border-color);
+  border-color: var(--uranus-acc-color);
+  box-shadow: 0 0 0 1px var(--uranus-acc-color);
 }
 
 /* Disabled */

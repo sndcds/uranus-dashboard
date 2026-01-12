@@ -3,7 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
 import { createPinia, setActivePinia } from 'pinia'
-import LoginView from '../../src/views/LoginView.vue'
+import UranusLoginView from '../../src/views/UranusLoginView.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -45,7 +45,7 @@ vi.mock('../../src/api', () => ({
   apiFetch: vi.fn(),
 }))
 
-describe('LoginView', () => {
+describe('UranusLoginView', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     setActivePinia(createPinia())
@@ -53,7 +53,7 @@ describe('LoginView', () => {
   })
 
   it('renders login form with all fields', async () => {
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -67,7 +67,7 @@ describe('LoginView', () => {
   })
 
   it('displays subtitle text', () => {
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -77,7 +77,7 @@ describe('LoginView', () => {
   })
 
   it('shows link to signup page', () => {
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -89,7 +89,7 @@ describe('LoginView', () => {
   })
 
   it('shows forgot password link', () => {
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -101,7 +101,7 @@ describe('LoginView', () => {
   })
 
   it('validates required email field', async () => {
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -115,7 +115,7 @@ describe('LoginView', () => {
   })
 
   it('validates email format', async () => {
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -132,7 +132,7 @@ describe('LoginView', () => {
   })
 
   it('validates required password field', async () => {
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -149,7 +149,7 @@ describe('LoginView', () => {
   })
 
   it('clears email error when valid email is entered', async () => {
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -171,7 +171,7 @@ describe('LoginView', () => {
   })
 
   it('clears password error when password is entered', async () => {
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -207,7 +207,7 @@ describe('LoginView', () => {
       status: 200,
     })
 
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -238,7 +238,7 @@ describe('LoginView', () => {
       data: { error: 'Invalid credentials' },
     })
 
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -262,7 +262,7 @@ describe('LoginView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -288,7 +288,7 @@ describe('LoginView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -318,7 +318,7 @@ describe('LoginView', () => {
       status: 200,
     })
 
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -356,7 +356,7 @@ describe('LoginView', () => {
 
     await router.push('/app/login?redirect=/admin/dashboard')
 
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },
@@ -380,7 +380,7 @@ describe('LoginView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue(new Error('Network error'))
 
-    const wrapper = mount(LoginView, {
+    const wrapper = mount(UranusLoginView, {
       global: {
         plugins: [i18n, router],
       },

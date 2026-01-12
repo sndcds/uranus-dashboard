@@ -43,7 +43,7 @@
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -65,7 +65,7 @@ const activateAccount = async () => {
     activationError.value = null
 
     try {
-        const { status } = await apiFetch('/api/admin/activate', {
+        const { status } = await apiFetch('/api/activate', {
             method: 'POST',
             body: JSON.stringify({ token }),
         })

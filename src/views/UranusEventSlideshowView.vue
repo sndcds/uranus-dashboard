@@ -10,7 +10,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import UranusEventSlideshow from '@/components/event/UranusEventSlideshow.vue'
-import { apiFetch } from '@/api'
 
 interface CalendarEvent {
   event_date_id: number

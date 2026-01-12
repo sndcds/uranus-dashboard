@@ -1,0 +1,380 @@
+,da,de,en
+1,Koncert,Konzert,Concert
+1001,Elektronisk musik,Elektronische Musik,Electronic music
+1002,Rock,Rock,Rock
+1003,Jazz,Jazz,Jazz
+1004,Metal,Metal,Metal
+1005,R&b,R&B,R&b
+1006,World music,World Music,World music
+1007,Country,Country,Country
+1008,Hip hop,Hip Hop,Hip hop
+1009,Fusion,Fusion,Fusion
+1010,Folk,Folk,Folk
+1011,Pop,Pop,Pop
+1012,Latin,Latin,Latin
+1013,Klassik,Klassik,Classic
+1014,Singer-songwriter,Singer-Songwriter,Singer-songwriter
+1015,Blues,Blues,Blues
+1016,Crossover,Crossover,Crossover
+1017,Indie,Indie,Indie
+1018,Alternative,Alternative,Alternative
+1019,Punk,Punk,Punk
+1020,Reggea,Reggea,Reggea
+1021,Soul,Soul,Soul
+1022,Funk,Funk,Funk
+1023,Gospel,Gospel,Gospel
+1024,Schlager,Schlager,Schlager
+1025,Ny musik,Neue Musik,New music
+1026,Ambient,Ambient,Ambient
+1027,Industrial,Industrial,Industrial
+1028,Techno,Techno,Techno
+1029,House,House,House
+1030,Balkan,Balkan,Balkan
+1031,Eksperimentel,Experimental,Experimental
+1032,Kammerkoncert,Kammerkonzert,Chamber concert
+1033,Orgelkoncert,Orgelkonzert,Organ concert
+,,,
+2,Teater & scene,Theater & Bühne,Theater & Stage
+2001,Musical,Musical,Musical
+2002,Musikteater,Musiktheater,Musical theater
+2003,Cirkusteater,Zirkus-Theater,Circus theatre
+2004,Drama,Drama,Drama
+2005,Komedie,Komödie,Comedy
+2006,Tragedie,Tragödie,Tragedy
+2007,Farce,Farce,Farce
+2008,Satire,Satire,Satire
+2009,Grotesk,Groteske,Grotesque
+2010,Klassisk teater,Klassisches Theater,Classical theatre
+2011,Historisk teater,Historisches Theater,Historical theatre
+2012,Improvisationsteater,Improvisationstheater,Improvisational theatre
+2013,Performance-teater,Performance-Theater,Performance theatre
+2014,Pantomime,Pantomime,Pantomime
+2015,Ballet,Ballett,Ballet
+2016,Klassisk opera,Klassisches Oper,Classical opera
+2017,Moderne opera,Moderne Oper,Modern opera
+2018,Operette,Operette,Operetta
+2019,Kammeropera,Kammeroper,Chamber opera
+2020,Opera for børn/familier,Oper für Kinder/Familien,Opera for children/families
+2021,Ungt teater,Junges Theater,Youth theater
+2022,Dukketeater,Puppenspiel,Puppet theater
+2023,Skuespil,Schauspiel,Theater play
+2024,Opera,Oper,Opera
+,,,
+2,Party,Party,Party
+3001,Trance,Trance,Trance
+3002,Edm,EDM,Edm
+3003,Drum and bass,Drum and Bass,Drum and bass
+3004,Disco,Disco,Disco
+3005,Dancehall,Dancehall,Dancehall
+3006,Retro,Retro,Retro
+3007,Schlager,Schlager,Schlager
+3008,Silent disco,Silent Disco,Silent disco
+3009,Kostumefest,Kostümparty,Costume party
+3010,Karaoke,Karaoke,Karaoke
+3011,Clubbing,Clubbing,Clubbing
+,,,
+,,,
+4,Comedy,Comedy,Comedy
+4001,Stand-up,Stand-up,Stand-up
+4002,Kabaret,Kabarett,Cabaret
+4003,Satire,Satire,Satire
+4004,Sketch,Sketch,Sketch
+4005,Parodi,Parodie,Parody
+4006,Nonsens,Nonsens,Nonsense
+,,,
+,,,
+5,Børneteater,Kindertheater,Children´s Theater
+5001,Dukketeater,Puppenspiel,Puppet show
+5002,Eventyr,Märchen,Fairy tale
+5003,Fabel,Fabel,Fable
+5004,Klassiker,Klassiker,Classic
+5005,Klovneteater,Clownstheater,Clown theater
+5006,Figurteater,Figurentheater,Object theater
+5007,Børnemusical,Kindermusical,Children’s musical
+5008,Fantasy,Fantasy,Fantasy
+5009,Oplevelse,Abenteuer,Adventure
+5010,Dyrehistorier,Tiergeschichten,Animal stories
+5011,Magi og trylleri,Zauber- und Magie,Magic & illusion
+5012,Danseteater,Tanztheater,Dance theatre
+,,,
+,,,
+7,Oplæsning,Lesung,Reading
+6001,Roman,Roman,Novel
+6002,Korthistorier,Kurzgeschichten,Short stories
+6003,Novelle,Novelle,Novella
+6004,Fantasy,Fantasy,Fantasy
+6005,Science-fiction,Science-Fiction,Science fiction
+6006,Krimi/thriller,Krimi/Thriller,Crime/thriller
+6007,Historisk litteratur,Historische Literatur,Historical
+6008,Børne- og ungdomsbog,Jugendbuch,Young adult book
+6009,Digte,Gedichte,Poems
+6010,Biografi,Biografie,Biography
+6011,Autobiografi,Autobiografie,Autobiography
+6012,Minder,Memoiren,Memoirs
+6013,Rejseberetning,Reisebericht,Travel report
+6014,Videnskab,Wissenschaft,Science
+6015,Essay,Essay,Essay
+6016,Politik/samfund,Politik/Gesellschaft,Politics/social
+6017,Filosofi,Philosophie,Philosophy
+6018,Manuskript,Drehbuch,Screenplay
+6019,Børnehistorier,Kindergeschichten,Children’s stories
+6020,Eventyr og sagn,Märchen und Sagen,Fairy tales and legends
+6021,Spirituelle tekster,Spirituelle Texte,Spiritual texts
+,,,
+,,,
+7,Sport,Sport,Sport
+7001,Basketball,Basketball,Basketball
+7002,Iskockey,Eishockey,Ice hockey
+7003,Fodbold,Fussball,Soccer
+7004,Golf,Golf,Golf
+7005,Kampsport,Kampfsport,Martial arts
+7006,Walking,Walking,Walking
+7007,Løb,Laufen,Running
+7008,Vandring,Wandern,Hiking
+7009,Cykling,Radfahren,Cycling
+7010,Motorsport,Motorsport,Motorsport
+7011,Ridning,Reiten,Horse riding
+7012,Flyvning,Fliegen,Flying
+7013,Sejlads,Segeln,Sailing
+7014,Rulleskøjte,Skaten,Skating
+7015,Skiløb,Schifahren,Skiing
+7016,Volleyball,Volleyball,Volleyball
+7017,Vandsport,Wassersport,Water sports
+7018,Vintersport,Wintersport,Winter sports
+7019,Yoga,Yoga,Yoga
+,,,
+,,,
+8,Kunst,Kunst,Art
+8001,Maleri,Malerei,Painting
+8002,Fotografi,Fotografie,Photography
+8003,Skulptur,Skulptur,Sculpture
+8004,Installation,Installation,Installation
+8005,Illustration,Illustration,Illustration
+8006,Grafik og tryk,Grafik und Druck,Graphics and print
+8007,Design,Design,Design
+8008,Objektkunst,Objektkunst,Object art
+8009,Mediekunst,Medienkunst,Media art
+8010,Street art,Street Art,Street art
+8011,Video / film / bevægelsesbillede,Video / Film / Bewegtbild,Video / film / moving image
+8012,Performancekunst,Performance-Kunst,Performance art
+8013,Arkitektur,Architektur,Architecture
+8014,Lydkunst,Klangkunst,Sound art
+8015,Lyskunst,Lichtkunst,Light art
+8016,Fotografi,Fotografie,Photography
+,,,
+,,,
+9,Film,Film,Film
+9001,Drama,Drama,Drama
+9002,Komedie,Komödie,Comedy
+9003,Dokumentarfilm,Dokumentarfilm,Documentary film
+9004,Animationsfilm,Animationsfilm,Animated film
+9005,Eksperimentel film,Experimentalfilm,Experimental film
+9006,Kortfilm,Kurzfilm,Short film
+9007,Spillefilm,Spielfilm,Feature film
+9008,Essayfilm,Essayfilm,Essay film
+9009,Stumfilm,Stummfilm,Silent film
+9010,Arthouse / independent,Arthouse / Independent,Arthouse / independent
+9011,Familiefilm,Familienfilm,Family film
+9012,Biografi,Biografie,Biography
+9013,Roadmovie,Roadmovie,Road movie
+9014,Satire,Satire,Satire
+9015,Grotesk,Groteske,Grotesque
+9016,Science fiction,Science Fiction,Science fiction
+9017,Fantasy,Fantasy,Fantasy
+9018,Thriller,Thriller,Thriller
+9019,Krimi,Krimi,Crime
+9020,Musikfilm,Musikfilm,Music movie
+9021,Dansefilm,Tanzfilm,Dance movie
+9022,Litteraturfilm,Literaturverfilmung,Literary adaptation
+,,,
+,,,
+10,Dans,Tanz,Dance
+10001,Klassisk ballet,Klassisches Ballett,Classical ballet
+10002,Moderne dans / samtidsdans,Modern Dance / Zeitgenössischer Tanz,Modern dance / contemporary dance
+10003,Jazzdans,Jazz Dance,Jazz dance
+10004,Danseteater,Tanztheater,Dance theatre
+10005,Børneballet,Kinderballett,Children’s ballet
+,,,
+,,,
+11,Musik,Musik,Music
+11001,Open mic,Open Mic,Open mic
+11002,Jam session,Jam Session,am session
+11003,Samtalekoncert,Gesprächskonzert,Lecture concert
+11004,Formidling,Vermittlung,Education
+11005,Deep listening,Deep Listening,Deep listening
+11006,Lyttesession,Hörsession,Listening session
+11007,Kunstnersamtale,Künstlergespräch,Artist talk
+11008,Lydvandring,Soundwalk,Sound walk
+11009,Hørespil,Hörspiel,Audio drama
+11010,Åben prøve,Offene Probe,Open rehearsal
+,,,
+,,,
+12,Videnskab,Wissenschaft,Science
+12001,Verdensrummet,Weltraum,Space
+12002,Jorden,Planet Erde,Planet earth
+12003,Teknik,Technik,Technology
+,,,
+,,,
+13,Marked,Markt,Market
+13001,Loppemarked,Flohmarkt,Flea market
+13002,Julemarked,Weihnachtsmarkt,Christmas market
+13003,Påskemarked,Ostermarkt,Easter market
+13004,Sommermarked,Sommermarkt,Summer market
+13005,Høstmarked,Erntemarkt,Harvest market
+13006,Middelaldermarked,Mittelaltermarkt,Medieval market
+13007,Vikingemarked,Wikingermarkt,Viking market
+13008,Ugently marked,Wochenmarkt,Weekly market
+13009,Fødevaremarked,Lebensmittelmarkt,Food market
+13010,Fiskemarked,Fischmarkt,Fish market
+13011,Blomstermarked,Blumenmarkt,Flower market
+13012,Genbrugsmarked,Second-Hand-Markt,Second-hand market
+13013,Byttemarked,Tauschmarkt,Swap market
+13014,Antikmarked,Antikmarkt,Antique market
+13015,Retro-marked,Retromarkt,Retro market
+13016,Kunsthåndværkermarked,Kunsthandwerkermarkt,Arts and crafts market
+13017,Designmarked,Designmarkt,Design market
+13018,Bogmarked,Büchermarkt,Book market
+13019,Plademarked,Schallplattenmarkt,Record fair
+13020,Natmarked,Nachtmarkt,Night market
+13021,Dyremarked,Tiermarkt,Animal market
+,,,
+,,,
+14,Kursus,Kursus,Course
+14001,Dänisch,Deutsch,Englisch
+14002,Engelsk,Englisch,English
+14003,Fransk,Französisch,French
+14004,Spansk,Spanisch,Spanish
+14005,Italiensk,Italienisch,Italian
+14006,Tysk som fremmedsprog,Deutsch als Fremdsprache (DaF),German as a foreign language
+14007,Kinesisk,Chinesisch,Chinese
+14008,Japansk,Japanisch,Japanese
+14009,Russisk,Russisch,Russian
+14010,Tegnsprog,Gebärdensprache,Sign language
+14011,Latin,Latein,Latin
+14012,Oldgræsk,Altgriechisch,Ancient greek
+14013,Maleri,Malen,Painting
+14014,Tegning,Zeichnen,Drawing
+14015,Akvarel,Aquarell,Watercolor
+14016,Oliefarve,Ölmalerei,Oil painting
+14017,Skulptur,Bildhauerei,Sculpture
+14018,Keramik,Töpfern / Keramik,Pottery / ceramics
+14019,Fotografi,Fotografie,Photography
+14020,Fotoredigering,Bildbearbeitung,Photo editing
+14021,Strikning,Stricken,Knitting
+14022,Hækling,Häkeln,Crocheting
+14023,Syning,Nähen,Sewing
+14024,Smykkefremstilling,Schmuckdesign,Jewelry design
+14025,Håndarbejde / diy,Basteln / DIY,Handicrafts / DIY
+14026,Instrumentalundervisning,Instrumentalunterricht,Instrument lessons
+14027,Sangundervisning,Gesangsunterricht,Singing lessons
+14028,Kor,Chorarbeit,Choir
+14029,Standard / latin dans,Standard / Latein Tanz,Ballroom / latin dance
+14030,Hip-hop dans,Hip-Hop Tanz,Hip-hop dance
+14031,Salsa,Salsa,Salsa
+14032,Folkedans,Volkstanz,Folk dance
+14033,Zumba,Zumba,Zumba
+14034,Musikteori,Musiktheorie,Music theory
+14035,Komposition,Komposition,Composition
+14036,Ensemble / band,Ensemble / Band,Ensemble / band
+14037,Yoga,Yoga,Yoga
+14038,Pilates,Pilates,Pilates
+14039,Tai chi,Tai Chi,Tai Chi
+14040,Qigong,Qigong,Qigong
+14041,Fitness,Fitness,Fitness
+14042,Aerobic,Aerobic,Aerobics
+14043,Funktionel træning,Funktional Training,Functional training
+14044,Rygtræning,Rückenschule,Back exercise
+14045,Svømning,Schwimmen,Swimming
+14046,Vandfitness,Aquafitness,Aqua Fitness
+14047,Selvforsvar,Selbstverteidigung,Self-defense
+14048,Kampsport,Kampfsport,Martial Arts
+14049,Meditation,Meditation,Meditation
+14050,Autogen træning,Autogenes Training,Autogenic Training
+14051,Retorik,Rhetorik,Rhetoric / public speaking
+14052,Kommunikation,Kommunikation,Communication
+14053,Præsentation,Präsentation,Presentation
+14054,Jobtræning,Bewerbungstraining,Job application / career training
+14055,Stresshåndtering,Stressmanagement,Stress management
+14056,Tidsstyring,Zeitmanagement,Time management
+14057,Psykologi,Psychologie,Psychology
+14058,Filosofi / etik,Philosophie / Ethik,Philosophy / ethics
+14059,Politik,Politik,Politics
+14060,Kontorprogrammer,Office-Programme,Office software
+14061,Programmering,Programmieren,Programming
+14062,Python,Python,Python
+14063,Webudvikling,Webentwicklung,Web development
+14064,Grafik / design,Grafik & Design,Graphic design
+14065,Photoshop,Photoshop,Photoshop
+14066,Illustrator,Illustrator,Illustrator
+14067,Cad,CAD,CAD
+14068,Sociale medier,Social Media,Social media
+14069,Blogging,Blogging,Blogging
+14070,Youtube,YouTube,YouTube
+14071,Smartphone / tablet,Smartphone / Tablet,Smartphone / tablet
+14072,Sprogcertifikater,Sprachzertifikate,Language certificates
+14073,Pleje,Pflege,Nursing / care
+14074,Pædagogik,Erziehung,Education / pedagogy
+14075,Håndværk,Handwerk,Crafts
+14076,Bogføring,Buchhaltung,Accounting
+14077,Skatteret,Steuerrecht,Tax law
+14078,Økonomi,Betriebswirtschaft,Business administration
+14079,Madlavning,Kochkurse,Cooking classes
+14080,Bagning,Backen,Baking
+14081,Ernæring / sundhed,Ernährung & Gesundheit,Nutrition & health
+14082,Havearbejde,Gartenarbeit,Gardening
+14083,Urban gardening,Urban Gardening,Urban gardening
+14084,Brætspil,Brettspiele,Board games
+14085,Rejser / kultur,Reisen & Kultur,Travel & culture
+14086,Litteraturkreds,Literaturzirkel,Literature circle
+14087,Skrivning,Schreibwerkstatt,Writing workshop
+,,,
+,,,
+15,Workshop,Workshop,Workshop
+16,Poetry slam,Poetry Slam,Poetry Slam
+17,Udstilling,Ausstellung,Exhibition
+18,Festival,Festival,Festival
+19,Fest/fejring,Fest/feier,Celebration
+20,Foredrag,Vortrag,Lecture
+21,Forsamling,Versammlung,Assembly
+22,Kongres,Kongress,Congress
+23,Messe,Messe,Fair
+24,Åbent hus,Tag der offenen Tür,Open house
+25,Rundvisning,Rundgang,Tour
+26,Circus,Zirkus,Circus
+27,Udflugt,Ausflug,Trip
+28,Performance,Performance,Performance
+29,Wellness,Wellness,Wellness
+30,Velgørenhed,Charity,Charity
+31,Religiøs begivenhed,Glaubensveranstaltung,Religious event
+32,Hackathon,Hackathon,Hackathon
+33,Hjælpetilbud,Hilfsangebot,Assistance offer
+34,Uddannelse,Bildung,Education
+35,Politik,Politik,Politics
+36,Byvanding,Stadtführung,City tour
+37,Community event,Community event,Community event
+38,Litteratur,Literatur,Literature
+39,Laboratorium,Labor,Laboratory
+40,Håndværk,Handwerk,Craft
+41,Happening,Happening,Happening
+42,Udendørs,Outdoor,Outdoor
+43,Børn,Kinder,Children
+44,Familie,Familie,Family
+45,Natur,Natur,Nature
+46,Socialt,Soziales,Social
+47,Sundhed,Gesundheit,Health
+48,Retreat,Retreat,Retreat
+49,"Dialog, debat","Gespräch, Diskussion","Talk, discussion"
+50,Netværk,Netzwerk,Network
+51,Fitness,Fitness,Fitness
+52,Historie,Geschichte,History
+53,Mad og drikke,Essen und trinken,Food and drink
+54,Videreuddannelse,Weiterbildung,Further education
+55,Ferie,Ferien,Holiday
+56,Fritid,Freizeit,Leisure
+57,Mindearrangement,Gedenkveranstaltung,Memorial event
+58,Unge,Jugend,Youth
+59,Seniorer,Senioren,Elderly
+60,Spil,Spiel,Game
+61,Konference,Konferenz,Conference
+62,Optog,Aufzüge,Parades
+63,Afslapning,Erholung,Recreation

@@ -36,7 +36,7 @@ const mockEvent = {
   description: 'Event description',
   organization_id: 1,
   organization_name: 'Test Organization',
-  teaser_text: 'Teaser text',
+  summary: 'Summary',
   participation_info: 'Participation info',
   meeting_point: 'Meeting point',
   event_types: [

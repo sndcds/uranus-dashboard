@@ -25,7 +25,7 @@
 
       <UranusDashboardButton
           v-if="organization.can_edit_organization"
-          class="uranus-button tiny"
+          class="tiny"
           :to="`/admin/organization/${organization.organization_id}/edit`"
           icon="edit"
       >
@@ -34,7 +34,7 @@
 
       <UranusDashboardButton
           v-if="organization.can_delete_organization"
-          class="uranus-button tiny"
+          class="tiny"
           icon="delete"
           @click="deleteOrganization(organization.organization_id)"
       >
@@ -43,7 +43,7 @@
 
       <UranusDashboardButton
           v-if="organization.can_manage_team"
-          class="uranus-button tiny"
+          class="tiny"
           icon="organization"
           :to="`/admin/organization/${organization.organization_id}/team`"
       >
@@ -53,7 +53,7 @@
 
 
     <!-- Delete confirmation modal -->
-    <PasswordConfirmModal
+    <UranusPasswordConfirmModal
         :show="showDeleteModal"
         :title="t('confirm_delete_organization')"
         :description="t('confirm_delete_organization_description', { name: organization.organization_name })"
@@ -73,7 +73,7 @@ import { useAppStore } from '@/store/appStore.ts'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 
-import PasswordConfirmModal from '@/components/PasswordConfirmModal.vue'
+import UranusPasswordConfirmModal from '@/components/uranus/UranusPasswordConfirmModal.vue'
 import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";
 import UranusNumberDisplay from "@/components/ui/UranusNumberDisplay.vue";
 
@@ -211,7 +211,6 @@ const confirmDelete = async ({ password }: { password: string }) => {
 
 .organization-card__table {
   font-size: 0.9rem;
-  color: var(--color-text);
 
   &-header { font-weight: 600; border-bottom: 2px solid var(--border-soft); padding: 0.5rem; }
   &-header--right { text-align: right; }

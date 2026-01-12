@@ -87,7 +87,7 @@
             :selectable="true"
         />
 
-        <ValueInfoComponent :label="t('geo_location')" :value="locationSummary" />
+        <UranusValueInfo :label="t('geo_location')" :value="locationSummary" />
       </UranusCard>
 
       <UranusCard>
@@ -103,7 +103,7 @@
             :id="descriptionLabelId"
             :label="t('description')"
             :error="fieldErrors.description">
-          <MarkdownEditorComponent
+          <UranusMarkdownEditor
               v-model="description"
               class="organization-description-editor"
               :aria-labelledby="descriptionLabelId"
@@ -140,11 +140,11 @@
 import { computed, reactive, ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { apiFetch, fetchCoordinatesForAddress } from '@/api'
+import { apiFetch, fetchCoordinatesForAddress } from '@/api.ts'
 
-import MarkdownEditorComponent from '@/components/MarkdownEditorComponent.vue'
+import UranusMarkdownEditor from '@/components/uranus/UranusMarkdownEditor.vue'
 import UranusRegionSelect from '@/components/selects/UranusRegionSelect.vue'
-import ValueInfoComponent from "@/components/ValueInfoComponent.vue"
+import UranusValueInfo from "@/components/ui/UranusValueInfo.vue"
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
 import UranusTextInput from "@/components/ui/UranusTextInput.vue"
 import UranusFormRow from "@/components/ui/UranusFormRow.vue"
@@ -593,7 +593,6 @@ watch(website, (value) => {
     margin: 0;
     cursor: pointer;
     font-weight: 500;
-    color: var(--color-text);
     line-height: 1.4;
 }
 

@@ -187,7 +187,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch, toRef, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusFormRow from '@/components/ui/UranusFormRow.vue'
 import UranusFieldLabel from '@/components/ui/UranusFieldLabel.vue'

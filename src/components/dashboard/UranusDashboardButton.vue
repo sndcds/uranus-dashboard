@@ -61,3 +61,14 @@ const modeClass = computed(() => ({
   'clickable': !!props.icon || !!props.to
 }))
 </script>
+
+<style scoped lang="scss">
+
+a {
+  color: var(--uranus-button-color);
+  &:hover {
+    color: var(--uranus-button-color-hover);
+  }
+}
+
+</style>

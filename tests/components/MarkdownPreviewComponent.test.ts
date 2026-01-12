@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
-import MarkdownPreviewComponent from '../../src/components/MarkdownPreviewComponent.vue'
+import UranusMarkdownPreview from '../../src/components/UranusMarkdownPreview.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -13,9 +13,9 @@ const i18n = createI18n({
   },
 })
 
-describe('MarkdownPreviewComponent', () => {
+describe('UranusMarkdownPreview', () => {
   const createWrapper = (value: string = '') => {
-    return mount(MarkdownPreviewComponent, {
+    return mount(UranusMarkdownPreview, {
       props: { value },
       global: {
         plugins: [i18n],
@@ -116,19 +116,19 @@ describe('MarkdownPreviewComponent', () => {
 | Alice | 30 |
 | Bob | 25 |`
       const wrapper = createWrapper(content)
-      
+
       expect(wrapper.find('table').exists()).toBe(true)
       expect(wrapper.find('thead').exists()).toBe(true)
       expect(wrapper.find('tbody').exists()).toBe(true)
-      
+
       const headers = wrapper.findAll('th')
       expect(headers).toHaveLength(2)
       expect(headers[0].text()).toBe('Name')
       expect(headers[1].text()).toBe('Age')
-      
+
       const rows = wrapper.findAll('tbody tr')
       expect(rows).toHaveLength(2)
-      
+
       const firstRowCells = rows[0].findAll('td')
       expect(firstRowCells[0].text()).toBe('Alice')
       expect(firstRowCells[1].text()).toBe('30')
@@ -139,14 +139,14 @@ describe('MarkdownPreviewComponent', () => {
 | :--- | :---: | ---: |
 | L1 | C1 | R1 |`
       const wrapper = createWrapper(content)
-      
+
       // Check that table is rendered with correct structure
       const headers = wrapper.findAll('th')
       expect(headers).toHaveLength(3)
       expect(headers[0].text()).toBe('Left')
       expect(headers[1].text()).toBe('Center')
       expect(headers[2].text()).toBe('Right')
-      
+
       const cells = wrapper.findAll('tbody td')
       expect(cells).toHaveLength(3)
       expect(cells[0].text()).toBe('L1')
@@ -159,7 +159,7 @@ describe('MarkdownPreviewComponent', () => {
 | --- | --- |
 | | X |`
       const wrapper = createWrapper(content)
-      
+
       const cells = wrapper.findAll('tbody td')
       expect(cells).toHaveLength(2)
       expect(cells[0].text()).toBe('')
@@ -213,9 +213,9 @@ This is a **bold** paragraph with *italic* text.
 - Item 2
 
 \`code example\``
-      
+
       const wrapper = createWrapper(content)
-      
+
       expect(wrapper.find('h1').exists()).toBe(true)
       expect(wrapper.find('h2').exists()).toBe(true)
       expect(wrapper.find('strong').exists()).toBe(true)

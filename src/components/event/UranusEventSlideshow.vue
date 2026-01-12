@@ -20,13 +20,13 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
-import { mapPublicEvent } from '@/utils/UranusPublicEventMapper'
+import { apiFetch } from '@/api.ts'
+import { mapPublicEvent } from '@/utils/UranusPublicEventMapper.ts'
 import UranusEventSlide from './UranusEventSlide.vue'
 import type {
   UranusPublicEventDetail,
   UranusPublicEventDate
-} from '@/models/UranusPublicEventModel'
+} from '@/models/UranusPublicEventModel.ts'
 
 /* ------------------ types ------------------ */
 

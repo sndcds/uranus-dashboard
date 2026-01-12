@@ -44,13 +44,16 @@
           </div>
 
           <div class="calendar-text">
-            <span>{{ uranusFormatDateTime(event.start_date, event.start_time, locale) }}</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span>{{ uranusFormatDateTime(event.start_date, event.start_time, locale) }}</span>
+              <UranusEventReleaseChip
+                  v-if="(event.release_status_id ?? 0) > 3"
+                  :releaseStatusId="event.release_status_id"
+                  tiny
+              />
+            </div>
             <h3>{{ event.title }}</h3>
             <span>{{ event.venue_name }}, {{ event.venue_city }}</span>
-            <UranusEventReleaseChip
-                v-if="(event.release_status_id ?? 0) > 3"
-                :releaseStatusId="event.release_status_id"
-            />
             <!-- Render only event types (no genres) -->
             <div v-if="event.event_types && event.event_types.length" class="uranus-public-event-detail-tags">
               <div
@@ -207,7 +210,7 @@ interface CalendarEvent {
   title: string
   subtitle: string | null
   image_path: string | null
-  teaser_text: string | null
+  summary: string | null
   description: string | null
   start_date: string
   start_time: string | null
@@ -453,7 +456,7 @@ onBeforeUnmount(() => {
   position: relative;
   cursor: pointer;
   overflow: hidden;
-  background: #fff;
+  background: var(--uranus-bg-d1);
   width: 100%;
   transition: transform 0.25s ease;
 }
@@ -463,7 +466,7 @@ onBeforeUnmount(() => {
 }
 
 .filter-button {
-  background-color: #333;
+  background-color: var(--uranus-nav-bg);
   color: #fff;
   border: none;
   padding: 6px 12px;

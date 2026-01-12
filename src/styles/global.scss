@@ -7,13 +7,13 @@
 @use 'uranus_value_info';
 @use 'uranus_inline_editor';
 @use 'uranus_public';
+@use 'uranus_html';
 @use 'uranus_notification';
 @use './_markdown_editor.scss';
 
 @font-face {
   font-family: 'Open Sans';
-  src: url('../assets/fonts/open-sans/OpenSans-VariableFont_wdth,wght.ttf')
-  format('truetype');
+  src: url('../assets/fonts/open-sans/OpenSans-VariableFont_wdth,wght.ttf');
   font-weight: 300 800; /* full weight range */
   font-stretch: 75% 125%; /* width axis (wdth) */
   font-style: normal;
@@ -22,8 +22,7 @@
 
 @font-face {
   font-family: 'Open Sans';
-  src: url('../assets/fonts/open-sans/OpenSans-Italic-VariableFont_wdth,wght.ttf')
-  format('truetype');
+  src: url('../assets/fonts/open-sans/OpenSans-Italic-VariableFont_wdth,wght.ttf');
   font-weight: 300 800;
   font-stretch: 75% 125%;
   font-style: italic;
@@ -31,23 +30,55 @@
 }
 
 
-
-
 :root {
   color-scheme: light;
 
-  --uranus-color: #01182e;
-  --uranus-bg: #F1F4F9;
-  --uranus-bg-d1: #F4F7FA;
-  --uranus-bg-d2: #E3EBF2;
+  --uranus-hue: 266;
+  --uranus-active-hue: 286;
+  --uranus-link-hue: 286;
+  --uranus-action-hue:266;
+
+  --uranus-acc-color: red;
+
+  --uranus-color: oklch(10% 0.02 var(--uranus-hue));
+  --uranus-color-dimmed: oklch(50% 0.05 var(--uranus-hue));
+  --uranus-link-color: oklch(50% 0.2 var(--uranus-link-hue));
+  --uranus-link-color-hover: oklch(60% 0.2 var(--uranus-link-hue));
+  --uranus-bg: oklch(96% 0.008 var(--uranus-hue));
+  --uranus-bg-d1: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-bg-d2: oklch(97% 0.01 var(--uranus-hue));
+  --uranus-bg-d3: oklch(92% 0.014 var(--uranus-hue));
+
+  --uranus-backdrop-color: oklch(96% 0.008 var(--uranus-hue) / 0.8);
+
   --uranus-dashboard-bg: var(--uranus-bg);
-  --uranus-card-bg: #ffffff;
-  --uranus-button-color: var(--uranus-color);
-  --uranus-button-bg: var(--uranus-bg-d1);
-  --uranus-button-hover-color: var(--uranus-color);
-  --uranus-button-hover-bg: var(--uranus-bg-d2);
-  --uranus-button-active-color: #ffffff;
-  --uranus-button-active-bg: #1a34dc;
+  --uranus-card-bg: var(--uranus-bg-d1);
+
+  --uranus-nav-color: oklch(10% 0.02 var(--uranus-hue));
+  --uranus-nav-bg: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-nav-color-hover: oklch(20% 0.16 var(--uranus-hue));
+  --uranus-nav-bg-hover: oklch(96% 0.01 var(--uranus-hue));
+  --uranus-nav-color-active: oklch(100% 0.0 var(--uranus-active-hue));
+  --uranus-nav-bg-active: oklch(25% 0.1 var(--uranus-active-hue));
+  --uranus-nav-color-active-hover: oklch(100% 0.0 var(--uranus-active-hue));
+  --uranus-nav-bg-active-hover: oklch(25% 0.1 var(--uranus-active-hue));
+
+  --uranus-dashboard-border-width: 1px;
+  --uranus-dashboard-border-color: oklch(92% 0.014 var(--uranus-hue));
+
+  --uranus-button-color-active: oklch(100% 0.0 var(--uranus-active-hue));
+  --uranus-button-bg-active: var(--uranus-nav-bg-active);
+
+  --uranus-action-button-color: oklch(100% 0.0 var(--uranus-action-hue));
+  --uranus-action-button-bg: oklch(50% 0.2 var(--uranus-action-hue));
+  --uranus-action-button-color-hover: oklch(100% 0.0 var(--uranus-action-hue));
+  --uranus-action-button-bg-hover: oklch(44% 0.18 var(--uranus-action-hue));
+
+  // Inputs & borders
+  --uranus-input-bg: oklch(98% 0.006 var(--uranus-hue));
+  --uranus-input-border-color: oklch(98% 0.006 var(--uranus-hue));
+  --uranus-input-border-width: 2px;
+
 
 
 
@@ -56,16 +87,11 @@
   --uranus-language-tag-background: rgba(69, 181, 141, 0.18);
   --uranus-language-tag-color: rgb(56, 126, 107);
 
-  --uranus-public-link-color: #4f46e5;
-  --uranus-public-link-hover-color: #7c6eef;
-
-
 
   // Base typography & text colors
   --font-brand: 'Space Grotesk', 'Inter', sans-serif;
   --color-bg: #f5f7fb;
   --color-text: #0f172a;
-  --color-text-primary: #0f172a;
   --color-text-secondary: #475569;
   --color-link: #2563eb;
   --uranus-muted-text: #64748b;
@@ -89,10 +115,6 @@
   --uranus-ia-inline-color-dark2: #582780;
   --uranus-inline-label-color: #808d9c;
 
-  --uranus-focus-border-color: #0078d4;
-
-  --uranus-surface-muted: rgb(234, 238, 246);
-
   --uranus-event-type-chip-background: #f2f2fb;
   --uranus-event-type-chip-color: #4f46e5;
   --uranus-language-chip-background: rgb(230, 248, 232);
@@ -114,11 +136,8 @@
   --uranus-event-release-color-rescheduled: #ffffff;
   --uranus-event-release-background-rescheduled: #164db1;
 
-  --uranus-backdrop-color: rgba(15, 23, 42, 0.5);
 
   // Accent tokens shared across layouts
-  --accent-primary: #4f46e5;
-  --accent-primary-hover: #4338ca;
   --accent-secondary: #22d3ee;
   --accent-muted: rgba(79, 70, 229, 0.1);
   --accent-muted-hover: rgba(79, 70, 229, 0.2);
@@ -130,9 +149,9 @@
   --surface-primary: #ffffff;
 
   --surface-hover: rgba(15, 23, 42, 0.06);
-  --uranus-card-color: var(--color-text);
+  --uranus-card-color: var(--uranus-color);
   --uranus-card-border-color: #eee;
-  --uranus-card-border-radius: 0px;
+  --uranus-card-border-radius: 7px;
 
   // Application chrome
   --uranus-disabled-color: #c7cedd;
@@ -146,7 +165,7 @@
   --uranus-grid-gap: 12px;
   --uranus-card-gap: 8px;
   --uranus-default-text-padding: 6px 12px;
-  --uranus-inline-edit-border-radius: 0px;
+  --uranus-inline-edit-border-radius: 5px;
   --uranus-form-field-border-radius: 0px;
   --uranus-tiny-border-radius: 0px;
   --uranus-input-height: 44px;
@@ -154,14 +173,6 @@
     --uranus-notify-info-color: #a2bae8;
     --uranus-notify-warning-color: #fdee89;
     --uranus-notify-error-color: #ffafaf;
-
-  // Inputs & borders
-  --input-bg: #ffffff;
-  --input-border: #cbd5f5;
-  --uranus-input-bg-color: #ffffff;
-  --uranus-input-border-color: rgba(186, 163, 248, 0.5);
-  --border-soft: rgba(148, 163, 184, 0.4);
-  --border-color: #d9e3f5;
 
   // Secondary controls
   --uranus-secondary-button-background-color: rgba(155, 32, 255, 0.12);
@@ -171,42 +182,75 @@
   --uranus-app-menu-background: #ffffff;
   --uranus-app-menu-background-menu-bg: #fcfcfc;
   --uranus-app-menu-color: #1f2937;
-
+/*
   font-family: 'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: var(--color-text);
-  background-color: var(--color-bg);
+  color: var(--uranus-color);
+  background-color: var(--uranus-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+*/
 }
+
 
 :root[data-theme="dark"] {
   color-scheme: dark;
 
+  --uranus-hue: 266;
+  --uranus-active-hue: 280;
+  --uranus-link-hue: 280;
+  --uranus-action-hue: 260;
 
-  --uranus-color: #eef6ff;
-  --uranus-bg: #01182e;
-  --uranus-bg-d1: #022445;
-  --uranus-bg-d2: #032F59;
-  --uranus-bg-d3: #033977;
+  --uranus-color: oklch(92% 0.02 var(--uranus-hue));
+  --uranus-color-dimmed: oklch(74% 0.03 var(--uranus-hue));
+  --uranus-link-color: oklch(55% 0.18 var(--uranus-link-hue));
+  --uranus-link-color-hover: oklch(50% 0.2 var(--uranus-link-hue));
+  --uranus-bg: oklch(20% 0.03 var(--uranus-hue));
+  --uranus-bg-d1: oklch(22% 0.033 var(--uranus-hue));
+  --uranus-bg-d2: oklch(30% 0.042 var(--uranus-hue));
+  --uranus-bg-d3: oklch(35% 0.044 var(--uranus-hue));
+
+  --uranus-backdrop-color: oklch(20% 0.03 var(--uranus-hue) / 0.9);
+
   --uranus-dashboard-bg: var(--uranus-bg);
   --uranus-card-bg: var(--uranus-bg-d1);
-  --uranus-button-color: var(--uranus-color);
-  --uranus-button-bg: var(--uranus-bg-d2);
-  --uranus-button-hover-color: var(--uranus-color);
-  --uranus-button-hover-bg: var(--uranus-bg-d3);
+
+  --uranus-nav-color: oklch(82% 0.02 var(--uranus-hue));
+  --uranus-nav-bg: oklch(20% 0.03 var(--uranus-hue));
+  --uranus-nav-color-hover: oklch(82% 0.03 var(--uranus-hue));
+  --uranus-nav-bg-hover: oklch(22% 0.05 var(--uranus-hue));
+  --uranus-nav-color-active: oklch(100% 0.0 var(--uranus-active-hue));
+  --uranus-nav-bg-active: oklch(31% 0.14 var(--uranus-active-hue));
+  --uranus-nav-color-active-hover: oklch(100% 0.0 var(--uranus-active-hue));
+  --uranus-nav-bg-active-hover: oklch(35% 0.14 var(--uranus-active-hue));
+
+  --uranus-dashboard-border-width: 1px;
+  --uranus-dashboard-border-color: oklch(28% 0.04 var(--uranus-hue));
+
+  --uranus-button-color-active: oklch(100% 0.0 var(--uranus-active-hue));
+  --uranus-button-bg-active: oklch(36% 0.16 var(--uranus-active-hue));
+
+  --uranus-action-button-color: oklch(100% 0.0 var(--uranus-action-hue));
+  --uranus-action-button-bg: oklch(50% 0.16 var(--uranus-action-hue));
+  --uranus-action-button-color-hover: oklch(100% 0.0 var(--uranus-action-hue));
+  --uranus-action-button-bg-hover: oklch(45% 0.16 var(--uranus-action-hue));
+
+  // Inputs & borders
+  --uranus-input-bg: oklch(26% 0.05 var(--uranus-hue));
+  --uranus-input-border-color: oklch(26% 0.05 var(--uranus-hue));
+  --uranus-input-border-width: 2px;
 
 
 
 
 
   --color-bg: #050b16;
-  --color-text: #f1f5f9;
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #cbd5f5;
+  --color-text: #ff0000; // #f1f5f9;
+  --color-text-primary: #00ff00;
+  --color-text-secondary: #0000ff;
   --color-link: #93c5fd;
   --uranus-muted-text: #94a3b8;
 
@@ -221,8 +265,6 @@
 
   --input-bg: #0f172a;
   --input-border: rgba(148, 163, 184, 0.45);
-  --uranus-input-bg-color: #0f172a;
-  --uranus-input-border-color: rgba(99, 102, 241, 0.5);
 
   --border-soft: rgba(148, 163, 184, 0.35);
   --border-color: #1f2a44;
@@ -239,9 +281,6 @@
   --uranus-app-menu-color: #f8fafc;
 
   --uranus-secondary-button-background-color: rgba(155, 32, 255, 0.24);
-
-  --uranus-surface-muted: #1b2640;
-
 }
 
 *,
@@ -255,22 +294,28 @@ body {
   min-height: 100dvh;
   background-color: var(--uranus-bg);
   color: var(--uranus-color);
+  font-family: 'Google Sans', 'Avenir', 'Helvetica Neue', 'Arial', sans-serif;
 }
 
 a {
-  color: inherit;
+  color: var(--uranus-link-color);
   text-decoration: none;
+
+  &:hover {
+    color: var(--uranus-link-color-hover);
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
-  font-weight: 600;
-  color: var(--color-text);
 }
 
 p, span {
-  color: var(--color-text);
+}
+
+button {
+  font-family: inherit
 }
 
 hr {
@@ -373,6 +418,13 @@ header {
 
 .card-title {
   color: #222;
+}
+
+
+.uranus-modal-description {
+  margin: 0;
+  color: var(--uranus-color);
+  line-height: 1.4;
 }
 
 /* TODO ersetzen! */

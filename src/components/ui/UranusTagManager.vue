@@ -229,8 +229,6 @@ const error = computed(() => props.error)
   gap: 0.4rem;
   padding: 0.35rem 0.8rem;
   border-radius: 999px;
-  background: rgba(79, 70, 229, 0.1);
-  color: var(--color-text);
   font-size: 0.9rem;
 }
 
@@ -245,7 +243,6 @@ const error = computed(() => props.error)
 }
 
 .tag-manager__chip-remove:hover {
-  color: var(--color-text);
 }
 
 .tag-manager__add {

@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { reactive, watch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 import UranusModal from '@/components/uranus/UranusModal.vue'
 import UranusTextInput from '@/components/ui/UranusTextInput.vue'

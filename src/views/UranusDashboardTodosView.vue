@@ -17,12 +17,9 @@
     />
 
     <UranusDashboardActionBar>
-      <div
-          class="uranus-action-button"
-          @click="openCreate"
-      >
+      <UranusActionButton @click="openCreate">
         {{ t('add_todo') }}
-      </div>
+      </UranusActionButton>
     </UranusDashboardActionBar>
 
     <!-- Error -->
@@ -53,14 +50,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 import UranusDashboardHero from '@/components/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/components/ui/UranusNotification.vue'
 import UranusTodoListItem from '@/components/todo/UranusTodoListItem.vue'
 import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionBar.vue";
-import UranusButton from "@/components/ui/UranusButton.vue";
 import UranusEditTodoModal from "@/components/todo/UranusEditTodoModal.vue";
+import UranusActionButton from "@/components/ui/UranusActionButton.vue";
 
 const { t } = useI18n()
 

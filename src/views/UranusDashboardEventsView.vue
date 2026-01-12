@@ -24,12 +24,11 @@
 
     <template v-else>
       <UranusDashboardActionBar v-if="!isLoading && canAddEvent">
-        <router-link
-            class="uranus-action-button"
+        <UranusActionButton
             :to="`/admin/organization/${organizationId}/event/create`"
         >
           {{ t('add_new_event') }}
-        </router-link>
+        </UranusActionButton>
       </UranusDashboardActionBar>
 
       <div
@@ -50,7 +49,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 import UranusDashboardEventCard from '@/components/dashboard/UranusDashboardEventCard.vue'
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue"
@@ -58,6 +57,7 @@ import UranusDashboardActionBar from "@/components/uranus/UranusDashboardActionB
 import { mapDashboardEventData } from "@/utils/UranusDashboardEventDataMapper.ts"
 import { UranusEventBase } from "@/models/UranusEventModel.ts"
 import UranusNotification from "@/components/ui/UranusNotification.vue";
+import UranusActionButton from "@/components/ui/UranusActionButton.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()

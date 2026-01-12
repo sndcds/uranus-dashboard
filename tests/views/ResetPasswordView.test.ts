@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
-import ResetPasswordView from '../../src/views/ResetPasswordView.vue'
+import UranusResetPasswordView from '../../src/views/UranusResetPasswordView.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -41,7 +41,7 @@ vi.mock('../../src/api', () => ({
   apiFetch: vi.fn(),
 }))
 
-describe('ResetPasswordView', () => {
+describe('UranusResetPasswordView', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -49,7 +49,7 @@ describe('ResetPasswordView', () => {
   it('renders reset password form with all fields', async () => {
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -67,7 +67,7 @@ describe('ResetPasswordView', () => {
   it('displays subtitle text', async () => {
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -87,7 +87,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password/token-from-params')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -123,7 +123,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password?token=token-from-query')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -153,7 +153,7 @@ describe('ResetPasswordView', () => {
   it('shows error when no token is provided', async () => {
     await router.push('/app/reset-password')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -178,7 +178,7 @@ describe('ResetPasswordView', () => {
   it('validates required password field', async () => {
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -196,7 +196,7 @@ describe('ResetPasswordView', () => {
   it('validates required repeat password field', async () => {
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -217,7 +217,7 @@ describe('ResetPasswordView', () => {
   it('validates passwords match', async () => {
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -241,7 +241,7 @@ describe('ResetPasswordView', () => {
   it('clears repeat password error when passwords match', async () => {
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -274,7 +274,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -310,7 +310,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -343,7 +343,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -380,7 +380,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -410,7 +410,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -439,7 +439,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -470,7 +470,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -501,7 +501,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password/valid-token-123')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -533,7 +533,7 @@ describe('ResetPasswordView', () => {
 
     await router.push('/app/reset-password')
 
-    const wrapper = mount(ResetPasswordView, {
+    const wrapper = mount(UranusResetPasswordView, {
       global: {
         plugins: [i18n, router],
       },

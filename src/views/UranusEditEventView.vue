@@ -102,15 +102,22 @@ async function loadEvent() {
   try {
     const { data } = await apiFetch(`/api/admin/event/${eventId}?lang=${locale.value}`)
 
-    const mapped = mapEventDetailData(data)
-    if (!mapped) {
-      errorMessage.value = t('error_incomplete_data')
-      return
+    const result = mapEventDetailData(data)
+    console.log(result)
+    if ('error' in result) {
+      console.error("Mapping failed:", result.error)
+      errorMessage.value = result.error
+      event.value = null  // clear the event if mapping failed
+    } else {
+      console.log("Event mapped successfully:", result.data)
+      event.value = result.data  // assign only the mapped event
+      errorMessage.value = null   // clear any previous error
     }
 
-    event.value = mapped
-  } catch {
+  } catch (err) {
+    console.error("Failed to fetch event:", err)
     errorMessage.value = t('event_load_error')
+    event.value = null
   }
 }
 

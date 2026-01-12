@@ -14,6 +14,7 @@
         {{ t('notifications_loading') }}
       </div>
       <div v-else-if="!notifications.length" class="events-feedback">
+        <!-- TODO: UranusNotification -->
         {{ t('notifications_empty') }}
       </div>
       <div v-else class="uranus-dashboard-card-grid uranus-max-layout">
@@ -58,7 +59,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 import UranusDashboardButton from "@/components/dashboard/UranusDashboardButton.vue";
 import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
 
@@ -153,7 +154,6 @@ const loadNotifications = async () => {
       notifications.value = []
     }
   } catch (err) {
-    console.error('Failed to load notifications:', err)
     error.value = t('notifications_load_error')
     notifications.value = []
   } finally {
@@ -171,7 +171,6 @@ onMounted(() => {
   margin: 0 0 1rem;
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-text);
 }
 
 .notification-card {

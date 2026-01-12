@@ -1,0 +1,61 @@
+.uranus-html-page {
+  font-family: "Inter", sans-serif;
+  color: var(--uranus-color);
+  line-height: 1.5;
+  max-width: 1024px;
+
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 500;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1rem; }
+  h4 { font-size: 1rem; }
+  h5 { font-size: 1rem; }
+
+  p {
+    margin-bottom: 1em;
+    font-size: 1rem;
+    color: var(--uranus-color-dimmed);
+  }
+
+  a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--accent-primary-hover);
+    }
+  }
+
+  // Optional: nested lists
+  ul, ol {
+    margin: 1em 0;
+    padding-left: 1.5em;
+    color: var(--uranus-color-dimmed);
+
+    li {
+      margin-bottom: 0.5em;
+    }
+  }
+
+  blockquote {
+    border-left: 4px solid var(--uranus-color);
+    padding-left: 1em;
+    color: var(--uranus-color-dimmed);
+    font-style: italic;
+    margin: 1em 0;
+  }
+
+  code {
+    font-family: "Fira Code", monospace;
+    background: var(--uranus-bg-d2);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+  }
+}

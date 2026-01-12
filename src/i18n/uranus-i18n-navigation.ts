@@ -64,7 +64,7 @@ export const uranusI18nNavigationTranslations: Record<string, Record<UranusLocal
     nav_events: {
         de: 'Events',
         en: 'Events',
-        da: 'Arrangementer'
+        da: 'Begivenheder'
     },
 }
 

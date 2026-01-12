@@ -1,6 +1,6 @@
-import { useTokenStore } from '@/store/tokenStore'
-import router from '@/router'
-import type { ThemeMode } from '@/utils/theme'
+import { useTokenStore } from '@/store/tokenStore.ts'
+import router from '@/router/index.ts'
+import type { ThemeMode } from '@/utils/theme.ts'
 
 let refreshPromise: Promise<boolean> | null = null;
 

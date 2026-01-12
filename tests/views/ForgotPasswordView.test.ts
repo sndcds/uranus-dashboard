@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { createI18n } from 'vue-i18n'
-import ForgotPasswordView from '../../src/views/ForgotPasswordView.vue'
+import UranusForgotPasswordView from '../../src/views/UranusForgotPasswordView.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -38,14 +38,14 @@ vi.mock('../../src/api', () => ({
   apiFetch: vi.fn(),
 }))
 
-describe('ForgotPasswordView', () => {
+describe('UranusForgotPasswordView', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     router.push('/app/forgot-password')
   })
 
   it('renders forgot password form with email field', () => {
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -58,7 +58,7 @@ describe('ForgotPasswordView', () => {
   })
 
   it('displays subtitle text', () => {
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -68,7 +68,7 @@ describe('ForgotPasswordView', () => {
   })
 
   it('shows link to login page', () => {
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -80,7 +80,7 @@ describe('ForgotPasswordView', () => {
   })
 
   it('validates required email field', async () => {
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -94,7 +94,7 @@ describe('ForgotPasswordView', () => {
   })
 
   it('validates email format', async () => {
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -111,7 +111,7 @@ describe('ForgotPasswordView', () => {
   })
 
   it('clears email error when valid email is entered', async () => {
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -135,7 +135,7 @@ describe('ForgotPasswordView', () => {
       status: 200,
     })
 
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -163,7 +163,7 @@ describe('ForgotPasswordView', () => {
       status: 200,
     })
 
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -186,7 +186,7 @@ describe('ForgotPasswordView', () => {
       data: { error: 'Email not found' },
     })
 
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -207,7 +207,7 @@ describe('ForgotPasswordView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -230,7 +230,7 @@ describe('ForgotPasswordView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockImplementation(() => new Promise(() => {}))
 
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -253,7 +253,7 @@ describe('ForgotPasswordView', () => {
       status: 200,
     })
 
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -281,7 +281,7 @@ describe('ForgotPasswordView', () => {
       status: 400,
     })
 
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -301,7 +301,7 @@ describe('ForgotPasswordView', () => {
     const { apiFetch } = await import('../../src/api')
     vi.mocked(apiFetch).mockRejectedValue(new Error('Network error'))
 
-    const wrapper = mount(ForgotPasswordView, {
+    const wrapper = mount(UranusForgotPasswordView, {
       global: {
         plugins: [i18n, router],
       },
@@ -332,7 +332,7 @@ describe('ForgotPasswordView', () => {
     ]
 
     for (const email of validEmails) {
-      const wrapper = mount(ForgotPasswordView, {
+      const wrapper = mount(UranusForgotPasswordView, {
         global: {
           plugins: [i18n, router],
         },
@@ -364,7 +364,7 @@ describe('ForgotPasswordView', () => {
     ]
 
     for (const email of invalidEmails) {
-      const wrapper = mount(ForgotPasswordView, {
+      const wrapper = mount(UranusForgotPasswordView, {
         global: {
           plugins: [i18n, router],
         },

@@ -4,7 +4,7 @@
   gap: var(--uranus-card-gap);
   color: var(--uranus-card-color);
   background-color: var(--uranus-card-bg);
-  border-radius: 0px;
+  border-radius: var(--uranus-card-border-radius);
   border: 0px solid var(--uranus-low-contrast-color);
   padding: 12px;
 }

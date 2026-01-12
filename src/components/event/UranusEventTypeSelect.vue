@@ -29,13 +29,9 @@
       </option>
     </select>
 
-    <button
-        v-if="canAddType"
-        class="uranus-action-button"
-        @click="onAddType"
-    >
+    <UranusActionButton v-if="canAddType" @click="onAddType">
       {{ t('add') }}
-    </button>
+    </UranusActionButton>
   </UranusFormRow>
 
   <div class="uranus-dashboard-chip-wrapper">
@@ -66,6 +62,7 @@ import { useI18n } from 'vue-i18n'
 import { useEventTypeLookupStore } from '@/store/eventTypesLookup'
 import type { UranusEventType } from '@/models/UranusEventModel'
 import UranusFormRow from '@/components/ui/UranusFormRow.vue'
+import UranusActionButton from "@/components/ui/UranusActionButton.vue";
 
 /* i18n */
 const { t, locale } = useI18n({ useScope: 'global' })

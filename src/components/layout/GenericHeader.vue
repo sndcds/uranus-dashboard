@@ -3,7 +3,7 @@
     <div class="generic-header__content">
       <!-- Logo / Brand -->
       <div class="generic-header__brand">
-        <UranusLogo class="generic-header__logo-icon" />
+        <UranusLogo />
 
         <!-- Visitor Navigation -->
         <nav v-if="!isAdminPage" class="generic-header__nav">
@@ -30,7 +30,7 @@
           </router-link>
 
           <router-link
-              to="/about"
+              to="/page/about"
               class="generic-header__nav-link"
               active-class="generic-header__nav-link--active">
             {{ t('nav_about') }}
@@ -214,13 +214,13 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useTokenStore } from '@/store/tokenStore'
-import { apiFetch } from '@/api'
-import { applyTheme } from '@/utils/theme'
-import { useUserStore } from '@/store/userStore'
+import { useTokenStore } from '@/store/tokenStore.ts'
+import { apiFetch } from '@/api.ts'
+import { applyTheme } from '@/utils/theme.ts'
+import { useUserStore } from '@/store/userStore.ts'
 
 import UranusLogo from '@/components/ui/UranusLogo.vue'
-import { useEventsFilterStore } from '@/store/eventsFilterStore'
+import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -411,7 +411,7 @@ onUnmounted(() => {
   top: 0;
   z-index: 1000;
   background: var(--surface-primary);
-  border-bottom: 1px solid var(--border-soft);
+  border-bottom: var(--uranus-dashboard-border-width) solid var(--uranus-dashboard-border-color);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   margin-bottom: 0;
 }
@@ -422,6 +422,7 @@ onUnmounted(() => {
   justify-content: space-between;
   padding: 1rem;
   max-width: 100%;
+  background: var(--uranus-nav-bg);
 }
 
 .generic-header__brand {
@@ -462,7 +463,7 @@ onUnmounted(() => {
 .generic-header__nav {
   display: none;
   margin-left: 2rem;
-  gap: 1.5rem;
+  gap: 0.5rem;
 
   @media (min-width: 769px) {
     display: flex;
@@ -472,22 +473,22 @@ onUnmounted(() => {
 
 .generic-header__nav-link {
   text-decoration: none;
-  color: var(--color-text);
   font-weight: 500;
   font-size: 0.95rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.8rem 1rem;
   border-radius: 0.375rem;
   transition: all 0.2s ease;
+  color: var(--uranus-nav-color);
 
   &:hover {
-    color: var(--accent-primary);
-    background: var(--uranus-surface-muted);
+    color: var(--uranus-nav-color-hover);
+    background: var(--uranus-nav-bg-hover);
   }
 
-  &--active {
-    color: var(--accent-primary);
-    background: var(--accent-muted);
-    font-weight: 600;
+  &--active,
+  &--active:hover {
+    color: var(--uranus-nav-color-active);
+    background: var(--uranus-nav-bg-active);
   }
 }
 
@@ -500,15 +501,15 @@ onUnmounted(() => {
 .generic-header__menu-toggle,
 .generic-header__settings-trigger {
   display: none;
+  color: var(--uranus-nav-color);
   background: none;
   border: none;
   padding: 0.5rem;
   cursor: pointer;
-  color: var(--color-text);
   transition: color 0.2s ease;
 
   &:hover {
-    color: var(--accent-primary);
+    color: var(--uranus-nav-color-hover);
   }
 
   @media (max-width: 768px) {
@@ -525,7 +526,7 @@ onUnmounted(() => {
   border-radius: 50%;
 
   &:hover {
-    background: var(--uranus-surface-muted);
+    background: var(--uranus-nav-bg-hover);
   }
 }
 
@@ -539,8 +540,8 @@ onUnmounted(() => {
   top: calc(100% + 0.5rem);
   right: 0;
   min-width: 240px;
-  background: var(--surface-primary);
-  border: 1px solid var(--border-soft);
+  background: var(--uranus-nav-bg);
+  border: 1px solid var(--uranus-dashboard-border-color);
   border-radius: 0.5rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   z-index: 1200;
@@ -581,7 +582,6 @@ onUnmounted(() => {
   gap: 0.75rem;
   padding: 0.625rem 1rem;
   font-size: 0.9rem;
-  color: var(--color-text);
   background: none;
   border: none;
   width: 100%;
@@ -595,15 +595,13 @@ onUnmounted(() => {
     opacity: 0.7;
   }
 
-  &:hover {
-    background: var(--uranus-surface-muted);
+  &:not(&--active):hover {
+    background: var(--uranus-nav-bg-hover);
   }
 
   &--active {
-    background: var(--accent-muted);
-    color: var(--accent-primary);
-    font-weight: 600;
-
+    background: var(--uranus-nav-bg-active);
+    color: var(--uranus-nav-color-active);
     &::before {
       content: '✓';
       position: absolute;
@@ -615,7 +613,7 @@ onUnmounted(() => {
 
 .generic-header__dropdown-divider {
   height: 1px;
-  background: var(--border-soft);
+  background: var(--uranus-dashboard-border-color);
   margin: 0.5rem 0;
 }
 
@@ -630,16 +628,13 @@ onUnmounted(() => {
   gap: 0.5rem;
   padding: 0.375rem;
   background: none;
-  // border: 1px solid var(--border-soft);
   border: 0;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--color-text);
 
   &:hover {
-    background: var(--uranus-surface-muted);
-    border-color: var(--border-soft);
+    background: var(--uranus-nav-bg-hover);
   }
 
   @media (max-width: 640px) {
@@ -659,7 +654,7 @@ onUnmounted(() => {
 
 .generic-header__user-avatar {
   object-fit: cover;
-  border: 2px solid var(--border-soft);
+  border: 2px solid var(--uranus-dashboard-border-color);
 }
 
 .generic-header__user-avatar-placeholder {
@@ -680,6 +675,7 @@ onUnmounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--uranus-nav-color)
 }
 
 .generic-header__user-caret {
@@ -696,8 +692,8 @@ onUnmounted(() => {
   top: calc(100% + 0.5rem);
   right: 0;
   min-width: 240px;
-  background: var(--surface-primary);
-  border: 1px solid var(--border-soft);
+  background: var(--uranus-nav-bg);
+  border: 1px solid var(--uranus-dashboard-border-color);
   border-radius: 0.5rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   z-index: 1200;
@@ -730,12 +726,10 @@ onUnmounted(() => {
 .generic-header__user-dropdown-name {
   font-weight: 600;
   font-size: 0.95rem;
-  color: var(--color-text);
 }
 
 .generic-header__user-dropdown-email {
   font-size: 0.85rem;
-  color: var(--uranus-muted-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -743,7 +737,7 @@ onUnmounted(() => {
 
 .generic-header__user-dropdown-divider {
   height: 1px;
-  background: var(--border-soft);
+  background: var(--uranus-dashboard-border-color);
   margin: 0.5rem 0;
 }
 
@@ -759,7 +753,6 @@ onUnmounted(() => {
   gap: 0.75rem;
   padding: 0.625rem 1rem;
   font-size: 0.9rem;
-  color: var(--color-text);
   text-decoration: none;
   background: none;
   border: none;
@@ -767,6 +760,7 @@ onUnmounted(() => {
   text-align: left;
   cursor: pointer;
   transition: background-color 0.15s ease;
+  color: var(--uranus-nav-color);
 
   svg {
     flex-shrink: 0;
@@ -774,7 +768,7 @@ onUnmounted(() => {
   }
 
   &:hover {
-    background: var(--uranus-surface-muted);
+    background: var(--uranus-nav-bg-hover);
   }
 
   &--logout {

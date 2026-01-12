@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
-import MarkdownEditorComponent from '../../src/components/MarkdownEditorComponent.vue'
+import UranusMarkdownEditor from '../../src/components/UranusMarkdownEditor.vue'
 
 const i18n = createI18n({
   legacy: false,
@@ -22,9 +22,9 @@ const i18n = createI18n({
   },
 })
 
-describe('MarkdownEditorComponent', () => {
+describe('UranusMarkdownEditor', () => {
   it('renders in write mode by default', () => {
-    const wrapper = mount(MarkdownEditorComponent, {
+    const wrapper = mount(UranusMarkdownEditor, {
       props: {
         modelValue: '',
         placeholder: 'Enter text',
@@ -38,7 +38,7 @@ describe('MarkdownEditorComponent', () => {
   })
 
   it('emits update:modelValue when content changes', async () => {
-    const wrapper = mount(MarkdownEditorComponent, {
+    const wrapper = mount(UranusMarkdownEditor, {
       props: {
         modelValue: '',
         placeholder: 'Enter text',
@@ -56,7 +56,7 @@ describe('MarkdownEditorComponent', () => {
   })
 
   it('switches between write and preview modes', async () => {
-    const wrapper = mount(MarkdownEditorComponent, {
+    const wrapper = mount(UranusMarkdownEditor, {
       props: {
         modelValue: '# Test',
         placeholder: 'Enter text',
@@ -78,7 +78,7 @@ describe('MarkdownEditorComponent', () => {
   })
 
   it('displays placeholder when empty', () => {
-    const wrapper = mount(MarkdownEditorComponent, {
+    const wrapper = mount(UranusMarkdownEditor, {
       props: {
         modelValue: '',
         placeholder: 'Custom placeholder',

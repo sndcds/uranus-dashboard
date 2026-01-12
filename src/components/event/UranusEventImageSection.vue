@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, toRaw } from 'vue'
 import type { UranusEventDate } from '@/models/UranusEventModel.ts'
-import { apiFetch } from '@/api'
+import { apiFetch } from '@/api.ts'
 
 interface Slice {
   file: File | null

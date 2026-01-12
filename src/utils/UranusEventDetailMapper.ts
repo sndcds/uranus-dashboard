@@ -7,58 +7,53 @@ import {
 } from '@/models/UranusEventModel.ts'
 import { toNumberOrNull, toString, toNullableString } from './UranusUtils.ts'
 
-export const mapEventDetailData = (raw: unknown): UranusEventDetail | null => {
-    if (!raw || typeof raw !== 'object') return null
+type MapResult<T> = { data: T } | { error: string }
+
+export const mapEventDetailData = (raw: unknown): MapResult<UranusEventDetail> => {
+    if (!raw || typeof raw !== 'object') {
+        return { error: "Invalid input: expected an object" }
+    }
+
     const r = raw as Record<string, unknown>
+
+    // --- Required fields ---
 
     // Event ID
     const eventId = toNumberOrNull(r.event_id)
-    if (eventId === null) return null
+    if (eventId === null) return { error: "Missing or invalid field: event_id" }
 
-    // First event date ID (if multiple dates exist)
-    const firstEventDate = Array.isArray(r.event_dates) && r.event_dates[0] ? r.event_dates[0] : null
-    const eventDateId = firstEventDate ? toNumberOrNull(firstEventDate.event_date_id) : null
+    // Title
+    const title = toString(r.title)
+    if (!title) return { error: "Missing field: title" }
+
+    // Organization
+    const organizationId = toNumberOrNull(r.organization_id)
+    if (organizationId === null) return { error: "Missing or invalid field: organization_id" }
+
+    const organizationName = toString(r.organization_name)
+    if (!organizationName) return { error: "Missing field: organization_name" }
 
     // Event types
-    const eventTypes: UranusEventType[] | null = Array.isArray(r.event_types)
+    const eventTypes: UranusEventType[] = Array.isArray(r.event_types)
         ? r.event_types.map(mapEventType).filter((et): et is UranusEventType => et !== null)
         : []
 
-    // Image IDs (always 8 slots)
-    const imageIds: (number | null)[] = [
-        r.image1_id, r.image2_id, r.image3_id, r.image4_id,
-        r.image_some_16_9_id, r.image_some_1_1_id,
-        r.image_some_4_5_id, r.image_some_9_16_id,
-    ].map(toNumberOrNull)
+    // --- Optional fields with fallbacks ---
+    const firstEventDate = Array.isArray(r.event_dates) && r.event_dates[0] ? r.event_dates[0] : null
+    const eventDateId = firstEventDate ? toNumberOrNull(firstEventDate.event_date_id) : null
 
     const toBooleanOrNull = (v: unknown): boolean | null => v != null ? Boolean(v) : null
 
-    // Title / subtitle
-    const title = toString(r.title)
     const subtitle = toNullableString(r.subtitle)
 
-    // Organization
-    const organizationId = toNumberOrNull(r.organization_id) ?? 0
-    const organizationName = toString(r.organization_name)
+    const startDate = firstEventDate ? toString(firstEventDate.start_date) : toNullableString(r.date)
+    if (!startDate) return { error: "Missing required field: startDate" }
 
-    // Dates / times
-    const startDate = firstEventDate ? toString(firstEventDate.start_date) : toString(r.start_date)
-    const startTime = firstEventDate ? toString(firstEventDate.start_time) : toString(r.start_time)
+    const startTime = firstEventDate ? toString(firstEventDate.start_time) : toNullableString(r.start_time)
+    if (!startTime) return { error: "Missing required field: startTime" }
+
     const endDate = firstEventDate ? toNullableString(firstEventDate.end_date) : toNullableString(r.end_date)
     const endTime = firstEventDate ? toNullableString(firstEventDate.end_time) : toNullableString(r.end_time)
-
-    // Venue & space (fall back to firstEventDate)
-    /*
-    const venueId = toNumberOrNull(r.venue_id ?? firstEventDate?.venue_id)
-    const venueName = toNullableString(r.venue_name ?? firstEventDate?.venue_name)
-    const venueLon = toNumberOrNull(r.venue_lon ?? firstEventDate?.venue_lon)
-    const venueLat = toNumberOrNull(r.venue_lat ?? firstEventDate?.venue_lat)
-    const spaceId = toNumberOrNull(r.space_id ?? firstEventDate?.space_id)
-    const spaceName = toNullableString(r.space_name ?? firstEventDate?.space_name)
-    const spaceBuildingLevel = toNumberOrNull(r.space_building_level ?? firstEventDate?.space_building_level)
-    const spaceSeatingCapacity = toNumberOrNull(r.space_seating_capacity ?? firstEventDate?.space_seating_capacity)
-    const spaceTotalCapacity = toNumberOrNull(r.space_total_capacity ?? firstEventDate?.space_total_capacity)
-     */
 
     const venueId = toNumberOrNull(r.venue_id)
     const venueName = toNullableString(r.venue_name)
@@ -70,8 +65,14 @@ export const mapEventDetailData = (raw: unknown): UranusEventDetail | null => {
     const spaceSeatingCapacity = toNumberOrNull(r.space_seating_capacity)
     const spaceTotalCapacity = toNumberOrNull(r.space_total_capacity)
 
-    // Construct UranusEventDetail
-    return new UranusEventDetail({
+    const imageIds: (number | null)[] = [
+        r.image1_id, r.image2_id, r.image3_id, r.image4_id,
+        r.image_some_16_9_id, r.image_some_1_1_id,
+        r.image_some_4_5_id, r.image_some_9_16_id,
+    ].map(toNumberOrNull)
+
+    // --- Construct object ---
+    const data = new UranusEventDetail({
         eventId,
         eventDateId,
         title,
@@ -102,7 +103,7 @@ export const mapEventDetailData = (raw: unknown): UranusEventDetail | null => {
         timeSeriesIndex: toNumberOrNull(r.time_series_index) ?? 0,
         timeSeries: toNumberOrNull(r.time_series) ?? 0,
         description: toNullableString(r.description),
-        teaserText: toNullableString(r.teaser_text),
+        summary: toNullableString(r.summary),
         participationInfo: toNullableString(r.participation_info),
         meetingPoint: toNullableString(r.meeting_point),
         minAge: toNumberOrNull(r.min_age),
@@ -138,7 +139,10 @@ export const mapEventDetailData = (raw: unknown): UranusEventDetail | null => {
         entryTime: toNullableString(r.entry_time),
         tags: Array.isArray(r.tags) ? r.tags.map(String) : [],
     })
+
+    return { data }
 }
+
 
 /** Helper functions */
 const mapEventType = (raw: unknown): UranusEventType | null => {
@@ -148,9 +152,7 @@ const mapEventType = (raw: unknown): UranusEventType | null => {
     if (typeId === null) return null
     return {
         typeId,
-        typeName: toString(r.type_name),
         genreId: toNumberOrNull(r.genre_id),
-        genreName: toNullableString(r.genre_name),
     }
 }
 

@@ -151,12 +151,12 @@ function onKeyDown(event: KeyboardEvent, index: number) {
 }
 
 .tab[aria-selected="true"] .tab-title::before {
-  background-color: var(--uranus-ia-inline-color); /* fill color */
-  border-color: var(--uranus-ia-inline-color);     /* border matches fill */
+  background-color: var(--uranus-ia-inline-color);
+  border-color: var(--uranus-ia-inline-color);
 }
 
 .tab:focus {
-  outline: 2px solid var(--uranus-focus-border-color);
+  outline: 2px solid var(--uranus-acc-color);
 }
 
 .card-content {

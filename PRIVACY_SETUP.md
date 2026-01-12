@@ -60,7 +60,7 @@ Die Datenschutzerklärung enthält folgende Abschnitte:
 ## Zugriff auf die Datenschutzerklärung
 
 Die Datenschutzerklärung ist verfügbar unter:
-- `/privacy` - Öffentliche Route für alle Besucher
+- `/page/privacy` - Öffentliche Route für alle Besucher
 
 ## Rechtliche Anforderungen
 

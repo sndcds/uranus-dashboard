@@ -1,31 +1,32 @@
 // Default Uranus Dashboard Button
-.uranus-button {
+.uranus-button,
+.uranus-action-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border: none;
   cursor: pointer;
   border-radius: 2px;
-  background: var(--uranus-button-bg);
-  color: var(--uranus-button-color);
+  color: var(--uranus-color);
+  border: 0;
+  background: var(--uranus-bg-d2);
   text-decoration: none;
   transition: all 0.1s ease;
   padding: 0.4rem 0.8rem !important;
+  font-size: 1rem;
 
   &:hover {
-    background: var(--uranus-button-hover-bg);
-    color: var(--uranus-button-hover-color);
+    background: var(--uranus-bg-d3);
   }
 
   &.tiny {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     padding: 0.2rem 0.4rem;
   }
 
   &.active {
-    color: var(--uranus-button-active-color);
-    background: var(--uranus-button-active-bg);
+    color: var(--uranus-button-color-active);
+    background: var(--uranus-button-bg-active);
   }
 }
 
@@ -33,6 +34,7 @@
   width: 1.4em;
   height: 1.4em;
   flex-shrink: 0;
+  // fill: var(--uranus-color);
 }
 
 .uranus-ok-button,
@@ -56,8 +58,8 @@
 
 .uranus-ok-button:focus {
   outline: none;
-  border-color: var(--uranus-focus-border-color);
-  box-shadow: 0 0 0 1px var(--uranus-focus-border-color);
+  border-color: var(--uranus-acc-color);
+  box-shadow: 0 0 0 1px var(--uranus-acc-color);
 }
 
 /* Disabled */
@@ -78,25 +80,17 @@
 }
 
 
-
+/*
 .uranus-action-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.4rem 1.4rem;
-  border-radius: 999px;
-  color: var(--uranus-button-active-bg);
-  border: 2px solid var(--uranus-button-active-bg);
-  background-color: transparent;
-  font-size: 1rem;
-  font-weight: 500;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  color: var(--uranus-action-button-color);
+  background-color: var(--uranus-action-button-bg);
+  border-radius: 5px;
+  padding: 0.6rem 1.2rem !important;
+  border: 0;
 
   &:hover:not(:disabled) {
-    color: var(--uranus-button-active-color);
-    background-color: var(--uranus-button-active-bg);
+    color: var(--uranus-action-button-color-hover);
+    background-color: var(--uranus-action-button-bg-hover);
   }
 
   &:focus-visible {
@@ -109,30 +103,120 @@
     transform: none;
   }
 }
+*/
 
-.xuranus-secondary-button,
-.xuranus-tertiary-button {
-  background: transparent;
-  border: 2px solid var(--uranus-ia-color);
-  color: var(--uranus-ia-color-dark1);
-  padding: 0.4rem 1rem;
+.uranus-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 5px;
+  color: var(--uranus-action-button-color);
+  background-color: var(--uranus-action-button-bg);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
-    background: var(--uranus-ia-color);
-    color: white;
+    color: var(--uranus-action-button-color-hover);
+    background-color: var(--uranus-action-button-bg-hover);
   }
 
-  &--active {
-    background: var(--uranus-ia-color);
-    color: white;
-    cursor: default;
-    &:hover {
-    }
+  &:focus-visible {
+    outline: none;
+  }
+
+  &.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &.is-dimmed {
+    opacity: 0.4;
+    filter: grayscale(0.4);
+    pointer-events: none;
+  }
+
+  &.is-loading {
+    cursor: progress;
   }
 }
 
-.xuranus-tertiary-button {
-  font-size: 0.9rem;
-  padding: 0.3rem 0.9rem;
-  border-width: 1px;
+.uranus-radio {
+  display: flex;
+  align-items: start;
+  cursor: pointer;
+  position: relative;
+  gap: 0.5rem;
+  user-select: none;
+
+  /* Hide the native radio input */
+  input[type='radio'] {
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  /* The label wrapping the visible circle and text */
+  .radio-label {
+    position: relative;
+    padding-left: 28px; // space for the circle
+    line-height: 1.6rem;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--uranus-color);
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+  }
+
+  /* Checked state indicator */
+  input[type='radio']:checked + .radio-label::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--uranus-color);
+    transition: all 0.2s ease;
+  }
+
+  /* Hover state */
+  &:not(.disabled):hover .radio-label::before {
+    // border-color: var(--uranus-button-bg-active);
+  }
+
+  /* Disabled state */
+  &.disabled {
+    cursor: not-allowed;
+    color: var(--uranus-text-disabled, #888); // TODO: refactor
+
+    .radio-label::before {
+      border-color: var(--uranus-border-disabled, #ccc); // TODO: refactor
+      background: var(--uranus-surface-disabled, #f5f5f5); // TODO: refactor
+    }
+
+    input[type='radio']:checked + .radio-label::after {
+      background: var(--uranus-accent-disabled, #aaa); // TODO: refactor
+    }
+  }
+
+  /* Focus-visible ring for accessibility */
+  input[type='radio']:focus-visible + .radio-label::before {
+    outline: 2px solid var(--uranus-acc-color);
+    outline-offset: 2px;
+  }
 }

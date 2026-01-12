@@ -1,38 +1,36 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useTokenStore } from '@/store/tokenStore'
+import type { RouteLocationNormalized } from 'vue-router'
+import { useTokenStore } from '@/store/tokenStore.ts'
 
 import UranusDashboardView from '@/views/UranusDashboardView.vue'
 import UranusDashboardTodosView from '@/views/UranusDashboardTodosView.vue'
-import LoginView from '@/views/LoginView.vue'
+import UranusLoginView from '@/views/UranusLoginView.vue'
 import UranusDashboardOrganizationsView from '@/views/UranusDashboardOrganizationsView.vue'
-import SettingsView from '@/views/SettingsView.vue'
+import UranusSettingsView from '@/views/UranusSettingsView.vue'
 import UranusDashboardVenuesView from '@/views/UranusDashboardVenuesView.vue'
-import SignupView from '@/views/SignupView.vue'
+import UranusSignupView from '@/views/UranusSignupView.vue'
 import UranusSpaceEditView from '@/views/UranusSpaceEditView.vue'
 import UranusDashboardEventsView from '@/views/UranusDashboardEventsView.vue'
 import UranusCreateEventView from '@/views/UranusCreateEventView.vue'
 import UranusEditEventView from '@/views/UranusEditEventView.vue'
 import UserPermissionView from '@/views/UserPermissionView.vue'
-import FormUserProfileView from '@/views/FormUserProfileView.vue'
+import UranusUserProfileView from '@/views/UranusUserProfileView.vue'
 import UranusEditOrganizationView from '@/views/UranusEditOrganizationView.vue'
 import UranusEditVenueView from '@/views/UranusEditVenueView.vue'
-import ForgotPasswordView from '@/views/ForgotPasswordView.vue'
-import ResetPasswordView from '@/views/ResetPasswordView.vue'
-import MessageInboxView from '@/views/MessageInboxView.vue'
-import MessageSendView from '@/views/MessageSendView.vue'
+import UranusForgotPasswordView from '@/views/UranusForgotPasswordView.vue'
+import UranusResetPasswordView from '@/views/UranusResetPasswordView.vue'
+import UranusMessageInboxView from '@/views/UranusMessageInboxView.vue'
+import UranusMessageSendView from '@/views/UranusMessageSendView.vue'
 import UranusPublicEventView from '@/views/UranusPublicEventView.vue'
-import ImprintView from '@/views/ImprintView.vue'
-import PrivacyView from '@/views/PrivacyView.vue'
-import TermsView from '@/views/TermsView.vue'
-import AboutView from '@/views/AboutView.vue'
-import FirstStepsView from '@/views/FirstStepsView.vue'
-import MapView from '@/views/MapView.vue'
+import UranusHtmlView from '@/views/UranusHTMLView.vue'
+import UranusVenueMapView from '@/views/UranusVenueMapView.vue'
 import UserActivateView from '@/views/UserActivateView.vue'
-import InviteActivateView from '@/views/InviteActivateView.vue'
-import FormOrganizationTeamView from '@/views/FormOrganizationTeamView.vue'
+import UranusInviteActivateView from '@/views/UranusInviteActivateView.vue'
+import UranusOrganizationTeamView from '@/views/UranusOrganizationTeamView.vue'
 import UranusOrganizationMemberPermissionView from '@/views/UranusOrganizationMemberPermissionView.vue'
 import UranusCalendarView from '@/views/UranusCalendarView.vue'
 import UranusEventSlideshowView from '@/views/UranusEventSlideshowView.vue'
+import UranusDevThemeView from '@/views/UranusDevThemeView.vue'
 
 
 import GenericLayout from '@/components/layout/GenericLayout.vue'
@@ -66,7 +64,7 @@ const routes = [
             {
                 path: 'settings',
                 name: 'admin-settings',
-                component: SettingsView,
+                component: UranusSettingsView,
             },
             {
                 path: 'organization/create',
@@ -81,7 +79,7 @@ const routes = [
             {
                 path: 'organization/:id/team',
                 name: 'admin-team-organization',
-                component: FormOrganizationTeamView,
+                component: UranusOrganizationTeamView,
             },
             {
                 path: 'organization/:id/venue/create',
@@ -131,22 +129,22 @@ const routes = [
             {
                 path: 'user/profile',
                 name: 'admin-user-profile',
-                component: FormUserProfileView,
+                component: UranusUserProfileView,
             },
             {
                 path: 'user/messages/inbox',
                 name: 'admin-user-messages-inbox',
-                component: MessageInboxView,
+                component: UranusMessageInboxView,
             },
             {
                 path: 'user/messages/send',
                 name: 'admin-user-messages-send',
-                component: MessageSendView,
+                component: UranusMessageSendView,
             },
             {
                 path: 'invite/accept',
                 name: 'admin-accept-invite',
-                component: InviteActivateView,
+                component: UranusInviteActivateView,
             },
             {
                 path: 'organization/:organizationId/member/:memberId/permission',
@@ -165,6 +163,13 @@ const routes = [
         component: GenericLayout,
         children: [
             {
+                path: '/page/:pageName',
+                component: UranusHtmlView,
+                props: (route: RouteLocationNormalized) => ({
+                    pageName: route.params.pageName as string
+                })
+            },
+            {
                 path: '',
                 name: 'events',
                 component: UranusCalendarView,
@@ -175,34 +180,15 @@ const routes = [
                 component: UranusPublicEventView,
             },
             {
-                path: 'imprint',
-                name: 'imprint',
-                component: ImprintView,
-            },
-            {
-                path: 'privacy',
-                name: 'privacy',
-                component: PrivacyView,
-            },
-            {
-                path: 'terms',
-                name: 'terms',
-                component: TermsView,
-            },
-            {
-                path: 'about',
-                name: 'about',
-                component: AboutView,
-            },
-            {
-                path: 'first-steps',
-                name: 'first-steps',
-                component: FirstStepsView,
-            },
-            {
                 path: 'map',
                 name: 'map',
-                component: MapView,
+                component: UranusVenueMapView,
+                meta: { layoutMode: 'zero-padding' },
+            },
+            {
+                path: 'dev-theme-view',
+                name: 'dev-theme-view',
+                component: UranusDevThemeView,
                 meta: { layoutMode: 'zero-padding' },
             }
         ],
@@ -215,22 +201,22 @@ const routes = [
             {
                 path: 'login',
                 name: 'app-login',
-                component: LoginView,
+                component: UranusLoginView,
             },
             {
                 path: 'signup',
                 name: 'app-signup',
-                component: SignupView,
+                component: UranusSignupView,
             },
             {
                 path: 'forgot-password',
                 name: 'app-forgot-password',
-                component: ForgotPasswordView,
+                component: UranusForgotPasswordView,
             },
             {
                 path: 'reset-password',
                 name: 'app-reset-password',
-                component: ResetPasswordView,
+                component: UranusResetPasswordView,
             },
             {
                 path: 'activate/account',
