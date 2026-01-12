@@ -8,8 +8,6 @@
   <div class="uranus-main-layout member-permission-view">
     <UranusDashboardHero :title="t('permissions')" :subtitle="pageSubtitle" />
 
-    memberId: {{ memberId }}
-
     <transition name="fade">
       <p v-if="updateError" class="feedback feedback--error" role="alert">
         {{ updateError }}
