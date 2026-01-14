@@ -1,20 +1,20 @@
 <template>
   <div class="uranus-inline-label">
-    <span
+    <!--span
         v-if="labelText"
         :class="[labelClass]"
     >
       {{ labelText }}
-    </span>
-    <button
-        type="button"
-        class="uranus-inline-edit-button"
-        @click="$emit('edit-started')"
-        :style="{ marginLeft: labelText ? '8px' : '0' }"
-    >
-      {{ editButtonText }}
-    </button>
+    </span-->
   </div>
+  <button
+      type="button"
+      class="uranus-inline-edit-button"
+      @click="$emit('edit-started')"
+      :style="{ marginLeft: labelText ? '8px' : '0' }"
+  >
+    {{ editButtonText }}
+  </button>
 </template>
 
 <script setup>

@@ -6,15 +6,23 @@
     <UranusDashboardHero :title="t('edit_event')" />
     <span>Edit event #{{ eventId }}</span>
 
+    <h3>{{ t('event_release_date') }}</h3>
     <UranusCard>
       <UranusEditEventRelease />
     </UranusCard>
 
+    <h3>{{ t('title') }}</h3>
     <UranusCard>
       <UranusEditEventTitle />
+    </UranusCard>
+
+    <h3>{{ t('venue') }}</h3>
+    <UranusCard>
       <UranusEditEventVenue />
     </UranusCard>
 
+
+    <h3>{{ t('summary') }}</h3>
     <UranusCard>
       <UranusEditEventTextBlock
           field="summary"
@@ -23,6 +31,7 @@
       />
     </UranusCard>
 
+    <h3>{{ t('description') }}</h3>
     <UranusCard>
       <UranusEditEventTextBlock
           field="description"
@@ -33,8 +42,8 @@
       />
     </UranusCard>
 
-
-    <UranusCard>
+    <h3>{{ t('images') }}</h3>
+    <UranusCard style="padding:14px;">
       <UranusEditEventImages
           ref="imagesRef"
           @update="onImagesUpdated"
@@ -42,20 +51,32 @@
           @remove="onRemoveImage"/>
     </UranusCard>
 
+    <h3>{{ t('dates') }}</h3>
     <UranusCard>
       <UranusEditEventDates />
     </UranusCard>
 
+    <h3>{{ t('event_type') }}</h3>
     <UranusCard>
       <UranusEditEventTypes />
+    </UranusCard>
+
+    <h3>{{ t('languages') }}</h3>
+    <UranusCard>
       <UranusEditEventLanguages />
+    </UranusCard>
+
+    <h3>{{ t('event_tags') }}</h3>
+    <UranusCard>
       <UranusEditEventTags />
     </UranusCard>
 
+    <h3>{{ t('event_links') }}</h3>
     <UranusCard>
       <UranusEditEventUrls />
     </UranusCard>
 
+    <h3>{{ t('event_participation_info') }}</h3>
     <UranusCard>
       <UranusEditEventParticipationInfos />
     </UranusCard>

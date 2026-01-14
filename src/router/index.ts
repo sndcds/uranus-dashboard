@@ -157,7 +157,7 @@ const routes = [
         component: GenericLayout,
         children: [
             {
-                path: '/page/:pageName',
+                path: '/page/:pageName(.*)',
                 component: UranusHtmlView,
                 props: (route: RouteLocationNormalized) => ({
                     pageName: route.params.pageName as string

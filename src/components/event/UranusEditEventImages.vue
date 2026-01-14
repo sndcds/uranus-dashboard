@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { ref, type Ref, inject } from 'vue'
 import UranusImageSlot from '@/components/image/UranusImageSlot.vue'
-import { buildPlutoPreviewImageUrl } from '@/utils/UranusUtils'
+import { buildPlutoPreviewImageUrl } from '@/utils/UranusUtils.ts'
 import type { UranusEventDetail } from "@/models/UranusEventModel.ts";
 
 const event = inject<Ref<UranusEventDetail | null>>('event')

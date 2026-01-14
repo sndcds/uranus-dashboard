@@ -108,7 +108,7 @@ function removeImage() {
 }
 
 .hover-actions button:hover {
-  background: var(--uranus-ia-inline-color-light1);
+  background: var(--uranus-ia-inline-color);
 }
 
 .image-index {

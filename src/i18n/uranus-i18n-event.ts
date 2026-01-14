@@ -11,6 +11,26 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Events',
         da: 'Begivenheder',
     },
+    event_type: {
+        de: 'Eventtyp',
+        en: 'Event type',
+        da: 'Begivenhedstype',
+    },
+    event_genre: {
+        de: 'Genre',
+        en: 'Genre',
+        da: 'Genre',
+    },
+    event_tags: {
+        de: 'Tags',
+        en: 'Tags',
+        da: 'Tags',
+    },
+    event_links: {
+        de: 'Externe Links',
+        en: 'External links',
+        da: 'Eksterne links',
+    },
     all_events: {
         de: 'Alle Events',
         en: 'All events',

@@ -79,6 +79,10 @@
   --uranus-input-border-color: oklch(98% 0.006 var(--uranus-hue));
   --uranus-input-border-width: 2px;
 
+  // Inline Editor
+  --uranus-ia-inline-color: oklch(60% 0.33 300);
+  --uranus-ia-inline-color-d1: oklch(67% 0.3 300);
+
 
 
 
@@ -108,11 +112,6 @@
   --uranus-ia-color-light2: #4382e6;
   --uranus-ia-color-dark1: #0150c6;
   --uranus-ia-color-dark2: #003a98;
-  --uranus-ia-inline-color: #9b20ff;
-  --uranus-ia-inline-color-light1: #c076fc;
-  --uranus-ia-inline-color-light2: #ddb5ff;
-  --uranus-ia-inline-color-dark1: #6e24aa;
-  --uranus-ia-inline-color-dark2: #582780;
   --uranus-inline-label-color: #808d9c;
 
   --uranus-event-type-chip-background: #f2f2fb;
@@ -165,7 +164,6 @@
   --uranus-grid-gap: 12px;
   --uranus-card-gap: 8px;
   --uranus-default-text-padding: 6px 12px;
-  --uranus-inline-edit-border-radius: 5px;
   --uranus-form-field-border-radius: 0px;
   --uranus-tiny-border-radius: 0px;
   --uranus-input-height: 44px;
@@ -243,6 +241,9 @@
   --uranus-input-border-color: oklch(26% 0.05 var(--uranus-hue));
   --uranus-input-border-width: 2px;
 
+  // Inline Editor
+  --uranus-ia-inline-color: oklch(90% 0.09 75);
+  --uranus-ia-inline-color-d1: oklch(85% 0.086 75);
 
 
 
@@ -358,11 +359,27 @@ header {
     font-size: 2em;
     font-weight: 600;
   }
+  h2 {
+    font-size: 1.6em;
+    font-weight: 500;
+  }
   h3 {
     font-size: 1.2em;
     font-weight: 500;
   }
 }
+
+.uranus-inline-layout > h3 {
+  margin-left: 12px;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+.uranus-inline-layout > .uranus-card {
+  padding: 0;
+}
+
+
 
 .uranus-dashboard-hero {
   display: flex;

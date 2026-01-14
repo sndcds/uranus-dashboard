@@ -23,7 +23,6 @@ export const event = {
         event_date: 'Termin',
         event_dates: 'Termine',
         event_languages: "Sprachen",
-        event_tags: "Tags",
 
         event_genre_placeholder: 'Genre auswählen…',
         event_datetime: 'Datum & Uhrzeit',
@@ -177,7 +176,6 @@ export const event = {
         event_space_label: 'Space',
         event_type_placeholder: 'Select event types',
         event_languages: "Languages",
-        event_tags: "Tags",
 
         event_genre_placeholder: 'Select genre…',
         event_section_dates: 'Dates & times',
@@ -321,7 +319,6 @@ export const event = {
         event_type_label: 'Begivenhedstype',
         event_type_placeholder: 'Vælg begivenhedstyper',
         event_languages: "Sprog",
-        event_tags: "Tags",
 
         event_genre_placeholder: 'Vælg genre…',
         event_section_dates: 'Datoer og tidspunkter',
