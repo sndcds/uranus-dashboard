@@ -103,7 +103,7 @@ const confirmDelete = async ({ password }: { password: string }) => {
   deleteError.value = ''
 
   try {
-    await apiFetch(`/api/admin/todo/${props.todo.id}`, {
+    await apiFetch(`/api/admin/user/todo/${props.todo.id}`, {
       method: 'DELETE',
       body: JSON.stringify({ password }),
     })

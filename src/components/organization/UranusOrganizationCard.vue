@@ -29,7 +29,7 @@
           :to="`/admin/organization/${organization.organization_id}/edit`"
           icon="edit"
       >
-        {{ t('edit_organization') }}
+        {{ t('edit') }}
       </UranusDashboardButton>
 
       <UranusDashboardButton
@@ -38,7 +38,7 @@
           icon="delete"
           @click="deleteOrganization(organization.organization_id)"
       >
-        {{ t('delete_organization') }}
+        {{ t('delete') }}
       </UranusDashboardButton>
 
       <UranusDashboardButton

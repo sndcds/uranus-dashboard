@@ -143,7 +143,7 @@ import { useI18n } from "vue-i18n";
 import { apiFetch } from "@/api.ts"
 import UranusModal from '@/components/uranus/UranusModal.vue'
 import UranusEventReleaseChip from "@/components/event/UranusEventReleaseChip.vue";
-import { useEventsFilterStore } from '@/store/eventsFilterStore'
+import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from "@/store/eventTypesLookup.ts";
 import UranusFormRow from "@/components/ui/UranusFormRow.vue";
 import UranusInlineEditActions from "@/components/ui/UranusInlineEditActions.vue";

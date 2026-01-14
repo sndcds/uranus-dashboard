@@ -32,8 +32,8 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { useUserStore } from '@/store/userStore'
-import { useTokenStore } from '@/store/tokenStore'
+import { useUserStore } from '@/store/userStore.ts'
+import { useTokenStore } from '@/store/tokenStore.ts'
 import { apiFetch } from '@/api.ts'
 
 
@@ -183,7 +183,7 @@ const uploadAvatar = async (file: File) => {
     formData.append('avatar', file)
     const method = avatarExistsOnServer.value ? 'PUT' : 'POST'
 
-    await apiFetch<unknown>('/api/admin/user/me/avatar', {
+    await apiFetch<unknown>('/api/admin/user/avatar', {
         method: 'POST',
         body: formData,
     })
@@ -192,7 +192,7 @@ const uploadAvatar = async (file: File) => {
 }
 
 const deleteAvatar = async () => {
-    await apiFetch<unknown>('/api/admin/user/me/avatar', {
+    await apiFetch<unknown>('/api/admin/user/avatar', {
         method: 'DELETE',
     })
     avatarExistsOnServer.value = false

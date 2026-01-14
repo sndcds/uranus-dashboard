@@ -181,7 +181,7 @@ const loadPermissions = async () => {
 
   try {
     const { data } = await apiFetch<PermissionListResponse | null>(
-      `/api/admin/permission/list${buildQuery()}`
+      `/api/admin/permissions/list${buildQuery()}`
     )
 
     if (!data || typeof data !== 'object') {
@@ -265,7 +265,7 @@ const updatePermission = async (
   updateError.value = null
 
   try {
-    await apiFetch(`/api/admin/organization/${organizationId.value}/member/${memberId.value}/permission`, {
+    await apiFetch(`/api/admin/organization/${organizationId.value}/member/${memberId.value}/permissions`, {
       method: 'PUT',
       body: JSON.stringify({ bit: entry.bit, enabled }),
     })

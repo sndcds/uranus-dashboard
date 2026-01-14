@@ -145,7 +145,7 @@ const onSubmit = async () => {
       completed: form.completed,
     }
 
-    const { data } = await apiFetch<{ id: number }>(`/api/admin/todo`, {
+    const { data } = await apiFetch<{ id: number }>(`/api/admin/user/todo`, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })

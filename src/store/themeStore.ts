@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { applyTheme, type ThemeMode } from '@/utils/theme'
+import { applyTheme, type ThemeMode } from '@/utils/theme.ts'
 
 export const useThemeStore = defineStore('theme', () => {
     // State

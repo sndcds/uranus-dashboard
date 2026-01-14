@@ -76,7 +76,7 @@ const showCreateModal = ref(false)
 
 onMounted(async () => {
   try {
-    const { data } = await apiFetch<{ todos: Todo[] }>('/api/admin/todos')
+    const { data } = await apiFetch<{ todos: Todo[] }>('/api/admin/user/todos')
     todos.value = data?.todos ?? []
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {

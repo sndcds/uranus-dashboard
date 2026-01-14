@@ -121,8 +121,8 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useAppStore } from '@/store/appStore'
-import { useTokenStore } from '@/store/tokenStore'
+import { useAppStore } from '@/store/appStore.ts'
+import { useTokenStore } from '@/store/tokenStore.ts'
 
 interface Props {
   isOpen: boolean

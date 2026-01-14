@@ -2,20 +2,20 @@
     <form class="uranus-form" @submit.prevent="handleSubmit" novalidate>
         <section class="uranus-card">
             <UranusTextInput id="venue_name" size="big" required v-model="venueName" :label="t('venue_name')"
-                :error="fieldErrors.venueName" />
+                :error="fieldErrors.venueName!" />
 
             <UranusFormRow>
                 <UranusTextInput id="street" required :flex=2 v-model="street" :label="t('street')"
-                    :error="fieldErrors.street" />
+                    :error="fieldErrors.street!" />
                 <UranusTextInput id="house_number" required v-model="houseNumber" :label="t('house_number')"
-                    :error="fieldErrors.houseNumber" />
+                    :error="fieldErrors.houseNumber!" />
             </UranusFormRow>
 
             <UranusFormRow>
                 <UranusTextInput id="postal_code" required v-model="postalCode" :label="t('postal_code')"
-                    :error="fieldErrors.postalCode" />
+                    :error="fieldErrors.postalCode!" />
                 <UranusTextInput id="city" required :flex=2 v-model="city" :label="t('city')"
-                    :error="fieldErrors.city" />
+                    :error="fieldErrors.city!" />
             </UranusFormRow>
 
             <UranusFormRow>
@@ -26,12 +26,12 @@
 
         <section class="uranus-card">
             <UranusFormRow>
-                <UranusTextInput id="email" v-model="email" :label="t('email')" :error="fieldErrors.email" />
+                <UranusTextInput id="email" v-model="email" :label="t('email')" :error="fieldErrors.email!" />
 
-                <UranusTextInput id="phone" v-model="phone" :label="t('phone')" :error="fieldErrors.phone" />
+                <UranusTextInput id="phone" v-model="phone" :label="t('phone')" :error="fieldErrors.phone!" />
             </UranusFormRow>
 
-            <UranusTextInput id="website" v-model="website" :label="t('website')" :error="fieldErrors.website" />
+            <UranusTextInput id="website" v-model="website" :label="t('website')" :error="fieldErrors.website!" />
 
             <UranusFieldLabel v-if="showDescription" :id="descriptionLabelId" :label="t('description')"
                 :error="fieldErrors.description">
@@ -168,16 +168,17 @@ const closedAt = ref('')
 const location = ref<LatLngLiteral | null>(null)
 
 const fieldErrors = reactive({
-    venueName: null as string | null,
-    street: null as string | null,
-    houseNumber: null as string | null,
-    postalCode: null as string | null,
-    city: null as string | null,
-    email: null as string | null,
-    website: null as string | null,
-    description: null as string | null,
-    openedAt: null as string | null,
-    closedAt: null as string | null,
+  venueName: null as string | null,
+  street: null as string | null,
+  houseNumber: null as string | null,
+  postalCode: null as string | null,
+  city: null as string | null,
+  email: null as string | null,
+  phone: null as string | null,
+  website: null as string | null,
+  description: null as string | null,
+  openedAt: null as string | null,
+  closedAt: null as string | null,
 })
 
 const localError = ref<string | null>(null)

@@ -251,7 +251,7 @@ const loadProfile = async () => {
     loadError.value = null
 
     try {
-        const { data } = await apiFetch<UserProfilePayload>('/api/admin/user/me')
+        const { data } = await apiFetch<UserProfilePayload>('/api/admin/user/profile')
         mapResponseToState(data)
     } catch (err: unknown) {
         if (err instanceof Error && err.message) {
@@ -292,7 +292,7 @@ const submitProfile = async () => {
     }
 
     try {
-        const { data } = await apiFetch<UserProfilePayload>('/api/admin/user/me', {
+        const { data } = await apiFetch<UserProfilePayload>('/api/admin/user/profile', {
             method: 'PUT',
             body: JSON.stringify(payload),
         })

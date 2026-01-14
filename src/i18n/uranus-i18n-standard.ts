@@ -96,6 +96,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Description',
         da: 'Beskrivelse',
     },
+    summary: {
+        de: 'Kurzbeschreibung',
+        en: 'Short Summary',
+        da: 'Kort resume',
+    },
     street: {
         de: 'Straße',
         en: 'Street',

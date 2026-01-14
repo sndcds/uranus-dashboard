@@ -184,13 +184,6 @@
               </svg>
               {{ t('user_profile') }}
             </router-link>
-
-              <router-link to="/admin/user/permissions" class="generic-header__user-dropdown-item">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-                </svg>
-                {{ t('permissions') }}
-              </router-link>
           </nav>
 
           <div class="generic-header__user-dropdown-divider"></div>
@@ -291,7 +284,7 @@ const setTheme = async (theme: 'light' | 'dark') => {
   // Save to API if authenticated
   if (tokenStore.isAuthenticated) {
     try {
-      await apiFetch('/api/admin/user/me/settings', {
+      await apiFetch('/api/admin/user/settings', {
         method: 'PUT',
         body: JSON.stringify({
           theme: theme,
@@ -312,7 +305,7 @@ const setLanguage = async (lang: string) => {
   // Save to API if authenticated
   if (tokenStore.isAuthenticated) {
     try {
-      await apiFetch('/api/admin/user/me/settings', {
+      await apiFetch('/api/admin/user/settings', {
         method: 'PUT',
         body: JSON.stringify({
           theme: currentTheme.value,
@@ -335,7 +328,7 @@ const fetchUserProfile = async () => {
       email_address: string
       avatar_url: string | null
       user_id: number
-    }>('/api/admin/user/me')
+    }>('/api/admin/user/profile')
 
     if (data) {
       userStore.setUserId(data.user_id)

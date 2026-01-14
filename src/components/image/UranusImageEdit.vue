@@ -4,8 +4,10 @@
 <template>
   <div class="image-grid">
     <UranusImageSlot
-        v-for="idx in imagesIds"
-        :key="idx"
+        v-for="(id, index) in imagesIds"
+        :key="id ?? index"
+        :slotIndex="index + 1"
+        :imageId="id"
     />
   </div>
 </template>

@@ -16,7 +16,7 @@
             required
             v-model="organizationName"
             :label="t('organization_name')"
-            :error="fieldErrors.organizationName"
+            :error="fieldErrors.organizationName!"
         />
 
         <UranusFormRow>
@@ -39,7 +39,7 @@
               :flex=3
               v-model="street"
               :label="t('street')"
-              :error="fieldErrors.street"
+              :error="fieldErrors.street!"
           />
 
           <UranusTextInput
@@ -47,7 +47,7 @@
               required
               v-model="houseNumber"
               :label="t('house_number')"
-              :error="fieldErrors.houseNumber"
+              :error="fieldErrors.houseNumber!"
           />
         </UranusFormRow>
 
@@ -63,7 +63,7 @@
               required
               v-model="postalCode"
               :label="t('postal_code')"
-              :error="fieldErrors.postalCode"
+              :error="fieldErrors.postalCode!"
           />
 
           <UranusTextInput
@@ -72,7 +72,7 @@
               :flex=3
               v-model="city"
               :label="t('city')"
-              :error="fieldErrors.city"
+              :error="fieldErrors.city!"
           />
         </UranusFormRow>
 
@@ -93,11 +93,11 @@
       <UranusCard>
 
         <UranusFormRow>
-          <UranusTextInput id="email" v-model="email" :label="t('email')" :error="fieldErrors.email" />
-          <UranusTextInput id="phone" v-model="phone" :label="t('phone')" :error="fieldErrors.phone" />
+          <UranusTextInput id="email" v-model="email" :label="t('email')" :error="fieldErrors.email!" />
+          <UranusTextInput id="phone" v-model="phone" :label="t('phone')" :error="fieldErrors.phone!" />
         </UranusFormRow>
 
-        <UranusTextInput id="website" v-model="website" :label="t('website')" :error="fieldErrors.website" />
+        <UranusTextInput id="website" v-model="website" :label="t('website')" :error="fieldErrors.website!" />
 
         <UranusFieldLabel
             :id="descriptionLabelId"

@@ -7,8 +7,15 @@
             </header>
 
             <form class="uranus-form" @submit.prevent="requestReset" :aria-busy="isSubmitting" novalidate>
-                <UranusTextInput id="forgot-email" v-model="email" type="email" :label="t('email')"
-                    :placeholder="t('email_placeholder')" autocomplete="email" required :error="displayError('email')"
+                <UranusTextInput
+                    id="forgot-email"
+                    v-model="email"
+                    type="email"
+                    :label="t('email')"
+                    :placeholder="t('email_placeholder')"
+                    autocomplete="email"
+                    required
+                    :error="displayError('email') ?? undefined"
                     @input="handleInput" />
 
                 <transition name="fade">

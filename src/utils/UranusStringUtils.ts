@@ -84,20 +84,20 @@ export function replaceInTemplate<T extends Record<string, unknown>>(
 
 export function uranusAgeText(
     t: (key: string) => string,
-    minAge: number | undefined,
-    maxAge: number | undefined
+    minAge: number | null | undefined,
+    maxAge: number | null | undefined
 ): string {
-    if (minAge !== undefined && maxAge === undefined) {
+    if (minAge != null && maxAge == null) {
         const template = t('from_age_sentence'); // e.g. "From {age}"
         return template.replace('{age}', minAge.toString());
     }
 
-    if (minAge === undefined && maxAge !== undefined) {
+    if (minAge == null && maxAge != null) {
         const template = t('to_age_sentence'); // e.g. "Up to {age}"
         return template.replace('{age}', maxAge.toString());
     }
 
-    if (minAge !== undefined && maxAge !== undefined) {
+    if (minAge != null && maxAge != null) {
         const template = t('age_range_sentence'); // e.g. "{from} – {to}"
         return template
             .replace('{from}', minAge.toString())

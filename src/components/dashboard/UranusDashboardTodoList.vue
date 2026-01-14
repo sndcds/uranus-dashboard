@@ -275,7 +275,7 @@ const loadTodos = async (): Promise<void> => {
     todoLoading.value = true
 
     try {
-        const { data } = await apiFetch<unknown>('/api/admin/todos')
+        const { data } = await apiFetch<unknown>('/api/admin/user/todos')
         const normalizedTodos = normalizeTodos(data)
         todos.value = normalizedTodos
     } catch (err: unknown) {
@@ -388,12 +388,12 @@ const saveTodo = async (): Promise<void> => {
                 throw new Error('Invalid todo identifier')
             }
 
-            await apiFetch(`/api/admin/todo/${todoId}`, {
+            await apiFetch(`/api/admin/user/todo/${todoId}`, {
                 method: 'PUT',
                 body: JSON.stringify(payload),
             })
         } else {
-            await apiFetch('/api/admin/todo', {
+            await apiFetch('/api/admin/user/todo', {
                 method: 'POST',
                 body: JSON.stringify(payload),
             })
@@ -416,7 +416,7 @@ const toggleTodo = async (todo: Todo): Promise<void> => {
     todoError.value = null
 
     try {
-        await apiFetch(`/api/admin/todo/${todo.todo_id}`, {
+        await apiFetch(`/api/admin/user/todo/${todo.todo_id}`, {
             method: 'PUT',
             body: JSON.stringify({
                 title: todo.title,
@@ -441,7 +441,7 @@ const deleteTodo = async (todo: Todo): Promise<void> => {
     todoLoading.value = true
 
     try {
-        await apiFetch(`/api/admin/todo/${todo.todo_id}`, {
+        await apiFetch(`/api/admin/user/todo/${todo.todo_id}`, {
             method: 'DELETE',
         })
 

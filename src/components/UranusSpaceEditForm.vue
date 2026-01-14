@@ -68,20 +68,19 @@
         <UranusFieldLabel
             :label="t('space_type')"
             id="space_type_id"
-            required
             :error="fieldErrors.spaceTypeId"
         >
           <select
               id="space_type_id"
-              -model.number="spaceTypeId"
+              v-model.number="spaceTypeId"
               class="uranus-text-input"
-              :aria-required="true"
-              :aria-invalid="fieldErrors.spaceTypeId ? 'true' : 'false'"
           >
-            <option :value="null" disabled>
-              {{ t('select_space_type') }}
+            <!-- First option for "no selection" -->
+            <option :value="null">
+              {{ t('no_space_type') || 'Kein Raumtyp angegeben' }}
             </option>
-            <option v-for="type in spaceTypes" :key="type.id" :value="type.id">
+
+            <option v-for="type in sortedSpaceTypes" :key="type.id" :value="type.id">
               {{ type.name }}
             </option>
           </select>
@@ -192,6 +191,7 @@ import UranusTextInput from '@/components/ui/UranusTextInput.vue'
 import UranusFormRow from '@/components/ui/UranusFormRow.vue'
 import UranusFieldLabel from '@/components/ui/UranusFieldLabel.vue'
 import { uranusI18nAccessibilityFlags } from '@/i18n/uranus-i18n-accessibility.ts'
+import { useSpaceTypeLookupStore } from '@/store/spaceTypesLookup.ts'
 
 interface AccessibilityFlagRecord {
     id?: string | number | null
@@ -261,6 +261,14 @@ const emit = defineEmits<{
 
 const { t, te, locale } = useI18n()
 
+const spaceTypeStore = useSpaceTypeLookupStore()
+const spaceTypes = computed(() => spaceTypeStore.getAll(locale.value))
+const sortedSpaceTypes = computed(() => {
+  return [...spaceTypes.value].sort((a, b) =>
+      a.name.localeCompare(b.name, locale.value, { sensitivity: 'base' })
+  )
+})
+
 const spaceId = ref<number | null>(null)
 const spaceName = ref('')
 const totalCapacity = ref(0)
@@ -271,7 +279,6 @@ const websiteUrl = ref('')
 const description = ref('')
 const accessibilitySummary = ref('')
 
-const spaceTypes = ref<Array<{ id: number; name: string }>>([])
 const selectedAccessibilityFlags = ref<bigint[]>([])
 
 const fieldErrors = reactive({
@@ -302,35 +309,8 @@ watch(
 )
 
 onMounted(async () => {
-    await Promise.all([fetchSpaceTypes()])
 })
 
-async function fetchSpaceTypes() {
-    try {
-        const { data, status } = await apiFetch<Array<{ id: number; name: string }> | { space_types?: Array<{ id: number; name: string }> }>(`/api/choosable-space-types?lang=${locale.value}`, {
-            method: 'GET',
-        })
-
-        if (status >= 200 && status < 300) {
-            let types: Array<{ id: number; name: string }> | undefined
-
-            if (Array.isArray(data)) {
-                types = data
-            } else if (data && typeof data === 'object' && 'space_types' in data && Array.isArray(data.space_types)) {
-                types = data.space_types
-            }
-
-            if (types) {
-                spaceTypes.value = types
-                return
-            }
-        }
-
-        console.error(`Failed to fetch space types (status ${status}).`)
-    } catch (error) {
-        console.error('Error fetching space types:', error)
-    }
-}
 
 const toFlagNumber = (value: unknown): number | null => {
     if (typeof value === 'number' && Number.isFinite(value)) {
@@ -461,7 +441,6 @@ const handleSubmit = () => {
         fieldErrors.totalCapacity,
         fieldErrors.seatingCapacity,
         fieldErrors.buildingLevel,
-        fieldErrors.spaceTypeId,
     ].some((value) => Boolean(value))
 
     const websiteInvalid = Boolean(fieldErrors.websiteUrl)
@@ -473,11 +452,6 @@ const handleSubmit = () => {
 
     if (websiteInvalid) {
         localError.value = fieldErrors.websiteUrl
-        return
-    }
-
-    if (spaceTypeId.value === null) {
-        localError.value = t('select_space_type_error')
         return
     }
 

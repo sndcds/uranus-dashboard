@@ -128,8 +128,8 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
     },
     user_permissions_entities: {
         de: '[count] Einträge',
-        en: '{count} entries',
-        da: '{count} poster',
+        en: '[count] entries',
+        da: '[count] poster',
     },
     user_permissions_relation: {
         de: 'Relation-ID [id]',

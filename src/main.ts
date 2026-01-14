@@ -9,6 +9,7 @@ import { useThemeStore } from '@/store/themeStore.ts'
 import { useLanguageLookupStore } from '@/store/languageLookup.ts'
 import { useUrlTypeLookupStore } from '@/store/urlTypesLookup.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypesLookup.ts'
+import { useSpaceTypeLookupStore } from '@/store/spaceTypesLookup.ts'
 
 
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
@@ -35,5 +36,7 @@ await eventUrlTypeLookupStore.load('event', [...SUPPORTED_UI_LANGUAGES])
 const eventTypeLookupStore = useEventTypeLookupStore()
 await eventTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES])
 
+const spaceTypeLookupStore = useSpaceTypeLookupStore()
+await spaceTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES])
 
 app.mount('#app')

@@ -1,5 +1,5 @@
 <template>
-  <UranusFieldLabel :label="t('event_url_type')">
+  <UranusFieldLabel :label="t('event_url_type')" id="">
     <select
         v-model="selectedId"
         class="_uranus-select"
@@ -7,7 +7,7 @@
         :disabled="isLoading"
     >
       <option :value="null" disabled>{{ t('select_placeholder') }}</option>
-      <option v-for="option in urlTypeOptions" :key="option.key" :value="option.key">
+      <option v-for="option in urlTypeOptions" :key="option.key" :value="Number(option.key)">
         {{ option.label }}
       </option>
     </select>
@@ -15,10 +15,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from "vue";
-import { useI18n } from "vue-i18n";
-import { apiFetch } from "@/api.ts";
-import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue";
+import { ref, onMounted, watch, computed } from "vue"
+import { useI18n } from "vue-i18n"
+import { apiFetch } from "@/api.ts"
+import UranusFieldLabel from "@/components/ui/UranusFieldLabel.vue"
+import { UranusEventUrl } from '@/models/UranusEventModel.ts'
 
 // Props + v-model
 const props = defineProps<{ modelValue: number | null }>()

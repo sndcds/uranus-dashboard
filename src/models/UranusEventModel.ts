@@ -74,7 +74,7 @@ export class UranusEventUrl {
 }
 
 /**
- * Represents a single URL used in an Event.
+ * Represents a single Location used in an Event.
  */
 export class UranusEventLocation {
     id: number | null

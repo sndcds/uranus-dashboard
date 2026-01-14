@@ -11,16 +11,35 @@
     </UranusCard>
 
     <UranusCard>
+      <UranusEditEventTitle />
+      <UranusEditEventVenue />
+    </UranusCard>
+
+    <UranusCard>
+      <UranusEditEventTextBlock
+          field="summary"
+          api-path="summary"
+          label-key="summary"
+      />
+    </UranusCard>
+
+    <UranusCard>
+      <UranusEditEventTextBlock
+          field="description"
+          api-path="description"
+          label-key="description"
+          required
+          required-error-key="event_description_required"
+      />
+    </UranusCard>
+
+
+    <UranusCard>
       <UranusEditEventImages
           ref="imagesRef"
           @update="onImagesUpdated"
           @edit="onEditImage"
           @remove="onRemoveImage"/>
-    </UranusCard>
-
-    <UranusCard>
-      <UranusEditEventTitle />
-      <UranusEditEventVenue />
     </UranusCard>
 
     <UranusCard>
@@ -35,10 +54,6 @@
 
     <UranusCard>
       <UranusEditEventUrls />
-    </UranusCard>
-
-    <UranusCard>
-      <UranusEditEventDescription />
     </UranusCard>
 
     <UranusCard>
@@ -65,7 +80,6 @@ import { type UranusEventDetail, UranusImageMeta } from '@/models/UranusEventMod
 
 import UranusDashboardHero from "@/components/dashboard/UranusDashboardHero.vue";
 import UranusEditEventTitle from "@/components/event/UranusEditEventTitle.vue";
-import UranusEditEventDescription from "@/components/event/UranusEditEventDescription.vue";
 import UranusEditEventTypes from "@/components/event/UranusEditEventTypes.vue";
 import UranusCard from "@/components/ui/UranusCard.vue";
 import UranusEditEventVenue from "@/components/event/UranusEditEventVenue.vue";
@@ -77,6 +91,7 @@ import UranusEditEventParticipationInfos from "@/components/event/UranusEditEven
 import UranusEditEventImages from "@/components/event/UranusEditEventImages.vue";
 import UranusImageEditDialog from "@/components/image/UranusImageEditDialog.vue";
 import UranusEditEventUrls from "@/components/event/UranusEditEventUrls.vue";
+import UranusEditEventTextBlock from "@/components/event/UranusEditEventTextBlock.vue";
 
 const { t } = useI18n()
 const { locale } = useI18n({ useScope: 'global' })

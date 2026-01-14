@@ -79,11 +79,14 @@ const updateColors = () => {
 
 // WCAG contrast helpers
 const luminance = (rgb: number[]) => {
+  if (rgb.length < 3) throw new Error("RGB array must have 3 elements")
+
   const a = rgb.map(v => {
     v /= 255
     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)
   })
-  return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2]
+
+  return 0.2126 * a[0]! + 0.7152 * a[1]! + 0.0722 * a[2]!
 }
 
 const parseRGB = (rgb: string) => {

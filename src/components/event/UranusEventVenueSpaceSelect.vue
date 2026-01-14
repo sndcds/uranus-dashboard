@@ -73,7 +73,7 @@ const options = ref<
       label: string
       venue_id: number
       space_id: number | null
-      dateVenueId: number
+      date_venue_id: number
       venue_name: string
       space_name: string | null
     }[]
@@ -81,20 +81,34 @@ const options = ref<
 
 const isLoading = ref(false)
 
+type ChoosableEventPlace = {
+  venue_id: number
+  venue_name: string
+  space_id: number | null
+  space_name: string | null
+}
+
+type ChoosableEventPlacesResponse = {
+  places: ChoosableEventPlace[]
+}
 
 async function fetchVenueSpaceOptions() {
   isLoading.value = true
   try {
-    const { data } = await apiFetch(`/api/admin/user/choosable-venues-spaces`)
+    const { data } = await apiFetch<ChoosableEventPlacesResponse>(
+        `/api/admin/user/choosable-event-places`
+    )
 
-    options.value = (Array.isArray(data) ? data : []).map((item) => ({
+    const places = Array.isArray(data?.places) ? data.places : []
+
+    options.value = places.map((item) => ({
       key: buildVenueSpaceKey(item.venue_id, item.space_id),
       label: item.space_name
           ? `${item.venue_name} / ${item.space_name}`
           : item.venue_name,
       venue_id: item.venue_id,
       space_id: item.space_id,
-      dateVenueId: item.venue_id,
+      date_venue_id: item.venue_id,
       venue_name: item.venue_name,
       space_name: item.space_name ?? null,
     }))
@@ -132,7 +146,7 @@ const selectedKey = computed({
     if (!found) return
 
     Object.assign(localValue, {
-      dateVenueId: found.dateVenueId,
+      dateVenueId: found.date_venue_id,
       venueId: found.venue_id,
       spaceId: found.space_id,
       venueName: found.venue_name ?? null,

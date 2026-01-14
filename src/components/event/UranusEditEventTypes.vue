@@ -83,9 +83,7 @@ function updateDraft() {
   if (!event?.value) return
   draft.eventTypes = event.value.eventTypes?.map(et => ({
     typeId: et.typeId,
-    typeName: et.typeName,
     genreId: et.genreId,
-    genreName: et.genreName
   })) ?? []
 }
 

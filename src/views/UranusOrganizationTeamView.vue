@@ -86,7 +86,7 @@
                                   v-if="true"
                                   class="uranus-tertiary-button"
                                   icon="edit"
-                                  :to="`/admin/organization/${organizationId}/member/${member.member_id}/permission`"
+                                  :to="`/admin/organization/${organizationId}/member/${member.member_id}/permissions`"
                               >
                                 {{ t('edit') }}
                               </UranusDashboardButton>
@@ -135,7 +135,7 @@
                             </div>
                         </UranusFormRow>
 
-                        <button class="uranus-button" type="submit" :disabled="isInviting || !roles.length">
+                        <button class="uranus-button" type="submit" :disabled="isInviting">
                             <span v-if="!isInviting">{{ t('organization_team_invite_button') }}</span>
                             <span v-else>{{ t('organization_team_inviting') }}</span>
                         </button>
@@ -421,7 +421,8 @@ const removeMember = async (member: OrganizationTeamMember) => {
 }
 
 const submitInvite = async () => {
-    if (!organizationId.value || !inviteRoleId.value) {
+  console.log('submitInvite')
+    if (!organizationId.value) {
         inviteError.value = t('organization_team_invite_role_required')
         return
     }

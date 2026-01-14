@@ -4,7 +4,7 @@
       :type="type"
       :class="['uranus-button', `uranus-button--${variant}`]"
       :disabled="disabled || loading"
-      @click="$emit('click', $event)"
+      @click="handleClick"
   >
     <span v-if="loading">{{ loadingText }}</span>
     <span v-else><slot /></span>
@@ -12,23 +12,24 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-  type?: 'button' | 'submit' | 'reset'
-  variant?: 'primary' | 'secondary'
-  loading?: boolean
-  loadingText?: string
-  disabled?: boolean
-}>()
+import { defineProps } from 'vue'
+
+const props = defineProps({
+  type: {
+    type: String as () => 'button' | 'submit' | 'reset',
+    default: 'button'
+  },
+  variant: { type: String, default: 'primary' },
+  disabled: { type: Boolean, default: false },
+  loading: { type: Boolean, default: false },
+  loadingText: { type: String, default: 'Loading...' }
+})
 
 const emit = defineEmits<{
-  click: (event: MouseEvent) => void
+  (e: 'click', event: MouseEvent): void
 }>()
 
-const defaultProps = {
-  type: 'button',
-  variant: 'primary',
-  loading: false,
-  loadingText: 'Loading...',
-  disabled: false,
+function handleClick(event: MouseEvent) {
+  emit('click', event)
 }
 </script>

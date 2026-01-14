@@ -182,7 +182,7 @@ const sendMessage = async () => {
         ? rawContextId
         : props.selectedOrganization.id
 
-    await apiFetch(`/api/admin/send-message`, {
+    await apiFetch(`/api/admin/user/send-message`, {
       method: 'POST',
       body: JSON.stringify({
         context: 'organization',

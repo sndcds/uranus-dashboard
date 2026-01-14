@@ -161,6 +161,7 @@ const draft = reactive<{
   location: {
     id: event?.value?.location?.id ?? null,
     name: event?.value?.location?.name ?? '',
+    description: event?.value?.location?.description ?? '',
     street: event?.value?.location?.street ?? '',
     houseNumber: event?.value?.location?.houseNumber ?? '',
     postalCode: event?.value?.location?.postalCode ?? '',

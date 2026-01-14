@@ -23,7 +23,7 @@ watch(() => props.modelValue, (nv) => { local.value = nv ? nv.map(x => ({ ...x }
 watch(local, (nv) => emit('update:modelValue', nv), { deep: true })
 
 function add() {
-  local.value.push({ id: null, title: '', url: '', urlType: 'external' })
+  local.value.push({ id: null, title: '', url: '', urlType: 1 }) // 1 = Website
 }
 function remove(i: number) { local.value.splice(i, 1) }
 function save() { emit('updated') }

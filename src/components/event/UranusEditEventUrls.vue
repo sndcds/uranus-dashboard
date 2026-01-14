@@ -65,7 +65,8 @@
 import { ref, inject, computed, nextTick, reactive, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import type { UranusEventDetail, UranusEventUrl } from '@/models/UranusEventModel.ts'
+import type { UranusEventDetail } from '@/models/UranusEventModel.ts'
+import { UranusEventUrl } from '@/models/UranusEventModel.ts'
 
 import UranusEditEventUrlDisplay from '@/components/event/UranusEditEventUrlDisplay.vue'
 import UranusModal from '@/components/uranus/UranusModal.vue'
@@ -91,12 +92,11 @@ const canSave = computed(() => !isSaving.value)
  * Open modal for editing a URL
  */
 function onOpenModal(url: UranusEventUrl, index: number) {
-  // Wrap in reactive to ensure v-model updates
   editingUrl.value = reactive({
     id: url.id,
     url: url.url ?? '',
     title: url.title ?? '',
-    urlType: url.urlType ?? 0, // default 0 if null
+    urlType: url.urlType ?? 0, // <-- Zahl erzwingen, nicht String
   })
   editingIndex.value = index
 }
@@ -116,8 +116,8 @@ function onAddEventUrl() {
   const evt = event?.value
   if (!evt) return
 
-  const newUrl: UranusEventUrl = { id: null, url: '', title: '', urlType: 0 }
-  editingIndex.value = null; // indicates new
+  const newUrl = new UranusEventUrl(null, '', '', 0) // urlType = 0 als Zahl
+  editingIndex.value = null
 
   nextTick(() => {
     onOpenModal(newUrl, -1)
@@ -151,7 +151,7 @@ async function onSaveModal() {
     )
 
     const data = (response.data as any) ?? {}
-    const savedId = data.url_id ?? editingUrl.value.link_id
+    const savedId = data.url_id ?? editingUrl.value.id
 
     if (editingUrl.value.id === null) {
       // New URL: replace the placeholder in array with actual saved URL

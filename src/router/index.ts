@@ -13,7 +13,6 @@ import UranusSpaceEditView from '@/views/UranusSpaceEditView.vue'
 import UranusDashboardEventsView from '@/views/UranusDashboardEventsView.vue'
 import UranusCreateEventView from '@/views/UranusCreateEventView.vue'
 import UranusEditEventView from '@/views/UranusEditEventView.vue'
-import UserPermissionView from '@/views/UserPermissionView.vue'
 import UranusUserProfileView from '@/views/UranusUserProfileView.vue'
 import UranusEditOrganizationView from '@/views/UranusEditOrganizationView.vue'
 import UranusEditVenueView from '@/views/UranusEditVenueView.vue'
@@ -21,14 +20,14 @@ import UranusForgotPasswordView from '@/views/UranusForgotPasswordView.vue'
 import UranusResetPasswordView from '@/views/UranusResetPasswordView.vue'
 import UranusMessageInboxView from '@/views/UranusMessageInboxView.vue'
 import UranusMessageSendView from '@/views/UranusMessageSendView.vue'
-import UranusPublicEventView from '@/views/UranusPublicEventView.vue'
-import UranusHtmlView from '@/views/UranusHTMLView.vue'
+import UranusPublicEventView from '@/views/public/UranusPublicEventView.vue'
+import UranusHtmlView from '@/views/public/UranusHTMLView.vue'
 import UranusVenueMapView from '@/views/UranusVenueMapView.vue'
 import UserActivateView from '@/views/UserActivateView.vue'
 import UranusInviteActivateView from '@/views/UranusInviteActivateView.vue'
 import UranusOrganizationTeamView from '@/views/UranusOrganizationTeamView.vue'
 import UranusOrganizationMemberPermissionView from '@/views/UranusOrganizationMemberPermissionView.vue'
-import UranusCalendarView from '@/views/UranusCalendarView.vue'
+import UranusCalendarView from '@/views/public/UranusCalendarView.vue'
 import UranusEventSlideshowView from '@/views/UranusEventSlideshowView.vue'
 import UranusDevThemeView from '@/views/UranusDevThemeView.vue'
 
@@ -122,11 +121,6 @@ const routes = [
                 component: UranusEditEventView,
             },
             {
-                path: 'user/permissions',
-                name: 'admin-user-permissions',
-                component: UserPermissionView,
-            },
-            {
                 path: 'user/profile',
                 name: 'admin-user-profile',
                 component: UranusUserProfileView,
@@ -147,7 +141,7 @@ const routes = [
                 component: UranusInviteActivateView,
             },
             {
-                path: 'organization/:organizationId/member/:memberId/permission',
+                path: 'organization/:organizationId/member/:memberId/permissions',
                 name: 'admin-edit-member-permission',
                 component: UranusOrganizationMemberPermissionView,
             }

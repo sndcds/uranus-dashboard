@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
-import { useUserStore } from '@/store/userStore'
-import { useAppStore } from '@/store/appStore'
+import { useUserStore } from '@/store/userStore.ts'
+import { useAppStore } from '@/store/appStore.ts'
 
 const LOGOUT_CHANNEL_NAME = 'uranus-auth-channel'
 const LOGOUT_STORAGE_KEY = 'uranus-auth-logout'
