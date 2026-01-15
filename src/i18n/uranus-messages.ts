@@ -1,4 +1,3 @@
-import { event } from './_event.ts'
 import { type UranusLocaleKey, type UranusTranslationBlock } from "@/i18n/uranus-i18n-index.ts";
 import { uranusI18nStandardTranslations } from "@/i18n/uranus-i18n-standard.ts";
 import { uranusI18nNavigationTranslations } from "@/i18n/uranus-i18n-navigation.ts";
@@ -34,7 +33,6 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'de'),
-        ...event.de,
 
         organization_unknown: 'Unbekannter Veranstalter',
 
@@ -398,8 +396,6 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'en'),
-        ...event.en,
-
 
         organization_unknown: 'Unknown organization',
 
@@ -766,8 +762,6 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'da'),
-        ...event.da,
-
 
         organization_unknown: 'Ukendt arrangør',
         one_of_n: 'af',

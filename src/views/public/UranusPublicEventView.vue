@@ -36,9 +36,7 @@
         <!-- Title area -->
         <div class="uranus-public-section">
           <h1>{{ event.title }}</h1>
-          <h2
-              v-if="event.subtitle"
-              class="uranus-public-section--subtitle">
+          <h2 v-if="event.subtitle">
             {{ event.subtitle }}
           </h2>
           <UranusEventReleaseChip
@@ -107,6 +105,7 @@
               :startTime="eventStartTime"
               :endDate="eventEndDate"
               :endTime="eventEndTime"
+              :entryTime="eventEntryTime"
           />
 
           <!-- Venue, Space, Location -->
@@ -295,6 +294,7 @@ const eventStartDate = computed(() => eventDate.value?.startDate ?? event.value?
 const eventStartTime = computed(() => eventDate.value?.startTime ?? event.value?.startTime ?? null)
 const eventEndDate = computed(() => eventDate.value?.endDate ?? event.value?.endDate ?? null)
 const eventEndTime = computed(() => eventDate.value?.endTime ?? event.value?.endTime ?? null)
+const eventEntryTime = computed(() => eventDate.value?.entryTime ?? event.value?.entryTime ?? null)
 
 const hasLonLat = computed(() => {
   if ((event.value?.venueLon && event.value?.venueLat) || (event.value?.locationLon && event.value?.locationLat))

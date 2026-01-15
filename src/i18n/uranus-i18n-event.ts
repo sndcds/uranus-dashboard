@@ -141,10 +141,25 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Unknown type',
         da: 'Ukendt type',
     },
+    event_starts_short: {
+        de: 'Beginn',
+        en: 'Starts',
+        da: 'Start',
+    },
     event_starts: {
         de: 'Event beginnt',
         en: 'Event starts',
         da: 'Begivenheder starter',
+    },
+    event_ends_short: {
+        de: 'Ende',
+        en: 'Ends',
+        da: 'Slut',
+    },
+    event_entry_time_short: {
+        de: 'Einlass',
+        en: 'Doors open',
+        da: 'Dørene åbner',
     },
     event_tags_heading: {
         de: 'Eventtypen',

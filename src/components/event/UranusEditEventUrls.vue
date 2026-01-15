@@ -1,16 +1,13 @@
 <template>
   <UranusInlineEditSection>
     <!-- Only show URLs that have an id -->
-    <template
+    <UranusEditEventUrlDisplay
         v-for="(url, index) in (event?.eventUrls ?? []).filter(u => u.id !== null)"
-        :key="url.id ?? index">
-      <UranusEditEventUrlDisplay
-          :url="url"
-          :can-edit="true"
-          @edit="() => onOpenModal(url, index)"
-          @remove="() => onRemoveUrl(index)"
-      />
-    </template>
+        :url="url"
+        :can-edit="true"
+        @edit="() => onOpenModal(url, index)"
+        @delete="() => onDeleteUrl(url)"
+    />
 
     <div style="margin-top: 8px;">
       <button class="uranus-inline-edit-button" @click="onAddEventUrl">
@@ -125,10 +122,17 @@ function onAddEventUrl() {
 }
 
 /**
- * Remove a URL
+ * Delete a URL
  */
-function onRemoveUrl(index: number) {
-  event?.value?.eventUrls.splice(index, 1)
+function onDeleteUrl(url: UranusEventUrl) {
+  console.log(url)
+  const urls = event?.value?.eventUrls
+  if (!urls || url.id == null) return
+
+  const index = urls.findIndex(u => u.id === url.id)
+  if (index !== -1) {
+    urls.splice(index, 1)
+  }
 }
 
 /**

@@ -15,15 +15,10 @@ export function formatDate(
 }
 
 // Format a single time (HH:mm) with leading zeros
-export function formatTime(
-    time: string,
-    locale: string
-) {
+export function formatTime(time: string, locale: string) {
     const [h, m] = time.split(':').map(Number)
-
     const d = new Date()
     d.setHours(h ?? 0, m ?? 0, 0, 0)
-
     return new Intl.DateTimeFormat(locale, {
         hour: '2-digit',
         minute: '2-digit',
@@ -31,19 +26,32 @@ export function formatTime(
     }).format(d)
 }
 
-// Format time range with localized prefix/postfix
-export function formatTimeRange(
-    start: string,
-    locale: string,
-    end?: string
-) {
+// Format a single time (HH:mm) with leading zeros
+export function formatTimeForUI(time: string, locale: string) {
+    const timeStr = formatTime(time, locale)
     if (locale.startsWith('de')) {
-        return end ? `${start} – ${end} Uhr` : `${start} Uhr`
+        return timeStr + ' Uhr'
     }
-
     if (locale.startsWith('da')) {
-        return end ? `kl. ${start} – ${end}` : `kl. ${start}`
+        return 'kl. ' + timeStr
     }
+    return timeStr
+}
 
-    return end ? `${start} – ${end}` : start
+// Format time range with localized prefix/postfix
+export function formatTimeRangeForUI(startTime: string, locale: string, endTime?: string
+) {
+    let timeStr = ''
+    const startStr = formatTime(startTime, locale)
+    if (endTime) {
+        const endStr = formatTime(endTime, locale)
+        timeStr = `${startStr} – ${endStr}`
+    }
+    if (locale.startsWith('de')) {
+        return timeStr + ' Uhr'
+    }
+    if (locale.startsWith('da')) {
+        return 'kl.' + timeStr
+    }
+    return timeStr
 }

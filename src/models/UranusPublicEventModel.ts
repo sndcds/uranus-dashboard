@@ -16,6 +16,7 @@ export class UranusPublicEventDetail {
         public startTime: string | null = null,
         public endDate: string | null = null,
         public endTime: string | null = null,
+        public entryTime: string | null = null,
 
         public venueId: number | null = null,
         public venueName: string | null = null,

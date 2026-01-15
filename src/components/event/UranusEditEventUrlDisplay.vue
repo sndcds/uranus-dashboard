@@ -3,6 +3,7 @@
     <span v-if="url.title"><strong> {{ url.title  }}: </strong></span>
     <a :href="getUranusEventUrl" target="_blank">{{ url.url }}</a>
     <span v-if="getUrlTypeLabel(url.urlType)"> ({{ getUrlTypeLabel(url.urlType) }})</span>
+    {{ url.id }}
     <UranusInlineIcon
         v-if="canEdit"
         mode="edit"
@@ -12,7 +13,7 @@
     <UranusInlineIcon
         v-if="canEdit"
         mode="delete"
-        @click="$emit('remove')"
+        @click="$emit('delete')"
         class="icon"
     />
   </div>

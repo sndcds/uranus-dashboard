@@ -80,6 +80,7 @@ export const mapPublicEvent = (raw: any): UranusPublicEventDetail | null => {
         mainDate.start_time ?? null,
         mainDate.end_date ?? null,
         mainDate.end_time ?? null,
+        mainDate.entry_time ?? null,
         mainDate.venue_id ?? null,
         mainDate.venue_name ?? null,
         mainDate.venue_street ?? null,
