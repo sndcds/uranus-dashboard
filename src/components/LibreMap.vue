@@ -201,7 +201,8 @@ onMounted(() => {
       sources: {
         osm: {
           type: 'raster',
-          tiles: ['https://tiles.oklabflensburg.de/sgm/{z}/{x}/{y}.png'],
+          // tiles: ['https://tiles.oklabflensburg.de/sgm/{z}/{x}/{y}.png'],
+          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
           tileSize: 256,
           attribution: 'MapLibre | © OpenStreetMap contributors',
         },
