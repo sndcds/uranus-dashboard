@@ -6,14 +6,15 @@ import router from './router/index.ts'
 
 import { SUPPORTED_UI_LANGUAGES } from '@/store/constants.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
-import { useLanguageLookupStore } from '@/store/languageLookup.ts'
-import { useUrlTypeLookupStore } from '@/store/urlTypesLookup.ts'
-import { useEventTypeLookupStore } from '@/store/eventTypesLookup.ts'
-import { useSpaceTypeLookupStore } from '@/store/spaceTypesLookup.ts'
+import { useLanguageLookupStore } from '@/store/uranusLanguageLookupStore.ts'
+import { useUrlTypeLookupStore } from '@/store/uranusUrlTypesLookup.ts'
+import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
+import { useSpaceTypeLookupStore } from '@/store/uranusSpaceTypesLookup.ts'
+import { useCurrencyLookupStore } from '@/store/uranusCurrencyLookup.ts'
 
 
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import '@/styles/global.scss'
+import '@/style/global.scss'
 
 const app = createApp(App)
 
@@ -38,5 +39,9 @@ await eventTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES])
 
 const spaceTypeLookupStore = useSpaceTypeLookupStore()
 await spaceTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES])
+
+const currencyStore = useCurrencyLookupStore()
+await currencyStore.load([...SUPPORTED_UI_LANGUAGES])
+
 
 app.mount('#app')

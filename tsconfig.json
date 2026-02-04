@@ -16,7 +16,7 @@
     "paths": {
       "@/*": ["src/*"]               // '@' resolves to 'src/'
     },
-    "types": ["vite/client", "node"],// Vite + Node types
+    "types": ["vite/client", "node"],// Vite + Node type
     "esModuleInterop": true,         // For default imports
     "skipLibCheck": true             // Avoid type errors in node_modules
   },

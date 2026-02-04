@@ -1,6 +1,6 @@
-import { useTokenStore } from '@/store/tokenStore.ts'
+import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import router from '@/router/index.ts'
-import type { ThemeMode } from '@/utils/theme.ts'
+import type { ThemeMode } from '@/util/theme.ts'
 
 let refreshPromise: Promise<boolean> | null = null;
 
@@ -28,7 +28,7 @@ export interface NominatimResult {
 /**
  * Custom Error type that includes HTTP status and response data
  */
-class ApiError extends Error {
+export class ApiError extends Error {
     status: number;
     data: unknown;
 

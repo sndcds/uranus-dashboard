@@ -1,39 +1,40 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteLocationNormalized } from 'vue-router'
-import { useTokenStore } from '@/store/tokenStore.ts'
+import { useTokenStore } from '@/store/uranusTokenStore.ts'
 
-import UranusDashboardView from '@/views/UranusDashboardView.vue'
-import UranusDashboardTodosView from '@/views/UranusDashboardTodosView.vue'
-import UranusLoginView from '@/views/UranusLoginView.vue'
-import UranusDashboardOrganizationsView from '@/views/UranusDashboardOrganizationsView.vue'
-import UranusSettingsView from '@/views/UranusSettingsView.vue'
-import UranusDashboardVenuesView from '@/views/UranusDashboardVenuesView.vue'
-import UranusSignupView from '@/views/UranusSignupView.vue'
-import UranusSpaceEditView from '@/views/UranusSpaceEditView.vue'
-import UranusDashboardEventsView from '@/views/UranusDashboardEventsView.vue'
-import UranusCreateEventView from '@/views/UranusCreateEventView.vue'
-import UranusEditEventView from '@/views/UranusEditEventView.vue'
-import UranusUserProfileView from '@/views/UranusUserProfileView.vue'
-import UranusEditOrganizationView from '@/views/UranusEditOrganizationView.vue'
-import UranusEditVenueView from '@/views/UranusEditVenueView.vue'
-import UranusForgotPasswordView from '@/views/UranusForgotPasswordView.vue'
-import UranusResetPasswordView from '@/views/UranusResetPasswordView.vue'
-import UranusMessageInboxView from '@/views/UranusMessageInboxView.vue'
-import UranusMessageSendView from '@/views/UranusMessageSendView.vue'
-import UranusPublicEventView from '@/views/public/UranusPublicEventView.vue'
-import UranusHtmlView from '@/views/public/UranusHTMLView.vue'
-import UranusVenueMapView from '@/views/UranusVenueMapView.vue'
-import UserActivateView from '@/views/UserActivateView.vue'
-import UranusInviteActivateView from '@/views/UranusInviteActivateView.vue'
-import UranusOrganizationTeamView from '@/views/UranusOrganizationTeamView.vue'
-import UranusOrganizationMemberPermissionView from '@/views/UranusOrganizationMemberPermissionView.vue'
-import UranusCalendarView from '@/views/public/UranusCalendarView.vue'
-import UranusEventSlideshowView from '@/views/UranusEventSlideshowView.vue'
-import UranusDevThemeView from '@/views/UranusDevThemeView.vue'
+import UranusDashboardView from '@/view/UranusDashboardView.vue'
+import UranusDashboardTodosView from '@/view/UranusDashboardTodosView.vue'
+import UranusLoginView from '@/view/UranusLoginView.vue'
+import UranusDashboardOrganizationsView from '@/view/UranusDashboardOrganizationsView.vue'
+import UranusSettingsView from '@/view/UranusSettingsView.vue'
+import UranusDashboardVenuesView from '@/view/UranusDashboardVenuesView.vue'
+import UranusSignupView from '@/view/UranusSignupView.vue'
+import UranusSpaceEditView from '@/view/UranusSpaceEditView.vue'
+import UranusAdminOrganizationEventsView from '@/view/admin/UranusAdminOrganizationEventsView.vue'
+import UranusAdminEditEventView from '@/view/admin/UranusAdminEditEventView.vue'
+import UranusUserProfileView from '@/view/UranusUserProfileView.vue'
+import UranusEditOrganizationView from '@/view/UranusEditOrganizationView.vue'
+import UranusEditVenueView from '@/view/UranusEditVenueView.vue'
+import UranusForgotPasswordView from '@/view/UranusForgotPasswordView.vue'
+import UranusResetPasswordView from '@/view/UranusResetPasswordView.vue'
+import UranusMessageInboxView from '@/view/UranusMessageInboxView.vue'
+import UranusMessageSendView from '@/view/UranusMessageSendView.vue'
+import UranusEventView from '@/view/public/UranusEventView.vue'
+import UranusHtmlView from '@/view/public/UranusHTMLView.vue'
+import UranusVenueMapView from '@/view/public/UranusVenueMapView.vue'
+import UserActivateView from '@/view/UserActivateView.vue'
+import UranusInviteActivateView from '@/view/UranusInviteActivateView.vue'
+import UranusOrganizationTeamView from '@/view/UranusOrganizationTeamView.vue'
+import UranusEditOrganizationImagesView from '@/view/UranusEditOrganizationImagesView.vue'
+import UranusOrganizationMemberPermissionView from '@/view/UranusOrganizationMemberPermissionView.vue'
+import UranusEditVenueImagesView from '@/view/UranusEditVenueImagesView.vue'
+import UranusCalendarView from '@/view/public/UranusCalendarView.vue'
+import UranusEventSlideshowView from '@/view/public/UranusEventSlideshowView.vue'
+import UranusDevThemeView from '@/view/UranusDevThemeView.vue'
 
 
-import GenericLayout from '@/components/layout/GenericLayout.vue'
-import UranusBlankLayout from '@/components/layout/UranusBlankLayout.vue'
+import GenericLayout from '@/component/layout/GenericLayout.vue'
+import UranusBlankLayout from '@/component/layout/UranusBlankLayout.vue'
 
 const routes = [
     {
@@ -81,6 +82,11 @@ const routes = [
                 component: UranusOrganizationTeamView,
             },
             {
+                path: 'organization/:id/images',
+                name: 'admin-edit-organization-images',
+                component: UranusEditOrganizationImagesView,
+            },
+            {
                 path: 'organization/:id/venue/create',
                 name: 'admin-create-venue',
                 component: UranusEditVenueView,
@@ -89,6 +95,11 @@ const routes = [
                 path: 'organization/:id/venue/:venueId/edit',
                 name: 'admin-edit-venue',
                 component: UranusEditVenueView,
+            },
+            {
+                path: 'venue/:id/images',
+                name: 'admin-edit-venues-images',
+                component: UranusEditVenueImagesView,
             },
             {
                 path: 'organization/:id/venue/:venueId/space/create',
@@ -108,17 +119,12 @@ const routes = [
             {
                 path: 'organization/:id/events',
                 name: 'admin-organization-events',
-                component: UranusDashboardEventsView,
-            },
-            {
-                path: 'organization/:id/event/create',
-                name: 'admin-create-event',
-                component: UranusCreateEventView,
+                component: UranusAdminOrganizationEventsView,
             },
             {
                 path: 'event/:id',
                 name: 'admin-event-details',
-                component: UranusEditEventView,
+                component: UranusAdminEditEventView,
             },
             {
                 path: 'user/profile',
@@ -171,7 +177,7 @@ const routes = [
             {
                 path: 'event/:id/date/:eventDateId',
                 name: 'event-details',
-                component: UranusPublicEventView,
+                component: UranusEventView,
             },
             {
                 path: 'map',
@@ -184,7 +190,7 @@ const routes = [
                 name: 'dev-theme-view',
                 component: UranusDevThemeView,
                 meta: { layoutMode: 'zero-padding' },
-            }
+            },
         ],
     },
     {

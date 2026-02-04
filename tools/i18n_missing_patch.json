@@ -45,7 +45,7 @@
     "src/views/FormUserProfileView.vue",
     "src/views/ForgotPasswordView.vue",
     "src/views/InviteActivateView.vue",
-    "src/views/UranusDashboardEventsView.vue",
+    "src/views/admin/UranusUserOrganizationEventsView.vue",
     "src/views/ImprintView.vue",
     "src/views/FormOrganizationTeamView.vue",
     "src/views/EmptyEventsView.vue",

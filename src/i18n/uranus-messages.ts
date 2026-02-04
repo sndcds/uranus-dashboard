@@ -4,7 +4,9 @@ import { uranusI18nNavigationTranslations } from "@/i18n/uranus-i18n-navigation.
 import { uranusI18nDashboardTranslations } from "@/i18n/uranus-i18n-dashboard.ts";
 import { uranusI18nUserTranslations } from "@/i18n/uranus-i18n-user.ts";
 import { uranusI18nOrganizationTranslations } from "@/i18n/uranus-i18n-organization.ts";
+import { uranusI18nImageTranslations } from "@/i18n/uranus-i18n-image.ts";
 import { uranusI18nVenueTranslations } from "@/i18n/uranus-i18n-venue.ts";
+import { uranusI18nSpaceTranslations } from "@/i18n/uranus-i18n-space.ts";
 import { uranusI18nEventTranslations } from "@/i18n/uranus-i18n-event.ts";
 import { uranusI18nCalendarViewTranslations } from "@/i18n/uranus-i18n-calendar-view.ts";
 import {uranusI18nAccessibilityTranslations} from "@/i18n/uranus-i18n-accessibility.ts";
@@ -29,7 +31,9 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nNavigationTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nUserTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'de'),
+        ...uranusI18nForLocale(uranusI18nImageTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nVenueTranslations, 'de'),
+        ...uranusI18nForLocale(uranusI18nSpaceTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'de'),
@@ -114,7 +118,6 @@ const uranusI18nMessages = {
         genre: 'Genre',
         image_details: "Bild Details",
         image_created_by: "Erstellt von {creator}",
-        image_copyright: "© {copyright}",
         image_license: "Lizenz: {license}",
         choose_genre: 'Wähle ein Genre',
         dashboard_inbox_cta: 'Posteingang öffnen',
@@ -392,7 +395,9 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nNavigationTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nUserTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'en'),
+        ...uranusI18nForLocale(uranusI18nImageTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nVenueTranslations, 'en'),
+        ...uranusI18nForLocale(uranusI18nSpaceTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'en'),
@@ -403,7 +408,7 @@ const uranusI18nMessages = {
         edit_event: 'Edit event',
 
         one_of_n: 'of',
-        price_types: 'Price types',
+        price_types: 'Price type',
         occasion: 'Occasion',
 
 
@@ -481,7 +486,6 @@ const uranusI18nMessages = {
         genre: 'Genre',
         image_details: "Image details",
         image_created_by: "Created by {creator}",
-        image_copyright: "© {copyright}",
         image_license: "License: {license}",
         choose_genre: 'Choose a genre',
         dashboard_inbox_cta: 'Open inbox',
@@ -758,7 +762,9 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nNavigationTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nUserTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'da'),
+        ...uranusI18nForLocale(uranusI18nImageTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nVenueTranslations, 'da'),
+        ...uranusI18nForLocale(uranusI18nSpaceTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'da'),
@@ -844,7 +850,6 @@ const uranusI18nMessages = {
         genre: 'Genre',
         image_details: "Billeddetaljer",
         image_created_by: "Oprettet af {creator}",
-        image_copyright: "© {copyright}",
         image_license: "Licens: {license}",
         choose_genre: 'Vælg et genre',
         dashboard_inbox_cta: 'Åbn indbakke',

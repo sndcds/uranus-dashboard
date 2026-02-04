@@ -11,10 +11,20 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Error loading data',
         da: 'Fejl ved indlæsning af data',
     },
+    password_required: {
+        de: 'Ein Passwort ist erforderlich',
+        en: 'A password is required',
+        da: 'Adgangskode er påkrævet',
+    },
     notification: {
         de: 'Hinweis',
         en: 'Notification',
         da: 'Bemærk',
+    },
+    error_notification: {
+        de: 'Ein Fehler ist aufgetreten',
+        en: 'An error has occurred',
+        da: 'Der opstod en fejl',
     },
     yes: {
         de: 'Ja',
@@ -51,10 +61,20 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Edit',
         da: 'Rediger',
     },
+    images_and_logos: {
+        de: 'Bilder & Logos',
+        en: 'Images & logos',
+        da: 'Billeder og logoer',
+    },
     cancel: {
         de: 'Abbrechen',
         en: 'Cancel',
         da: 'Annuller',
+    },
+    discard: {
+        de: 'Verwerfen',
+        en: 'Discard',
+        da: 'Forkast',
     },
     save: {
         de: 'Speichern',
@@ -151,6 +171,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Languages',
         da: 'Sprog',
     },
+    content_language: {
+        de: 'Inhaltssprache',
+        en: 'Content Language',
+        da: 'Indholdssprog',
+    },
     date: {
         de: 'Datum',
         en: 'Date',
@@ -196,6 +221,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Website',
         da: 'Hjemmeside',
     },
+    license: {
+        de: 'Lizenz',
+        en: 'License',
+        da: 'Licens',
+    },
     show_map: {
         de: 'Karte anzeigen',
         en: 'Show map',
@@ -210,6 +240,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Währung',
         en: 'Currency',
         da: 'Valuta',
+    },
+    select_currency: {
+        de: 'Währung auswählen',
+        en: 'Select currency',
+        da: 'Vælg valuta',
     },
     price_from_sentence: {
         de: 'Mindestpreis: {price}',

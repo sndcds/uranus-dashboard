@@ -61,4 +61,15 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Go to Organizations',
         da: 'Til organisationerne',
     },
+    venue_images_title: {
+        de: 'Spielstätte Bilder und Logos',
+        en: 'Venue images and logos',
+        da: 'Spillestedets billeder og logoer',
+    },
+    venue_images_description: {
+        de: 'Lade Bilder und Logos deiner Spielstätte hoch.',
+        en: 'Upload images and logos for your venue.',
+        da: 'Upload billeder og logoer for dit spillested.',
+    },
+
 }

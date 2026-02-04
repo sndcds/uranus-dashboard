@@ -1,0 +1,661 @@
+<!--
+  UranusDashboardTodoList.vue
+-->
+<template>
+  <UranusDashboardActionBar>
+    <UranusActionButton :disabled="todoLoading" @click="startAddingTodo">
+      {{ t('dashboard_todo_add') }}
+    </UranusActionButton>
+  </UranusDashboardActionBar>
+
+  <section class="todo-panel">
+    <transition name="fade">
+      <p v-if="todoError" class="todo-feedback todo-feedback--error" role="alert" aria-live="assertive">
+        {{ todoError }}
+      </p>
+    </transition>
+
+    <form v-if="isAddingTodo" class="uranus-form todo-editor" @submit.prevent="saveTodo">
+      <UranusDashboardTodoForm
+          class="uranus-card"
+          id-prefix="todo-new"
+          v-model:title="todoDraft.title"
+          v-model:description="todoDraft.description"
+          v-model:due-date="todoDraft.dueDate"
+          :title-label="todoTitleLabel"
+          :title-placeholder="todoTitlePlaceholder"
+          :description-label="todoDescriptionLabel"
+          :description-placeholder="todoDescriptionPlaceholder"
+          :due-date-label="todoDueDateLabel"
+          :disabled="todoSaving"
+          :error="todoDraftError"
+          @escape="cancelEditingTodo"
+      />
+
+      <section class="uranus-form-action-footer">
+        <button
+            class="uranus-cancel-button"
+            @click="cancelEditingTodo"
+            :disabled="todoSaving">
+          {{ t('cancel') }}
+        </button>
+        <button
+            class="uranus-ok-button"
+            :disabled="isSaveDisabled">
+          <template v-if="!todoSaving">{{ t('save') }}</template>
+          <template v-else>{{ t('saving') }}</template>
+        </button>
+      </section>
+    </form>
+
+    <section>
+      <ul class="todo-list" role="list" :aria-busy="todoLoading" :aria-label="todoListTitle">
+        <li v-if="todoLoading" class="todo-list__loading">
+          {{ loadingTodoLabel }}
+        </li>
+        <template v-else>
+          <div v-if="todos.length === 0" class="todo-list__empty">
+            {{ todoEmptyLabel }}
+          </div>
+          <UranusCard v-for="todo in todos" :key="todo.todo_id" class="todo-list-item">
+            <template v-if="editingTodoId !== todo.todo_id">
+                <!--article
+                    class="todo-item"
+                    :class="{ 'todo-item--completed':
+                    todo.completed }"
+                -->
+                <div class="todo-item__header">
+                  <input
+                      type="checkbox"
+                      :id="`todo-${todo.todo_id}`"
+                      class="todo-item__checkbox"
+                      :checked="Boolean(todo.completed)"
+                      :disabled="todoLoading"
+                      @change="toggleTodo(todo)"
+                  />
+                    <label :for="`todo-${todo.todo_id}`" class="todo-item__label">
+                      {{ todo.title }}
+                    </label>
+                </div>
+                <p v-if="todo.description" class="todo-item__description">
+                    {{ todo.description }}
+                </p>
+                <p v-if="todo.dueDate" class="todo-item__due-date">
+                    {{ t('dashboard_todo_due') }}: {{ formatTodoDueDate(todo.dueDate) }}
+                </p>
+                <div class="todo-item__footer">
+                  <UranusDashboardButton
+                      class="uranus-button"
+                      icon="edit"
+                      @click="startEditingTodo(todo)"
+                  >
+                    {{ t('edit') }}
+                  </UranusDashboardButton>
+
+                  <UranusDashboardButton
+                      class="uranus-button"
+                      icon="delete"
+                      @click="deleteTodo(todo)"
+                  >
+                    {{ t('delete') }}
+                  </UranusDashboardButton>
+                </div>
+                <!--/article-->
+            </template>
+            <template v-else>
+              <form class="uranus-form todo-editor todo-editor--inline" @submit.prevent="saveTodo">
+                <UranusDashboardTodoForm
+                    :id-prefix="`todo-${todo.todo_id}`"
+                    v-model:title="todoDraft.title"
+                    v-model:description="todoDraft.description"
+                    v-model:due-date="todoDraft.dueDate"
+                    :title-label="todoTitleLabel"
+                    :title-placeholder="todoTitlePlaceholder"
+                    :description-label="todoDescriptionLabel"
+                    :description-placeholder="todoDescriptionPlaceholder"
+                    :due-date-label="todoDueDateLabel"
+                    :disabled="todoSaving"
+                    :error="todoDraftError"
+                    @escape="cancelEditingTodo"
+                />
+
+                <section class="uranus-form-action-footer">
+                  <button
+                      class="uranus-cancel-button"
+                      @click="cancelEditingTodo"
+                      :disabled="todoSaving">
+                    {{ t('cancel') }}
+                  </button>
+                  <button
+                      class="uranus-ok-button"
+                      :disabled="isSaveDisabled">
+                    <template v-if="!todoSaving">{{ t('save') }}</template>
+                    <template v-else>{{ t('saving') }}</template>
+                  </button>
+                </section>
+              </form>
+            </template>
+          </UranusCard>
+        </template>
+      </ul>
+    </section>
+  </section>
+</template>
+
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { apiFetch } from '@/api.ts'
+
+import UranusCard from "@/component/ui/UranusCard.vue";
+import UranusDashboardTodoForm from '@/component/dashboard/UranusDashboardTodoForm.vue'
+import UranusDashboardButton from "@/component/dashboard/UranusDashboardButton.vue";
+import UranusDashboardActionBar from "@/component/uranus/UranusDashboardActionBar.vue";
+import UranusActionButton from "@/component/ui/UranusActionButton.vue";
+
+interface Todo {
+    todo_id: number
+    title: string
+    description?: string | null
+    completed: boolean
+    dueDate?: string | null
+    createdAt?: string | null
+    updatedAt?: string | null
+}
+
+interface TodoDraft {
+    title: string
+    description: string
+    dueDate: string
+}
+
+const { t } = useI18n()
+const todos = ref<Todo[]>([])
+const todoLoading = ref(false)
+const todoError = ref<string | null>(null)
+const todoSaving = ref(false)
+const todoDraftError = ref<string | null>(null)
+const editingTodoId = ref<number | null>(null)
+const isAddingTodo = ref(false)
+const currentEditingTodo = ref<Todo | null>(null)
+const todoDraft = ref<TodoDraft>({ title: '', description: '', dueDate: '' })
+
+const todoListTitle = computed(() => t('dashboard_todo_list_title'))
+const loadingTodoLabel = computed(() => t('dashboard_todo_loading'))
+const todoEmptyLabel = computed(() => t('dashboard_todo_empty'))
+const todoTitleLabel = computed(() => t('dashboard_todo_title'))
+const todoTitlePlaceholder = computed(() => t('dashboard_todo_title_placeholder'))
+const todoDescriptionLabel = computed(() => t('dashboard_todo_description'))
+const todoDescriptionPlaceholder = computed(() => t('dashboard_todo_description_placeholder'))
+const todoDueDateLabel = computed(() => t('dashboard_todo_due_date'))
+const todoErrorFallback = computed(() => t('dashboard_todo_error'))
+const isSaveDisabled = computed(() => todoSaving.value || !todoDraft.value.title.trim())
+
+const toNumberOrNull = (value: unknown): number | null => {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return value
+    }
+    if (typeof value === 'string') {
+        const trimmed = value.trim()
+        if (!trimmed.length) {
+            return null
+        }
+        const parsed = Number(trimmed)
+        return Number.isFinite(parsed) ? parsed : null
+    }
+    return null
+}
+
+const normalizeDateInput = (value: unknown): string => {
+    if (typeof value !== 'string') {
+        return ''
+    }
+    const trimmed = value.trim()
+    if (!trimmed.length) {
+        return ''
+    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+        return trimmed
+    }
+    const parsed = new Date(trimmed)
+    if (!Number.isNaN(parsed.getTime())) {
+        return parsed.toISOString().slice(0, 10)
+    }
+    return trimmed
+}
+
+const normalizeTodos = (payload: unknown): Todo[] => {
+    const items: unknown[] = []
+
+    if (Array.isArray(payload)) {
+        items.push(...payload)
+    } else if (payload && typeof payload === 'object') {
+        const obj = payload as Record<string, unknown>
+        if (Array.isArray(obj.messages)) {
+            items.push(...obj.messages)
+        } else if (Array.isArray(obj.todos)) {
+            items.push(...obj.todos)
+        } else if (Array.isArray(obj.data)) {
+            items.push(...obj.data)
+        }
+    }
+
+    const todos: Todo[] = []
+    items.forEach((entry) => {
+        if (!entry || typeof entry !== 'object') {
+            return
+        }
+
+        const raw = entry as Record<string, unknown>
+        const idCandidate = raw.todo_id ?? raw.id
+        const titleCandidate = raw.title
+
+        if (typeof idCandidate !== 'number' || typeof titleCandidate !== 'string') {
+            return
+        }
+
+        const todo: Todo = {
+            todo_id: idCandidate,
+            title: titleCandidate,
+            description: typeof raw.description === 'string' ? raw.description : null,
+            completed: Boolean(raw.completed),
+            dueDate: typeof raw.due_date === 'string' ? raw.due_date : null,
+            createdAt: typeof raw.created_at === 'string' ? raw.created_at : null,
+            updatedAt: typeof raw.updated_at === 'string' ? raw.updated_at : null,
+        }
+
+        todos.push(todo)
+    })
+
+    return todos
+}
+
+const loadTodos = async (): Promise<void> => {
+    todoError.value = null
+    todoLoading.value = true
+
+    try {
+        const { data } = await apiFetch<unknown>('/api/admin/user/todos')
+        const normalizedTodos = normalizeTodos(data)
+        todos.value = normalizedTodos
+    } catch (err: unknown) {
+        console.error('Error loading todos:', err)
+        todoError.value = resolveTodoErrorMessage(err, todoErrorFallback.value)
+        todos.value = []
+    } finally {
+        todoLoading.value = false
+    }
+}
+
+const resolveTodoErrorMessage = (err: unknown, fallback: string): string => {
+    if (typeof err === 'string' && err.trim().length > 0) {
+        return err
+    }
+
+    if (err && typeof err === 'object') {
+        const maybeError = err as { message?: unknown; data?: unknown }
+
+        if (maybeError.data && typeof maybeError.data === 'object' && 'error' in (maybeError.data as Record<string, unknown>)) {
+            const apiMessage = (maybeError.data as Record<string, unknown>).error
+            if (typeof apiMessage === 'string' && apiMessage.trim().length > 0) {
+                return apiMessage
+            }
+        }
+
+        if (typeof maybeError.message === 'string' && maybeError.message.trim().length > 0) {
+            return maybeError.message
+        }
+    }
+
+    return fallback
+}
+
+const formatTodoDueDate = (value: string | null | undefined): string => {
+    if (!value) {
+        return ''
+    }
+
+    try {
+        const parsed = new Date(value)
+        if (Number.isNaN(parsed.getTime())) {
+            return value
+        }
+
+        return new Intl.DateTimeFormat(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        }).format(parsed)
+    } catch {
+        return value
+    }
+}
+
+const startAddingTodo = () => {
+    todoDraft.value = { title: '', description: '', dueDate: '' }
+    todoDraftError.value = null
+    isAddingTodo.value = true
+    editingTodoId.value = null
+    currentEditingTodo.value = null
+}
+
+const startEditingTodo = (todo: Todo) => {
+    currentEditingTodo.value = { ...todo }
+    editingTodoId.value = todo.todo_id
+    todoDraft.value = {
+        title: todo.title,
+        description: todo.description ?? '',
+        dueDate: normalizeDateInput(todo.dueDate),
+    }
+    todoDraftError.value = null
+    isAddingTodo.value = false
+}
+
+const cancelEditingTodo = () => {
+    editingTodoId.value = null
+    isAddingTodo.value = false
+    todoDraft.value = { title: '', description: '', dueDate: '' }
+    currentEditingTodo.value = null
+    todoDraftError.value = null
+}
+
+const saveTodo = async (): Promise<void> => {
+    const title = todoDraft.value.title.trim()
+    const description = todoDraft.value.description.trim()
+
+    if (!title) {
+        todoDraftError.value = t('dashboard_todo_title_required')
+        return
+    }
+
+    todoSaving.value = true
+    todoDraftError.value = null
+
+    try {
+        const payload: Record<string, unknown> = {
+            title,
+            description: description || null,
+        }
+
+        if (todoDraft.value.dueDate) {
+            payload.due_date = todoDraft.value.dueDate
+        }
+
+        if (editingTodoId.value !== null && currentEditingTodo.value) {
+            const todoId = toNumberOrNull(currentEditingTodo.value.todo_id)
+
+            if (todoId === null) {
+                throw new Error('Invalid todo identifier')
+            }
+
+            await apiFetch(`/api/admin/user/todo/${todoId}`, {
+                method: 'PUT',
+                body: JSON.stringify(payload),
+            })
+        } else {
+            await apiFetch('/api/admin/user/todo', {
+                method: 'POST',
+                body: JSON.stringify(payload),
+            })
+        }
+
+    editingTodoId.value = null
+    isAddingTodo.value = false
+    todoDraft.value = { title: '', description: '', dueDate: '' }
+    currentEditingTodo.value = null
+        await loadTodos()
+    } catch (err: unknown) {
+        console.error('Failed to save todo:', err)
+        todoDraftError.value = resolveTodoErrorMessage(err, t('dashboard_todo_save_error'))
+    } finally {
+        todoSaving.value = false
+    }
+}
+
+const toggleTodo = async (todo: Todo): Promise<void> => {
+    todoError.value = null
+
+    try {
+        await apiFetch(`/api/admin/user/todo/${todo.todo_id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                title: todo.title,
+                description: todo.description || null,
+                completed: !todo.completed,
+            }),
+        })
+
+        todo.completed = !todo.completed
+    } catch (err: unknown) {
+        console.error('Failed to toggle todo:', err)
+        todoError.value = resolveTodoErrorMessage(err, t('dashboard_todo_toggle_error'))
+    }
+}
+
+const deleteTodo = async (todo: Todo): Promise<void> => {
+    if (!confirm(t('dashboard_todo_delete_confirm'))) {
+        return
+    }
+
+    todoError.value = null
+    todoLoading.value = true
+
+    try {
+        await apiFetch(`/api/admin/user/todo/${todo.todo_id}`, {
+            method: 'DELETE',
+        })
+
+        todos.value = todos.value.filter(t => t.todo_id !== todo.todo_id)
+    } catch (err: unknown) {
+        console.error('Failed to delete todo:', err)
+        todoError.value = resolveTodoErrorMessage(err, t('dashboard_todo_delete_error'))
+    } finally {
+        todoLoading.value = false
+    }
+}
+
+onMounted(() => {
+    void loadTodos()
+})
+
+defineExpose({
+    loadTodos,
+})
+</script>
+
+<style scoped lang="scss">
+.todo-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.todo-panel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.todo-panel__title {
+    font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+    font-weight: 700;
+    margin: 0;
+    color: var(--uranus-color);
+}
+
+.todo-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.todo-list-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 0;
+}
+
+.todo-list__loading,
+.todo-list__empty {
+    margin: 0;
+    padding: 1rem;
+    color: var(--uranus-low-contrast-color);
+    font-size: 0.95rem;
+    text-align: center;
+    background: var(--uranus-bg-color);
+    border: 1px dashed var(--uranus-disabled-color);
+}
+
+.todo-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.todo-item__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.todo-item__checkbox {
+  cursor: pointer;
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.todo-item__label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    flex: 1;
+    color: var(--uranus-color);
+}
+
+.todo-item__description {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--uranus-low-contrast-color);
+    line-height: 1.4;
+}
+
+.todo-item__due-date {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--uranus-medium-contrast-color);
+    font-weight: 500;
+}
+
+.todo-item__footer {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.todo-list-item .button {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.todo-list-item:hover, .button {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.todo-item__delete-button {
+    color: var(--uranus-error-color);
+    border-color: rgba(243, 87, 73, 0.35);
+
+    &:hover:not(:disabled) {
+        background: rgba(243, 87, 73, 0.08);
+        border-color: var(--uranus-error-color);
+    }
+}
+
+.todo-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.todo-editor__card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.todo-editor__label :deep(.uranus-form-row) {
+    height: 100%;
+}
+
+.todo-editor__row {
+    align-items: stretch;
+}
+
+.todo-editor__textarea {
+    min-height: 200px;
+    height: 100%;
+    width: 100%;
+    resize: vertical;
+}
+
+.todo-feedback {
+    margin: 0;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.todo-feedback--error {
+    color: #991b1b;
+    background: rgba(254, 202, 202, 0.45);
+    border: 1px solid rgba(248, 113, 113, 0.35);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.25s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+@media (max-width: 640px) {
+    .todo-panel__header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .uranus-save-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    // show footer buttons always on mobile
+    .todo-item__footer {
+        opacity: 1;
+    }
+}
+</style>

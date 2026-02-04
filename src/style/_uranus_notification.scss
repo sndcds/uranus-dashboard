@@ -1,0 +1,123 @@
+/* UranusNotification.scss */
+.uranus-notification {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+  gap: 1rem;
+  border: 0px solid transparent;
+  border-radius: 6px;
+  color: var(--uranus-card-color);
+  background: var(--uranus-card-bg);
+  max-width: var(--uranus-notification-max-width);
+  overflow: hidden;
+
+  .notification-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+
+    .notification-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notification-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      width: 100%;
+      padding: var(--uranus-default-text-padding);
+      margin: 0 0 0.25rem;
+    }
+  }
+
+  .notification-content {
+    padding: var(--uranus-default-text-padding);
+    p {
+      font-size: 1rem;
+      margin: 0;
+    }
+  }
+
+  .notification-content {
+    margin-bottom: 12px;
+  }
+
+  .notification-actions {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    padding: 16px;
+
+    .notification-button {
+      display: inline-block;
+      padding: 0.4rem 0.75rem;
+      border-radius: 99px;
+      color: #333;
+      background-color: #eee;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        border-color: #eee;
+        background-color: #ddd;
+      }
+    }
+  }
+
+  &.notification-type-info {
+    border-color: var(--uranus-notify-info-color);
+    background: var(--uranus-notify-info-bg-color);
+    .notification-title {
+      background: var(--uranus-notify-info-color);
+    }
+  }
+
+  &.notification-type-warning {
+    border-color: var(--uranus-notify-warning-color);
+    background: var(--uranus-notify-warning-color);
+    .notification-title {
+      background: var(--uranus-notify-warning-color);
+    }
+  }
+
+  &.notification-type-error {
+    border-color: var(--uranus-notify-error-color);
+    color: var(--uranus-notify-error-color);
+    background: var(--uranus-notify-error-bg);
+    .notification-title {
+      color: var(--uranus-notify-error-title-color);
+      background: var(--uranus-notify-error-title-bg);
+    }
+  }
+}
+
+
+.uranus-notification-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--uranus-action-button-color);
+  background: var(--uranus-action-button-bg);
+  border: 0;
+  border-radius: 99px;
+  text-decoration: none;
+  transition: all 0.1s ease;
+  padding: 0.4rem 1.2rem !important;
+  font-size: 1rem;
+
+  &:hover {
+    color: var(--uranus-action-button-color);
+    background: var(--uranus-action-button-bg-hover);
+  }
+
+  &.tiny {
+    font-size: 0.85rem;
+    padding: 0.2rem 0.4rem;
+  }
+}
