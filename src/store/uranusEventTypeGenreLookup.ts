@@ -51,15 +51,19 @@ export const useEventTypeLookupStore = defineStore('eventTypesLookup', () => {
 
     /** Get genre name by typeId, genreId, and locale */
     const getGenreName = (typeId: number | null, genreId: number | null, localeStr: string): string => {
-        if (!typeId || genreId == null) return ''
+        if (typeId == null || genreId == null) return ''
         const typeObj = data.value[localeStr]?.types?.[typeId.toString()]
-        return typeObj?.genres?.[genreId.toString()] ?? ''
+        if (!typeObj || !typeObj.genres) return ''
+        const genreName =
+            genreId != null
+                ? typeObj.genres[String(genreId)] ?? ''
+                : '11111'
+        return genreName
     }
 
     /** Combined type / genre label */
     const getTypeGenreName = (typeId: number | null, genreId: number | null, localeStr: string): string => {
         const typeName = getTypeName(typeId, localeStr)
-        if (!genreId) return typeName
         const genreName = getGenreName(typeId, genreId, localeStr)
         return genreName ? `${typeName} / ${genreName}` : typeName
     }

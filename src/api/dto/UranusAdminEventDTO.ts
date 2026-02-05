@@ -1,5 +1,7 @@
 /*
-    UranusAdminEventDetailProps → data shape / input contract
+    src/api/dto/UranusAdminEventDTO.ts
+
+    2026-02-05, Roald
  */
 
 import { type UranusAdminEventDateDTO } from '@/api/dto/UranusAdminEventDateDTO.ts'

@@ -6,6 +6,8 @@ import { UranusEventLink } from '@/domain/event/UranusEventLink.ts'
 
 import { PlutoImageMeta } from '@/model/plutoImageModel.ts'
 import { toNumberOrNull, toString, toNullableString } from '@/util/UranusUtils.ts'
+import { mapEventTypeFromDTO, type UranusEventTypeDTO }  from "@/api/dto/UranusEventTypeDTO.ts";
+import type { UranusEventType } from "@/domain/event/UranusEventType.ts";
 
 type MapResult<T> = { data: T } | { error: string }
 
@@ -27,8 +29,9 @@ export const mapEventData = (raw: unknown): MapResult<UranusEvent> => {
     if (!organizationName) return { error: 'Missing field: organization_name' }
 
     // --- Event type ---
-    const eventTypes: UranusEventTypePair[] = Array.isArray(r.event_types)
-        ? r.event_types.map(mapEventType).filter((et): et is UranusEventTypePair => et !== null)
+    const eventTypes: UranusEventType[] = Array.isArray(r.event_types)
+        ? (r.event_types as UranusEventTypeDTO[])
+            .map(mapEventTypeFromDTO)
         : []
 
     // --- Event dates ---
@@ -86,9 +89,46 @@ export const mapEventData = (raw: unknown): MapResult<UranusEvent> => {
     }
 
     const data = new UranusEvent(
-        eventId,
-    )
+        eventId,                          // eventId
+        toNullableString(r.release_status), // releaseStatus
+        toNullableString(r.lang),           // lang
 
+        organizationId,                   // organizationId
+        organizationName,                 // organizationName
+        toNullableString(r.organization_url), // organizationUrl
+
+        title,                             // title
+        subtitle,                          // subtitle
+        toNullableString(r.description),   // description
+        toNullableString(r.summary),       // summary
+        eventTypes,                        // types
+        Array.isArray(r.tags) ? r.tags.map(String) : [], // tags
+
+        toNumberOrNull(r.min_age),         // minAge
+        toNumberOrNull(r.max_age),         // maxAge
+        Array.isArray(r.languages) ? r.languages.map(String) : [], // languages
+
+        toNullableString(r.meeting_point), // meetingPoint
+        toNullableString(r.participation_info), // participationInfo
+        toNullableString(r.online_url),    // onlineUrl
+
+        toNumberOrNull(r.max_attendees),   // maxAttendees
+        toNumberOrNull(r.price_type),      // priceType
+        toNumberOrNull(r.ticket_advance),  // ticketAdvance
+        toBooleanOrNull(r.ticket_required), // ticketRequired
+        toBooleanOrNull(r.registration_required), // registrationRequired
+        toNullableString(r.currency),      // currency
+        toNumberOrNull(r.min_price),       // minPrice
+        toNumberOrNull(r.max_price),       // maxPrice
+
+        images['main'] ?? null,            // image (example: pick a key from images)
+        Array.isArray(r.event_links)
+            ? (r.event_links as any[]).map(mapEventUrl).filter((u): u is UranusEventLink => u !== null)
+            : [],                            // eventUrls
+
+        firstEventDate ?? new UranusEventDate(), // date
+        eventDates.filter(d => d !== firstEventDate) // furtherDates
+    )
     return { data }
 
 }

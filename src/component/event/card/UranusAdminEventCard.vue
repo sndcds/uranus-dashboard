@@ -1,5 +1,5 @@
 <!--
-  src/component/event/card/UranusEventDashboardCard.vue
+  src/component/event/card/UranusAdminEventCard.vue
 
   Dashboard card displaying basic event information.
 
@@ -10,12 +10,14 @@
   <UranusCard class="uranus-dashboard-event-card">
     <div class="uranus-dashboard-event-card-layout">
 
+      event.imageUrl: {{ event.imageUrl }}
       <!-- Event Image -->
       <img
           v-if="event.imageUrl"
           class="uranus-dashboard-event-card-image"
           :src="event.imageUrl"
           :alt="event.title"
+          @error="onImageError"
       />
 
       <!-- Event Info -->
@@ -96,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { ApiError } from '@/api.ts'
@@ -109,6 +111,15 @@ import UranusCard from "@/component/ui/UranusCard.vue";
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusDashboardButton from '@/component/dashboard/UranusDashboardButton.vue'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
+import type { UranusAdminListEvent } from '@/domain/event/UranusAdminListEvent.ts'
+import type { UranusEventTypePair } from '@/domain/event/UranusEventTypePair.ts'
+
+const placeholderImage = '/public/uranus-pevent-laceholder.webp'
+
+const onImageError = (e: Event) => {
+  const img = e.target as HTMLImageElement
+  img.src = placeholderImage
+}
 
 const emit = defineEmits<{
   deleted: [payload: { eventId: number; dateId: number | null; deleteSeries: boolean }]

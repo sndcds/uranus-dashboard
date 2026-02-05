@@ -11,7 +11,7 @@ import UranusDashboardVenuesView from '@/view/UranusDashboardVenuesView.vue'
 import UranusSignupView from '@/view/UranusSignupView.vue'
 import UranusSpaceEditView from '@/view/UranusSpaceEditView.vue'
 import UranusAdminOrganizationEventsView from '@/view/admin/UranusAdminOrganizationEventsView.vue'
-import UranusAdminEditEventView from '@/view/admin/UranusAdminEditEventView.vue'
+import UranusEditEventView from '@/view/admin/UranusEditEventView.vue'
 import UranusUserProfileView from '@/view/UranusUserProfileView.vue'
 import UranusEditOrganizationView from '@/view/UranusEditOrganizationView.vue'
 import UranusEditVenueView from '@/view/UranusEditVenueView.vue'
@@ -124,7 +124,7 @@ const routes = [
             {
                 path: 'event/:id',
                 name: 'admin-event-details',
-                component: UranusAdminEditEventView,
+                component: UranusEditEventView,
             },
             {
                 path: 'user/profile',

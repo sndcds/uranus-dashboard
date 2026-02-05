@@ -1,8 +1,8 @@
-import { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
-import { UranusEventLocation } from '@/domain/event/UranusEventLocation.ts'
+// import { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
+// import { UranusEventLocation } from '@/domain/event/UranusEventLocation.ts'
 
 
-interface UranusEventDateDTO {
+export interface UranusEventDateDTO {
     id?: number
     event_id?: number
     release_status?: string
@@ -37,7 +37,7 @@ interface UranusEventDateDTO {
     space_name?: string
     space_website?: string
 }
-
+/*
 function mapEventDateFromApi(dto: UranusEventDateDTO): UranusEventDate {
     return new UranusEventDate(
         dto.id ?? null,
@@ -77,3 +77,4 @@ function mapEventDateFromApi(dto: UranusEventDateDTO): UranusEventDate {
         dto.space_website ?? null,
     )
 }
+*/

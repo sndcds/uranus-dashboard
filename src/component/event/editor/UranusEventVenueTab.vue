@@ -57,7 +57,7 @@
 import { onMounted, computed, ref, watch } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
-import { type UranusEventVenueInfoDTO } from '@/api/dto/UranusEventVenueInfoDTO.ts'
+import { type UranusVenueInfoDTO } from '@/api/dto/UranusVenueInfoDTO.ts'
 import { type UranusGroupedVenue } from '@/domain/venue/UranusGroupedVenue.ts'
 import { type UranusAPIResponse } from '@/model/uranusAPIResponse.ts'
 import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
@@ -65,7 +65,7 @@ import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue
 const store = useUranusAdminEventStore()
 const draft = computed(() => store.draft!)
 
-const venueInfos = ref<UranusEventVenueInfoDTO[]>([])
+const venueInfos = ref<UranusVenueInfoDTO[]>([])
 
 const showModal = ref(false)
 
@@ -87,7 +87,7 @@ watch(selectedPlace, (val) => {
 
 onMounted(async () => {
   const res = await apiFetch<
-      UranusAPIResponse<{ venueInfos: UranusEventVenueInfoDTO[] }>
+      UranusAPIResponse<{ venueInfos: UranusVenueInfoDTO[] }>
   >('/api/admin/user/choosable-event-venues')
 
   venueInfos.value = res.data?.data?.venueInfos ?? []

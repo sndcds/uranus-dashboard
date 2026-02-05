@@ -17,9 +17,6 @@ export const useUranusAdminEventStore = defineStore('uranusEvent', () => {
     const saving = ref(false)
     const error = ref<string | null>(null)
 
-    const baseTabFields = ['title', 'subtitle', 'description', 'summary'] as const
-    type BaseTabField = (typeof baseTabFields)[number]
-
 
     // Helpers
     function cloneEvent(event: UranusAdminEvent): UranusAdminEvent {
@@ -61,53 +58,12 @@ export const useUranusAdminEventStore = defineStore('uranusEvent', () => {
         draft.value = cloneEvent(event)
     }
 
-    function resetDraft() {
-        if (!original.value) return
-        draft.value = cloneEvent(original.value)
-    }
-
-    function commitDraft() {
-        if (!draft.value) return
-        original.value = cloneEvent(draft.value)
-    }
-
-    function commitBaseTab() {
-        if (!draft.value || !original.value) return
-
-        const keys: BaseTabField[] = ['title', 'subtitle', 'description', 'summary']
-
-        keys.forEach(key => {
-            // fallback to empty string if null
-            original.value![key] = structuredClone(draft.value![key] ?? '')
-        })
-    }
-
-    function resetBaseTab() {
-        if (!draft.value || !original.value) return
-
-        const keys: BaseTabField[] = ['title', 'subtitle', 'description', 'summary']
-
-        keys.forEach(key => {
-            draft.value![key] = structuredClone(original.value![key] ?? '')
-        })
-    }
-
-
     function clear() {
         original.value = null
         draft.value = null
         error.value = null
     }
 
-    // Domain-specific mutations
-
-    function updateBase<K extends keyof UranusAdminEvent>(
-        key: K,
-        value: UranusAdminEvent[K]
-    ) {
-        if (!draft.value) return
-            ;(draft.value[key] as any) = value
-    }
 
     function addEventDate() {
         if (!draft.value) return
@@ -135,30 +91,25 @@ export const useUranusAdminEventStore = defineStore('uranusEvent', () => {
     }
 
     return {
-        // state
+        // State
         original,
         draft,
         loading,
         saving,
         error,
 
-        // getters
+        // Getters
         isLoaded,
         isDirty,
         hasMultipleDates,
         primaryDate,
         effectiveReleaseDate,
 
-        // actions
+        // Actions
         loadFromApi,
-        commitBaseTab,
-        resetBaseTab,
-        resetDraft,
-        commitDraft,
         clear,
 
-        // domain mutations
-        updateBase,
+        // Domain mutations
         addEventDate,
         removeEventDate,
         addTag,

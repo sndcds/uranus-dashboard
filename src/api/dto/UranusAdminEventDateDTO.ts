@@ -1,3 +1,9 @@
+/*
+    src/api/dto/UranusAdminEventDateDTO.ts
+
+    2026-02-05, Roald
+ */
+
 export interface UranusAdminEventDateDTO {
     id: number
     event_id: number

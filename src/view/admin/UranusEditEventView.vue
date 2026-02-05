@@ -1,5 +1,7 @@
 <!--
-  src/view/admin/UranusAdminEditEventView.vue
+  src/view/admin/UranusEditEventView.vue
+
+  Uranus Event Editor
 
   2026-02-05, Roald
 -->
@@ -110,18 +112,6 @@ onUnmounted(() => {
   // Important when switching between events
   adminEventStore.clear()
 })
-
-async function save() {
-  if (!adminEventStore.draft || !adminEventStore.isDirty) return
-
-  adminEventStore.saving = true
-  try {
-    // await updateAdminEvent(store.draft) TODO: !!!!
-    adminEventStore.commitDraft()
-  } finally {
-    adminEventStore.saving = false
-  }
-}
 </script>
 
 

@@ -1,3 +1,9 @@
+<!--
+  src/view/public/UranusEventView.vue
+
+  2026-02-05, Roald
+-->
+
 <template>
 
   <div v-if="showLoading" class="uranus-public-state-info--loading">
@@ -37,7 +43,6 @@
           <h2 v-if="event.subtitle">
             {{ event.subtitle }}
           </h2>
-          xxx {{ event.releaseStatus }}
           <UranusEventReleaseChip
               v-if="['released', 'cancelled', 'deferred', 'rescheduled'].includes(event.releaseStatus ?? 'draft')"
               :releaseStatus="event.releaseStatus"
@@ -86,7 +91,7 @@
           <div class="uranus-public-detail-links">
             <a v-for="link in event.eventUrls" :key="link.id" :href="link.url" target="_blank"
                rel="noopener noreferrer" class="uranus-public-detail-link">
-              {{ link.title || link.url }}&nbsp;↗
+              {{ link.label || link.url }}&nbsp;↗
             </a>
           </div>
         </div>
@@ -95,8 +100,7 @@
 
       <!-- Right Column - Sidebar -->
       <aside class="uranus-event-detail-sidebar">
-
-        <div v-if="event.eventId && eventDate?.id" class="uranus-public-info-section">
+        <div class="uranus-public-info-section">
 
           <!-- Date & Time -->
           <UranusEventDateTimeDisplay
@@ -111,15 +115,26 @@
           <UranusEventVenueDisplay :event="event" />
           <UranusEventLocationDisplay :event="event" />
 
+          maxAttendees: {{ event.maxAttendees }}<br>
+          minAge: {{ event.minAge }}<br>
+          maxAge: {{ event.maxAge }}<br>
+          currency: {{ event.currency }}<br>
+          priceType: {{ event.priceType }}<br>
+          minPrice: {{ event.minPrice }}<br>
+          maxPrice: {{ event.maxPrice }}<br>
+          meetingPoint: {{ event.meetingPoint }}<br>
+          participationInfo: {{ event.participationInfo }}<br>
+          <br>
+
           <!-- Organization -->
-          <div v-if="event.orgName">
+          <div v-if="event.organizationName">
             <p class="uranus-public-info-label">{{ t('event_organizer') }}:</p>
-            <p v-if="event?.orgUrl && event?.orgName">
-              <a :href="event.orgUrl" target="_blank" rel="noopener noreferrer">
-                {{ event?.orgName }}&nbsp;↗
+            <p v-if="event?.organizationUrl && event?.organizationName">
+              <a :href="event.organizationUrl" target="_blank" rel="noopener noreferrer">
+                {{ event?.organizationName }}&nbsp;↗
               </a>
             </p>
-            <p v-else>{{ event.orgName }}</p>
+            <p v-else>{{ event.organizationName }}</p>
           </div>
 
           <!-- Additional Info -->
@@ -188,7 +203,6 @@ import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDispla
 
 import { UranusEvent } from '@/domain/event/UranusEvent.ts'
 import { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
-import { mapEventData } from '@/api/mapper/UranusEventMapper.ts'
 import UranusEventLocationDisplay from '@/component/event/ui/UranusEventLocationDisplay.vue'
 import UranusEventFurtherDatesDisplay from '@/component/event/ui/UranusEventFurtherDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
@@ -302,11 +316,10 @@ const hasLonLat = computed(() => {
   return false
 })
 
-// Load event
-const loadEvent = async () => {
-  const eventId = resolveRouteParam(route.params.id)
-  const eventDateId = Number(resolveRouteParam(route.params.eventDateId))
 
+const loadEvent = async () => {
+  const eventId = Number(resolveRouteParam(route.params.id))
+  const eventDateId = Number(resolveRouteParam(route.params.eventDateId))
   if (!eventId || !eventDateId) {
     loadError.value = t('error_missing_params')
     isLoading.value = false
@@ -320,19 +333,12 @@ const loadEvent = async () => {
     const lang = locale.value || 'de'
     const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
     const {data} = await apiFetch<unknown>(endpoint)
-
-    // Map API data to your typed model
     const mappedEvent = UranusEvent.fromApi(data, eventDateId)
-
     if (!mappedEvent) {
       loadError.value = t('error_incomplete_data')
       return
     }
-
-    // Set full event
     event.value = mappedEvent
-
-    // Set selected date
     eventDate.value = mappedEvent.date
 
   } catch (error: unknown) {
