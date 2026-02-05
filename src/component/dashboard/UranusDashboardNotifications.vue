@@ -60,8 +60,8 @@
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import UranusDashboardButton from "@/component/dashboard/UranusDashboardButton.vue";
-import UranusEventReleaseChip from "@/component/event/UranusEventReleaseChip.vue";
+import UranusDashboardButton from '@/component/dashboard/UranusDashboardButton.vue'
+import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 
 interface Notification {
   event_id: number

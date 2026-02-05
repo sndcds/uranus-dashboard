@@ -9,7 +9,7 @@
   ],
   "compilerOptions": {
     "target": "ESNext",              // Modern JS output
-    "module": "ESNext",              // Needed for import.meta
+    "module": "Node16",              // Needed for import.meta
     "moduleResolution": "Node16",    // Node-style module resolution
     "strict": true,                  // Enable strict type checking
     "baseUrl": ".",                  // Allow absolute imports
@@ -18,6 +18,13 @@
     },
     "types": ["vite/client", "node"],// Vite + Node type
     "esModuleInterop": true,         // For default imports
-    "skipLibCheck": true             // Avoid type errors in node_modules
+    "skipLibCheck": true,            // Avoid type errors in node_modules
+
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
   },
 }

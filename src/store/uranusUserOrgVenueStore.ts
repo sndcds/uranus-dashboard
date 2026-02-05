@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { apiFetch } from '@/api.ts'
-import type { UranusEventVenueInfoProp } from '@/model/uranusAdminEventModel.ts'
+import type { UranusEventVenueInfoDTO } from '@/api/dto/UranusEventVenueInfoDTO.ts'
 
 interface UranusVenueApiResponse {
     service: string
@@ -12,13 +12,13 @@ interface UranusVenueApiResponse {
     timestamp: string
     data: {
         total_count: number
-        venueInfos: UranusEventVenueInfoProp[]
+        venueInfos: UranusEventVenueInfoDTO[]
     }
 }
 
 export const useUranusUserOrgVenueStore = defineStore('uranusVenue', () => {
     // the venue list
-    const venueInfos = ref<UranusEventVenueInfoProp[]>([])
+    const venueInfos = ref<UranusEventVenueInfoDTO[]>([])
 
     const loading = ref(false)
     const error = ref<string | null>(null)

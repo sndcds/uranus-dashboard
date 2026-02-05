@@ -37,8 +37,9 @@
           <h2 v-if="event.subtitle">
             {{ event.subtitle }}
           </h2>
+          xxx {{ event.releaseStatus }}
           <UranusEventReleaseChip
-              v-if="(event.releaseStatus ?? 0) > 3"
+              v-if="['released', 'cancelled', 'deferred', 'rescheduled'].includes(event.releaseStatus ?? 'draft')"
               :releaseStatus="event.releaseStatus"
           />
         </div>
@@ -98,7 +99,7 @@
         <div v-if="event.eventId && eventDate?.id" class="uranus-public-info-section">
 
           <!-- Date & Time -->
-          <UranusPublicEventDateTimeDisplay
+          <UranusEventDateTimeDisplay
               :startDate="eventStartDate"
               :startTime="eventStartTime"
               :endDate="eventEndDate"
@@ -107,8 +108,8 @@
           />
 
           <!-- Venue, Space, Location -->
-          <UranusPublicEventVenueDisplay :event="event" />
-          <UranusPublicEventLocationDisplay :event="event" />
+          <UranusEventVenueDisplay :event="event" />
+          <UranusEventLocationDisplay :event="event" />
 
           <!-- Organization -->
           <div v-if="event.orgName">
@@ -127,7 +128,7 @@
             <p>{{ event.meetingPoint }}</p>
           </div>
 
-          <UranusPublicEventFurtherDates
+          <UranusEventFurtherDatesDisplay
               v-if="event?.furtherDates?.length"
               :dates="event.furtherDates"
           />
@@ -182,14 +183,15 @@ import { marked } from 'marked'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import { useLanguageLookupStore } from '@/store/uranusLanguageLookupStore.ts'
 
-import UranusPublicEventDateTimeDisplay from "@/component/event/UranusPublicEventDateTimeDisplay.vue"
-import UranusPublicEventVenueDisplay from "@/component/event/UranusPublicEventVenueDisplay.vue"
+import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
+import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'
 
-import { UranusEvent, UranusEventDate } from '@/model/uranusEventModel.ts'
-import { mapEventData } from '@/util/UranusEventMapper.ts'
-import UranusPublicEventLocationDisplay from "@/component/event/UranusPublicEventLocationDisplay.vue";
-import UranusPublicEventFurtherDates from "@/component/event/UranusPublicEventFurtherDates.vue";
-import UranusEventReleaseChip from "@/component/event/UranusEventReleaseChip.vue";
+import { UranusEvent } from '@/domain/event/UranusEvent.ts'
+import { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
+import { mapEventData } from '@/api/mapper/UranusEventMapper.ts'
+import UranusEventLocationDisplay from '@/component/event/ui/UranusEventLocationDisplay.vue'
+import UranusEventFurtherDatesDisplay from '@/component/event/ui/UranusEventFurtherDatesDisplay.vue'
+import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { uranusI18nAccessibilityFlags } from '@/i18n/uranus-i18n-accessibility.ts'
 
 const route = useRoute()
@@ -303,10 +305,10 @@ const hasLonLat = computed(() => {
 // Load event
 const loadEvent = async () => {
   const eventId = resolveRouteParam(route.params.id)
-  const eventDateId = resolveRouteParam(route.params.eventDateId)
+  const eventDateId = Number(resolveRouteParam(route.params.eventDateId))
 
   if (!eventId || !eventDateId) {
-    loadError.value = 'Missing event ID or date ID'
+    loadError.value = t('error_missing_params')
     isLoading.value = false
     return
   }
@@ -314,45 +316,33 @@ const loadEvent = async () => {
   isLoading.value = true
   loadError.value = null
 
-  const loadEvent = async () => {
-    const eventId = resolveRouteParam(route.params.id)
-    const eventDateId = Number(resolveRouteParam(route.params.eventDateId))
+  try {
+    const lang = locale.value || 'de'
+    const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
+    const {data} = await apiFetch<unknown>(endpoint)
 
-    if (!eventId || !eventDateId) {
-      loadError.value = t('error_missing_params')
-      isLoading.value = false
+    // Map API data to your typed model
+    const mappedEvent = UranusEvent.fromApi(data, eventDateId)
+
+    if (!mappedEvent) {
+      loadError.value = t('error_incomplete_data')
       return
     }
 
-    isLoading.value = true
-    loadError.value = null
+    // Set full event
+    event.value = mappedEvent
 
-    try {
-      const lang = locale.value || 'de'
-      const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
-      const {data} = await apiFetch<unknown>(endpoint)
+    // Set selected date
+    eventDate.value = mappedEvent.date
 
-      // Map API data to your typed model
-      const mappedEvent = UranusEvent.fromApi(data, eventDateId)
-
-      if (!mappedEvent) {
-        loadError.value = t('error_incomplete_data')
-        return
-      }
-
-      // Set full event
-      event.value = mappedEvent
-
-      // Set selected date
-      eventDate.value = mappedEvent.date
-
-    } catch (error: unknown) {
-      loadError.value = error instanceof Error ? error.message : t('error_fetch_data_failed')
-    } finally {
-      isLoading.value = false
-    }
+  } catch (error: unknown) {
+    loadError.value = error instanceof Error ? error.message : t('error_fetch_data_failed')
+    console.log('error', error)
+  } finally {
+    isLoading.value = false
   }
 }
+
 
 const onShowOnMap = () => {
   // TODO: Implement!

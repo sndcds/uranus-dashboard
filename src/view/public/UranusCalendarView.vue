@@ -154,15 +154,15 @@ import { useRouter } from "vue-router"
 import { useI18n } from "vue-i18n";
 import { apiFetch } from "@/api.ts"
 import UranusModal from '@/component/uranus/UranusModal.vue'
-import UranusEventReleaseChip from "@/component/event/UranusEventReleaseChip.vue";
+import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
-import { useEventTypeLookupStore } from "@/store/uranusEventTypeGenreLookup.ts";
-import UranusFormRow from "@/component/ui/UranusFormRow.vue";
-import UranusInlineEditActions from "@/component/ui/UranusInlineEditActions.vue";
-import UranusTextInput from "@/component/ui/UranusTextInput.vue";
-import { urlParamsSetIfPresent } from "@/util/UranusUtils.ts";
-import UranusDateInput from "@/component/ui/UranusDateInput.vue";
-import { uranusFormatDateTime } from "@/util/UranusStringUtils.ts";
+import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusInlineEditActions from '@/component/ui/UranusInlineEditActions.vue'
+import UranusTextInput from '@/component/ui/UranusTextInput.vue'
+import { urlParamsSetIfPresent } from '@/util/UranusUtils.ts'
+import UranusDateInput from '@/component/ui/UranusDateInput.vue'
+import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
 
 const router = useRouter()
 const { t, locale } = useI18n({ useScope: 'global' })

@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@georgedoescode/spline": "^1.0.1",

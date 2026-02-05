@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import UranusEventSlideshow from '@/component/event/UranusEventSlideshow.vue'
+import UranusEventSlideshow from '@/component/dev/UranusEventSlideshow.vue'
 
 interface CalendarEvent {
   event_date_id: number

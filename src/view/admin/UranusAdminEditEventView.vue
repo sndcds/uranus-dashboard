@@ -1,12 +1,17 @@
+<!--
+  src/view/admin/UranusAdminEditEventView.vue
+
+  2026-02-05, Roald
+-->
+
 <template>
   <div class="event-editor">
-    <div v-if="store.loading">Loading…</div>
-    <div v-else-if="store.error">{{ store.error }}</div>
+    <div v-if="adminEventStore.loading">Loading…</div>
+    <div v-else-if="adminEventStore.error">{{ adminEventStore.error }}</div>
 
-    <template v-else-if="store.isLoaded">
-      <!-- header -->
+    <template v-else-if="adminEventStore.isLoaded">
       <header class="editor-header">
-        <h1>{{ store.draft?.title }}</h1>
+        <h1>{{ adminEventStore.draft?.title }}</h1>
         {{ eventId }}
       </header>
 
@@ -22,7 +27,6 @@
         </button>
       </nav>
 
-      <!-- tab content -->
       <section class="tab-content">
         <component :is="currentTabComponent" />
       </section>
@@ -34,27 +38,25 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
-
-import { type UranusAdminEventJSON } from '@/composable/useAdminEvent.ts'
-
-// tab components
 import { useI18n } from "vue-i18n";
 import { apiFetch } from "@/api.ts";
-import AdminEventSettingsTab from '@/component/event/event-editor/AdminEventSettingsTab.vue'
-import AdminEventBaseTab from '@/component/event/event-editor/AdminEventBaseTab.vue'
-import AdminEventDatesTab from '@/component/event/event-editor/AdminEventDatesTab.vue'
-import UranusMeta1Tab from "@/component/event/event-editor/UranusMeta1Tab.vue";
-import AdminEventParticipationTab from "@/component/event/event-editor/AdminEventParticipationTab.vue";
-import UranusEventVenueTab from "@/component/event/event-editor/UranusEventVenueTab.vue";
-import AdminEventPriceTab from "@/component/event/event-editor/AdminEventPriceTab.vue";
+
+import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { type UranusAdminEventDTO } from '@/api/dto/UranusAdminEventDTO.ts'
+
+import AdminEventBaseTab from '@/component/event/editor/AdminEventBaseTab.vue'
+import AdminEventDatesTab from '@/component/event/editor/AdminEventDatesTab.vue'
+import UranusMeta1Tab from "@/component/event/editor/UranusMeta1Tab.vue";
+import AdminEventParticipationTab from "@/component/event/editor/AdminEventParticipationTab.vue";
+import UranusEventVenueTab from "@/component/event/editor/UranusEventVenueTab.vue";
+import AdminEventPriceTab from "@/component/event/editor/AdminEventPriceTab.vue";
 
 // api
 // import { fetchAdminEvent, updateAdminEvent } from '@/api/adminEvents' TODO: !!!
 
-const { t, locale } = useI18n({ useScope: 'global' })
+const { locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
-const store = useUranusAdminEventStore()
+const adminEventStore = useUranusAdminEventStore()
 
 const eventId = computed(() => {
   const id = Number(route.params.id)
@@ -65,29 +67,21 @@ type TabKey = 'settings' | 'base' | 'dates' | 'venue' |'meta1' | 'participation'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
-  { key: 'base', label: 'Base' },
-  { key: 'venue', label: 'Venue' },
-  { key: 'dates', label: 'Dates' },
-  { key: 'meta1', label: 'Meta1' },
-  { key: 'participation', label: 'Participation' },
-  { key: 'price', label: 'Price' },
-  { key: 'settings', label: 'Settings' }
+  { key: 'base', label: 'Was' },
+  { key: 'venue', label: 'Wo' },
+  { key: 'dates', label: 'Wann' },
+  { key: 'meta1', label: '1' },
+  { key: 'participation', label: '2' },
+  { key: 'price', label: '3' }
 ] as const
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
-    case 'settings':
-      return AdminEventSettingsTab
-    case 'dates':
-      return AdminEventDatesTab
-    case 'venue':
-      return UranusEventVenueTab
-    case 'meta1':
-      return UranusMeta1Tab
-    case 'participation':
-      return AdminEventParticipationTab
-    case 'price':
-      return AdminEventPriceTab
+    case 'dates': return AdminEventDatesTab
+    case 'venue': return UranusEventVenueTab
+    case 'meta1': return UranusMeta1Tab
+    case 'participation': return AdminEventParticipationTab
+    case 'price': return AdminEventPriceTab
     case 'base':
     default:
       return AdminEventBaseTab
@@ -96,36 +90,36 @@ const currentTabComponent = computed(() => {
 
 onMounted(async () => {
   if (!eventId.value) {
-    store.error = 'Invalid eventId'
+    adminEventStore.error = 'Invalid eventId'
     return
   }
 
-  store.loading = true
+  adminEventStore.loading = true
   try {
     const apiPath = `/api/admin/event/${eventId.value}?lang=${locale.value}`
-    const response = await apiFetch<{ data: UranusAdminEventJSON }>(apiPath)
-    store.loadFromApi(response.data.data)
+    const response = await apiFetch<{ data: UranusAdminEventDTO }>(apiPath)
+    adminEventStore.loadFromApi(response.data.data)
   } catch (e) {
-    store.error = 'Failed to load event'
+    adminEventStore.error = 'Failed to load event'
   } finally {
-    store.loading = false
+    adminEventStore.loading = false
   }
 })
 
 onUnmounted(() => {
   // Important when switching between events
-  store.clear()
+  adminEventStore.clear()
 })
 
 async function save() {
-  if (!store.draft || !store.isDirty) return
+  if (!adminEventStore.draft || !adminEventStore.isDirty) return
 
-  store.saving = true
+  adminEventStore.saving = true
   try {
     // await updateAdminEvent(store.draft) TODO: !!!!
-    store.commitDraft()
+    adminEventStore.commitDraft()
   } finally {
-    store.saving = false
+    adminEventStore.saving = false
   }
 }
 </script>

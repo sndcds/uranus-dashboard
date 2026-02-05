@@ -1,15 +1,17 @@
 /*
     src/store/uranusAdminEventStore.ts
+
+    2026-02-05, Roald
  */
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { UranusEventDetail } from '@/model/uranusAdminEventModel.ts'
+import { UranusAdminEvent } from '@/domain/event/UranusAdminEvent.ts'
 
 export const useUranusAdminEventStore = defineStore('uranusEvent', () => {
     // State
-    const original = ref<UranusEventDetail | null>(null)
-    const draft = ref<UranusEventDetail | null>(null)
+    const original = ref<UranusAdminEvent | null>(null)
+    const draft = ref<UranusAdminEvent | null>(null)
 
     const loading = ref(false)
     const saving = ref(false)
@@ -20,9 +22,9 @@ export const useUranusAdminEventStore = defineStore('uranusEvent', () => {
 
 
     // Helpers
-    function cloneEvent(event: UranusEventDetail): UranusEventDetail {
+    function cloneEvent(event: UranusAdminEvent): UranusAdminEvent {
         // safest clone for class-based models
-        return new UranusEventDetail(structuredClone(event.toProps()))
+        return new UranusAdminEvent(structuredClone(event.toProps()))
     }
 
     // Getters
@@ -49,14 +51,12 @@ export const useUranusAdminEventStore = defineStore('uranusEvent', () => {
         )
     })
 
-    // Actions
     function loadFromApi(raw: any) {
-        const event = UranusEventDetail.fromApi(raw)
+        const event = UranusAdminEvent.fromApi(raw)
         if (!event) {
             error.value = 'Failed to map event'
             return
         }
-
         original.value = event
         draft.value = cloneEvent(event)
     }
@@ -101,9 +101,9 @@ export const useUranusAdminEventStore = defineStore('uranusEvent', () => {
 
     // Domain-specific mutations
 
-    function updateBase<K extends keyof UranusEventDetail>(
+    function updateBase<K extends keyof UranusAdminEvent>(
         key: K,
-        value: UranusEventDetail[K]
+        value: UranusAdminEvent[K]
     ) {
         if (!draft.value) return
             ;(draft.value[key] as any) = value
