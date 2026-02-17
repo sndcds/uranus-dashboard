@@ -13,7 +13,7 @@
             id="login-email"
             required
             :label="t('email')"
-            :error="fieldErrors.email"
+            :error="fieldErrors.email ?? ''"
         />
 
         <UranusPasswordInput
@@ -48,6 +48,8 @@
       </footer>
     </div>
   </div>
+
+  <UranusBlob />
 </template>
 
 <script setup lang="ts">
@@ -57,13 +59,12 @@ import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import type { LoginResponse } from '@/api.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import { useUserStore } from '@/store/userStore.ts'
-import { useThemeStore } from '@/store/themeStore.ts'
+import { useUserStore } from '@/store/uranusUserStore.ts'
+import { useThemeStore } from '@/store/uranusThemeStore.ts'
 
 import UranusTextInput from '@/component/ui/UranusTextInput.vue'
 import UranusPasswordInput from "@/component/ui/UranusPasswordInput.vue";
-import UranusBlob from "@/component/uranus/UranusBlob.vue";
-import UranusDashboardButton from "@/component/dashboard/UranusDashboardButton.vue";
+import UranusBlob from '@/component/uranus/UranusBlob.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -82,7 +83,6 @@ const selectedLocale = computed({
 
 const email = ref('')
 const password = ref('')
-const isPasswordVisible = ref(false)
 const error = ref<string | null>(null)
 const isSubmitting = ref(false)
 

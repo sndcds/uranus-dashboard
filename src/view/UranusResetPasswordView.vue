@@ -232,10 +232,7 @@ const handleSubmit = async () => {
     try {
         const { status } = await apiFetch('/api/reset-password', {
             method: 'POST',
-            body: JSON.stringify({
-                token,
-                new_password: trimmedPassword,
-            }),
+            body: JSON.stringify({ token, new_password: trimmedPassword }),
         })
 
         if (status >= 200 && status < 300) {

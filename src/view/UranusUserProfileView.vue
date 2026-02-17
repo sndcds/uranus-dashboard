@@ -61,7 +61,7 @@
                             </div>
                             <UranusFormRow class="profile-preferences__grid">
                                 <UranusFieldLabel id="profile_language" :label="t('language')">
-                                    <select id="profile_language" v-model="selectedLocale" class="uranus-select"
+                                    <select id="profile_language" v-model="selectedLocale" class="uranus-admin-select"
                                         :disabled="isSubmitting">
                                         <option v-for="option in localeOptions" :key="option.value"
                                             :value="option.value">
@@ -70,7 +70,7 @@
                                     </select>
                                 </UranusFieldLabel>
                                 <UranusFieldLabel id="profile_theme" :label="t('settings_theme')">
-                                    <select id="profile_theme" v-model="selectedTheme" class="uranus-select"
+                                    <select id="profile_theme" v-model="selectedTheme" class="uranus-admin-select"
                                         :disabled="isSubmitting">
                                         <option v-for="option in themeOptions" :key="option.value"
                                             :value="option.value">
@@ -108,8 +108,8 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useThemeStore } from '@/store/themeStore.ts'
-import { useUserStore } from '@/store/userStore.ts'
+import { useThemeStore } from '@/store/uranusThemeStore.ts'
+import { useUserStore } from '@/store/uranusUserStore.ts'
 import type { ThemeMode } from '@/util/theme.ts'
 import { apiFetch } from '@/api.ts'
 import UserAvatarUpload from '@/component/UserAvatarUpload.vue'

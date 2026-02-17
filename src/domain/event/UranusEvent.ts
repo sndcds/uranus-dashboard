@@ -45,7 +45,7 @@ export class UranusEvent {
 
     public date: UranusEventDate = new UranusEventDate()
     public furtherDates: UranusEventDate[] = []
- 
+
     /** Static mapper from API JSON → domain object */
     static fromApi(raw: any, dateId?: number): UranusEvent | null {
         if (!raw || typeof raw !== 'object') return null

@@ -21,7 +21,6 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { mapEventData } from '@/api/mapper/UranusEventMapper.ts'
 import UranusEventSlide from './UranusEventSlide.vue'
 
 /* ------------------ type ------------------ */

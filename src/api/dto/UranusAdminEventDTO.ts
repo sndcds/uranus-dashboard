@@ -51,5 +51,5 @@ export interface UranusAdminEventDTO {
 
     languages?: string[]
     event_dates?: UranusAdminEventDateDTO[] | null
-    event_links: { label: string | null; type: number | null; url: string | null }[] | null
+    event_links: { label: string | null; type: string | null; url: string | null }[] | null
 }

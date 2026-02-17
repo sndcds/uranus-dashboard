@@ -10,7 +10,6 @@
   <UranusCard class="uranus-dashboard-event-card">
     <div class="uranus-dashboard-event-card-layout">
 
-      event.imageUrl: {{ event.imageUrl }}
       <!-- Event Image -->
       <img
           v-if="event.imageUrl"
@@ -213,9 +212,10 @@ const confirmDelete = async ({password, selectedOption}: {
 
     const response = await apiFetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     })
+
+    console.log(response) // TODO: Validate response
 
     // Success → emit deleted
     emit('deleted', {

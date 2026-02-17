@@ -3,7 +3,6 @@ import {
     UranusAdminEventDate
 } from '@/model/uranusAdminEventModel.ts'
 
-import type { UranusEventLink } from '@/model/uranusEventModel.ts'
 
 export function mapAdminEventDetail(raw: any): UranusEventDetail | null {
     if (!raw || typeof raw !== 'object') return null

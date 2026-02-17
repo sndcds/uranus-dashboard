@@ -1,8 +1,4 @@
-<!--
-  src/component/event/editor/AdminEventDatesTab.vue
-
-  2026-02-05, Roald
--->
+<!-- src/component/event/editor/AdminEventDatesTab.vue -->
 
 <template>
   <section class="dates-tab">
@@ -45,7 +41,7 @@
 
       <div class="full-width">
         <span v-if="date.venueId" class="venue_name">
-          {{ getVenueLabel(date.venueId, date.spaceId) }}
+          {{ venueInfoStore.getVenueLabel(date.venueId, date.spaceId) }}
         </span>
       </div>
 
@@ -66,7 +62,6 @@
           Remove
         </button>
       </div>
-
     </div>
 
     <button @click="addDate" type="button">
@@ -90,103 +85,76 @@
       v-model="selectedPlace"
       @close="showModal = false"
   />
-
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue'
+import { apiFetch } from "@/api.ts";
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
-import {apiFetch} from "@/api.ts";
+import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
 import UranusVenueSelectModal from "@/component/venue/UranusVenueSelectModal.vue";
-import { useUranusUserOrgVenueStore } from '@/store/uranusUserOrgVenueStore.ts'
 
 const store = useUranusAdminEventStore()
-const venueStore = useUranusUserOrgVenueStore()
+const venueInfoStore = useUranusEventVenueInfoStore()
+
+// ----------------------------
+// Reactive state
+// ----------------------------
+interface SelectedPlace {
+  venueId: number | null
+  spaceId: number | null
+}
+
+const selectedPlace = ref<SelectedPlace>({ venueId: null, spaceId: null })
+const showModal = ref(false)
+const activeDate = ref<any | null>(null)
+
+// Computed list of venues for modal
+const venueInfos = computed(() => venueInfoStore.items)
 
 // Compute if dates tab is dirty
 const isDirty = computed(() => {
   const draft = store.draft?.eventDates
   const original = store.original?.eventDates
   if (!draft || !original) return false
-
   return JSON.stringify(draft) !== JSON.stringify(original)
 })
 
-
-interface SelectedPlace {
-  venueId: number | null
-  spaceId: number | null
-}
-
-const selectedPlace = ref<SelectedPlace>({
-  venueId: null,
-  spaceId: null,
-})
-
-
-const showModal = ref(false)
-const venueInfos = computed(() => venueStore.venueInfos)
-
-// keep a reference to the date being edited
-const activeDate = ref<any | null>(null)
-
-// fetch venues on mounted
+// ----------------------------
+// Lifecycle
+// ----------------------------
 onMounted(() => {
-  venueStore.fetchVenues()
+  venueInfoStore.fetchAll()
 })
 
-function getVenueLabel(
-    venueId: number | null,
-    spaceId: number | null
-): string {
-  if (!venueId) return ''
-
-  // exact match (venue + space)
-  const exact = venueStore.venueInfos.find(v =>
-      v.venue_id === venueId &&
-      (spaceId == null ? v.space_id == null : v.space_id === spaceId)
-  )
-
-  if (exact) {
-    return exact.space_name
-        ? `${exact.venue_name} – ${exact.space_name}`
-        : exact.venue_name
-  }
-
-  // fallback: venue only
-  const venueOnly = venueStore.venueInfos.find(v => v.venue_id === venueId)
-  return venueOnly ? venueOnly.venue_name : ''
-}
-
+// ----------------------------
+// Modal handling
+// ----------------------------
 function openVenueModal(date: any) {
   activeDate.value = date
-
-  selectedPlace.value.venueId = date.venueId ?? null
-  selectedPlace.value.spaceId = date.spaceId ?? null
-
   showModal.value = true
-
-  watch(selectedPlace, (val) => {
-    if (!activeDate.value || !val) return
-    activeDate.value.venueId = val.venueId
-    activeDate.value.spaceId = val.spaceId
-  }, { deep: true }) // <- important if you want Vue to track changes inside the object
-
-  watch(showModal, (show) => {
-    if (!show) {
-      activeDate.value = null
-    }
-  })
 }
 
+// Sync selected venue back to the active date
+watch(selectedPlace, (val) => {
+  if (!activeDate.value || !val) return
+  activeDate.value.venueId = val.venueId
+  activeDate.value.spaceId = val.spaceId
+}, { deep: true })
+
+// Reset active date when modal closes
+watch(showModal, (val) => {
+  if (!val) activeDate.value = null
+})
+
+// ----------------------------
+// Date management
+// ----------------------------
 function clearVenue(date: any) {
   date.venueId = null
   date.spaceId = null
-
-  // Also reset selectedPlace if this date is active
   if (activeDate.value === date) {
-    selectedPlace.value.venueId = null
-    selectedPlace.value.spaceId = null
+    selectedPlace.value = { venueId: null, spaceId: null }
   }
 }
 
@@ -198,6 +166,9 @@ function removeDate(index: number) {
   store.removeEventDate(index)
 }
 
+// ----------------------------
+// Saving / API
+// ----------------------------
 function toSnakeCase(str: string) {
   return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
 }
@@ -220,8 +191,6 @@ async function commitDates() {
     }) ?? []
 
     const wrappedPayload = { event_dates: payload }
-
-    console.log('Payload to send:', JSON.stringify(wrappedPayload, null, 2))
 
     const apiPath = `/api/admin/event/${store.draft.id}/dates`
     await apiFetch(apiPath, {
@@ -247,7 +216,6 @@ function resetDates() {
       : []
 }
 </script>
-
 
 <style scoped lang="scss">
 .dates-tab {

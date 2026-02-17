@@ -150,7 +150,6 @@ async function commitTab() {
     const apiPath = `/api/admin/event/${draftEvent.value.id}/fields`
     await apiFetch(apiPath, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
 
@@ -174,11 +173,11 @@ function resetTab() {
   const original = store.original
   if (!draft || !original) return
 
-  original.priceType = draft.priceType ?? null
-  original.minPrice = draft.minPrice ?? null
-  original.maxPrice = draft.maxPrice ?? null
-  original.currency = draft.currency ?? null
-  original.ticketFlags = draft.ticketFlags ?? null
+  draft.priceType = original.priceType ?? null
+  draft.minPrice = original.minPrice ?? null
+  draft.maxPrice = original.maxPrice ?? null
+  draft.currency = original.currency ?? null
+  draft.ticketFlags = original.ticketFlags ?? null
 }
 </script>
 

@@ -1,6 +1,22 @@
-// src/composable/useBigIntFlags.ts
+/*
+    src/composable/useBigIntFlags.ts
+ */
 
 import { ref, computed } from 'vue';
+
+export type BigIntFlags = Record<number, boolean>
+
+export function setBigintByFlags(flags: BigIntFlags) {
+    let val= 0n
+    // Loop through all flags and combine into a single BigInt
+    for (const flagIdStr in flags) {
+        const flagId = Number(flagIdStr)
+        if (flags[flagId]) {
+            val |= 1n << BigInt(flagId) // set the corresponding bit
+        }
+    }
+    return val
+}
 
 /**
  * Manage a single 64-bit bigint as a set of flags

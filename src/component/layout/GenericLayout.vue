@@ -84,22 +84,22 @@ const closeSidebar = () => {
 
 // Main Content
 .generic-layout__main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .generic-layout__content {
-    background-color: var(--uranus-dashboard-bg);
-    flex: 1;
-    padding: 2rem;
-    max-width: 100%;
-    display: flex;
+  flex: 1;
+  padding: 2rem;
+  max-width: 100%;
+  width:100%;
+  background-color: var(--uranus-dashboard-bg);
 
-    @media (max-width: 768px) {
-        padding: 1rem;
-    }
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 }
 
 .generic-layout__zero-padding {

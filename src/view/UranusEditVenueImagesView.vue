@@ -50,7 +50,7 @@ import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
 import UranusImageEditDialog from '@/component/image/UranusImageEditDialog.vue'
 import { PlutoImageMeta } from '@/model/plutoImageModel.ts'
-import type { PlutoImageRaw } from '@/model/plutoImageModel.ts'
+import type { PlutoImageDTO } from '@/model/plutoImageModel.ts'
 import { plutoNormalizeImage, plutoOnImageSave } from '@/composable/usePlutoImages.ts'
 
 
@@ -134,10 +134,10 @@ interface VenueApiResponse {
   id: number
   name: string
   images?: {
-    main_logo?: PlutoImageRaw
-    light_theme_logo?: PlutoImageRaw
-    dark_theme_logo?: PlutoImageRaw
-    avatar?: PlutoImageRaw
+    main_logo?: PlutoImageDTO
+    light_theme_logo?: PlutoImageDTO
+    dark_theme_logo?: PlutoImageDTO
+    avatar?: PlutoImageDTO
   }
 }
 
@@ -197,7 +197,7 @@ async function onImageSave(meta: PlutoImageMeta, file: File | null, identifier: 
   if (!identifier || !isImageIdentifier(identifier)) return
   if (!venueId.value) return
 
-  const raw: PlutoImageRaw = await plutoOnImageSave(
+  const raw: PlutoImageDTO = await plutoOnImageSave(
       meta,
       file,
       'venue',

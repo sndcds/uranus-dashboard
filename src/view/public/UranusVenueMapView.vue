@@ -1,6 +1,7 @@
 <!--
-  src/viewls/public/UranusVenueMapView.vue
+  src/view/public/UranusVenueMapView.vue
 -->
+
 <template>
   <div v-if="loading" class="loading-state">
     Loading venues...

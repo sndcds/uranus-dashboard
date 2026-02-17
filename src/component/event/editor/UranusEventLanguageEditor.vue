@@ -53,7 +53,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
-import { useLanguageLookupStore } from '@/store/uranusLanguageLookupStore.ts'
+import { useLanguageLookupStore } from '@/store/UranusLanguageLookup.ts'
 import { apiFetch } from '@/api.ts'
 import {UranusEventTypePair} from "@/domain/event/UranusEventTypePair.ts"
 
@@ -97,7 +97,6 @@ async function commit() {
   try {
     await apiFetch(`/api/admin/event/${store.draft.id}/languages`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ languages: store.draft.languages }),
     })
     // Commit locally

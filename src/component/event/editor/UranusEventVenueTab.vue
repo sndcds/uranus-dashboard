@@ -1,14 +1,8 @@
-<!--
-  src/component/event/editor/UranusEventVenueTab.vue
-
-  2026-02-05, Roald
--->
-
 <template>
-  <section class="release-tab">
-    <h2>Venue/Space</h2>
+  <section class="venue-tab">
+    <h2>Venue / Space</h2>
 
-    <button @click="showModal = true">
+    <button @click="openVenueModal">
       Select Venue / Space
     </button>
     <p>
@@ -19,18 +13,8 @@
         :show="showModal"
         :venueInfos="venueInfos"
         v-model="selectedPlace"
-        @close="showModal = false"
+        @close="closeVenueModal"
     />
-
-    <!--div class="field">
-      <label for="venue">Venue</label>
-      <input type="text" id="venue" v-model="draft.venueId" placeholder="Venue ID" />
-    </div>
-
-    <div class="field">
-      <label for="space">Space</label>
-      <input type="text" id="space" v-model="draft.spaceId" placeholder="Space ID" />
-    </div-->
 
     <div class="field">
       <label for="meetingPoint">Meeting Point</label>
@@ -54,45 +38,59 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, ref, watch } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
-import { type UranusVenueInfoDTO } from '@/api/dto/UranusVenueInfoDTO.ts'
-import { type UranusGroupedVenue } from '@/domain/venue/UranusGroupedVenue.ts'
-import { type UranusAPIResponse } from '@/model/uranusAPIResponse.ts'
 import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
+import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
 
 const store = useUranusAdminEventStore()
+const venueInfoStore = useUranusEventVenueInfoStore()
 const draft = computed(() => store.draft!)
 
-const venueInfos = ref<UranusVenueInfoDTO[]>([])
+const venueInfos = computed(() => venueInfoStore.items)
 
 const showModal = ref(false)
+const activeDraft = ref<typeof draft.value | null>(null)
 
 interface SelectedPlace {
   venueId: number | null
   spaceId: number | null
 }
 
-const selectedPlace = ref<SelectedPlace>({
-  venueId: draft.value?.venueId ?? null,
-  spaceId: draft.value?.spaceId ?? null,
-})
+const selectedPlace = ref<SelectedPlace>({ venueId: null, spaceId: null })
 
-watch(selectedPlace, (val) => {
-  if (!draft.value) return
-  draft.value.venueId = val.venueId
-  draft.value.spaceId = val.spaceId
-})
+// ----------------------------
+// Modal handlers
+// ----------------------------
+function openVenueModal() {
+  activeDraft.value = draft.value
+  selectedPlace.value = {
+    venueId: draft.value?.venueId ?? null,
+    spaceId: draft.value?.spaceId ?? null,
+  }
+  showModal.value = true
+}
 
+function closeVenueModal() {
+  if (activeDraft.value && selectedPlace.value) {
+    activeDraft.value.venueId = selectedPlace.value.venueId
+    activeDraft.value.spaceId = selectedPlace.value.spaceId
+  }
+  showModal.value = false
+  activeDraft.value = null
+}
+
+// ----------------------------
+// Fetch venues on mount
+// ----------------------------
 onMounted(async () => {
-  const res = await apiFetch<
-      UranusAPIResponse<{ venueInfos: UranusVenueInfoDTO[] }>
-  >('/api/admin/user/choosable-event-venues')
-
-  venueInfos.value = res.data?.data?.venueInfos ?? []
+  await venueInfoStore.fetchAll()
 })
 
+// ----------------------------
+// Dirty indicator
+// ----------------------------
 const isBDirty = computed(() => {
   if (!store.draft || !store.original) return false
   const d = store.draft
@@ -105,6 +103,9 @@ const isBDirty = computed(() => {
   )
 })
 
+// ----------------------------
+// API calls
+// ----------------------------
 async function commitTab() {
   if (!draft.value || !store.original) return
   store.saving = true
@@ -120,11 +121,9 @@ async function commitTab() {
 
     await apiFetch(`/api/admin/event/${draft.value.id}/venue`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
 
-    // Update original locally
     store.original.venueId = draft.value.venueId
     store.original.spaceId = draft.value.spaceId
     store.original.meetingPoint = draft.value.meetingPoint
@@ -137,10 +136,8 @@ async function commitTab() {
   }
 }
 
-// Reset release-related fields
 function resetTab() {
   if (!draft.value || !store.original) return
-
   draft.value.venueId = store.original.venueId
   draft.value.spaceId = store.original.spaceId
   draft.value.meetingPoint = store.original.meetingPoint
@@ -149,7 +146,7 @@ function resetTab() {
 </script>
 
 <style scoped lang="scss">
-.release-tab {
+.venue-tab {
   display: flex;
   flex-direction: column;
   gap: 1rem;

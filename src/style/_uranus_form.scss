@@ -23,7 +23,8 @@
     border-radius: var(--uranus-form-field-border-radius);
     background: var(--uranus-input-bg);
     color: var(--uranus-color);
-    border: var(--uranus-input-border-width) solid var(--uranus-input-border-color);
+    border: var(--uranus-input-border-width) solid var(--uranus-input-bg);
+    border: var(--uranus-input-border-width) solid red;
     appearance: none;
   }
 
@@ -70,7 +71,7 @@
   input[type="email"],
   select,
   textarea {
-    border: var(--uranus-input-border-width) solid var(--uranus-input-border-color);
+    border: var(--uranus-input-border-width) solid var(--uranus-input-bg);
   }
 }
 
@@ -102,7 +103,7 @@ input.uranus-text-input {
   text-overflow: ellipsis;
   /* optional: show ... */
 
-  // children (selects, inputs) shrink if space is limited
+  // children (select, inputs) shrink if space is limited
   >* {
     flex: 1 1 auto; // flex-grow:1, flex-shrink:1, flex-basis:auto
     //min-width: 120px; // optional: don't shrink below 120px

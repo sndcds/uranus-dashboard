@@ -210,10 +210,10 @@ import { useI18n } from 'vue-i18n'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { apiFetch } from '@/api.ts'
 import { applyTheme } from '@/util/theme.ts'
-import { useUserStore } from '@/store/userStore.ts'
+import { useUserStore } from '@/store/uranusUserStore.ts'
 
 import UranusLogo from '@/component/ui/UranusLogo.vue'
-import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import { useEventsFilterStore } from '@/store/uranusFventsFilterStore.ts'
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -394,7 +394,11 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
+  try {
+    document.removeEventListener('click', handleClickOutside)
+  } catch (err) {
+    console.error("Unmount error in GenericHeader:", err)
+  }
 })
 </script>
 

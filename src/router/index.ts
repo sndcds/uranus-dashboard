@@ -5,16 +5,11 @@ import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import UranusDashboardView from '@/view/UranusDashboardView.vue'
 import UranusDashboardTodosView from '@/view/UranusDashboardTodosView.vue'
 import UranusLoginView from '@/view/UranusLoginView.vue'
-import UranusDashboardOrganizationsView from '@/view/UranusDashboardOrganizationsView.vue'
 import UranusSettingsView from '@/view/UranusSettingsView.vue'
 import UranusDashboardVenuesView from '@/view/UranusDashboardVenuesView.vue'
 import UranusSignupView from '@/view/UranusSignupView.vue'
-import UranusSpaceEditView from '@/view/UranusSpaceEditView.vue'
-import UranusAdminOrganizationEventsView from '@/view/admin/UranusAdminOrganizationEventsView.vue'
-import UranusEditEventView from '@/view/admin/UranusEditEventView.vue'
+import UranusSpaceEditView from '@/component/space/view/UranusSpaceEditView.vue'
 import UranusUserProfileView from '@/view/UranusUserProfileView.vue'
-import UranusEditOrganizationView from '@/view/UranusEditOrganizationView.vue'
-import UranusEditVenueView from '@/view/UranusEditVenueView.vue'
 import UranusForgotPasswordView from '@/view/UranusForgotPasswordView.vue'
 import UranusResetPasswordView from '@/view/UranusResetPasswordView.vue'
 import UranusMessageInboxView from '@/view/UranusMessageInboxView.vue'
@@ -32,9 +27,16 @@ import UranusCalendarView from '@/view/public/UranusCalendarView.vue'
 import UranusEventSlideshowView from '@/view/public/UranusEventSlideshowView.vue'
 import UranusDevThemeView from '@/view/UranusDevThemeView.vue'
 
-
 import GenericLayout from '@/component/layout/GenericLayout.vue'
-import UranusBlankLayout from '@/component/layout/UranusBlankLayout.vue'
+import UranusDashboardOrganizationsView from '@/view/admin/organization/UranusDashboardOrganizationsView.vue'
+import UranusOrganizationEditView from "@/view/admin/organization/UranusOrganizationEditView.vue";
+import UranusOrganizationCreateView from "@/view/admin/organization/UranusOrganizationCreateView.vue";
+import UranusVenueCreateView from "@/view/admin/venue/UranusVenueCreateView.vue";
+import UranusVenueEditView from "@/view/admin/venue/UranusVenueEditView.vue";
+import UranusAdminEventsListView from '@/component/event/view/UranusAdminEventsListView.vue'
+import UranusEventCreateView from "@/component/event/view/UranusEventCreateView.vue";
+import UranusEventEditView from '@/component/event/view/UranusEventEditView.vue'
+
 
 const routes = [
     {
@@ -69,12 +71,12 @@ const routes = [
             {
                 path: 'organization/create',
                 name: 'admin-create-organization',
-                component: UranusEditOrganizationView,
+                component: UranusOrganizationCreateView,
             },
             {
                 path: 'organization/:id/edit',
                 name: 'admin-edit-organization',
-                component: UranusEditOrganizationView,
+                component: UranusOrganizationEditView,
             },
             {
                 path: 'organization/:id/team',
@@ -89,12 +91,12 @@ const routes = [
             {
                 path: 'organization/:id/venue/create',
                 name: 'admin-create-venue',
-                component: UranusEditVenueView,
+                component: UranusVenueCreateView,
             },
             {
                 path: 'organization/:id/venue/:venueId/edit',
                 name: 'admin-edit-venue',
-                component: UranusEditVenueView,
+                component: UranusVenueEditView,
             },
             {
                 path: 'venue/:id/images',
@@ -119,12 +121,17 @@ const routes = [
             {
                 path: 'organization/:id/events',
                 name: 'admin-organization-events',
-                component: UranusAdminOrganizationEventsView,
+                component: UranusAdminEventsListView,
+            },
+            {
+                path: 'organization/:id/event/create',
+                name: 'admin-create-event',
+                component: UranusEventCreateView,
             },
             {
                 path: 'event/:id',
                 name: 'admin-event-details',
-                component: UranusEditEventView,
+                component: UranusEventEditView,
             },
             {
                 path: 'user/profile',

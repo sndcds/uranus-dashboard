@@ -1,8 +1,11 @@
 <!--
   UranusMapLocationPicker.vue
+
+  2026-02-08, Roald
 -->
+
 <template>
-  <div class="map-wrapper">
+  <div class="map-wrapper" v-bind="attrs">
     <div ref="mapContainer" class="maplibre-map"></div>
     <footer class="map-footer">
       <slot name="footer" />
@@ -11,11 +14,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, useAttrs } from 'vue'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { LngLatLike, MapMouseEvent } from 'maplibre-gl'
 import markerIcon from '@/assets/marker.png'
+
+const attrs = useAttrs()
 
 /* ------------------------------------------------------------------
  * Props / Emits
@@ -228,7 +233,7 @@ onBeforeUnmount(() => {
 
 .maplibre-map {
   width: 100%;
-  height: 400px;
+  height: 100%;
   overflow: hidden;
   border: 2px solid var(--uranus-bg-color-d2);
 }

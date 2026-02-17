@@ -1,7 +1,7 @@
 // usePlutoImages.ts
 
 import { PlutoImageMeta } from '@/model/plutoImageModel.ts'
-import type { PlutoImageRaw } from '@/model/plutoImageModel.ts'
+import type { PlutoImageDTO } from '@/model/plutoImageModel.ts'
 import {apiFetch} from "@/api.ts";
 
 export async function plutoOnImageSave(
@@ -10,19 +10,19 @@ export async function plutoOnImageSave(
     context: string,
     contextId: number,
     identifier: string
-): Promise<PlutoImageRaw> { // <-- must return PlutoImageRaw
+): Promise<PlutoImageDTO> { // <-- must return PlutoImageRaw
     const formData = new FormData()
     if (file) formData.append('image', file)
-    if (meta.alt) formData.append('alt', meta.alt)
+    if (meta.alt_text) formData.append('alt', meta.alt_text)
     if (meta.description) formData.append('description', meta.description)
     if (meta.copyright) formData.append('copyright', meta.copyright)
     if (meta.creator) formData.append('creator', meta.creator)
-    if (meta.license !== null) formData.append('license', String(meta.license))
+    if (meta.licenseType !== null) formData.append('license', String(meta.licenseType))
     if (meta.focusX !== null) formData.append('focus_x', String(meta.focusX))
     if (meta.focusY !== null) formData.append('focus_y', String(meta.focusY))
 
     const endpoint = `/api/admin/${context}/${contextId}/image/${identifier}`
-    const { data } = await apiFetch<PlutoImageRaw>(endpoint, {
+    const { data } = await apiFetch<PlutoImageDTO>(endpoint, {
         method: 'POST',
         body: formData,
     })
@@ -33,7 +33,7 @@ export async function plutoOnImageSave(
 /**
  * Convert raw API image object into PlutoImageMeta
  */
-export function plutoNormalizeImage(raw?: PlutoImageRaw | null): PlutoImageMeta | null {
+export function plutoNormalizeImage(raw?: PlutoImageDTO | null): PlutoImageMeta | null {
     if (!raw) return null
 
     return new PlutoImageMeta(

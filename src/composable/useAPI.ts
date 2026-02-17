@@ -1,3 +1,7 @@
+/*
+    src/composable/useApi.ts
+ */
+
 export function camelCaseKeys<T>(obj: any): T {
     if (Array.isArray(obj)) return obj.map(camelCaseKeys) as any;
     if (obj !== null && typeof obj === "object") {

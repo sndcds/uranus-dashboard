@@ -33,22 +33,20 @@ import UranusFieldLabel from './UranusFieldLabel.vue'
 
 defineOptions({ inheritAttrs: false })
 
-const props = defineProps({
-  id: { type: String, required: true },
-  label: { type: String, required: true },
+const props = defineProps<{
+  id: string
+  label: string
+  modelValue?: string | undefined
+  required?: boolean
+  size?: string
+  flex?: number | string
+  error?: string
+  placeholder?: string
+  disabled?: boolean
+  readonly?: boolean
+  name?: string
+}>()
 
-  modelValue: { type: String, default: '' },
-
-  required: { type: Boolean, default: false },
-  size: { type: String, default: 'normal' }, // tiny / normal / big
-  flex: { type: [Number, String], default: 1 },
-  error: { type: String, default: '' },
-  placeholder: { type: String, default: '' },
-
-  disabled: { type: Boolean, default: false },
-  readonly: { type: Boolean, default: false },
-  name: { type: String, default: '' },
-})
 
 const emit = defineEmits(['update:modelValue'])
 

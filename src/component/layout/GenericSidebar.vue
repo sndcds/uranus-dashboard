@@ -121,7 +121,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useAppStore } from '@/store/appStore.ts'
+import { useAppStore } from '@/store/uranusAppStore.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 
 interface Props {

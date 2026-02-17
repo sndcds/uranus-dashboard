@@ -100,16 +100,18 @@ function mapApiVenueInfosToModel(venue: VenueInfoApi): UranusVenueInfo {
     }
 }
 
-export function mapApiOrganizationVenueInfosToModel(apiData: OrganizationVenueInfosApi): OrganizationVenueInfos {
+export function mapApiOrganizationVenueInfosToModel(
+    apiData: OrganizationVenueInfosApi
+): OrganizationVenueInfos {
     return {
         organizationId: apiData.organization_id,
         organizationName: apiData.organization_name,
         totalUpcomingEvents: apiData.total_upcoming_events,
-        canEditOrganization: apiData.can_edit_organization,
-        canDeleteOrganization: apiData.can_delete_organization,
-        canAddVenue: apiData.can_add_venue,
-        canAddSpace: apiData.can_add_space,
-        canAddEvent: apiData.can_add_event,
+        canEditOrganization: apiData.can_edit_organization ?? false,
+        canDeleteOrganization: apiData.can_delete_organization ?? false,
+        canAddVenue: apiData.can_add_venue ?? false,
+        canAddSpace: apiData.can_add_space ?? false,
+        canAddEvent: apiData.can_add_event ?? false,
         venueInfos: apiData.venues.map(mapApiVenueInfosToModel),
     }
 }

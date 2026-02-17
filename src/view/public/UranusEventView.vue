@@ -196,7 +196,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { marked } from 'marked'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
-import { useLanguageLookupStore } from '@/store/uranusLanguageLookupStore.ts'
+import { useLanguageLookupStore } from '@/store/UranusLanguageLookup.ts'
 
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
 import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'

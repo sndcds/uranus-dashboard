@@ -10,6 +10,7 @@ export class UranusAdminEventDate {
     accessibilityInfo: string | null
     venueId: number | null
     spaceId: number | null
+    allDay: boolean | null
 
     constructor(props: Partial<UranusAdminEventDate> = {}) {
         this.id = props.id ?? 0
@@ -23,10 +24,6 @@ export class UranusAdminEventDate {
         this.accessibilityInfo = props.accessibilityInfo ?? null
         this.venueId = props.venueId ?? null
         this.spaceId = props.spaceId ?? null
-    }
-
-    // Example helper
-    isAllDay(): boolean {
-        return !this.startTime && !this.endTime
+        this.allDay = props.allDay ?? null
     }
 }

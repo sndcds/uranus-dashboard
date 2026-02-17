@@ -15,7 +15,7 @@
                     :placeholder="t('email_placeholder')"
                     autocomplete="email"
                     required
-                    :error="displayError('email') ?? undefined"
+                    :error="displayError('email') ?? ''"
                     @input="handleInput" />
 
                 <transition name="fade">

@@ -56,8 +56,8 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { useAppStore } from '@/store/appStore.ts'
-import type { UranusVenueInfo, VenueInfoSpaceInfo, OrganizationVenueInfos, OrganizationVenueInfosApi } from '@/model/uranusVenueInfo.ts'
+import { useAppStore } from '@/store/uranusAppStore.ts'
+import type { OrganizationVenueInfos, OrganizationVenueInfosApi } from '@/model/uranusVenueInfo.ts'
 import { mapApiOrganizationVenueInfosToModel } from '@/model/uranusVenueInfo.ts'
 
 
@@ -105,8 +105,17 @@ watch(
             `/api/admin/organization/${id}/venues`
         )
         const apiData = response.data
-        // ✅ Use the mapping function here
+
+        // Map API data to model
         organizationVenueInfos.value = mapApiOrganizationVenueInfosToModel(apiData)
+
+        // Sort spaces by spaceName in each venue
+        organizationVenueInfos.value.venueInfos.forEach(venue => {
+          venue.spaceInfos.sort((a, b) =>
+              a.spaceName.localeCompare(b.spaceName, undefined, { sensitivity: 'base' })
+          )
+        })
+
         error.value = null
       } catch (err: unknown) {
         if (typeof err === 'object' && err && 'data' in err) {

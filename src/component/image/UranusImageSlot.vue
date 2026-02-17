@@ -1,91 +1,176 @@
 <!--
   src/component/image/UranusImageSlot.vue
+
+  2026-02-10, Roald
 -->
 
 <template>
   <div class="image-card">
+
+    <!-- Preview -->
     <div class="image-wrapper" @click="openDialog">
-      <!-- Image or placeholder -->
+
       <img
-          v-if="image && imageUrl"
+          v-if="imageId && imageUrl"
           :key="reloadCounter"
           :src="imageUrl"
-          :alt="image.alt ?? 'Image'"
+          :alt="imageMeta?.alt_text ?? ''"
           :class="fitMode"
       />
 
       <div v-else class="placeholder">+</div>
 
       <!-- Hover buttons -->
-      <div v-if="image?.id" class="hover-actions">
+      <div v-if="imageId" class="hover-actions">
         <button @click.stop="openDialog">Edit</button>
         <button @click.stop="removeImage">Remove</button>
       </div>
+
     </div>
 
     <div class="image-index">
       {{ label ?? identifier }}
     </div>
+
+    <!-- Modal -->
+    <UranusImageEditDialog
+        v-if="dialogOpen && contextId && identifier"
+        :context="context"
+        :contextId="contextId"
+        :identifier="identifier"
+        :fitMode="fitMode"
+        @close="dialogOpen = false"
+        @save="onSave"
+    />
+
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { buildPlutoPreviewImageUrl, buildPlutoSlotImageUrl } from '@/util/UranusUtils.ts'
-import type { UranusImage } from '@/model/uranusEventModel.ts'
+import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import UranusImageEditDialog from './UranusImageEditDialog.vue'
+import { apiFetch } from '@/api'
+import { buildPlutoSlotImageUrl } from '@/util/UranusUtils'
+import type { PlutoImageMeta } from '@/model/plutoImageModel'
 
+const { t } = useI18n()
+
+// Props
 const props = defineProps<{
-  identifier: string            // "main", "gallery1", ...
-  image: UranusImage | null
+  context: 'event' | 'venue' | 'organization'
+  contextId: number | null
+  identifier: string | null
   label?: string | null
   fitMode?: 'cover' | 'contain'
 }>()
 
-const fitMode = computed(() => props.fitMode === 'contain' ? 'contain' : 'cover')
-
+// State
+const dialogOpen = ref(false)
 const reloadCounter = ref(0)
+const imageMeta = ref<PlutoImageMeta | null>(null)
+const imageId = ref<number | null>(null)
 
-const emit = defineEmits<{
-  (e: 'edit', identifier: string): void
-  (e: 'remove', identifier: string): void
-}>()
-
+// Computed
+const fitMode = computed(() =>
+    props.fitMode === 'contain' ? 'contain' : 'cover'
+)
 
 const imageUrl = computed(() => {
-  if (!props.image?.id) return ''
+  if (!imageId.value) return ''
 
   const baseUrl = buildPlutoSlotImageUrl(
-      props.image.id,
+      imageId.value,
       320,
       null,
       props.fitMode ?? 'contain'
   )
 
-  // const baseUrl = buildPlutoPreviewImageUrl(props.image.id)
   const url = new URL(baseUrl, window.location.origin)
-
-  // Append client-side cache buster
   url.searchParams.set('v', reloadCounter.value.toString())
 
   return url.toString()
 })
 
-function openDialog() {
-  emit('edit', props.identifier)
+
+async function loadMeta() {
+  try {
+    const res = await apiFetch<any>(
+        `/api/image/meta/${props.context}/${props.contextId}/${props.identifier}`
+    )
+
+    if (!res.data) {
+      imageId.value = null
+      imageMeta.value = null
+      return
+    }
+
+    const meta = res.data.data
+    imageMeta.value = meta
+    imageId.value = meta.id ?? null
+
+  } catch {
+    imageId.value = null
+    imageMeta.value = null
+  }
 }
 
-function removeImage() {
-  emit('remove', props.identifier)
+
+function openDialog() {
+  dialogOpen.value = true
 }
+
+
+async function onSave(
+    payload: any,
+    file: File | null,
+) {
+  const form = new FormData()
+
+  if (file) form.append('file', file)
+
+  form.append('payload', JSON.stringify(payload))
+
+  const apiPath = `/api/admin/image/${props.context}/${props.contextId}/${props.identifier}`
+  await apiFetch(apiPath,{ method: 'POST', body: form })
+
+  dialogOpen.value = false
+
+  await loadMeta()
+  incReloadCounter()
+}
+
+
+async function removeImage() {
+  if (!imageId.value) return
+
+  // Ask the user for confirmation
+  const ok = confirm(t('delete_image_alert'))
+  if (!ok) return  // user canceled
+
+  try {
+    const apiPath = `/api/admin/image/${props.context}/${props.contextId}/${props.identifier}`
+    await apiFetch(apiPath, { method: 'DELETE'})
+
+    // Clear the reactive values
+    imageId.value = null
+    imageMeta.value = null
+  } catch (err) {
+    console.error('Failed to delete image', err)
+    alert('Failed to delete image')
+  }
+}
+
 
 function incReloadCounter() {
   reloadCounter.value++
-  console.log('reloadCounter', reloadCounter.value)
 }
 
-defineExpose({
-  incReloadCounter
-})
+
+defineExpose({ incReloadCounter })
+
+
+onMounted(loadMeta)
 </script>
 
 <style scoped>
@@ -105,8 +190,6 @@ defineExpose({
   width: 100%;
   aspect-ratio: 3 / 2;
   overflow: hidden;
-
-  /* Flex centering */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -115,8 +198,6 @@ defineExpose({
 .image-wrapper img {
   max-width: 100%;
   max-height: 100%;
-  height: auto;
-  width: auto;
 }
 
 .placeholder {
@@ -136,7 +217,7 @@ defineExpose({
   display: flex;
   gap: 0.4rem;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.3s ease;
 }
 
 .image-wrapper:hover .hover-actions {
@@ -144,22 +225,11 @@ defineExpose({
 }
 
 .hover-actions button {
-  color: var(--uranus-ia-inline-bg);
-  background: var(--uranus-ia-inline-color);
-  opacity: 1;
   border: none;
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  backdrop-filter: blur(2px);
-  transition: background 0.4s;
   cursor: pointer;
-}
-
-.hover-actions button:hover {
-  color: var(--uranus-ia-inline-color);
-  background: var(--uranus-ia-inline-bg);
-  opacity: 1;
 }
 
 .image-index {

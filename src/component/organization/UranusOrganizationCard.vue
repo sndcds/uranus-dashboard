@@ -57,16 +57,6 @@
       >
         {{ t('manage_team') }}
       </UranusDashboardButton>
-
-      <UranusDashboardButton
-          v-if="organization.can_edit_organization"
-          class="tiny"
-          icon="image"
-          :to="`/admin/organization/${organization.organization_id}/images`"
-      >
-        {{ t('images_and_logos') }}
-      </UranusDashboardButton>
-
     </div>
 
 
@@ -87,7 +77,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAppStore } from '@/store/appStore.ts'
+import { useAppStore } from '@/store/uranusAppStore.ts'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 
@@ -163,7 +153,6 @@ const confirmDelete = async ({ password }: { password: string }) => {
   try {
     await apiFetch(`/api/admin/organization/${pendingDeleteId.value}`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password }),
     })
 

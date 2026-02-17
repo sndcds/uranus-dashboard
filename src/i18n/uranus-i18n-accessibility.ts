@@ -1,4 +1,8 @@
-import type { UranusLocaleKey } from './uranus-i18n-index.ts'
+/*
+    src/i18n/uranus-i18n-accessibility.ts
+
+    2026-02-15, Roald
+ */
 
 export const uranusI18nAccessibilityTranslations: Record<string, Record<'en' | 'de' | 'da', string>> = {
     space_accessibility: {

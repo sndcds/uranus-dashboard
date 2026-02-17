@@ -35,14 +35,6 @@
         {{ t('delete') }}
       </UranusDashboardButton>
 
-      <UranusDashboardButton
-          v-if="venueInfo.canEditEvent"
-          class="tiny"
-          icon="image"
-          :to="`/admin/venue/${venueInfo.venueId}/images`"
-      >
-        {{ t('images_and_logos') }}
-      </UranusDashboardButton>
     </div>
 
     <section>
@@ -168,9 +160,6 @@ const confirmDelete = async ({ password }: { password: string }) => {
   try {
     await apiFetch(`/api/admin/venue/${pendingVenueId.value}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({ password }),
     })
 
@@ -213,9 +202,6 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
   try {
     await apiFetch(`/api/admin/space/${pendingSpaceId.value}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({ password }),
     })
 

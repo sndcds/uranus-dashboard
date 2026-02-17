@@ -1,0 +1,94 @@
+.uranus-admin-edit-section {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 1024px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.9rem;
+    text-indent: 2px;
+  }
+
+  input, textarea {
+    border: 2px solid white;
+    font-size: 1.1rem;
+    padding: 8px;
+    border-radius: 4px;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 200px;
+  }
+
+  .big {
+    font-size: 1.5rem;
+  }
+
+  .button-bar {
+    border-top: 1px solid var(--uranus-dashboard-border-color);
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 12px;
+  }
+}
+
+
+.uranus-admin-page-title {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+
+.uranus-admin-responsive-grid {
+  display: grid;
+  gap: 1rem; // Space between fields
+  grid-template-columns: 1fr; // Default 1 column
+
+  label {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .full-width {
+    grid-column: 1 / -1; // Span all columns
+  }
+
+  .start-new-row {
+    grid-column-start: 1; /* Always start at the first column */
+  }
+
+  // Two-column layout for screens wider than 768px
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  button {
+    grid-column: 1 / -1;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+}
+
+.uranus-admin-select {
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 0.5rem; /* Add space on the right for the arrow */
+  border-radius: var(--uranus-form-field-border-radius);
+  border: 1px solid var(--uranus-input-border-color);
+  font-size: 1rem;
+  appearance: none; /* Remove native arrow */
+  background-color: white;
+
+  /* Add SVG triangle arrow */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 4l4 4 4-4' stroke='black' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 0.75rem auto;
+}

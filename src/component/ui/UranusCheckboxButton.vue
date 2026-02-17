@@ -59,13 +59,26 @@ defineEmits<{
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border: 0px solid var(--uranus-input-border-color);
-  border-radius: var(--uranus-form-field-border-radius);
+  border-radius: 0;
   cursor: pointer;
   user-select: none;
   transition: all 0.2s ease;
 
   input {
-    display: none;
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+  }
+
+  input:focus-visible + .checkmark {
+    outline: 2px solid var(--uranus-focus-color, #2684ff);
+    outline-offset: 0px;
   }
 
   .checkmark {
@@ -77,8 +90,8 @@ defineEmits<{
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid var(--uranus-ia-inline-color);
-    border-radius: 0.25rem;
+    border: 1px solid var(--uranus-input-border-color);
+    border-radius: 0;
     transition: all 0.2s ease;
   }
 

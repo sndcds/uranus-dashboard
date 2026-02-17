@@ -12,7 +12,7 @@
                     v-model="email"
                     type="email"
                     :label="t('email')"
-                    :error="fieldErrors.email"
+                    :error="fieldErrors.email ?? ''"
                     required
                 />
 
@@ -21,7 +21,7 @@
                     v-model="repeatEmail"
                     type="email"
                     :label="t('repeat_email')"
-                    :error="fieldErrors.repeatEmail"
+                    :error="fieldErrors.repeatEmail ?? ''"
                     required
                 />
 

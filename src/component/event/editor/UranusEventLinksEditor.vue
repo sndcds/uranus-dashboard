@@ -7,7 +7,7 @@
 <template>
   <h2>Web Links</h2>
 
-  <section class="urls-tab">
+  <section class="links-tab">
     <div
         v-for="(url, index) in store.draft?.eventLinks ?? []"
         :key="index"
@@ -15,19 +15,10 @@
     >
       <input v-model="url.label" placeholder="Title" />
 
-      <select v-model.number="url.type">
-        <option :value="null" disabled>
-          Select type
-        </option>
-
-        <option
-            v-for="opt in urlTypeLookup"
-            :key="opt.id"
-            :value="opt.id"
-        >
-          {{ opt.label }}
-        </option>
-      </select>
+      <UranusLinkTypeSelect
+          :model-value="url.type"
+          @update:modelValue="val => url.type = val"
+      />
 
       <input v-model="url.url" placeholder="URL" />
 
@@ -58,29 +49,12 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 import { UranusEventLink } from '@/domain/event/UranusEventLink.ts'
 import { apiFetch } from '@/api.ts'
-import { useUrlTypeLookupStore } from '@/store/uranusUrlTypesLookup.ts'
+import UranusLinkTypeSelect from "@/component/select/UranusLinkTypeSelect.vue";
 
-const { t, locale } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
-const urlTypeStore = useUrlTypeLookupStore()
-
-const urlTypeLookup = computed(() => {
-  const map =
-      urlTypeStore.data['event']?.[locale.value] ?? {}
-
-  return Object.entries(map)
-      .map(([id, label]) => ({
-        id: Number(id),
-        label
-      }))
-      .sort((a, b) =>
-          a.label.localeCompare(b.label, locale.value)
-      )
-})
 
 // Initialize draft.eventUrls from original
 onMounted(() => {
@@ -124,27 +98,25 @@ function removeUrl(index: number) {
   store.draft.eventLinks.splice(index, 1)
 }
 
-// Helper to convert camelCase to snake_case
-function toSnakeCase(str: string) {
-  return str.replace(/[A-Z]/g, l => `_${l.toLowerCase()}`)
-}
-
 // Commit changes to API
 async function commitUrlsTab() {
   if (!store.draft) return
   store.saving = true
   store.error = null
 
+  if (store.draft.eventLinks) {
+    console.log(JSON.stringify(store.draft.eventLinks, null, 2))
+  }
   try {
     const payload = store.draft.eventLinks?.map((u: UranusEventLink) => ({
-      ['label']: u.label,
-      ['type']: u.type != null ? Number(u.type) : 0,
+      ['label']: u.label?.trim() !== '' ? u.label : null,
+      ['type']: u.type,
       ['url']: u.url,
     })) ?? []
 
     const wrappedPayload = { event_links: payload }
 
-    await apiFetch(`/api/admin/event/${store.draft.id}/urls`, {
+    await apiFetch(`/api/admin/event/${store.draft.id}/links`, {
       method: 'PUT',
       body: JSON.stringify(wrappedPayload),
     })
@@ -171,7 +143,7 @@ function resetUrlsTab() {
 </script>
 
 <style scoped lang="scss">
-.urls-tab {
+.links-tab {
   display: flex;
   flex-direction: column;
   gap: 1rem;

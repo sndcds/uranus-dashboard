@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { apiFetch } from '@/api.ts'
-import type { UranusAPIResponse } from '@/model/uranusAPIResponse.ts'
+import type { UranusApiResponse } from '@/model/uranusApiResponse.ts'
 
 export interface CurrencyEntry {
     id: string
@@ -24,7 +24,7 @@ export const useCurrencyLookupStore = defineStore('currencyLookup', {
             try {
                 const results = await Promise.all(
                     languages.map(async (uiLang) => {
-                        const res = await apiFetch<UranusAPIResponse<CurrencyEntry[]>>(
+                        const res = await apiFetch<UranusApiResponse<CurrencyEntry[]>>(
                             `/api/choosable-currencies?lang=${uiLang}`
                         )
                         // Access the actual array inside 'data'

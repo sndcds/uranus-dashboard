@@ -79,7 +79,7 @@ import { computed, reactive, ref, watch, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import UranusMarkdownEditor from '@/component/uranus/UranusMarkdownEditor.vue'
-import UranusRegionSelect from '@/component/selects/UranusRegionSelect.vue'
+import UranusRegionSelect from '@/component/select/UranusRegionSelect.vue'
 import UranusValueInfo from "@/component/ui/UranusValueInfo.vue"
 import UranusTextInput from "@/component/ui/UranusTextInput.vue"
 import UranusFormRow from "@/component/ui/UranusFormRow.vue"

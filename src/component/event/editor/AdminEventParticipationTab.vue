@@ -132,7 +132,6 @@ async function commitParticipationTab() {
 
     await apiFetch(apiPath, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
 

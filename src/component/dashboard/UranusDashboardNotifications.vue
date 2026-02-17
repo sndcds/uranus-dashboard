@@ -1,6 +1,7 @@
 <!--
   UranusDashboardNotifications.vue
 -->
+
 <template>
   <section>
     <h2 class="section-title">{{ t('notifications') }}</h2>

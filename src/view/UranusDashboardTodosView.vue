@@ -57,9 +57,9 @@ import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusTodoListItem from '@/component/todo/UranusTodoListItem.vue'
-import UranusDashboardActionBar from "@/component/uranus/UranusDashboardActionBar.vue";
-import UranusEditTodoModal from "@/component/todo/UranusEditTodoModal.vue";
-import UranusActionButton from "@/component/ui/UranusActionButton.vue";
+import UranusDashboardActionBar from '@/component/uranus/UranusDashboardActionBar.vue'
+import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
+import UranusActionButton from '@/component/ui/UranusActionButton.vue'
 
 const { t } = useI18n()
 

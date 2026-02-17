@@ -99,7 +99,6 @@ async function commitTagsTab() {
 
     await apiFetch(apiPath, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
 

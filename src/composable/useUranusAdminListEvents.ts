@@ -1,10 +1,12 @@
 /*
     src/composable/useUranusEvents.ts
+
+    2026-02-08, Roald
  */
 
 import { ref } from "vue";
-import type { UranusAdminListEvent } from "@/model/uranusAdminEventModel.ts"
-import type { UranusAPIResponse } from "@/model/uranusAPIResponse.ts";
+import type { UranusAdminListEvent } from '@/domain/event/UranusAdminListEvent.ts'
+import type { UranusApiResponse } from '@/model/uranusApiResponse.ts'
 import { camelCaseKeys } from "./useAPI.ts";
 import { apiFetch } from "@/api.ts";
 
@@ -27,7 +29,7 @@ export function useUranusAdminListEvents() {
 
             const path = `/api/admin/organization/${organizationId}/events?${params.toString()}`;
             // Use your apiFetch wrapper
-            const res = await apiFetch<UranusAPIResponse<any[]>>(path);
+            const res = await apiFetch<UranusApiResponse<any[]>>(path);
 
             if (res.data.status !== "ok") {
                 throw new Error(res.data.error || "Unknown API error");

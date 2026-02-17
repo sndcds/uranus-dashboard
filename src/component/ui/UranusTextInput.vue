@@ -45,7 +45,7 @@ const props = defineProps({
   required: { type: Boolean, default: false },
   size: { type: String, default: 'normal' }, // tiny / normal / big
   flex: { type: [Number, String], default: 1 },
-  error: { type: String, default: '' },
+  error: { type: String, default: undefined },
   placeholder: { type: String, default: '' },       // added
   autocomplete: { type: String, default: 'off' },  // added
   disabled: { type: Boolean, default: false },

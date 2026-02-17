@@ -60,7 +60,7 @@
               <span>{{ uranusFormatDateTime(event.start_date, event.start_time, locale) }}</span>
               <UranusEventReleaseChip
                   v-if="(event.release_status_id ?? 0) > 3"
-                  :releaseStatus="event.release_status"
+                  :releaseStatus="event.release_status_id"
                   tiny
               />
             </div>
@@ -155,7 +155,7 @@ import { useI18n } from "vue-i18n";
 import { apiFetch } from "@/api.ts"
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
-import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import { useEventsFilterStore } from '@/store/uranusFventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusInlineEditActions from '@/component/ui/UranusInlineEditActions.vue'
@@ -380,10 +380,7 @@ const openEvent = (event: CalendarEvent) => {
   })
 }
 
-/* -------------------- Lifecycle -------------------- */
-
 onMounted(async () => {
-  console.log("Mounted → load first page")
   await loadEvents()
 
   observer = new IntersectionObserver(
@@ -400,7 +397,6 @@ onMounted(async () => {
   )
 
   if (loadMoreTrigger.value) {
-    console.log("Observing loadMoreTrigger element", loadMoreTrigger.value)
     observer.observe(loadMoreTrigger.value)
   } else {
     console.warn("loadMoreTrigger ref is null")

@@ -14,7 +14,6 @@
             v-if="localImageMeta.url"
             :src="localImageMeta.url"
             class="uranus-preview-img"
-            :style="{ objectFit: previewFitMode }"
         />
         <div v-else class="uranus-no-img">{{ t('click_to_upload') }}</div>
         <input
@@ -35,7 +34,7 @@
       <UranusFormRow>
         <UranusTextInput
             id="alt-text"
-            v-model="localImageMeta.alt as string | undefined"
+            v-model="localImageMeta.alt_text as string"
             :label="t('image_alt_text')"
         />
       </UranusFormRow>
@@ -43,7 +42,7 @@
       <UranusFormRow>
         <UranusTextInput
             id="creator-name"
-            v-model="localImageMeta.creator as string | undefined"
+            v-model="localImageMeta.creator as string"
             :label="t('image_creator_name')"
         />
       </UranusFormRow>
@@ -51,25 +50,23 @@
       <UranusFormRow>
         <UranusTextInput
             id="copyright"
-            v-model="localImageMeta.copyright as string | undefined"
+            v-model="localImageMeta.copyright as string"
             :label="t('image_copyright')"
         />
 
         <UranusLicenseSelect
-            id="license-select"
-            v-model:license="localImageMeta.license"
-            :label="t('image_license')"
+            v-model="localImageMeta.licenseType"
         />
 
         <UranusTextInput
             id="focus-x"
-            v-model.number="localImageMeta.focusX as number | undefined"
+            v-model.number="localImageMeta.focusX as number"
             :label="t('image_focus_x')"
         />
 
         <UranusTextInput
             id="focus-y"
-            v-model.number="localImageMeta.focusY as number | undefined"
+            v-model.number="localImageMeta.focusY as number"
             :label="t('image_focus_y')"
         />
       </UranusFormRow>
@@ -77,7 +74,7 @@
       <UranusFormRow>
         <UranusTextarea
             id="description"
-            v-model:model-value="descriptionValue"
+            v-model="descriptionValue"
             :label="t('image_description')"
         />
       </UranusFormRow>
@@ -99,10 +96,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { PlutoImageMeta } from '@/model/plutoImageModel.ts'
 import { apiFetch, ApiError } from '@/api.ts'
+import { PlutoImageMeta } from '@/model/plutoImageModel.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusTextInput from '@/component/ui/UranusTextInput.vue'
 import UranusFormRow from "@/component/ui/UranusFormRow.vue";
@@ -111,13 +108,13 @@ import UranusInlineSaveButton from "@/component/ui/UranusInlineSaveButton.vue";
 import UranusInlineCancelButton from "@/component/ui/UranusInlineCancelButton.vue";
 import UranusInlineActionBar from "@/component/ui/UranusInlineActionBar.vue";
 import UranusTextarea from "@/component/ui/UranusTextarea.vue";
-import UranusLicenseSelect from "@/component/selects/UranusLicenseSelect.vue";
+import UranusLicenseSelect from "@/component/select/UranusLicenseSelect.vue";
 
 const props = defineProps<{
   addModeTitle?: string | null
   editModeTitle?: string | null
-  context: string                 // "event", "venue"
-  contextId: number               // DB id
+  context: string                 // eg. 'event', 'venue'
+  contextId: number               // pluto image id
   identifier: string              // "main", "gallery1"
   fitMode?: 'cover' | 'contain'
 }>()
@@ -139,11 +136,9 @@ const apiUrl = computed(() => {
   return `/api/image/meta/${props.context}/${props.contextId}/${props.identifier}`
 })
 
-const previewFitMode = computed(() => props.fitMode ?? 'contain')
-
 const emit = defineEmits<{
   (e: 'close'): void
-  (e: 'save', imageMeta: PlutoImageMeta, file: File | null, ctx: {
+  (e: 'save', imageMeta: any, file: File | null, ctx: {
     context: string
     contextId: number
     identifier: string
@@ -159,11 +154,11 @@ const localImageFile = ref<File | null>(null)
 function clearLocalImageMeta() {
   localImageMeta.id = null
   localImageMeta.url = null
-  localImageMeta.alt = null
+  localImageMeta.alt_text = null
   localImageMeta.description = null
   localImageMeta.copyright = null
   localImageMeta.creator = null
-  localImageMeta.license = null
+  localImageMeta.licenseType = null
   localImageMeta.focusX = null
   localImageMeta.focusY = null
 }
@@ -213,7 +208,18 @@ function onCancel() {
 }
 
 function onSave() {
-  emit('save', localImageMeta, localImageFile.value, {
+  const payload = {
+    id: localImageMeta.id,
+    alt_text: localImageMeta.alt_text,
+    description: localImageMeta.description,
+    copyright: localImageMeta.copyright,
+    creator: localImageMeta.creator,
+    license: localImageMeta.licenseType,
+    focus_x: localImageMeta.focusX,
+    focus_y: localImageMeta.focusY,
+  }
+
+  emit('save', payload, localImageFile.value, {
     context: props.context,
     contextId: props.contextId,
     identifier: props.identifier,
@@ -223,20 +229,21 @@ function onSave() {
 onMounted(async () => {
     try {
       const response = await apiFetch<any>(apiUrl.value)
-      const data = response.data
-      if (!data) return
+      if (!response.data) return
 
-      localImageMeta.id = data.id ?? null
+      const meta = response.data.data
+
+      localImageMeta.id = meta.id ?? null
       localImageMeta.url = localImageMeta.id !== null
           ? buildPlutoEditImageUrl(localImageMeta.id, 800)
           : null
-      localImageMeta.alt = data.alt_text ?? null
-      localImageMeta.description = data.description ?? null
-      localImageMeta.copyright = data.copyright ?? null
-      localImageMeta.creator = data.creator ?? null
-      localImageMeta.license = data.license ?? null
-      localImageMeta.focusX = data.focus_x ?? null
-      localImageMeta.focusY = data.focus_y ?? null
+      localImageMeta.alt_text = meta.alt_text ?? null
+      localImageMeta.description = meta.description ?? null
+      localImageMeta.copyright = meta.copyright ?? null
+      localImageMeta.creator = meta.creator ?? null
+      localImageMeta.licenseType = meta.license ?? null
+      localImageMeta.focusX = meta.focus_x ?? null
+      localImageMeta.focusY = meta.focus_y ?? null
     } catch (err) {
       console.log("onMounted error")
       if (err instanceof ApiError && err.status === 404) {
@@ -289,7 +296,7 @@ onMounted(async () => {
   object-fit: contain;
   object-position: center;
   border-radius: var(--uranus-tiny-border-radius);
-  padding: 0;
+  padding: 8px;
 }
 
 .uranus-no-img {

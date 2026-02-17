@@ -41,6 +41,7 @@
 <script setup lang="ts">
 import { computed, ref, nextTick, watch } from 'vue'
 import UranusModal from '@/component/uranus/UranusModal.vue'
+import { type UranusEventVenueInfo } from '@/store/uranusEventVenueInfoStore.ts'
 
 interface VenueSpaceOption {
   venueId: number
@@ -51,15 +52,6 @@ interface VenueSpaceOption {
     spaceName: string | null
     city: string
   }[]
-}
-
-export interface UranusEventVenueInfo {
-  venue_id: number
-  venue_name: string
-  space_id: number | null
-  space_name: string | null
-  city: string
-  country: string
 }
 
 const props = defineProps<{
@@ -75,24 +67,25 @@ const emit = defineEmits<{
 
 const containerRef = ref<HTMLDivElement | null>(null)
 
+// Group venues + spaces
 const groupedVenues = computed<VenueSpaceOption[]>(() => {
   const map = new Map<number, VenueSpaceOption>()
 
-  for (const p of props.venueInfos) {
-    if (!map.has(p.venue_id)) {
-      map.set(p.venue_id, {
-        venueId: p.venue_id,
-        venueName: p.venue_name,
-        city: p.city,
+  for (const v of props.venueInfos) {
+    if (!map.has(v.venueId)) {
+      map.set(v.venueId, {
+        venueId: v.venueId,
+        venueName: v.venueName,
+        city: v.city,
         spaces: [],
       })
     }
 
-    if (p.space_id != null) {
-      map.get(p.venue_id)!.spaces.push({
-        spaceId: p.space_id,
-        spaceName: p.space_name,
-        city: p.city,
+    if (v.spaceId != null) {
+      map.get(v.venueId)!.spaces.push({
+        spaceId: v.spaceId,
+        spaceName: v.spaceName,
+        city: v.city,
       })
     }
   }
@@ -102,24 +95,25 @@ const groupedVenues = computed<VenueSpaceOption[]>(() => {
   )
 })
 
+// Select a venue/space
 function select(venueId: number, spaceId: number | null) {
   emit('update:modelValue', { venueId, spaceId })
   emit('close')
 }
 
+// Check if a venue/space is selected
 function isSelected(venueId: number, spaceId: number | null) {
   return props.modelValue?.venueId === venueId && props.modelValue?.spaceId === spaceId
 }
 
-// Watch for modal opening and scroll selected item into view
+// Auto-scroll selected item when modal opens
 watch(() => props.show, async (val) => {
   if (!val) return
-  await nextTick() // wait for DOM render
+  await nextTick()
   const selectedEl = containerRef.value?.querySelector('.selected') as HTMLElement | null
   selectedEl?.scrollIntoView({ block: 'center', behavior: 'smooth' })
 })
 </script>
-
 
 <style scoped lang="scss">
 .venue-space-list {

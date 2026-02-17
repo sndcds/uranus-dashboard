@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { useUserStore } from '@/store/userStore.ts'
+import { useUserStore } from '@/store/uranusUserStore.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { apiFetch } from '@/api.ts'
 
