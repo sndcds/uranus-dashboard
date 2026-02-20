@@ -214,12 +214,14 @@ import { useUserStore } from '@/store/uranusUserStore.ts'
 
 import UranusLogo from '@/component/ui/UranusLogo.vue'
 import { useEventsFilterStore } from '@/store/uranusFventsFilterStore.ts'
+import { useThemeStore } from "@/store/uranusThemeStore.ts";
 
 const { t, locale } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const tokenStore = useTokenStore()
 const userStore = useUserStore()
+const themeStore = useThemeStore()
 const eventsFilterStore = useEventsFilterStore()
 
 const emit = defineEmits<{
@@ -279,7 +281,7 @@ const closeSettingsMenu = () => {
 const setTheme = async (theme: 'light' | 'dark') => {
   currentTheme.value = theme
   applyTheme(theme)
-  localStorage.setItem('app-theme', theme)
+  themeStore.setTheme(theme)
 
   // Save to API if authenticated
   if (tokenStore.isAuthenticated) {
@@ -343,7 +345,7 @@ const fetchUserProfile = async () => {
 
 // Initialize theme and locale from storage
 const initializePreferences = () => {
-  const storedTheme = localStorage.getItem('app-theme') as 'light' | 'dark' | null
+  const storedTheme = themeStore.theme
   if (storedTheme) {
     currentTheme.value = storedTheme
     applyTheme(storedTheme)

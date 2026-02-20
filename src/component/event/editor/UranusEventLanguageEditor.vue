@@ -55,7 +55,6 @@ import { useI18n } from 'vue-i18n'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 import { useLanguageLookupStore } from '@/store/UranusLanguageLookup.ts'
 import { apiFetch } from '@/api.ts'
-import {UranusEventTypePair} from "@/domain/event/UranusEventTypePair.ts"
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()

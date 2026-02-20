@@ -1,5 +1,3 @@
-import { type UranusEventLocation } from '@/domain/event/UranusEventLocation.ts'
-
 export class UranusEventDate {
     constructor(
         public id: number | null = null,
@@ -16,15 +14,26 @@ export class UranusEventDate {
         public accessibilitySummary: string | null = null,
         public accessibilityInfo: string | null = null,
         public visitorFlags: string | null = null,
-        public location: UranusEventLocation | null = null,
         public totalCapacity: number | null = null,
         public seatingCapacity: number | null = null,
         public buildingLevel: number | null = null,
         public venueId: number | null = null,
         public venueName: string | null = null,
+        public venueStreet: string | null = null,
+        public venueHouseNumber: string | null = null,
+        public venuePostalCode: string | null = null,
+        public venueCity: string | null = null,
+        public venueState: string | null = null,
+        public venueCountry: string | null = null,
+        public venueLon: string | null = null,
+        public venueLat: string | null = null,
         public venueWebsite: string | null = null,
         public venueLogoId: number | null = null,
+        public venueLightThemeLogoId: number | null = null,
+        public venueDarkThemeLogoId: number | null = null,
         public venueLogoUrl: string | null = null,
+        public venueLightThemeLogoUrl: string | null = null,
+        public venueDarkThemeLogoUrl: string | null = null,
         public spaceId: number | null = null,
         public spaceName: string | null = null,
         public spaceWebsite: string | null = null,

@@ -5,7 +5,6 @@ import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import UranusDashboardView from '@/view/UranusDashboardView.vue'
 import UranusDashboardTodosView from '@/view/UranusDashboardTodosView.vue'
 import UranusLoginView from '@/view/UranusLoginView.vue'
-import UranusSettingsView from '@/view/UranusSettingsView.vue'
 import UranusDashboardVenuesView from '@/view/UranusDashboardVenuesView.vue'
 import UranusSignupView from '@/view/UranusSignupView.vue'
 import UranusSpaceEditView from '@/component/space/view/UranusSpaceEditView.vue'
@@ -20,9 +19,7 @@ import UranusVenueMapView from '@/view/public/UranusVenueMapView.vue'
 import UserActivateView from '@/view/UserActivateView.vue'
 import UranusInviteActivateView from '@/view/UranusInviteActivateView.vue'
 import UranusOrganizationTeamView from '@/view/UranusOrganizationTeamView.vue'
-import UranusEditOrganizationImagesView from '@/view/UranusEditOrganizationImagesView.vue'
 import UranusOrganizationMemberPermissionView from '@/view/UranusOrganizationMemberPermissionView.vue'
-import UranusEditVenueImagesView from '@/view/UranusEditVenueImagesView.vue'
 import UranusCalendarView from '@/view/public/UranusCalendarView.vue'
 import UranusEventSlideshowView from '@/view/public/UranusEventSlideshowView.vue'
 import UranusDevThemeView from '@/view/UranusDevThemeView.vue'
@@ -64,11 +61,6 @@ const routes = [
                 component: UranusDashboardOrganizationsView,
             },
             {
-                path: 'settings',
-                name: 'admin-settings',
-                component: UranusSettingsView,
-            },
-            {
                 path: 'organization/create',
                 name: 'admin-create-organization',
                 component: UranusOrganizationCreateView,
@@ -84,11 +76,6 @@ const routes = [
                 component: UranusOrganizationTeamView,
             },
             {
-                path: 'organization/:id/images',
-                name: 'admin-edit-organization-images',
-                component: UranusEditOrganizationImagesView,
-            },
-            {
                 path: 'organization/:id/venue/create',
                 name: 'admin-create-venue',
                 component: UranusVenueCreateView,
@@ -97,11 +84,6 @@ const routes = [
                 path: 'organization/:id/venue/:venueId/edit',
                 name: 'admin-edit-venue',
                 component: UranusVenueEditView,
-            },
-            {
-                path: 'venue/:id/images',
-                name: 'admin-edit-venues-images',
-                component: UranusEditVenueImagesView,
             },
             {
                 path: 'organization/:id/venue/:venueId/space/create',

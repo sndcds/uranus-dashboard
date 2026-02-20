@@ -16,4 +16,5 @@ export interface UranusAdminEventDateDTO {
     accessibility_info?: string | null
     venue_id?: number | null
     space_id?: number | null
+    all_day?: boolean | null
 }

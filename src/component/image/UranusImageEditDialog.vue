@@ -132,7 +132,7 @@ const descriptionValue = computed({
   }
 })
 
-const apiUrl = computed(() => {
+const apiPath = computed(() => {
   return `/api/image/meta/${props.context}/${props.contextId}/${props.identifier}`
 })
 
@@ -228,7 +228,7 @@ function onSave() {
 
 onMounted(async () => {
     try {
-      const response = await apiFetch<any>(apiUrl.value)
+      const response = await apiFetch<any>(apiPath.value)
       if (!response.data) return
 
       const meta = response.data.data

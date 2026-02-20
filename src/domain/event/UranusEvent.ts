@@ -3,7 +3,6 @@ import { UranusEventDate } from './UranusEventDate.ts'
 import { UranusEventType } from './UranusEventType.ts'
 import { UranusEventLink } from './UranusEventLink.ts'
 import { UranusImage } from '../image/UranusImage.ts'
-import { mapEventLocationFromDate } from '@/api/mapper/UranusEventLocation.mapper.ts'
 import { mapEventTypeFromDTO, type UranusEventTypeDTO } from '@/api/dto/UranusEventTypeDTO.ts'
 
 
@@ -55,32 +54,37 @@ export class UranusEvent {
                 d.date_id ?? null,
                 d.event_id ?? null,
                 d.release_status ?? null,
-
                 d.start_date ?? null,
                 d.start_time ?? null,
                 d.end_date ?? null,
                 d.end_time ?? null,
                 d.entry_time ?? null,
-
                 d.duration ?? null,
                 Boolean(d.all_day),
-
                 d.accessibility_flags ?? null,
                 d.accessibility_summary ?? null,
                 d.accessibility_info ?? null,
                 d.visitor_flags ?? null,
-
-                mapEventLocationFromDate(d),
-
                 d.total_capacity ?? null,
                 d.seating_capacity ?? null,
                 d.building_level ?? null,
-
                 d.venue_id ?? null,
                 d.venue_name ?? null,
-                d.venue_web_url ?? null,
+                d.venue_street ?? null,
+                d.venue_house_number ?? null,
+                d.venue_postal_code ?? null,
+                d.venue_city ?? null,
+                d.venue_state ?? null,
+                d.venue_country ?? null,
+                d.venue_lon ?? null,
+                d.venue_lat ?? null,
+                d.venue_website ?? null,
                 d.venue_logo_id ?? null,
+                d.venue_light_theme_logo_id ?? null,
+                d.venue_dark_theme_logo_id ?? null,
                 d.venue_logo_url ?? null,
+                d.venue_light_theme_logo_url ?? null,
+                d.venue_dark_theme_logo_url ?? null,
 
                 d.space_id ?? null,
                 d.space_name ?? null,

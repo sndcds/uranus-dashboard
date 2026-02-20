@@ -1,4 +1,4 @@
-export class UranusEventTypePair {
+export class UranusAdminEventTypePair {
     constructor(
         public typeId: number | null = null,
         public genreId: number | null = null

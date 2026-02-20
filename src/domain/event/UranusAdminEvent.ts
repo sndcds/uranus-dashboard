@@ -3,16 +3,18 @@
 
     2026-02-05, Roald
  */
+
 import { type UranusEventReleaseStatus } from './UranusEventReleaseStatus.ts'
 import { UranusEventLink } from './UranusEventLink.ts'
-import { UranusEventTypePair } from './UranusEventTypePair.ts'
+import { UranusAdminEventTypePair } from './UranusAdminEventTypePair.ts'
 import { type UranusAdminEventDTO } from '@/api/dto/UranusAdminEventDTO.ts'
 import { type UranusAdminEventDate } from '@/domain/event/UranusAdminEventDate.ts'
-import { mapUranusAdminEvent } from "@/api/mapper/UranusAdminEvent.mapper.ts";
 import {
+    mapUranusAdminEvent,
     mapAdminEventDatesFromApi,
     mapAdminEventDatesToApi
-} from "@/api/mapper/UranusEventDate.mapper.ts";
+} from '@/api/mapper/UranusAdminEvent.mapper.ts'
+
 
 export class UranusAdminEvent {
     id: number
@@ -31,7 +33,7 @@ export class UranusAdminEvent {
     eventLinks: UranusEventLink[]
 
     occasionTypeId: number | null
-    eventTypes: UranusEventTypePair[] | null
+    eventTypes: UranusAdminEventTypePair[] | null
     tags: string[] | null
 
     eventDates: UranusAdminEventDate[] | null
@@ -69,7 +71,7 @@ export class UranusAdminEvent {
         this.summary = props.summary ?? null
         this.eventLinks = (props.event_links ?? []).map(e => new UranusEventLink(e.label, e.type, e.url))
         this.occasionTypeId = props.occasion_type_id ?? null
-        this.eventTypes = (props.event_types ?? []).map(e => new UranusEventTypePair(e.type_id, e.genre_id))
+        this.eventTypes = (props.event_types ?? []).map(e => new UranusAdminEventTypePair(e.type_id, e.genre_id))
         this.tags = props.tags ?? null
         this.eventDates = mapAdminEventDatesFromApi(props.event_dates)
         this.organizationId = props.organization_id

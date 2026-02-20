@@ -1,5 +1,5 @@
 import { type UranusEventReleaseStatus } from '@/domain/event/UranusEventReleaseStatus.ts'
-import { type UranusEventTypePair } from '@/domain/event/UranusEventTypePair.ts'
+import { type UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTypePair.ts'
 
 
 // Used for event lists in admin dashboards
@@ -27,5 +27,5 @@ export interface UranusAdminListEvent {
     endTime?: string | null
     title: string
     subtitle?: string | null
-    eventTypes?: UranusEventTypePair[] | null
+    eventTypes?: UranusAdminEventTypePair[] | null
 }

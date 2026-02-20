@@ -5,23 +5,23 @@
 -->
 
 <template>
-
-  <div v-if="showLoading" class="uranus-public-state-info--loading">
+  <div v-if="showLoading" class="uranus-public-event-state-info--loading">
     <!-- Loading state -->
     <span>{{ loadingLabel }}</span>
   </div>
-  <div v-else-if="loadError" class="uranus-public-state-info--alert">
+  <div v-else-if="loadError" class="uranus-public-event-state-info--alert">
     <!-- Error state -->
     <span>{{ loadError }}</span>
   </div>
-  <div v-else-if="event" class="uranus-event-frame">
+  <div v-else-if="event" class="uranus-public-event-frame">
+
     <!-- Event content -->
-
     <div class="uranus-public-event-detail-layout">
-      <!-- Main Content -->
 
-      <section class="uranus-public-event-main">
-        <!-- Main image -->
+      <!-- Main Content -->
+      <section class="uranus-public-event-main-layout">
+
+        <!-- Image -->
         <div>
           <div v-if="event.image?.url" class="uranus-public-event-image-frame">
             <img
@@ -32,19 +32,19 @@
                 class="uranus-public-event-image"
             />
           </div>
-          <span v-if="buildImageCredit()" class="uranus-public-event-image-caption">
-            {{ buildImageCredit() }}
+          <span v-if="imageCredit()" class="uranus-public-event-image-caption">
+            {{ imageCredit() }}
           </span>
         </div>
 
-        <!-- Title area -->
-        <div class="uranus-public-section">
+        <!-- Title -->
+        <div class="uranus-public-event-section">
           <h1>{{ event.title }}</h1>
           <h2 v-if="event.subtitle">
             {{ event.subtitle }}
           </h2>
           <UranusEventReleaseChip
-              v-if="['released', 'cancelled', 'deferred', 'rescheduled'].includes(event.releaseStatus ?? 'draft')"
+              v-if="['cancelled', 'deferred', 'rescheduled'].includes(event.releaseStatus ?? 'draft')"
               :releaseStatus="event.releaseStatus"
           />
         </div>
@@ -52,7 +52,7 @@
         <!-- Event type and genres -->
         <div
             v-if="event.types && event.types.length"
-            class="uranus-public-section">
+            class="uranus-public-event-section">
           <div class="uranus-public-event-detail-tags">
             <span
                 v-for="type in event.types"
@@ -82,15 +82,15 @@
         </div>
 
         <!-- Description -->
-        <div v-if="event.description" class="uranus-public-section">
+        <div v-if="event.description" class="uranus-public-event-section">
           <div class="uranus-public-event-description" v-html="formatMarkdown(event.description)"></div>
         </div>
 
         <!-- URLs -->
-        <div v-if="event.eventUrls && event.eventUrls.length > 0" class="uranus-public-section">
-          <div class="uranus-public-detail-links">
-            <a v-for="link in event.eventUrls" :key="link.id" :href="link.url" target="_blank"
-               rel="noopener noreferrer" class="uranus-public-detail-link">
+        <div v-if="event.eventUrls && event.eventUrls.length > 0" class="uranus-public-event-section">
+          <div class="uranus-public-event-detail-links">
+            <a v-for="(link, index) in event.eventUrls" :key="index" :href="link.url!" target="_blank"
+               rel="noopener noreferrer" class="uranus-public-event-detail-link">
               {{ link.label || link.url }}&nbsp;↗
             </a>
           </div>
@@ -98,9 +98,9 @@
 
       </section>
 
-      <!-- Right Column - Sidebar -->
-      <aside class="uranus-event-detail-sidebar">
-        <div class="uranus-public-info-section">
+      <!-- Sidebar -->
+      <aside class="uranus-public-event-sidebar">
+        <div class="uranus-public-event-info-section">
 
           <!-- Date & Time -->
           <UranusEventDateTimeDisplay
@@ -112,23 +112,34 @@
           />
 
           <!-- Venue, Space, Location -->
-          <UranusEventVenueDisplay :event="event" />
-          <UranusEventLocationDisplay :event="event" />
+          <UranusEventVenueDisplay :eventDate="eventDate" />
 
-          maxAttendees: {{ event.maxAttendees }}<br>
-          minAge: {{ event.minAge }}<br>
-          maxAge: {{ event.maxAge }}<br>
-          currency: {{ event.currency }}<br>
-          priceType: {{ event.priceType }}<br>
-          minPrice: {{ event.minPrice }}<br>
-          maxPrice: {{ event.maxPrice }}<br>
+          <template v-if="event.maxAttendees">
+            {{ t('event_max_attendees', { count: event.maxAttendees }) }}<br>
+          </template>
+
+          <template v-if="ageLabel">
+            {{ ageLabel }}<br>
+          </template>
+
+          <div v-if="priceLabel || priceTypeLabel">
+            <strong>{{ t('event_price') }}:</strong><br>
+            <template v-if="priceTypeLabel">
+              {{ priceTypeLabel }}<br>
+            </template>
+            <template v-if="priceLabel">
+              {{ priceLabel }}
+            </template>
+          </div>
+
+
           meetingPoint: {{ event.meetingPoint }}<br>
           participationInfo: {{ event.participationInfo }}<br>
           <br>
 
           <!-- Organization -->
           <div v-if="event.organizationName">
-            <p class="uranus-public-info-label">{{ t('event_organizer') }}:</p>
+            <p class="uranus-public-event-info-label">{{ t('event_organizer') }}:</p>
             <p v-if="event?.organizationUrl && event?.organizationName">
               <a :href="event.organizationUrl" target="_blank" rel="noopener noreferrer">
                 {{ event?.organizationName }}&nbsp;↗
@@ -139,7 +150,7 @@
 
           <!-- Additional Info -->
           <div v-if="event.meetingPoint">
-            <p class="uranus-public-info-label">{{ t('event_meeting_point') }}</p>
+            <p class="uranus-public-event-info-label">{{ t('event_meeting_point') }}</p>
             <p>{{ event.meetingPoint }}</p>
           </div>
 
@@ -148,13 +159,13 @@
               :dates="event.furtherDates"
           />
 
-          <div v-if="selectedAccessibilityLabels.length" class="uranus-public-tight-section">
+          <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-tight-section">
             <svg width="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
               <g transform="matrix(1.23077,0,0,1.23077,-2.30769,-2.76923)">
                 <path d="M11.25,5.25C11.25,6.078 10.578,6.75 9.75,6.75C8.922,6.75 8.25,6.078 8.25,5.25C8.25,4.422 8.922,3.75 9.75,3.75C10.578,3.75 11.25,4.422 11.25,5.25ZM12.75,5.25C12.75,6.648 11.794,7.822 10.5,8.155L10.5,9.75L15.375,9.75L15.375,11.25L10.5,11.25L10.5,14.25L17.865,14.25L18.615,18L19.5,18L19.5,19.5L17.385,19.5L16.635,15.75L15.75,15.75C15.75,19.064 13.064,21.75 9.75,21.75C6.436,21.75 3.75,19.064 3.75,15.75C3.75,12.69 6.04,10.166 9,9.796L9,8.155C7.706,7.822 6.75,6.648 6.75,5.25C6.75,3.593 8.093,2.25 9.75,2.25C11.407,2.25 12.75,3.593 12.75,5.25ZM9,15.75L14.25,15.75C14.25,18.235 12.235,20.25 9.75,20.25C7.265,20.25 5.25,18.235 5.25,15.75C5.25,13.52 6.872,11.669 9,11.312L9,15.75Z"/>
               </g>
             </svg>
-            <p class="uranus-public-info-label">{{ t('space_accessibility') }}:</p>
+            <p class="uranus-public-event-info-label">{{ t('space_accessibility') }}:</p>
             <p v-for="label in selectedAccessibilityLabels" :key="label">
               {{ label }}
             </p>
@@ -163,7 +174,7 @@
           <button
               v-if="hasLonLat"
               type="button"
-              class="uranus-public-detail-link"
+              class="uranus-public-event-detail-link"
               @click="onShowOnMap">
             <svg width="20px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
               <path d="M29.664,1.531L29.411,1.579L20.823,4.907L11.177,1.531L2.11,4.587C1.769,4.687 1.532,5 1.531,5.355L1.531,29.664C1.531,30.111 1.889,30.469 2.336,30.469L2.589,30.421L11.177,27.093L20.823,30.469L29.89,27.413C30.231,27.313 30.468,27 30.469,26.645L30.469,2.336C30.469,2.335 30.469,2.334 30.469,2.333C30.469,1.893 30.107,1.531 29.667,1.531C29.666,1.531 29.665,1.531 29.664,1.531M12.783,5.501L19.217,7.753L19.217,26.499L12.783,24.247L12.783,5.501M4.748,7.093L9.571,5.469L9.571,24.28L4.748,26.145L4.748,7.094M27.252,24.907L22.429,26.531L22.429,7.738L27.252,5.874L27.252,24.907Z" style="fill-rule:nonzero;"/>
@@ -174,7 +185,7 @@
           <button
               v-if="event.eventId && eventDate?.id"
               type="button"
-              class="uranus-public-detail-link"
+              class="uranus-public-event-detail-link"
               @click="onDownloadIcs">
             <svg width="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <g transform="matrix(0.294848,0,0,0.303202,-229.662,-293.77)">
@@ -203,7 +214,6 @@ import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDispla
 
 import { UranusEvent } from '@/domain/event/UranusEvent.ts'
 import { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
-import UranusEventLocationDisplay from '@/component/event/ui/UranusEventLocationDisplay.vue'
 import UranusEventFurtherDatesDisplay from '@/component/event/ui/UranusEventFurtherDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { uranusI18nAccessibilityFlags } from '@/i18n/uranus-i18n-accessibility.ts'
@@ -275,7 +285,7 @@ const selectedAccessibilityLabels = computed(() => {
 })
 
 // Helpers
-function buildImageCredit() {
+function imageCredit() {
   const e = event.value
   if (!e) return null
   let parts = ''
@@ -310,8 +320,63 @@ const eventEndDate = computed(() => eventDate.value?.endDate ?? event.value?.dat
 const eventEndTime = computed(() => eventDate.value?.endTime ?? event.value?.date.endTime ?? null)
 const eventEntryTime = computed(() => eventDate.value?.entryTime ?? event.value?.date.entryTime ?? null)
 
+const ageLabel = computed(() => {
+  const min = event.value?.minAge
+  const max = event.value?.maxAge
+  if (!min && !max) return null
+  if (min && max) { return t('event_age_between', { min, max }) }
+  if (min) { return t('event_age_from', { min }) }
+  if (max) { return t('event_age_until', { max }) }
+  return null
+})
+
+const priceLabel = computed(() => {
+  const min = event.value?.minPrice
+  const max = event.value?.maxPrice
+  const currency = event.value?.currency ?? ''
+
+  // Helper to format numbers according to locale with 2 decimals
+  const formatNumber = (value: number) => {
+    return new Intl.NumberFormat(navigator.language, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value)
+  }
+
+  if (min != null && max != null) {
+    return t('event_price_between_sentence', { min: formatNumber(min), max: formatNumber(max), currency })
+  }
+  if (min != null) {
+    return t('event_price_from_sentence', { min: formatNumber(min), currency })
+  }
+  if (max != null) {
+    return t('event_price_until_sentence', { max: formatNumber(max), currency })
+  }
+  return null
+})
+
+const priceTypeLabel = computed(() => {
+  const map: Record<string, string> = {
+    not_specified: 'event_price_not_specified',
+    regular_price: 'event_price_regular',
+    free: 'event_price_free',
+    donation: 'event_price_donation',
+    tiered_prices: 'event_price_tiered',
+  }
+
+  const priceType = event.value?.priceType ?? 'not_specified'
+  const key = map[priceType] || 'event_price_not_specified'
+
+  // Return null if not_specified
+  if (key === 'event_price_not_specified') {
+    return null
+  }
+
+  return t(key)
+})
+
 const hasLonLat = computed(() => {
-  if ((event.value?.date.lon && event.value?.date.lat) || (event.value?.date.lon && event.value?.date.lat))
+  if ((event.value?.date.venueLon && event.value?.date.venueLat) || (event.value?.date.venueLon && event.value?.date.venueLat))
     return true
   return false
 })
@@ -331,8 +396,8 @@ const loadEvent = async () => {
 
   try {
     const lang = locale.value || 'de'
-    const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
-    const {data} = await apiFetch<unknown>(endpoint)
+    const apiPath = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
+    const {data} = await apiFetch<unknown>(apiPath)
     const mappedEvent = UranusEvent.fromApi(data, eventDateId)
     if (!mappedEvent) {
       loadError.value = t('error_incomplete_data')

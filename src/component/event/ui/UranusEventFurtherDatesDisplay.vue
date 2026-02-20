@@ -5,8 +5,8 @@
 -->
 
 <template>
-  <div v-if="dates.length" class="uranus-public-further-dates">
-    <p class="uranus-public-info-label">
+  <div v-if="dates.length" class="uranus-public-event-further-dates">
+    <p class="uranus-public-event-info-label">
       {{ t('event_additional_dates') }}
     </p>
 

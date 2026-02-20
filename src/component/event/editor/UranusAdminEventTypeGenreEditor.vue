@@ -67,7 +67,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
-import { UranusEventTypePair } from "@/domain/event/UranusEventTypePair.ts"
+import { UranusAdminEventTypePair } from "@/domain/event/UranusAdminEventTypePair.ts"
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
@@ -82,7 +82,7 @@ onMounted(async () => {
   if (store.draft) {
     store.draft.eventTypes =
         store.original?.eventTypes?.map(
-            e => new UranusEventTypePair(e.typeId, e.genreId)
+            e => new UranusAdminEventTypePair(e.typeId, e.genreId)
         ) ?? []
   }
 })
@@ -142,7 +142,7 @@ function removePair(index: number) {
   store.draft!.eventTypes!.splice(index, 1)
 }
 
-function getTypeGenreLabel(pair: UranusEventTypePair) {
+function getTypeGenreLabel(pair: UranusAdminEventTypePair) {
   return lookupStore.getTypeGenreName(pair.typeId, pair.genreId, locale.value)
 }
 
@@ -197,7 +197,7 @@ async function commitEventTypesTab() {
     // Commit locally
     if (store.original && store.draft && store.draft.eventTypes) {
       store.original.eventTypes = store.draft.eventTypes.map(
-          e => new UranusEventTypePair(e.typeId, e.genreId)
+          e => new UranusAdminEventTypePair(e.typeId, e.genreId)
       )
     }
   } catch (err) {
@@ -213,7 +213,7 @@ function resetEventTypesTab() {
 
   if (store.original?.eventTypes) {
     store.draft.eventTypes = store.original.eventTypes.map(
-        e => new UranusEventTypePair(e.typeId, e.genreId)
+        e => new UranusAdminEventTypePair(e.typeId, e.genreId)
     )
   }
 

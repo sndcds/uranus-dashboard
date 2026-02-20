@@ -111,7 +111,7 @@ import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.
 import UranusDashboardButton from '@/component/dashboard/UranusDashboardButton.vue'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import type { UranusAdminListEvent } from '@/domain/event/UranusAdminListEvent.ts'
-import type { UranusEventTypePair } from '@/domain/event/UranusEventTypePair.ts'
+import type { UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTypePair.ts'
 
 const placeholderImage = '/public/uranus-pevent-laceholder.webp'
 
@@ -129,7 +129,7 @@ const props = defineProps<{ event: UranusAdminListEvent }>()
 const { t, locale } = useI18n({ useScope: 'global' })
 const typeLookupStore = useEventTypeLookupStore()
 
-const eventTypeGenreString = (type: UranusEventTypePair) => {
+const eventTypeGenreString = (type: UranusAdminEventTypePair) => {
   const name = typeLookupStore.getTypeGenreName(type.typeId, type.genreId ?? null, locale.value)
   return name || 'Unknown'
 }

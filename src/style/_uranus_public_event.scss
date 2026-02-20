@@ -1,4 +1,5 @@
-.uranus-event-frame {
+// Main area for rendering of event data
+.uranus-public-event-frame {
   display: flex;
   flex-direction: column;
   max-width: 1024px;
@@ -19,12 +20,12 @@
   }
 }
 
-.uranus-event-detail-sidebar {
+.uranus-public-event-sidebar {
   width: 300px;
 }
 
 // Info area for feedback to the user
-.uranus-public-state-info {
+.uranus-public-event-state-info {
   padding: clamp(2rem, 5vw, 3rem);
   text-align: center;
   font-weight: 500;
@@ -43,7 +44,7 @@
 }
 
 // Info label in front or above text
-.uranus-public-info-label {
+.uranus-public-event-info-label {
   font-weight: bold;
   margin-right: 4px;
 }
@@ -58,7 +59,6 @@
 
 .uranus-public-event-image {
   width: 100%;
-  max-width: 800px;
   height: auto;
   object-fit: cover;
   display: block;
@@ -71,29 +71,10 @@
   padding: 8px 4px;
 }
 
-.event-detail-hero__subtitle {
-  margin: 1rem 0 0;
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
-  color: var(--uranus-muted-text);
-  line-height: 1.4;
-}
-
-.event-detail-languages-tags {
+.uranus-public-event-main-layout {
   display: flex;
-  gap: 0.3rem;
-}
-
-.event-detail-language-tag {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  background: rgba(181, 222, 255, 0.65);
-  color: var(--accent-secondary, rgb(22, 149, 213));
-  font-weight: 700;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .uranus-public-event-detail-layout {
@@ -103,13 +84,7 @@
   align-items: start;
 }
 
-.uranus-public-event-main {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.uranus-public-section {
+.uranus-public-event-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -127,7 +102,7 @@
   }
 }
 
-.uranus-public-info-section {
+.uranus-public-event-info-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -146,19 +121,19 @@
   }
 }
 
-.uranus-public-tight-section {
+.uranus-public-event-tight-section {
   display: flex;
   flex-direction: column;
   font-size: 0.9rem;
 }
 
-.uranus-public-further-dates {
+.uranus-public-event-further-dates {
 }
 
 
 .uranus-public-event-detail-tags,
 .uranus-public-event-language-tags,
-.uranus-public-event-language-tags {
+.uranus-public-event-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
@@ -169,7 +144,7 @@
 .uranus-public-event-tag {
   display: inline-flex;
   align-items: center;
-  padding: 0.1rem 0.6rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 3px;
   font-weight: 500;
   font-size: 0.95rem;
@@ -189,13 +164,6 @@
   padding: 0.1rem 0.4rem;
 }
 
-
-.event-detail-teaser {
-  margin: 0;
-  font-size: clamp(1.1rem, 2.5vw, 1.25rem);
-  line-height: 1.6;
-  color: var(--uranus-muted-text);
-}
 
 .uranus-public-event-description {
   p {
@@ -233,18 +201,18 @@
 
 
 
-.uranus-public-detail-links {
+.uranus-public-event-detail-links {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.uranus-public-detail-link svg path {
+.uranus-public-event-detail-link svg path {
   fill: currentColor; /* inherit the button's color */
   transition: fill 0.2s ease; /* optional smooth transition */
 }
 
-.uranus-public-detail-link {
+.uranus-public-event-detail-link {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -258,56 +226,17 @@
   cursor: pointer;
 }
 
-.uranus-public-detail-link:hover {
+.uranus-public-event-detail-link:hover {
   opacity: 0.7;
 }
 
-.uranus-public-detail-link:disabled {
+.uranus-public-event-detail-link:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-
-.event-detail-download-error {
-  margin-top: 0.5rem;
-  color: #b91c1c;
-  font-size: 0.9rem;
-}
-
-.event-detail-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  position: sticky;
-  top: 100px;
-}
-
-.event-detail-section-spacing {
-  margin-top: 1rem;
-}
-
-.event-detail-info-label {
-  font-weight: 700;
-  letter-spacing: 0.3px;
-}
-
-.event-detail-info-value {
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.event-detail-organization {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
 }
 
 @media (max-width: 1024px) {
   .uranus-public-event-detail-layout {
     grid-template-columns: 1fr;
-  }
-
-  .event-detail-sidebar {
-    position: static;
   }
 }

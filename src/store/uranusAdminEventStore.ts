@@ -8,7 +8,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { UranusAdminEvent } from '@/domain/event/UranusAdminEvent.ts'
 
-export const useUranusAdminEventStore = defineStore('uranusEvent', () => {
+export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
     // State
     const original = ref<UranusAdminEvent | null>(null)
     const draft = ref<UranusAdminEvent | null>(null)

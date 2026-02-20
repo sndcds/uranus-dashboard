@@ -7,7 +7,6 @@
 import { type UranusAdminEventDateDTO } from '@/api/dto/UranusAdminEventDateDTO.ts'
 import { type UranusEventReleaseStatus } from '@/domain/event/UranusEventReleaseStatus.ts'
 
-
 export interface UranusAdminEventDTO {
     id: number
     release_status: UranusEventReleaseStatus | null
