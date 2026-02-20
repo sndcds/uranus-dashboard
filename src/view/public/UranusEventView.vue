@@ -96,6 +96,8 @@
           </div>
         </div>
 
+        <UranusEmbedYoutubeVideo url="https://www.youtube.com/watch?v=63zGtiv89bA" />
+
       </section>
 
       <!-- Sidebar -->
@@ -114,13 +116,11 @@
           <!-- Venue, Space, Location -->
           <UranusEventVenueDisplay :eventDate="eventDate" />
 
-          <template v-if="event.maxAttendees">
-            {{ t('event_max_attendees', { count: event.maxAttendees }) }}<br>
-          </template>
+          <div v-if="event.meetingPoint">
+            <p class="uranus-public-event-info-label">{{ t('event_meeting_point') }}</p>
+            <p>{{ event.meetingPoint }}</p>
+          </div>
 
-          <template v-if="ageLabel">
-            {{ ageLabel }}<br>
-          </template>
 
           <div v-if="priceLabel || priceTypeLabel">
             <strong>{{ t('event_price') }}:</strong><br>
@@ -132,9 +132,19 @@
             </template>
           </div>
 
+          <div v-if="event.maxAttendees || ageLabel">
+            <strong>{{ t('event_participation_info') }}:</strong><br>
+            <template v-if="event.maxAttendees">
+              {{ t('event_max_attendees', { count: event.maxAttendees }) }}<br>
+            </template>
+            <template v-if="ageLabel">
+              {{ ageLabel }}<br>
+            </template>
+            <template v-if="event.participationInfo">
+              {{ event.participationInfo }}<br>
+            </template>
+          </div>
 
-          meetingPoint: {{ event.meetingPoint }}<br>
-          participationInfo: {{ event.participationInfo }}<br>
           <br>
 
           <!-- Organization -->
@@ -146,12 +156,6 @@
               </a>
             </p>
             <p v-else>{{ event.organizationName }}</p>
-          </div>
-
-          <!-- Additional Info -->
-          <div v-if="event.meetingPoint">
-            <p class="uranus-public-event-info-label">{{ t('event_meeting_point') }}</p>
-            <p>{{ event.meetingPoint }}</p>
           </div>
 
           <UranusEventFurtherDatesDisplay
@@ -217,6 +221,7 @@ import { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
 import UranusEventFurtherDatesDisplay from '@/component/event/ui/UranusEventFurtherDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { uranusI18nAccessibilityFlags } from '@/i18n/uranus-i18n-accessibility.ts'
+import UranusEmbedYoutubeVideo from '@/component/video/UranusEmbedYoutubeVideo.vue'
 
 const route = useRoute()
 
