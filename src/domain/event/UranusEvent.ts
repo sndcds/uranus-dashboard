@@ -51,7 +51,7 @@ export class UranusEvent {
 
         const mapDate = (d: any): UranusEventDate =>
             new UranusEventDate(
-                d.date_id ?? null,
+                d.id ?? null,
                 d.event_id ?? null,
                 d.release_status ?? null,
                 d.start_date ?? null,

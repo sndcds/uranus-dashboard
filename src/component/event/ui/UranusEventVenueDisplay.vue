@@ -6,7 +6,7 @@
 
 <template>
   <div v-if="hasVenueInfo">
-    <span class="uranus-public-event-info-label ">{{ t('location') }}:</span><br>
+    <span class="uranus-public-event-info-label ">{{ t('location') }}</span><br>
 
     <p v-if="eventDate?.venueWebsite && eventDate?.venueName">
       <a :href="eventDate.venueWebsite" target="_blank" rel="noopener noreferrer">

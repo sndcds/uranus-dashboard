@@ -123,7 +123,7 @@
 
 
           <div v-if="priceLabel || priceTypeLabel">
-            <strong>{{ t('event_price') }}:</strong><br>
+            <strong>{{ t('event_price') }}</strong><br>
             <template v-if="priceTypeLabel">
               {{ priceTypeLabel }}<br>
             </template>
@@ -133,7 +133,7 @@
           </div>
 
           <div v-if="event.maxAttendees || ageLabel">
-            <strong>{{ t('event_participation_info') }}:</strong><br>
+            <strong>{{ t('event_participation_info') }}</strong><br>
             <template v-if="event.maxAttendees">
               {{ t('event_max_attendees', { count: event.maxAttendees }) }}<br>
             </template>
@@ -149,7 +149,7 @@
 
           <!-- Organization -->
           <div v-if="event.organizationName">
-            <p class="uranus-public-event-info-label">{{ t('event_organizer') }}:</p>
+            <p class="uranus-public-event-info-label">{{ t('event_organizer') }}</p>
             <p v-if="event?.organizationUrl && event?.organizationName">
               <a :href="event.organizationUrl" target="_blank" rel="noopener noreferrer">
                 {{ event?.organizationName }}&nbsp;↗
@@ -164,12 +164,13 @@
           />
 
           <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-tight-section">
-            <svg width="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+            <svg width="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                 style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2; margin-bottom: 8px;">
               <g transform="matrix(1.23077,0,0,1.23077,-2.30769,-2.76923)">
                 <path d="M11.25,5.25C11.25,6.078 10.578,6.75 9.75,6.75C8.922,6.75 8.25,6.078 8.25,5.25C8.25,4.422 8.922,3.75 9.75,3.75C10.578,3.75 11.25,4.422 11.25,5.25ZM12.75,5.25C12.75,6.648 11.794,7.822 10.5,8.155L10.5,9.75L15.375,9.75L15.375,11.25L10.5,11.25L10.5,14.25L17.865,14.25L18.615,18L19.5,18L19.5,19.5L17.385,19.5L16.635,15.75L15.75,15.75C15.75,19.064 13.064,21.75 9.75,21.75C6.436,21.75 3.75,19.064 3.75,15.75C3.75,12.69 6.04,10.166 9,9.796L9,8.155C7.706,7.822 6.75,6.648 6.75,5.25C6.75,3.593 8.093,2.25 9.75,2.25C11.407,2.25 12.75,3.593 12.75,5.25ZM9,15.75L14.25,15.75C14.25,18.235 12.235,20.25 9.75,20.25C7.265,20.25 5.25,18.235 5.25,15.75C5.25,13.52 6.872,11.669 9,11.312L9,15.75Z"/>
               </g>
             </svg>
-            <p class="uranus-public-event-info-label">{{ t('space_accessibility') }}:</p>
+            <!--p class="uranus-public-event-info-label">{{ t('space_accessibility') }}</p-->
             <p v-for="label in selectedAccessibilityLabels" :key="label">
               {{ label }}
             </p>
@@ -187,7 +188,7 @@
           </button>
 
           <button
-              v-if="event.eventId && eventDate?.id"
+              v-if="eventDate?.eventId && eventDate?.id"
               type="button"
               class="uranus-public-event-detail-link"
               @click="onDownloadIcs">
