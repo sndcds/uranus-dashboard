@@ -41,6 +41,10 @@ export const toBoolean = (value: unknown): boolean => {
     return false
 }
 
+export const apiBaseUrl = () => {
+    return import.meta.env.VITE_API_URL
+}
+
 export const buildPlutoPreviewImageUrl = (imageId: number) => {
     const params = new URLSearchParams({
         mode: 'cover',

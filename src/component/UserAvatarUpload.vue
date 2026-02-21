@@ -52,6 +52,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useUserStore } from '@/store/uranusUserStore.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { apiFetch } from '@/api.ts'
+import {apiBaseUrl} from "@/util/UranusUtils.ts";
 
 
 const props = withDefaults(
@@ -141,7 +142,6 @@ watch(
 
 const loadAvatar = async () => {
   const userId = userStore.userId
-
   if (!userId) {
     updateAvatarFromServer(null)
     return
@@ -153,25 +153,24 @@ const loadAvatar = async () => {
   }
 
   isLoadingAvatar.value = true
-
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/${userId}/avatar/256`, {
+    const api_base = apiBaseUrl()
+    const res = await fetch(`${api_base}/api/user/${userId}/avatar/256`, {
       method: 'GET',
-      headers: Object.keys(headers).length ? headers : undefined,
+      headers,
       cache: 'no-store',
     })
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        updateAvatarFromServer(null)
-      }
+    if (!res.ok) {
+      if (res.status === 404) updateAvatarFromServer(null)
       return
     }
 
-    const blob = await response.blob()
+    const blob = await res.blob()
     if (loadedAvatarObjectUrl.value) {
       URL.revokeObjectURL(loadedAvatarObjectUrl.value)
     }
+
     const objectUrl = URL.createObjectURL(blob)
     loadedAvatarObjectUrl.value = objectUrl
     currentAvatarUrl.value = objectUrl
@@ -198,7 +197,6 @@ watch(
 const uploadAvatar = async (file: File) => {
   const formData = new FormData()
   formData.append('avatar', file)
-  const method = avatarExistsOnServer.value ? 'PUT' : 'POST'
 
   await apiFetch<unknown>('/api/admin/user/avatar', {
     method: 'POST',

@@ -33,6 +33,7 @@ import UranusVenueEditView from "@/view/admin/venue/UranusVenueEditView.vue";
 import UranusAdminEventsListView from '@/component/event/view/UranusAdminEventsListView.vue'
 import UranusEventCreateView from "@/component/event/view/UranusEventCreateView.vue";
 import UranusEventEditView from '@/component/event/view/UranusEventEditView.vue'
+import UranusDevGetEventsView from "@/component/dev/UranusDevGetEventsView.vue";
 
 
 const routes = [
@@ -179,6 +180,11 @@ const routes = [
                 name: 'dev-theme-view',
                 component: UranusDevThemeView,
                 meta: { layoutMode: 'zero-padding' },
+            },
+            {
+                path: 'dev-get-events',
+                name: 'dev-get-events',
+                component: UranusDevGetEventsView
             },
         ],
     },
