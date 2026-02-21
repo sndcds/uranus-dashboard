@@ -26,7 +26,7 @@ export interface UranusOrganizationDTO {
     created_by?: number | null
     modified_by?: number | null
 
-    wkb_pos?: string | null // or a geometry type depending on how you handle it in TS
+    geo_pos?: string | null // or a geometry type depending on how you handle it in TS
 
     image_main_logo_id?: number | null
     image_light_mode_logo_id?: number | null

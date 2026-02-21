@@ -1,6 +1,9 @@
 <template>
   <h1>Uranus API - Get Events Demo</h1>
 
+  <!-- Venue type-ahead -->
+  <UranusVenueTypeahead v-model:selectedVenue="chosenVenue" />
+
   <div class="get-events-demo">
     <!-- Basic examples -->
     <div>Get all upcoming events</div>
@@ -12,8 +15,11 @@
     <div>Get all events ending before a specific date</div>
     <div><a :href="`${API_BASE}/api/events/?end=2026-12-31`">Link</a></div>
 
-    <div>Search events by keyword in title/description</div>
+    <div>Search events by keyword text elements</div>
     <div><a :href="`${API_BASE}/api/events/?search=music`">Link</a></div>
+
+    <div>Search events by keyword in title</div>
+    <div><a :href="`${API_BASE}/api/events/?title=*bullet*`">Link</a></div>
 
     <div>Filter by event IDs</div>
     <div><a :href="`${API_BASE}/api/events/?events=16,461`">Link</a></div>
@@ -37,7 +43,7 @@
     <div><a :href="`${API_BASE}/api/events/?postal_code=24937`">Link</a></div>
 
     <div>Filter by city</div>
-    <div><a :href="`${API_BASE}/api/events/?city=Flensburg`">Link</a></div>
+    <div><a :href="`${API_BASE}/api/events/?city=Flensb*`">Link</a></div>
 
     <div>Filter by event types</div>
     <div><a :href="`${API_BASE}/api/events/?event_types=1,2`">Link</a></div>
@@ -55,7 +61,7 @@
     <div><a :href="`${API_BASE}/api/events/?age=18`">Link</a></div>
 
     <div>Filter by geographic location and radius</div>
-    <div><a :href="`${API_BASE}/api/events/?lat=54.33&lon=10.12&radius=5`">Link</a></div>
+    <div><a :href="`${API_BASE}/api/events/?lat=54.78&lon=9.43&radius=5000`">Link</a></div>
 
     <div>Pagination: limit and offset</div>
     <div><a :href="`${API_BASE}/api/events/?limit=10&offset=20`">Link</a></div>
@@ -63,9 +69,20 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { apiBaseUrl } from '@/util/UranusUtils.ts'
+import UranusVenueTypeahead from '@/component/venue/UranusVenueTypeahead.vue'
 
 const API_BASE = apiBaseUrl()
+
+// Bind the selected venue from the typeahead
+interface Venue {
+  id: number
+  name: string
+}
+
+const chosenVenue = ref<Venue | null>(null)
+
 </script>
 
 <style scoped>
