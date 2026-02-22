@@ -96,7 +96,7 @@
           </div>
         </div>
 
-        <UranusEmbedYoutubeVideo url="https://www.youtube.com/watch?v=63zGtiv89bA" />
+        <!--UranusEmbedYoutubeVideo url="https://www.youtube.com/watch?v=63zGtiv89bA" /-->
 
       </section>
 
@@ -403,8 +403,8 @@ const loadEvent = async () => {
   try {
     const lang = locale.value || 'de'
     const apiPath = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
-    const {data} = await apiFetch<unknown>(apiPath)
-    const mappedEvent = UranusEvent.fromApi(data, eventDateId)
+    const response = await apiFetch<any>(apiPath)
+    const mappedEvent = UranusEvent.fromApi(response.data.data, eventDateId)
     if (!mappedEvent) {
       loadError.value = t('error_incomplete_data')
       return

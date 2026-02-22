@@ -1,4 +1,22 @@
 <template>
+
+  <div>
+    <h3>draft</h3>
+    <p>
+      venueId: {{ store.draft?.venueId }}<br>
+      spaceId: {{ store.draft?.spaceId }}<br>
+      meetingPoint: {{ store.draft?.meetingPoint }}<br>
+      onlineLink: {{ store.draft?.onlineLink }}<br>
+    </p>
+    <h3>original</h3>
+    <p>
+      venueId: {{ store.original?.venueId }}<br>
+      spaceId: {{ store.original?.spaceId }}<br>
+      meetingPoint: {{ store.original?.meetingPoint }}<br>
+      onlineLink: {{ store.original?.onlineLink }}<br>
+    </p>
+  </div>
+
   <section class="venue-tab">
     <h2>Venue / Space</h2>
 
@@ -26,13 +44,13 @@
       <input type="url" id="onlineUrl" v-model="draft.onlineLink" placeholder="https://..." />
     </div>
 
-    <div class="dirty-indicator" v-if="isBDirty">
+    <div class="dirty-indicator" v-if="isDirty">
       ⚠ You have unsaved changes
     </div>
 
     <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isBDirty">Discard</button>
-      <button @click="commitTab" :disabled="store.saving || !isBDirty">Save</button>
+      <button @click="resetTab" :disabled="store.saving || !isDirty">Discard</button>
+      <button @click="commitTab" :disabled="store.saving || !isDirty">Save</button>
     </div>
   </section>
 </template>
@@ -60,9 +78,6 @@ interface SelectedPlace {
 
 const selectedPlace = ref<SelectedPlace>({ venueId: null, spaceId: null })
 
-// ----------------------------
-// Modal handlers
-// ----------------------------
 function openVenueModal() {
   activeDraft.value = draft.value
   selectedPlace.value = {
@@ -81,17 +96,11 @@ function closeVenueModal() {
   activeDraft.value = null
 }
 
-// ----------------------------
-// Fetch venues on mount
-// ----------------------------
 onMounted(async () => {
   await venueInfoStore.fetchAll()
 })
 
-// ----------------------------
-// Dirty indicator
-// ----------------------------
-const isBDirty = computed(() => {
+const isDirty = computed(() => {
   if (!store.draft || !store.original) return false
   const d = store.draft
   const o = store.original
@@ -103,9 +112,6 @@ const isBDirty = computed(() => {
   )
 })
 
-// ----------------------------
-// API calls
-// ----------------------------
 async function commitTab() {
   if (!draft.value || !store.original) return
   store.saving = true

@@ -1,4 +1,6 @@
-// usePlutoImages.ts
+/*
+    src/composable/usePlutoImages.ts
+ */
 
 import { PlutoImageMeta } from '@/model/plutoImageModel.ts'
 import type { PlutoImageDTO } from '@/model/plutoImageModel.ts'

@@ -70,6 +70,7 @@ import AdminEventParticipationTab from "@/component/event/editor/AdminEventParti
 import UranusEventVenueTab from "@/component/event/editor/UranusEventVenueTab.vue";
 import AdminEventPriceTab from "@/component/event/editor/AdminEventPriceTab.vue";
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
+import UranusEventVisitorInfosEditor from '@/component/event/editor/UranusEventVisitorInfosEditor.vue'
 
 const showReleaseModal = ref(false)
 
@@ -89,7 +90,7 @@ const eventId = computed(() => {
   return Number.isFinite(id) ? id : null
 })
 
-type TabKey = 'settings' | 'base' | 'dates' | 'venue' |'meta1' | 'participation' | 'price'
+type TabKey = 'settings' | 'base' | 'dates' | 'venue' |'meta1' | 'participation' | 'price' | 'visitor'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
@@ -98,7 +99,8 @@ const tabs = [
   { key: 'dates', label: 'Wann' },
   { key: 'meta1', label: '1' },
   { key: 'participation', label: '2' },
-  { key: 'price', label: '3' }
+  { key: 'price', label: '3' },
+  { key: 'visitor', label: 'visitor' }
 ] as const
 
 const currentTabComponent = computed(() => {
@@ -108,6 +110,7 @@ const currentTabComponent = computed(() => {
     case 'meta1': return UranusMeta1Tab
     case 'participation': return AdminEventParticipationTab
     case 'price': return AdminEventPriceTab
+    case 'visitor': return UranusEventVisitorInfosEditor
     case 'base':
     default:
       return AdminEventBaseTab
@@ -127,9 +130,13 @@ onMounted(async () => {
     adminEventStore.loadFromApi(response.data.data)
   } catch (e) {
     adminEventStore.error = 'Failed to load event'
+    console.log(e)
   } finally {
     adminEventStore.loading = false
   }
+
+  console.log("/// original: ", adminEventStore?.original?.visitorInfoFlags)
+  console.log("/// draft: ", adminEventStore?.draft?.visitorInfoFlags)
 })
 
 onUnmounted(() => {

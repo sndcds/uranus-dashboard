@@ -77,7 +77,6 @@ function resetTab() {
   flags.value.value = store.original.accessibilityFlags ?? 0n
 }
 
-// Build API payload
 // Build API payload from current flag checkboxes
 function buildPayload(draft: UranusSpace, original: UranusSpace) {
   const accFlags = setBigintByFlags(flagModels)

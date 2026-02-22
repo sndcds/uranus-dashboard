@@ -7,6 +7,11 @@ import type { UranusAdminEventDate } from "@/domain/event/UranusAdminEventDate.t
 export function mapUranusAdminEvent(raw: any): UranusAdminEvent | null {
     if (!raw || typeof raw !== 'object') return null
 
+    let visitorInfoFlags = '0'
+    if (raw.visitor_info_flags !== undefined) {
+        visitorInfoFlags = raw.visitor_info_flags
+    }
+
     const dto: UranusAdminEventDTO = {
         id: raw.id,
         release_status: raw.release_status ?? null,
@@ -34,6 +39,7 @@ export function mapUranusAdminEvent(raw: any): UranusAdminEvent | null {
         min_price: raw.min_price ?? null,
         max_price: raw.max_price ?? null,
         ticket_flags: raw.ticket_flags ?? null,
+        visitor_info_flags: visitorInfoFlags,
         currency: raw.currency ?? null,
         occasion_type_id: raw.occasion_type_id ?? null,
         online_link: raw.online_link ?? null,
@@ -42,7 +48,7 @@ export function mapUranusAdminEvent(raw: any): UranusAdminEvent | null {
         event_links: raw.event_links ?? [],
     }
 
-    return new UranusAdminEvent(dto)
+    return UranusAdminEvent.fromDTO(dto)
 }
 
 export function mapAdminEventDateFromApi(

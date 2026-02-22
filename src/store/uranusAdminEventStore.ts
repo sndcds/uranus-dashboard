@@ -21,7 +21,7 @@ export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
     // Helpers
     function cloneEvent(event: UranusAdminEvent): UranusAdminEvent {
         // safest clone for class-based models
-        return new UranusAdminEvent(structuredClone(event.toProps()))
+        return new UranusAdminEvent(structuredClone(event))
     }
 
     // Getters
@@ -56,6 +56,7 @@ export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
         }
         original.value = event
         draft.value = cloneEvent(event)
+        draft.value.visitorInfoFlags = original.value.visitorInfoFlags
     }
 
     function clear() {

@@ -36,6 +36,7 @@ export interface UranusAdminEventDTO {
     min_age?: number | null
     max_age?: number | null
     max_attendees?: number | null
+    visitor_info_flags?: string | null
 
     price_type?: string | null
     min_price?: number | null
