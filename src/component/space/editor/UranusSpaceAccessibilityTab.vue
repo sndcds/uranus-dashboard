@@ -1,110 +1,55 @@
+<!--
+  src/component/space/editor/UranusSpaceAccessibilityTab.vue
+-->
+
 <template>
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
-    <!--isDirty: {{ isDirty}} <br>
-    flagModels: {{ flagModels }}
-    -->
-    <div
-        v-for="topic in uranusI18nAccessibilityFlags"
-        :key="topic.topic"
-        class="accessibility-group"
-    >
-      <h3>{{ t(topic.topic_name) }}</h3>
-      <div class="accessibility-options">
-        <label v-for="flag in topic.flags" :key="flag.id">
-          <input type="checkbox" v-model="flagModels[flag.id]" />
-          {{ t(flag.name) }}
-        </label>
-      </div>
-    </div>
-
-    <!-- Actions -->
-    <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
-        {{ t('discard') }}
-      </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
-        {{ t('save') }}
-      </button>
-    </div>
-
-  </section>
+    <UranusBigIntFlagsEditor
+        :topics="uranusI18nAccessibilityFlags"
+        v-model="draft.accessibilityFlags!"
+    />
+  <div class="tab-actions">
+    <button @click="onReset" :disabled="store.saving || !isDirty">Discard</button>
+    <button @click="onCommit" :disabled="store.saving || !isDirty">Save</button>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { apiFetch } from "@/api.ts";
-import { useBigIntFlags, setBigintByFlags, type BigIntFlags } from '@/composable/useBigIntFlags'
-import type { UranusSpace } from '@/domain/space/UranusSpace'
 import { useUranusSpaceStore } from '@/store/uranusSpaceStore'
-import { uranusI18nAccessibilityFlags } from '@/i18n/uranus-i18n-accessibility'
+import { uranusI18nAccessibilityFlags }  from '@/i18n/uranus-i18n-accessibility.ts'
+import UranusBigIntFlagsEditor from '@/component/uranus/UranusBigIntFlagsEditor.vue'
+import {computed} from "vue";
 
-const { t } = useI18n({ useScope: 'global' })
 const store = useUranusSpaceStore()
-const space = computed(() => store.draft!)
+const draft = computed(() => store.draft!)
 
-if (!space.value) throw new Error('Draft space not initialized')
-
-// Initialize BigInt flags helper
-const flags = useBigIntFlags(space.value.accessibilityFlags ?? 0n)
-
-// Reactive map of checkbox states
-const flagModels = reactive<BigIntFlags>({})
-
-// Bind each checkbox to the flags utility
-uranusI18nAccessibilityFlags.forEach(topic => {
-  topic.flags.forEach(flag => {
-    Object.defineProperty(flagModels, flag.id, {
-      get: () => flags.flagComputed(flag.id).value,
-      set: (val: boolean) => (flags.flagComputed(flag.id).value = val),
-      enumerable: true,
-      configurable: true,
-    })
-  })
-})
-
-// Detect changes between draft and original
 const isDirty = computed(() => {
-  const accFlags = setBigintByFlags(flagModels)
-  const originalFlags = store.original?.accessibilityFlags ?? 0n
-  return accFlags !== originalFlags
+  if (!store.draft || !store.original) return false
+  const d = store.draft
+  const o = store.original
+  return (d.accessibilityFlags ?? null) !== (o.accessibilityFlags ?? null)
 })
 
-// Reset draft to original values
-function resetTab() {
-  if (!space.value || !store.original) return
-  space.value.accessibilityFlags = store.original.accessibilityFlags ?? 0n
-  flags.value.value = store.original.accessibilityFlags ?? 0n
+function onReset() {
+  if (!draft.value || !store.original) return
+  draft.value.accessibilityFlags = store.original.accessibilityFlags ?? 0n
 }
 
-// Build API payload from current flag checkboxes
-function buildPayload(draft: UranusSpace, original: UranusSpace) {
-  const accFlags = setBigintByFlags(flagModels)
-  const originalFlags = store.original?.accessibilityFlags ?? 0n
-  if (accFlags !== originalFlags) {
-    return { accessibility_flags: accFlags.toString() } // safe string for API
-  }
-  return {}
-}
-
-// Save draft to API
-async function commitTab() {
-  if (!space.value || !store.original) return
-
+async function onCommit() {
+  if (!store.draft || !store.original) return
   store.saving = true
   store.error = null
 
   try {
-    const payload = buildPayload(space.value, store.original)
-    if (Object.keys(payload).length === 0) return
-
-    await apiFetch(`/api/admin/space/${space.value.id}/fields`, {
+    const payload = {
+      accessibility_flags: store.draft.accessibilityFlags?.toString() ?? '0'
+    }
+    const apiPath = `/api/admin/space/${draft.value.id}/fields`
+    await apiFetch(apiPath, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })
-
-    // Sync original with draft after saving
-    store.original.accessibilityFlags = setBigintByFlags(flagModels)
+    store.original.accessibilityFlags = store.draft.accessibilityFlags
   } catch (err) {
     console.error(err)
     store.error = 'Failed to save accessibility flags'

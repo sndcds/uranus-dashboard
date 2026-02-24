@@ -1,3 +1,7 @@
+<!--
+  src/component/venue/UranusVenueSelectModal.vue
+-->
+
 <template>
   <UranusModal
       :show="show"

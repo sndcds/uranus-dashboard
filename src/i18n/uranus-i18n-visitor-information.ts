@@ -1,7 +1,7 @@
 /*
     src/i18n/uranus-i18n-visitor-information.ts
 
-    2026-02-22, Auto-generated
+    2026-02-23, Auto-generated
 */
 
 export const uranusI18nVisitorInformationTranslations: Record<string, Record<'en' | 'de' | 'da', string>> = {
@@ -114,6 +114,11 @@ export const uranusI18nVisitorInformationTranslations: Record<string, Record<'en
         en: 'Mobile Network Available',
         de: 'Mobilfunknetz verfügbar',
         da: 'Mobilnetværk tilgængeligt',
+    },
+    msb: {
+        en: 'MSB',
+        de: 'MSB',
+        da: 'MSB',
     },
     nature_location: {
         en: 'Nature Location',
@@ -307,6 +312,7 @@ export const uranusI18nVisitorInformationFlags = [
             { id: 40, name: 'fire_safety_measures' },
             { id: 41, name: 'surveillance_cameras' },
             { id: 42, name: 'access_wristbands' },
+            { id: 62, name: 'msb' },
         ],
     },
 ]

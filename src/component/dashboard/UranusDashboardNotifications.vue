@@ -70,7 +70,7 @@ interface Notification {
   organization_id: number
   organization_name: string
   release_date: string
-  release_status_id: number | null
+  release_status: string | null
   release_status_name?: string | null
   earliest_event_date: string
   days_until_release: number | null
@@ -107,8 +107,8 @@ const formatReleaseStatus = (notification: Notification) => {
   if (notification.release_status_name && notification.release_status_name.trim().length > 0) {
     return notification.release_status_name
   }
-  if (notification.release_status_id) {
-    return t('event_release_status_placeholder', { id: notification.release_status_id })
+  if (notification.release_status) {
+    return t('event_release_status_placeholder', { id: notification.release_status })
   }
   return t('event_release_status_placeholder', { id: '—' })
 }

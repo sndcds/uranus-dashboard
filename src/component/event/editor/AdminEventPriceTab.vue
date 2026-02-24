@@ -80,8 +80,8 @@ import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 import UranusCurrencySelect from '@/component/ui/UranusCurrencySelect.vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import type { UranusEventDetail } from "@/model/uranusAdminEventModel.ts";
 import { equalStringArrays } from '@/type/utils.ts'
+import type {UranusAdminEvent} from '@/domain/event/UranusAdminEvent.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
@@ -119,8 +119,8 @@ function parseFloatOrNull(e: Event): number | null {
 }
 
 function buildPayload(
-    draft: UranusEventDetail,
-    original: UranusEventDetail
+    draft: UranusAdminEvent,
+    original: UranusAdminEvent
 ) {
   const payload: Record<string, any> = {}
 

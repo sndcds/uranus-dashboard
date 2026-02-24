@@ -7,6 +7,7 @@ import UranusDashboardTodosView from '@/view/UranusDashboardTodosView.vue'
 import UranusLoginView from '@/view/UranusLoginView.vue'
 import UranusDashboardVenuesView from '@/view/UranusDashboardVenuesView.vue'
 import UranusSignupView from '@/view/UranusSignupView.vue'
+import UranusSpaceCreateView from '@/component/space/view/UranusSpaceCreateView.vue'
 import UranusSpaceEditView from '@/component/space/view/UranusSpaceEditView.vue'
 import UranusUserProfileView from '@/view/UranusUserProfileView.vue'
 import UranusForgotPasswordView from '@/view/UranusForgotPasswordView.vue'
@@ -89,7 +90,7 @@ const routes = [
             {
                 path: 'organization/:id/venue/:venueId/space/create',
                 name: 'admin-create-space',
-                component: UranusSpaceEditView,
+                component: UranusSpaceCreateView,
             },
             {
                 path: 'organization/:id/venue/:venueId/space/:spaceId/edit',

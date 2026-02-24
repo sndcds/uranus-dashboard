@@ -19,7 +19,7 @@
 
           <!-- TODO: Button styling-->
           <button
-              class="reset-filter-button"
+              class="filter-button"
               @click="onResetFilter"
               :disabled="!canResetFilterMore"
           >
@@ -55,12 +55,13 @@
             <img :src="getEventImageUrl(event)" alt="Event image" />
           </div>
 
+          event.release_status: {{ event.release_status }}
           <div class="calendar-text">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span>{{ uranusFormatDateTime(event.start_date, event.start_time, locale) }}</span>
               <UranusEventReleaseChip
-                  v-if="(event.release_status_id ?? 0) > 3"
-                  :releaseStatus="event.release_status_id"
+                  v-if="true"
+                  :releaseStatus="event.release_status"
                   tiny
               />
             </div>
@@ -232,7 +233,7 @@ interface CalendarEvent {
   venue_city: string | null
   event_types: CalendarEventType[] | null
   organization_name: string | null,
-  release_status_id: number | null
+  release_status: string | null
 }
 
 interface TypeSummaryEntry {
@@ -474,31 +475,24 @@ onBeforeUnmount(() => {
   transform: translateY(-3px);
 }
 
+.calendar-filter-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .filter-button {
+  color: var(--uranus-nav-color);
   background-color: var(--uranus-nav-bg);
-  color: #fff;
   border: none;
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9rem;
 
-  &:hover {
-    background-color: #555;
-  }
-}
-
-.reset-filter-button {
-  background-color: #eee;
-  color: #333;
-  border: 1px solid #ccc;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-
-  &:hover:enabled {
-    background-color: #ddd;
+  &:not(:disabled):hover {
+    color: var(--uranus-nav-color-active);
+    background-color: var(--uranus-nav-bg-active);
   }
 
   &:disabled {
@@ -547,13 +541,6 @@ onBeforeUnmount(() => {
   min-height: 100px;
   background: var(--uranus-dashboard-bg);
   // background: mistyrose;
-}
-
-.calendar-filter-buttons {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  // background: greenyellow;
 }
 
 .calendar-type-chips {

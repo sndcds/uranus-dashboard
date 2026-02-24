@@ -48,8 +48,14 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: 'global' })
 
-// BigInt helper
 const flags = useBigIntFlags(props.modelValue ?? 0n)
+
+watch(
+    () => props.modelValue,
+    (newVal) => {
+      flags.value.value = newVal ?? 0n
+    }
+)
 
 // Reactive checkbox model
 const flagModels = reactive<BigIntFlags>({})
