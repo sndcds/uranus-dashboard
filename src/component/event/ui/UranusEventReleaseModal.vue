@@ -8,7 +8,8 @@
     <div class="modal-content">
       <label>
         Release Status
-        <UranusEventReleaseSelect v-model="localReleaseStatus" />
+        <UranusEventReleaseStatusSelect
+            v-model="localReleaseStatus" />
       </label>
 
       <label>
@@ -27,17 +28,16 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import UranusModal from '@/component/uranus/UranusModal.vue'
-import UranusEventReleaseSelect from '@/component/event/ui/UranusEventReleaseSelect.vue'
-import type { UranusEventReleaseStatus } from "@/domain/event/UranusEventReleaseStatus.ts";
+import UranusEventReleaseStatusSelect from '@/component/event/ui/UranusEventReleaseStatusSelect.vue'
 
 interface Props {
   show: boolean
-  releaseStatus: UranusEventReleaseStatus | null
+  releaseStatus: string | null
   releaseDate: string | null
 }
 const props = defineProps<Props>()
 const emit = defineEmits<{
-  (e: 'update:releaseStatus', val: UranusEventReleaseStatus | null): void
+  (e: 'update:releaseStatus', val: string | null): void
   (e: 'update:releaseDate', val: string | null): void
   (e: 'close'): void
 }>()

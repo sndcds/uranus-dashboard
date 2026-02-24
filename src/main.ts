@@ -14,6 +14,7 @@ import { useVenueTypeLookupStore } from '@/store/UranusVenueTypesLookup.ts'
 import { useSpaceTypeLookupStore } from '@/store/UranusSpaceTypesLookup.ts'
 import { useLegalFormLookupStore } from '@/store/UranusLegalFormLookup.ts'
 import { useLicenseLookup } from '@/store/UranusLicenseLookup.ts'
+import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
 
 
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
@@ -54,5 +55,8 @@ await legalFormLookupStore.initialize([...SUPPORTED_UI_LANGUAGES])
 
 const licenseLookup = useLicenseLookup()
 await licenseLookup.initialize([...SUPPORTED_UI_LANGUAGES])
+
+const eventReleaseStatusStore = useEventReleaseStatusStore();
+await eventReleaseStatusStore.load([...SUPPORTED_UI_LANGUAGES]);
 
 app.mount('#app')

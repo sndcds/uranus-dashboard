@@ -4,7 +4,7 @@
 
 import { PlutoImageMeta } from '@/model/plutoImageModel.ts'
 import type { PlutoImageDTO } from '@/model/plutoImageModel.ts'
-import {apiFetch} from "@/api.ts";
+import {apiFetch} from '@/api.ts'
 
 export async function plutoOnImageSave(
     meta: PlutoImageMeta,

@@ -17,7 +17,6 @@
             {{ t('calendar_filter_button_label') }}
           </button>
 
-          <!-- TODO: Button styling-->
           <button
               class="filter-button"
               @click="onResetFilter"
@@ -55,12 +54,11 @@
             <img :src="getEventImageUrl(event)" alt="Event image" />
           </div>
 
-          event.release_status: {{ event.release_status }}
           <div class="calendar-text">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span>{{ uranusFormatDateTime(event.start_date, event.start_time, locale) }}</span>
               <UranusEventReleaseChip
-                  v-if="true"
+                  v-if="eventReleaseStatusStore.isReleased(event.release_status ?? '')"
                   :releaseStatus="event.release_status"
                   tiny
               />
@@ -164,10 +162,13 @@ import UranusTextInput from '@/component/ui/UranusTextInput.vue'
 import { urlParamsSetIfPresent } from '@/util/UranusUtils.ts'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
+import { UranusEvent } from '@/domain/event/UranusEvent.ts'
+import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
 
 const router = useRouter()
 const { t, locale } = useI18n({ useScope: 'global' })
 
+const eventReleaseStatusStore = useEventReleaseStatusStore()
 
 const showFilterModal = ref(false)
 const eventsFilterStore = useEventsFilterStore()
