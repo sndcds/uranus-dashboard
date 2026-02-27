@@ -47,7 +47,8 @@ import { apiFetch } from "@/api.ts";
 
 import VenueBaseTab from '@/component/venue/editor/UranusVenueBaseTab.vue'
 import VenueMapTab from '@/component/venue/editor/UranusVenueMapTab.vue'
-import VenueImagesTab from '@/component/venue/editor/UranusVenueImagesTab.vue'
+import UranusVenueLogoTab from '@/component/venue/editor/UranusVenueLogoTab.vue'
+import UranusVenueImageTab from '@/component/venue/editor/UranusVenueImageTab.vue'
 import { useUranusVenueStore } from '@/store/UranusVenueStore.ts'
 import type { UranusVenueDTO } from '@/api/dto/UranusVenueDTO.ts'
 
@@ -60,12 +61,13 @@ const venueId = computed(() => {
   return Number.isFinite(id) ? id : null
 })
 
-type TabKey = 'base' | 'map' | 'images'
+type TabKey = 'base' | 'map' | 'logos' | 'images'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
   { key: 'base', label: 'Base' },
   { key: 'map', label: 'Map' },
+  { key: 'logos', label: 'Logos' },
   { key: 'images', label: 'Images' },
 ] as const
 
@@ -73,7 +75,8 @@ const currentTabComponent = computed(() => {
   switch (activeTab.value) {
     case 'base': return VenueBaseTab
     case 'map': return VenueMapTab
-    case 'images': return VenueImagesTab
+    case 'logos': return UranusVenueLogoTab
+    case 'images': return UranusVenueImageTab
     default: return VenueBaseTab
   }
 })

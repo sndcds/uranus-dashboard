@@ -1,5 +1,5 @@
 <!--
-  src/component/event/editor/UranusVenueImagesTab.vue
+  src/component/event/editor/UranusVenueImageTab.vue
 
   2026-02-08, Roald
 -->
@@ -10,29 +10,25 @@
     <UranusImageSlot
         context="venue"
         :contextId="venue.id"
-        identifier="main_logo"
-        bgClass="light padded"
+        identifier="main_photo"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
         :contextId="venue.id"
-        identifier="dark_theme_logo"
-        bgClass="dark padded"
+        identifier="gallery_photo_1"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
         :contextId="venue.id"
-        identifier="light_theme_logo"
-        bgClass="light padded"
+        identifier="gallery_photo_2"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
         :contextId="venue.id"
-        identifier="avatar"
-        bgClass="light padded"
+        identifier="gallery_photo_3"
         :width="220"
     />
   </section>

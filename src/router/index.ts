@@ -14,6 +14,7 @@ import UranusForgotPasswordView from '@/view/UranusForgotPasswordView.vue'
 import UranusResetPasswordView from '@/view/UranusResetPasswordView.vue'
 import UranusMessageInboxView from '@/view/UranusMessageInboxView.vue'
 import UranusMessageSendView from '@/view/UranusMessageSendView.vue'
+import UranusVenueView from '@/view/public/UranusVenueView.vue'
 import UranusEventView from '@/view/public/UranusEventView.vue'
 import UranusHtmlView from '@/view/public/UranusHTMLView.vue'
 import UranusVenueMapView from '@/view/public/UranusVenueMapView.vue'
@@ -169,6 +170,11 @@ const routes = [
                 path: 'event/:id/date/:eventDateId',
                 name: 'event-details',
                 component: UranusEventView,
+            },
+            {
+                path: 'venue/:id',
+                name: 'venue-details',
+                component: UranusVenueView,
             },
             {
                 path: 'map',
