@@ -6,6 +6,12 @@
 
 import type { UranusVenueDTO } from '@/api/dto/UranusVenueDTO.ts'
 
+export interface UranusVenueSelectItemInfo {
+    id: number
+    name: string
+    city?: string
+}
+
 export class UranusVenue {
     id: number | null = null
     organizationId: number | null = null

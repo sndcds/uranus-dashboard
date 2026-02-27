@@ -4,7 +4,6 @@ import { UranusEventType } from './UranusEventType.ts'
 import { UranusEventLink } from './UranusEventLink.ts'
 import { UranusImage } from '../image/UranusImage.ts'
 import { mapEventTypeFromDTO, type UranusEventTypeDTO } from '@/api/dto/UranusEventTypeDTO.ts'
-import { type UranusEventReleaseStatus } from '@/domain/event/UranusEventReleaseStatus.ts'
 
 export class UranusEvent {
     public eventId: number | null = null
@@ -169,7 +168,7 @@ export class UranusEvent {
         return e
     }
 
-    static showReleaseStatusChip(releaseStatus: UranusEventReleaseStatus): boolean {
+    static showReleaseStatusChip(releaseStatus: string): boolean {
         switch (releaseStatus) {
             case 'draft':
             case 'review':

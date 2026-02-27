@@ -1,16 +1,16 @@
-@use 'uranus_admin';
-@use 'uranus_app_menu';
-@use 'uranus_card';
-@use 'uranus_form';
-@use 'uranus_button';
-@use 'uranus_combo_tag';
-@use 'uranus_dashboard';
-@use 'uranus_value_info';
-@use 'uranus_inline_editor';
-@use 'uranus_public_event';
-@use 'uranus_html';
-@use 'uranus_notification';
-@use 'uranus_map_popup';
+@use '_uranus_admin';
+@use '_uranus_app_menu';
+@use '_uranus_card';
+@use '_uranus_form';
+@use '_uranus_button';
+@use '_uranus_combo_tag';
+@use '_uranus_dashboard';
+@use '_uranus_value_info';
+@use '_uranus_inline_editor';
+@use '_uranus_public_event';
+@use '_uranus_html';
+@use '_uranus_notification';
+@use '_uranus_map_popup';
 @use './_markdown_editor.scss';
 
 @font-face {
@@ -66,10 +66,10 @@
   --uranus-font-h4: 1.25rem;
   --uranus-font-p: 1rem;
 
-  --uranus-hue: 266;
-  --uranus-active-hue: 286;
-  --uranus-link-hue: 286;
-  --uranus-action-hue:266;
+  --uranus-hue: 266deg;
+  --uranus-active-hue: 286deg;
+  --uranus-link-hue: 286deg;
+  --uranus-action-hue:266deg;
 
   --uranus-acc-color: red;
 
@@ -81,6 +81,9 @@
   --uranus-bg-d1: oklch(100% 0.0 var(--uranus-hue));
   --uranus-bg-d2: oklch(97% 0.01 var(--uranus-hue));
   --uranus-bg-d3: oklch(92% 0.014 var(--uranus-hue));
+  --uranus-dark-bg: oklch(20% 0.03 var(--uranus-hue));
+  --uranus-light-bg: oklch(96% 0.008 var(--uranus-hue));
+
 
   --uranus-backdrop-color: oklch(96% 0.008 var(--uranus-hue) / 0.8);
 
@@ -228,10 +231,10 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --uranus-hue: 266;
-  --uranus-active-hue: 280;
-  --uranus-link-hue: 280;
-  --uranus-action-hue: 260;
+  --uranus-hue: 266deg;
+  --uranus-active-hue: 280deg;
+  --uranus-link-hue: 280deg;
+  --uranus-action-hue: 260deg;
 
   --uranus-color: oklch(92% 0.02 var(--uranus-hue));
   --uranus-color-dimmed: oklch(74% 0.03 var(--uranus-hue));
@@ -241,6 +244,9 @@
   --uranus-bg-d1: oklch(22% 0.033 var(--uranus-hue));
   --uranus-bg-d2: oklch(30% 0.042 var(--uranus-hue));
   --uranus-bg-d3: oklch(35% 0.044 var(--uranus-hue));
+  --uranus-dark-bg: oklch(20% 0.03 var(--uranus-hue));
+  --uranus-light-bg: oklch(96% 0.008 var(--uranus-hue));
+
 
   --uranus-backdrop-color: oklch(20% 0.03 var(--uranus-hue) / 0.9);
 
@@ -371,7 +377,6 @@ header {
 .uranus-main-content {
   width: 100%;
   min-height: 100vh;
-  background: var(--uranus-dashboard-bg-color);
   padding: 10px;
 }
 
@@ -426,6 +431,7 @@ header {
   gap: var(--uranus-grid-gap);
   max-width: calc(560px * 3 + var(--uranus-grid-gap) * 2);
   align-items: stretch;
+  background: var(--uranus-bg);
 }
 
 .uranus-dashboard-card-grid > * {
@@ -438,6 +444,10 @@ header {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.uranus-image-slot-dark-bg {
+  background: var(--uranus-dark-bg, black) !important;
 }
 
 /* Tablet and up: Sidebar layout */

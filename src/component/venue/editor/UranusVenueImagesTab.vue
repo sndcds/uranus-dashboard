@@ -11,21 +11,29 @@
         context="venue"
         :contextId="venue.id"
         identifier="main_logo"
+        bgClass="light padded"
+        :width="220"
     />
     <UranusImageSlot
         context="venue"
         :contextId="venue.id"
         identifier="dark_theme_logo"
+        bgClass="dark padded"
+        :width="220"
     />
     <UranusImageSlot
         context="venue"
         :contextId="venue.id"
         identifier="light_theme_logo"
+        bgClass="light padded"
+        :width="220"
     />
     <UranusImageSlot
         context="venue"
         :contextId="venue.id"
         identifier="avatar"
+        bgClass="light padded"
+        :width="220"
     />
   </section>
 </template>

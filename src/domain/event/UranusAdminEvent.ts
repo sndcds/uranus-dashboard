@@ -4,7 +4,6 @@
     2026-02-05, Roald
  */
 
-import { type UranusEventReleaseStatus } from './UranusEventReleaseStatus.ts'
 import { UranusEventLink } from './UranusEventLink.ts'
 import { UranusAdminEventTypePair } from './UranusAdminEventTypePair.ts'
 import { type UranusAdminEventDTO } from '@/api/dto/UranusAdminEventDTO.ts'
@@ -18,7 +17,7 @@ import {
 
 export class UranusAdminEvent {
     id: number | null = null
-    releaseStatus: UranusEventReleaseStatus | null = null
+    releaseStatus: string | null = null
     releaseDate: string | null = null
     externalId: string | null = null
     sourceUrl: string | null = null
@@ -61,13 +60,6 @@ export class UranusAdminEvent {
         Object.assign(this, props)
     }
 
-    private static asUranusEventReleaseStatus(s: string): UranusEventReleaseStatus {
-        const allowed: UranusEventReleaseStatus[] = [
-            'draft', 'review', 'released', 'cancelled', 'deferred', 'rescheduled'
-        ];
-        return allowed.includes(s as any) ? (s as UranusEventReleaseStatus) : 'draft';
-    }
-
     static fromDTO(dto: UranusAdminEventDTO): UranusAdminEvent {
         let visitorInfoFlags: bigint = 0n
         try {
@@ -81,7 +73,7 @@ export class UranusAdminEvent {
 
         const event = new UranusAdminEvent({
             id: dto.id,
-            releaseStatus: this.asUranusEventReleaseStatus(dto.release_status ?? 'draft'),
+            releaseStatus: dto.release_status,
             releaseDate: dto.release_date,
             externalId: dto.external_id,
             sourceUrl: dto.source_url ?? null,

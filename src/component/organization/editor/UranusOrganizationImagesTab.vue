@@ -16,6 +16,7 @@
         context="organization"
         :contextId="org.id"
         identifier="dark_theme_logo"
+        bg-class="uranus-image-slot-dark-bg"
     />
     <UranusImageSlot
         context="organization"
@@ -40,7 +41,6 @@
 
 
 </script>
-
 
 <style lang="scss" scoped>
 </style>

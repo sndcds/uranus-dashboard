@@ -18,6 +18,7 @@
         context="event"
         :contextId="event.id"
         identifier="main"
+        :width="480"
     />
 
     <!-- Title / Subtitle -->

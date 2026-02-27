@@ -5,11 +5,10 @@
  */
 
 import { type UranusAdminEventDateDTO } from '@/api/dto/UranusAdminEventDateDTO.ts'
-import { type UranusEventReleaseStatus } from '@/domain/event/UranusEventReleaseStatus.ts'
 
 export interface UranusAdminEventDTO {
     id: number
-    release_status: UranusEventReleaseStatus | null
+    release_status: string | null
     release_date: string | null
     external_id: string | null
     source_url?: string | null

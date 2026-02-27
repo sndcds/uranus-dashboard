@@ -135,6 +135,9 @@
         <UranusDateInput id="end-date" v-model="filter.endDate" :label="t('calendar_filter_end_date')" />
       </UranusFormRow>
 
+      {{ filter.venue!.id }} / {{ filter.venue!.name }}
+      <UranusVenueTypeahead v-model:selectedVenue="filter.venue" />
+
       <UranusInlineEditActions
           :isSaving="isSavingFilter"
           :canSave="canSaveFilter"
@@ -162,8 +165,9 @@ import UranusTextInput from '@/component/ui/UranusTextInput.vue'
 import { urlParamsSetIfPresent } from '@/util/UranusUtils.ts'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
-import { UranusEvent } from '@/domain/event/UranusEvent.ts'
 import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
+import UranusVenueTypeahead from '@/component/venue/UranusVenueTypeahead.vue'
+import type {UranusVenueSelectItemInfo} from '@/domain/venue/UranusVenue.ts'
 
 const router = useRouter()
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -173,6 +177,7 @@ const eventReleaseStatusStore = useEventReleaseStatusStore()
 const showFilterModal = ref(false)
 const eventsFilterStore = useEventsFilterStore()
 const searchQuery = ref('')
+const chosenVenue = ref<UranusVenueSelectItemInfo | null>(null)
 
 const typeLookupStore = useEventTypeLookupStore()
 
@@ -258,6 +263,7 @@ interface CalendarEventsFilter {
   city: string
   startDate?: string
   endDate?: string
+  venue?: UranusVenueSelectItemInfo
 }
 
 /* -------------------- State -------------------- */
@@ -276,7 +282,8 @@ const filter = ref<CalendarEventsFilter>({
   search: '',
   city: '',
   startDate: '',
-  endDate: ''
+  endDate: '',
+  venue: { id: -1, name: '' }
 })
 
 const canResetFilterMore = computed(() => {
@@ -304,6 +311,7 @@ watch(searchQuery, () => {
 
 const buildFilterParams = (paginationMode = false) => {
   const params = new URLSearchParams()
+  console.log("buildFilterParams 1")
 
   if (paginationMode) {
     params.set("limit", limit.toString())
@@ -315,10 +323,18 @@ const buildFilterParams = (paginationMode = false) => {
     }
   }
 
+  console.log("buildFilterParams 2")
   urlParamsSetIfPresent(params, "search", filter.value.search)
   urlParamsSetIfPresent(params, "city", filter.value.city)
   urlParamsSetIfPresent(params, "start", filter.value.startDate)
   urlParamsSetIfPresent(params, "end", filter.value.endDate)
+  console.log("buildFilterParams 3")
+  if (filter.value.venue!.id >= 0) {
+    console.log("buildFilterParams 4")
+    console.log(JSON.stringify(filter.value, null, 2))
+    urlParamsSetIfPresent(params, "venues", filter.value.venue?.id.toString())
+  }
+  console.log("buildFilterParams 5", params)
 
   return params
 }
@@ -389,7 +405,6 @@ onMounted(async () => {
       (entries) => {
         const entry = entries[0]
         if (entry?.isIntersecting) {  // Optional chaining
-          console.log("Triggering loadEvents() from observer")
           loadEvents()
         }
       },
@@ -405,8 +420,6 @@ onMounted(async () => {
   }
 })
 
-
-/* Filtering */
 
 const onSaveFilter = async () => {
   showFilterModal.value = false

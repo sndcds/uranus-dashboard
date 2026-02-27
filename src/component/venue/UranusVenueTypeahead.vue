@@ -33,17 +33,34 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import {apiBaseUrl} from "@/util/UranusUtils.ts";
+import { apiBaseUrl } from '@/util/UranusUtils.ts'
+import type { UranusVenueSelectItemInfo } from '@/domain/venue/UranusVenue.ts'
 
-interface Venue {
-  id: number
-  name: string
-  city?: string
-}
 
-const selectedVenue = ref<{ id: number; name: string; city?: string } | null>(null)
+const props = defineProps<{
+  selectedVenue: UranusVenueSelectItemInfo | null
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:selectedVenue', value: UranusVenueSelectItemInfo | null): void
+}>()
+
 const query = ref('')
-const results = ref<Venue[]>([])
+
+watch(
+    () => props.selectedVenue,
+    (val) => {
+      if (!val || typeof val !== 'object') {
+        query.value = ''
+        return
+      }
+
+      query.value = val.name ?? ''
+    },
+    { immediate: true }
+)
+
+const results = ref<UranusVenueSelectItemInfo[]>([])
 const selectedIndex = ref(-1)
 const isOpen = ref(false)
 
@@ -99,14 +116,10 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 
-function selectVenue(venue: Venue) {
-  selectedVenue.value = {
-    id: venue.id,
-    name: venue.name,
-    ...(venue.city !== undefined && { city: venue.city }),
-  };
-  query.value = venue.name;
-  isOpen.value = false;
+function selectVenue(venue: UranusVenueSelectItemInfo) {
+  emit('update:selectedVenue', venue)
+  query.value = venue.name
+  isOpen.value = false
 }
 </script>
 

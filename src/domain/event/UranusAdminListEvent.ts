@@ -1,4 +1,3 @@
-import { type UranusEventReleaseStatus } from '@/domain/event/UranusEventReleaseStatus.ts'
 import { type UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTypePair.ts'
 
 
@@ -6,7 +5,7 @@ import { type UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTy
 export interface UranusAdminListEvent {
     id: number
     dateId: number
-    releaseStatus?: UranusEventReleaseStatus | null
+    releaseStatus?: string | null
     releaseDate?: string | null
     canEditEvent: boolean
     canDeleteEvent: boolean

@@ -5,7 +5,7 @@
 -->
 
 <template>
-  <div class="image-card">
+  <div :class="['image-card', props.bgClass]" :style="cardStyle">
 
     <!-- Preview -->
     <div class="image-wrapper" @click="openDialog">
@@ -58,11 +58,13 @@ const { t } = useI18n()
 
 // Props
 const props = defineProps<{
-  context: 'event' | 'venue' | 'organization'
+  context: string
   contextId: number | null
   identifier: string | null
   label?: string | null
+  width?: number | null
   fitMode?: 'cover' | 'contain'
+  bgClass?: string | null
 }>()
 
 // State
@@ -76,19 +78,25 @@ const fitMode = computed(() =>
     props.fitMode === 'contain' ? 'contain' : 'cover'
 )
 
+const cardStyle = computed(() => {
+  const style: Record<string, string> = {}
+  style.width = props.width ? `${props.width}px` : '220px'
+  return style
+})
+
 const imageUrl = computed(() => {
   if (!imageId.value) return ''
 
+  const width = props.width ?? 220
   const baseUrl = buildPlutoSlotImageUrl(
       imageId.value,
-      320,
+      width,
       null,
       props.fitMode ?? 'contain'
   )
 
   const url = new URL(baseUrl, window.location.origin)
   url.searchParams.set('v', reloadCounter.value.toString())
-
   return url.toString()
 })
 
@@ -173,12 +181,21 @@ defineExpose({ incReloadCounter })
 onMounted(loadMeta)
 </script>
 
-<style scoped>
+<style lang="scss">
+.image-card {
+  &.light {background: var(--uranus-light-bg) !important; }
+  &.dark {background: var(--uranus-dark-bg) !important; }
+  &.padded { padding: 12px !important; }
+}
+
+</style>
+
+<style scoped lang="scss">
 .image-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 220px;
+  width: 320px;
   border: 1px solid #ccc;
   border-radius: 6px;
   overflow: hidden;

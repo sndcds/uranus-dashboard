@@ -17,7 +17,7 @@
             :key="flag.id"
         >
           <input type="checkbox" v-model="flagModels[flag.id]" />
-          {{ t(flag.name) }}
+          {{ t(flag.name) }} .. {{ t(flag.id ) }}
         </label>
       </div>
     </div>
