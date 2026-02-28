@@ -18,7 +18,7 @@ import { ref, computed, onMounted, onBeforeUnmount, watch, useAttrs } from 'vue'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { LngLatLike, MapMouseEvent } from 'maplibre-gl'
-import markerIcon from '@/assets/marker.png'
+import markerIcon from '@/assets/map/marker.png'
 
 const attrs = useAttrs()
 

@@ -7,16 +7,20 @@
       v-else
       class="map-container"
       :layers="mapLayers"
-  :center="[9.5, 54.3]"
-  :zoom="10"
+      :center="[9.5, 54.3]"
+      :zoom="10"
   />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { apiFetch } from '@/api.ts'
 import type { FeatureCollection, Point } from 'geojson'
+import { apiFetch } from '@/api.ts'
 import LibreMap from '@/component/map/LibreMap.vue'
+
+// Import your marker images
+import venueIcon from '@/assets/map/marker.png'
+import stationIcon from '@/assets/map/map-marker-station.png'
 
 // Loading state
 const loading = ref(true)
@@ -25,7 +29,7 @@ const loading = ref(true)
 const venues = ref<FeatureCollection<Point>>({ type: 'FeatureCollection', features: [] })
 const stations = ref<FeatureCollection<Point>>({ type: 'FeatureCollection', features: [] })
 
-// Optional props to control which layers to show
+// Optional props
 const props = defineProps<{
   showVenues?: boolean
   showStations?: boolean
@@ -34,7 +38,7 @@ const props = defineProps<{
   stationRadius?: number
 }>()
 
-// Load layers
+// Load data
 const loadVenues = async () => {
   try {
     const { data } = await apiFetch<any>('/api/venues/geojson')
@@ -56,7 +60,7 @@ const loadVenues = async () => {
 const loadStations = async () => {
   const lat = props.stationCenterLat ?? 54.7745
   const lon = props.stationCenterLon ?? 9.4411
-  const radius = props.stationRadius ?? 5000
+  const radius = props.stationRadius ?? 500000
 
   try {
     const { data } = await apiFetch<any>(`/api/transport/stations?lat=${lat}&lon=${lon}&radius=${radius}`)
@@ -75,24 +79,43 @@ const loadStations = async () => {
   }
 }
 
-// Layers for LibreMap
+// Map layers definition
+// The order here defines rendering order: stations below, venues above
 const mapLayers = computed(() => {
-  const layers: { id: string; data: FeatureCollection; cluster?: boolean }[] = []
+  const layers: Record<string, any> = {}
 
-  // Add stations first (rendered below)
+  // Stations first (rendered below)
   if (props.showStations) {
-    layers.push({ id: 'stations', data: stations.value, cluster: false })
+    layers.stations = {
+      data: stations.value,
+      cluster: false,
+      minzoom: 14,
+      icon: stationIcon,
+      unclusteredStyle: { iconSize: 0.6, iconAnchor: 'center' }
+    }
   }
 
-  // Add venues on top
+  // Venues on top
   if (props.showVenues) {
-    layers.push({ id: 'venues', data: venues.value, cluster: true })
+    layers.venues = {
+      data: venues.value,
+      cluster: true,
+      clusterStyle: {
+        circleColor: '#ffffff',
+        circleStrokeColor: '#0D79F2',
+        circleStrokeWidth: 2,
+        textColor: '#0D79F2',
+        textSize: 14
+      },
+      icon: venueIcon,
+      unclusteredStyle: { iconSize: 0.8, iconAnchor: 'bottom' }
+    }
   }
 
   return layers
 })
 
-// Load map data
+// Load map
 const loadMap = async () => {
   try {
     if (props.showStations) await loadStations()
