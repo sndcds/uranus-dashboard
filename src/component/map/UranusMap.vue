@@ -20,7 +20,8 @@ import LibreMap from '@/component/map/LibreMap.vue'
 
 // Import your marker images
 import venueIcon from '@/assets/map/marker.png'
-import stationIcon from '@/assets/map/map-marker-station.png'
+import eventIcon from '@/assets/map/marker-event.png'
+import stationIcon from '@/assets/map/marker-station.png'
 
 // Loading state
 const loading = ref(true)
@@ -28,11 +29,14 @@ const loading = ref(true)
 // Map data layers
 const venues = ref<FeatureCollection<Point>>({ type: 'FeatureCollection', features: [] })
 const stations = ref<FeatureCollection<Point>>({ type: 'FeatureCollection', features: [] })
+const events = ref<FeatureCollection<Point>>({ type: 'FeatureCollection', features: [] })
+
 
 // Optional props
 const props = defineProps<{
   showVenues?: boolean
   showStations?: boolean
+  showEvents?: boolean
   stationCenterLat?: number
   stationCenterLon?: number
   stationRadius?: number
@@ -79,12 +83,40 @@ const loadStations = async () => {
   }
 }
 
+const loadEvents = async () => {
+  try {
+    const { data } = await apiFetch<any>('/api/events/geojson')
+
+    // Ensure we have event array
+    if (Array.isArray(data?.data?.events)) {
+      events.value = {
+        type: 'FeatureCollection',
+        features: data.data.events.map((e: any) => {
+          // Only include events with valid coordinates
+          const lat = e.venue_lat ?? e.lat
+          const lon = e.venue_lon ?? e.lon
+          return {
+            type: 'Feature' as const,
+            geometry: {
+              type: 'Point' as const,
+              coordinates: lat != null && lon != null ? [lon, lat] : [0, 0], // fallback coords
+            },
+            properties: e,
+          }
+        }),
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load events:', err)
+  }
+}
+
 // Map layers definition
 // The order here defines rendering order: stations below, venues above
 const mapLayers = computed(() => {
   const layers: Record<string, any> = {}
 
-  // Stations first (rendered below)
+  // Stations layer
   if (props.showStations) {
     layers.stations = {
       data: stations.value,
@@ -95,7 +127,7 @@ const mapLayers = computed(() => {
     }
   }
 
-  // Venues on top
+  // Venues layer
   if (props.showVenues) {
     layers.venues = {
       data: venues.value,
@@ -112,6 +144,21 @@ const mapLayers = computed(() => {
     }
   }
 
+  // Events layer
+  layers.events = {
+    data: events.value,
+    cluster: true, // optional clustering
+    clusterStyle: {
+      circleColor: '#780DF2', // gold
+      circleStrokeColor: '#780DF2',
+      circleStrokeWidth: 2,
+      textColor: '#fff',
+      textSize: 12,
+    },
+    icon: eventIcon,
+    unclusteredStyle: { iconSize: 0.8, iconAnchor: 'bottom' },
+  }
+
   return layers
 })
 
@@ -120,6 +167,7 @@ const loadMap = async () => {
   try {
     if (props.showStations) await loadStations()
     if (props.showVenues) await loadVenues()
+    if (props.showEvents) await loadEvents()
   } catch (err) {
     console.error('Error loading map layers:', err)
   } finally {

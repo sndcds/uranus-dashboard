@@ -23,7 +23,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import UranusEventSlide from './UranusEventSlide.vue'
 
-/* ------------------ type ------------------ */
+// Type
 
 interface EventPair {
   eventId: number
@@ -38,7 +38,7 @@ interface SlideData {
   date: string
 }
 
-/* ------------------ props ------------------ */
+// Props
 
 const props = defineProps<{
   eventPairs: EventPair[]
@@ -46,7 +46,7 @@ const props = defineProps<{
 
 const slides = props.eventPairs ?? []
 
-/* ------------------ state ------------------ */
+// State
 
 const { locale } = useI18n({ useScope: 'global' })
 
@@ -60,17 +60,17 @@ const loadError = ref<string | null>(null)
 
 let timer: number | null = null
 
-/* ------------------ helpers ------------------ */
+// Helpers
 
 async function loadEvent(eventId: number, eventDateId: number): Promise<SlideData | null> {
   try {
     const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${locale.value}`
-    const { data } = await apiFetch(endpoint)
+    const { data } = await apiFetch<any>(endpoint)
 
-    const mapped = mapEventData(data)
-    if ('error' in mapped) throw new Error(mapped.error)
+    const event = data.data
+    if (!event) return null
 
-    const event = mapped.data
+    console.log(JSON.stringify(data, null, 2))
 
     return {
       imageUrl: event.image?.url ?? '',
@@ -83,9 +83,10 @@ async function loadEvent(eventId: number, eventDateId: number): Promise<SlideDat
     console.error('Failed to load event:', err)
     return null
   }
+
 }
 
-/* ------------------ slideshow logic ------------------ */
+// Slideshow logic
 
 function showNextSlide() {
   if (!preloadedSlides.value.length) return
@@ -97,7 +98,7 @@ function showNextSlide() {
   timer = window.setTimeout(showNextSlide, 7000)
 }
 
-/* ------------------ lifecycle ------------------ */
+// Lifecycle
 
 onMounted(async () => {
   if (!slides.length) {
@@ -156,7 +157,6 @@ onBeforeUnmount(() => {
   font-size: 1.5rem;
 }
 
-/* ---- fade transition ---- */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 1s ease;

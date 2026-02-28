@@ -8,6 +8,7 @@
     <UranusMap
         :showStations="true"
         :showVenues="true"
+        :showEvents="true"
     />
 </template>
 
