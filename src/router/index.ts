@@ -17,7 +17,6 @@ import UranusMessageSendView from '@/view/UranusMessageSendView.vue'
 import UranusVenueView from '@/view/public/UranusVenueView.vue'
 import UranusEventView from '@/view/public/UranusEventView.vue'
 import UranusHtmlView from '@/view/public/UranusHTMLView.vue'
-import UranusVenueMapView from '@/view/public/UranusVenueMapView.vue'
 import UserActivateView from '@/view/UserActivateView.vue'
 import UranusInviteActivateView from '@/view/UranusInviteActivateView.vue'
 import UranusOrganizationTeamView from '@/view/UranusOrganizationTeamView.vue'
@@ -36,6 +35,7 @@ import UranusAdminEventsListView from '@/component/event/view/UranusAdminEventsL
 import UranusEventCreateView from "@/component/event/view/UranusEventCreateView.vue";
 import UranusEventEditView from '@/component/event/view/UranusEventEditView.vue'
 import UranusDevGetEventsView from "@/component/dev/UranusDevGetEventsView.vue";
+import UranusMapView from "@/view/public/UranusMapView.vue";
 
 
 const routes = [
@@ -179,7 +179,7 @@ const routes = [
             {
                 path: 'map',
                 name: 'map',
-                component: UranusVenueMapView,
+                component: UranusMapView,
                 meta: { layoutMode: 'zero-padding' },
             },
             {

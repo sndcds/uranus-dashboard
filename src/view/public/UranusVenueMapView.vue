@@ -14,7 +14,7 @@ import { ref, computed, onMounted } from 'vue'
 import type { FeatureCollection, Point } from 'geojson'
 import { apiFetch } from '@/api.ts'
 
-import LibreMap from '@/component/LibreMap.vue'
+import LibreMap from '@/component/map/LibreMap.vue'
 
 interface Venue {
   venue_name: string

@@ -85,7 +85,6 @@ import UranusTextInput from "@/component/ui/UranusTextInput.vue"
 import UranusFormRow from "@/component/ui/UranusFormRow.vue"
 import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue"
 import UranusDateInput from "@/component/ui/UranusDateInput.vue"
-import LibreMap from '@/component/LibreMap.vue'
 import UranusMapLocationPicker from "@/component/UranusMapLocationPicker.vue";
 
 interface LatLngLiteral {

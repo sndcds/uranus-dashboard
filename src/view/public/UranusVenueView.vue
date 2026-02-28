@@ -5,6 +5,7 @@
 -->
 
 <template>
+
   <div v-if="showLoading" class="uranus-public-venue-state-info--loading">
     <span>{{ loadingLabel }}</span>
   </div>
@@ -97,14 +98,22 @@
       </aside>
     </div>
   </div>
+
+  <div class="public-calendar-page" v-if="venue">
+    <UranusEventCalendar
+        :initial-filter="initialEventFilter"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { marked } from 'marked'
+import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'
+import type {UranusVenueSelectItemInfo} from '@/domain/venue/UranusVenue.ts'
 
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -117,6 +126,21 @@ const loadingLabel = computed(() => t('loading'))
 const loadError = ref<string | null>(null)
 
 const hasLonLat = computed(() => venue.value?.lon && venue.value?.lat)
+
+
+const initialEventFilter = reactive({
+  search: null,
+  city: null,
+  startDate: null,
+  endDate: null,
+  venue: { id: -1, name: '' } as UranusVenueSelectItemInfo
+})
+
+watch(venue, (newVenue) => {
+  if (newVenue) {
+    initialEventFilter.venue = { id: newVenue.id, name: newVenue.name }
+  }
+})
 
 // Helpers
 const formatMarkdown = (markdown: string) => {
