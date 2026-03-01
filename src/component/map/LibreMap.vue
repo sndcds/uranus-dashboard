@@ -20,6 +20,8 @@ const props = defineProps<{
         clusterStyle?: Record<string, any>
         minzoom?: number
         maxzoom?: number
+        popupTitle?: (feature: GeoJSON.Feature) => string
+        popupContent?: (feature: GeoJSON.Feature) => string
       }
   >
   center?: LngLatLike
@@ -34,10 +36,6 @@ const defaultCenter: LngLatLike = props.center ?? [9.5, 54.3]
 const defaultZoom = props.zoom ?? 8
 
 // Utils
-type PopupProperties = Record<string, unknown>
-
-const normalizeProperties = (raw: unknown): PopupProperties =>
-    raw && typeof raw === 'object' ? (raw as PopupProperties) : {}
 
 const escapeHtml = (value: string) =>
     value.replace(/&/g, '&amp;')
@@ -46,34 +44,6 @@ const escapeHtml = (value: string) =>
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;')
 
-const pickString = (props: PopupProperties, keys: string[], fallback = ''): string => {
-  for (const key of keys) {
-    const value = props[key]
-    if (typeof value === 'string' && value.trim()) return value.trim()
-  }
-  return fallback
-}
-
-const buildPopupHtml = (properties: PopupProperties, coordinates: [number, number]): string => {
-  const title = pickString(properties, ['venue_name', 'event_title', 'name', 'title'], 'Unbenannter Ort')
-  const city = pickString(properties, ['venue_city', 'city', 'event_city'])
-  const address = pickString(properties, ['venue_address', 'address', 'street'])
-  const metaLines = [city, address].filter(Boolean).join(' · ')
-
-  return `
-    <div class="uranus-map-popup">
-      <div class="uranus-map-popup__header">
-        <span class="uranus-map-popup__title-text">${escapeHtml(title)}</span>
-        <button class="uranus-map-popup__close" type="button" data-map-popup-close aria-label="Popup schließen">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="uranus-map-popup__body">
-        <p class="uranus-map-popup__meta">${escapeHtml(metaLines) || 'Keine weiteren Angaben'}</p>
-      </div>
-    </div>
-  `
-}
 
 const attachPopupInteractions = (popup: Popup | null) => {
   if (!popup) return
@@ -99,6 +69,7 @@ onMounted(async () => {
 
   if (!mapContainer.value) return
 
+
   const map = new maplibregl.Map({
     container: mapContainer.value,
     style: {
@@ -118,6 +89,16 @@ onMounted(async () => {
     center: defaultCenter,
     zoom: defaultZoom,
   })
+
+
+  /* Alternative vector map
+  const map = new maplibregl.Map({
+    container: mapContainer.value,
+    style: 'https://tiles.openfreemap.org/styles/positron', // liberty, bright, 3d
+    center: [13.388, 52.517],
+    zoom: 9.5,
+  })
+   */
 
   map.addControl(new maplibregl.NavigationControl())
   mapInstance.value = map
@@ -164,7 +145,7 @@ onMounted(async () => {
           paint: {
             'circle-color': cs.circleColor || '#ffffff',
             'circle-radius': ['step', ['get', 'point_count'], 16, 16, 20, 48, 24],
-            'circle-stroke-width': cs.circleStrokeWidth || 3,
+            'circle-stroke-width': cs.circleStrokeWidth || 0,
             'circle-stroke-color': cs.circleStrokeColor || '#235df1',
           },
         })
@@ -182,43 +163,122 @@ onMounted(async () => {
       }
 
       // Unclustered points
-      const unclusteredStyle = layerData.unclusteredStyle || {}
-      map.addLayer({
-        id: `${layerName}-unclustered`,
-        type: 'symbol',
-        source: layerName,
-        filter: ['!', ['has', 'point_count']],
-        minzoom,
-        maxzoom,
-        layout: {
-          'icon-image': layerData.icon ? layerName : 'circle',
-          'icon-size': unclusteredStyle.iconSize || 0.8,
-          'icon-anchor': unclusteredStyle.iconAnchor || 'bottom',
+      const us = layerData.unclusteredStyle || {}
+
+      if (us.circleRadius) {
+        // Circle layer (for event_count scaling)
+        map.addLayer({
+          id: `${layerName}-unclustered`,
+          type: 'circle',
+          source: layerName,
+          filter: ['!', ['has', 'point_count']],
+          minzoom,
+          maxzoom,
+          paint: {
+            'circle-radius': us.circleRadius,
+            'circle-color': us.circleColor ?? '#235df1',
+            'circle-stroke-width': us.circleStrokeWidth ?? 0,
+            'circle-stroke-color': us.circleStrokeColor ?? '#ffffff',
+          },
+        })
+
+        // Optional text label centered inside circle
+        if (us.textField) {
+          map.addLayer({
+            id: `${layerName}-unclustered-text`,
+            type: 'symbol',
+            source: layerName,
+            filter: ['!', ['has', 'point_count']],
+            minzoom,
+            maxzoom,
+            layout: {
+              'text-field': us.textField,
+              'text-size': us.textSize ?? 12,
+              'text-anchor': 'center',
+            },
+            paint: {
+              'text-color': us.textColor ?? '#fff',
+            },
+          })
+        }
+
+      } else {
+        // Fallback: Symbol / Icon logic (your existing behavior)
+        const layout: Record<string, any> = {
+          'icon-image': layerData.icon ? layerName : undefined,
+          'icon-size': us.iconSize ?? 0.8,
+          'icon-anchor': us.iconAnchor ?? 'bottom',
           'icon-allow-overlap': true,
           'icon-ignore-placement': true,
-        },
-      })
+        }
 
+        if (us.textField) {
+          layout['text-field'] = us.textField
+          layout['text-size'] = us.textSize ?? 12
+          layout['text-anchor'] = us.textAnchor ?? 'top'
+          layout['text-offset'] = us.textOffset ?? [0, -1.5]
+        }
+
+        const paint: Record<string, any> = {}
+        if (us.textColor) paint['text-color'] = us.textColor
+
+        map.addLayer({
+          id: `${layerName}-unclustered`,
+          type: 'symbol',
+          source: layerName,
+          filter: ['!', ['has', 'point_count']],
+          minzoom,
+          maxzoom,
+          layout,
+          paint,
+        })
+      }
+
+      // Popups
       // Popups
       map.on('click', `${layerName}-unclustered`, (e) => {
         if (!e.features?.length) return
         const feature = e.features[0]
         if (!feature) return
 
-        const props = normalizeProperties(feature.properties)
+        // Get coordinates
+        const coords: [number, number] =
+            feature.geometry?.type === 'Point' &&
+            Array.isArray(feature.geometry.coordinates) &&
+            feature.geometry.coordinates.length >= 2
+                ? [feature.geometry.coordinates[0], feature.geometry.coordinates[1]]
+                : [e.lngLat.lng, e.lngLat.lat]
 
-        // Ensure coordinates are exactly [lng, lat]
-        let coords: [number, number]
-        if (feature.geometry?.type === 'Point' && Array.isArray(feature.geometry.coordinates) && feature.geometry.coordinates.length >= 2) {
-          coords = [feature.geometry.coordinates[0], feature.geometry.coordinates[1]] as [number, number]
-        } else {
-          coords = [e.lngLat.lng, e.lngLat.lat]
-        }
-
+        // Remove existing popup
         if (currentPopup) currentPopup.remove()
+
+        // Build content from parent layer
+        const titleHtml = layerData.popupTitle
+            ? `<span class="uranus-map-popup__title-text">${escapeHtml(layerData.popupTitle(feature))}</span>`
+            : ''
+        const bodyHtml = layerData.popupContent
+            ? layerData.popupContent(feature)
+            : '<p>Keine weiteren Angaben</p>'
+
+        // Wrap with frame
+        const html = `
+          <div class="uranus-map-popup">
+            <div class="uranus-map-popup__header">
+              ${titleHtml}
+              <button class="uranus-map-popup__close" type="button" data-map-popup-close aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="uranus-map-popup__body">
+              ${bodyHtml}
+            </div>
+          </div>
+        `
+
+        // Add popup
         currentPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false })
             .setLngLat(coords)
-            .setHTML(buildPopupHtml(props, coords))
+            .setHTML(html)
             .addTo(map)
 
         attachPopupInteractions(currentPopup)

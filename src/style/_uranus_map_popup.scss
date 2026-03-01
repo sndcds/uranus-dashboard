@@ -54,17 +54,9 @@
 .uranus-map-popup__body {
   padding: 12px 16px 4px;
   background: var(--uranus-bg);
-}
-
-.uranus-map-popup__meta {
-  margin: 0 0 8px;
   font-size: 1rem;
   color: var(--uranus-muted-text);
   line-height: 1.4;
-}
-
-.uranus-map-popup__meta:last-child {
-  margin-bottom: 0;
 }
 
 .uranus-map-popup__footer {

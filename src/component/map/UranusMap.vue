@@ -46,12 +46,16 @@ const props = defineProps<{
 const loadVenues = async () => {
   try {
     const { data } = await apiFetch<any>('/api/venues/geojson')
-    if (Array.isArray(data)) {
+
+    if (data?.data?.venues) {
       venues.value = {
         type: 'FeatureCollection',
-        features: data.map((v: any) => ({
+        features: data.data.venues.map((v: any) => ({
           type: 'Feature' as const,
-          geometry: { type: 'Point' as const, coordinates: [v.venue_lon, v.venue_lat] },
+          geometry: {
+            type: 'Point' as const,
+            coordinates: [v.venue_lon, v.venue_lat],
+          },
           properties: v,
         })),
       }
@@ -86,29 +90,26 @@ const loadStations = async () => {
 const loadEvents = async () => {
   try {
     const { data } = await apiFetch<any>('/api/events/geojson')
+    if (data?.data?.venues) {
+      const eventFeatures = Object.values(data.data.venues).map((v: any) => ({
+        type: 'Feature' as const,
+        geometry: { type: 'Point' as const, coordinates: [v.lon ?? 0, v.lat ?? 0] },
+        properties: {
+          ...v,
+          event_count: v.event_count ?? v.events?.length ?? 0,
+          venue_name: v.name
+        },
+      }))
 
-    // Ensure we have event array
-    if (Array.isArray(data?.data?.events)) {
       events.value = {
         type: 'FeatureCollection',
-        features: data.data.events.map((e: any) => {
-          // Only include events with valid coordinates
-          const lat = e.venue_lat ?? e.lat
-          const lon = e.venue_lon ?? e.lon
-          return {
-            type: 'Feature' as const,
-            geometry: {
-              type: 'Point' as const,
-              coordinates: lat != null && lon != null ? [lon, lat] : [0, 0], // fallback coords
-            },
-            properties: e,
-          }
-        }),
+        features: eventFeatures,
       }
     }
   } catch (err) {
     console.error('Failed to load events:', err)
   }
+  console.log(JSON.stringify(events.value, null, 2))
 }
 
 // Map layers definition
@@ -133,30 +134,48 @@ const mapLayers = computed(() => {
       data: venues.value,
       cluster: true,
       clusterStyle: {
-        circleColor: '#ffffff',
-        circleStrokeColor: '#0D79F2',
-        circleStrokeWidth: 2,
-        textColor: '#0D79F2',
+        circleColor: "#0D79F2bb",
+        circleStrokeColor: "#0D79F2bb",
+        circleStrokeWidth: 0,
+        textColor: "#ffffff",
         textSize: 14
       },
       icon: venueIcon,
-      unclusteredStyle: { iconSize: 0.8, iconAnchor: 'bottom' }
+      unclusteredStyle: {
+        iconSize: 0.8,
+        iconAnchor: "bottom"
+      },
+      popupTitle: (f: any) => (f.properties).venue_name,
+      popupContent: (f: any) => `<div>${(f.properties).venue_city}</div>`
     }
   }
 
   // Events layer
-  layers.events = {
-    data: events.value,
-    cluster: true, // optional clustering
-    clusterStyle: {
-      circleColor: '#780DF2', // gold
-      circleStrokeColor: '#780DF2',
-      circleStrokeWidth: 2,
-      textColor: '#fff',
-      textSize: 12,
-    },
-    icon: eventIcon,
-    unclusteredStyle: { iconSize: 0.8, iconAnchor: 'bottom' },
+  if (props.showEvents) {
+    layers.events = {
+      data: events.value,
+      cluster: false,
+      icon: venueIcon,
+      // no icon
+      unclusteredStyle: {
+        circleRadius: [
+          "interpolate", ["linear"],
+          ["to-number", ["get", "event_count"]],
+          1, 10,
+          5, 16,
+          10, 24
+        ],
+        circleColor: "#D623F199",
+        circleStrokeWidth: 30,
+        circleStrokeColor: "#D623F133",
+
+        textField: ["to-string", ["get", "event_count"]],
+        textSize: 14,
+        textColor: "#ffffff",
+      },
+      popupTitle: (f: any) => (f.properties as any).venue_name,
+      popupContent: (f: any) => `<div>${(f.properties as any).event_count} Events</div>`
+    }
   }
 
   return layers
