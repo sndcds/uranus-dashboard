@@ -8,7 +8,7 @@
             <!-- Overlay for mobile -->
             <div v-if="isSidebarOpen" class="generic-layout__overlay" @click="closeSidebar"></div>
 
-            <main class="generic-layout__main">
+            <main :class="mainClass">
                 <div :class="layoutClass">
                     <router-view />
                 </div>
@@ -29,8 +29,11 @@ import GenericFooter from '@/component/layout/GenericFooter.vue'
 
 const route = useRoute()
 
-// Check if we're on an admin page
 const isAdminPage = computed(() => route.path.startsWith('/admin'))
+
+const mainClass = computed(() => {
+  return (route.meta.layoutBgClass as string) || 'generic-layout__main'
+})
 
 const layoutClass = computed(() => {
   const mode = route.meta.layoutMode as string | undefined
@@ -88,6 +91,7 @@ const closeSidebar = () => {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  background: var(--uranus-bg);
 }
 
 .generic-layout__content {
@@ -95,7 +99,6 @@ const closeSidebar = () => {
   padding: 2rem;
   max-width: 100%;
   width:100%;
-  background-color: var(--uranus-dashboard-bg);
 
   @media (max-width: 768px) {
     padding: 1rem;

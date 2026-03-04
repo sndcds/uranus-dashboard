@@ -239,7 +239,7 @@ const applyFilters = () => {
   loadEvents()
 }
 
-/* -------------------- Types -------------------- */
+// Types
 
 interface CalendarEventType {
   genre_id: number | null
@@ -354,7 +354,7 @@ const loadEvents = async (resetObserver = false) => {
   if (resetObserver && observer) observer.disconnect()
 
   try {
-    // --- Fetch events ---
+    // Fetch events
     const params = buildFilterParams(true)
     const { data } = await apiFetch<{
       events: CalendarEvent[]
@@ -368,7 +368,7 @@ const loadEvents = async (resetObserver = false) => {
       lastEventDateId.value = data.last_event_date_id
     }
 
-    // --- Fetch summary with same filters, but without limit ---
+    // Fetch summary with same filters, but without limit
     const summaryParams = buildFilterParams(false)
     const summaryResponse = await apiFetch<{ summary: TypeSummaryEntry[] }>(
         `/api/events/type-summary?${summaryParams.toString()}`
@@ -387,7 +387,7 @@ const loadEvents = async (resetObserver = false) => {
 
 const getEventImageUrl = (event: CalendarEvent) => {
   if (!event.image_path)
-    return "/placeholder.png"
+    return import.meta.env.BASE_URL + "assets/event_dummy.png"
 
   const url = new URL(event.image_path, window.location.origin)
   url.searchParams.set("width", "480")

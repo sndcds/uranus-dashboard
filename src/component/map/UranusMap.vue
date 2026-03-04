@@ -4,11 +4,13 @@
   </div>
 
   <LibreMap
+      ref="libreMapRef"
       v-else
       class="map-container"
       :layers="mapLayers"
       :center="[9.5, 54.3]"
       :zoom="10"
+      @mapLoaded="onMapLoaded"
   />
 </template>
 
@@ -25,6 +27,8 @@ import stationIcon from '@/assets/map/marker-station.png'
 
 // Loading state
 const loading = ref(true)
+
+const libreMapRef = ref<any>(null)
 
 // Map data layers
 const venues = ref<FeatureCollection<Point>>({ type: 'FeatureCollection', features: [] })
@@ -91,25 +95,26 @@ const loadEvents = async () => {
   try {
     const { data } = await apiFetch<any>('/api/events/geojson')
     if (data?.data?.venues) {
-      const eventFeatures = Object.values(data.data.venues).map((v: any) => ({
-        type: 'Feature' as const,
-        geometry: { type: 'Point' as const, coordinates: [v.lon ?? 0, v.lat ?? 0] },
-        properties: {
-          ...v,
-          event_count: v.event_count ?? v.events?.length ?? 0,
-          venue_name: v.name
-        },
-      }))
+      const sanitizedFeatures = Object.values(data.data.venues).map((v: any) => {
+        const eventCount = Number(v.event_count ?? v.events?.length ?? 0)
+        return {
+          type: 'Feature' as const,
+          geometry: { type: 'Point' as const, coordinates: [v.lon ?? 0, v.lat ?? 0] },
+          properties: {
+            event_count: isNaN(eventCount) ? 0 : eventCount, // must always be a number
+            venue_name: v.name ?? 'Unknown',
+          },
+        }
+      })
 
       events.value = {
         type: 'FeatureCollection',
-        features: eventFeatures,
+        features: sanitizedFeatures
       }
     }
   } catch (err) {
     console.error('Failed to load events:', err)
   }
-  console.log(JSON.stringify(events.value, null, 2))
 }
 
 // Map layers definition
@@ -124,7 +129,11 @@ const mapLayers = computed(() => {
       cluster: false,
       minzoom: 14,
       icon: stationIcon,
-      unclusteredStyle: { iconSize: 0.6, iconAnchor: 'center' }
+      unclusteredStyle: {
+        iconSize: 0.6,
+        iconAnchor: 'center',
+        textColor: "#ffffff"
+      }
     }
   }
 
@@ -143,7 +152,8 @@ const mapLayers = computed(() => {
       icon: venueIcon,
       unclusteredStyle: {
         iconSize: 0.8,
-        iconAnchor: "bottom"
+        iconAnchor: "bottom",
+        textColor: "#ffffff"
       },
       popupTitle: (f: any) => (f.properties).venue_name,
       popupContent: (f: any) => `<div>${(f.properties).venue_city}</div>`
@@ -155,26 +165,17 @@ const mapLayers = computed(() => {
     layers.events = {
       data: events.value,
       cluster: false,
-      icon: venueIcon,
-      // no icon
       unclusteredStyle: {
-        circleRadius: [
-          "interpolate", ["linear"],
-          ["to-number", ["get", "event_count"]],
-          1, 10,
-          5, 16,
-          10, 24
-        ],
-        circleColor: "#D623F199",
-        circleStrokeWidth: 30,
-        circleStrokeColor: "#D623F133",
-
+        circleRadius: 12,
+        circleColor: "#d623f1",
+        circleStrokeWidth: 20,
+        circleStrokeColor: "rgba(214,35,241,0.11)",
         textField: ["to-string", ["get", "event_count"]],
         textSize: 14,
         textColor: "#ffffff",
       },
-      popupTitle: (f: any) => (f.properties as any).venue_name,
-      popupContent: (f: any) => `<div>${(f.properties as any).event_count} Events</div>`
+      popupTitle: (f: any) => f.properties.venue_name,
+      popupContent: (f: any) => `<div>${f.properties.event_count} Events</div>`,
     }
   }
 
@@ -192,6 +193,22 @@ const loadMap = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const onMapLoaded = (map: maplibregl.Map) => {
+  const eventsSource = map.getSource('events')
+  if (!eventsSource) {
+    console.warn('Events source not ready yet')
+    return
+  }
+
+  map.once('idle', () => {
+    const clusters = map.querySourceFeatures('events', {
+      filter: ['has', 'point_count']
+    })
+    console.log('Clustered features with totals:', clusters.map(f => f.properties.total_event_count))
+  })
+
 }
 
 onMounted(() => loadMap())

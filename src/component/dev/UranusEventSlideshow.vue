@@ -76,8 +76,8 @@ async function loadEvent(eventId: number, eventDateId: number): Promise<SlideDat
       imageUrl: event.image?.url ?? '',
       title: event.title ?? 'Untitled',
       subtitle: event.subtitle ?? '',
-      location: event.date?.location ?? '',
-      date: event.date?.startDate ?? ''
+      location: event.date?.venue_name ?? '',
+      date: event.date?.start_date ?? ''
     }
   } catch (err) {
     console.error('Failed to load event:', err)

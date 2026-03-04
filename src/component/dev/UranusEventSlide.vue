@@ -1,8 +1,9 @@
 <template>
   <div class="slide">
     <!-- Image fades in/out -->
+    <div style="background: white;">{{ imageWithParams }}</div>
     <transition name="fade">
-      <img v-if="imageUrl" :src="imageUrl" :alt="title" class="slide-image" :key="imageUrl"/>
+      <img v-if="imageUrl" :src="imageWithParams" :alt="title" class="slide-image" :key="imageUrl"/>
     </transition>
 
     <!-- Text container -->
@@ -29,13 +30,30 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+
 const props = defineProps<{
   imageUrl: string
   title: string
   subtitle: string
   venue: string
   date: string
+  width: number
+  ratio: string
 }>()
+
+// Default width and ratio if not passed
+const width = props.width || 1920
+const ratio = props.ratio || "16:9"
+
+// Append query parameters safely
+const imageWithParams = computed(() => {
+  if (!props.imageUrl) return ""
+  const url = new URL(props.imageUrl, window.location.origin)
+  url.searchParams.set("width", width.toString())
+  url.searchParams.set("ratio", ratio)
+  return url.toString()
+})
 
 const randomColors = [
   { bg: '#000000', fg: '#ffffff' },
