@@ -7,9 +7,9 @@ export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLoc
         da: "Indstil filter",
     },
     calendar_filter_search_label: {
-        de: 'Freitextsuche',
-        en: 'Text search',
-        da: 'Søg tekst',
+        de: 'Suche',
+        en: 'Search',
+        da: 'Søg',
     },
     calendar_filter_search_placeholder : {
         de: 'Wonach suchst du?',

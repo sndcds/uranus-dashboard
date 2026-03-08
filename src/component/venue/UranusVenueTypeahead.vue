@@ -1,41 +1,38 @@
-<!--
-  src/component/venu/UranusVenueTypeahead.vue
-
-  2026-02-21, Roald
--->
-
 <template>
-  <div class="typeahead">
+  <div class="typeahead" ref="inputWrapper">
     <input
+        ref="inputRef"
         type="text"
+        class="uranus-text-input"
         v-model="query"
         @keydown="onKeydown"
         placeholder="Type a venue..."
         autocomplete="off"
     />
 
-    <ul v-if="isOpen" class="popover">
-      <li
-          v-for="(venue, index) in results"
-          :key="venue.id"
-          :class="{ 'selected': index === selectedIndex }"
-          @click="selectVenue(venue)"
-          @mouseenter="selectedIndex = index"
-      >
-        {{ venue.name }}<span v-if="venue.city"> ({{ venue.city }})</span>
-      </li>
-    </ul>
+    <!-- Teleport the popover outside clipped containers -->
+    <teleport to="body">
+      <ul v-if="isOpen" class="popover" :style="popoverStyle">
+        <li
+            v-for="(venue, index) in results"
+            :key="venue.id"
+            :class="{ selected: index === selectedIndex }"
+            @click="selectVenue(venue)"
+            @mouseenter="selectedIndex = index"
+        >
+          {{ venue.name }}<span v-if="venue.city"> ({{ venue.city }})</span>
+        </li>
+      </ul>
+    </teleport>
   </div>
 
   id: {{ selectedVenue?.id }} / city: {{ selectedVenue?.city }}
 </template>
 
-
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { apiBaseUrl } from '@/util/UranusUtils.ts'
 import type { UranusVenueSelectItemInfo } from '@/domain/venue/UranusVenue.ts'
-
 
 const props = defineProps<{
   selectedVenue: UranusVenueSelectItemInfo | null
@@ -46,25 +43,38 @@ const emit = defineEmits<{
 }>()
 
 const query = ref('')
-
-watch(
-    () => props.selectedVenue,
-    (val) => {
-      if (!val || typeof val !== 'object') {
-        query.value = ''
-        return
-      }
-
-      query.value = val.name ?? ''
-    },
-    { immediate: true }
-)
-
 const results = ref<UranusVenueSelectItemInfo[]>([])
 const selectedIndex = ref(-1)
 const isOpen = ref(false)
+const ignoreQueryWatch = ref(false)
+const inputRef = ref<HTMLInputElement | null>(null)
 
-// Debounce helper (pure JS)
+const popoverStyle = computed(() => {
+  if (!inputRef.value) {
+    return {
+      position: 'absolute',
+      top: '0px',
+      left: '0px',
+      width: '0px',
+      zIndex: 1000
+    }
+  }
+  const rect = inputRef.value.getBoundingClientRect()
+  return {
+    position: 'absolute',
+    top: `${rect.bottom + window.scrollY}px`,
+    left: `${rect.left + window.scrollX}px`,
+    width: `${rect.width}px`,
+    zIndex: 1000
+  }
+})
+
+watch(query, (val) => {
+  if (ignoreQueryWatch.value) return
+  fetchVenuesDebounced(val)
+})
+
+// Debounce helper
 function debounce<T extends (...args: any[]) => void>(func: T, wait = 300) {
   let timeout: ReturnType<typeof setTimeout> | null
   return (...args: Parameters<T>) => {
@@ -73,6 +83,7 @@ function debounce<T extends (...args: any[]) => void>(func: T, wait = 300) {
   }
 }
 
+// Fetch venues from API
 async function fetchVenues(q: string) {
   if (!q) {
     results.value = []
@@ -84,7 +95,7 @@ async function fetchVenues(q: string) {
     const apiPath = apiBaseUrl() + `/api/choosable-venues?name=${encodeURIComponent(q)}*`
     const res = await fetch(apiPath)
     const json = await res.json()
-    results.value = json.data ?? []  // <-- extract the array
+    results.value = json.data ?? []
     isOpen.value = results.value.length > 0
     selectedIndex.value = -1
   } catch (err) {
@@ -96,8 +107,7 @@ async function fetchVenues(q: string) {
 
 const fetchVenuesDebounced = debounce(fetchVenues, 250)
 
-watch(query, (val) => fetchVenuesDebounced(val))
-
+// Keyboard navigation
 function onKeydown(e: KeyboardEvent) {
   if (!isOpen.value) return
 
@@ -118,16 +128,19 @@ function onKeydown(e: KeyboardEvent) {
 
 function selectVenue(venue: UranusVenueSelectItemInfo) {
   emit('update:selectedVenue', venue)
+  ignoreQueryWatch.value = true
   query.value = venue.name
   isOpen.value = false
+  setTimeout(() => {
+    ignoreQueryWatch.value = false
+  }, 0) // or nextTick
 }
 </script>
-
 
 <style scoped>
 .typeahead {
   position: relative;
-  width: 400px;
+  width: 100%;
 
   input {
     width: 100%;
@@ -137,26 +150,27 @@ function selectVenue(venue: UranusVenueSelectItemInfo) {
 }
 
 .popover {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  max-height: 200px;
+  min-height: 100px;
+  max-height: 400px;
   overflow-y: auto;
-  border: 1px solid #ccc;
+  border: 0px solid #ccc;
   background: white;
-  z-index: 100;
+  z-index: 1000;
   padding: 0;
   margin: 0;
   list-style: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .popover li {
   padding: 0.5rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .popover li.selected {
-  background-color: #f0f0f0;
+  color: #fff;
+  background-color: #333;
 }
 </style>

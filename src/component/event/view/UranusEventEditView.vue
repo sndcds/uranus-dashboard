@@ -17,7 +17,7 @@
         {{ eventId }}
       </header>
 
-      <button @click="showReleaseModal = true">
+      <button class="uranus-action-button" @click="showReleaseModal = true">
         Edit Release Status / Date
       </button>
 

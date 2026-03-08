@@ -1,50 +1,27 @@
-.uranus-form,
-.uranus-inline-edit-section {
+.uranus-form {
   display: flex;
   flex-direction: column;
   gap: var(--uranus-grid-gap);
 
-  label {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin: 0;
-  }
-
-  .required {
-    color: #dc2626;
-    margin-left: 0.25rem;
-  }
-
-  input,
-  textarea {
+  input, textarea {
     font-size: 1rem;
-    padding: 0.7rem 1.0rem 0.5rem 1.0rem;
+    padding: 0.2rem 0.6rem 0.2rem 0.6rem;
     border-radius: var(--uranus-form-field-border-radius);
     background: var(--uranus-input-bg);
-    color: var(--uranus-color);
-    border: var(--uranus-input-border-width) solid var(--uranus-input-bg);
-    border: var(--uranus-input-border-width) solid red;
+    color: var(--uranus-input-color);
+    border: var(--uranus-input-border-width) solid var(--uranus-input-border-color);
     appearance: none;
   }
 
   input[type="date"] {
     font-weight: 500;
   }
+  input[type="date"]::placeholder {
+    color: red;
+  }
 
   textarea {
     border-radius: var(--uranus-form-field-border-radius);
-  }
-
-  .uranus-label-text {
-    padding-left: 10px;
-    margin: 0;
-    font-weight: 400;
-    font-size: 0.9rem;
-    color: var(--uranus-color-dimmed);
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
   }
 
   select {
@@ -54,7 +31,7 @@
     border: var(--uranus-input-border-width) solid var(--uranus-input-border-color);
     background: var(--uranus-input-bg);
     border-radius: var(--uranus-form-field-border-radius);
-    color: var(--uranus-color);
+    color: var(--uranus-input-color);
     height: var(--uranus-input-height);
     box-sizing: border-box; // include padding/border in width
     // background: var(--uranus-bg-color-d1) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><polygon points="0,2 12,2 6,8" fill="%237f12e3"/></svg>') no-repeat right 0.8rem center;
@@ -64,19 +41,30 @@
   }
 }
 
-.uranus-inline-edit-section,
-.uranus-form {
-  input,
-  input[type="text"],
-  input[type="email"],
-  select,
-  textarea {
-    border: var(--uranus-input-border-width) solid var(--uranus-input-bg);
-  }
+.uranus-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-input.uranus-text-input {
+.uranus-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--uranus-color-dimmed);
+}
+
+.uranus-text-input {
   height: var(--uranus-input-height);
+  width: 100%;
+  border: var(--uranus-input-border-width) solid var(--uranus-input-border-color) !important;
+  border-radius: var(--uranus-form-field-border-radius);
+}
+
+::placeholder {
+  color: var(--uranus-input-placeholder-color);
 }
 
 .uranus-tiny-text {
@@ -176,6 +164,14 @@ input.uranus-text-input {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
+
+.uranus-inline-edit-section,
+.uranus-form {
+  input, input[type="text"], input[type="email"], select, textarea {
+    border: var(--uranus-input-border-width) solid var(--uranus-input-bg);
+  }
+}
+
 
 @media (max-width: 540px) {
   .uranus-grid-4 {

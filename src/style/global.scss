@@ -77,7 +77,7 @@
   --uranus-color-dimmed: oklch(50% 0.05 var(--uranus-hue));
   --uranus-link-color: oklch(50% 0.2 var(--uranus-link-hue));
   --uranus-link-color-hover: oklch(60% 0.2 var(--uranus-link-hue));
-  --uranus-bg: oklch(96% 0.008 var(--uranus-hue));
+  --uranus-bg: oklch(100% 0.0 var(--uranus-hue));
   --uranus-bg-d1: oklch(100% 0.0 var(--uranus-hue));
   --uranus-bg-d2: oklch(97% 0.01 var(--uranus-hue));
   --uranus-bg-d3: oklch(92% 0.014 var(--uranus-hue));
@@ -111,9 +111,12 @@
   --uranus-action-button-bg-hover: oklch(44% 0.18 var(--uranus-action-hue));
 
   // Inputs & borders
-  --uranus-input-bg: oklch(98% 0.006 var(--uranus-hue));
-  --uranus-input-border-color: oklch(92% 0.006 var(--uranus-hue));
-  --uranus-input-border-width: 2px;
+  --uranus-input-color: oklch(10% 0.02 var(--uranus-hue));
+  --uranus-input-bg: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-input-border-color: oklch(72% 0.01 var(--uranus-hue));
+  --uranus-input-border-width: 1px;
+  --uranus-input-placeholder-color: oklch(70% 0.0 var(--uranus-hue));
+
 
   // Inline Editor
   --uranus-ia-inline-bg: var(--uranus-bg);
@@ -206,7 +209,7 @@
   --uranus-grid-gap: 12px;
   --uranus-card-gap: 8px;
   --uranus-default-text-padding: 6px 12px;
-  --uranus-form-field-border-radius: 3px;
+  --uranus-form-field-border-radius: 5px;
   --uranus-tiny-border-radius: 0px;
   --uranus-input-height: 44px;
 
@@ -276,8 +279,11 @@
   --uranus-action-button-bg-hover: oklch(45% 0.16 var(--uranus-action-hue));
 
   // Inputs & borders
+  --uranus-input-color: oklch(90% 0.02 var(--uranus-hue));
   --uranus-input-bg: oklch(26% 0.05 var(--uranus-hue));
   --uranus-input-border-color: oklch(26% 0.05 var(--uranus-hue));
+  --uranus-input-placeholder-color: oklch(60% 0.06 var(--uranus-hue));
+
 
   // Inline Editor
   --uranus-ia-inline-color: oklch(90% 0.09 75);

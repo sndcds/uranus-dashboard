@@ -1,26 +1,8 @@
 <template>
-
-  <div>
-    <h3>draft</h3>
-    <p>
-      venueId: {{ store.draft?.venueId }}<br>
-      spaceId: {{ store.draft?.spaceId }}<br>
-      meetingPoint: {{ store.draft?.meetingPoint }}<br>
-      onlineLink: {{ store.draft?.onlineLink }}<br>
-    </p>
-    <h3>original</h3>
-    <p>
-      venueId: {{ store.original?.venueId }}<br>
-      spaceId: {{ store.original?.spaceId }}<br>
-      meetingPoint: {{ store.original?.meetingPoint }}<br>
-      onlineLink: {{ store.original?.onlineLink }}<br>
-    </p>
-  </div>
-
   <section class="venue-tab">
     <h2>Venue / Space</h2>
 
-    <button @click="openVenueModal">
+    <button class="uranus-action-button" @click="openVenueModal">
       Select Venue / Space
     </button>
     <p>

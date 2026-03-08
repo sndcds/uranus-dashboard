@@ -264,7 +264,8 @@ function resetDates() {
     align-items: center;
     padding: 16px;
     border-radius: 7px;
-    border: 1px solid #ccc;
+    border: 0 solid #ccc;
+    background: white;
 
     input[type="date"],
     input[type="time"],
@@ -272,8 +273,9 @@ function resetDates() {
       font-size: 1rem;
       padding: 0.4rem 0.8rem;
       border-radius: 4px;
-      border: 0px solid #ccc;
+      border: 1px solid #ccc;
       width: calc(50% - 6px);
+      background: #eee;
     }
 
     .all-day {

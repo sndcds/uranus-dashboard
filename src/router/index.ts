@@ -165,6 +165,7 @@ const routes = [
                 path: '',
                 name: 'events',
                 component: UranusCalendarView,
+                meta: { layoutMode: 'zero-padding' },
             },
             {
                 path: 'event/:id/date/:eventDateId',

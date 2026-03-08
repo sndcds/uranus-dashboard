@@ -1,28 +1,28 @@
 <template>
-    <div class="uranus-textfield-wrapper" :style="{ flex: flexValue }">
-        <UranusFieldLabel
+  <div class="uranus-textfield-wrapper">
+    <UranusFieldLabel
+        :id="id"
+        :label="label"
+        :required="required"
+        :error="error"
+    >
+        <input
+            type="date"
             :id="id"
-            :label="label"
+            :value="modelValue"
+            :class="['uranus-text-input', sizeClass]"
+            :placeholder="placeholder"
+            :autocomplete="autocomplete"
+            :aria-required="required ? 'true' : 'false'"
+            :aria-invalid="error ? 'true' : 'false'"
             :required="required"
-            :error="error"
-        >
-            <input
-                type="date"
-                :id="id"
-                :value="modelValue"
-                :class="['uranus-text-input', sizeClass]"
-                :placeholder="placeholder"
-                :autocomplete="autocomplete"
-                :aria-required="required ? 'true' : 'false'"
-                :aria-invalid="error ? 'true' : 'false'"
-                :required="required"
-                :disabled="disabled"
-                :name="inputName"
-                v-bind="$attrs"
-                @input="$emit('update:modelValue', $event.target.value)"
-            />
-        </UranusFieldLabel>
-    </div>
+            :disabled="disabled"
+            :name="inputName"
+            v-bind="$attrs"
+            @input="$emit('update:modelValue', $event.target.value)"
+        />
+    </UranusFieldLabel>
+  </div>
 </template>
 
 <script setup>

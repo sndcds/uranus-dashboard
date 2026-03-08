@@ -10,6 +10,7 @@
   <UranusCard class="uranus-dashboard-event-card">
     <div class="uranus-dashboard-event-card-layout">
 
+      info: {{ event.id }} / {{ event.dateId }}
       <!-- Event Image -->
       <img
           v-if="event.imageUrl"

@@ -2,13 +2,25 @@
   <label
       :for="id"
       class="uranus-label"
-      :style="{ flex: props.flex ?? 1 }">
-    <div class="uranus-label-text">
+      :style="{ flex: props.flex ?? 1 }"
+  >
+    <span class="uranus-label-row">
       {{ label }}
-      <span v-if="required" class="uranus-input-required" aria-hidden="true">*</span>
-      <span v-if="error" class="uranus-field-error">{{ error }}</span>
-    </div>
+      <span
+          v-if="required"
+          class="uranus-input-required"
+          aria-hidden="true"
+      >*</span>
+    </span>
+
     <slot />
+
+    <span
+        v-if="error"
+        class="uranus-field-error"
+    >
+      {{ error }}
+    </span>
   </label>
 </template>
 
@@ -22,7 +34,21 @@ const props = defineProps({
 })
 </script>
 
-<style scoped>
+<style lang="scss">
+.label-text2 {
+  padding-left: 10px;
+  margin: 0;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: var(--uranus-color-dimmed);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+
+
+
 .uranus-field-error {
   margin: 0;
   color: var(--uranus-required-color);
