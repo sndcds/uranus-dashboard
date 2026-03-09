@@ -100,7 +100,7 @@
   --uranus-nav-bg-active-hover: oklch(25% 0.1 var(--uranus-active-hue));
 
   --uranus-dashboard-border-width: 1px;
-  --uranus-dashboard-border-color: oklch(92% 0.014 var(--uranus-hue));
+  --uranus-dashboard-border-color: oklch(88% 0.014 var(--uranus-hue));
 
   --uranus-button-color-active: oklch(100% 0.0 var(--uranus-active-hue));
   --uranus-button-bg-active: var(--uranus-nav-bg-active);
@@ -194,7 +194,6 @@
 
   --surface-hover: rgba(15, 23, 42, 0.06);
   --uranus-card-color: var(--uranus-color);
-  --uranus-card-border-color: #eee;
   --uranus-card-border-radius: 7px;
 
   // Application chrome
@@ -458,6 +457,19 @@ header {
 .uranus-image-slot-dark-bg {
   background: var(--uranus-dark-bg, black) !important;
 }
+
+
+.uranus-dashboard-card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-top: auto;
+  padding: 16px;
+  padding-bottom: 48px;
+  overflow: hidden;
+  border: 1px solid var(--uranus-dashboard-border-color);
+}
+
 
 /* Tablet and up: Sidebar layout */
 @media (min-width: 768px) {

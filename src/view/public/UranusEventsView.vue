@@ -4,22 +4,14 @@
     <!-- Sidebar for desktop, modal for mobile -->
     <UranusEventFilterPanel
         v-if="isSidebarVisible || showFilterModal"
-        :initial-filter="filter"
         :isSavingFilter="isSavingFilter"
         :canSaveFilter="canSaveFilter"
         @filter-changed="onFilterChanged"
-        @save="applyFilters"
         @cancel="onCancelFilter"
     />
 
     <div class="calendar-body">
-      search: {{ filter.search }}, city: {{ filter.city }}<br>
-      startDate: {{ filter.startDate }}, endDate: {{ filter.endDate }}<br>
-      venue: {{ filter.venue }}<br>
-
-      <UranusEventCalendar
-          :initial-filter="filter"
-      />
+      <UranusEventCalendar />
     </div>
 
     <!-- Mobile modal overlay -->
@@ -30,11 +22,9 @@
         show
     >
       <UranusEventFilterPanel
-          :initial-filter="filter"
           :isSavingFilter="isSavingFilter"
           :canSaveFilter="canSaveFilter"
           @filter-changed="onFilterChanged"
-          @save="applyFilters"
           @cancel="onCancelFilter"
       />
     </UranusModal>
@@ -43,34 +33,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import UranusModal from '@/component/uranus/UranusModal.vue'
-import { urlParamsSetIfPresent } from '@/util/UranusUtils.ts'
-import type { UranusVenueSelectItemInfo } from '@/domain/venue/UranusVenue.ts'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
 import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'
+import { type UranusEventsFilter, useEventsFilterStore } from '@/store/uranusEventsFilterStore.ts'
+
+const filterStore = useEventsFilterStore()
+
+const onFilterChanged = (newFilter: UranusEventsFilter) => {
+  console.log(JSON.stringify(newFilter, null, 2))
+  filterStore.setFilter(newFilter)
+}
 
 const { t } = useI18n({ useScope: 'global' })
 
-// Filter & UI state
-interface CalendarEventsFilter {
-  search: string | null
-  city: string | null
-  startDate?: string | null
-  endDate?: string | null
-  venue: UranusVenueSelectItemInfo | null
-}
-
-const props = defineProps<{ initialFilter?: CalendarEventsFilter }>()
-const filter = ref<CalendarEventsFilter>({
-  search: props.initialFilter?.search ?? '',
-  city: props.initialFilter?.city ?? '',
-  startDate: props.initialFilter?.startDate ?? '',
-  endDate: props.initialFilter?.endDate ?? '',
-  venue: props.initialFilter?.venue ?? { id: -1, name: '' }
-})
 
 const showFilterModal = ref(false)
 const isSavingFilter = ref(false)
@@ -82,6 +61,7 @@ window.addEventListener('resize', () => {
   isSidebarVisible.value = window.innerWidth >= 1024
 })
 
+/*
 // Events & types
 interface CalendarEventType { genre_id: number|null; genre_name: string|null; type_id: number; type_name: string }
 interface CalendarEvent {
@@ -95,8 +75,8 @@ const events = ref<CalendarEvent[]>([])
 const limit = 32
 const lastEventStartAt = ref<string | null>(null)
 const lastEventDateId = ref<number | null>(null)
-
-
+*/
+/*
 const buildFilterParams = (paginationMode = false) => {
   const params = new URLSearchParams()
   if (paginationMode) {
@@ -115,9 +95,9 @@ const buildFilterParams = (paginationMode = false) => {
   }
   return params
 }
+*/
 
-
-
+/*
 watch(filter, async (newFilter, oldFilter) => {
   // Reset pagination and events
   events.value = []
@@ -127,12 +107,9 @@ watch(filter, async (newFilter, oldFilter) => {
   // Optionally debounce to avoid too many API calls
   loadEvents(true)
 }, { deep: true })
+*/
 
-
-const onFilterChanged = (newFilter: CalendarEventsFilter) => {
-  Object.assign(filter.value, newFilter)
-}
-
+/*
 const applyFilters = async () => {
   showFilterModal.value = false
   isSavingFilter.value = true
@@ -142,6 +119,7 @@ const applyFilters = async () => {
   // window.scrollTo({ top: 0, behavior: 'smooth' })
   // try { await loadEvents() } finally { isSavingFilter.value = false }
 }
+*/
 
 const onCancelFilter = () => showFilterModal.value = false
 </script>

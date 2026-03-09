@@ -213,7 +213,7 @@ import { applyTheme } from '@/util/theme.ts'
 import { useUserStore } from '@/store/uranusUserStore.ts'
 
 import UranusLogo from '@/component/ui/UranusLogo.vue'
-import { useEventsFilterStore } from '@/store/uranusFventsFilterStore.ts'
+import { useEventsFilterStore } from '@/store/uranusEventsFilterStore.ts'
 import { useThemeStore } from "@/store/uranusThemeStore.ts";
 
 const { t, locale } = useI18n()

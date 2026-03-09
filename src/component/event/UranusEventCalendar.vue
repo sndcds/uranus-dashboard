@@ -20,7 +20,7 @@
           <button
               class="filter-button"
               @click="onResetFilter"
-              :disabled="!canResetFilterMore"
+              :disabled="false"
           >
             {{ t('calendar_filter_reset_button_label') }}
           </button>
@@ -105,41 +105,16 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue"
-import { useRouter } from "vue-router"
 import { useI18n } from "vue-i18n";
 import { apiFetch } from "@/api.ts"
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
-import { useEventsFilterStore } from '@/store/uranusFventsFilterStore.ts'
+import { useEventsFilterStore } from '@/store/uranusEventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import { urlParamsSetIfPresent } from '@/util/UranusUtils.ts'
 import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
 import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
-import type {UranusVenueSelectItemInfo} from '@/domain/venue/UranusVenue.ts'
 
-const router = useRouter()
 const { t, locale } = useI18n({ useScope: 'global' })
-
-interface CalendarEventsFilter {
-  search: string | null
-  city: string | null
-  startDate?: string | null
-  endDate?: string | null
-  venue: UranusVenueSelectItemInfo | null
-}
-
-// Declare the prop
-const props = defineProps<{
-  initialFilter?: CalendarEventsFilter
-}>()
-
-const filter = ref<CalendarEventsFilter>({
-  search: props.initialFilter?.search ?? '',
-  city: props.initialFilter?.city ?? '',
-  startDate: props.initialFilter?.startDate ?? '',
-  endDate: props.initialFilter?.endDate ?? '',
-  venue: props.initialFilter?.venue ?? { id: -1, name: '' }
-})
-
 
 
 const eventReleaseStatusStore = useEventReleaseStatusStore()
@@ -151,18 +126,11 @@ const searchQuery = ref('')
 const typeLookupStore = useEventTypeLookupStore()
 
 watch(
-    () => props.initialFilter,
-    (newFilter) => {
-      if (!newFilter) return
-
-      // update local filter
-      filter.value = {
-        search: newFilter.search ?? '',
-        city: newFilter.city ?? '',
-        startDate: newFilter.startDate ?? '',
-        endDate: newFilter.endDate ?? '',
-        venue: newFilter.venue ?? { id: -1, name: '' }
-      }
+    () => eventsFilterStore.filter,
+    () => {
+      events.value = []
+      lastEventStartAt.value = null
+      lastEventDateId.value = null
 
       // reset pagination
       events.value = []
@@ -175,29 +143,10 @@ watch(
     { deep: true }
 )
 
-/*
-const CalendarFilter = defineComponent({
-  setup() {
-    return () => h('input', {
-      type: 'text',
-      placeholder: 'Search events...',
-      class: 'filter-textfield',
-      value: searchQuery.value,
-      onInput: (e: Event) => {
-        const target = e.target as HTMLInputElement
-        searchQuery.value = target.value
-      }
-    })
-  }
-})
-*/
-
 onMounted(() => {
-  // eventsFilterStore.content = CalendarFilter
 })
 
 onBeforeUnmount(() => {
-  eventsFilterStore.content = null
 })
 
 
@@ -254,11 +203,6 @@ const lastEventStartAt = ref<string | null>(null)
 const lastEventDateId = ref<number | null>(null)
 
 
-const canResetFilterMore = computed(() => {
-  return filter.value.search || filter.value.city || filter.value.startDate || filter.value.endDate
-})
-
-
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 
@@ -279,7 +223,7 @@ watch(searchQuery, () => {
 
 const buildFilterParams = (paginationMode = false) => {
   const params = new URLSearchParams()
-  console.log("buildFilterParams 1")
+  const f = eventsFilterStore.filter // pull current filter from store
 
   if (paginationMode) {
     params.set("limit", limit.toString())
@@ -291,18 +235,16 @@ const buildFilterParams = (paginationMode = false) => {
     }
   }
 
-  console.log("buildFilterParams 2")
-  urlParamsSetIfPresent(params, "search", filter.value.search)
-  urlParamsSetIfPresent(params, "city", filter.value.city)
-  urlParamsSetIfPresent(params, "start", filter.value.startDate)
-  urlParamsSetIfPresent(params, "end", filter.value.endDate)
-  console.log("buildFilterParams 3")
-  if (filter.value.venue && filter.value.venue.id >= 0) {
-    console.log("buildFilterParams 4")
-    console.log(JSON.stringify(filter.value, null, 2))
-    urlParamsSetIfPresent(params, "venues", filter.value.venue?.id.toString())
+  // Only add params if they are not empty
+  urlParamsSetIfPresent(params, "search", f.search)
+  urlParamsSetIfPresent(params, "city", f.city)
+  urlParamsSetIfPresent(params, "start", f.startDate)
+  urlParamsSetIfPresent(params, "end", f.endDate)
+
+  // Venue filter (optional)
+  if (f.venue?.id != null && f.venue.id >= 0) {
+    urlParamsSetIfPresent(params, "venues", f.venue.id.toString())
   }
-  console.log("buildFilterParams 5", params)
 
   return params
 }
@@ -380,19 +322,24 @@ onMounted(async () => {
 
 
 const onResetFilter = () => {
-  filter.value.search = ''
-  filter.value.city = ''
-  filter.value.startDate = ''
-  filter.value.endDate = ''
+  // Reset the filter in the store
+  eventsFilterStore.setFilter({
+    search: '',
+    city: '',
+    startDate: '',
+    endDate: '',
+    venue: { id: -1, name: '' }
+  })
 
   // Reset the event list and pagination cursors
   events.value = []
   lastEventStartAt.value = null
   lastEventDateId.value = null
 
+  // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' })
 
-  // Reload events and reset observer
+  // Reload events (observer will re-trigger if needed)
   loadEvents(true)
 }
 
@@ -488,7 +435,6 @@ onBeforeUnmount(() => {
   top: 80px;
   z-index: 10;
   padding: 12px 16px;
-  border-bottom: 1px solid #eee;
   min-height: 100px;
   background: var(--uranus-dashboard-bg);
   // background: mistyrose;

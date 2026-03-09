@@ -7,14 +7,14 @@
 -->
 
 <template>
-  <UranusCard class="uranus-dashboard-event-card">
+  <UranusCard class="uranus-dashboard-card">
     <div class="uranus-dashboard-event-card-layout">
 
       <!-- Event Image -->
       <img
           v-if="event.imageUrl"
           class="uranus-dashboard-event-card-image"
-          :src="event.imageUrl"
+          :src="event.imageUrl + '?width=160&ratio=16:9'"
           :alt="event.title"
           @error="onImageError"
       />
@@ -242,16 +242,6 @@ const confirmDelete = async ({password, selectedOption}: {
 </script>
 
 <style scoped lang="scss">
-.uranus-dashboard-event-card {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  margin-top: auto;
-  padding: 16px;
-  padding-bottom: 48px;
-  overflow: hidden;
-  border: 1px solid var(--uranus-card-border-color);
-}
 
 .uranus-dashboard-event-card-layout {
   display: flex;
@@ -266,7 +256,7 @@ const confirmDelete = async ({password, selectedOption}: {
 .uranus-dashboard-event-card-image {
   display: block;
   width: 160px;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 16 / 9;
   border-radius: var(--uranus-tiny-border-radius);
   object-fit: cover;
   margin-bottom: 8px;
