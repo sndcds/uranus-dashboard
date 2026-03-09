@@ -17,11 +17,7 @@
             {{ t('calendar_filter_button_label') }}
           </button>
 
-          <button
-              class="filter-button"
-              @click="onResetFilter"
-              :disabled="false"
-          >
+          <button class="filter-button" @click="onResetFilter" :disabled="false">
             {{ t('calendar_filter_reset_button_label') }}
           </button>
         </div>
@@ -31,6 +27,8 @@
               v-for="entry in typeSummary"
               :key="entry.type_id"
               class="type-chip"
+              :class="{ active: filterStore.eventTypeIds.includes(entry.type_id) }"
+              @click="toggleType(entry.type_id)"
           >
             {{ getTypeName(entry.type_id) }} ({{ entry.date_count }})
           </span>
@@ -104,29 +102,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue"
-import { useI18n } from "vue-i18n";
-import { apiFetch } from "@/api.ts"
-import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { apiFetch } from '@/api.ts'
 import { useEventsFilterStore } from '@/store/uranusEventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import { urlParamsSetIfPresent } from '@/util/UranusUtils.ts'
 import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
 import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
+import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
 
 const eventReleaseStatusStore = useEventReleaseStatusStore()
+const typeLookupStore = useEventTypeLookupStore()
+const filterStore = useEventsFilterStore()
 
 const showFilterModal = ref(false)
-const eventsFilterStore = useEventsFilterStore()
 const searchQuery = ref('')
 
-const typeLookupStore = useEventTypeLookupStore()
 
 watch(
-    () => eventsFilterStore.filter,
+    () => filterStore.filter,
     () => {
       events.value = []
       lastEventStartAt.value = null
@@ -223,7 +221,7 @@ watch(searchQuery, () => {
 
 const buildFilterParams = (paginationMode = false) => {
   const params = new URLSearchParams()
-  const f = eventsFilterStore.filter // pull current filter from store
+  const f = filterStore.filter // pull current filter from store
 
   if (paginationMode) {
     params.set("limit", limit.toString())
@@ -241,9 +239,14 @@ const buildFilterParams = (paginationMode = false) => {
   urlParamsSetIfPresent(params, "start", f.startDate)
   urlParamsSetIfPresent(params, "end", f.endDate)
 
-  // Venue filter (optional)
+  // Venue
   if (f.venue?.id != null && f.venue.id >= 0) {
     urlParamsSetIfPresent(params, "venues", f.venue.id.toString())
+  }
+
+  // Event types
+  if (f.eventTypeIds?.length) {
+    params.set("event_types", f.eventTypeIds.join(","))
   }
 
   return params
@@ -320,10 +323,13 @@ onMounted(async () => {
   }
 })
 
+function toggleType(typeId: number) {
+  filterStore.toggleEventType(typeId)
+}
 
 const onResetFilter = () => {
   // Reset the filter in the store
-  eventsFilterStore.setFilter({
+  filterStore.setFilter({
     search: '',
     city: '',
     startDate: '',
@@ -449,7 +455,7 @@ onBeforeUnmount(() => {
 }
 
 .type-chip {
-  background-color: #fff;
+  background-color: #eee;
   padding: 4px 8px;
   border-radius: 16px;
   font-size: 0.9rem;
@@ -457,7 +463,11 @@ onBeforeUnmount(() => {
   user-select: none;
 }
 
-/* Hover overlay */
+.type-chip.active {
+  background-color: #3b82f6; /* blue */
+  color: #fff;
+}
+
 .calendar-overlay {
   position: absolute;
   inset: 0;

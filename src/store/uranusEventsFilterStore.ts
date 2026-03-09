@@ -2,9 +2,9 @@
     src/store/uranusEventsFilterStore.ts
 */
 
-import { defineStore } from "pinia"
-import { ref, watch } from "vue"
-import type { UranusVenueSelectItemInfo } from "@/domain/venue/UranusVenue"
+import { defineStore } from 'pinia'
+import { computed, ref, watch } from 'vue'
+import type { UranusVenueSelectItemInfo } from '@/domain/venue/UranusVenue'
 
 export interface UranusEventsFilter {
     search: string | null
@@ -12,10 +12,9 @@ export interface UranusEventsFilter {
     startDate?: string | null
     endDate?: string | null
     venue: UranusVenueSelectItemInfo | null
-
-    // Location-specific fields
     useCurrentLocation?: boolean
     radiusKm: number
+    eventTypeIds: number[]
 }
 
 const defaultFilter: UranusEventsFilter = {
@@ -25,12 +24,14 @@ const defaultFilter: UranusEventsFilter = {
     endDate: "",
     venue: { id: -1, name: "" },
     useCurrentLocation: false,
-    radiusKm: 10.0
+    radiusKm: 10.0,
+    eventTypeIds: []
 }
 
 export const useEventsFilterStore = defineStore("calendarFilter", () => {
 
     const filter = ref<UranusEventsFilter>({ ...defaultFilter })
+    const eventTypeIds = computed(() => filter.value.eventTypeIds)
 
     // Load saved filter from localStorage
     const saved = localStorage.getItem("calendar-filter")
@@ -60,9 +61,22 @@ export const useEventsFilterStore = defineStore("calendarFilter", () => {
         filter.value = { ...defaultFilter }
     }
 
+    // NEW: toggle event type
+    function toggleEventType(typeId: number) {
+        const list = filter.value.eventTypeIds
+
+        if (list.includes(typeId)) {
+            filter.value.eventTypeIds = list.filter(id => id !== typeId)
+        } else {
+            filter.value.eventTypeIds.push(typeId)
+        }
+    }
+
     return {
         filter,
+        eventTypeIds,
         setFilter,
-        resetFilter
+        resetFilter,
+        toggleEventType
     }
 })
