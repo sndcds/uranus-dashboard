@@ -21,7 +21,7 @@ import UserActivateView from '@/view/UserActivateView.vue'
 import UranusInviteActivateView from '@/view/UranusInviteActivateView.vue'
 import UranusOrganizationTeamView from '@/view/UranusOrganizationTeamView.vue'
 import UranusOrganizationMemberPermissionView from '@/view/UranusOrganizationMemberPermissionView.vue'
-import UranusCalendarView from '@/view/public/UranusCalendarView.vue'
+import UranusEventsView from '@/view/public/UranusEventsView.vue'
 import UranusEventSlideshowView from '@/view/public/UranusEventSlideshowView.vue'
 import UranusDevThemeView from '@/view/UranusDevThemeView.vue'
 
@@ -164,7 +164,7 @@ const routes = [
             {
                 path: '',
                 name: 'events',
-                component: UranusCalendarView,
+                component: UranusEventsView,
                 meta: { layoutMode: 'zero-padding' },
             },
             {

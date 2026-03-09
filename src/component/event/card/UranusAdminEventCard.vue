@@ -10,7 +10,6 @@
   <UranusCard class="uranus-dashboard-event-card">
     <div class="uranus-dashboard-event-card-layout">
 
-      info: {{ event.id }} / {{ event.dateId }}
       <!-- Event Image -->
       <img
           v-if="event.imageUrl"
@@ -251,6 +250,7 @@ const confirmDelete = async ({password, selectedOption}: {
   padding: 16px;
   padding-bottom: 48px;
   overflow: hidden;
+  border: 1px solid var(--uranus-card-border-color);
 }
 
 .uranus-dashboard-event-card-layout {

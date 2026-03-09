@@ -1,5 +1,5 @@
 <template>
-  <div class="calendar-page">
+  <div class="calendar-view">
 
     <!-- Sidebar for desktop, modal for mobile -->
     <UranusEventFilterPanel
@@ -13,10 +13,13 @@
     />
 
     <div class="calendar-body">
-      <UranusEventCalendar2
-          :initial-filter="initialFilter!"
-          @filter-changed="onFilterChanged"
-       filter=""/>
+      search: {{ filter.search }}, city: {{ filter.city }}<br>
+      startDate: {{ filter.startDate }}, endDate: {{ filter.endDate }}<br>
+      venue: {{ filter.venue }}<br>
+
+      <UranusEventCalendar
+          :initial-filter="filter"
+      />
     </div>
 
     <!-- Mobile modal overlay -->
@@ -40,22 +43,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api.ts'
 
 import UranusModal from '@/component/uranus/UranusModal.vue'
-import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
-import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
 import { urlParamsSetIfPresent } from '@/util/UranusUtils.ts'
 import type { UranusVenueSelectItemInfo } from '@/domain/venue/UranusVenue.ts'
-import UranusEventFilterPanel from "@/component/event/panel/UranusEventFilterPanel.vue";
-import UranusEventCalendar from "@/component/event/UranusEventCalendar.vue";
-import UranusEventCalendar2 from "@/component/event/UranusEventCalendar2.vue";
+import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
+import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'
 
-const router = useRouter()
-const { t, locale } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
 
 // Filter & UI state
 interface CalendarEventsFilter {
@@ -93,34 +90,12 @@ interface CalendarEvent {
   end_date: string; end_time: string|null; venue_name: string|null; venue_city: string|null
   event_types: CalendarEventType[]|null; organization_name: string|null; release_status: string|null
 }
-interface TypeSummaryEntry { type_id: number; date_count: number }
 
 const events = ref<CalendarEvent[]>([])
-const typeSummary = ref<TypeSummaryEntry[]>([])
-const eventReleaseStatusStore = useEventReleaseStatusStore()
-const typeLookupStore = useEventTypeLookupStore()
 const limit = 32
-const loading = ref(false)
 const lastEventStartAt = ref<string | null>(null)
 const lastEventDateId = ref<number | null>(null)
 
-// Filter helpers
-const canResetFilterMore = computed(() => {
-  return filter.value.search || filter.value.city || filter.value.startDate || filter.value.endDate
-})
-
-const getTypeName = (typeId: number) =>
-    typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
-
-const getUniqueEventTypes = (types: CalendarEventType[]): number[] => {
-  const unique = new Set<number>()
-  types.forEach(t => unique.add(t.type_id))
-  return Array.from(unique)
-}
-
-// API & infinite scroll
-const loadMoreTrigger = ref<HTMLElement | null>(null)
-let observer: IntersectionObserver | null = null
 
 const buildFilterParams = (paginationMode = false) => {
   const params = new URLSearchParams()
@@ -141,37 +116,19 @@ const buildFilterParams = (paginationMode = false) => {
   return params
 }
 
-const loadEvents = async (resetObserver = false) => {
-  if (loading.value) return
-  loading.value = true
-  if (resetObserver && observer) observer.disconnect()
 
-  try {
-    const params = buildFilterParams(true)
-    const { data } = await apiFetch<{ events: CalendarEvent[]; last_event_start_at: string; last_event_date_id: number }>(
-        `/api/events?${params.toString()}`
-    )
-    if (data?.events.length) {
-      events.value.push(...data.events)
-      lastEventStartAt.value = data.last_event_start_at
-      lastEventDateId.value = data.last_event_date_id
-    }
 
-    // Fetch summary
-    const summaryParams = buildFilterParams(false)
-    const summaryResp = await apiFetch<{ summary: TypeSummaryEntry[] }>(
-        `/api/events/type-summary?${summaryParams.toString()}`
-    )
-    typeSummary.value = summaryResp.data.summary || []
-  } catch (err) {
-    console.error('Failed to load events:', err)
-  } finally {
-    loading.value = false
-    if (resetObserver && observer && loadMoreTrigger.value) observer.observe(loadMoreTrigger.value)
-  }
-}
+watch(filter, async (newFilter, oldFilter) => {
+  // Reset pagination and events
+  events.value = []
+  lastEventStartAt.value = null
+  lastEventDateId.value = null
 
-// Actions
+  // Optionally debounce to avoid too many API calls
+  loadEvents(true)
+}, { deep: true })
+
+
 const onFilterChanged = (newFilter: CalendarEventsFilter) => {
   Object.assign(filter.value, newFilter)
 }
@@ -182,54 +139,18 @@ const applyFilters = async () => {
   events.value = []
   lastEventStartAt.value = null
   lastEventDateId.value = null
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  try { await loadEvents() } finally { isSavingFilter.value = false }
+  // window.scrollTo({ top: 0, behavior: 'smooth' })
+  // try { await loadEvents() } finally { isSavingFilter.value = false }
 }
 
 const onCancelFilter = () => showFilterModal.value = false
-
-const onResetFilter = () => {
-  filter.value.search = ''
-  filter.value.city = ''
-  filter.value.startDate = ''
-  filter.value.endDate = ''
-  filter.value.venue = { id: -1, name: '' }
-  events.value = []
-  lastEventStartAt.value = null
-  lastEventDateId.value = null
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  loadEvents(true)
-}
-
-const getEventImageUrl = (event: CalendarEvent) => {
-  if (!event.image_path) return import.meta.env.BASE_URL + 'assets/event_dummy.png'
-  const url = new URL(event.image_path, window.location.origin)
-  url.searchParams.set('width', '480')
-  url.searchParams.set('ratio', '16:9')
-  return url.toString()
-}
-
-const openEvent = (event: CalendarEvent) => {
-  router.push({ name: 'event-details', params: { id: event.id, eventDateId: event.event_date_id } })
-}
-
-// Infinite scroll
-onMounted(async () => {
-  await loadEvents()
-  observer = new IntersectionObserver(entries => {
-    if (entries[0]?.isIntersecting) loadEvents()
-  }, { rootMargin: '200px' })
-  if (loadMoreTrigger.value) observer.observe(loadMoreTrigger.value)
-})
-
-onBeforeUnmount(() => observer?.disconnect())
 </script>
 
 <style scoped lang="scss">
-.calendar-page {
+.calendar-view {
   display: flex;
-  flex-direction:
-      row; width: 100%;
+  flex-direction: row;
+  width: 100%;
 }
 
 .calendar-body {
@@ -277,11 +198,6 @@ onBeforeUnmount(() => observer?.disconnect())
 }
 
 @media (min-width: 1024px) {
-  .calendar-page {
-    flex-direction: row;
-  }
-
-  /* Sidebar is visible, calendar-body takes remaining space */
   .calendar-body {
     margin-left: 0;
   }
