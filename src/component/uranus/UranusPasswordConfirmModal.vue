@@ -79,7 +79,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  error: '',
+  locationError: '',
   isSubmitting: false,
   question: '',
   options: null,

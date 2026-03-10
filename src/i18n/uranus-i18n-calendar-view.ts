@@ -17,7 +17,7 @@ export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLoc
         da: 'Hvad søger du?',
     },
     calendar_filter_city_label: {
-        de: 'Stadt',
+        de: 'Ort',
         en: 'City',
         da: 'By',
     },
@@ -40,6 +40,11 @@ export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLoc
         de: 'Filter zurücksetzen',
         en: 'Reset filter',
         da: 'Nultil filter',
+    },
+    calendar_filter_use_gps: {
+        de: 'Standort',
+        en: 'Location',
+        da: 'Placering',
     }
 }
 

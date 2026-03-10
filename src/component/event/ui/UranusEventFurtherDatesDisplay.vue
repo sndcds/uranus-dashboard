@@ -7,7 +7,7 @@
 <template>
   <div v-if="dates.length" class="uranus-public-event-further-dates">
     <p class="uranus-public-event-info-label">
-      {{ t('event_additional_dates') }}
+      {{ t('event_all_dates') }}
     </p>
 
     <router-link

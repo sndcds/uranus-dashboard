@@ -37,7 +37,7 @@
       </UranusFormRow>
 
       <UranusFormRow>
-        <UranusCheckboxButton
+        <UranusCheckbox
             id="todo_completed"
             v-model="form.completed"
             :label="t('completed')"
@@ -78,7 +78,7 @@ import { apiFetch } from '@/api.ts'
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusTextInput from '@/component/ui/UranusTextInput.vue'
 import UranusTextarea from '@/component/ui/UranusTextarea.vue'
-import UranusCheckboxButton from '@/component/ui/UranusCheckboxButton.vue'
+import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusFormRow from "@/component/ui/UranusFormRow.vue";
 
 interface Todo {

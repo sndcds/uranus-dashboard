@@ -111,6 +111,7 @@ import { urlParamsSetIfPresent } from '@/util/UranusUtils.ts'
 import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
 import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
+import {mapAdminEventDateFromApi} from "@/api/mapper/UranusAdminEvent.mapper.ts";
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -219,7 +220,7 @@ watch(searchQuery, () => {
 })
 
 
-const buildFilterParams = (paginationMode = false) => {
+const buildFilterParams = (paginationMode = false, typesMode = false) => {
   const params = new URLSearchParams()
   const f = filterStore.filter // pull current filter from store
 
@@ -244,8 +245,32 @@ const buildFilterParams = (paginationMode = false) => {
     urlParamsSetIfPresent(params, "venues", f.venue.id.toString())
   }
 
+  // Location
+  if (f.useCurrentLocation &&
+      typeof f.latitude === 'number' &&
+      typeof f.longitude === 'number' &&
+      typeof f.radiusKm === 'number') {
+    params.set("lat", f.latitude.toString())
+    params.set("lon", f.longitude.toString())
+
+    // Convert km → m and round
+    const radiusMeters = Math.round(f.radiusKm * 1000)
+    params.set("radius", radiusMeters.toString())
+  }
+
+  // Age
+  if (f.minAge !== null && f.maxAge !== null) {
+    params.set("age", f.minAge + ',' + f.maxAge)
+  }
+  else if (typeof f.minAge === 'number') {
+    params.set("age", f.minAge?.toString())
+  }
+  else if (typeof f.maxAge === 'number') {
+    params.set("age", f.maxAge?.toString())
+  }
+
   // Event types
-  if (f.eventTypeIds?.length) {
+  if (typesMode && f.eventTypeIds?.length) {
     params.set("event_types", f.eventTypeIds.join(","))
   }
 
@@ -260,7 +285,7 @@ const loadEvents = async (resetObserver = false) => {
 
   try {
     // Fetch events
-    const params = buildFilterParams(true)
+    const params = buildFilterParams(true, true)
     const { data } = await apiFetch<{
       events: CalendarEvent[]
       last_event_start_at: string
@@ -274,7 +299,7 @@ const loadEvents = async (resetObserver = false) => {
     }
 
     // Fetch summary with same filters, but without limit
-    const summaryParams = buildFilterParams(false)
+    const summaryParams = buildFilterParams(false, false)
     const summaryResponse = await apiFetch<{ summary: TypeSummaryEntry[] }>(
         `/api/events/type-summary?${summaryParams.toString()}`
     )

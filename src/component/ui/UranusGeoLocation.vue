@@ -1,3 +1,9 @@
+<!--
+  src/component/ui/UranusGeoLocation.vue
+
+  TODO: Experimental, not in use
+-->
+
 <template>
   <div>
     <h2>Real-Time Location</h2>

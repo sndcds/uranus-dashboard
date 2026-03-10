@@ -141,6 +141,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Additional dates',
         da: 'Flere datoer',
     },
+    event_all_dates: {
+        de: 'Alle Termine',
+        en: 'All dates',
+        da: 'Alle datoer',
+    },
     event_teaser_tags: {
         de: 'Event-Tags',
         en: 'Tags',
@@ -255,6 +260,16 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Alter bis',
         en: 'Max. Age',
         da: 'Alder til',
+    },
+    event_filter_from: {
+        de: 'Von',
+        en: 'From',
+        da: 'Fra',
+    },
+    event_filter_to: {
+        de: 'Bis',
+        en: 'To',
+        da: 'Til',
     },
     event_age_from: {
         de: "Ab {min} Jahren",

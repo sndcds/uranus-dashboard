@@ -45,11 +45,10 @@ import UranusFieldLabel from './UranusFieldLabel.vue'
 
 defineOptions({ inheritAttrs: false })
 
-// Props
 const props = defineProps({
   id: { type: String, required: true },
   label: { type: String, required: true },
-  modelValue: { type: [String, Number], default: '' },
+  modelValue: { type: [String, Number, null], default: '' },
   type: { type: String, default: 'text' },
   required: { type: Boolean, default: false },
   size: { type: String, default: 'normal' }, // tiny / normal / big
@@ -60,9 +59,9 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   readonly: { type: Boolean, default: false },
   name: { type: String, default: '' },
+  nullableNumber: { type: Boolean, default: false },
 })
 
-// Emits
 const emit = defineEmits(['update:modelValue', 'blur', 'focus'])
 
 // Computed for size
@@ -77,15 +76,19 @@ const sizeClass = computed(() => {
 // Computed for name attribute
 const inputName = computed(() => props.name || undefined)
 
-
 // Input handler
 const onInput = (event: Event) => {
   const target = event.target as HTMLInputElement
-  let value: string | number = target.value
+  let value: string | number | null = target.value
 
   if (props.type === 'number') {
-    const parsed = Number(value)
-    value = isNaN(parsed) ? '' : parsed
+    if (props.nullableNumber && value === '') {
+      // Emit null if empty and flag is true
+      value = null
+    } else {
+      const parsed = Number(value)
+      value = isNaN(parsed) ? '' : parsed
+    }
   }
 
   emit('update:modelValue', value)

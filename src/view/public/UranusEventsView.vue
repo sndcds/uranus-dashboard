@@ -2,13 +2,15 @@
   <div class="calendar-view">
 
     <!-- Sidebar for desktop, modal for mobile -->
-    <UranusEventFilterPanel
-        v-if="isSidebarVisible || showFilterModal"
-        :isSavingFilter="isSavingFilter"
-        :canSaveFilter="canSaveFilter"
-        @filter-changed="onFilterChanged"
-        @cancel="onCancelFilter"
-    />
+    <div class="sidebar">
+      <UranusEventFilterPanel
+          v-if="isSidebarVisible || showFilterModal"
+          :isSavingFilter="isSavingFilter"
+          :canSaveFilter="canSaveFilter"
+          @filter-changed="onFilterChanged"
+          @cancel="onCancelFilter"
+      />
+    </div>
 
     <div class="calendar-body">
       <UranusEventCalendar />
@@ -61,66 +63,6 @@ window.addEventListener('resize', () => {
   isSidebarVisible.value = window.innerWidth >= 1024
 })
 
-/*
-// Events & types
-interface CalendarEventType { genre_id: number|null; genre_name: string|null; type_id: number; type_name: string }
-interface CalendarEvent {
-  id: number; event_date_id: number; title: string; subtitle: string|null; image_path: string|null
-  summary: string|null; description: string|null; start_date: string; start_time: string|null
-  end_date: string; end_time: string|null; venue_name: string|null; venue_city: string|null
-  event_types: CalendarEventType[]|null; organization_name: string|null; release_status: string|null
-}
-
-const events = ref<CalendarEvent[]>([])
-const limit = 32
-const lastEventStartAt = ref<string | null>(null)
-const lastEventDateId = ref<number | null>(null)
-*/
-/*
-const buildFilterParams = (paginationMode = false) => {
-  const params = new URLSearchParams()
-  if (paginationMode) {
-    params.set('limit', limit.toString())
-    if (lastEventStartAt.value) {
-      params.set('last_event_start_at', lastEventStartAt.value)
-      if (lastEventDateId.value !== null) params.set('last_event_date_id', lastEventDateId.value.toString())
-    }
-  }
-  urlParamsSetIfPresent(params, 'search', filter.value.search)
-  urlParamsSetIfPresent(params, 'city', filter.value.city)
-  urlParamsSetIfPresent(params, 'start', filter.value.startDate)
-  urlParamsSetIfPresent(params, 'end', filter.value.endDate)
-  if (filter.value.venue?.id && filter.value.venue.id >= 0) {
-    urlParamsSetIfPresent(params, 'venues', filter.value.venue.id.toString())
-  }
-  return params
-}
-*/
-
-/*
-watch(filter, async (newFilter, oldFilter) => {
-  // Reset pagination and events
-  events.value = []
-  lastEventStartAt.value = null
-  lastEventDateId.value = null
-
-  // Optionally debounce to avoid too many API calls
-  loadEvents(true)
-}, { deep: true })
-*/
-
-/*
-const applyFilters = async () => {
-  showFilterModal.value = false
-  isSavingFilter.value = true
-  events.value = []
-  lastEventStartAt.value = null
-  lastEventDateId.value = null
-  // window.scrollTo({ top: 0, behavior: 'smooth' })
-  // try { await loadEvents() } finally { isSavingFilter.value = false }
-}
-*/
-
 const onCancelFilter = () => showFilterModal.value = false
 </script>
 
@@ -129,6 +71,14 @@ const onCancelFilter = () => showFilterModal.value = false
   display: flex;
   flex-direction: row;
   width: 100%;
+}
+
+.sidebar {
+  position: sticky;
+  top: 80px; /* same as your header offset */
+  align-self: start;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
 }
 
 .calendar-body {

@@ -1,31 +1,11 @@
 <template>
-  <UranusForm @submit.prevent="onSaveFilter" class="sss">
+  <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
-    <!-- Accordion: Location -->
-    <div class="accordion">
-      <div class="accordion-header" @click="locationOpen = !locationOpen">
-        {{ t('calendar_filter_location') }}
-        <span class="accordion-arrow">{{ locationOpen ? '▲' : '▼' }}</span>
-      </div>
-
-      <div v-show="locationOpen" class="accordion-body">
-        <UranusFormRow :cols="1">
-          <UranusCheckboxButton id="app" v-model="filter.useCurrentLocation!" :label="t('calendar_filter_use_gps')" />
-        </UranusFormRow>
-
-        <UranusFormRow :cols="1">
-          <UranusTextfield
-              id="radius-km"
-              v-model="filter.radiusKm"
-              type="number"
-              min="0"
-              step="0.1"
-              label="Radius (km)"
-              placeholder="Radius in km"
-          />
-        </UranusFormRow>
-      </div>
-    </div>
+    <UranusFormRow :cols="2">
+      <button type="button" class="filter-action-button reset" @click="onResetFilter">
+        {{ t('calendar_filter_reset_button_label') }}
+      </button>
+    </UranusFormRow>
 
     <!-- Search & City -->
     <UranusFormRow :cols="1">
@@ -61,26 +41,86 @@
 
     <!-- Venue -->
     <UranusFormRow :cols="1">
-      <UranusVenueTypeahead
-          v-model:selectedVenue="filter.venue"
-      />
+      <UranusFieldLabel id="xx" label="Spielstätte">
+        <UranusVenueTypeahead v-model:selectedVenue="filter.venue"/>
+      </UranusFieldLabel>
     </UranusFormRow>
 
-    <!-- Action Buttons -->
-    <UranusFormRow :cols="2">
-      <button type="submit" class="filter-action-button">
-        {{ t('calendar_filter_save_button') }}
-      </button>
-      <button type="button" class="filter-action-button reset" @click="onResetFilter">
-        {{ t('calendar_filter_reset_button_label') }}
-      </button>
-    </UranusFormRow>
+    <div class="uranus-filter-accordions">
+      <UranusAccordion v-model="locationOpen">
+        <template #title>{{ t('calendar_filter_use_gps') }}</template>
+        <UranusFormRow :cols="1">
+          <UranusCheckbox
+              id="use-gps"
+              v-model="filter.useCurrentLocation!"
+              label="Use GPS"
+          />
+        </UranusFormRow>
+
+        <UranusFormRow :cols="1">
+          <UranusTextfield
+              id="radius-km"
+              v-model="filter.radiusKm"
+              type="number"
+              min="0"
+              step="0.1"
+              label="Radius (km)"
+              placeholder="Radius in km"
+              :disabled="!filter.useCurrentLocation"
+          />
+        </UranusFormRow>
+        locationError: {{ locationError }}
+        <div v-if="locationError" class="uranus-error-message">{{ locationError }}</div>
+      </UranusAccordion>
+
+      <UranusAccordion v-model="audienceOpen">
+        <template #title>Alter</template>
+        <UranusFormRow :cols="2">
+          <UranusTextfield
+              id="min-age"
+              :label="t('event_filter_from')"
+              type="number" min="0" step="1" :nullableNumber="true"
+              v-model="minAgeModel"
+          />
+          <UranusTextfield
+              id="max-age"
+              :label="t('event_filter_to')"
+              type="number" min="0" step="1" :nullableNumber="true"
+              v-model="maxAgeModel"
+          />
+        </UranusFormRow>
+      </UranusAccordion>
+
+      <UranusAccordion v-model="priceOpen">
+        <template #title>Preis</template>
+        <UranusFormRow :cols="1">
+          <UranusCheckbox id="price-free" v-model="filter.priceTypeFree!" label="Gratis"/>
+        </UranusFormRow>
+        <UranusFormRow :cols="1">
+          <UranusCheckbox id="price-donation" v-model="filter.priceTypeDonation!" label="Spende"/>
+        </UranusFormRow>
+        <UranusFormRow :cols="2">
+          <UranusTextfield
+              id="min-price"
+              :label="t('event_filter_from')"
+              type="number" min="0" step="0.1" :nullableNumber="true"
+              v-model="minPriceModel"
+          />
+          <UranusTextfield
+              id="max-price"
+              :label="t('event_filter_to')"
+              type="number" min="0" step="0.1" :nullableNumber="true"
+              v-model="maxPriceModel"
+          />
+        </UranusFormRow>
+      </UranusAccordion>
+    </div>
 
   </UranusForm>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import {computed, ref, watch} from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 import UranusVenueTypeahead from '@/component/venue/UranusVenueTypeahead.vue'
@@ -88,21 +128,89 @@ import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import { useEventsFilterStore, type UranusEventsFilter } from '@/store/uranusEventsFilterStore.ts'
-import UranusCheckboxButton from "@/component/ui/UranusCheckboxButton.vue";
+import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
+import UranusAccordion from '@/component/ui/UranusAccordion.vue'
+import { useGpsLocation } from '@/composable/useGpsLocation'
+import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 
 const eventsFilterStore = useEventsFilterStore()
-
-// Use store filter directly
 const filter: UranusEventsFilter = eventsFilterStore.filter
 
-// Add location-specific fields if missing
+// Add defaults if missing
 if (filter.useCurrentLocation === undefined) filter.useCurrentLocation = false
-if (filter.radiusKm === undefined) filter.radiusKm = 10.0 // default radius in km
+if (filter.radiusKm === undefined) filter.radiusKm = 3.0
 
-// Accordion state
-const locationOpen = ref(true)
+// GPS composable reads filter.useCurrentLocation directly
+const useCurrentLocationRef = ref(filter.useCurrentLocation)
+const { latitude, longitude, locationError } = useGpsLocation(useCurrentLocationRef)
+
+
+const minAgeModel = computed({
+  get: () => filter.minAge ?? '',
+  set: (v: string | number | null) => {
+    if (v === '' || v === null) {
+      filter.minAge = null
+    } else {
+      const n = Number(v)
+      filter.minAge = Number.isNaN(n) ? null : n
+    }
+  }
+})
+
+const maxAgeModel = computed({
+  get: () => filter.maxAge ?? '',
+  set: (v: string | number | null) => {
+    if (v === '' || v === null) {
+      filter.maxAge = null
+    } else {
+      const n = Number(v)
+      filter.maxAge = Number.isNaN(n) ? null : n
+    }
+  }
+})
+
+const minPriceModel = computed({
+  get: () => filter.minPrice ?? '',
+  set: (v: string | number | null) => {
+    if (v === '' || v === null) {
+      filter.minPrice = null
+    } else {
+      const n = Number(v)
+      filter.minPrice = Number.isNaN(n) ? null : n
+    }
+  }
+})
+
+const maxPriceModel = computed({
+  get: () => filter.maxPrice ?? '',
+  set: (v: string | number | null) => {
+    if (v === '' || v === null) {
+      filter.maxPrice = null
+    } else {
+      const n = Number(v)
+      filter.maxPrice = Number.isNaN(n) ? null : n
+    }
+  }
+})
+
+
+// Sync coordinates to filter store
+watch([() => filter.useCurrentLocation, latitude, longitude], ([gpsActive, lat, lon]) => {
+  if (gpsActive && lat != null && lon != null) {
+    filter.latitude = lat
+    filter.longitude = lon
+  } else {
+    filter.latitude = null
+    filter.longitude = null
+  }
+})
+
+// Accordion states
+const locationOpen = ref(false)
+const audienceOpen = ref(false)
+const priceOpen = ref(false)
 
 // Save filter
 const onSaveFilter = () => {
@@ -121,40 +229,21 @@ const onResetFilter = () => {
     radiusKm: 10.0
   })
 }
+
 </script>
 
 <style scoped lang="scss">
-.sss {
+.uranus-filter-panel {
   width: 300px;
   padding: 12px;
   background: var(--uranus-bg);
 }
 
-/* Accordion */
-.accordion {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-bottom: 12px;
-  overflow: hidden;
-}
 
-.accordion-header {
-  padding: 8px 12px;
-  background-color: #f2f2f2;
-  cursor: pointer;
-  font-weight: bold;
+.uranus-filter-accordions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.accordion-body {
-  padding: 8px 12px;
-  background-color: #fff;
-}
-
-.accordion-arrow {
-  font-size: 0.8rem;
+  flex-direction: column;
+  gap: 0;
 }
 
 .checkbox-label {

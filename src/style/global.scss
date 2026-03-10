@@ -84,6 +84,7 @@
   --uranus-dark-bg: oklch(20% 0.03 var(--uranus-hue));
   --uranus-light-bg: oklch(96% 0.008 var(--uranus-hue));
 
+  --uranus-select-color: oklch(30% 0.2 300);
 
   --uranus-backdrop-color: oklch(96% 0.008 var(--uranus-hue) / 0.8);
 
@@ -116,12 +117,6 @@
   --uranus-input-border-color: oklch(72% 0.01 var(--uranus-hue));
   --uranus-input-border-width: 1px;
   --uranus-input-placeholder-color: oklch(70% 0.0 var(--uranus-hue));
-
-
-  // Inline Editor
-  --uranus-ia-inline-bg: var(--uranus-bg);
-  --uranus-ia-inline-color: oklch(60% 0.33 300);
-  --uranus-ia-inline-color-d1: oklch(67% 0.3 300);
 
   // Event page view
   --uranus-evet-page-bg: white;
@@ -251,6 +246,7 @@
   --uranus-dark-bg: oklch(20% 0.03 var(--uranus-hue));
   --uranus-light-bg: oklch(96% 0.008 var(--uranus-hue));
 
+  --uranus-select-color: oklch(60% 0.3 280);
 
   --uranus-backdrop-color: oklch(20% 0.03 var(--uranus-hue) / 0.9);
 
@@ -283,10 +279,6 @@
   --uranus-input-border-color: oklch(26% 0.05 var(--uranus-hue));
   --uranus-input-placeholder-color: oklch(60% 0.06 var(--uranus-hue));
 
-
-  // Inline Editor
-  --uranus-ia-inline-color: oklch(90% 0.09 75);
-  --uranus-ia-inline-color-d1: oklch(85% 0.086 75);
 
   // Event page view
   --uranus-evet-page-bg: black;

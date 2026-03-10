@@ -75,15 +75,15 @@ function onChange(event: Event) {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid var(--uranus-ia-inline-color);
+    border: 2px solid var(--uranus-select-color);
     border-radius: 0.25rem;
     transition: all 0.2s ease;
   }
 
   input:checked + .checkmark,
   &:has(input:checked) .checkmark {
-    background: var(--uranus-ia-inline-color);
-    border-color: var(--uranus-ia-inline-color);
+    background: var(--uranus-select-color);
+    border-color: var(--uranus-select-color);
     svg {
       width: 18px;
       height: 18px;

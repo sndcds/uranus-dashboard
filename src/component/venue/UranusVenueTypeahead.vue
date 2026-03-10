@@ -6,7 +6,7 @@
         class="uranus-text-input"
         v-model="query"
         @keydown="onKeydown"
-        placeholder="Type a venue..."
+        placeholder="Name der Spielstätte ..."
         autocomplete="off"
     />
 
@@ -25,8 +25,6 @@
       </ul>
     </teleport>
   </div>
-
-  id: {{ selectedVenue?.id }} / city: {{ selectedVenue?.city }}
 </template>
 
 <script setup lang="ts">

@@ -58,7 +58,7 @@ const props = withDefaults(
   {
     idPrefix: 'todo',
     disabled: false,
-    error: null,
+    locationError: null,
   }
 )
 

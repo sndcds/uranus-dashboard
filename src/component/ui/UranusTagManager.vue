@@ -97,7 +97,7 @@ const props = withDefaults(
   {
     tags: () => [],
     isSaving: false,
-    error: '',
+    locationError: '',
     title: '',
     editLabel: '',
     emptyLabel: '',

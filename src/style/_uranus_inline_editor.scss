@@ -20,7 +20,7 @@
 /* Hover effect */
 .uranus-inline-edit-section:hover,
 .uranus-inline-edit-section.uranus-inline-edit--active {
-  border-color: var(--uranus-ia-inline-color);
+  border-color: var(--uranus-select-color);
 }
 
 .uranus-inline-section-layout {
@@ -42,7 +42,7 @@
   border-radius: 999px;
   border: 0;
   color: var(--uranus-bg);
-  background-color: var(--uranus-ia-inline-color);
+  background-color: var(--uranus-select-color);
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
@@ -52,7 +52,6 @@
 
   &:hover:not(:disabled):not(&--active) {
     color: var(--uranus-bg);
-    background-color: var(--uranus-ia-inline-color-d1);
   }
 
   &:focus-visible {
@@ -67,7 +66,7 @@
 
   // Active state for button
   &--active {
-    background: var(--uranus-ia-inline-color);
+    background: var(--uranus-select-color);
     color: white;
     cursor: default;
     &:hover {
@@ -84,14 +83,14 @@
   height: 32px;
   border-radius: 50%;
   transition: all 0.4s ease;
-  color: var(--uranus-ia-inline-color);
+  color: var(--uranus-select-color);
 
   &.clickable {
     cursor: pointer;
   }
 
   &:hover {
-    background-color: var(--uranus-ia-inline-color);
+    background-color: var(--uranus-select-color);
     color: white;
   }
 

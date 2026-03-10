@@ -1,19 +1,15 @@
-<!--
-  src/component/ui/UranusCheckboxButton.vue
--->
+<!-- src/component/ui/UranusCheckbox.vue -->
 <template>
-  <UranusFieldLabel
-      :id="id"
-      label="&nbsp;"
-      :required="required"
-  >
-    <label class="button-checkbox-outlined">
+    <div class="uranus-checkbox-outlined" @click="toggle">
+      <!-- Hidden checkbox for accessibility -->
       <input
-          :id="id"
           type="checkbox"
+          :id="id"
           :checked="modelValue"
-          @change="$emit('update:modelValue', ($event.target as HTMLInputElement).checked)"
+          @change="$emit('update:modelValue', $event.target.checked)"
       />
+
+      <!-- Visible checkmark -->
       <span class="checkmark">
         <svg
             v-if="modelValue"
@@ -30,13 +26,14 @@
           <polyline points="20 6 9 17 4 12" />
         </svg>
       </span>
+
+      <!-- Label text -->
       <span class="label-text">{{ label }}</span>
-    </label>
-  </UranusFieldLabel>
+    </div>
+
 </template>
 
 <script setup lang="ts">
-import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue";
 
 const props = defineProps<{
   id: string
@@ -45,23 +42,26 @@ const props = defineProps<{
   label: string
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
 }>()
+
+const toggle = (e: MouseEvent) => {
+  // Avoid double toggle if input already fired change
+  if ((e.target as HTMLElement).tagName !== 'INPUT') {
+    emit('update:modelValue', !props.modelValue)
+  }
+}
 </script>
 
-<style lang="scss" scoped>
-.button-checkbox-outlined {
+<style lang="scss">
+.uranus-checkbox-outlined {
   display: inline-flex;
-  flex-direction: row;
   align-items: center;
-  height: var(--uranus-input-height);
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border: 0px solid var(--uranus-input-border-color);
-  border-radius: 0;
   cursor: pointer;
   user-select: none;
+  padding: 0.5rem 0.4rem;
   transition: all 0.2s ease;
 
   input {
@@ -78,27 +78,25 @@ defineEmits<{
 
   input:focus-visible + .checkmark {
     outline: 2px solid var(--uranus-focus-color, #2684ff);
-    outline-offset: 0px;
+    outline-offset: 2px;
   }
 
   .checkmark {
-    box-sizing: content-box;
-    flex-shrink: 0;
-    flex-grow: 0;
     width: 22px;
     height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 1px solid var(--uranus-input-border-color);
-    border-radius: 0;
+    border-radius: 4px;
     transition: all 0.2s ease;
   }
 
   input:checked + .checkmark,
   &:has(input:checked) .checkmark {
-    background: var(--uranus-ia-inline-color);
-    border-color: var(--uranus-ia-inline-color);
+    background: var(--uranus-select-color);
+    border-color: var(--uranus-select-color);
+
     svg {
       width: 18px;
       height: 18px;

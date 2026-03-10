@@ -14,6 +14,14 @@ export interface UranusEventsFilter {
     venue: UranusVenueSelectItemInfo | null
     useCurrentLocation?: boolean
     radiusKm: number
+    latitude?: number | null
+    longitude?: number | null
+    minAge?: number | null
+    maxAge?: number | null
+    priceTypeFree?: boolean,
+    priceTypeDonation?: boolean,
+    minPrice?: number | null
+    maxPrice?: number | null
     eventTypeIds: number[]
 }
 
@@ -25,6 +33,14 @@ const defaultFilter: UranusEventsFilter = {
     venue: { id: -1, name: "" },
     useCurrentLocation: false,
     radiusKm: 10.0,
+    latitude: null,
+    longitude: null,
+    minAge: null,
+    maxAge: null,
+    priceTypeFree: false,
+    priceTypeDonation: false,
+    minPrice: null,
+    maxPrice: null,
     eventTypeIds: []
 }
 
