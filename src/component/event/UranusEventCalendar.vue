@@ -21,7 +21,8 @@
             {{ t('calendar_filter_reset_button_label') }}
           </button>
         </div>
-
+        
+        <UranusHorizontalScroller>
         <div class="calendar-type-chips">
           <span
               v-for="entry in typeSummary"
@@ -33,6 +34,7 @@
             {{ getTypeName(entry.type_id) }} ({{ entry.date_count }})
           </span>
         </div>
+        </UranusHorizontalScroller>
       </div>
 
       <!-- TODO: Message for viewer -->
@@ -112,6 +114,7 @@ import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
 import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import {mapAdminEventDateFromApi} from "@/api/mapper/UranusAdminEvent.mapper.ts";
+import UranusHorizontalScroller from "@/component/ui/UranusHorizontalScroller.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -458,25 +461,22 @@ onBeforeUnmount(() => {
 }
 
 .calendar-settings {
+  position: sticky;
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  position: sticky;
   top: 80px;
   z-index: 10;
   padding: 12px 16px;
   min-height: 100px;
   background: var(--uranus-dashboard-bg);
-  // background: mistyrose;
 }
 
 .calendar-type-chips {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 8px;
-  // background: #ccffcc;
 }
 
 .type-chip {

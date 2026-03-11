@@ -2,7 +2,7 @@
   src/composable/useGpsLocation.ts
  */
 
-import { ref, watch, Ref, onBeforeUnmount } from 'vue'
+import {ref, watch, onBeforeUnmount, type Ref} from 'vue'
 
 export function useGpsLocation(enabled: Ref<boolean>) {
   const latitude = ref<number | null>(null)

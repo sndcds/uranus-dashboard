@@ -12,7 +12,7 @@ export interface UranusEventsFilter {
     startDate?: string | null
     endDate?: string | null
     venue: UranusVenueSelectItemInfo | null
-    useCurrentLocation?: boolean
+    useCurrentLocation: boolean
     radiusKm: number
     latitude?: number | null
     longitude?: number | null

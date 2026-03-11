@@ -1,4 +1,5 @@
 <template>
+
   <div class="calendar-view">
 
     <!-- Sidebar for desktop, modal for mobile -->
@@ -64,45 +65,36 @@ window.addEventListener('resize', () => {
 })
 
 const onCancelFilter = () => showFilterModal.value = false
+
 </script>
 
 <style scoped lang="scss">
 .calendar-view {
   display: flex;
-  flex-direction: row;
+  align-items: flex-start;
   width: 100%;
 }
 
 .sidebar {
+  width: 300px;
+  flex: 0 0 300px;
   position: sticky;
-  top: 80px; /* same as your header offset */
-  align-self: start;
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
+  top: 80px;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 .calendar-body {
+  display: block;
   flex: 1;
+  min-width: 0;
+  margin-left: -300px;
 }
 
 .calendar-layout {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 12px;
-}
-
-/* Filter buttons (mobile) */
-.calendar-settings {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-
-.calendar-filter-buttons {
-  display: flex;
-  gap: 8px;
 }
 
 .filter-button {

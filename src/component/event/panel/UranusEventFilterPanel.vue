@@ -69,7 +69,6 @@
               :disabled="!filter.useCurrentLocation"
           />
         </UranusFormRow>
-        locationError: {{ locationError }}
         <div v-if="locationError" class="uranus-error-message">{{ locationError }}</div>
       </UranusAccordion>
 
@@ -120,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue'
+import {computed, ref, toRef, watch} from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 import UranusVenueTypeahead from '@/component/venue/UranusVenueTypeahead.vue'
@@ -131,7 +130,7 @@ import { useEventsFilterStore, type UranusEventsFilter } from '@/store/uranusEve
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import { useGpsLocation } from '@/composable/useGpsLocation'
-import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue";
+import UranusFieldLabel from '@/component/ui/UranusFieldLabel.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -143,7 +142,7 @@ if (filter.useCurrentLocation === undefined) filter.useCurrentLocation = false
 if (filter.radiusKm === undefined) filter.radiusKm = 3.0
 
 // GPS composable reads filter.useCurrentLocation directly
-const useCurrentLocationRef = ref(filter.useCurrentLocation)
+const useCurrentLocationRef = toRef(filter, 'useCurrentLocation')
 const { latitude, longitude, locationError } = useGpsLocation(useCurrentLocationRef)
 
 
@@ -207,17 +206,14 @@ watch([() => filter.useCurrentLocation, latitude, longitude], ([gpsActive, lat, 
   }
 })
 
-// Accordion states
 const locationOpen = ref(false)
 const audienceOpen = ref(false)
 const priceOpen = ref(false)
 
-// Save filter
 const onSaveFilter = () => {
   eventsFilterStore.setFilter({ ...filter })
 }
 
-// Reset filter
 const onResetFilter = () => {
   eventsFilterStore.setFilter({
     search: '',
@@ -239,7 +235,6 @@ const onResetFilter = () => {
   background: var(--uranus-bg);
 }
 
-
 .uranus-filter-accordions {
   display: flex;
   flex-direction: column;
@@ -252,7 +247,6 @@ const onResetFilter = () => {
   gap: 6px;
 }
 
-/* Buttons */
 .filter-action-button {
   padding: 6px 12px;
   border-radius: 4px;

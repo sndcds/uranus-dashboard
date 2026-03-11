@@ -99,7 +99,7 @@
     </div>
   </div>
 
-  <div class="public-calendar-page" v-if="venue">
+  <div class="calendar-content" v-if="venue">
     <UranusEventCalendar
         :initial-filter="initialEventFilter"
     />
