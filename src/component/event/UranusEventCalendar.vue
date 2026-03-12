@@ -21,7 +21,7 @@
             {{ t('calendar_filter_reset_button_label') }}
           </button>
         </div>
-        
+
         <UranusHorizontalScroller>
         <div class="calendar-type-chips">
           <span
@@ -270,6 +270,15 @@ const buildFilterParams = (paginationMode = false, typesMode = false) => {
   }
   else if (typeof f.maxAge === 'number') {
     params.set("age", f.maxAge?.toString())
+  }
+
+  // Price
+  if (f.priceType !== 'not_specified') {
+    if (f.priceType === 'free' || f.priceType === 'donation') {
+      params.set("price", f.priceType)
+    } else if (typeof f.maxPrice === 'number') {
+      params.set("price", f.maxPrice?.toString() + ',' + f.priceCurrency)
+    }
   }
 
   // Event types

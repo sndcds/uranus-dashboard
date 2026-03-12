@@ -18,10 +18,9 @@ export interface UranusEventsFilter {
     longitude?: number | null
     minAge?: number | null
     maxAge?: number | null
-    priceTypeFree?: boolean,
-    priceTypeDonation?: boolean,
-    minPrice?: number | null
+    priceType?: string,
     maxPrice?: number | null
+    priceCurrency?: string
     eventTypeIds: number[]
 }
 
@@ -37,10 +36,9 @@ const defaultFilter: UranusEventsFilter = {
     longitude: null,
     minAge: null,
     maxAge: null,
-    priceTypeFree: false,
-    priceTypeDonation: false,
-    minPrice: null,
+    priceType: 'not_specified',
     maxPrice: null,
+    priceCurrency: 'EUR',
     eventTypeIds: []
 }
 

@@ -19,9 +19,9 @@
       {{ t('event_price_type') }}
       <select v-model="draftEvent.priceType">
         <option value="not_specified">{{ t('event_price_not_specified') }}</option>
-        <option value="regular_price">{{ t('event_price_regular') }}</option>
         <option value="free">{{ t('event_price_free') }}</option>
         <option value="donation">{{ t('event_price_donation') }}</option>
+        <option value="regular_price">{{ t('event_price_regular') }}</option>
         <option value="tiered_prices">{{ t('event_price_tiered') }}</option>
       </select>
     </label>

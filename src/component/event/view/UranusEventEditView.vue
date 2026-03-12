@@ -14,16 +14,11 @@
     <template v-else-if="adminEventStore.isLoaded">
       <header class="editor-header">
         <h1>{{ adminEventStore.draft?.title }}</h1>
-        {{ eventId }}
       </header>
 
       <button class="uranus-action-button" @click="showReleaseModal = true">
         Edit Release Status / Date
       </button>
-
-      <p>
-        Current: Status {{ draftEvent.releaseStatus }}, Date {{ draftEvent.releaseDate }}
-      </p>
 
       <UranusEventReleaseModal
           :show="showReleaseModal"
@@ -97,10 +92,10 @@ const tabs = [
   { key: 'base', label: 'Was' },
   { key: 'venue', label: 'Wo' },
   { key: 'dates', label: 'Wann' },
-  { key: 'meta1', label: '1' },
-  { key: 'participation', label: '2' },
-  { key: 'price', label: '3' },
-  { key: 'visitor', label: 'visitor' }
+  { key: 'meta1', label: 'Tags und Links' },
+  { key: 'participation', label: 'Begrenzung' },
+  { key: 'price', label: 'Preis' },
+  { key: 'visitor', label: 'Infos' }
 ] as const
 
 const currentTabComponent = computed(() => {

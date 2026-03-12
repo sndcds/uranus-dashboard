@@ -94,19 +94,20 @@ const onTouchMove = (e: TouchEvent) => {
   gap: 6px;
 }
 
-/* buttons */
-
 .scroll-btn {
-  height: 60px;
+  height: 36px;
+  width: 36px;
   border: none;
-  border-radius: 4px;
-  background: rgba(0,0,0,0.25);
-  color: white;
-  font-size: 26px;
+  border-radius: 18px;
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.6);
+  font-size: 32px;
   cursor: pointer;
-}
 
-/* scroll container */
+  display: flex;
+  align-items: center;     /* vertical center */
+  justify-content: center; /* horizontal center */
+}
 
 .scroll-container {
   overflow-x: auto;
@@ -115,16 +116,12 @@ const onTouchMove = (e: TouchEvent) => {
   white-space: nowrap;
 }
 
-/* content */
-
 .scroll-content {
   display: inline-flex;
   align-items: center;
   gap: 16px;
   padding: 0 10px;
 }
-
-/* hide scrollbar */
 
 .scroll-container::-webkit-scrollbar {
   display: none;

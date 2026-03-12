@@ -266,6 +266,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'From',
         da: 'Fra',
     },
+    event_filter_max_price: {
+        de: 'Höchster Preis',
+        en: 'Max price',
+        da: 'Højeste pris',
+    },
     event_filter_to: {
         de: 'Bis',
         en: 'To',

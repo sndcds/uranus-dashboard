@@ -2,7 +2,7 @@
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
     <UranusFormRow :cols="2">
-      <button type="button" class="filter-action-button reset" @click="onResetFilter">
+      <button type="button" class="filter-button reset" @click="onResetFilter">
         {{ t('calendar_filter_reset_button_label') }}
       </button>
     </UranusFormRow>
@@ -41,7 +41,7 @@
 
     <!-- Venue -->
     <UranusFormRow :cols="1">
-      <UranusFieldLabel id="xx" label="Spielstätte">
+      <UranusFieldLabel id="venue" label="Spielstätte">
         <UranusVenueTypeahead v-model:selectedVenue="filter.venue"/>
       </UranusFieldLabel>
     </UranusFormRow>
@@ -93,24 +93,29 @@
       <UranusAccordion v-model="priceOpen">
         <template #title>Preis</template>
         <UranusFormRow :cols="1">
-          <UranusCheckbox id="price-free" v-model="filter.priceTypeFree!" label="Gratis"/>
-        </UranusFormRow>
-        <UranusFormRow :cols="1">
-          <UranusCheckbox id="price-donation" v-model="filter.priceTypeDonation!" label="Spende"/>
+          <UranusFieldLabel id="price-type" label="Preisart">
+            <select v-model="filter.priceType">
+              <option value="not_specified">{{ t('event_price_not_specified') }}</option>
+              <option value="free">{{ t('event_price_free') }}</option>
+              <option value="donation">{{ t('event_price_donation') }}</option>
+              <option value="regular_price">{{ t('event_price_regular') }}</option>
+              <option value="tiered_prices">{{ t('event_price_tiered') }}</option>
+            </select>
+          </UranusFieldLabel>
         </UranusFormRow>
         <UranusFormRow :cols="2">
           <UranusTextfield
-              id="min-price"
-              :label="t('event_filter_from')"
-              type="number" min="0" step="0.1" :nullableNumber="true"
-              v-model="minPriceModel"
-          />
-          <UranusTextfield
               id="max-price"
-              :label="t('event_filter_to')"
+              :label="t('event_filter_max_price')"
               type="number" min="0" step="0.1" :nullableNumber="true"
               v-model="maxPriceModel"
           />
+          <UranusFieldLabel id="price-currency" label="Währung">
+            <select v-model="filter.priceCurrency">
+              <option value="EUR">Euro</option>
+              <option value="DKK">DKK</option>
+            </select>
+          </UranusFieldLabel>
         </UranusFormRow>
       </UranusAccordion>
     </div>
@@ -170,18 +175,6 @@ const maxAgeModel = computed({
   }
 })
 
-const minPriceModel = computed({
-  get: () => filter.minPrice ?? '',
-  set: (v: string | number | null) => {
-    if (v === '' || v === null) {
-      filter.minPrice = null
-    } else {
-      const n = Number(v)
-      filter.minPrice = Number.isNaN(n) ? null : n
-    }
-  }
-})
-
 const maxPriceModel = computed({
   get: () => filter.maxPrice ?? '',
   set: (v: string | number | null) => {
@@ -228,7 +221,7 @@ const onResetFilter = () => {
 
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .uranus-filter-panel {
   width: 300px;
   padding: 12px;
@@ -240,14 +233,11 @@ const onResetFilter = () => {
   flex-direction: column;
   gap: 0;
 }
+</style>
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+<style scoped lang="scss">
 
-.filter-action-button {
+.filter-button {
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
@@ -262,7 +252,7 @@ const onResetFilter = () => {
   }
 }
 
-.filter-action-button.reset {
+.filter-button.reset {
   background-color: #eee;
   color: #333;
 
@@ -270,4 +260,9 @@ const onResetFilter = () => {
     background-color: #ddd;
   }
 }
+
+select {
+  border: 1px solid var(--uranus-input-border-color) !important;
+}
+
 </style>
