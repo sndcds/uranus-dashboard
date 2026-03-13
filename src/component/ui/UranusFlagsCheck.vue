@@ -57,7 +57,7 @@ function onChange(event: Event) {
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border: 0px solid var(--uranus-input-border-color);
-  border-radius: var(--uranus-form-field-border-radius);
+  border-radius: var(--uranus-input-border-radius);
   cursor: pointer;
   user-select: none;
   transition: all 0.2s ease;

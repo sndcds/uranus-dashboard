@@ -19,7 +19,7 @@
                             v-model="password"
                             :type="passwordFieldType"
                             autocomplete="new-password"
-                            class="uranus-text-input"
+                            class="uranus-input"
                             :aria-required="true"
                             :aria-invalid="fieldErrors.password ? 'true' : 'false'"
                         />
@@ -57,7 +57,7 @@
                             v-model="confirmPassword"
                             :type="confirmPasswordFieldType"
                             autocomplete="new-password"
-                            class="uranus-text-input"
+                            class="uranus-input"
                             :aria-required="true"
                             :aria-invalid="fieldErrors.confirmPassword ? 'true' : 'false'"
                         />

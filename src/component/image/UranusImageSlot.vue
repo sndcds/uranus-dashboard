@@ -196,8 +196,8 @@ onMounted(loadMeta)
   flex-direction: column;
   align-items: center;
   width: 320px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: 1px solid var(--uranus-input-border-color);
+  border-radius: var(--uranus-input-border-radius);
   overflow: hidden;
   cursor: pointer;
 }
@@ -224,7 +224,7 @@ onMounted(loadMeta)
   justify-content: center;
   align-items: center;
   font-size: 2.5rem;
-  color: #bbb;
+  color: var(--uranus-color);
 }
 
 .hover-actions {

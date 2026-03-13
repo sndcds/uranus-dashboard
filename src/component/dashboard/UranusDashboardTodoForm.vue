@@ -14,7 +14,7 @@
         <textarea
           :id="`${idPrefix}-description`"
           v-model="descriptionModel"
-          class="uranus-text-input todo-editor__textarea"
+          class="uranus-input todo-editor__textarea"
           :placeholder="descriptionPlaceholder"
           rows="3"
           :disabled="disabled"

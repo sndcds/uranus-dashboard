@@ -14,7 +14,7 @@
             :id="id"
             :type="type"
             :value="modelValue"
-            :class="['uranus-text-input', sizeClass]"
+            :class="['uranus-input', sizeClass]"
             :placeholder="placeholder"
             :autocomplete="autocomplete"
             :required="required"
@@ -51,7 +51,7 @@ const props = defineProps({
   modelValue: { type: [String, Number, null], default: '' },
   type: { type: String, default: 'text' },
   required: { type: Boolean, default: false },
-  size: { type: String, default: 'normal' }, // tiny / normal / big
+  size: { type: String, default: 'normal' }, // tiny / normal / medium / big
   flex: { type: [Number, String], default: 1 },
   error: { type: String, default: undefined },
   placeholder: { type: String, default: '' },
@@ -68,6 +68,7 @@ const emit = defineEmits(['update:modelValue', 'blur', 'focus'])
 const sizeClass = computed(() => {
   switch (props.size) {
     case 'tiny': return 'uranus-tiny-text'
+    case 'medium': return 'uranus-medium-text'
     case 'big': return 'uranus-big-text'
     default: return ''
   }
@@ -108,34 +109,11 @@ const onInput = (event: Event) => {
   align-items: center;
   position: relative;
 }
-/*
-.uranus-text-input {
-  flex: 1;
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  border: 10px solid #00c;
-  border-radius: 0.375rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.uranus-text-input:focus {
-  border-color: #007aff;
-}
-*/
-.uranus-tiny-text {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-}
-
-.uranus-big-text {
-  font-size: 1.25rem;
-  padding: 0.75rem 1rem;
-}
 
 .uranus-error-msg {
   color: #f44336;
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
+
 </style>

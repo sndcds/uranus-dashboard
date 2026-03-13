@@ -131,7 +131,7 @@ function onKeyDown(event: KeyboardEvent, index: number) {
   position: relative;
   border-radius: 6px;
   outline: 2px solid transparent;
-  outline-offset: 0px;
+  outline-offset: 0;
   transition: all 0.2s, color 0.2s;
   white-space: nowrap;
 }
@@ -156,7 +156,7 @@ function onKeyDown(event: KeyboardEvent, index: number) {
 }
 
 .tab:focus {
-  outline: 2px solid var(--uranus-acc-color);
+  outline: 2px solid var(--uranus-focus-color);
 }
 
 .card-content {

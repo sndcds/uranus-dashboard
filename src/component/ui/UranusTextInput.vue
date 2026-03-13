@@ -13,7 +13,7 @@
           :id="id"
           :type="type"
           :value="modelValue"
-          :class="['uranus-text-input', sizeClass]"
+          :class="['uranus-input', sizeClass]"
           :aria-required="required ? 'true' : 'false'"
           :aria-invalid="error ? 'true' : 'false'"
           :placeholder="placeholder"

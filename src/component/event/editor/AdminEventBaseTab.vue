@@ -6,57 +6,64 @@
 
 <template>
   <section class="base-tab">
+    <UranusForm>
 
-    <!-- Content Language -->
-    <UranusLanguageSelect
-        v-model="draftContentLanguage"
-        :label="t('content_language')"
-    />
+      <UranusFormRow>
+        <UranusFieldLabel id="event-language" :label="t('content_language')">
+          <UranusLanguageSelect
+              v-model="draftContentLanguage"
+              :label="t('content_language')"
+          />
+        </UranusFieldLabel>
+      </UranusFormRow>
 
-    <!-- Main Image -->
-    <UranusImageSlot
-        context="event"
-        :contextId="event.id"
-        identifier="main"
-        :width="480"
-    />
-
-    <!-- Title / Subtitle -->
-    <label>
-      Title
-      <input v-model="event.title" class="title" />
-    </label>
-
-    <label>
-      Subtitle
-      <input v-model="event.subtitle" />
-    </label>
-
-    <!-- Description -->
-    <div class="field">
-      Dirty: {{ isDescriptionDirty }}
-      <span>Description</span>
-      <UranusTextEditor
-          v-model="descriptionProxy"
-          ref="descriptionEditor"
+      <UranusImageSlot
+          context="event"
+          :contextId="event.id"
+          identifier="main"
+          :width="480"
       />
-    </div>
 
-    <!-- Summary -->
-    <label>
-      Summary
-      <textarea v-model="event.summary" />
-    </label>
+      <UranusFormRow>
+        <UranusTextfield id="event-title" size="big" :label="t('title')" v-model="event.title" />
+      </UranusFormRow>
 
-    <!-- Buttons -->
-    <div class="tab-actions">
-      <button @click="resetBaseTab" :disabled="store.saving || !isDirty">
-        {{ t('discard')}}
-      </button>
-      <button @click="commitBaseTab" :disabled="store.saving || !isDirty">
-        {{ t('save')}}
-      </button>
-    </div>
+      <UranusFormRow>
+        <UranusTextfield id="event-subtitle" size="medium" :label="t('subtitle')" v-model="event.subtitle" />
+      </UranusFormRow>
+
+
+      <UranusFormRow>
+        <UranusFieldLabel id="event-description" :label="t('description')">
+          <UranusTextEditor
+              v-model="descriptionProxy"
+              ref="descriptionEditor"
+          />
+        </UranusFieldLabel>
+      </UranusFormRow>
+
+      <!-- Summary -->
+      <UranusFormRow>
+        <UranusFieldLabel id="event-description" :label="t('summary')">
+          <UranusTextEditor
+              v-model="summaryProxy"
+              ref="descriptionEditor"
+          />
+        </UranusFieldLabel>
+      </UranusFormRow>
+
+
+      <!-- Buttons -->
+      <div class="tab-actions">
+        <button @click="resetBaseTab" :disabled="store.saving || !isDirty">
+          {{ t('discard')}}
+        </button>
+        <button @click="commitBaseTab" :disabled="store.saving || !isDirty">
+          {{ t('save')}}
+        </button>
+      </div>
+
+    </UranusForm>
   </section>
 </template>
 
@@ -71,6 +78,10 @@ import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
 import UranusImageSlot from "@/component/image/UranusImageSlot.vue";
 
 import type { UranusAdminEvent } from "@/domain/event/UranusAdminEvent.ts"
+import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue";
+import UranusTextfield from "@/component/ui/UranusTextfield.vue";
+import UranusForm from "@/component/ui/UranusForm.vue";
+import UranusFormRow from "@/component/ui/UranusFormRow.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
@@ -83,6 +94,12 @@ const descriptionEditor = ref<InstanceType<typeof UranusTextEditor> | null>(null
 const descriptionProxy = computed({
   get: () => store.draft?.description ?? '',
   set: (val: string) => { if (store.draft) store.draft.description = val }
+})
+
+
+const summaryProxy = computed({
+  get: () => store.draft?.summary ?? '',
+  set: (val: string) => { if (store.draft) store.draft.summary = val }
 })
 
 // Dirty tracking

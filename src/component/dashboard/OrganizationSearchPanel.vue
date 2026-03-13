@@ -299,8 +299,6 @@ defineExpose({
 }
 
 .organization-search__controls input:focus-visible {
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
   outline: none;
 }
 

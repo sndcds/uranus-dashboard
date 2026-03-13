@@ -6,7 +6,7 @@
   input, textarea {
     font-size: 1rem;
     padding: 0.2rem 0.6rem 0.2rem 0.6rem;
-    border-radius: var(--uranus-form-field-border-radius);
+    border-radius: var(--uranus-input-border-radius);
     background: var(--uranus-input-bg);
     color: var(--uranus-input-color);
     border: var(--uranus-input-border-width) solid var(--uranus-input-border-color);
@@ -21,23 +21,7 @@
   }
 
   textarea {
-    border-radius: var(--uranus-form-field-border-radius);
-  }
-
-  select {
-    cursor: pointer;
-    padding: 0.6rem 1.0rem;
-    font-size: 1.0rem;
-    border: var(--uranus-input-border-width) solid var(--uranus-input-border-color);
-    background: var(--uranus-input-bg);
-    border-radius: var(--uranus-form-field-border-radius);
-    color: var(--uranus-input-color);
-    height: var(--uranus-input-height);
-    box-sizing: border-box; // include padding/border in width
-    // background: var(--uranus-bg-color-d1) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><polygon points="0,2 12,2 6,8" fill="%237f12e3"/></svg>') no-repeat right 0.8rem center;
-    // appearance: none; /* remove default arrow */
-    // -webkit-appearance: none;
-    // -moz-appearance: none;
+    border-radius: var(--uranus-input-border-radius);
   }
 }
 
@@ -56,24 +40,8 @@
   color: var(--uranus-color-dimmed);
 }
 
-.uranus-text-input {
-  height: var(--uranus-input-height);
-  width: 100%;
-  border: var(--uranus-input-border-width) solid var(--uranus-input-border-color) !important;
-  border-radius: var(--uranus-form-field-border-radius);
-}
-
 ::placeholder {
   color: var(--uranus-input-placeholder-color);
-}
-
-.uranus-tiny-text {
-  font-size: 0.85rem !important;
-}
-
-.uranus-big-text {
-  font-size: 1.4rem !important;
-  font-weight: 600 !important;
 }
 
 .uranus-textarea {

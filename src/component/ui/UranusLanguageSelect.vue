@@ -1,6 +1,5 @@
 <template>
   <div class="language-select">
-    <label :for="id">{{ label }}</label>
     <select :id="id" v-model="modelValue">
       <option :value="''">{{ t('choose_language') }}</option>
       <option
@@ -58,17 +57,8 @@ const modelValue = computed({
   flex-direction: column;
   gap: 0.25rem;
 
-  label {
-    font-weight: 500;
-    color: #555;
-  }
-
   select {
     width: min-content;
-    padding: 0.5rem;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
   }
 }
 </style>

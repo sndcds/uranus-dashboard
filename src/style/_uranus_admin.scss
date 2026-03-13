@@ -76,19 +76,3 @@
     cursor: pointer;
   }
 }
-
-.uranus-admin-select {
-  width: 100%;
-  padding: 0.5rem 2rem 0.5rem 0.5rem; /* Add space on the right for the arrow */
-  border-radius: var(--uranus-form-field-border-radius);
-  border: 1px solid var(--uranus-input-border-color);
-  font-size: 1rem;
-  appearance: none; /* Remove native arrow */
-  background-color: white;
-
-  /* Add SVG triangle arrow */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 4l4 4 4-4' stroke='black' stroke-width='2' fill='none'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.5rem center;
-  background-size: 0.75rem auto;
-}

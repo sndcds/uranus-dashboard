@@ -31,7 +31,7 @@
                         <div class="uranus-textfield-wrapper team-role-filter">
                             <UranusFieldLabel id="team-role-filter-select"
                                 :label="t('organization_team_role_filter_label')">
-                                <select id="team-role-filter-select" v-model="roleFilterModel" class="uranus-text-input">
+                                <select id="team-role-filter-select" v-model="roleFilterModel" class="uranus-input">
                                     <option value="all">{{ t('organization_team_role_filter_all') }}</option>
                                     <option v-for="role in roles" :key="role.id" :value="role.id">
                                         {{ role.name }}
@@ -126,7 +126,7 @@
                                 <UranusFieldLabel id="team-invite-role-select"
                                     :label="t('organization_team_invite_role_label')" :required="true">
                                     <select id="team-invite-role-select" v-model="inviteRoleModel"
-                                        class="uranus-text-input" :disabled="!roles.length" required>
+                                        class="uranus-input" :disabled="!roles.length" required>
                                         <option v-for="role in roles" :key="role.id" :value="role.id">
                                             {{ role.name }}
                                         </option>

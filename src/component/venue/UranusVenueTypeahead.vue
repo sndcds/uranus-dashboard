@@ -3,7 +3,7 @@
     <input
         ref="inputRef"
         type="text"
-        class="uranus-text-input"
+        class="uranus-input"
         v-model="query"
         @keydown="onKeydown"
         placeholder="Name der Spielstätte ..."

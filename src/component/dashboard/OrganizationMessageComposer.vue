@@ -290,13 +290,6 @@ defineExpose({
   min-height: 12rem;
 }
 
-.input-group input:focus-visible,
-.input-group textarea:focus-visible {
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
-  outline: none;
-}
-
 .message-form__actions {
   display: flex;
   justify-content: flex-end;

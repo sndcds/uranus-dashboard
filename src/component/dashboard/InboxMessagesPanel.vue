@@ -422,7 +422,7 @@ defineExpose({
 }
 
 .messages-panel__refresh:focus-visible {
-  outline: 2px solid var(--accent-primary);
+  outline: 2px solid var(--uranus-focus-color);
   outline-offset: 2px;
 }
 
@@ -495,7 +495,7 @@ defineExpose({
 }
 
 .message-card:focus-visible {
-  // outline: 2px solid var(--accent-primary);
+  outline: 2px solid var(--uranus-focus-color);
   outline-offset: 2px;
 }
 

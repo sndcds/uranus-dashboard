@@ -77,7 +77,7 @@ const toggle = (e: MouseEvent) => {
   }
 
   input:focus-visible + .checkmark {
-    outline: 2px solid var(--uranus-focus-color, #2684ff);
+    outline: 2px solid var(--uranus-focus-color);
     outline-offset: 2px;
   }
 

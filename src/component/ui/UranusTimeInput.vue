@@ -10,7 +10,7 @@
                 type="time"
                 :id="id"
                 :value="modelValue"
-                :class="['uranus-text-input', sizeClass]"
+                :class="['uranus-input', sizeClass]"
                 :placeholder="placeholder"
                 :autocomplete="autocomplete"
                 :aria-required="required ? 'true' : 'false'"
