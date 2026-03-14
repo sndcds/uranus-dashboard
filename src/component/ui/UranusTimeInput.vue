@@ -1,6 +1,6 @@
 <template>
     <div class="uranus-textfield-wrapper" :style="{ flex: flexValue }">
-        <UranusFieldLabel
+        <UranusLabel
             :id="id"
             :label="label"
             :required="required"
@@ -17,13 +17,13 @@
                 :aria-invalid="error ? 'true' : 'false'"
                 @input="$emit('update:modelValue', $event.target.value)"
             />
-        </UranusFieldLabel>
+        </UranusLabel>
     </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-import UranusFieldLabel from './UranusFieldLabel.vue'
+import UranusLabel from './UranusLabel.vue'
 
 const props = defineProps({
     id: { type: String, required: true },

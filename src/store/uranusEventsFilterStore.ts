@@ -7,6 +7,7 @@ import { computed, ref, watch } from 'vue'
 import type { UranusVenueSelectItemInfo } from '@/domain/venue/UranusVenue'
 
 export interface UranusEventsFilter {
+    categories: number[] | null
     search: string | null
     city: string | null
     startDate?: string | null
@@ -25,6 +26,7 @@ export interface UranusEventsFilter {
 }
 
 const defaultFilter: UranusEventsFilter = {
+    categories: null,
     search: "",
     city: "",
     startDate: "",

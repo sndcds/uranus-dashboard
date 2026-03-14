@@ -8,19 +8,20 @@
   <section class="base-tab">
     <UranusForm>
 
-      <UranusEventCategorySelector
-          v-model="selectedCategories"
-          :multiple="true"
-      />
-      <p>Selected IDs: {{ selectedCategories }}</p>
+      <UranusLabel id="event-description" :label="t('event_category')">
+        <UranusEventCategorySelector
+            v-model="store.draft!.categories"
+            :multiple="true"
+        />
+      </UranusLabel>
 
       <UranusFormRow>
-        <UranusFieldLabel id="event-language" :label="t('content_language')">
+        <UranusLabel id="event-language" :label="t('content_language')">
           <UranusLanguageSelect
               v-model="draftContentLanguage"
               :label="t('content_language')"
           />
-        </UranusFieldLabel>
+        </UranusLabel>
       </UranusFormRow>
 
       <UranusImageSlot
@@ -40,46 +41,45 @@
 
 
       <UranusFormRow>
-        <UranusFieldLabel id="event-description" :label="t('description')">
+        <UranusLabel id="event-description" :label="t('description')">
           <UranusTextEditor
               v-model="descriptionProxy"
               ref="descriptionEditor"
           />
-        </UranusFieldLabel>
+        </UranusLabel>
       </UranusFormRow>
 
       <!-- Summary -->
       <UranusFormRow>
-        <UranusFieldLabel id="event-description" :label="t('summary')">
+        <UranusLabel id="event-description" :label="t('summary')">
           <UranusTextEditor
               v-model="summaryProxy"
               ref="descriptionEditor"
           />
-        </UranusFieldLabel>
+        </UranusLabel>
       </UranusFormRow>
 
-      <UranusButton variant="primary" :loading="saving" loading-text="Saving...">
-        <template #icon>
-          <Save />
-        </template>
-        Save
-      </UranusButton>
-
-      <UranusButton variant="danger" icon-position="right" @click="deleteItem">
-        Delete
-        <template #icon>
-          <Trash />
-        </template>
-      </UranusButton>
-
-      <!-- Buttons -->
       <div class="tab-actions">
-        <button @click="resetBaseTab" :disabled="store.saving || !isDirty">
+        <UranusButton
+            variant="cta"
+            :disabled="store.saving || !isDirty"
+            @click="resetBaseTab"
+        >
+          <template #icon><Undo /></template>
           {{ t('discard')}}
-        </button>
-        <button @click="commitBaseTab" :disabled="store.saving || !isDirty">
+        </UranusButton>
+
+        <UranusButton
+            variant="cta"
+            :disabled="store.saving || !isDirty"
+            :loading="store.saving"
+            loading-text="Saving..."
+            @click="commitBaseTab"
+        >
+          <template #icon><Save /></template>
           {{ t('save')}}
-        </button>
+        </UranusButton>
+
       </div>
 
     </UranusForm>
@@ -97,19 +97,18 @@ import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
 import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
 
 import type { UranusAdminEvent } from '@/domain/event/UranusAdminEvent.ts'
-import UranusFieldLabel from '@/component/ui/UranusFieldLabel.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { Save, Trash } from 'lucide-vue-next'
+import { Save, Undo } from 'lucide-vue-next'
 import UranusEventCategorySelector from '@/component/event/ui/UranusEventCategorySelector.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
 const event = computed(() => store.draft!)
 
-const selectedCategories = ref<number[]>([1,3]) // preselected
 
 // Description editor
 const descriptionEditor = ref<InstanceType<typeof UranusTextEditor> | null>(null)
@@ -134,6 +133,7 @@ const baseFields = [
   'releaseStatus',
   'releaseDate',
   'contentLanguage',
+  'categories',
   'title',
   'subtitle',
   'description',
@@ -155,6 +155,7 @@ function buildPayload(draft: UranusAdminEvent, original: UranusAdminEvent) {
   if (draft.releaseStatus !== original.releaseStatus) payload.release_status = draft.releaseStatus
   if (draft.releaseDate !== original.releaseDate) payload.release_date = draft.releaseDate
   if (draft.contentLanguage !== original.contentLanguage) payload.content_language = draft.contentLanguage
+  if (draft.categories !== original.categories) payload.categories = draft.categories
   if (draft.title !== original.title) payload.title = draft.title
   if (draft.subtitle !== original.subtitle) payload.subtitle = draft.subtitle
   if (draft.description !== original.description) payload.description = draft.description
@@ -238,20 +239,8 @@ function resetBaseTab() {
   .tab-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
+    gap: 0.6rem;
     margin-top: 1rem;
-
-    button {
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 4px;
-      border: 2px solid #888;
-      background-color: #f5f5f5;
-      transition: background 0.2s;
-
-      &:hover:not(:disabled) { background-color: #e0e0e0; }
-      &:disabled { cursor: not-allowed; opacity: 0.6; }
-    }
   }
 }
 </style>

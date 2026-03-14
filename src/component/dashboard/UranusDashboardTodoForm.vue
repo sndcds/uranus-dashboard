@@ -10,7 +10,7 @@
     />
 
     <UranusFormRow class="todo-editor__row">
-      <UranusFieldLabel :id="`${idPrefix}-description`" :label="descriptionLabel" class="todo-editor__label">
+      <UranusLabel :id="`${idPrefix}-description`" :label="descriptionLabel" class="todo-editor__label">
         <textarea
           :id="`${idPrefix}-description`"
           v-model="descriptionModel"
@@ -20,7 +20,7 @@
           :disabled="disabled"
           @keyup.escape="$emit('escape')"
         />
-      </UranusFieldLabel>
+      </UranusLabel>
     </UranusFormRow>
 
     <UranusFormRow>
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import UranusTextInput from '@/component/ui/UranusTextInput.vue'
-import UranusFieldLabel from '@/component/ui/UranusFieldLabel.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 

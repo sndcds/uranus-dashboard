@@ -32,6 +32,7 @@ export class UranusAdminEvent {
     eventLinks: UranusEventLink[] | null = null
 
     occasionTypeId: number | null = null
+    categories: number[] | null = null
     eventTypes: UranusAdminEventTypePair[] | null = null
     tags: string[] | null = null
 
@@ -86,6 +87,7 @@ export class UranusAdminEvent {
             summary: dto.summary ?? null,
             eventLinks: (dto.event_links ?? []).map(e => new UranusEventLink(e.label, e.type, e.url)),
             occasionTypeId: dto.occasion_type_id ?? null,
+            categories: dto.categories ?? null,
             eventTypes: (dto.event_types ?? []).map(e => new UranusAdminEventTypePair(e.type_id, e.genre_id)),
             tags: dto.tags ?? null,
             eventDates: mapAdminEventDatesFromApi(dto.event_dates),
@@ -122,6 +124,7 @@ export class UranusAdminEvent {
             organization_id: this.organizationId!,
             venue_id: this.venueId,
             space_id: this.spaceId,
+            categories: this.categories,
             event_types: this.eventTypes?.map(e => ({ type_id: e.typeId, genre_id: e.genreId })) ?? [],
             description: this.description,
             summary: this.summary,
@@ -149,8 +152,6 @@ export class UranusAdminEvent {
             tags: this.tags,
         }
     }
-
-
 
     static fromApi(raw: any): UranusAdminEvent | null {
         return mapUranusAdminEvent(raw)

@@ -308,3 +308,14 @@ export function urlParamsSetIfPresent(
         params.set(key, value)
     }
 }
+
+export function urlParamsSetArrayIfPresent(
+    params: URLSearchParams,
+    key: string,
+    value?: number[] | string[] | null) {
+    if (value && value.length > 0) {
+        params.set(key, value.join(',')) // convert array to "1,3,4"
+    } else {
+        params.delete(key) // remove param if empty or null
+    }
+}

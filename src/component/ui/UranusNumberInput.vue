@@ -6,7 +6,7 @@
       class="uranus-textfield-wrapper"
       :style="{ flex: props.flex ?? 1 }"
   >
-    <UranusFieldLabel
+    <UranusLabel
         :id="id"
         :label="label"
         :required="required"
@@ -28,13 +28,13 @@
           v-bind="$attrs"
           @input="onInput($event)"
       />
-    </UranusFieldLabel>
+    </UranusLabel>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import UranusFieldLabel from './UranusFieldLabel.vue'
+import UranusLabel from './UranusLabel.vue'
 
 defineOptions({
   inheritAttrs: false,

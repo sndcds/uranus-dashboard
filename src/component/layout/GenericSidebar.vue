@@ -199,7 +199,7 @@ const eventsRoute = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  padding: 0 0.75rem;
+  padding: 0.2rem 0.5rem;
   overflow: hidden;
 }
 

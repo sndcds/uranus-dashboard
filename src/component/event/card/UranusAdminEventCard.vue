@@ -242,12 +242,10 @@ const confirmDelete = async ({password, selectedOption}: {
 </script>
 
 <style scoped lang="scss">
-
 .uranus-dashboard-event-card-layout {
   display: flex;
   flex-direction: column;
   gap: 6px;
-
   span {
     font-size: 0.9em;
   }

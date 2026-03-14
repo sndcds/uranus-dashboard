@@ -1,6 +1,6 @@
 <template>
   <div class="uranus-textfield-wrapper">
-    <UranusFieldLabel
+    <UranusLabel
         :id="id"
         :label="label"
         :required="required"
@@ -21,14 +21,14 @@
             v-bind="$attrs"
             @input="$emit('update:modelValue', $event.target.value)"
         />
-    </UranusFieldLabel>
+    </UranusLabel>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 
-import UranusFieldLabel from '@/component/ui/UranusFieldLabel.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
 
 defineOptions({
     inheritAttrs: false,

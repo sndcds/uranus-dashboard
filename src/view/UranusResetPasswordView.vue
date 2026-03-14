@@ -7,7 +7,7 @@
             </header>
 
             <form class="uranus-form" @submit.prevent="handleSubmit" :aria-busy="isSubmitting" novalidate>
-                <UranusFieldLabel
+                <UranusLabel
                     id="new-password"
                     :label="t('new_password')"
                     :error="fieldErrors.password"
@@ -43,9 +43,9 @@
                             </svg>
                         </button>
                     </div>
-                </UranusFieldLabel>
+                </UranusLabel>
 
-                <UranusFieldLabel
+                <UranusLabel
                     id="confirm-password"
                     :label="t('confirm_password')"
                     :error="fieldErrors.confirmPassword"
@@ -81,7 +81,7 @@
                             </svg>
                         </button>
                     </div>
-                </UranusFieldLabel>
+                </UranusLabel>
 
                 <transition name="fade">
                     <p v-if="displayError" class="feedback feedback--error" role="alert" aria-live="assertive">
@@ -115,7 +115,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 
-import UranusFieldLabel from '@/component/ui/UranusFieldLabel.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
 
 const { t } = useI18n()
 const route = useRoute()

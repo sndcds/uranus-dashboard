@@ -6,8 +6,9 @@
   <!-- Modal overlay -->
   <div class="uranus-modal-backdrop uranus-form">
     <UranusCard class="uranus-modal-card">
-      <!-- Title -->
+
       <h2>{{ title }}</h2>
+
       <!-- Image preview -->
       <div class="uranus-image-preview" @click="onImageClick($event)">
         <img
@@ -28,7 +29,6 @@
              :style="{ left: `${localImageMeta.focusX * 100}%`, top: `${localImageMeta.focusY * 100}%`}">
         </div>
       </div>
-
 
       <!-- Metadata fields -->
       <UranusFormRow>

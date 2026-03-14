@@ -1,20 +1,28 @@
 <template>
-  <div class="category-selector">
-    <button
-        v-for="cat in categories"
-        :key="cat.id"
-        type="button"
-        :class="['category-chip', { selected: selected.includes(cat.id) }]"
-        :style="{ '--chip-color': cat.color }"
-        @click="toggleCategory(cat.id)"
-    >
-      {{ cat.label }}
-    </button>
-  </div>
+  <UranusAccordion v-model="open">
+    <template #title>{{ t('event_filter_categories') }}</template>
+
+    <div class="category-selector">
+      <button
+          v-for="cat in categories"
+          :key="cat.id"
+          type="button"
+          :class="['category-chip', { selected: selected.includes(cat.id) }]"
+          :style="{ '--chip-color': cat.color }"
+          @click="toggleCategory(cat.id)"
+      >
+        {{ cat.label }}
+      </button>
+    </div>
+  </UranusAccordion>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import UranusAccordion from '@/component/ui/UranusAccordion.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 interface Category {
   id: number
@@ -26,13 +34,13 @@ interface Category {
 const props = defineProps<{
   modelValue: number[] | null
   multiple?: boolean
-}>()
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: number[]): void
+  (e: 'update:modelValue', value: number[] | null): void
 }>()
 
-// Category definitions
+// Define your six main categories
 const categories: Category[] = [
   { id: 1, label: 'Kultur', color: '#f94144' },
   { id: 2, label: 'Bildung', color: '#f3722c' },
@@ -42,10 +50,11 @@ const categories: Category[] = [
   { id: 6, label: 'Gesellschaft', color: '#942dcc' }
 ]
 
-// Reactive selected state
+// Reactive state
 const selected = ref<number[]>(props.modelValue ?? [])
+const open = ref(false)
 
-// Sync external changes
+// Watch for external changes
 watch(
     () => props.modelValue,
     (val) => {
@@ -53,6 +62,7 @@ watch(
     }
 )
 
+// Toggle a category
 function toggleCategory(id: number) {
   if (props.multiple ?? true) {
     if (selected.value.includes(id)) {
@@ -74,9 +84,7 @@ function toggleCategory(id: number) {
   flex-wrap: wrap;
   gap: 0.5rem;
   width: fit-content;
-  border: 1px solid var(--uranus-input-border-color);
-  border-radius: var(--uranus-input-border-radius);
-  padding: 0.5rem;
+  padding: 0.5rem 0;
 }
 
 /* Base chip style */
@@ -90,13 +98,11 @@ function toggleCategory(id: number) {
   font-size: 1.1rem;
   cursor: pointer;
   overflow: hidden;
-
   transition:
       background 0.25s ease,
       color 0.25s ease,
       transform 0.15s ease;
 
-  /* bottom color bar */
   &::after {
     content: "";
     position: absolute;

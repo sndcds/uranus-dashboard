@@ -5,7 +5,7 @@
 -->
 
 <template>
-  <UranusFieldLabel
+  <UranusLabel
       :id="countrySelectId"
       :label="countryLabel"
       :required="true"
@@ -22,10 +22,10 @@
         {{ country.name }}
       </option>
     </select>
-  </UranusFieldLabel>
+  </UranusLabel>
 
   <!-- State -->
-  <UranusFieldLabel :id="stateSelectId" :label="stateLabel" :required="true" :error="stateError">
+  <UranusLabel :id="stateSelectId" :label="stateLabel" :required="true" :error="stateError">
     <select v-model="stateModel" :id="stateSelectId" :disabled="statesLoading || !countryModel" class="uranus-admin-select"
       :aria-required="true" :aria-invalid="stateError ? 'true' : 'false'">
       <option value="" disabled>{{ statePlaceholder }}</option>
@@ -33,7 +33,7 @@
         {{ state.name }}
       </option>
     </select>
-  </UranusFieldLabel>
+  </UranusLabel>
 </template>
 
 <script setup lang="ts">
@@ -41,7 +41,7 @@ import { computed, onMounted, ref, watch, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 
-import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue"
+import UranusLabel from "@/component/ui/UranusLabel.vue"
 
 // Models
 const countryModel = defineModel<string>('countryCode', { default: '' })

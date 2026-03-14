@@ -5,7 +5,7 @@
 -->
 
 <template>
-  <UranusFieldLabel id="price-type-select" :label="t('price_types')">
+  <UranusLabel id="price-type-select" :label="t('price_types')">
     <select
         v-model="selectedCode"
         class="_language-select"
@@ -20,14 +20,14 @@
         {{ option.label }}
       </option>
     </select>
-  </UranusFieldLabel>
+  </UranusLabel>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { apiFetch } from "@/api.ts";
-import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue";
+import UranusLabel from "@/component/ui/UranusLabel.vue";
 
 const { t, locale } = useI18n({ useScope: "global" });
 

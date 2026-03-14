@@ -29,7 +29,7 @@
                             :label="t('organization_team_search_label')" />
 
                         <div class="uranus-textfield-wrapper team-role-filter">
-                            <UranusFieldLabel id="team-role-filter-select"
+                            <UranusLabel id="team-role-filter-select"
                                 :label="t('organization_team_role_filter_label')">
                                 <select id="team-role-filter-select" v-model="roleFilterModel" class="uranus-input">
                                     <option value="all">{{ t('organization_team_role_filter_all') }}</option>
@@ -37,7 +37,7 @@
                                         {{ role.name }}
                                     </option>
                                 </select>
-                            </UranusFieldLabel>
+                            </UranusLabel>
                         </div>
                     </UranusFormRow>
 
@@ -123,7 +123,7 @@
                             <UranusTextInput id="invite-email" v-model="inviteEmail" type="email"
                                 :label="t('organization_team_invite_email_label')" autocomplete="email" required />
                             <div class="uranus-textfield-wrapper team-role-select">
-                                <UranusFieldLabel id="team-invite-role-select"
+                                <UranusLabel id="team-invite-role-select"
                                     :label="t('organization_team_invite_role_label')" :required="true">
                                     <select id="team-invite-role-select" v-model="inviteRoleModel"
                                         class="uranus-input" :disabled="!roles.length" required>
@@ -131,7 +131,7 @@
                                             {{ role.name }}
                                         </option>
                                     </select>
-                                </UranusFieldLabel>
+                                </UranusLabel>
                             </div>
                         </UranusFormRow>
 
@@ -196,7 +196,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusFieldLabel from '@/component/ui/UranusFieldLabel.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusTextInput from '@/component/ui/UranusTextInput.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from "@/component/ui/UranusButton.vue";

@@ -1,6 +1,6 @@
 <template>
     <div class="uranus-textfield-wrapper">
-        <UranusFieldLabel
+        <UranusLabel
             :id="id"
             :label="label"
             :required="required"
@@ -37,13 +37,13 @@
                     </svg>
                 </button>
             </div>
-        </UranusFieldLabel>
+        </UranusLabel>
     </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import UranusFieldLabel from './UranusFieldLabel.vue'
+import UranusLabel from './UranusLabel.vue'
 
 const props = defineProps({
     id: { type: String, required: true },

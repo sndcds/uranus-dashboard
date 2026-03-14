@@ -24,6 +24,7 @@ export interface UranusAdminEventDTO {
     venue_id: number | null
     space_id: number | null
 
+    categories?: number[] | null,
     event_types: { type_id: number | null; genre_id: number | null }[] | null
     tags?: string[] | null
 

@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue";
+import UranusLabel from "@/component/ui/UranusLabel.vue";
 
 const props = defineProps<{
   id: string

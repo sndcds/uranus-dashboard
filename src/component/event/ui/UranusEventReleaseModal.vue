@@ -1,21 +1,19 @@
 <template>
   <UranusModal
       :show="show"
-      title="Event Release Settings"
+      :title="t('event_release_settings')"
       @close="$emit('close')"
       :maxWidth="'500px'"
   >
     <div class="modal-content">
-      <label>
-        Release Status
+      <UranusLabel id="" label="Release Status">
         <UranusEventReleaseStatusSelect
             v-model="localReleaseStatus" />
-      </label>
+      </UranusLabel>
 
-      <label>
-        Release Date
+      <UranusLabel id="" label="Release Date">
         <input type="date" v-model="localReleaseDate" />
-      </label>
+      </UranusLabel>
     </div>
 
     <div class="modal-actions">
@@ -27,8 +25,12 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusEventReleaseStatusSelect from '@/component/event/ui/UranusEventReleaseStatusSelect.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
+
+const { t } = useI18n()
 
 interface Props {
   show: boolean

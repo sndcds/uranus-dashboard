@@ -60,7 +60,7 @@
                                 <p>{{ t('user_profile_preferences_description') }}</p>
                             </div>
                             <UranusFormRow class="profile-preferences__grid">
-                                <UranusFieldLabel id="profile_language" :label="t('language')">
+                                <UranusLabel id="profile_language" :label="t('language')">
                                     <select id="profile_language" v-model="selectedLocale" class="uranus-admin-select"
                                         :disabled="isSubmitting">
                                         <option v-for="option in localeOptions" :key="option.value"
@@ -68,8 +68,8 @@
                                             {{ option.label }}
                                         </option>
                                     </select>
-                                </UranusFieldLabel>
-                                <UranusFieldLabel id="profile_theme" :label="t('settings_theme')">
+                                </UranusLabel>
+                                <UranusLabel id="profile_theme" :label="t('settings_theme')">
                                     <select id="profile_theme" v-model="selectedTheme" class="uranus-admin-select"
                                         :disabled="isSubmitting">
                                         <option v-for="option in themeOptions" :key="option.value"
@@ -77,7 +77,7 @@
                                             {{ t(option.label) }}
                                         </option>
                                     </select>
-                                </UranusFieldLabel>
+                                </UranusLabel>
                             </UranusFormRow>
                         </div>
                     </div>
@@ -116,7 +116,7 @@ import UserAvatarUpload from '@/component/UserAvatarUpload.vue'
 import UranusDashboardHero from "@/component/dashboard/UranusDashboardHero.vue"
 import UranusTextInput from "@/component/ui/UranusTextInput.vue"
 import UranusFormRow from "@/component/ui/UranusFormRow.vue"
-import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue"
+import UranusLabel from "@/component/ui/UranusLabel.vue"
 import { use } from 'marked'
 
 interface UserProfilePayload {

@@ -5,7 +5,7 @@
 -->
 
 <template>
-  <UranusFieldLabel :label="t('event_link_type')" id="">
+  <UranusLabel :label="t('event_link_type')" id="">
     <select
         v-model="selectedId"
         class="uranus-admin-select"
@@ -21,14 +21,14 @@
         {{ option.label }}
       </option>
     </select>
-  </UranusFieldLabel>
+  </UranusLabel>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue"
 import { useI18n } from "vue-i18n"
 import { useLinkTypeLookupStore } from "@/store/UranusLinkTypeLookup.ts"
-import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue"
+import UranusLabel from "@/component/ui/UranusLabel.vue"
 
 // Props + v-model
 const props = defineProps<{ modelValue: string | null }>()

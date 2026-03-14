@@ -1,6 +1,8 @@
 <template>
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
+    <UranusEventCategorySelectorAccordion v-model="filter.categories" :multiple="true" />
+
     <UranusFormRow :cols="2">
       <button type="button" class="filter-button reset" @click="onResetFilter">
         {{ t('calendar_filter_reset_button_label') }}
@@ -41,9 +43,9 @@
 
     <!-- Venue -->
     <UranusFormRow :cols="1">
-      <UranusFieldLabel id="venue" label="Spielstätte">
+      <UranusLabel id="venue" label="Spielstätte">
         <UranusVenueTypeahead v-model:selectedVenue="filter.venue"/>
-      </UranusFieldLabel>
+      </UranusLabel>
     </UranusFormRow>
 
     <div class="uranus-filter-accordions">
@@ -93,7 +95,7 @@
       <UranusAccordion v-model="priceOpen">
         <template #title>Preis</template>
         <UranusFormRow :cols="1">
-          <UranusFieldLabel id="price-type" label="Preisart">
+          <UranusLabel id="price-type" label="Preisart">
             <select v-model="filter.priceType">
               <option value="not_specified">{{ t('event_price_not_specified') }}</option>
               <option value="free">{{ t('event_price_free') }}</option>
@@ -101,7 +103,7 @@
               <option value="regular_price">{{ t('event_price_regular') }}</option>
               <option value="tiered_prices">{{ t('event_price_tiered') }}</option>
             </select>
-          </UranusFieldLabel>
+          </UranusLabel>
         </UranusFormRow>
         <UranusFormRow :cols="2">
           <UranusTextfield
@@ -110,12 +112,12 @@
               type="number" min="0" step="0.1" :nullableNumber="true"
               v-model="maxPriceModel"
           />
-          <UranusFieldLabel id="price-currency" label="Währung">
+          <UranusLabel id="price-currency" label="Währung">
             <select v-model="filter.priceCurrency">
               <option value="EUR">Euro</option>
               <option value="DKK">DKK</option>
             </select>
-          </UranusFieldLabel>
+          </UranusLabel>
         </UranusFormRow>
       </UranusAccordion>
     </div>
@@ -135,7 +137,8 @@ import { useEventsFilterStore, type UranusEventsFilter } from '@/store/uranusEve
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import { useGpsLocation } from '@/composable/useGpsLocation'
-import UranusFieldLabel from '@/component/ui/UranusFieldLabel.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
+import UranusEventCategorySelectorAccordion from '@/component/event/panel/UranusEventCategorySelectorAccordion.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -209,6 +212,7 @@ const onSaveFilter = () => {
 
 const onResetFilter = () => {
   eventsFilterStore.setFilter({
+    categories: null,
     search: '',
     city: '',
     startDate: '',

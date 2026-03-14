@@ -109,12 +109,11 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useEventsFilterStore } from '@/store/uranusEventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
-import { urlParamsSetIfPresent } from '@/util/UranusUtils.ts'
+import { urlParamsSetIfPresent, urlParamsSetArrayIfPresent } from '@/util/UranusUtils.ts'
 import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
 import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
-import {mapAdminEventDateFromApi} from "@/api/mapper/UranusAdminEvent.mapper.ts";
-import UranusHorizontalScroller from "@/component/ui/UranusHorizontalScroller.vue";
+import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -236,6 +235,8 @@ const buildFilterParams = (paginationMode = false, typesMode = false) => {
       }
     }
   }
+
+  urlParamsSetArrayIfPresent(params, "category", f.categories)
 
   // Only add params if they are not empty
   urlParamsSetIfPresent(params, "search", f.search)
