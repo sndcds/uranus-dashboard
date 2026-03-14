@@ -236,7 +236,7 @@ const buildFilterParams = (paginationMode = false, typesMode = false) => {
     }
   }
 
-  urlParamsSetArrayIfPresent(params, "category", f.categories)
+  urlParamsSetArrayIfPresent(params, "categories", f.categories)
 
   // Only add params if they are not empty
   urlParamsSetIfPresent(params, "search", f.search)

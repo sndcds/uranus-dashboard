@@ -11,7 +11,7 @@
       @change="onChange"
   >
     <option :value="null">
-      {{ t('unsepcified_venue_type') }}
+      {{ t('unspecified_venue_type') }}
     </option>
 
     <option

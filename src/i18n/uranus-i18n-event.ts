@@ -276,6 +276,36 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Categories',
         da: 'Kategorier',
     },
+    event_filter_category_culture: {
+        de: 'Kultur',
+        en: 'Culture',
+        da: 'Kultur',
+    },
+    event_filter_category_education: {
+        de: 'Bildung',
+        en: 'Education',
+        da: 'Uddannelse',
+    },
+    event_filter_category_sports: {
+        de: 'Sport',
+        en: 'Sports',
+        da: 'Sport',
+    },
+    event_filter_category_leisure: {
+        de: 'Freizeit',
+        en: 'Leisure',
+        da: 'Fritid',
+    },
+    event_filter_category_family: {
+        de: 'Familie',
+        en: 'Family',
+        da: 'Familie',
+    },
+    event_filter_category_society: {
+        de: 'Gesellschaft',
+        en: 'Society',
+        da: 'Samfund',
+    },
     event_filter_from: {
         de: 'Von',
         en: 'From',

@@ -11,7 +11,7 @@
           :style="{ '--chip-color': cat.color }"
           @click="toggleCategory(cat.id)"
       >
-        {{ cat.label }}
+        {{ t(cat.label) }}
       </button>
     </div>
   </UranusAccordion>
@@ -19,8 +19,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import { useI18n } from 'vue-i18n'
+import UranusAccordion from '@/component/ui/UranusAccordion.vue'
+
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -42,12 +43,12 @@ const emit = defineEmits<{
 
 // Define your six main categories
 const categories: Category[] = [
-  { id: 1, label: 'Kultur', color: '#f94144' },
-  { id: 2, label: 'Bildung', color: '#f3722c' },
-  { id: 3, label: 'Sport', color: '#f9c74f' },
-  { id: 4, label: 'Freizeit', color: '#90be6d' },
-  { id: 5, label: 'Familie', color: '#384fe8' },
-  { id: 6, label: 'Gesellschaft', color: '#942dcc' }
+  { id: 1, label: 'event_filter_category_culture', color: '#f94144' },
+  { id: 2, label: 'event_filter_category_education', color: '#f3722c' },
+  { id: 3, label: 'event_filter_category_sports', color: '#f9c74f' },
+  { id: 4, label: 'event_filter_category_leisure', color: '#90be6d' },
+  { id: 5, label: 'event_filter_category_family', color: '#384fe8' },
+  { id: 6, label: 'event_filter_category_society', color: '#942dcc' }
 ]
 
 // Reactive state
@@ -90,12 +91,12 @@ function toggleCategory(id: number) {
 /* Base chip style */
 .category-chip {
   position: relative;
-  padding: 0.45rem 1rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 0;
   border: 0 solid rgba(0,0,0,0.08);
   background: var(--uranus-bg);
   color: var(--uranus-color);
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   overflow: hidden;
   transition:
@@ -109,8 +110,9 @@ function toggleCategory(id: number) {
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 5px;
+    height: 3px;
     background: var(--chip-color);
+    border-radius: 8px;
     transition: height 0.25s ease;
   }
 
@@ -123,6 +125,7 @@ function toggleCategory(id: number) {
 .category-chip.selected {
   background: var(--chip-color);
   color: white;
+  border-radius: 50px;
 }
 
 .category-chip.selected::after {

@@ -11,7 +11,7 @@
       @change="onChange"
   >
     <option :value="null">
-      {{ t('unsepcified_space_type') }}
+      {{ t('unspecified_space_type') }}
     </option>
 
     <option

@@ -8,13 +8,16 @@
         :style="{ '--chip-color': cat.color }"
         @click="toggleCategory(cat.id)"
     >
-      {{ cat.label }}
+      {{ t(cat.label) }}
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
 
 interface Category {
   id: number
@@ -34,12 +37,12 @@ const emit = defineEmits<{
 
 // Category definitions
 const categories: Category[] = [
-  { id: 1, label: 'Kultur', color: '#f94144' },
-  { id: 2, label: 'Bildung', color: '#f3722c' },
-  { id: 3, label: 'Sport', color: '#f9c74f' },
-  { id: 4, label: 'Freizeit', color: '#90be6d' },
-  { id: 5, label: 'Familie', color: '#384fe8' },
-  { id: 6, label: 'Gesellschaft', color: '#942dcc' }
+  { id: 1, label: 'event_filter_category_culture', color: '#f94144' },
+  { id: 2, label: 'event_filter_category_education', color: '#f3722c' },
+  { id: 3, label: 'event_filter_category_sports', color: '#f9c74f' },
+  { id: 4, label: 'event_filter_category_leisure', color: '#90be6d' },
+  { id: 5, label: 'event_filter_category_family', color: '#384fe8' },
+  { id: 6, label: 'event_filter_category_society', color: '#942dcc' }
 ]
 
 // Reactive selected state
@@ -74,8 +77,6 @@ function toggleCategory(id: number) {
   flex-wrap: wrap;
   gap: 0.5rem;
   width: fit-content;
-  border: 1px solid var(--uranus-input-border-color);
-  border-radius: var(--uranus-input-border-radius);
   padding: 0.5rem;
 }
 
@@ -104,6 +105,7 @@ function toggleCategory(id: number) {
     bottom: 0;
     width: 100%;
     height: 5px;
+    border-radius: 50px;
     background: var(--chip-color);
     transition: height 0.25s ease;
   }
@@ -117,6 +119,8 @@ function toggleCategory(id: number) {
 .category-chip.selected {
   background: var(--chip-color);
   color: white;
+  border-radius: 50px;
+
 }
 
 .category-chip.selected::after {

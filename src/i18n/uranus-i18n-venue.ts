@@ -11,6 +11,11 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Venues',
         da: 'Spillesteder',
     },
+    unspecified_venue_type: {
+        de: 'Unbestimmte Spielstättentyp',
+        en: 'Unspecified venue type',
+        da: 'uspecificeret spillesteds type',
+    },
     venue_space: {
         de: 'Raum',
         en: 'Space',
