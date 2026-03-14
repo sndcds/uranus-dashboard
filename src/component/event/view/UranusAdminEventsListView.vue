@@ -27,11 +27,14 @@
     </UranusNotification>
 
     <template v-else>
-      <UranusDashboardActionBar v-if="!isLoading && canAddEvent">
-        <UranusActionButton :to="`/admin/organization/${organizationId}/event/create`">
+      <div v-if="!isLoading && canAddEvent">
+        <UranusButton
+            :to="`/admin/organization/${organizationId}/event/create`"
+            variant="cta"
+        >
           {{ t('add_new_event') }}
-        </UranusActionButton>
-      </UranusDashboardActionBar>
+        </UranusButton>
+      </div>
 
       <div v-if="organizationId" class="uranus-dashboard-card-grid uranus-max-layout">
         <UranusAdminEventCard
@@ -51,11 +54,11 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 import UranusAdminEventCard from '@/component/event/card/UranusAdminEventCard.vue'
-import UranusDashboardHero from "@/component/dashboard/UranusDashboardHero.vue"
-import UranusDashboardActionBar from "@/component/uranus/UranusDashboardActionBar.vue"
-import UranusNotification from "@/component/ui/UranusNotification.vue";
-import UranusActionButton from "@/component/ui/UranusActionButton.vue";
-import { useUranusAdminListEvents } from "@/composable/useUranusAdminListEvents.ts"
+import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
+import UranusDashboardActionBar from '@/component/uranus/UranusDashboardActionBar.vue'
+import UranusNotification from '@/component/ui/UranusNotification.vue'
+import { useUranusAdminListEvents } from '@/composable/useUranusAdminListEvents.ts'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()

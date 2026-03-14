@@ -1,10 +1,10 @@
 @use '_fonts';
+@use '_button';
 
 @use '_uranus_admin';
 @use '_uranus_app_menu';
 @use '_uranus_card';
 @use '_uranus_form';
-@use '_uranus_button';
 @use '_uranus_combo_tag';
 @use '_uranus_dashboard';
 @use '_uranus_value_info';
@@ -29,11 +29,11 @@
   --uranus-color: oklch(10% 0.02 var(--uranus-hue));
   --uranus-color-dimmed: oklch(50% 0.05 var(--uranus-hue));
   --uranus-bg: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-bg-dark: oklch(20% 0.03 var(--uranus-hue));
+  --uranus-bg-light: oklch(96% 0.008 var(--uranus-hue));
   --uranus-bg-d1: oklch(100% 0.0 var(--uranus-hue));
   --uranus-bg-d2: oklch(97% 0.01 var(--uranus-hue));
   --uranus-bg-d3: oklch(92% 0.014 var(--uranus-hue));
-  --uranus-dark-bg: oklch(20% 0.03 var(--uranus-hue));
-  --uranus-light-bg: oklch(96% 0.008 var(--uranus-hue));
 
   --uranus-link-color: oklch(50% 0.2 var(--uranus-link-hue));
   --uranus-link-color-hover: oklch(60% 0.2 var(--uranus-link-hue));
@@ -61,10 +61,15 @@
   --uranus-button-color-active: oklch(100% 0.0 var(--uranus-active-hue));
   --uranus-button-bg-active: var(--uranus-nav-bg-active);
 
-  --uranus-action-button-color: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-action-button-bg: oklch(50% 0.2 var(--uranus-hue));
-  --uranus-action-button-color-hover: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-action-button-bg-hover: oklch(44% 0.18 var(--uranus-hue));
+  --uranus-button-color: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-button-bg: oklch(50% 0.2 var(--uranus-hue));
+  --uranus-button-color-hover: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-button-bg-hover: oklch(44% 0.18 var(--uranus-hue));
+
+  --uranus-secondary-button-color: oklch(30% 0.16 var(--uranus-hue));
+  --uranus-secondary-button-bg: oklch(96% 0.006 var(--uranus-hue));
+  --uranus-secondary-button-color-hover: oklch(30% 0.2 var(--uranus-hue));
+  --uranus-secondary-button-bg-hover: oklch(90% 0.03 var(--uranus-hue));
 
   // Inputs & borders
   --uranus-input-color: oklch(10% 0.02 var(--uranus-hue));
@@ -171,8 +176,6 @@
   --uranus-notify-error-bg: #fee2e2;
   --uranus-notify-error-color: #ac1b1b;
 
-  // Secondary controls
-  --uranus-secondary-button-background-color: rgba(155, 32, 255, 0.12);
 
   // App menu
   --uranus-app-menu-width: 260px;
@@ -192,11 +195,11 @@
   --uranus-color: oklch(92% 0.02 var(--uranus-hue));
   --uranus-color-dimmed: oklch(74% 0.03 var(--uranus-hue));
   --uranus-bg: oklch(20% 0.03 var(--uranus-hue));
+  --uranus-bg-dark: oklch(20% 0.03 var(--uranus-hue));
+  --uranus-bg-light: oklch(96% 0.008 var(--uranus-hue));
   --uranus-bg-d1: oklch(22% 0.033 var(--uranus-hue));
   --uranus-bg-d2: oklch(30% 0.042 var(--uranus-hue));
   --uranus-bg-d3: oklch(35% 0.044 var(--uranus-hue));
-  --uranus-dark-bg: oklch(20% 0.03 var(--uranus-hue));
-  --uranus-light-bg: oklch(96% 0.008 var(--uranus-hue));
 
   --uranus-link-color: oklch(55% 0.18 var(--uranus-link-hue));
   --uranus-link-color-hover: oklch(50% 0.2 var(--uranus-link-hue));
@@ -220,13 +223,21 @@
   --uranus-dashboard-border-width: 1px;
   --uranus-dashboard-border-color: oklch(28% 0.04 var(--uranus-hue));
 
+
+  // Button colors
+  --uranus-button-color: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-button-bg: oklch(50% 0.16 var(--uranus-hue));
+  --uranus-button-color-hover: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-button-bg-hover: oklch(45% 0.16 var(--uranus-hue));
+
+  --uranus-secondary-button-color: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-secondary-button-bg: oklch(50% 0.16 var(--uranus-hue));
+  --uranus-secondary-button-color-hover: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-secondary-button-bg-hover: oklch(45% 0.16 var(--uranus-hue));
+
   --uranus-button-color-active: oklch(100% 0.0 var(--uranus-active-hue));
   --uranus-button-bg-active: oklch(36% 0.16 var(--uranus-active-hue));
 
-  --uranus-action-button-color: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-action-button-bg: oklch(50% 0.16 var(--uranus-hue));
-  --uranus-action-button-color-hover: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-action-button-bg-hover: oklch(45% 0.16 var(--uranus-hue));
 
   // Inputs & borders
   --uranus-input-color: oklch(90% 0.02 var(--uranus-hue));
@@ -271,8 +282,6 @@
   --uranus-app-menu-background: #0f172a;
   --uranus-app-menu-background-menu-bg: #0a1224;
   --uranus-app-menu-color: #f8fafc;
-
-  --uranus-secondary-button-background-color: rgba(155, 32, 255, 0.24);
 }
 
 *,
@@ -451,7 +460,7 @@ header {
 }
 
 .uranus-image-slot-dark-bg {
-  background: var(--uranus-dark-bg, black) !important;
+  background: var(--uranus-bg-dark, black) !important;
 }
 
 

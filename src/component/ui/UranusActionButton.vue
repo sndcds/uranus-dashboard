@@ -1,88 +1,73 @@
 <template>
-  <router-link
-      v-if="to"
-      :to="to"
-      class="uranus-action-button"
-      :class="stateClasses"
-      :aria-disabled="isDisabled || isDimmed"
-      @click="handleRouterClick"
-  >
-    <slot />
-  </router-link>
-
   <button
-      v-else-if="!to"
       :type="type"
-      :form="form"
-      class="uranus-action-button"
-      :class="stateClasses"
-      :disabled="isDisabled || isDimmed"
-      @click="handleButtonClick"
-  >
-    <slot />
-  </button>
-
-  <!-- Fallback div only if somehow neither of the above render -->
-  <div
-      v-else
-      class="uranus-action-button"
-      :class="stateClasses"
-      role="button"
-      tabindex="0"
-      :aria-disabled="isDisabled || isDimmed"
+      :class="['uranus-button', `uranus-button--${variant}`]"
+      :disabled="disabled || loading"
       @click="handleClick"
-      @keydown.enter.space.prevent="handleClick"
   >
-    <slot />
-  </div>
+    <span class="content">
+      <!-- Show loading text if loading -->
+      <span v-if="loading" class="loading-text">{{ loadingText }}</span>
+
+      <!-- Icon + slot text -->
+      <span v-else class="inner" :class="{ 'with-icon': icon }">
+        <component v-if="icon" :is="icon" class="icon" />
+        <span><slot /></span>
+      </span>
+    </span>
+  </button>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 
-const props = defineProps<{
-  to?: string
-  type?: 'button' | 'submit' | 'reset'
-  form?: string
-  disabled?: boolean
-  loading?: boolean
-  dimmed?: boolean
-}>()
+
+const props = defineProps({
+  type: {
+    type: String as () => 'button' | 'submit' | 'reset',
+    default: 'button'
+  },
+  variant: { type: String, default: 'primary' },
+  disabled: { type: Boolean, default: false },
+  loading: { type: Boolean, default: false },
+  loadingText: { type: String, default: 'Loading...' },
+  icon: { type: Object, default: null }, // pass a Lucide component
+})
 
 const emit = defineEmits<{
-  (e: 'click'): void
+  (e: 'click', event: MouseEvent): void
 }>()
 
-const isDisabled = computed(() => props.disabled || props.loading)
-const isDimmed = computed(() => props.dimmed)
-
-const stateClasses = computed(() => ({
-  'is-disabled': isDisabled.value,
-  'is-loading': props.loading,
-  'is-dimmed': isDimmed.value,
-}))
-
-// Emits click only if type !== submit
-function handleButtonClick(e: Event) {
-  if (isDisabled.value || isDimmed.value) return
-
-  if (props.type !== 'submit') {
-    emit('click')
-  }
-  // If type === submit, do nothing — native form submit happens automatically
-}
-
-// Generic click for fallback div
-function handleClick(e?: Event) {
-  if (isDisabled.value || isDimmed.value) return
-  emit('click')
-}
-
-// Router-link disabled handling
-function handleRouterClick(e: Event) {
-  if (isDisabled.value || isDimmed.value) {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+function handleClick(event: MouseEvent) {
+  if (!props.disabled && !props.loading) emit('click', event)
 }
 </script>
+
+<style scoped>
+.uranus-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.uranus-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.inner.with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.icon {
+  width: 1em;
+  height: 1em;
+}
+</style>

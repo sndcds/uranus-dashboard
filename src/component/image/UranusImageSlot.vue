@@ -183,8 +183,8 @@ onMounted(loadMeta)
 
 <style lang="scss">
 .image-card {
-  &.light { background: var(--uranus-light-bg); }
-  &.dark { background: var(--uranus-dark-bg); }
+  &.light { background: var(--uranus-bg-light); }
+  &.dark { background: var(--uranus-bg-dark); }
   &.padded { padding: 12px; }
 }
 

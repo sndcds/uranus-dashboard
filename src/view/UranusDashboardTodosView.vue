@@ -18,11 +18,11 @@
       {{ t('todo_empty_message') }}
     </UranusNotification>
 
-    <UranusDashboardActionBar>
-      <UranusActionButton @click="openCreate">
+    <div>
+      <UranusButton @click="openCreate">
         {{ t('add_todo') }}
-      </UranusActionButton>
-    </UranusDashboardActionBar>
+      </UranusButton>
+    </div>
 
     <!-- Error -->
     <div v-if="error" class="todo-dashboard-view__error">
@@ -59,7 +59,7 @@ import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusTodoListItem from '@/component/todo/UranusTodoListItem.vue'
 import UranusDashboardActionBar from '@/component/uranus/UranusDashboardActionBar.vue'
 import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
-import UranusActionButton from '@/component/ui/UranusActionButton.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n()
 

@@ -8,9 +8,6 @@
         :subtitle="t('dashboard_hero_description')"
     />
 
-    <UranusDashboardActionBar>
-    </UranusDashboardActionBar>
-
     <UranusDashboardNotifications />
   </div>
 </template>

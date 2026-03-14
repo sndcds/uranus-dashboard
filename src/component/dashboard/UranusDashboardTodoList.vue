@@ -2,11 +2,11 @@
   UranusDashboardTodoList.vue
 -->
 <template>
-  <UranusDashboardActionBar>
-    <UranusActionButton :disabled="todoLoading" @click="startAddingTodo">
+  <div>
+    <UranusButton :disabled="todoLoading" @click="startAddingTodo">
       {{ t('dashboard_todo_add') }}
-    </UranusActionButton>
-  </UranusDashboardActionBar>
+    </UranusButton>
+  </div>
 
   <section class="todo-panel">
     <transition name="fade">
@@ -84,21 +84,21 @@
                     {{ t('dashboard_todo_due') }}: {{ formatTodoDueDate(todo.dueDate) }}
                 </p>
                 <div class="todo-item__footer">
-                  <UranusDashboardButton
+                  <UranusButton
                       class="uranus-button"
                       icon="edit"
                       @click="startEditingTodo(todo)"
                   >
                     {{ t('edit') }}
-                  </UranusDashboardButton>
+                  </UranusButton>
 
-                  <UranusDashboardButton
+                  <UranusButton
                       class="uranus-button"
                       icon="delete"
                       @click="deleteTodo(todo)"
                   >
                     {{ t('delete') }}
-                  </UranusDashboardButton>
+                  </UranusButton>
                 </div>
                 <!--/article-->
             </template>
@@ -149,9 +149,7 @@ import { apiFetch } from '@/api.ts'
 
 import UranusCard from "@/component/ui/UranusCard.vue";
 import UranusDashboardTodoForm from '@/component/dashboard/UranusDashboardTodoForm.vue'
-import UranusDashboardButton from "@/component/dashboard/UranusDashboardButton.vue";
-import UranusDashboardActionBar from "@/component/uranus/UranusDashboardActionBar.vue";
-import UranusActionButton from "@/component/ui/UranusActionButton.vue";
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 interface Todo {
     todo_id: number

@@ -26,13 +26,11 @@
 
     <template v-else>
       <div v-if="!isLoading" class="uranus-main-layout">
-        <UranusDashboardActionBar
-            v-if="organizationVenueInfos && organizationVenueInfos.canAddVenue"
-        >
-          <UranusActionButton :to="`/admin/organization/${organizationId}/venue/create`">
+        <div v-if="organizationVenueInfos && organizationVenueInfos.canAddVenue">
+          <UranusButton :to="`/admin/organization/${organizationId}/venue/create`">
             {{ t('venue_add') }}
-          </UranusActionButton>
-        </UranusDashboardActionBar>
+          </UranusButton>
+        </div>
 
         <!-- Error Message, Todo: Implement errors -->
         <div v-if="error" class="organization-venue-view__error">
@@ -62,10 +60,10 @@ import { mapApiOrganizationVenueInfosToModel } from '@/model/uranusVenueInfo.ts'
 
 
 import UranusVenueCard from '@/component/venue/UranusVenueCard.vue'
-import UranusDashboardHero from "@/component/dashboard/UranusDashboardHero.vue"
-import UranusDashboardActionBar from "@/component/uranus/UranusDashboardActionBar.vue"
-import UranusNotification from "@/component/ui/UranusNotification.vue";
-import UranusActionButton from "@/component/ui/UranusActionButton.vue";
+import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
+import UranusDashboardActionBar from '@/component/uranus/UranusDashboardActionBar.vue'
+import UranusNotification from '@/component/ui/UranusNotification.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n()
 const appStore = useAppStore()

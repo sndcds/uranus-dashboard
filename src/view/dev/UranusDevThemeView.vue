@@ -24,27 +24,27 @@
     <section>
       <h2>UranusActionButton</h2>
       <div class="grid">
-        <UranusActionButton @click="">Action Button</UranusActionButton>
+        <UranusButton @click="">Action Button</UranusButton>
 
-        <UranusActionButton
+        <UranusButton
             :to="`/dev-theme-view`"
         >
           Router Link
-        </UranusActionButton>
+        </UranusButton>
 
-        <UranusActionButton type="submit" form="formId" :loading="true">
+        <UranusButton type="submit" form="formId" :loading="true">
           Submit Button Loading ...
-        </UranusActionButton>
+        </UranusButton>
 
-        <UranusActionButton dimmed>
+        <UranusButton dimmed>
           Coming Soon
-        </UranusActionButton>
+        </UranusButton>
       </div>
 
       <h3>Colors</h3>
       <div class="grid">
-        <UranusDevColorSwatch bgVar="--uranus-action-button-bg" colorVar="--uranus-action-button-color" />
-        <UranusDevColorSwatch bgVar="--uranus-action-button-bg-hover" colorVar="--uranus-action-button-color-hover" />
+        <UranusDevColorSwatch bgVar="--uranus-button-bg" colorVar="--uranus-button-color" />
+        <UranusDevColorSwatch bgVar="--uranus-button-bg-hover" colorVar="--uranus-button-color-hover" />
       </div>
     </section>
 
@@ -52,9 +52,9 @@
     <section>
       <h2>UranusDashboardButton</h2>
       <div class="grid card">
-        <UranusDashboardButton class="" icon="edit">Button</UranusDashboardButton>
-        <UranusDashboardButton class="tiny" icon="delete">Tiny Button</UranusDashboardButton>
-        <UranusDashboardButton class="active" icon="delete">Active Button</UranusDashboardButton>
+        <UranusButton class="" icon="edit">Button</UranusButton>
+        <UranusButton class="tiny" icon="delete">Tiny Button</UranusButton>
+        <UranusButton class="active" icon="delete">Active Button</UranusButton>
       </div>
     </section>
 
@@ -74,9 +74,8 @@
 
 <script setup lang="ts">
 import UranusDevColorSwatch from '@/component/dev/UranusDevColorSwatch.vue'
-import UranusActionButton from '@/component/ui/UranusActionButton.vue'
-import UranusDashboardButton from '@/component/dashboard/UranusDashboardButton.vue'
-import UranusDevHueSamples from "@/view/dev/UranusDevHueSamples.vue";
+import UranusDevHueSamples from '@/view/dev/UranusDevHueSamples.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 
 </script>

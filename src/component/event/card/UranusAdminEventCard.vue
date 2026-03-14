@@ -50,25 +50,26 @@
         </span>
       </span>
 
-      <!-- Actions -->
       <div class="uranus-dashboard-event-card-actions">
-        <UranusDashboardButton
+        <UranusButton
             v-if="event.canEditEvent"
-            class="uranus-button tiny"
-            icon="edit"
+            size="small"
+            variant="secondary"
             :to="`/admin/event/${event.id}`"
         >
+          <template #icon><Pencil /></template>
           {{ t('edit') }}
-        </UranusDashboardButton>
+        </UranusButton>
 
-        <UranusDashboardButton
+        <UranusButton
             v-if="event.canDeleteEvent"
-            class="uranus-button tiny"
-            icon="delete"
+            size="small"
+            variant="secondary"
             @click.prevent.stop="requestDelete(event)"
         >
+          <template #icon><Trash /></template>
           {{ t('delete') }}
-        </UranusDashboardButton>
+        </UranusButton>
       </div>
 
     </div>
@@ -101,17 +102,16 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { ApiError } from '@/api.ts'
-import {
-  uranusFormatEventDateTime
-} from '@/util/UranusUtils.ts'
+import {uranusFormatEventDateTime } from '@/util/UranusUtils.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from "@/component/ui/UranusCard.vue";
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
-import UranusDashboardButton from '@/component/dashboard/UranusDashboardButton.vue'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import type { UranusAdminListEvent } from '@/domain/event/UranusAdminListEvent.ts'
 import type { UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTypePair.ts'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import { Pencil, Trash } from 'lucide-vue-next'
 
 const placeholderImage = '/public/uranus-pevent-laceholder.webp'
 

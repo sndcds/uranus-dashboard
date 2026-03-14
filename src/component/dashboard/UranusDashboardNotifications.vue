@@ -43,13 +43,13 @@
             </li>
           </ul>
           <p class="event-actions">
-            <UranusDashboardButton
+            <UranusButton
                 class="uranus-button tiny"
                 icon="edit"
                 :to="`/admin/event/${notification.event_id}`"
             >
               {{ t('edit') }}
-            </UranusDashboardButton>
+            </UranusButton>
           </p>
         </article>
       </div>
@@ -61,8 +61,8 @@
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import UranusDashboardButton from '@/component/dashboard/UranusDashboardButton.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 interface Notification {
   event_id: number

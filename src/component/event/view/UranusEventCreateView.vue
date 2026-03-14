@@ -26,12 +26,12 @@
     </label>
 
     <div class="button-bar full-width">
-      <UranusActionButton
+      <UranusButton
           :disabled="eventTitle.trim().length === 0"
           @click="onCreate"
       >
         Jetzt erstellen
-      </UranusActionButton>
+      </UranusButton>
     </div>
   </section>
 
@@ -45,7 +45,7 @@ import router from '@/router/index.ts'
 import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusActionButton from '@/component/ui/UranusActionButton.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n()
 

@@ -17,23 +17,23 @@
 
     <div class="uranus-card-button-container">
 
-      <UranusDashboardButton
+      <UranusButton
           v-if="venueInfo.canEditEvent"
           class="uranus-button tiny"
           icon="edit"
           :to="`/admin/organization/${organizationId}/venue/${venueInfo.venueId}/edit`"
       >
         {{ t('edit') }}
-      </UranusDashboardButton>
+      </UranusButton>
 
-      <UranusDashboardButton
+      <UranusButton
           v-if="venueInfo.canDeleteEvent"
           class="uranus-button tiny"
           icon="delete"
           @click="onDeleteEvent(venueInfo)"
       >
         {{ t('delete') }}
-      </UranusDashboardButton>
+      </UranusButton>
 
     </div>
 
@@ -108,11 +108,11 @@ import { useI18n } from "vue-i18n"
 import { apiFetch } from '@/api.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
-import UranusCard from "@/component/ui/UranusCard.vue"
-import UranusIconAction from "@/component/ui/UranusIconAction.vue"
-import UranusDashboardButton from "@/component/dashboard/UranusDashboardButton.vue"
-import { buildPlutoImageUrl } from "@/util/UranusUtils.ts"
-import type { UranusVenueInfo, VenueInfoSpaceInfo } from "@/model/uranusVenueInfo.ts"
+import UranusCard from '@/component/ui/UranusCard.vue'
+import UranusIconAction from '@/component/ui/UranusIconAction.vue'
+import { buildPlutoImageUrl } from '@/util/UranusUtils.ts'
+import type { UranusVenueInfo, VenueInfoSpaceInfo } from '@/model/uranusVenueInfo.ts'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n()
 

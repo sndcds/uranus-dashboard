@@ -4,55 +4,55 @@
     <!-- Toolbar -->
     <div class="control-group button-group">
       <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
-        <Bold :size="20" />
+        <Bold :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().toggleItalic().run()" :class="{ 'is-active': editor.isActive('italic') }">
-        <Italic :size="20" />
+        <Italic :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().toggleStrike().run()" :class="{ 'is-active': editor.isActive('strike') }">
-        <Strikethrough :size="20" />
+        <Strikethrough :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().toggleCode().run()" :class="{ 'is-active': editor.isActive('code') }">
-        <Code :size="20" />
+        <Code :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().unsetAllMarks().run()">
-        <Trash2 :size="20" />
+        <Trash2 :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().clearNodes().run()">
-        <XCircle :size="20" />
+        <XCircle :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().setParagraph().run()" :class="{ 'is-active': editor.isActive('paragraph') }">
-        <Type :size="20" />
+        <Type :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }">
-        <Heading1 :size="20" />
+        <Heading1 :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }">
-        <Heading2 :size="20" />
+        <Heading2 :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().toggleBulletList().run()" :class="{ 'is-active': editor.isActive('bulletList') }">
-        <List :size="20" />
+        <List :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().toggleOrderedList().run()" :class="{ 'is-active': editor.isActive('orderedList') }">
-        <ListOrdered :size="20" />
+        <ListOrdered :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().toggleCodeBlock().run()" :class="{ 'is-active': editor.isActive('codeBlock') }">
-        <SquareCode :size="20" />
+        <SquareCode :size="iconSize" />
       </button>
 
       <button @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': editor.isActive('blockquote') }">
-        <Quote :size="20" />
+        <Quote :size="iconSize" />
       </button>
     </div>
 
@@ -76,6 +76,8 @@ import { ListItem } from '@tiptap/extension-list'
 import TurndownService from 'turndown'
 import MarkdownIt from 'markdown-it'
 
+
+const iconSize = 16;
 
 const md = new MarkdownIt()
 const turndown = new TurndownService({
@@ -147,10 +149,6 @@ export default {
   color: var(--uranus-color);
 }
 
-.control-group {
-
-}
-
 .button-group {
   display: flex;
   flex-wrap: wrap;
@@ -159,15 +157,14 @@ export default {
 }
 
 button {
-  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
   border-radius: 4px;
   border: 1px solid var(--uranus-input-border-color);
   background: var(--uranus-bg);
   cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 button.is-active {

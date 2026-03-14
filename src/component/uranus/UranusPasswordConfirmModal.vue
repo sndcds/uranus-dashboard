@@ -37,12 +37,12 @@
 
     <template #actions>
       <div class="modal-actions">
-        <UranusActionButton type="button" @click="$emit('cancel')">
+        <UranusButton type="button" @click="$emit('cancel')">
           {{ t('cancel') }}
-        </UranusActionButton>
-        <UranusActionButton type="submit" :form="formId" :disabled="isSubmitting">
+        </UranusButton>
+        <UranusButton type="submit" :form="formId" :disabled="isSubmitting">
           {{ isSubmitting ? loadingText : confirmText }}
-        </UranusActionButton>
+        </UranusButton>
       </div>
     </template>
   </UranusModal>
@@ -53,11 +53,11 @@ import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import UranusModal from '@/component/uranus/UranusModal.vue'
-import UranusRadioButton from "@/component/ui/UranusRadioButton.vue";
-import UranusActionButton from "@/component/ui/UranusActionButton.vue";
-import UranusFormRow from "@/component/ui/UranusFormRow.vue";
-import UranusPasswordInput from "@/component/ui/UranusPasswordInput.vue";
-import UranusErrorMessage from "@/component/ui/UranusErrorMessage.vue";
+import UranusRadioButton from '@/component/ui/UranusRadioButton.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusPasswordInput from '@/component/ui/UranusPasswordInput.vue'
+import UranusErrorMessage from '@/component/ui/UranusErrorMessage.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 

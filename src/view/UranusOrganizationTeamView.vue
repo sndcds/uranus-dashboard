@@ -73,23 +73,23 @@
                             </div>
 
                             <div class="team-member__actions">
-                              <UranusDashboardButton
+                              <UranusButton
                                   v-if="true"
                                   class="uranus-tertiary-button"
                                   icon="delete"
                                   @click.prevent.stop="removeMember(member)"
                               >
                                 {{ t('delete') }}
-                              </UranusDashboardButton>
+                              </UranusButton>
 
-                              <UranusDashboardButton
+                              <UranusButton
                                   v-if="true"
                                   class="uranus-tertiary-button"
                                   icon="edit"
                                   :to="`/admin/organization/${organizationId}/member/${member.member_id}/permissions`"
                               >
                                 {{ t('edit') }}
-                              </UranusDashboardButton>
+                              </UranusButton>
                             </div>
                         </li>
                     </ul>
@@ -199,7 +199,7 @@ import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusFieldLabel from '@/component/ui/UranusFieldLabel.vue'
 import UranusTextInput from '@/component/ui/UranusTextInput.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
-import UranusDashboardButton from "@/component/dashboard/UranusDashboardButton.vue";
+import UranusButton from "@/component/ui/UranusButton.vue";
 
 interface OrganizationTeamRole {
     id: number

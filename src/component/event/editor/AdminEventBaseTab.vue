@@ -8,6 +8,12 @@
   <section class="base-tab">
     <UranusForm>
 
+      <UranusEventCategorySelector
+          v-model="selectedCategories"
+          :multiple="true"
+      />
+      <p>Selected IDs: {{ selectedCategories }}</p>
+
       <UranusFormRow>
         <UranusFieldLabel id="event-language" :label="t('content_language')">
           <UranusLanguageSelect
@@ -52,6 +58,19 @@
         </UranusFieldLabel>
       </UranusFormRow>
 
+      <UranusButton variant="primary" :loading="saving" loading-text="Saving...">
+        <template #icon>
+          <Save />
+        </template>
+        Save
+      </UranusButton>
+
+      <UranusButton variant="danger" icon-position="right" @click="deleteItem">
+        Delete
+        <template #icon>
+          <Trash />
+        </template>
+      </UranusButton>
 
       <!-- Buttons -->
       <div class="tab-actions">
@@ -75,19 +94,22 @@ import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 
 import UranusLanguageSelect from '@/component/ui/UranusLanguageSelect.vue'
 import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
-import UranusImageSlot from "@/component/image/UranusImageSlot.vue";
+import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
 
-import type { UranusAdminEvent } from "@/domain/event/UranusAdminEvent.ts"
-import UranusFieldLabel from "@/component/ui/UranusFieldLabel.vue";
-import UranusTextfield from "@/component/ui/UranusTextfield.vue";
-import UranusForm from "@/component/ui/UranusForm.vue";
-import UranusFormRow from "@/component/ui/UranusFormRow.vue";
+import type { UranusAdminEvent } from '@/domain/event/UranusAdminEvent.ts'
+import UranusFieldLabel from '@/component/ui/UranusFieldLabel.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import { Save, Trash } from 'lucide-vue-next'
+import UranusEventCategorySelector from '@/component/event/ui/UranusEventCategorySelector.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
 const event = computed(() => store.draft!)
 
-const showReleaseModal = ref(false)
+const selectedCategories = ref<number[]>([1,3]) // preselected
 
 // Description editor
 const descriptionEditor = ref<InstanceType<typeof UranusTextEditor> | null>(null)
@@ -100,12 +122,6 @@ const descriptionProxy = computed({
 const summaryProxy = computed({
   get: () => store.draft?.summary ?? '',
   set: (val: string) => { if (store.draft) store.draft.summary = val }
-})
-
-// Dirty tracking
-const isDescriptionDirty = computed(() => {
-  if (!store.draft || !store.original) return false
-  return store.draft.description !== store.original.description
 })
 
 const draftContentLanguage = computed({

@@ -19,9 +19,9 @@
       {{ t('organization_no_membership_message') }}
     </UranusNotification>
 
-    <UranusDashboardActionBar>
-      <UranusActionButton to="/admin/organization/create">{{ t('create_organization') }}</UranusActionButton>
-    </UranusDashboardActionBar>
+    <div>
+      <UranusButton to="/admin/organization/create">{{ t('create_organization') }}</UranusButton>
+    </div>
 
 
     <!-- Error Message -->
@@ -50,7 +50,7 @@ import UranusOrganizationCard from '@/component/organization/UranusOrganizationC
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusDashboardActionBar from '@/component/uranus/UranusDashboardActionBar.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
-import UranusActionButton from '@/component/ui/UranusActionButton.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n()
 

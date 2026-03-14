@@ -31,32 +31,32 @@
         {{ appStore.organizationId === organization.organization_id ? t('organization_active') : t('organization_activate') }}
       </button>
 
-      <UranusDashboardButton
+      <UranusButton
           v-if="organization.can_edit_organization"
           class="tiny"
           :to="`/admin/organization/${organization.organization_id}/edit`"
           icon="edit"
       >
         {{ t('edit') }}
-      </UranusDashboardButton>
+      </UranusButton>
 
-      <UranusDashboardButton
+      <UranusButton
           v-if="organization.can_delete_organization"
           class="tiny"
           icon="delete"
           @click="deleteOrganization(organization.organization_id)"
       >
         {{ t('delete') }}
-      </UranusDashboardButton>
+      </UranusButton>
 
-      <UranusDashboardButton
+      <UranusButton
           v-if="organization.can_manage_team"
           class="tiny"
           icon="organization"
           :to="`/admin/organization/${organization.organization_id}/team`"
       >
         {{ t('manage_team') }}
-      </UranusDashboardButton>
+      </UranusButton>
     </div>
 
 
@@ -82,9 +82,8 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
-import UranusDashboardButton from "@/component/dashboard/UranusDashboardButton.vue";
-import UranusNumberDisplay from "@/component/ui/UranusNumberDisplay.vue";
-import {buildPlutoImageUrl, buildPlutoPreviewImageUrl} from "@/util/UranusUtils.ts";
+import { buildPlutoImageUrl } from "@/util/UranusUtils.ts";
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const appStore = useAppStore()
 const { t } = useI18n()
