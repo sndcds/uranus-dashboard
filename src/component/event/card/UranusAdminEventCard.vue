@@ -8,21 +8,41 @@
 
 <template>
   <UranusCard class="uranus-dashboard-card">
-    <div class="uranus-dashboard-event-card-layout">
+    <div class="card-head">
+      <div >
+        <h2>{{ event.title }}</h2>
+      </div>
+      <div class="card-status">
+        <UranusEventReleaseChip :releaseStatus="event.releaseStatus ?? ''" :tiny="true"/>
+        <UranusEventCategoryDisplay v-if="event.categories" :categories="event.categories" />
+        <span v-if="event.seriesTotal && event.seriesTotal > 1">
+          {{ event.seriesIndex }} {{ t('one_of_n') }} {{ event.seriesTotal }}
+        </span>
+        <span v-else>1</span>
+      </div>
+    </div>
 
-      <!-- Event Image -->
+    <div class="uranus-event-card-layout">
       <img
           v-if="event.imageUrl"
-          class="uranus-dashboard-event-card-image"
+          class="uranus-event-card-image"
           :src="event.imageUrl + '?width=160&ratio=16:9'"
           :alt="event.title"
           @error="onImageError"
       />
 
-      <!-- Event Info -->
+      <div class="uranus-dashboard-chip-wrapper">
+        <span
+            v-for="eventType in event.eventTypes ?? []"
+            :key="eventType?.typeId ?? ''"
+            class="uranus-dashboard-chip tiny"
+        >
+          {{ eventTypeGenreString(eventType) }}
+        </span>
+      </div>
+
       <div>
-        <h3>{{ event.title }}</h3>
-        <span>
+        <span><strong>
           {{ uranusFormatEventDateTime(
             event.startDate,
             event.startTime,
@@ -30,7 +50,7 @@
             event.endTime,
             locale
         ) }}
-        </span><br>
+        </strong></span><br>
         <span>{{ t('event_organizer')}}: {{ event.organizationName }}</span><br>
 
         <span v-if="hasVenue">
@@ -39,18 +59,16 @@
         </span>
       </div>
 
-      <!-- Event Types -->
-      <span class="uranus-dashboard-chip-wrapper">
-        <span
-            v-for="eventType in event.eventTypes ?? []"
-            :key="eventType?.typeId ?? ''"
-            class="uranus-dashboard-chip tiny"
+      <div class="uranus-event-card-actions">
+        <UranusButton
+            size="small"
+            variant="secondary"
+            :to="`/event/${event.id}/date/${event.dateId}`"
         >
-          {{ eventTypeGenreString(eventType) }}
-        </span>
-      </span>
+          <template #icon><Eye /></template>
+          {{ t('preview') }}
+        </UranusButton>
 
-      <div class="uranus-dashboard-event-card-actions">
         <UranusButton
             v-if="event.canEditEvent"
             size="small"
@@ -76,10 +94,7 @@
 
     <!-- Release / Series Status -->
     <div class="_status-box">
-      <UranusEventReleaseChip :releaseStatus="event.releaseStatus ?? ''" :tiny="true"/>
-      <span v-if="event.seriesTotal && event.seriesTotal > 1">
-        {{ event.seriesIndex }} {{ t('one_of_n') }} {{ event.seriesTotal }}
-      </span>
+
     </div>
   </UranusCard>
 
@@ -111,7 +126,8 @@ import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import type { UranusAdminListEvent } from '@/domain/event/UranusAdminListEvent.ts'
 import type { UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTypePair.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { Pencil, Trash } from 'lucide-vue-next'
+import { Eye, Pencil, Trash } from 'lucide-vue-next'
+import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
 
 const placeholderImage = '/public/uranus-pevent-laceholder.webp'
 
@@ -240,27 +256,34 @@ const confirmDelete = async ({password, selectedOption}: {
   }
 }
 </script>
+<style>
+.uranus-dashboard-card {
+  padding: 0 !important;
+  gap: 0 !important;
+}
+</style>
 
 <style scoped lang="scss">
-.uranus-dashboard-event-card-layout {
+.uranus-event-card-layout {
   display: flex;
   flex-direction: column;
+  padding: 0.5rem;
+  padding-bottom: 40px;
   gap: 6px;
   span {
-    font-size: 0.9em;
+    font-size: 1em;
   }
 }
 
-.uranus-dashboard-event-card-image {
+.uranus-event-card-image {
   display: block;
   width: 160px;
   aspect-ratio: 16 / 9;
   border-radius: var(--uranus-tiny-border-radius);
   object-fit: cover;
-  margin-bottom: 8px;
 }
 
-.uranus-dashboard-event-card-actions {
+.uranus-event-card-actions {
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
@@ -272,13 +295,31 @@ const confirmDelete = async ({password, selectedOption}: {
   padding: 8px;
 }
 
-._status-box {
+
+.card-head {
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  align-items: center;
-  gap: 8px;
+  padding: 0.5rem;
+  min-height:32px;
+  border-bottom: 1px solid var(--uranus-dashboard-border-color);
 }
+
+.card-status {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  gap: 0.5rem;
+  min-height:32px;
+}
+
+.card-status > :last-child {
+  margin-left: auto;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+
 </style>

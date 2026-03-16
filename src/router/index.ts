@@ -3,9 +3,9 @@ import type { RouteLocationNormalized } from 'vue-router'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 
 import UranusDashboardView from '@/view/UranusDashboardView.vue'
-import UranusDashboardTodosView from '@/view/UranusDashboardTodosView.vue'
+import UranusAdminTodoListView from '@/view/UranusAdminTodoListView.vue'
 import UranusLoginView from '@/view/UranusLoginView.vue'
-import UranusDashboardVenuesView from '@/view/UranusDashboardVenuesView.vue'
+import UranusAdminVenueListView from '@/component/venue/view/UranusAdminVenueListView.vue'
 import UranusSignupView from '@/view/UranusSignupView.vue'
 import UranusSpaceCreateView from '@/component/space/view/UranusSpaceCreateView.vue'
 import UranusSpaceEditView from '@/component/space/view/UranusSpaceEditView.vue'
@@ -26,16 +26,16 @@ import UranusEventSlideshowView from '@/view/public/UranusEventSlideshowView.vue
 import UranusDevThemeView from '@/view/dev/UranusDevThemeView.vue'
 
 import GenericLayout from '@/component/layout/GenericLayout.vue'
-import UranusDashboardOrganizationsView from '@/view/admin/organization/UranusDashboardOrganizationsView.vue'
+import UranusAdminOrganizationListView from '@/component/organization/view/UranusAdminOrganizationListView.vue'
 import UranusOrganizationEditView from "@/view/admin/organization/UranusOrganizationEditView.vue";
 import UranusOrganizationCreateView from "@/view/admin/organization/UranusOrganizationCreateView.vue";
 import UranusVenueCreateView from "@/view/admin/venue/UranusVenueCreateView.vue";
 import UranusVenueEditView from "@/view/admin/venue/UranusVenueEditView.vue";
-import UranusAdminEventsListView from '@/component/event/view/UranusAdminEventsListView.vue'
+import UranusAdminEventListView from '@/component/event/view/UranusAdminEventListView.vue'
 import UranusEventCreateView from "@/component/event/view/UranusEventCreateView.vue";
 import UranusEventEditView from '@/component/event/view/UranusEventEditView.vue'
-import UranusDevGetEventsView from "@/component/dev/UranusDevGetEventsView.vue";
-import UranusMapView from "@/view/public/UranusMapView.vue";
+import UranusDevGetEventsView from '@/component/dev/UranusDevGetEventsView.vue'
+import UranusMapView from '@/view/public/UranusMapView.vue'
 
 
 const routes = [
@@ -56,12 +56,12 @@ const routes = [
             {
                 path: 'todo-list',
                 name: 'admin-todo-list',
-                component: UranusDashboardTodosView,
+                component: UranusAdminTodoListView,
             },
             {
                 path: 'organizations',
                 name: 'admin-organizations',
-                component: UranusDashboardOrganizationsView,
+                component: UranusAdminOrganizationListView,
             },
             {
                 path: 'organization/create',
@@ -101,12 +101,12 @@ const routes = [
             {
                 path: 'organization/:id/venues',
                 name: 'admin-venues',
-                component: UranusDashboardVenuesView,
+                component: UranusAdminVenueListView,
             },
             {
                 path: 'organization/:id/events',
                 name: 'admin-organization-events',
-                component: UranusAdminEventsListView,
+                component: UranusAdminEventListView,
             },
             {
                 path: 'organization/:id/event/create',

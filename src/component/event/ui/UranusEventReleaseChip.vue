@@ -7,7 +7,7 @@
 -->
 
 <template>
-  <div v-if="releaseStatus" :class="['event-meta__row', sizeClass]">
+  <div v-if="releaseStatus" :class="[sizeClass]">
     <span
         class="release-status-chip"
         :class="[colorClass, sizeClass]"
@@ -98,13 +98,6 @@ const date = computed(() => props.date ?? '')
 .variant--big.release-status-chip {
   font-size: 1rem;
   padding: 0.5rem 1rem;
-}
-
-.event-meta__row {
-  display: flex;
-  width: max-content;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .event-meta__label {

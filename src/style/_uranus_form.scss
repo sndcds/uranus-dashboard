@@ -28,6 +28,7 @@
 .uranus-label {
   display: flex;
   flex-direction: column;
+  padding-top: 0.25rem;
   gap: 4px;
 }
 
@@ -52,25 +53,18 @@
 
 .uranus-form-row {
   display: flex;
-  gap: 12px;
   flex-wrap: wrap; // allow items to move to next line if needed
+  gap: 12px;
   overflow: hidden;
-  /* hide overflow if needed */
   text-overflow: ellipsis;
-  /* optional: show ... */
 
-  // children (select, inputs) shrink if space is limited
   >* {
-    flex: 1 1 auto; // flex-grow:1, flex-shrink:1, flex-basis:auto
-    //min-width: 120px; // optional: don't shrink below 120px
+    flex: 1 1 auto;
   }
 }
 
-/* Make each textfield inside the row grow */
 .uranus-form-row > .uranus-textfield-wrapper {
   flex: 1;
-  /* grow to fill row */
-  //min-width: 150px;  /* optional: prevent too small inputs */
   margin: 0;
 }
 

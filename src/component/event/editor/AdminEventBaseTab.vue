@@ -82,6 +82,7 @@
 
       </div>
 
+      {{ JSON.stringify(store.draft!.categories, null, 2) }}
     </UranusForm>
   </section>
 </template>

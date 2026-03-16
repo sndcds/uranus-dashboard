@@ -35,20 +35,6 @@ const props = defineProps({
 </script>
 
 <style lang="scss">
-.label-text2 {
-  padding-left: 10px;
-  margin: 0;
-  font-weight: 400;
-  font-size: 0.9rem;
-  color: var(--uranus-color-dimmed);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-
-
-
 .uranus-field-error {
   margin: 0;
   color: var(--uranus-required-color);

@@ -11,6 +11,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Events',
         da: 'Begivenheder',
     },
+    event_title: {
+        de: 'Titel',
+        en: 'Title',
+        da: 'Overskrift',
+    },
     event_category: {
         de: 'Kategorie',
         en: 'Category',
@@ -40,6 +45,22 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Alle Events',
         en: 'All events',
         da: 'Alle begivenheder',
+    },
+    create_event: {
+        de: 'Neues Event erstellen',
+        en: 'Create a new event',
+        da: 'Opret en ny begivenheder',
+    },
+    create_event_definition: {
+        de: 'Ein Event ist ein Ereignis, das an einer Spielstätte stattfindet,\n' +
+            'z. B. ein Konzert, Theaterstück oder Workshop.\n' +
+            'Trage den genauen Titel des Events ein. Danach kannst du alle Details bearbeiten.',
+        en: 'An event is an occurrence taking place at a venue,\n' +
+            'e.g., a concert, theater performance, or workshop.\n' +
+            'Enter the exact title of the event. Afterwards, you can edit all details.',
+        da: 'En begivenhed er en hændelse, der finder sted på et sted,\n' +
+            'f.eks. en koncert, teaterforestilling eller workshop.\n' +
+            'Indtast den præcise titel på begivenheden. Derefter kan du redigere alle detaljer.',
     },
     edit_event: {
         de: 'Event bearbeiten',

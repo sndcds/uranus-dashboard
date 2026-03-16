@@ -7,7 +7,7 @@ import { uranusI18nOrganizationTranslations } from '@/i18n/uranus-i18n-organizat
 import { uranusI18nImageTranslations } from '@/i18n/uranus-i18n-image.ts'
 import { uranusI18nVenueTranslations } from '@/i18n/uranus-i18n-venue.ts'
 import { uranusI18nSpaceTranslations } from '@/i18n/uranus-i18n-space.ts'
-import { uranusI18nEventTranslations } from '@/i18n/uranus-i18n-event.ts'
+import { uranusI18nEventTranslations } from '@/i18n/event.ts'
 import { uranusI18nCalendarViewTranslations } from '@/i18n/uranus-i18n-calendar-view.ts'
 import { uranusI18nAccessibilityTranslations } from '@/i18n/uranus-i18n-accessibility.ts'
 import { uranusI18nVisitorInformationTranslations } from '@/i18n/uranus-i18n-visitor-information.ts'

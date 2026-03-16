@@ -1,5 +1,5 @@
 <!--
-  src/view/admin/UranusAdminEventsListView.vue
+  src/component/event/view/UranusAdminEventListView.vue
 -->
 
 <template>
@@ -55,7 +55,6 @@ import { useI18n } from 'vue-i18n'
 
 import UranusAdminEventCard from '@/component/event/card/UranusAdminEventCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusDashboardActionBar from '@/component/uranus/UranusDashboardActionBar.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import { useUranusAdminListEvents } from '@/composable/useUranusAdminListEvents.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'

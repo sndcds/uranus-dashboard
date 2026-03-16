@@ -7,6 +7,7 @@ export interface UranusAdminListEvent {
     dateId: number
     releaseStatus?: string | null
     releaseDate?: string | null
+    categories: number[] | null
     canEditEvent: boolean
     canDeleteEvent: boolean
     canReleaseEvent: boolean

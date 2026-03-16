@@ -25,8 +25,12 @@
                     </header>
 
                     <UranusFormRow class="team-toolbar">
-                        <UranusTextInput id="team-search" v-model="searchQuery" :placeholder="t('organization_team_search_placeholder')"
-                            :label="t('organization_team_search_label')" />
+                        <UranusTextInput
+                            id="team-search"
+                            v-model="searchQuery"
+                            :placeholder="t('organization_team_search_placeholder')"
+                            :label="t('organization_team_search_label')"
+                        />
 
                         <div class="uranus-textfield-wrapper team-role-filter">
                             <UranusLabel id="team-role-filter-select"

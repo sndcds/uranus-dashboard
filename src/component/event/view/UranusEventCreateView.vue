@@ -7,23 +7,23 @@
 <template>
   <UranusDashboardHero
       :title="t('create_event')"
-      :subtitle="t('create_event_description')"
+      :subtitle="t('create_event_definition')"
   />
 
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
-    <div class="full-width">
-      <h3>Was ist eine Veranstaltung?</h3>
-      <p>
-        Eine Veranstaltung ist ein Ereignis, das an einer Spielstätte stattfindet,
-        z. B. ein Konzert, Theaterstück oder Workshop.
-        Trage den genauen Titel der Veranstaltung ein. Danach kannst du alle Details bearbeiten.
-      </p>
-    </div>
 
-    <label class="full-width">
-      Name
-      <input class="big" type="text" v-model="eventTitle" required />
-    </label>
+  <section class="uranus-admin-edit-section">
+
+    <UranusForm>
+      <UranusFormRow>
+        <UranusTextInput
+            id="event_title"
+            :label="t('event_title')"
+            :placeholder="t('event_title')"
+            v-model="eventTitle"
+            size="big"
+        />
+      </UranusFormRow>
+    </UranusForm>
 
     <div class="button-bar full-width">
       <UranusButton
@@ -46,6 +46,10 @@ import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusLabel from "@/component/ui/UranusLabel.vue";
+import UranusTextInput from "@/component/ui/UranusTextInput.vue";
 
 const { t } = useI18n()
 

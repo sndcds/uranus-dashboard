@@ -26,6 +26,7 @@ export function mapUranusAdminEvent(raw: any): UranusAdminEvent | null {
         organization_id: raw.organization_id ?? 0,
         venue_id: raw.venue_id ?? null,
         space_id: raw.space_id ?? null,
+        categories: raw.categories ?? [],
         event_types: raw.event_types ?? [],
         tags: raw.tags ?? [],
         description: raw.description ?? null,

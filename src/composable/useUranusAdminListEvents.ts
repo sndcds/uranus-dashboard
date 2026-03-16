@@ -38,6 +38,8 @@ export function useUranusAdminListEvents() {
             // Map snake_case → camelCase
             adminListEvents.value = camelCaseKeys<UranusAdminListEvent[]>(res.data.data ?? []);
             metadata.value = res.data.metadata ?? {};
+
+            console.log(JSON.stringify(adminListEvents.value, null, 2));
         } catch (e: any) {
             error.value = e.message ?? "Unknown error";
             adminListEvents.value = [];

@@ -66,10 +66,10 @@
   --uranus-button-color-hover: oklch(100% 0.0 var(--uranus-hue));
   --uranus-button-bg-hover: oklch(44% 0.18 var(--uranus-hue));
 
-  --uranus-secondary-button-color: oklch(30% 0.16 var(--uranus-hue));
+  --uranus-secondary-button-color: oklch(30% 0.04 var(--uranus-hue));
   --uranus-secondary-button-bg: oklch(96% 0.006 var(--uranus-hue));
-  --uranus-secondary-button-color-hover: oklch(30% 0.2 var(--uranus-hue));
-  --uranus-secondary-button-bg-hover: oklch(90% 0.03 var(--uranus-hue));
+  --uranus-secondary-button-color-hover: oklch(30% 0.08 var(--uranus-hue));
+  --uranus-secondary-button-bg-hover: oklch(90% 0.01 var(--uranus-hue));
 
   // Inputs & borders
   --uranus-input-color: oklch(10% 0.02 var(--uranus-hue));
@@ -78,9 +78,13 @@
   --uranus-input-border-width: 1px;
   --uranus-input-placeholder-color: oklch(70% 0.0 var(--uranus-hue));
 
-  // Event page view
-  --uranus-evet-page-bg: white;
-
+  // Event category colors
+  --uranus-event-category-culture-color: #fd2c30;
+  --uranus-event-category-education-color: #ffa347;
+  --uranus-event-category-sports-color: #f9c74f;
+  --uranus-event-category-leisure-color: #90be6d;
+  --uranus-event-category-family-color: #384fe8;
+  --uranus-event-category-society-color: #942dcc;
 
 
   --uranus-event-tag-background: rgba(86, 80, 188, 0.16);
@@ -164,8 +168,8 @@
   --uranus-card-gap: 8px;
   --uranus-default-text-padding: 6px 12px;
   --uranus-input-border-radius: 5px;
-  --uranus-tiny-border-radius: 0px;
-  --uranus-input-height: 44px;
+  --uranus-tiny-border-radius: 3px;
+  --uranus-input-height: 36px;
 
   --uranus-notify-info-color: #d2e2fa;
   --uranus-notify-info-bg-color: #ffffff;
@@ -245,9 +249,6 @@
   --uranus-input-border-color: oklch(26% 0.05 var(--uranus-hue));
   --uranus-input-placeholder-color: oklch(60% 0.06 var(--uranus-hue));
 
-
-  // Event page view
-  --uranus-evet-page-bg: black;
 
 
   --color-bg: #050b16;
@@ -377,10 +378,12 @@ header {
 
 .uranus-medium-text {
   font-size: 1.4rem !important;
+  height: 2.4rem;
 }
 
 .uranus-big-text {
   font-size: 1.7rem !important;
+  height: 3.2rem;
 }
 
 .uranus-md-editor {

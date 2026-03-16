@@ -1,6 +1,7 @@
 <!--
-  src/view/admin/organization/UranusDashboardOrganizationsView.vue
+  src/component/organization/view/UranusAdminOrganizationListView.vue
 -->
+
 <template>
   <div class="uranus-main-layout" style="max-width: 1600px;">
     <UranusDashboardHero
@@ -20,7 +21,12 @@
     </UranusNotification>
 
     <div>
-      <UranusButton to="/admin/organization/create">{{ t('create_organization') }}</UranusButton>
+      <UranusButton
+          to="/admin/organization/create"
+          variant="cta"
+      >
+        {{ t('create_organization') }}
+      </UranusButton>
     </div>
 
 

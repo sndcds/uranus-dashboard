@@ -37,12 +37,12 @@ const emit = defineEmits<{
 
 // Category definitions
 const categories: Category[] = [
-  { id: 1, label: 'event_filter_category_culture', color: '#f94144' },
-  { id: 2, label: 'event_filter_category_education', color: '#f3722c' },
-  { id: 3, label: 'event_filter_category_sports', color: '#f9c74f' },
-  { id: 4, label: 'event_filter_category_leisure', color: '#90be6d' },
-  { id: 5, label: 'event_filter_category_family', color: '#384fe8' },
-  { id: 6, label: 'event_filter_category_society', color: '#942dcc' }
+  { id: 1, label: 'event_filter_category_culture', color: 'var(--uranus-event-category-culture-color)' },
+  { id: 2, label: 'event_filter_category_education', color: 'var(--uranus-event-category-education-color)' },
+  { id: 3, label: 'event_filter_category_sports', color: 'var(--uranus-event-category-sports-color)' },
+  { id: 4, label: 'event_filter_category_leisure', color: 'var(--uranus-event-category-leisure-color)' },
+  { id: 5, label: 'event_filter_category_family', color: 'var(--uranus-event-category-family-color)' },
+  { id: 6, label: 'event_filter_category_society', color: 'var(--uranus-event-category-society-color)' }
 ]
 
 // Reactive selected state
@@ -84,7 +84,7 @@ function toggleCategory(id: number) {
 .category-chip {
   position: relative;
   padding: 0.45rem 1rem;
-  border-radius: 0;
+  border-radius: 2px;
   border: 0 solid rgba(0,0,0,0.08);
   background: var(--uranus-bg);
   color: var(--uranus-color);
@@ -104,8 +104,8 @@ function toggleCategory(id: number) {
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 5px;
-    border-radius: 50px;
+    height: 3px;
+    border-radius: 2px;
     background: var(--chip-color);
     transition: height 0.25s ease;
   }
@@ -119,7 +119,7 @@ function toggleCategory(id: number) {
 .category-chip.selected {
   background: var(--chip-color);
   color: white;
-  border-radius: 50px;
+  border-radius: 2px;
 
 }
 

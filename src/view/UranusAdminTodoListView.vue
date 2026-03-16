@@ -19,7 +19,10 @@
     </UranusNotification>
 
     <div>
-      <UranusButton @click="openCreate">
+      <UranusButton
+          @click="openCreate"
+          variant="cta"
+      >
         {{ t('add_todo') }}
       </UranusButton>
     </div>

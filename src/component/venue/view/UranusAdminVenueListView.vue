@@ -1,5 +1,5 @@
 <!--
-  src/view/UranusDashboardVenuesView.vue
+  src/component/venue/view/UranusAdminVenueListView.vue
 -->
 
 <template>
@@ -27,7 +27,7 @@
     <template v-else>
       <div v-if="!isLoading" class="uranus-main-layout">
         <div v-if="organizationVenueInfos && organizationVenueInfos.canAddVenue">
-          <UranusButton :to="`/admin/organization/${organizationId}/venue/create`">
+          <UranusButton :to="`/admin/organization/${organizationId}/venue/create`" variant="cta">
             {{ t('venue_add') }}
           </UranusButton>
         </div>
@@ -61,7 +61,6 @@ import { mapApiOrganizationVenueInfosToModel } from '@/model/uranusVenueInfo.ts'
 
 import UranusVenueCard from '@/component/venue/UranusVenueCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusDashboardActionBar from '@/component/uranus/UranusDashboardActionBar.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 

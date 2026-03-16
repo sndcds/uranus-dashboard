@@ -93,7 +93,7 @@ const tabs = [
   { key: 'venue', label: 'Wo' },
   { key: 'dates', label: 'Wann' },
   { key: 'meta1', label: 'Tags und Links' },
-  { key: 'participation', label: 'Begrenzung' },
+  { key: 'participation', label: 'Einschränkung' },
   { key: 'price', label: 'Preis' },
   { key: 'visitor', label: 'Infos' }
 ] as const

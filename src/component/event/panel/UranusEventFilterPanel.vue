@@ -1,54 +1,64 @@
 <template>
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
-    <UranusEventCategorySelectorAccordion v-model="filter.categories" :multiple="true" />
-
     <UranusFormRow :cols="2">
-      <button type="button" class="filter-button reset" @click="onResetFilter">
-        {{ t('calendar_filter_reset_button_label') }}
-      </button>
+      <UranusButton
+          size="medium"
+          variant="secondary"
+          @click="onResetFilter"
+      >
+        <template #icon><FunnelX /></template>
+        {{ t('reset') }}
+      </UranusButton>
     </UranusFormRow>
 
-    <!-- Search & City -->
-    <UranusFormRow :cols="1">
-      <UranusTextfield
-          id="search-input"
-          v-model="filter.search!"
-          :label="t('calendar_filter_search_label')"
-          :placeholder="t('calendar_filter_search_placeholder')"
-      />
-
-      <UranusTextfield
-          id="city-input"
-          v-model="filter.city!"
-          :label="t('calendar_filter_city_label')"
-      />
-    </UranusFormRow>
-
-    <!-- Start & End Date -->
-    <UranusFormRow :cols="2">
-      <UranusDateInput
-          id="start-date"
-          v-model="filter.startDate"
-          :label="t('calendar_filter_start_date')"
-          style="width: 100%;"
-      />
-      <UranusDateInput
-          id="end-date"
-          v-model="filter.endDate"
-          :label="t('calendar_filter_end_date')"
-          style="width: 100%;"
-      />
-    </UranusFormRow>
-
-    <!-- Venue -->
-    <UranusFormRow :cols="1">
-      <UranusLabel id="venue" label="Spielstätte">
-        <UranusVenueTypeahead v-model:selectedVenue="filter.venue"/>
-      </UranusLabel>
-    </UranusFormRow>
 
     <div class="uranus-filter-accordions">
+      <UranusEventCategorySelectorAccordion v-model="filter.categories" :multiple="true" />
+
+      <UranusAccordion v-model="searchOpen">
+        <template #title>Suche</template>
+        <UranusFormRow :cols="1">
+          <UranusTextfield
+              id="search-input"
+              v-model="filter.search!"
+              :label="t('calendar_filter_search_label')"
+              :placeholder="t('calendar_filter_search_placeholder')"
+          />
+        </UranusFormRow>
+
+        <UranusFormRow :cols="1">
+          <UranusTextfield
+              id="city-input"
+              v-model="filter.city!"
+              :label="t('calendar_filter_city_label')"
+          />
+        </UranusFormRow>
+
+        <!-- Start & End Date -->
+        <UranusFormRow :cols="2">
+          <UranusDateInput
+              id="start-date"
+              v-model="filter.startDate"
+              :label="t('calendar_filter_start_date')"
+              style="width: 100%;"
+          />
+          <UranusDateInput
+              id="end-date"
+              v-model="filter.endDate"
+              :label="t('calendar_filter_end_date')"
+              style="width: 100%;"
+          />
+        </UranusFormRow>
+
+        <UranusFormRow :cols="1">
+          <UranusLabel id="venue" label="Spielstätte">
+            <UranusVenueTypeahead v-model:selectedVenue="filter.venue"/>
+          </UranusLabel>
+        </UranusFormRow>
+
+      </UranusAccordion>
+
       <UranusAccordion v-model="locationOpen">
         <template #title>{{ t('calendar_filter_use_gps') }}</template>
         <UranusFormRow :cols="1">
@@ -113,7 +123,7 @@
               v-model="maxPriceModel"
           />
           <UranusLabel id="price-currency" label="Währung">
-            <select v-model="filter.priceCurrency">
+            <select v-model="filter.priceCurrency" style="height: var(--uranus-input-height)">
               <option value="EUR">Euro</option>
               <option value="DKK">DKK</option>
             </select>
@@ -139,6 +149,8 @@ import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import { useGpsLocation } from '@/composable/useGpsLocation'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusEventCategorySelectorAccordion from '@/component/event/panel/UranusEventCategorySelectorAccordion.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import { FunnelX } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -202,6 +214,7 @@ watch([() => filter.useCurrentLocation, latitude, longitude], ([gpsActive, lat, 
   }
 })
 
+const searchOpen = ref(false)
 const locationOpen = ref(false)
 const audienceOpen = ref(false)
 const priceOpen = ref(false)

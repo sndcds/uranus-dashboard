@@ -62,6 +62,8 @@ export class UranusAdminEvent {
     }
 
     static fromDTO(dto: UranusAdminEventDTO): UranusAdminEvent {
+        console.log(JSON.stringify(dto, null, 2))
+
         let visitorInfoFlags: bigint = 0n
         try {
             if (dto.visitor_info_flags != null && dto.visitor_info_flags !== '') {
@@ -76,6 +78,7 @@ export class UranusAdminEvent {
             id: dto.id,
             releaseStatus: dto.release_status,
             releaseDate: dto.release_date,
+            categories: dto.categories ? [...dto.categories] : null,
             externalId: dto.external_id,
             sourceUrl: dto.source_url ?? null,
             custom: dto.custom ?? null,
@@ -87,7 +90,6 @@ export class UranusAdminEvent {
             summary: dto.summary ?? null,
             eventLinks: (dto.event_links ?? []).map(e => new UranusEventLink(e.label, e.type, e.url)),
             occasionTypeId: dto.occasion_type_id ?? null,
-            categories: dto.categories ?? null,
             eventTypes: (dto.event_types ?? []).map(e => new UranusAdminEventTypePair(e.type_id, e.genre_id)),
             tags: dto.tags ?? null,
             eventDates: mapAdminEventDatesFromApi(dto.event_dates),
@@ -117,6 +119,7 @@ export class UranusAdminEvent {
             id: this.id!,
             release_status: this.releaseStatus,
             release_date: this.releaseDate,
+            categories: this.categories ?? null,
             external_id: this.externalId,
             content_language: this.contentLanguage,
             title: this.title!,
@@ -124,7 +127,6 @@ export class UranusAdminEvent {
             organization_id: this.organizationId!,
             venue_id: this.venueId,
             space_id: this.spaceId,
-            categories: this.categories,
             event_types: this.eventTypes?.map(e => ({ type_id: e.typeId, genre_id: e.genreId })) ?? [],
             description: this.description,
             summary: this.summary,

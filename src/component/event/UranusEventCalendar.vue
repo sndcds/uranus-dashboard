@@ -12,16 +12,6 @@
     <div class="calendar-body">
 
       <div class="calendar-settings">
-        <div class="calendar-filter-buttons">
-          <button class="filter-button" @click="showFilterModal = true">
-            {{ t('calendar_filter_button_label') }}
-          </button>
-
-          <button class="filter-button" @click="onResetFilter" :disabled="false">
-            {{ t('calendar_filter_reset_button_label') }}
-          </button>
-        </div>
-
         <UranusHorizontalScroller>
         <div class="calendar-type-chips">
           <span
@@ -64,7 +54,7 @@
               />
             </div>
             <h3>{{ event.title }}</h3>
-            <span>{{ event.venue_name }}, {{ event.venue_city }}</span>
+            <span>{{ event.venue_name }} · {{ event.venue_city }}</span>
             <!-- Render only event type (no genres) -->
             <div v-if="event.event_types && event.event_types.length" class="uranus-public-event-detail-tags">
               <div
@@ -415,32 +405,6 @@ onBeforeUnmount(() => {
 
 .calendar-card:hover {
   transform: translateY(-3px);
-}
-
-.calendar-filter-buttons {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.filter-button {
-  color: var(--uranus-nav-color);
-  background-color: var(--uranus-nav-bg);
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-
-  &:not(:disabled):hover {
-    color: var(--uranus-nav-color-active);
-    background-color: var(--uranus-nav-bg-active);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 }
 
 /* Featured cards */
