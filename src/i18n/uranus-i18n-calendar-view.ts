@@ -48,3 +48,4 @@ export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLoc
     }
 }
 
+export default uranusI18nCalendarViewTranslations

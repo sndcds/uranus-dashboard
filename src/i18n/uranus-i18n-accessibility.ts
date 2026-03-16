@@ -225,3 +225,5 @@ export const uranusI18nAccessibilityFlags = [
         ],
     },
 ]
+
+export default uranusI18nAccessibilityFlags

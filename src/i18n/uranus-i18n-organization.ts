@@ -72,3 +72,5 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         da: 'Tilføj organisationsbillede',
     }
 }
+
+export default uranusI18nOrganizationTranslations

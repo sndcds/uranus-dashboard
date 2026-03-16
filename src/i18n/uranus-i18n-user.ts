@@ -397,3 +397,5 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         da: 'Kontoaktivering mislykkedes. Prøv igen eller kontakt support.',
     },
 }
+
+export default uranusI18nUserTranslations

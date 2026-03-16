@@ -68,3 +68,4 @@ export const uranusI18nNavigationTranslations: Record<string, Record<UranusLocal
     },
 }
 
+export default uranusI18nNavigationTranslations

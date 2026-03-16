@@ -17,3 +17,5 @@ export const uranusI18nFormTranslations: Record<string, Record<UranusLocaleKey, 
         da: 'Gennemse og opdater oplysningerne om din arrangør.',
     },
 }
+
+export default uranusI18nFormTranslations

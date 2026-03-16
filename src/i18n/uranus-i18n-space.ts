@@ -7,3 +7,5 @@ export const uranusI18nSpaceTranslations: Record<string, Record<UranusLocaleKey,
         da: 'uspecificeret lokale',
     },
 }
+
+export default uranusI18nSpaceTranslations

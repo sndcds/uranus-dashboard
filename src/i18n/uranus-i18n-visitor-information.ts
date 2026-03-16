@@ -316,3 +316,5 @@ export const uranusI18nVisitorInformationFlags = [
         ],
     },
 ]
+
+export default uranusI18nVisitorInformationFlags

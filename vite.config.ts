@@ -3,9 +3,6 @@ import vue from '@vitejs/plugin-vue'
 import svgLoader from 'vite-svg-loader'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
-import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-import path from "path";
-
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -18,9 +15,6 @@ export default defineConfig(({ mode }) => {
         plugins: [
             vue(),
             svgLoader(),
-            VueI18nPlugin({
-                include: path.resolve(__dirname, './src/i18n/**')
-            }),
         ],
         define: {
             __VUE_I18N_FULL_INSTALL__: true,
@@ -36,8 +30,7 @@ export default defineConfig(({ mode }) => {
         },
         css: {
             preprocessorOptions: {
-                scss: {
-                },
+                scss: {}
             },
         },
         server: {

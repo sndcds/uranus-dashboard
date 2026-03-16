@@ -76,5 +76,6 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Upload images and logos for your venue.',
         da: 'Upload billeder og logoer for dit spillested.',
     },
-
 }
+
+export default uranusI18nVenueTranslations

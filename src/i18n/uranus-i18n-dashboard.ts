@@ -109,3 +109,4 @@ export const uranusI18nDashboardTranslations: Record<string, Record<UranusLocale
     },
 }
 
+export default uranusI18nDashboardTranslations

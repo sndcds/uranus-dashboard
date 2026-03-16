@@ -52,3 +52,5 @@ export const uranusI18nImageTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Vil du virkelig slette dette billede?',
     }
 }
+
+export default uranusI18nImageTranslations

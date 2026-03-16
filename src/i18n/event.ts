@@ -543,3 +543,5 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Er du sikker på, at du vil slette denne dato?',
     },
 }
+
+export default uranusI18nEventTranslations

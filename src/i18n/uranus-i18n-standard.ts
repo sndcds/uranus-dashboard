@@ -302,3 +302,5 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         da: 'Kunne ikke downloade kalenderfilen.',
     },
 }
+
+export default uranusI18nStandardTranslations
