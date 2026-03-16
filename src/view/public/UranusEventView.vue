@@ -222,6 +222,7 @@ import { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
 import UranusEventFurtherDatesDisplay from '@/component/event/ui/UranusEventFurtherDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
+import {uranusStringInterpolate} from "@/util/UranusStringUtils.ts";
 // import UranusEmbedYoutubeVideo from '@/component/video/UranusEmbedYoutubeVideo.vue'
 
 const route = useRoute()
@@ -350,13 +351,23 @@ const priceLabel = computed(() => {
   }
 
   if (min != null && max != null) {
-    return t('event_price_between_sentence', { min: formatNumber(min), max: formatNumber(max), currency })
+    return uranusStringInterpolate(t('event_price_between_sentence'), {
+      min: formatNumber(min),
+      max: formatNumber(max),
+      currency: currency
+    });
   }
   if (min != null) {
-    return t('event_price_from_sentence', { min: formatNumber(min), currency })
+    return uranusStringInterpolate(t('event_price_from_sentence'), {
+      min: formatNumber(min),
+      currency: currency
+    });
   }
   if (max != null) {
-    return t('event_price_until_sentence', { max: formatNumber(max), currency })
+    return uranusStringInterpolate(t('event_price_until_sentence'), {
+      max: formatNumber(max),
+      currency: currency
+    });
   }
   return null
 })

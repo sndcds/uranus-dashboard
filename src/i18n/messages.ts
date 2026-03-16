@@ -1,13 +1,12 @@
 import type {UranusLocaleKey} from "@/i18n/uranus-i18n-index.ts";
 
-export const uranusI18nMessages: Record<string, Record<UranusLocaleKey, string>> = {
+export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>> = {
     de: {
         organization_unknown: 'Unbekannter Veranstalter',
 
         one_of_n: 'von',
         price_types: 'Preisarten',
         occasion: 'Anlass',
-
 
         invite_activate_title: 'Einladung bestätigen',
         invite_activate_subtitle: 'Willkommen im Team',

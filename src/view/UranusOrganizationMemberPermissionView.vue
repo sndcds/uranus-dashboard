@@ -32,7 +32,7 @@
           <div>
             <h2>{{ group.label }}</h2>
             <p class="member-permission__group-count">
-              {{ replaceInTemplate(t('user_permissions_entities'), { count: group.entries.length }) }}
+              {{ uranusReplaceInTemplate(t('user_permissions_entities'), {count: group.entries.length}) }}
             </p>
           </div>
         </header>
@@ -71,7 +71,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { replaceInTemplate } from '@/util/UranusStringUtils.ts'
+import { uranusReplaceInTemplate } from '@/util/UranusStringUtils.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 
@@ -102,7 +102,7 @@ const memberId = computed(() => {
   return Number.isFinite(raw) ? raw : null
 })
 
-const pageSubtitle = computed(() => replaceInTemplate(t('user_permissions_subtitle'), {
+const pageSubtitle = computed(() => uranusReplaceInTemplate(t('user_permissions_subtitle'), {
   name: memberDisplayName.value ?? t('user_unknown'),
   organization: organizationName.value ?? t('organization_unknown'),
 }))
