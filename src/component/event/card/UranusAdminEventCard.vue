@@ -129,7 +129,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import { Eye, Pencil, Trash } from 'lucide-vue-next'
 import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
 
-const placeholderImage = '/uranus-event-placeholder.webp'
+const placeholderImage = '/assets/event-dummy.png'
 
 const onImageError = (e: Event) => {
   const img = e.target as HTMLImageElement
