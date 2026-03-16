@@ -50,17 +50,19 @@
       @close="showCreateModal = false"
       @updated="createTodo"
   />
+
+  uranusI18nMessages: {{ uranusI18nMessages }}
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
+import uranusI18nMessages from '@/i18n/uranus-messages.ts'
 
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusTodoListItem from '@/component/todo/UranusTodoListItem.vue'
-import UranusDashboardActionBar from '@/component/uranus/UranusDashboardActionBar.vue'
 import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 
