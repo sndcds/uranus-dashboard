@@ -21,7 +21,6 @@ export default defineConfig(({ mode }) => {
             __VUE_I18N_LEGACY_API__: true,
             __INTLIFY_JIT_COMPILATION__: true,
             __INTLIFY_DROP_MESSAGE_COMPILER__: false,
-            __INTLIFY_PROD_DEVTOOLS__: false,
         },
         resolve: {
             alias: {

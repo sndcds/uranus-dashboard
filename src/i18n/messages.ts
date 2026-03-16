@@ -1,45 +1,7 @@
-import { type UranusLocaleKey, type UranusTranslationBlock } from '@/i18n/uranus-i18n-index.ts'
-import { uranusI18nStandardTranslations } from '@/i18n/standard.ts'
-import { uranusI18nNavigationTranslations } from '@/i18n/navigation.ts'
-import { uranusI18nDashboardTranslations } from '@/i18n/dashboard.ts'
-import { uranusI18nUserTranslations } from '@/i18n/user.ts'
-import { uranusI18nOrganizationTranslations } from '@/i18n/organization.ts'
-import { uranusI18nImageTranslations } from '@/i18n/image.ts'
-import { uranusI18nVenueTranslations } from '@/i18n/venue.ts'
-import { uranusI18nSpaceTranslations } from '@/i18n/space.ts'
-import { uranusI18nEventTranslations } from '@/i18n/event.ts'
-import { uranusI18nCalendarViewTranslations } from '@/i18n/calendar-view.ts'
-import { uranusI18nAccessibilityTranslations } from '@/i18n/accessibility.ts'
-import { uranusI18nVisitorInfoTranslations } from '@/i18n/visitor-info.ts'
+import type {UranusLocaleKey} from "@/i18n/uranus-i18n-index.ts";
 
-// Safe: always define this function first
-export const uranusI18nForLocale = <K extends string>(
-    block: UranusTranslationBlock<K>,
-    locale: UranusLocaleKey,
-): Record<K, string> => {
-    const result = {} as Record<K, string>
-    for (const key in block) {
-        result[key as K] = block[key][locale]
-    }
-    return result
-}
-
-
-const uranusI18nMessages = {
+export const uranusI18nMessages: Record<string, Record<UranusLocaleKey, string>> = {
     de: {
-        ...uranusI18nForLocale(uranusI18nStandardTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nDashboardTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nNavigationTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nUserTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nImageTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nVenueTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nSpaceTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nEventTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nVisitorInfoTranslations, 'de'),
-
         organization_unknown: 'Unbekannter Veranstalter',
 
         one_of_n: 'von',
@@ -393,29 +355,13 @@ const uranusI18nMessages = {
         spaces_empty: 'Noch keine Räume angelegt.',
     },
     en: {
-        ...uranusI18nForLocale(uranusI18nStandardTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nDashboardTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nNavigationTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nUserTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nImageTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nVenueTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nSpaceTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nEventTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nVisitorInfoTranslations, 'en'),
-
         organization_unknown: 'Unknown organization',
-
 
         edit_event: 'Edit event',
 
         one_of_n: 'of',
         price_types: 'Price type',
         occasion: 'Occasion',
-
-
 
         invite_activate_title: 'Join the team',
         invite_activate_subtitle: 'Accept your invite',
@@ -762,19 +708,6 @@ const uranusI18nMessages = {
         spaces_empty: 'No spaces added yet.',
     },
     da: {
-        ...uranusI18nForLocale(uranusI18nStandardTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nDashboardTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nNavigationTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nUserTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nOrganizationTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nImageTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nVenueTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nSpaceTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nEventTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nVisitorInfoTranslations, 'da'),
-
         organization_unknown: 'Ukendt arrangør',
         one_of_n: 'af',
         price_types: 'Pristyper',

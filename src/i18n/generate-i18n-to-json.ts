@@ -2,6 +2,7 @@
 import fs from 'fs'
 import path from 'path'
 import { uranusI18nStandardTranslations } from './standard.ts'
+import { uranusI18nMessages } from './messages.ts'
 import { uranusI18nDashboardTranslations } from './dashboard.ts'
 import { uranusI18nNavigationTranslations } from './navigation.ts'
 import { uranusI18nFormTranslations } from './form.ts'
@@ -23,6 +24,7 @@ if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true })
 locales.forEach((locale) => {
     const merged = {
         ...Object.fromEntries(Object.entries(uranusI18nStandardTranslations).map(([k, v]) => [k, v[locale]])),
+        ...Object.fromEntries(Object.entries(uranusI18nMessages).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nDashboardTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nNavigationTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nFormTranslations).map(([k, v]) => [k, v[locale]])),

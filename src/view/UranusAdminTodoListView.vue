@@ -55,7 +55,7 @@
     {{ t('event_price_from_sentence', { min: 12, currency: '€' }) }}
   </div>
 
-  uranusI18nMessages: {{ uranusI18nMessages }}
+  uranusI18nMessages: {{ uranusI18nMessages.de }}
 
 </template>
 
@@ -63,7 +63,7 @@
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import uranusI18nMessages from '@/i18n/uranus-messages.ts'
+import uranusI18nMessages from '@/i18n/messages.ts'
 
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
