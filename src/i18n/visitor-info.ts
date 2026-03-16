@@ -4,7 +4,7 @@
     2026-02-23, Auto-generated
 */
 
-export const uranusI18nVisitorInformationTranslations: Record<string, Record<'en' | 'de' | 'da', string>> = {
+export const uranusI18nVisitorInfoTranslations: Record<string, Record<'en' | 'de' | 'da', string>> = {
     access_control: {
         en: 'Access Control',
         de: 'Zugangskontrolle',
@@ -317,4 +317,4 @@ export const uranusI18nVisitorInformationFlags = [
     },
 ]
 
-export default uranusI18nVisitorInformationFlags
+export default uranusI18nVisitorInfoTranslations

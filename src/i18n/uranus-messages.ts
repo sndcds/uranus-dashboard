@@ -1,16 +1,16 @@
 import { type UranusLocaleKey, type UranusTranslationBlock } from '@/i18n/uranus-i18n-index.ts'
-import { uranusI18nStandardTranslations } from '@/i18n/uranus-i18n-standard.ts'
-import { uranusI18nNavigationTranslations } from '@/i18n/uranus-i18n-navigation.ts'
-import { uranusI18nDashboardTranslations } from '@/i18n/uranus-i18n-dashboard.ts'
-import { uranusI18nUserTranslations } from '@/i18n/uranus-i18n-user.ts'
-import { uranusI18nOrganizationTranslations } from '@/i18n/uranus-i18n-organization.ts'
-import { uranusI18nImageTranslations } from '@/i18n/uranus-i18n-image.ts'
-import { uranusI18nVenueTranslations } from '@/i18n/uranus-i18n-venue.ts'
-import { uranusI18nSpaceTranslations } from '@/i18n/uranus-i18n-space.ts'
+import { uranusI18nStandardTranslations } from '@/i18n/standard.ts'
+import { uranusI18nNavigationTranslations } from '@/i18n/navigation.ts'
+import { uranusI18nDashboardTranslations } from '@/i18n/dashboard.ts'
+import { uranusI18nUserTranslations } from '@/i18n/user.ts'
+import { uranusI18nOrganizationTranslations } from '@/i18n/organization.ts'
+import { uranusI18nImageTranslations } from '@/i18n/image.ts'
+import { uranusI18nVenueTranslations } from '@/i18n/venue.ts'
+import { uranusI18nSpaceTranslations } from '@/i18n/space.ts'
 import { uranusI18nEventTranslations } from '@/i18n/event.ts'
-import { uranusI18nCalendarViewTranslations } from '@/i18n/uranus-i18n-calendar-view.ts'
-import { uranusI18nAccessibilityTranslations } from '@/i18n/uranus-i18n-accessibility.ts'
-import { uranusI18nVisitorInformationTranslations } from '@/i18n/uranus-i18n-visitor-information.ts'
+import { uranusI18nCalendarViewTranslations } from '@/i18n/calendar-view.ts'
+import { uranusI18nAccessibilityTranslations } from '@/i18n/accessibility.ts'
+import { uranusI18nVisitorInfoTranslations } from '@/i18n/visitor-info.ts'
 
 // Safe: always define this function first
 export const uranusI18nForLocale = <K extends string>(
@@ -38,7 +38,7 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'de'),
         ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'de'),
-        ...uranusI18nForLocale(uranusI18nVisitorInformationTranslations, 'de'),
+        ...uranusI18nForLocale(uranusI18nVisitorInfoTranslations, 'de'),
 
         organization_unknown: 'Unbekannter Veranstalter',
 
@@ -404,7 +404,7 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'en'),
         ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'en'),
-        ...uranusI18nForLocale(uranusI18nVisitorInformationTranslations, 'en'),
+        ...uranusI18nForLocale(uranusI18nVisitorInfoTranslations, 'en'),
 
         organization_unknown: 'Unknown organization',
 
@@ -773,7 +773,7 @@ const uranusI18nMessages = {
         ...uranusI18nForLocale(uranusI18nEventTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nCalendarViewTranslations, 'da'),
         ...uranusI18nForLocale(uranusI18nAccessibilityTranslations, 'da'),
-        ...uranusI18nForLocale(uranusI18nVisitorInformationTranslations, 'da'),
+        ...uranusI18nForLocale(uranusI18nVisitorInfoTranslations, 'da'),
 
         organization_unknown: 'Ukendt arrangør',
         one_of_n: 'af',

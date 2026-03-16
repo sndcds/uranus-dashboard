@@ -221,7 +221,7 @@ import { UranusEvent } from '@/domain/event/UranusEvent.ts'
 import { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
 import UranusEventFurtherDatesDisplay from '@/component/event/ui/UranusEventFurtherDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
-import { uranusI18nAccessibilityFlags } from '@/i18n/uranus-i18n-accessibility.ts'
+import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
 // import UranusEmbedYoutubeVideo from '@/component/video/UranusEmbedYoutubeVideo.vue'
 
 const route = useRoute()

@@ -1,6 +1,10 @@
 import { createI18n } from 'vue-i18n'
 import { watch } from 'vue'
-import uranusI18nMessages from './uranus-messages.ts'
+import de from './json/de.json'
+import en from './json/en.json'
+import da from './json/da.json'
+
+export const uranusI18nMessages = { de, en, da }
 
 export type UranusLocaleKey = 'de' | 'en' | 'da'
 export type UranusTranslationBlock<K extends string> = Record<K, Record<UranusLocaleKey, string>>

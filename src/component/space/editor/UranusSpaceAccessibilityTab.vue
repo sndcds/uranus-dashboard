@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { apiFetch } from "@/api.ts";
 import { useUranusSpaceStore } from '@/store/uranusSpaceStore'
-import { uranusI18nAccessibilityFlags }  from '@/i18n/uranus-i18n-accessibility.ts'
+import { uranusI18nAccessibilityFlags }  from '@/i18n/accessibility.ts'
 import UranusBigIntFlagsEditor from '@/component/uranus/UranusBigIntFlagsEditor.vue'
 import {computed} from "vue";
 

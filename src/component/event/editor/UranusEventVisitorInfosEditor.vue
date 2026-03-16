@@ -18,7 +18,7 @@
 import { computed } from 'vue'
 import { apiFetch } from "@/api.ts";
 import UranusBigIntFlagsEditor from '@/component/uranus/UranusBigIntFlagsEditor.vue'
-import { uranusI18nVisitorInformationFlags } from '@/i18n/uranus-i18n-visitor-information'
+import { uranusI18nVisitorInformationFlags } from '@/i18n/visitor-info.ts'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 
 const store = useUranusAdminEventStore()

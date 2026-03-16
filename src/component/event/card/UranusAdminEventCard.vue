@@ -51,12 +51,11 @@
             locale
         ) }}
         </strong></span><br>
-        <span>{{ t('event_organizer')}}: {{ event.organizationName }}</span><br>
-
         <span v-if="hasVenue">
           {{ t('venue')}}: {{ event.venueName }}
-          <template v-if="hasSpace"> / {{ event.spaceName }}</template>
-        </span>
+          <template v-if="hasSpace"> / {{ event.spaceName }}}</template>
+        </span><br>
+        <span>{{ t('event_organizer')}}: {{ event.organizationName }}</span>
       </div>
 
       <div class="uranus-event-card-actions">
