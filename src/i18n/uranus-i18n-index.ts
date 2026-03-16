@@ -5,10 +5,7 @@ import en from './json/en.json'
 import da from './json/da.json'
 
 export const uranusI18nMessages = { de, en, da }
-
-export type UranusLocaleKey = 'de' | 'en' | 'da'
-export type UranusTranslationBlock<K extends string> = Record<K, Record<UranusLocaleKey, string>>
-
+export type UranusLocaleKey = keyof typeof uranusI18nMessages
 
 const storedLocale = typeof window !== 'undefined' ? window.localStorage.getItem('app-locale') : null
 const initialLocale =
@@ -21,6 +18,9 @@ export const uranusI18n = createI18n({
     locale: initialLocale,
     fallbackLocale: 'en',
     messages: uranusI18nMessages,
+    globalInjection: true,
+    // Ensure the runtime compiler is available
+    warnHtmlMessage: true
 })
 
 if (typeof window !== 'undefined') {
