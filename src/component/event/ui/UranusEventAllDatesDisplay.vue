@@ -1,11 +1,11 @@
 <!--
-  src/component/event/ui/UranusEventFurtherDatesDisplay.vue
+  src/component/event/ui/UranusEventAllDatesDisplay.vue
 
   2026-02-05, Roald
 -->
 
 <template>
-  <div v-if="dates.length" class="uranus-public-event-further-dates">
+  <div v-if="dates.length" class="uranus-public-event-all-dates">
     <p class="uranus-public-event-info-label">
       {{ t('event_all_dates') }}
     </p>

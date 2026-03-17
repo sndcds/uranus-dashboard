@@ -51,12 +51,6 @@
       @updated="createTodo"
   />
 
-  <div>
-    {{ t('event_price_from_sentence', { min: 12, currency: '€' }) }}
-  </div>
-
-  uranusI18nMessages: {{ uranusI18nMessages.de }}
-
 </template>
 
 <script setup lang="ts">

@@ -119,16 +119,12 @@ const searchQuery = ref('')
 watch(
     () => filterStore.filter,
     () => {
+      // Reset pagination
       events.value = []
       lastEventStartAt.value = null
       lastEventDateId.value = null
 
-      // reset pagination
-      events.value = []
-      lastEventStartAt.value = null
-      lastEventDateId.value = null
-
-      // reload events
+      // Reload events
       loadEvents(true)
     },
     { deep: true }

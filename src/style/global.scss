@@ -1,19 +1,19 @@
-@use '_fonts';
-@use '_button';
+@use 'fonts';
+@use 'button';
 
-@use '_uranus_admin';
-@use '_uranus_app_menu';
-@use '_uranus_card';
-@use '_uranus_form';
-@use '_uranus_combo_tag';
-@use '_uranus_dashboard';
-@use '_uranus_value_info';
-@use '_uranus_inline_editor';
-@use '_uranus_public_event';
-@use '_uranus_html';
-@use '_uranus_notification';
-@use '_uranus_map_popup';
-@use './_markdown_editor.scss';
+@use 'admin';
+@use 'app_menu';
+@use 'card';
+@use 'form';
+@use 'combo_tag';
+@use 'dashboard';
+@use 'value_info';
+@use 'inline_editor';
+@use 'public_event';
+@use 'html';
+@use 'notification';
+@use 'map_popup';
+@use 'editor';
 
 
 :root {
@@ -79,12 +79,12 @@
   --uranus-input-placeholder-color: oklch(70% 0.0 var(--uranus-hue));
 
   // Event category colors
-  --uranus-event-category-culture-color: #fd2c30;
-  --uranus-event-category-education-color: #ffa347;
-  --uranus-event-category-sports-color: #f9c74f;
-  --uranus-event-category-leisure-color: #90be6d;
-  --uranus-event-category-family-color: #384fe8;
-  --uranus-event-category-society-color: #942dcc;
+  --uranus-event-category-culture-color: #ef476f;
+  --uranus-event-category-education-color: #f78c6b;
+  --uranus-event-category-sports-color: #ffd166;
+  --uranus-event-category-leisure-color: #06d6a0;
+  --uranus-event-category-family-color: #118ab2;
+  --uranus-event-category-society-color: #073b4c;
 
 
   --uranus-event-tag-background: rgba(86, 80, 188, 0.16);

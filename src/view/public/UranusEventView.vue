@@ -158,7 +158,7 @@
             <p v-else>{{ event.organizationName }}</p>
           </div>
 
-          <UranusEventFurtherDatesDisplay
+          <UranusEventAllDatesDisplay
               v-if="event?.furtherDates?.length"
               :dates="event.furtherDates"
           />
@@ -219,7 +219,7 @@ import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDispla
 
 import { UranusEvent } from '@/domain/event/UranusEvent.ts'
 import { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
-import UranusEventFurtherDatesDisplay from '@/component/event/ui/UranusEventFurtherDatesDisplay.vue'
+import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
 import {uranusStringInterpolate} from "@/util/UranusStringUtils.ts";

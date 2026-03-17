@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import {apiFetch} from "@/api.ts";
 
 export interface UranusVenueTypeEntry {
     label: string | null
@@ -19,12 +20,10 @@ export const useVenueTypeLookupStore = defineStore('venueType', () => {
         loading.value[lang] = true
 
         try {
-            const res = await fetch(`/api/choosable-venue-types?lang=${lang}`)
-            if (!res.ok) throw new Error(`Failed to fetch venue types for lang=${lang}`)
-            const json = await res.json()
-
+            const res = await apiFetch(`/api/choosable-venue-types?lang=${lang}`)
+            const json = res.data
             const map: UranusVenueTypeMap = {}
-            for (const item of json.data ?? []) {
+            for (const item of (json as any).data ?? []) {
                 map[item.key] = {
                     label: item.name ?? null,
                     description: item.description ?? null
@@ -32,6 +31,7 @@ export const useVenueTypeLookupStore = defineStore('venueType', () => {
             }
             data.value[lang] = map
             loaded.value[lang] = true
+
         } catch (err) {
             console.error(`Error fetching venue types for lang=${lang}:`, err)
             data.value[lang] = {}
