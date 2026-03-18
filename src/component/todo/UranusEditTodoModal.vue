@@ -6,6 +6,7 @@
       :show="show"
       :title="props.todo ? t('edit_todo') : t('add_todo')"
       :close-on-backdrop="false"
+      data-testid="todo-edit-modal"
       @close="onCancel"
   >
     <!-- BODY -->
@@ -13,6 +14,7 @@
       <UranusFormRow>
         <UranusTextInput
             id="todo_title"
+            data-testid="todo-title-input"
             v-model="form.title"
             :label="t('title')"
             required
@@ -22,6 +24,7 @@
       <UranusFormRow>
         <UranusTextarea
             id="todo_description"
+            data-testid="todo-description-input"
             v-model="form.description"
             :label="t('description')"
         />
@@ -30,6 +33,7 @@
       <UranusFormRow>
         <UranusTextInput
             id="todo_due_date"
+            data-testid="todo-due-date-input"
             v-model="form.due_date"
             type="date"
             :label="t('due_date')"
@@ -39,6 +43,7 @@
       <UranusFormRow>
         <UranusCheckbox
             id="todo_completed"
+            data-testid="todo-completed-input"
             v-model="form.completed"
             :label="t('completed')"
         />
@@ -51,6 +56,7 @@
       <button
           type="button"
           class="uranus-button uranus-cancel-button"
+          data-testid="todo-cancel-button"
           @click="onCancel"
           :disabled="saving"
       >
@@ -60,6 +66,7 @@
       <button
           type="submit"
           class="uranus-button uranus-ok-button"
+          data-testid="todo-save-button"
           @click="onSubmit"
           :disabled="saving"
       >
@@ -150,8 +157,8 @@ const onSubmit = async () => {
       body: JSON.stringify(payload),
     })
 
-    if (props.todo) {
-      payload.id = data.id;
+    if (typeof data?.id === 'number' && Number.isFinite(data.id)) {
+      payload.id = data.id
     }
 
     emit('updated', { ...payload })

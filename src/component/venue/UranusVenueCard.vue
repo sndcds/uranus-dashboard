@@ -1,9 +1,9 @@
 <template>
-  <UranusCard custom-style="width:100%;">
+  <UranusCard custom-style="width:100%;" :data-testid="`venue-card-${venueInfo.venueId}`">
 
     <div>
       <div class="header">
-        <h2>{{ venueInfo.venueName }}</h2>
+        <h2 :data-testid="`venue-card-title-${venueInfo.venueId}`">{{ venueInfo.venueName }}</h2>
         <img
             v-if="venueInfo.venueLogoImageId"
             class="uranus-dashboard-organization-card-logo-image"
@@ -20,6 +20,7 @@
       <UranusButton
           v-if="venueInfo.canEditEvent"
           class="uranus-button tiny"
+          :data-testid="`venue-edit-${venueInfo.venueId}`"
           icon="edit"
           :to="`/admin/organization/${organizationId}/venue/${venueInfo.venueId}/edit`"
       >
@@ -29,6 +30,7 @@
       <UranusButton
           v-if="venueInfo.canDeleteEvent"
           class="uranus-button tiny"
+          :data-testid="`venue-delete-${venueInfo.venueId}`"
           icon="delete"
           @click="onDeleteEvent(venueInfo)"
       >
@@ -43,6 +45,7 @@
           <UranusIconAction
               mode="add"
               v-if="venueInfo.canEditVenue"
+              :data-testid="`venue-add-space-${venueInfo.venueId}`"
               :to="`/admin/organization/${organizationId}/venue/${venueInfo.venueId}/space/create`"
           />
         </h3>
@@ -53,8 +56,9 @@
             v-for="(spaceInfo, index) in venueInfo.spaceInfos"
             :key="spaceInfo.spaceId"
             class="space-row"
+            :data-testid="`space-row-${spaceInfo.spaceId}`"
         >
-          <div class="space-info">
+          <div class="space-info" :data-testid="`space-name-${spaceInfo.spaceId}`">
             <span>{{ spaceInfo.spaceName }}</span>
             <span>&nbsp;/ {{ spaceInfo.upcomingEventCount }}</span>
           </div>
@@ -63,11 +67,13 @@
             <UranusIconAction
                 mode="edit"
                 v-if="venueInfo.canEditSpace"
+                :data-testid="`space-edit-${spaceInfo.spaceId}`"
                 :to="`/admin/organization/${organizationId}/venue/${venueInfo.venueId}/space/${spaceInfo.spaceId}/edit`"
             />
             <UranusIconAction
                 mode="delete"
                 title="Delete"
+                :data-testid="`space-delete-${spaceInfo.spaceId}`"
                 :onClick="() => requestDeleteSpace(spaceInfo)"
             />
           </div>

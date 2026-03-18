@@ -1,5 +1,5 @@
 <template>
-    <div class="invite-activate-page">
+    <div class="invite-activate-page" data-testid="invite-activate-view">
         <div class="uranus-card">
             <header class="activate-header">
                 <p class="activate-eyebrow">{{ t('invite_activate_title') }}</p>
@@ -10,19 +10,19 @@
             </header>
 
             <div class="activation-content">
-                <div v-if="isProcessing" class="activation-state activation-state--loading">
+                <div v-if="isProcessing" class="activation-state activation-state--loading" data-testid="invite-activate-loading">
                     <div class="spinner" aria-hidden="true"></div>
                     <p>{{ t('invite_activate_processing') }}</p>
                 </div>
 
-                <div v-else-if="isSuccess" class="activation-state activation-state--success">
+                <div v-else-if="isSuccess" class="activation-state activation-state--success" data-testid="invite-activate-success">
                     <div class="success-icon">✓</div>
                     <p class="success-message">{{ t('invite_activate_success_title') }}</p>
                     <p class="redirect-message">
                         {{ successMessage }}
                     </p>
 
-                    <dl class="invite-details" v-if="inviteInfo">
+                    <dl class="invite-details" v-if="inviteInfo" data-testid="invite-activate-details">
                         <div class="invite-detail-row">
                             <dt>{{ t('invite_activate_organization_label') }}</dt>
                             <dd>{{ inviteInfo.organization_name }}</dd>
@@ -37,7 +37,7 @@
                         </div>
                     </dl>
 
-                    <button class="uranus-button" type="button" @click="goToTeam">
+                    <button class="uranus-button" type="button" data-testid="invite-activate-go-team" @click="goToTeam">
                         {{ t('invite_activate_go_to_team') }}
                     </button>
                     <p class="redirect-message">
@@ -45,7 +45,7 @@
                     </p>
                 </div>
 
-                <div v-else class="activation-state activation-state--error">
+                <div v-else class="activation-state activation-state--error" data-testid="invite-activate-error">
                     <div class="error-icon">!</div>
                     <p class="error-message">{{ errorMessage }}</p>
                     <router-link to="/admin/dashboard" class="uranus-button">

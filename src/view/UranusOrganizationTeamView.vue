@@ -1,18 +1,18 @@
 <template>
-    <div class="uranus-main-layout organization-team-view">
+    <div class="uranus-main-layout organization-team-view" data-testid="organization-team-view">
         <UranusDashboardHero :title="t('organization_team_management')" :subtitle="t('organization_team_management_description')" />
 
         <section class="organization-team">
-            <div v-if="isLoading" class="team-state">
+            <div v-if="isLoading" class="team-state" data-testid="organization-team-loading">
                 {{ t('organization_team_loading') }}
             </div>
 
-            <div v-else-if="loadError" class="team-state team-state--error" role="alert">
+            <div v-else-if="loadError" class="team-state team-state--error" data-testid="organization-team-error" role="alert">
                 {{ loadError }}
             </div>
 
-            <div v-else class="team-grid">
-                <article class="uranus-card uranus-form team-card team-card--members">
+            <div v-else class="team-grid" data-testid="organization-team-grid">
+                <article class="uranus-card uranus-form team-card team-card--members" data-testid="organization-team-members-card">
                     <header class="team-card__header">
                         <div>
                             <h2>{{ t('organization_team_members_title') }}</h2>
@@ -25,8 +25,9 @@
                     </header>
 
                     <UranusFormRow class="team-toolbar">
-                        <UranusTextInput
+                            <UranusTextInput
                             id="team-search"
+                            data-testid="organization-team-search"
                             v-model="searchQuery"
                             :placeholder="t('organization_team_search_placeholder')"
                             :label="t('organization_team_search_label')"
@@ -35,7 +36,7 @@
                         <div class="uranus-textfield-wrapper team-role-filter">
                             <UranusLabel id="team-role-filter-select"
                                 :label="t('organization_team_role_filter_label')">
-                                <select id="team-role-filter-select" v-model="roleFilterModel" class="uranus-input">
+                                <select id="team-role-filter-select" v-model="roleFilterModel" class="uranus-input" data-testid="organization-team-role-filter">
                                     <option value="all">{{ t('organization_team_role_filter_all') }}</option>
                                     <option v-for="role in roles" :key="role.id" :value="role.id">
                                         {{ role.name }}
@@ -51,16 +52,16 @@
                         </p>
                     </transition>
 
-                    <ul v-if="filteredMembers.length" class="team-member-list">
+                    <ul v-if="filteredMembers.length" class="team-member-list" data-testid="organization-team-member-list">
                         <li v-for="member in filteredMembers" :key="member.user_id" class="team-member">
                             <div class="team-member__avatar" aria-hidden="true">
                                 <img v-if="member.avatar_url" :src="member.avatar_url" :alt="member.display_name || member.email">
                             </div>
 
-                            <div class="team-member__details">
+                            <div class="team-member__details" :data-testid="`organization-team-member-${member.user_id}`">
                                 <div class="team-member__heading">
                                     <div>
-                                        <p class="team-member__name">{{ member.display_name || member.email }}</p>
+                                        <p class="team-member__name" :data-testid="`organization-team-member-name-${member.user_id}`">{{ member.display_name || member.email }}</p>
                                         <p class="team-member__email">{{ member.email }}</p>
                                     </div>
                                     <span class="team-member__role">{{ member.role_name }}</span>
@@ -81,6 +82,7 @@
                                   v-if="true"
                                   class="uranus-tertiary-button"
                                   icon="delete"
+                                  :data-testid="`organization-team-remove-${member.user_id}`"
                                   @click.prevent.stop="removeMember(member)"
                               >
                                 {{ t('delete') }}
@@ -90,6 +92,7 @@
                                   v-if="true"
                                   class="uranus-tertiary-button"
                                   icon="edit"
+                                  :data-testid="`organization-team-edit-${member.user_id}`"
                                   :to="`/admin/organization/${organizationId}/member/${member.member_id}/permissions`"
                               >
                                 {{ t('edit') }}
@@ -103,7 +106,7 @@
                     </div>
                 </article>
 
-                <article class="uranus-card team-card team-card--sidebar">
+                <article class="uranus-card team-card team-card--sidebar" data-testid="organization-team-invite-card">
                     <header class="team-card__header">
                         <div>
                             <h2>{{ t('organization_team_section_invite_title') }}</h2>
@@ -111,7 +114,7 @@
                         </div>
                     </header>
 
-                    <form class="team-form uranus-form" @submit.prevent="submitInvite">
+                    <form class="team-form uranus-form" data-testid="organization-team-invite-form" @submit.prevent="submitInvite">
                         <transition name="fade">
                             <p v-if="inviteError" class="feedback feedback--error" role="alert">
                                 {{ inviteError }}
@@ -124,12 +127,12 @@
                         </transition>
 
                         <UranusFormRow>
-                            <UranusTextInput id="invite-email" v-model="inviteEmail" type="email"
+                            <UranusTextInput id="invite-email" data-testid="organization-team-invite-email" v-model="inviteEmail" type="email"
                                 :label="t('organization_team_invite_email_label')" autocomplete="email" required />
                             <div class="uranus-textfield-wrapper team-role-select">
                                 <UranusLabel id="team-invite-role-select"
                                     :label="t('organization_team_invite_role_label')" :required="true">
-                                    <select id="team-invite-role-select" v-model="inviteRoleModel"
+                                    <select id="team-invite-role-select" data-testid="organization-team-invite-role" v-model="inviteRoleModel"
                                         class="uranus-input" :disabled="!roles.length" required>
                                         <option v-for="role in roles" :key="role.id" :value="role.id">
                                             {{ role.name }}
@@ -139,7 +142,7 @@
                             </div>
                         </UranusFormRow>
 
-                        <button class="uranus-button" type="submit" :disabled="isInviting">
+                        <button class="uranus-button" data-testid="organization-team-invite-submit" type="submit" :disabled="isInviting">
                             <span v-if="!isInviting">{{ t('organization_team_invite_button') }}</span>
                             <span v-else>{{ t('organization_team_inviting') }}</span>
                         </button>
@@ -157,10 +160,10 @@
                             </p>
                         </transition>
 
-                        <ul v-if="pendingInvitations.length" class="team-pending-list">
+                        <ul v-if="pendingInvitations.length" class="team-pending-list" data-testid="organization-team-pending-list">
                             <li v-for="invite in pendingInvitations" :key="invite.invite_id" class="team-pending-item">
-                                <div>
-                                    <p class="team-pending__email">{{ invite.email }}</p>
+                                <div :data-testid="`organization-team-invite-${invite.user_id}`">
+                                    <p class="team-pending__email" :data-testid="`organization-team-invite-email-${invite.user_id}`">{{ invite.email }}</p>
                                     <p class="team-pending__meta">
                                         <span>{{ invite.role_name }}</span>
                                         <span>·</span>
@@ -176,6 +179,7 @@
                                     </p>
                                 </div>
                                 <button class="uranus-secondary-button" type="button"
+                                    :data-testid="`organization-team-cancel-invite-${invite.user_id}`"
                                     :disabled="inviteActionId === invite.invite_id" @click="cancelInvite(invite)">
                                     <span v-if="inviteActionId === invite.invite_id">{{ t('organization_team_removing') }}</span>
                                     <span v-else>{{ t('organization_team_pending_cancel') }}</span>

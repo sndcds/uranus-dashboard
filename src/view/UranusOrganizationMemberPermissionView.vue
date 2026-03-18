@@ -5,7 +5,7 @@
   Allows enabling or disabling individual permission bits via checkboxes.
 -->
 <template>
-  <div class="uranus-main-layout member-permission-view">
+  <div class="uranus-main-layout member-permission-view" data-testid="member-permission-view">
     <UranusDashboardHero :title="t('permissions')" :subtitle="pageSubtitle" />
 
     <transition name="fade">
@@ -14,20 +14,20 @@
       </p>
     </transition>
 
-    <div v-if="isLoading" class="member-permission__state">
+    <div v-if="isLoading" class="member-permission__state" data-testid="member-permission-loading">
       {{ t('user_permissions_loading') }}
     </div>
 
-    <div v-else-if="error" class="member-permission__state member-permission__state--error" role="alert">
+    <div v-else-if="error" class="member-permission__state member-permission__state--error" data-testid="member-permission-error" role="alert">
       {{ error }}
     </div>
 
-    <div v-else-if="!permissionGroups.length" class="member-permission__state">
+    <div v-else-if="!permissionGroups.length" class="member-permission__state" data-testid="member-permission-empty">
       {{ t('user_permissions_invalid_response') }}
     </div>
 
-    <div v-else class="member-permission__groups">
-      <article v-for="group in permissionGroups" :key="group.type" class="member-permission__group">
+    <div v-else class="member-permission__groups" data-testid="member-permission-groups">
+      <article v-for="group in permissionGroups" :key="group.type" class="member-permission__group" :data-testid="`permission-group-${group.type}`">
         <header class="member-permission__group-header">
           <div>
             <h2>{{ group.label }}</h2>
@@ -39,9 +39,10 @@
 
         <UranusCard class="member-permission__card">
           <ul class="member-permission__bits">
-            <li v-for="entry in group.entries" :key="`${group.type}-${entry.bit}`" class="member-permission__bit">
+            <li v-for="entry in group.entries" :key="`${group.type}-${entry.bit}`" class="member-permission__bit" :data-testid="`permission-bit-${entry.bit}`">
               <label class="member-permission__bit-checkbox">
                 <input
+                  :data-testid="`permission-toggle-${entry.bit}`"
                   type="checkbox"
                   :value="entry.bit"
                   :checked="isBitSelected(entry.bit)"

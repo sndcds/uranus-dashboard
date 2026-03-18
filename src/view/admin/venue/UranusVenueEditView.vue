@@ -11,10 +11,11 @@
 -->
 
 <template>
-  <div v-if="venueStore.loading">Loading…</div>
-  <div v-else-if="venueStore.error">{{ venueStore.error }}</div>
+  <div v-if="venueStore.loading" data-testid="venue-editor-loading">Loading…</div>
+  <div v-else-if="venueStore.error" data-testid="venue-editor-error">{{ venueStore.error }}</div>
 
   <template v-else-if="venueStore.isLoaded">
+    <div data-testid="venue-editor-view">
     <header class="editor-header">
       <h1 class="uranus-admin-page-title">Venue Editor</h1>
       <p>Venue: {{ venueStore.draft?.name }} / #{{ venueId }}</p>
@@ -35,6 +36,7 @@
     <section class="tab-content">
       <component :is="currentTabComponent" />
     </section>
+    </div>
   </template>
 </template>
 

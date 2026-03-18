@@ -11,12 +11,13 @@
   />
 
 
-  <section class="uranus-admin-edit-section">
+  <section class="uranus-admin-edit-section" data-testid="admin-event-create-view">
 
     <UranusForm>
       <UranusFormRow>
         <UranusTextInput
             id="event_title"
+            data-testid="admin-event-create-title"
             :label="t('event_title')"
             :placeholder="t('event_title')"
             v-model="eventTitle"
@@ -28,6 +29,7 @@
     <div class="button-bar full-width">
       <UranusButton
           :disabled="eventTitle.trim().length === 0"
+          data-testid="admin-event-create-submit"
           @click="onCreate"
       >
         Jetzt erstellen

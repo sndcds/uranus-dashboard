@@ -7,7 +7,7 @@
 -->
 
 <template>
-  <div class="event-editor">
+  <div class="event-editor" data-testid="admin-event-editor">
     <div v-if="adminEventStore.loading">Loading…</div>
     <div v-else-if="adminEventStore.error">{{ adminEventStore.error }}</div>
 
@@ -16,7 +16,7 @@
         <h1>{{ adminEventStore.draft?.title }}</h1>
       </header>
 
-      <button class="uranus-action-button" @click="showReleaseModal = true">
+      <button class="uranus-action-button" data-testid="admin-event-release-button" @click="showReleaseModal = true">
         Edit Release Status / Date
       </button>
 
@@ -34,6 +34,7 @@
         <button
             v-for="tab in tabs"
             :key="tab.key"
+            :data-testid="`admin-event-tab-${tab.key}`"
             :class="{ active: tab.key === activeTab }"
             @click="activeTab = tab.key"
         >
@@ -41,7 +42,7 @@
         </button>
       </nav>
 
-      <section class="tab-content">
+      <section class="tab-content" data-testid="admin-event-tab-content">
         <component :is="currentTabComponent" />
       </section>
     </template>

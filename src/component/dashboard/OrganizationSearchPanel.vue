@@ -1,5 +1,5 @@
 <template>
-  <section class="uranus-card">
+  <section class="uranus-card" data-testid="organization-search-panel">
     <h2 class="inbox-sidebar__title">{{ inboxTitle }}</h2>
 
     <form class="organization-search" @submit.prevent="searchOrganizations" novalidate>
@@ -9,13 +9,14 @@
       <div class="organization-search__controls">
         <input
           id="organization-search-input"
+          data-testid="organization-search-input"
           v-model="searchTerm"
           type="search"
           :placeholder="searchPlaceholder"
           :aria-label="searchLabel"
           :aria-busy="isSearching"
         />
-        <button type="submit" :disabled="isSearchDisabled">
+        <button type="submit" data-testid="organization-search-submit" :disabled="isSearchDisabled">
           <span v-if="!isSearching">{{ searchButtonLabel }}</span>
           <span v-else>{{ searchingLabel }}</span>
         </button>
@@ -35,6 +36,7 @@
 
     <ul
       class="organization-results"
+      data-testid="organization-search-results"
       role="listbox"
       :aria-busy="isSearching"
       :aria-label="searchResultsLabel"
@@ -43,6 +45,7 @@
         <button
           type="button"
           class="organization-item"
+          :data-testid="`organization-result-${organization.id}`"
           :class="{ 'organization-item--active': organization.id === selectedOrganizationId }"
           @click="selectOrganization(organization)"
           :aria-pressed="organization.id === selectedOrganizationId"

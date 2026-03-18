@@ -11,13 +11,13 @@
 
     <label>
       {{ t('currency') }}
-      <UranusCurrencySelect v-model="draftEvent.currency" :placeholder="t('select_currency')" />
+      <UranusCurrencySelect v-model="draftEvent.currency" data-testid="admin-event-price-currency" :placeholder="t('select_currency')" />
     </label>
 
     <!-- Price Type -->
     <label>
       {{ t('event_price_type') }}
-      <select v-model="draftEvent.priceType">
+      <select v-model="draftEvent.priceType" data-testid="admin-event-price-type">
         <option value="not_specified">{{ t('event_price_not_specified') }}</option>
         <option value="free">{{ t('event_price_free') }}</option>
         <option value="donation">{{ t('event_price_donation') }}</option>
@@ -33,12 +33,12 @@
 
     <label>
       {{ t('event_min_price') }}
-      <input type="number" step="0.01" :value="draftEvent.minPrice ?? ''" @input="e => draftEvent.minPrice = parseFloatOrNull(e)" />
+      <input data-testid="admin-event-price-min" type="number" step="0.01" :value="draftEvent.minPrice ?? ''" @input="e => draftEvent.minPrice = parseFloatOrNull(e)" />
     </label>
 
     <label>
       {{ t('event_max_price') }}
-      <input type="number" step="0.01" :value="draftEvent.maxPrice ?? ''" @input="e => draftEvent.maxPrice = parseFloatOrNull(e)" />
+      <input data-testid="admin-event-price-max" type="number" step="0.01" :value="draftEvent.maxPrice ?? ''" @input="e => draftEvent.maxPrice = parseFloatOrNull(e)" />
     </label>
 
     <div class="field">
@@ -64,10 +64,10 @@
     </div>
 
     <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
+      <button data-testid="admin-event-price-discard" @click="resetTab" :disabled="store.saving || !isDirty">
         {{ t('discard') }}
       </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
+      <button data-testid="admin-event-price-save" @click="commitTab" :disabled="store.saving || !isDirty">
         {{ t('save') }}
       </button>
     </div>

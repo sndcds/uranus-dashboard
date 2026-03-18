@@ -8,16 +8,17 @@
 -->
 
 <template>
-  <div class="calendar-page">
+  <div class="calendar-page" data-testid="event-calendar">
     <div class="calendar-body">
 
       <div class="calendar-settings">
         <UranusHorizontalScroller>
-        <div class="calendar-type-chips">
+        <div class="calendar-type-chips" data-testid="event-type-chips">
           <span
               v-for="entry in typeSummary"
               :key="entry.type_id"
               class="type-chip"
+              :data-testid="`event-type-chip-${entry.type_id}`"
               :class="{ active: filterStore.eventTypeIds.includes(entry.type_id) }"
               @click="toggleType(entry.type_id)"
           >
@@ -32,12 +33,13 @@
         No events to display
       </div>
 
-      <div v-else class="calendar-layout">
+      <div v-else class="calendar-layout" data-testid="event-calendar-results">
         <router-link
             v-for="event in events"
             :key="`${event.id}-${event.event_date_id}`"
             :to="{ name: 'event-details', params: { id: event.id, eventDateId: event.event_date_id } }"
             class="calendar-card custom-link"
+            :data-testid="`calendar-card-${event.id}-${event.event_date_id}`"
         >
 
           <div class="calendar-image">
@@ -53,7 +55,7 @@
                   tiny
               />
             </div>
-            <h3>{{ event.title }}</h3>
+            <h3 :data-testid="`calendar-card-title-${event.id}-${event.event_date_id}`">{{ event.title }}</h3>
             <span>{{ event.venue_name }} · {{ event.venue_city }}</span>
             <!-- Render only event type (no genres) -->
             <div v-if="event.event_types && event.event_types.length" class="uranus-public-event-detail-tags">

@@ -1,5 +1,5 @@
 <template>
-  <section class="messages-panel" aria-labelledby="dashboard-messages-heading">
+  <section class="messages-panel" data-testid="messages-panel" aria-labelledby="dashboard-messages-heading">
     <header class="messages-panel__header">
       <h2 id="dashboard-messages-heading" class="messages-panel__title">
         {{ inboxMessagesTitle }}
@@ -8,7 +8,7 @@
         <span v-if="unreadCount > 0" class="messages-panel__badge">
           {{ unreadCount }} {{ unreadLabel }}
         </span>
-        <button type="button" class="messages-panel__refresh" @click="refreshMessages" :disabled="messagesLoading">
+        <button type="button" class="messages-panel__refresh" data-testid="messages-refresh" @click="refreshMessages" :disabled="messagesLoading">
           <span v-if="!messagesLoading">{{ refreshMessagesLabel }}</span>
           <span v-else>{{ refreshingMessagesLabel }}</span>
         </button>
@@ -23,7 +23,7 @@
 
     <div class="messages-panel__body">
       <div class="message-list-wrapper">
-        <ul class="message-list" role="listbox" :aria-busy="messagesLoading" :aria-label="inboxMessagesTitle">
+        <ul class="message-list" data-testid="messages-list" role="listbox" :aria-busy="messagesLoading" :aria-label="inboxMessagesTitle">
           <li v-if="messagesLoading" class="message-list__loading">
             {{ loadingMessagesLabel }}
           </li>
@@ -32,7 +32,7 @@
               {{ messagesEmptyLabel }}
             </li>
             <li v-for="message in messages" :key="message.id">
-              <button type="button" class="message-card" :class="{
+              <button type="button" class="message-card" :data-testid="`message-card-${message.id}`" :class="{
                 'message-card--active': message.id === selectedMessageId,
                 'message-card--unread': !message.isRead
               }" role="option" :aria-selected="message.id === selectedMessageId" @click="selectMessage(message)">
@@ -51,7 +51,7 @@
         </ul>
       </div>
 
-      <article class="message-detail" aria-live="polite">
+      <article class="message-detail" data-testid="message-detail" aria-live="polite">
         <div v-if="selectedMessage" class="message-detail__content">
           <header class="message-detail__header">
             <h3 class="message-detail__subject">{{ selectedMessage.subject }}</h3>

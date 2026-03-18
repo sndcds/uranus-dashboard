@@ -62,6 +62,7 @@
       <div class="tab-actions">
         <UranusButton
             variant="cta"
+            data-testid="admin-event-base-discard"
             :disabled="store.saving || !isDirty"
             @click="resetBaseTab"
         >
@@ -71,6 +72,7 @@
 
         <UranusButton
             variant="cta"
+            data-testid="admin-event-base-save"
             :disabled="store.saving || !isDirty"
             :loading="store.saving"
             loading-text="Saving..."

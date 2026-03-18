@@ -3,7 +3,7 @@
 -->
 
 <template>
-  <div class="uranus-main-layout" style="max-width: 1600px;">
+  <div class="uranus-main-layout" style="max-width: 1600px;" data-testid="admin-organizations-view">
     <UranusDashboardHero
         :title="t('organizations')"
         :subtitle="t('dashboard_organizations_hero_description')"
@@ -24,6 +24,7 @@
       <UranusButton
           to="/admin/organization/create"
           variant="cta"
+          data-testid="admin-organization-create-button"
       >
         {{ t('create_organization') }}
       </UranusButton>
@@ -36,7 +37,7 @@
     </div>
 
     <!-- Organization Cards Grid -->
-    <div class="organization-grid">
+    <div class="organization-grid" data-testid="admin-organization-grid">
       <UranusOrganizationCard
           v-for="organization in organizations"
           :key="organization.organization_id"

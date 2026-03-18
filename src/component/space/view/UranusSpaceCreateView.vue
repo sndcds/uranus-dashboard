@@ -10,7 +10,7 @@
       :subtitle="t('create_space_description')"
   />
 
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+  <section class="uranus-admin-edit-section uranus-admin-responsive-grid" data-testid="admin-space-create-view">
     <div class="full-width">
       <h3>Was ist ein Raum?</h3>
       <p>
@@ -23,12 +23,13 @@
 
     <label class="full-width">
       Name
-      <input class="big" type="text" v-model="spaceName" required />
+      <input class="big" data-testid="admin-space-create-name" type="text" v-model="spaceName" required />
     </label>
 
     <div class="button-bar full-width">
       <UranusButton
           :disabled="spaceName.trim().length === 0"
+          data-testid="admin-space-create-submit"
           @click="onCreate"
       >
         Jetzt erstellen

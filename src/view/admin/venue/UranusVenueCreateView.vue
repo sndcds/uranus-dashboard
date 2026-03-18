@@ -10,7 +10,7 @@
       :subtitle="t('create_venue_description')"
   />
 
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+  <section class="uranus-admin-edit-section uranus-admin-responsive-grid" data-testid="admin-venue-create-view">
     <div class="full-width">
       <h3>Was ist eine Spielstätte?</h3>
       <p>
@@ -23,12 +23,13 @@
 
     <label class="full-width">
       Name
-      <input class="big" type="text" v-model="venueName" required />
+      <input class="big" data-testid="admin-venue-create-name" type="text" v-model="venueName" required />
     </label>
 
     <div class="button-bar full-width">
       <UranusButton
           :disabled="venueName.trim().length === 0"
+          data-testid="admin-venue-create-submit"
           @click="onCreate"
       >
         Jetzt erstellen

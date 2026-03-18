@@ -70,10 +70,10 @@
 
     <!-- Save / Discard buttons -->
     <div class="tab-actions">
-      <button @click="resetDates" :disabled="store.saving || !isDirty">
+      <button data-testid="admin-event-dates-discard" @click="resetDates" :disabled="store.saving || !isDirty">
         Discard
       </button>
-      <button @click="commitDates" :disabled="store.saving || !isDirty">
+      <button data-testid="admin-event-dates-save" @click="commitDates" :disabled="store.saving || !isDirty">
         Save Tab
       </button>
     </div>

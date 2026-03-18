@@ -1,5 +1,5 @@
 <template>
-  <div class="uranus-html-page" v-html="htmlContent"></div>
+  <div class="uranus-html-page" data-testid="html-page" v-html="htmlContent"></div>
 </template>
 
 <script setup lang="ts">

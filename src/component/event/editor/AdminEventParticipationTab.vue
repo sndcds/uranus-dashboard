@@ -10,6 +10,7 @@
     <label>
       Max Attendees
       <input
+          data-testid="admin-event-participation-max-attendees"
           type="number"
           :value="event.maxAttendees ?? ''"
           @input="e => event.maxAttendees = parseNumberInput(e)"
@@ -21,6 +22,7 @@
     <label>
       Min Age
       <input
+          data-testid="admin-event-participation-min-age"
           type="number"
           :value="event.minAge ?? ''"
           @input="e => event.minAge = parseNumberInput(e)"
@@ -32,6 +34,7 @@
     <label>
       Max Age
       <input
+          data-testid="admin-event-participation-max-age"
           type="number"
           :value="event.maxAge ?? ''"
           @input="e => event.maxAge = parseNumberInput(e)"
@@ -42,15 +45,15 @@
 
     <div class="field">
       <span>Participation Info</span>
-      <textarea v-model="event.participationInfo" />
+      <textarea v-model="event.participationInfo" data-testid="admin-event-participation-info" />
     </div>
 
     <!-- Buttons -->
     <div class="tab-actions">
-      <button @click="resetParticipationTab" :disabled="store.saving || !isParticipationTabDirty">
+      <button data-testid="admin-event-participation-discard" @click="resetParticipationTab" :disabled="store.saving || !isParticipationTabDirty">
         {{ t('discard')}}
       </button>
-      <button @click="commitParticipationTab" :disabled="store.saving || !isParticipationTabDirty">
+      <button data-testid="admin-event-participation-save" @click="commitParticipationTab" :disabled="store.saving || !isParticipationTabDirty">
         {{ t('save')}}
       </button>
     </div>

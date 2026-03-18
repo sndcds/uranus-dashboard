@@ -3,7 +3,7 @@
 -->
 
 <template>
-  <div class="uranus-main-layout" style="max-width: 1600px;">
+  <div class="uranus-main-layout" style="max-width: 1600px;" data-testid="admin-todo-view">
     <UranusDashboardHero
         :title="t('todo_title')"
         :subtitle="t('todo_description')"
@@ -22,6 +22,7 @@
       <UranusButton
           @click="openCreate"
           variant="cta"
+          data-testid="admin-todo-create-button"
       >
         {{ t('add_todo') }}
       </UranusButton>
@@ -33,7 +34,7 @@
     </div>
 
     <!-- Todos -->
-    <div class="todo-list" v-if="!loading && todos.length">
+    <div class="todo-list" v-if="!loading && todos.length" data-testid="admin-todo-list">
       <UranusTodoListItem
           v-for="todo in todos"
           :key="todo.id"

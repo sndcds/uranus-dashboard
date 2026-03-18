@@ -1,5 +1,5 @@
 <template>
-  <div class="slide">
+  <div class="slide" data-testid="event-slide">
     <!-- Image fades in/out -->
     <div style="background: white;">{{ imageWithParams }}</div>
     <transition name="fade">
@@ -8,19 +8,19 @@
 
     <!-- Text container -->
     <div class="slide-text-container">
-      <div class="slide-text title" :style="randomTextStyle(0)">
+      <div class="slide-text title" data-testid="event-slide-title" :style="randomTextStyle(0)">
         <div class="slide-text-inner">
           {{ title }}
         </div>
       </div>
 
-      <div class="slide-text subtitle" :style="randomTextStyle(1)">
+      <div class="slide-text subtitle" data-testid="event-slide-subtitle" :style="randomTextStyle(1)">
         <div class="slide-text-inner">
           {{ subtitle }}
         </div>
       </div>
 
-      <div class="slide-text date-venue" :style="randomTextStyle(2)">
+      <div class="slide-text date-venue" data-testid="event-slide-meta" :style="randomTextStyle(2)">
         <div class="slide-text-inner">
           {{ date }} / {{ venue }}
         </div>

@@ -11,10 +11,11 @@
 -->
 
 <template>
-  <div v-if="spaceStore.loading">Loading…</div>
-  <div v-else-if="spaceStore.error">{{ spaceStore.error }}</div>
+  <div v-if="spaceStore.loading" data-testid="space-editor-loading">Loading…</div>
+  <div v-else-if="spaceStore.error" data-testid="space-editor-error">{{ spaceStore.error }}</div>
 
   <template v-else-if="spaceStore.isLoaded">
+    <div data-testid="space-editor-view">
     <header class="editor-header">
       <h1 class="uranus-admin-page-title">Space Editor</h1>
       <p>
@@ -39,6 +40,7 @@
     <section class="tab-content">
       <component :is="currentTabComponent" />
     </section>
+    </div>
   </template>
 </template>
 

@@ -5,11 +5,12 @@
 -->
 
 <template>
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+  <section class="uranus-admin-edit-section uranus-admin-responsive-grid" data-testid="space-capacity-tab">
 
     <label>
       Total Capacity
       <input
+          data-testid="space-capacity-total"
           type="number"
           v-model.number="space.totalCapacity"
           min="0"
@@ -20,6 +21,7 @@
     <label>
       Seating Capacity
       <input
+          data-testid="space-capacity-seating"
           type="number"
           v-model.number="space.seatingCapacity"
           min="0"
@@ -29,10 +31,10 @@
 
     <!-- Actions -->
     <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
+      <button data-testid="space-capacity-discard" @click="resetTab" :disabled="store.saving || !isDirty">
         {{ t('discard') }}
       </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
+      <button data-testid="space-capacity-save" @click="commitTab" :disabled="store.saving || !isDirty">
         {{ t('save') }}
       </button>
     </div>

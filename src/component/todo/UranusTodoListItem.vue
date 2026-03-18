@@ -2,22 +2,24 @@
   UranusTodoListItem.vue
 -->
 <template>
-  <div class="todo-list-item" :class="{ completed: todo.completed }">
+  <div class="todo-list-item" :class="{ completed: todo.completed }" :data-testid="`todo-item-${todo.id}`">
     <div class="todo-main">
-      <div class="title">{{ todo.title }}</div>
-      <div v-if="todo.description" class="description" v-html="todo.description"></div>
-      <div v-if="todo.due_date" class="due-date">{{ formattedDueDate }}</div>
+      <div class="title" :data-testid="`todo-title-${todo.id}`">{{ todo.title }}</div>
+      <div v-if="todo.description" class="description" :data-testid="`todo-description-${todo.id}`" v-html="todo.description"></div>
+      <div v-if="todo.due_date" class="due-date" :data-testid="`todo-due-date-${todo.id}`">{{ formattedDueDate }}</div>
     </div>
 
     <div class="todo-actions">
       <UranusIconAction
           mode="edit"
           :title="t('edit')"
+          :data-testid="`todo-edit-${todo.id}`"
           @click="openEdit"
       />
       <UranusIconAction
           mode="delete"
           :title="t('delete')"
+          :data-testid="`todo-delete-${todo.id}`"
           @click="requestDelete"
       />
     </div>
@@ -34,6 +36,7 @@
     <UranusPasswordConfirmModal
         :show="showDeleteModal"
         :title="t('confirm_delete_todo')"
+        :data-testid="`todo-delete-modal-${todo.id}`"
         :question="t('confirm_delete_todo_description', { name: todo.title })"
         :confirm-text="t('delete')"
         :loading-text="t('deleting')"

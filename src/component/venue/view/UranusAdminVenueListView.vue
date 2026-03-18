@@ -3,7 +3,7 @@
 -->
 
 <template>
-  <div class="uranus-main-layout">
+  <div class="uranus-main-layout" data-testid="admin-venues-view">
     <UranusDashboardHero :title="t('venues')" :subtitle="t('venues_description')" />
 
     <UranusNotification
@@ -28,7 +28,7 @@
       <div v-if="!isLoading" class="uranus-main-layout">
         <div v-if="organizationVenueInfos && organizationVenueInfos.canAddVenue">
           <UranusButton :to="`/admin/organization/${organizationId}/venue/create`" variant="cta">
-            {{ t('venue_add') }}
+            <span data-testid="admin-venue-create-button">{{ t('venue_add') }}</span>
           </UranusButton>
         </div>
 
@@ -37,7 +37,7 @@
           <p class="form-feedback-error">{{ error }}</p>
         </div>
 
-        <div v-if="organizationVenueInfos" class="organization-venue-view__content">
+        <div v-if="organizationVenueInfos" class="organization-venue-view__content" data-testid="admin-venue-list">
           <UranusVenueCard
               v-for="venueInfo in organizationVenueInfos?.venueInfos ?? []"
               :key="venueInfo.venueId"

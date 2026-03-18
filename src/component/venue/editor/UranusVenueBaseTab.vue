@@ -9,16 +9,16 @@
   name: {{ venue.name }}
   type: {{ venue.type }}
   openedAt: {{ venue.openedAt }}
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+  <section class="uranus-admin-edit-section uranus-admin-responsive-grid" data-testid="venue-base-tab">
 
     <label class="full-width">
       Name
-      <input class="big" type="text" v-model="venue.name" required />
+      <input class="big" data-testid="venue-base-name" type="text" v-model="venue.name" required />
     </label>
 
     <label class="full-width">
       Description
-      <textarea v-model="venue.description" />
+      <textarea data-testid="venue-base-description" v-model="venue.description" />
     </label>
 
     <label>
@@ -85,10 +85,10 @@
 
     <!-- Actions -->
     <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
+      <button data-testid="venue-base-discard" @click="resetTab" :disabled="store.saving || !isDirty">
         {{ t('discard') }}
       </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
+      <button data-testid="venue-base-save" @click="commitTab" :disabled="store.saving || !isDirty">
         {{ t('save') }}
       </button>
     </div>

@@ -86,10 +86,15 @@ The value can point at `http://localhost:8000` when running a local backend. Dur
 
 ## Testing
 
-Uranus Dashboard ships with a [Vitest](https://vitest.dev/) suite that exercises components, views, Pinia stores, and high-level authentication flows. Run the commands below from the project root:
+Uranus Dashboard currently ships with:
+
+- a [Vitest](https://vitest.dev/) setup for fast local frontend tests
+- a [Playwright](https://playwright.dev/) E2E suite for mocked user journeys across public, auth, and admin flows
+
+Run the commands below from the project root:
 
 ```bash
-# Run the full suite (default happy-dom environment)
+# Run the Vitest suite
 npm run test
 
 # Launch the Vitest UI runner
@@ -97,9 +102,33 @@ npm run test:ui
 
 # Collect coverage information
 npm run test:coverage
+
+# Run the Playwright E2E suite
+npm run test:e2e
+
+# Launch Playwright UI mode
+npm run test:e2e:ui
 ```
 
-Test helpers, mocks, and specs live inside the `tests/` directory—see `tests/README.md` for a full breakdown of available specs and coverage focus areas.
+### E2E notes
+
+- The Playwright suite uses `tests/e2e/support/mockApi.ts` and does not require a live backend.
+- The suite starts the local Vite dev server automatically through `playwright.config.ts`.
+- Local E2E runs currently use two workers because higher parallelism made the Vite server unstable during the full suite.
+
+### CI
+
+GitHub Actions runs the test workflow defined in [.github/workflows/tests.yml](./.github/workflows/tests.yml):
+
+- `unit`: installs dependencies and runs `npm run test -- --run`
+- `e2e`: installs dependencies, installs Playwright Chromium, runs `npm run test:e2e`, and uploads Playwright artifacts
+
+The E2E job uploads:
+
+- `playwright-report`
+- `test-results`
+
+Test helpers, mocks, and specs live inside the `tests/` directory.
 
 ## Project Layout
 
@@ -205,6 +234,6 @@ Test helpers, mocks, and specs live inside the `tests/` directory—see `tests/R
 
 - Connect the dashboard to your Uranus backend and seed sample data for organisers, venues, and events.
 - Extend the translation catalogue if you serve additional languages.
-- Add automated tests (`vitest`, `cypress`, …) to cover critical flows—no test suite ships with the repo yet.
+- Expand the automated suite with more unit coverage and additional E2E scenarios as new admin flows are added.
 
 Happy organising! 🎉

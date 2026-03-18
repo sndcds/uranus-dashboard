@@ -1,5 +1,5 @@
 <template>
-  <div class="event-slideshow-page">
+  <div class="event-slideshow-page" data-testid="event-slideshow-view">
     <UranusEventSlideshow v-if="events.length" :eventPairs="events" />
     <div v-else class="loading">
       Loading events...

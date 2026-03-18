@@ -1,12 +1,13 @@
 <template>
-  <section class="composer-panel">
-    <div v-if="!selectedOrganization" class="inbox-placeholder">
+  <section class="composer-panel" data-testid="message-composer">
+    <div v-if="!selectedOrganization" class="inbox-placeholder" data-testid="message-composer-placeholder">
       <p>{{ placeholderLabel }}</p>
     </div>
 
     <form
       v-else
       class="message-form"
+      data-testid="message-composer-form"
       @submit.prevent="sendMessage"
       :aria-busy="isSending"
       novalidate
@@ -49,6 +50,7 @@
         <label for="message-subject">{{ subjectLabel }}</label>
         <input
           id="message-subject"
+          data-testid="message-subject"
           v-model="messageSubject"
           type="text"
           :placeholder="subjectPlaceholder"
@@ -60,6 +62,7 @@
         <label for="message-body">{{ messageLabel }}</label>
         <textarea
           id="message-body"
+          data-testid="message-body"
           v-model="messageBody"
           rows="8"
           :placeholder="messagePlaceholder"
@@ -68,7 +71,7 @@
       </div>
 
       <div class="message-form__actions">
-        <button type="submit" :disabled="isSending || !canSend">
+        <button type="submit" data-testid="message-send-button" :disabled="isSending || !canSend">
           <span v-if="!isSending">{{ sendButtonLabel }}</span>
           <span v-else>{{ sendingLabel }}</span>
         </button>

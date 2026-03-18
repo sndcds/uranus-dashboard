@@ -3,9 +3,10 @@
       :show="show"
       :title="title"
       max-width="520px"
+      data-testid="password-confirm-modal"
       @close="$emit('cancel')"
   >
-    <form :id="formId" @submit.prevent="handleSubmit" class="uranus-form">
+    <form :id="formId" @submit.prevent="handleSubmit" class="uranus-form" data-testid="password-confirm-form">
       <span class="form-label">{{ question }}</span>
 
       <!-- Option Selection -->
@@ -27,6 +28,7 @@
         <UranusPasswordInput
             v-model="password"
             id="password"
+            data-testid="password-confirm-input"
             required
             :label="t('enter_password_to_confirm')"
         />
@@ -38,10 +40,10 @@
     <template #actions>
       <div class="modal-actions">
         <UranusButton type="button" @click="$emit('cancel')">
-          {{ t('cancel') }}
+          <span data-testid="password-confirm-cancel">{{ t('cancel') }}</span>
         </UranusButton>
         <UranusButton type="submit" :form="formId" :disabled="isSubmitting">
-          {{ isSubmitting ? loadingText : confirmText }}
+          <span data-testid="password-confirm-submit">{{ isSubmitting ? loadingText : confirmText }}</span>
         </UranusButton>
       </div>
     </template>

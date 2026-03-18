@@ -10,7 +10,7 @@
       :subtitle="t('create_organization_description')"
   />
 
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+  <section class="uranus-admin-edit-section uranus-admin-responsive-grid" data-testid="admin-organization-create-view">
 
     <div class="full-width">
       <h3>Was ist eine Organisation?</h3>
@@ -23,13 +23,14 @@
 
     <label class="full-width">
       Name
-      <input class="big" type="text" v-model="orgName" required
+      <input class="big" data-testid="admin-organization-create-name" type="text" v-model="orgName" required
       />
     </label>
 
     <div class="button-bar full-width">
       <UranusButton
           :disabled="orgName.trim().length === 0"
+          data-testid="admin-organization-create-submit"
           @click="onCreate"
       >
         Jetzt erstellen

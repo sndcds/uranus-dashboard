@@ -1,5 +1,5 @@
 <template>
-    <div class="auth-page">
+    <div class="auth-page" data-testid="account-activate-view">
         <div class="uranus-card">
             <header class="activate-header">
                 <h1>{{ t('activate_account') }}</h1>
@@ -10,13 +10,13 @@
 
             <div class="activation-content">
                 <!-- Loading State -->
-                <div v-if="isActivating" class="activation-state activation-state--loading">
+                <div v-if="isActivating" class="activation-state activation-state--loading" data-testid="account-activate-loading">
                     <div class="spinner"></div>
                     <p>{{ t('activating_account') }}</p>
                 </div>
 
                 <!-- Success State -->
-                <div v-else-if="activationSuccess" class="activation-state activation-state--success">
+                <div v-else-if="activationSuccess" class="activation-state activation-state--success" data-testid="account-activate-success">
                     <div class="success-icon">✓</div>
                     <p class="success-message">{{ t('activation_success') }}</p>
                     <p class="redirect-message">
@@ -27,7 +27,7 @@
                 </div>
 
                 <!-- Error State -->
-                <div v-else-if="activationError" class="activation-state activation-state--error">
+                <div v-else-if="activationError" class="activation-state activation-state--error" data-testid="account-activate-error">
                     <div class="error-icon">✕</div>
                     <p class="error-message">{{ activationError }}</p>
                     <router-link to="/app/login" class="uranus-button">

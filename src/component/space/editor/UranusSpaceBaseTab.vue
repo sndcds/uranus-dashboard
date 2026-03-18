@@ -5,11 +5,12 @@
 -->
 
 <template>
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+  <section class="uranus-admin-edit-section uranus-admin-responsive-grid" data-testid="space-base-tab">
 
     <label class="full-width">
       Name
       <input
+          data-testid="space-base-name"
           class="big"
           type="text"
           v-model="space.name"
@@ -19,7 +20,7 @@
 
     <label class="full-width">
       Description
-      <textarea v-model="space.description" />
+      <textarea data-testid="space-base-description" v-model="space.description" />
     </label>
 
     <label>
@@ -32,6 +33,7 @@
     <label>
       Website
       <input
+          data-testid="space-base-website"
           type="url"
           v-model="space.websiteLink"
           placeholder="https://"
@@ -41,6 +43,7 @@
     <label>
       Building Level
       <input
+          data-testid="space-base-building-level"
           type="number"
           v-model.number="space.buildingLevel"
       />
@@ -49,6 +52,7 @@
     <label>
       Area (sqm)
       <input
+          data-testid="space-base-area-sqm"
           type="number"
           step="0.01"
           v-model.number="space.areaSqm"
@@ -57,15 +61,15 @@
 
     <label class="full-width">
       Accessibility Summary
-      <textarea v-model="space.accessibilitySummary" />
+      <textarea data-testid="space-base-accessibility-summary" v-model="space.accessibilitySummary" />
     </label>
 
     <!-- Actions -->
     <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
+      <button data-testid="space-base-discard" @click="resetTab" :disabled="store.saving || !isDirty">
         {{ t('discard') }}
       </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
+      <button data-testid="space-base-save" @click="commitTab" :disabled="store.saving || !isDirty">
         {{ t('save') }}
       </button>
     </div>

@@ -1,10 +1,11 @@
 <template>
   <div
       class="uranus-card organization-card"
+      :data-testid="`organization-card-${organization.organization_id}`"
   >
     <div>
       <div class="header">
-        <h2>{{ organization.organization_name }}</h2>
+        <h2 :data-testid="`organization-card-title-${organization.organization_id}`">{{ organization.organization_name }}</h2>
         <img
             v-if="organization.main_logo_image_id"
             class="uranus-dashboard-organization-card-logo-image"
@@ -24,6 +25,7 @@
     <div class="uranus-card-button-container">
       <button
           class="uranus-button tiny"
+          :data-testid="`organization-activate-${organization.organization_id}`"
           style="min-width:100px;"
           :class="{ 'active': appStore.organizationId === organization.organization_id }"
           @click="assignOrganization(organization.organization_id)"
@@ -34,6 +36,7 @@
       <UranusButton
           v-if="organization.can_edit_organization"
           class="tiny"
+          :data-testid="`organization-edit-${organization.organization_id}`"
           :to="`/admin/organization/${organization.organization_id}/edit`"
           icon="edit"
       >
@@ -43,6 +46,7 @@
       <UranusButton
           v-if="organization.can_delete_organization"
           class="tiny"
+          :data-testid="`organization-delete-${organization.organization_id}`"
           icon="delete"
           @click="deleteOrganization(organization.organization_id)"
       >
@@ -52,6 +56,7 @@
       <UranusButton
           v-if="organization.can_manage_team"
           class="tiny"
+          :data-testid="`organization-team-${organization.organization_id}`"
           icon="organization"
           :to="`/admin/organization/${organization.organization_id}/team`"
       >

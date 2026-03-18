@@ -4,6 +4,7 @@
         ref="inputRef"
         type="text"
         class="uranus-input"
+        data-testid="venue-typeahead-input"
         v-model="query"
         @keydown="onKeydown"
         placeholder="Name der Spielstätte ..."
@@ -12,10 +13,11 @@
 
     <!-- Teleport the popover outside clipped containers -->
     <teleport to="body">
-      <ul v-if="isOpen" class="popover" :style="popoverStyle">
+      <ul v-if="isOpen" class="popover" :style="popoverStyle" data-testid="venue-typeahead-results">
         <li
             v-for="(venue, index) in results"
             :key="venue.id"
+            :data-testid="`venue-typeahead-option-${venue.id}`"
             :class="{ selected: index === selectedIndex }"
             @click="selectVenue(venue)"
             @mouseenter="selectedIndex = index"

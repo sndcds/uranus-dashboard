@@ -1,5 +1,5 @@
 <template>
-  <div class="event-slideshow">
+  <div class="event-slideshow" data-testid="event-slideshow">
     <Transition name="fade" mode="out-in">
       <UranusEventSlide
           v-if="activeSlide"
@@ -12,8 +12,8 @@
       />
     </Transition>
 
-    <div v-if="isLoading" class="loading">Loading…</div>
-    <div v-else-if="loadError" class="error">{{ loadError }}</div>
+    <div v-if="isLoading" class="loading" data-testid="event-slideshow-loading">Loading…</div>
+    <div v-else-if="loadError" class="error" data-testid="event-slideshow-error">{{ loadError }}</div>
   </div>
 </template>
 

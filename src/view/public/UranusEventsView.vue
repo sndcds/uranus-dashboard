@@ -1,9 +1,9 @@
 <template>
 
-  <div class="calendar-view">
+  <div class="calendar-view" data-testid="events-view">
 
     <!-- Sidebar for desktop, modal for mobile -->
-    <div class="sidebar">
+    <div class="sidebar" data-testid="events-filter-sidebar">
       <UranusEventFilterPanel
           v-if="isSidebarVisible || showFilterModal"
           :isSavingFilter="isSavingFilter"
@@ -13,7 +13,7 @@
       />
     </div>
 
-    <div class="calendar-body">
+    <div class="calendar-body" data-testid="events-calendar-body">
       <UranusEventCalendar />
     </div>
 

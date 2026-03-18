@@ -1,10 +1,11 @@
 <template>
-  <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
+  <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel" data-testid="event-filter-panel">
 
     <UranusFormRow :cols="2">
       <UranusButton
           size="medium"
           variant="secondary"
+          data-testid="event-filter-reset"
           @click="onResetFilter"
       >
         <template #icon><FunnelX /></template>
@@ -21,6 +22,7 @@
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="search-input"
+              data-testid="event-filter-search"
               v-model="filter.search!"
               :label="t('calendar_filter_search_label')"
               :placeholder="t('calendar_filter_search_placeholder')"
@@ -30,6 +32,7 @@
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="city-input"
+              data-testid="event-filter-city"
               v-model="filter.city!"
               :label="t('calendar_filter_city_label')"
           />
@@ -39,12 +42,14 @@
         <UranusFormRow :cols="2">
           <UranusDateInput
               id="start-date"
+              data-testid="event-filter-start-date"
               v-model="filter.startDate"
               :label="t('calendar_filter_start_date')"
               style="width: 100%;"
           />
           <UranusDateInput
               id="end-date"
+              data-testid="event-filter-end-date"
               v-model="filter.endDate"
               :label="t('calendar_filter_end_date')"
               style="width: 100%;"
@@ -64,6 +69,7 @@
         <UranusFormRow :cols="1">
           <UranusCheckbox
               id="use-gps"
+              data-testid="event-filter-use-gps"
               v-model="filter.useCurrentLocation!"
               label="Use GPS"
           />
@@ -72,6 +78,7 @@
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="radius-km"
+              data-testid="event-filter-radius-km"
               v-model="filter.radiusKm"
               type="number"
               min="0"
@@ -89,12 +96,14 @@
         <UranusFormRow :cols="2">
           <UranusTextfield
               id="min-age"
+              data-testid="event-filter-min-age"
               :label="t('event_filter_from')"
               type="number" min="0" step="1" :nullableNumber="true"
               v-model="minAgeModel"
           />
           <UranusTextfield
               id="max-age"
+              data-testid="event-filter-max-age"
               :label="t('event_filter_to')"
               type="number" min="0" step="1" :nullableNumber="true"
               v-model="maxAgeModel"
@@ -106,7 +115,7 @@
         <template #title>Preis</template>
         <UranusFormRow :cols="1">
           <UranusLabel id="price-type" label="Preisart">
-            <select v-model="filter.priceType">
+            <select v-model="filter.priceType" data-testid="event-filter-price-type">
               <option value="not_specified">{{ t('event_price_not_specified') }}</option>
               <option value="free">{{ t('event_price_free') }}</option>
               <option value="donation">{{ t('event_price_donation') }}</option>
@@ -118,12 +127,13 @@
         <UranusFormRow :cols="2">
           <UranusTextfield
               id="max-price"
+              data-testid="event-filter-max-price"
               :label="t('event_filter_max_price')"
               type="number" min="0" step="0.1" :nullableNumber="true"
               v-model="maxPriceModel"
           />
           <UranusLabel id="price-currency" label="Währung">
-            <select v-model="filter.priceCurrency" style="height: var(--uranus-input-height)">
+            <select v-model="filter.priceCurrency" data-testid="event-filter-price-currency" style="height: var(--uranus-input-height)">
               <option value="EUR">Euro</option>
               <option value="DKK">DKK</option>
             </select>

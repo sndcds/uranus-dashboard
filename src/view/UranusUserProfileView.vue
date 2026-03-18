@@ -1,5 +1,5 @@
 <template>
-    <div class="uranus-main-layout">
+    <div class="uranus-main-layout" data-testid="user-profile-view">
         <UranusDashboardHero
             :title="t('user_profile_title')"
             :subtitle="t('user_profile_subtitle')" />
@@ -11,7 +11,7 @@
                 </p>
             </transition>
 
-            <form class="uranus-form profile-form" @submit.prevent="submitProfile">
+            <form class="uranus-form profile-form" @submit.prevent="submitProfile" data-testid="user-profile-form">
                 <div v-if="isLoading" class="profile-loading">
                     <span class="profile-loading__text">
                       {{ t('user_profile_loading') }}
@@ -34,23 +34,23 @@
 
                     <div class="profile-fields">
                         <UranusFormRow class="profile-field-row">
-                            <UranusTextInput id="profile_display_name" v-model="profile.displayName"
+                            <UranusTextInput id="profile_display_name" data-testid="profile-display-name" v-model="profile.displayName"
                                 :label="t('user_profile_display_name')" required autocomplete="nickname"
                                 :disabled="isSubmitting" />
-                            <UranusTextInput id="profile_email" v-model="profile.emailAddress" type="email"
+                            <UranusTextInput id="profile_email" data-testid="profile-email" v-model="profile.emailAddress" type="email"
                                 :label="t('user_profile_email')" required autocomplete="email"
                                 :disabled="isSubmitting" />
                         </UranusFormRow>
                         <UranusFormRow class="profile-field-row">
-                            <UranusTextInput id="profile_first_name" v-model="profile.firstName"
+                            <UranusTextInput id="profile_first_name" data-testid="profile-first-name" v-model="profile.firstName"
                                 :label="t('user_profile_first_name')" autocomplete="given-name"
                                 :disabled="isSubmitting" />
-                            <UranusTextInput id="profile_last_name" v-model="profile.lastName"
+                            <UranusTextInput id="profile_last_name" data-testid="profile-last-name" v-model="profile.lastName"
                                 :label="t('user_profile_last_name')" autocomplete="family-name"
                                 :disabled="isSubmitting" />
                         </UranusFormRow>
                         <UranusFormRow class="profile-field-row">
-                            <UranusTextInput id="profile_username" v-model="profile.username"
+                            <UranusTextInput id="profile_username" data-testid="profile-username" v-model="profile.username"
                                 :label="t('user_profile_username')" />
                         </UranusFormRow>
 
@@ -61,7 +61,7 @@
                             </div>
                             <UranusFormRow class="profile-preferences__grid">
                                 <UranusLabel id="profile_language" :label="t('language')">
-                                    <select id="profile_language" v-model="selectedLocale" class="uranus-admin-select"
+                                    <select id="profile_language" data-testid="profile-language" v-model="selectedLocale" class="uranus-admin-select"
                                         :disabled="isSubmitting">
                                         <option v-for="option in localeOptions" :key="option.value"
                                             :value="option.value">
@@ -70,7 +70,7 @@
                                     </select>
                                 </UranusLabel>
                                 <UranusLabel id="profile_theme" :label="t('settings_theme')">
-                                    <select id="profile_theme" v-model="selectedTheme" class="uranus-admin-select"
+                                    <select id="profile_theme" data-testid="profile-theme" v-model="selectedTheme" class="uranus-admin-select"
                                         :disabled="isSubmitting">
                                         <option v-for="option in themeOptions" :key="option.value"
                                             :value="option.value">
@@ -95,7 +95,7 @@
                         </p>
                     </transition>
 
-                    <button class="uranus-button" type="submit" :disabled="saveDisabled">
+                    <button class="uranus-button" data-testid="profile-save-button" type="submit" :disabled="saveDisabled">
                         <span v-if="!isSubmitting">{{ t('user_profile_save') }}</span>
                         <span v-else>{{ t('form_saving') }}</span>
                     </button>
