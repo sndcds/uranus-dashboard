@@ -53,7 +53,7 @@
         </strong></span><br>
         <span v-if="hasVenue">
           {{ t('venue')}}: {{ event.venueName }}
-          <template v-if="hasSpace"> / {{ event.spaceName }}}</template>
+          <template v-if="hasSpace"> / {{ event.spaceName }}</template>
         </span><br>
         <span>{{ t('event_organizer')}}: {{ event.organizationName }}</span>
       </div>

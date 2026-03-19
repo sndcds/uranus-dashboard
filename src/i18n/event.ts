@@ -551,6 +551,16 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Spielstätte wählen',
         en: 'Select venue',
         da: 'Vælg spillested',
+    },
+    event_remove_venue: {
+        de: 'Spielstätte entfernen',
+        en: 'Remove venue',
+        da: 'Fjern spillested',
+    },
+    event_remove_date: {
+        de: 'Datum entfernen',
+        en: 'Remove date',
+        da: 'Fjern dato',
     }
 }
 

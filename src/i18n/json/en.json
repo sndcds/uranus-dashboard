@@ -667,6 +667,8 @@
   "notification_cant_see_events_action": "Go to Organizations",
   "event_date_delete_confirm": "Are you sure you want to delete this date?",
   "event_select_venue": "Select venue",
+  "event_remove_venue": "Remove venue",
+  "event_remove_date": "Remove date",
   "accessible_parking": "Accessible Parking",
   "accessible_restroom": "Accessible Restroom",
   "accessible_website": "Accessible Website",

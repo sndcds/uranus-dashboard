@@ -668,6 +668,8 @@
   "notification_cant_see_events_action": "Zu den Organisationen",
   "event_date_delete_confirm": "Möchtest du dieses Datum wirklich löschen?",
   "event_select_venue": "Spielstätte wählen",
+  "event_remove_venue": "Spielstätte entfernen",
+  "event_remove_date": "Datum entfernen",
   "accessible_parking": "Barrierefreier Parkplatz",
   "accessible_restroom": "Barrierefreies WC",
   "accessible_website": "Barrierefreie Webseite",

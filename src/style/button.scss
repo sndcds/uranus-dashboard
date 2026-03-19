@@ -42,6 +42,14 @@
   }
 }
 
+.uranus-button--tertiary {
+  border: 1px solid var(--uranus-tertiary-button-color);
+  color: var(--uranus-tertiary-button-color);
+  background: none;
+  &:hover {
+  }
+}
+
 .uranus-button--cta {
   border: 2px solid var(--uranus-color);
   border-radius: 40px;

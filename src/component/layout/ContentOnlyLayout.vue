@@ -38,7 +38,7 @@ const contentClass = computed(() => {
   display: flex;
   width: 100%;
   background: var(--uranus-bg);
-  padding: 1rem;
+  padding: 0;
   max-width: 100%;
 }
 

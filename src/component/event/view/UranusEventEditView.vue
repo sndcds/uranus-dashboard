@@ -8,20 +8,17 @@
 
 <template>
   <div class="event-editor">
-
     <div class="event-editor-status-header">
-      <h1>{{ t('edit_event') }}</h1>
-
-      <div style="display: flex; gap: 0.5rem;">
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
         <UranusButton size="small" variant="secondary" :onclick="goBack">
           {{ t('finish_edit') }}
         </UranusButton>
-
         <UranusButton size="small" variant="secondary" @click="showReleaseModal = true">
           {{ t('edit_event_release_status') }}
         </UranusButton>
       </div>
 
+      <h1>{{ t('edit_event') }}</h1>
 
       <div v-if="adminEventStore.loading">Loading…</div>
       <div v-else-if="adminEventStore.error">{{ adminEventStore.error }}</div>
@@ -64,7 +61,6 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { LayoutDashboard } from 'lucide-vue-next'
 import { getPreviousRoute } from '@/router'
 
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
@@ -72,10 +68,10 @@ import { type UranusAdminEventDTO } from '@/api/dto/UranusAdminEventDTO.ts'
 
 import AdminEventBaseTab from '@/component/event/editor/AdminEventBaseTab.vue'
 import AdminEventDatesTab from '@/component/event/editor/AdminEventDatesTab.vue'
-import UranusMeta1Tab from "@/component/event/editor/UranusMeta1Tab.vue";
-import AdminEventParticipationTab from "@/component/event/editor/AdminEventParticipationTab.vue";
-import AdminEventVenueTab from "@/component/event/editor/AdminEventVenueTab.vue";
-import AdminEventPriceTab from "@/component/event/editor/AdminEventPriceTab.vue";
+import UranusMeta1Tab from '@/component/event/editor/UranusMeta1Tab.vue'
+import AdminEventParticipationTab from '@/component/event/editor/AdminEventParticipationTab.vue'
+import AdminEventVenueTab from '@/component/event/editor/AdminEventVenueTab.vue'
+import AdminEventPriceTab from '@/component/event/editor/AdminEventPriceTab.vue'
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
 import UranusEventVisitorInfosEditor from '@/component/event/editor/UranusEventVisitorInfosEditor.vue'
 import UranusButton from "@/component/ui/UranusButton.vue";
@@ -211,7 +207,7 @@ async function updateReleaseField(field: 'releaseStatus' | 'releaseDate', value:
   top: 0;
   z-index: 10;
   background: var(--uranus-bg);
-  padding: 1rem 0;
+  padding: 1rem;
   width: 100%;
   overflow: hidden;
 }
@@ -238,6 +234,6 @@ async function updateReleaseField(field: 'releaseStatus' | 'releaseDate', value:
 }
 
 .tab-content {
-  padding: 1rem 0;
+  padding: 1rem;
 }
 </style>

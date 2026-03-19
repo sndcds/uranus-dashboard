@@ -71,6 +71,9 @@
   --uranus-secondary-button-color-hover: oklch(30% 0.08 var(--uranus-hue));
   --uranus-secondary-button-bg-hover: oklch(90% 0.01 var(--uranus-hue));
 
+  --uranus-tertiary-button-color: oklch(40% 0.02 var(--uranus-hue));
+
+
   // Inputs & borders
   --uranus-input-color: oklch(10% 0.02 var(--uranus-hue));
   --uranus-input-bg: oklch(100% 0.0 var(--uranus-hue));
@@ -360,6 +363,7 @@ header {
   border: var(--uranus-input-border-width) solid var(--uranus-input-border-color) !important;
   border-radius: var(--uranus-input-border-radius);
   padding: 0.5em;
+  font-size: 1rem;
 
   &:focus {
     outline: 2px solid var(--uranus-focus-color);

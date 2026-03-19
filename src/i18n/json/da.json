@@ -662,6 +662,8 @@
   "notification_cant_see_events_action": "Til organisationerne",
   "event_date_delete_confirm": "Er du sikker på, at du vil slette denne dato?",
   "event_select_venue": "Vælg spillested",
+  "event_remove_venue": "Fjern spillested",
+  "event_remove_date": "Fjern dato",
   "accessible_parking": "Handicapparkering",
   "accessible_restroom": "Handicapvenligt toilet",
   "accessible_website": "Tilgængelig hjemmeside",

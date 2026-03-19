@@ -2,104 +2,116 @@
 
 <template>
   <section class="dates-tab">
-    <div
+
+    <UranusCard
         v-for="(date, index) in store.draft?.eventDates"
         :key="index"
-        class="event-date"
+        class="date-card"
     >
-      <div class="two-fields">
-        <label>Beginn
-          <input type="date" v-model="date.startDate" />
-        </label>
-        <label>Zeit
-          <input type="time" v-model="date.startTime" />
-        </label>
+      <div v-if="date.venueId" class="date-venue-name">
+        <h2>{{ t('venue') }}: <strong>{{ venueInfoStore.getVenueLabel(date.venueId, date.spaceId) }}</strong></h2>
       </div>
 
-      <div class="two-fields">
-        <label>Ende
-          <input type="date" v-model="date.endDate" />
-        </label>
-        <label>Zeit
-          <input type="time" v-model="date.endTime" />
-        </label>
+      <div class="date-pair">
+        <UranusDateInput id="start-date" v-model="date.startDate" :label="t('event_start_date')" style="width: 100%;"/>
+        <UranusTimeInput id="start-time" v-model="date.startTime" :label="t('event_start_time')" style="width: 100%;"/>
       </div>
 
-      <div class="two-fields">
-        <label>Einlass
-          <input type="time" v-model="date.entryTime" placeholder="Entry Time" />
-        </label>
-        <label>Dauer
-          <input type="number" v-model.number="date.duration" min="0" placeholder="Duration (min)" />
-        </label>
+      <div class="date-pair">
+        <UranusDateInput id="end-date" v-model="date.endDate" :label="t('event_end_date')" style="width: 100%;"/>
+        <UranusTimeInput id="end-time" v-model="date.endTime" :label="t('event_end_time')" style="width: 100%;"/>
       </div>
 
-      <label class="all-day">
-        <input type="checkbox" v-model="date.allDay" />
-        All Day
-      </label>
-
-      <div class="full-width">
-        <span v-if="date.venueId" class="venue_name">
-          {{ venueInfoStore.getVenueLabel(date.venueId, date.spaceId) }}
-        </span>
+      <div class="date-pair">
+        <UranusTimeInput id="entry-time" v-model="date.entryTime" :label="t('event_entry_time')" style="width: 100%;"/>
+        <UranusNumberInput id="duration" v-model="date.duration!" min="0" :label="t('event_duration')" />
       </div>
 
-      <div class="full-width">
-        <button type="button" @click="openVenueModal(date)">
-          Select Venue
-        </button>
+      <div class="date-pair" style="padding-top: 1.6rem;">
+        <UranusCheckbox
+            id="todo_completed"
+            v-model="date.allDay!"
+            :label="t('all_day')"
+        />
+      </div>
 
-        <button type="button" @click="clearVenue(date)">
-          Clear Venue
-        </button>
+      <div class="date-actions">
+        <UranusButton size="small" variant="tertiary" @click="openVenueModal(date)">
+          {{ t('event_select_venue') }}
+        </UranusButton>
 
-        <button
+        <UranusButton size="small" variant="tertiary" @click="clearVenue(date)">
+          {{ t('event_remove_venue') }}
+        </UranusButton>
+
+        <UranusButton
             v-if="store.hasMultipleDates"
-            @click="removeDate(index)"
-            type="button"
-        >
-          Remove
-        </button>
+            size="small"
+            variant="tertiary"
+            @click="removeDate(index)">
+          {{ t('event_remove_date') }}
+        </UranusButton>
       </div>
-    </div>
+    </UranusCard>
 
-    <button @click="addDate" type="button">
-      Add date
-    </button>
 
     <!-- Save / Discard buttons -->
     <div class="tab-actions">
-      <button @click="resetDates" :disabled="store.saving || !isDirty">
-        Discard
-      </button>
-      <button @click="commitDates" :disabled="store.saving || !isDirty">
-        Save Tab
-      </button>
-    </div>
-  </section>
+      <UranusButton size="medium" variant="cta" @click="addDate">
+        {{ t('event_add_date') }}
+      </UranusButton>
 
-  <UranusVenueSelectModal
-      :show="showModal"
-      :venueInfos="venueInfos"
-      v-model="selectedPlace"
-      @close="showModal = false"
-  />
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          @click="resetDates"
+      >
+        <template #icon><Undo /></template>
+        {{ t('discard')}}
+      </UranusButton>
+
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          :loading="store.saving"
+          loading-text="Saving..."
+          @click="commitDates"
+      >
+        <template #icon><Save /></template>
+        {{ t('save')}}
+      </UranusButton>
+    </div>
+
+    <!-- Venue selection modal -->
+    <UranusVenueSelectModal
+        :show="showModal"
+        :venueInfos="venueInfos"
+        v-model="selectedPlace"
+        @close="showModal = false"
+    />
+  </section>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { apiFetch } from "@/api.ts";
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
 import UranusVenueSelectModal from "@/component/venue/UranusVenueSelectModal.vue";
+import UranusCard from "@/component/ui/UranusCard.vue";
+import UranusButton from "@/component/ui/UranusButton.vue";
+import {Save, Undo} from "lucide-vue-next";
+import UranusDateInput from "@/component/ui/UranusDateInput.vue";
+import UranusTimeInput from "@/component/ui/UranusTimeInput.vue";
+import UranusNumberInput from "@/component/ui/UranusNumberInput.vue";
+import UranusCheckbox from "@/component/ui/UranusCheckbox.vue";
+
+const { t } = useI18n({ useScope: 'global' })
 
 const store = useUranusAdminEventStore()
 const venueInfoStore = useUranusEventVenueInfoStore()
 
-// ----------------------------
-// Reactive state
-// ----------------------------
 interface SelectedPlace {
   venueId: number | null
   spaceId: number | null
@@ -120,16 +132,10 @@ const isDirty = computed(() => {
   return JSON.stringify(draft) !== JSON.stringify(original)
 })
 
-// ----------------------------
-// Lifecycle
-// ----------------------------
 onMounted(() => {
   venueInfoStore.fetchAll()
 })
 
-// ----------------------------
-// Modal handling
-// ----------------------------
 function openVenueModal(date: any) {
   activeDate.value = date
   showModal.value = true
@@ -147,9 +153,6 @@ watch(showModal, (val) => {
   if (!val) activeDate.value = null
 })
 
-// ----------------------------
-// Date management
-// ----------------------------
 function clearVenue(date: any) {
   date.venueId = null
   date.spaceId = null
@@ -166,9 +169,6 @@ function removeDate(index: number) {
   store.removeEventDate(index)
 }
 
-// ----------------------------
-// Saving / API
-// ----------------------------
 function toSnakeCase(str: string) {
   return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
 }
@@ -221,87 +221,18 @@ function resetDates() {
 .dates-tab {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1rem;
+  max-width: var(--uranus-dashboard-content-width);
 
-  .two-fields {
+  .date-pair {
     display: flex;
     gap: 12px;
     width: 40%;
     max-width: 400px;
-    min-width: 280px;
-
-    label {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      width: calc(50% - 6px);
-      font-size: 0.85rem;
-
-      input[type="date"],
-      input[type="time"],
-      input[type="number"] {
-        font-size: 1rem;
-        padding: 0.4rem 0.8rem;
-        border-radius: 4px;
-        border: 0px solid #ccc;
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-
-  .full-width {
-    display: flex;
-    gap: 8px;
-    padding-top: 12px;
-    width: 100%;
-  }
-
-  .event-date {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-    padding: 16px;
-    border-radius: 7px;
-    border: 0 solid #ccc;
-    background: white;
-
-    input[type="date"],
-    input[type="time"],
-    input[type="number"] {
-      font-size: 1rem;
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      width: calc(50% - 6px);
-      background: #eee;
-    }
-
-    .all-day {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      font-size: 0.9rem;
-    }
-
-    button {
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      border: 1px solid #aaa;
-      cursor: pointer;
-      background: #fff;
-
-      &:hover {
-        background: #e0e0e0;
-      }
-    }
-
-    .venue_name {
-      align-content: center;
-      padding: 0.4rem 0.8rem;
-      font-weight: 600;
-      font-size: 1.2rem
+    min-width: 300px;
+    > * {
+      flex: 1;
+      min-width: 0;
     }
   }
 
@@ -309,19 +240,30 @@ function resetDates() {
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
-
-    button {
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      border: 2px solid #888;
-      background-color: #f5f5f5;
-      cursor: pointer;
-
-      &:disabled {
-        cursor: not-allowed;
-        opacity: 0.5;
-      }
-    }
   }
+}
+
+.date-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.date-venue-name {
+  font-weight: 500;
+  flex-basis: 100%;
+  h2 {
+    font-weight: 500;
+  }
+}
+
+.date-actions {
+  display: flex;
+  flex-basis: 100%;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 </style>

@@ -2,15 +2,14 @@
   <section class="venue-tab">
 
     <UranusCard>
-
-    <h2 class="venue-name">
-      Auswahl: <b>{{ venueInfoStore.getVenueLabel(draft.venueId, draft.spaceId) }}</b>
-    </h2>
-    <div class="tab-actions">
-      <UranusButton variant="cta" :onclick="openVenueModal">
-        {{ t('event_select_venue') }}
-      </UranusButton>
-    </div>
+      <h2 class="venue-name">
+        {{ t('venue') }}: <strong>{{ venueInfoStore.getVenueLabel(draft.venueId, draft.spaceId) }}</strong>
+      </h2>
+      <div class="tab-actions">
+        <UranusButton variant="cta" :onclick="openVenueModal">
+          {{ t('event_select_venue') }}
+        </UranusButton>
+      </div>
     </UranusCard>
 
     <UranusVenueSelectModal

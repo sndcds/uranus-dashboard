@@ -33,7 +33,7 @@ import { computed } from 'vue'
 const props = defineProps({
   to: { type: [String, Object], default: null },
   type: { type: String as () => 'button' | 'submit' | 'reset', default: 'button' },
-  variant: { type: String as () => 'primary' | 'secondary' | 'cta' | 'danger', default: 'primary' },
+  variant: { type: String as () => 'primary' | 'secondary' | 'tertiary' | 'cta' | 'danger', default: 'primary' },
   size: { type: String as () => 'small' | 'medium' | 'large', default: 'medium' },
   disabled: { type: Boolean, default: false },
   loading: { type: Boolean, default: false },
