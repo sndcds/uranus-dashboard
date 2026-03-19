@@ -61,6 +61,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Edit',
         da: 'Rediger',
     },
+    finish_edit: {
+        de: 'Bearbeitung beenden',
+        en: 'Finish Editing',
+        da: 'Afslut redigering',
+    },
     images_and_logos: {
         de: 'Bilder & Logos',
         en: 'Images & logos',

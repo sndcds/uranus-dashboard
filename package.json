@@ -3,6 +3,16 @@
   "private": true,
   "version": "0.12.7",
   "type": "module",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,7 +20,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "generate:i18n": "ts-node-esm tools/i18n/generate-i18n-to-json.ts"
   },
   "dependencies": {
     "@georgedoescode/spline": "^1.0.1",
@@ -50,6 +61,7 @@
     "happy-dom": "^20.0.10",
     "jsdom": "^27.1.0",
     "sass": "^1.93.2",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
     "vite-svg-loader": "^5.1.0",

@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import {apiFetch} from "@/api.ts";
+import { apiFetch } from '@/api.ts'
 
 export interface UranusVenueTypeEntry {
     label: string | null

@@ -27,15 +27,16 @@ import UranusDevThemeView from '@/view/dev/UranusDevThemeView.vue'
 
 import GenericLayout from '@/component/layout/GenericLayout.vue'
 import UranusAdminOrganizationListView from '@/component/organization/view/UranusAdminOrganizationListView.vue'
-import UranusOrganizationEditView from "@/view/admin/organization/UranusOrganizationEditView.vue";
-import UranusOrganizationCreateView from "@/view/admin/organization/UranusOrganizationCreateView.vue";
-import UranusVenueCreateView from "@/view/admin/venue/UranusVenueCreateView.vue";
-import UranusVenueEditView from "@/view/admin/venue/UranusVenueEditView.vue";
+import UranusOrganizationEditView from '@/view/admin/organization/UranusOrganizationEditView.vue'
+import UranusOrganizationCreateView from '@/view/admin/organization/UranusOrganizationCreateView.vue'
+import UranusVenueCreateView from '@/view/admin/venue/UranusVenueCreateView.vue'
+import UranusVenueEditView from '@/view/admin/venue/UranusVenueEditView.vue'
 import UranusAdminEventListView from '@/component/event/view/UranusAdminEventListView.vue'
-import UranusEventCreateView from "@/component/event/view/UranusEventCreateView.vue";
+import UranusEventCreateView from '@/component/event/view/UranusEventCreateView.vue'
 import UranusEventEditView from '@/component/event/view/UranusEventEditView.vue'
 import UranusDevGetEventsView from '@/component/dev/UranusDevGetEventsView.vue'
 import UranusMapView from '@/view/public/UranusMapView.vue'
+import ContentOnlyLayout from '@/component/layout/ContentOnlyLayout.vue'
 
 
 const routes = [
@@ -109,16 +110,6 @@ const routes = [
                 component: UranusAdminEventListView,
             },
             {
-                path: 'organization/:id/event/create',
-                name: 'admin-create-event',
-                component: UranusEventCreateView,
-            },
-            {
-                path: 'event/:id',
-                name: 'admin-event-details',
-                component: UranusEventEditView,
-            },
-            {
                 path: 'user/profile',
                 name: 'admin-user-profile',
                 component: UranusUserProfileView,
@@ -143,6 +134,30 @@ const routes = [
                 name: 'admin-edit-member-permission',
                 component: UranusOrganizationMemberPermissionView,
             }
+        ],
+    },
+    {
+        path: '/admin/organization/:id/event/create',
+        component: ContentOnlyLayout,
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: '',
+                name: 'admin-create-event',
+                component: UranusEventCreateView,
+            },
+        ],
+    },
+    {
+        path: '/admin/event/:id',
+        component: ContentOnlyLayout,
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: '',
+                name: 'admin-event-details',
+                component: UranusEventEditView,
+            },
         ],
     },
     {
@@ -235,7 +250,11 @@ const router = createRouter({
     routes,
 })
 
-router.beforeEach((to) => {
+let previousRoute: RouteLocationNormalized | null = null
+
+router.beforeEach((to, from) => {
+    previousRoute = from
+
     const tokenStore = useTokenStore()
     const isAuthenticated = tokenStore.isAuthenticated
     const requiresAuth = to.matched.some((record) => record.meta?.requiresAuth)
@@ -257,5 +276,9 @@ router.beforeEach((to) => {
 
     return true
 })
+
+export function getPreviousRoute() {
+    return previousRoute
+}
 
 export default router

@@ -1,13 +1,17 @@
 <template>
   <section class="venue-tab">
-    <h2>Venue / Space</h2>
 
-    <button class="uranus-action-button" @click="openVenueModal">
-      Select Venue / Space
-    </button>
-    <p>
-      Selected: Venue {{ draft.venueId }}, Space {{ draft.spaceId }}
-    </p>
+    <UranusCard>
+
+    <h2 class="venue-name">
+      Auswahl: <b>{{ venueInfoStore.getVenueLabel(draft.venueId, draft.spaceId) }}</b>
+    </h2>
+    <div class="tab-actions">
+      <UranusButton variant="cta" :onclick="openVenueModal">
+        {{ t('event_select_venue') }}
+      </UranusButton>
+    </div>
+    </UranusCard>
 
     <UranusVenueSelectModal
         :show="showModal"
@@ -16,33 +20,63 @@
         @close="closeVenueModal"
     />
 
-    <div class="field">
-      <label for="meetingPoint">Meeting Point</label>
-      <input type="text" id="meetingPoint" v-model="draft.meetingPoint" placeholder="Meeting point" />
-    </div>
+    <UranusTextfield
+        id="meeting-point"
+        size="medium"
+        :label="t('event_meeting_point')"
+        v-model="draft.meetingPoint"
+    />
 
-    <div class="field">
-      <label for="onlineUrl">Online Event URL</label>
-      <input type="url" id="onlineUrl" v-model="draft.onlineLink" placeholder="https://..." />
-    </div>
+    <UranusTextfield
+        id="online-event-url"
+        size="medium"
+        :label="t('event_online_url')"
+        placeholder="https://..."
+        v-model="draft.onlineLink"
+    />
 
     <div class="dirty-indicator" v-if="isDirty">
       ⚠ You have unsaved changes
     </div>
 
     <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">Discard</button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">Save</button>
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          @click="resetTab"
+      >
+        <template #icon><Undo /></template>
+        {{ t('discard')}}
+      </UranusButton>
+
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          :loading="store.saving"
+          loading-text="Saving..."
+          @click="commitTab"
+      >
+        <template #icon><Save /></template>
+        {{ t('save')}}
+      </UranusButton>
     </div>
+
   </section>
 </template>
 
 <script setup lang="ts">
 import { onMounted, computed, ref } from 'vue'
 import { apiFetch } from '@/api.ts'
+import { useI18n } from 'vue-i18n'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
 import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import {Save, Undo} from "lucide-vue-next";
+import UranusCard from "@/component/ui/UranusCard.vue";
+
+const { t } = useI18n({ useScope: 'global' })
 
 const store = useUranusAdminEventStore()
 const venueInfoStore = useUranusEventVenueInfoStore()
@@ -138,6 +172,11 @@ function resetTab() {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-width: var(--uranus-dashboard-content-width);
+
+  .venue-name {
+    font-weight: 500;
+  }
 
   .field {
     display: flex;
@@ -162,20 +201,9 @@ function resetTab() {
 
   .tab-actions {
     display: flex;
-    gap: 0.5rem;
-
-    button {
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
-      border: 1px solid #888;
-      cursor: pointer;
-      background: #f5f5f5;
-
-      &:disabled {
-        cursor: not-allowed;
-        opacity: 0.5;
-      }
-    }
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 1rem;
   }
 }
 </style>

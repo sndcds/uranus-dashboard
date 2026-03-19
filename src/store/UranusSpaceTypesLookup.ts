@@ -1,3 +1,4 @@
+import { apiFetch } from '@/api'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -22,12 +23,13 @@ export const useSpaceTypeLookupStore = defineStore('spaceType', () => {
         loading.value[lang] = true
 
         try {
-            const res = await fetch(`/api/choosable-space-types?lang=${lang}`)
-            if (!res.ok) throw new Error(`Failed to load space types for lang=${lang}`)
-            const json = await res.json()
+            const res = await apiFetch<{ data: any[] }>(
+                `/api/choosable-space-types?lang=${lang}`
+            )
 
             const map: UranusSpaceTypeMap = {}
-            for (const item of json.data ?? []) {
+
+            for (const item of res.data.data ?? []) {
                 map[item.key] = {
                     label: item.name ?? null,
                     description: item.description ?? null
@@ -36,6 +38,7 @@ export const useSpaceTypeLookupStore = defineStore('spaceType', () => {
 
             data.value[lang] = map
             loaded.value[lang] = true
+
         } catch (err) {
             console.error(`Error fetching space types for lang=${lang}`, err)
             data.value[lang] = {}

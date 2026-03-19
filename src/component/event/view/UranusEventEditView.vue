@@ -8,52 +8,64 @@
 
 <template>
   <div class="event-editor">
-    <div v-if="adminEventStore.loading">Loading…</div>
-    <div v-else-if="adminEventStore.error">{{ adminEventStore.error }}</div>
 
-    <template v-else-if="adminEventStore.isLoaded">
-      <header class="editor-header">
-        <h1>{{ adminEventStore.draft?.title }}</h1>
-      </header>
+    <div class="event-editor-status-header">
+      <h1>{{ t('edit_event') }}</h1>
 
-      <button class="uranus-action-button" @click="showReleaseModal = true">
-        Edit Release Status / Date
-      </button>
+      <div style="display: flex; gap: 0.5rem;">
+        <UranusButton size="small" variant="secondary" :onclick="goBack">
+          {{ t('finish_edit') }}
+        </UranusButton>
 
-      <UranusEventReleaseModal
-          :show="showReleaseModal"
-          :releaseStatus="draftEvent.releaseStatus"
-          :releaseDate="draftEvent.releaseDate"
-          @update:releaseStatus="val => updateReleaseField('releaseStatus', val)"
-          @update:releaseDate="val => updateReleaseField('releaseDate', val)"
-          @close="showReleaseModal = false"
-      />
+        <UranusButton size="small" variant="secondary" @click="showReleaseModal = true">
+          {{ t('edit_event_release_status') }}
+        </UranusButton>
+      </div>
 
-      <!-- tabs -->
-      <nav class="tabs">
-        <button
-            v-for="tab in tabs"
-            :key="tab.key"
-            :class="{ active: tab.key === activeTab }"
-            @click="activeTab = tab.key"
-        >
-          {{ tab.label }}
-        </button>
-      </nav>
 
+      <div v-if="adminEventStore.loading">Loading…</div>
+      <div v-else-if="adminEventStore.error">{{ adminEventStore.error }}</div>
+      <template v-else-if="adminEventStore.isLoaded && adminEventStore.draft">
+        <nav class="tabs">
+          <button
+              v-for="tab in tabs"
+              :key="tab.key"
+              :class="{ active: tab.key === activeTab }"
+              @click="activeTab = tab.key"
+          >
+            {{ tab.label }}
+          </button>
+        </nav>
+
+      </template>
+    </div>
+
+    <template v-if="adminEventStore.isLoaded && adminEventStore.draft">
       <section class="tab-content">
         <component :is="currentTabComponent" />
       </section>
     </template>
   </div>
+
+  <UranusEventReleaseModal
+      :show="showReleaseModal"
+      :releaseStatus="draftEvent.releaseStatus"
+      :releaseDate="draftEvent.releaseDate"
+      @update:releaseStatus="val => updateReleaseField('releaseStatus', val)"
+      @update:releaseDate="val => updateReleaseField('releaseDate', val)"
+      @close="showReleaseModal = false"
+  />
+
 </template>
 
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { useI18n } from "vue-i18n";
-import { apiFetch } from "@/api.ts";
+import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { apiFetch } from '@/api.ts'
+import { LayoutDashboard } from 'lucide-vue-next'
+import { getPreviousRoute } from '@/router'
 
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 import { type UranusAdminEventDTO } from '@/api/dto/UranusAdminEventDTO.ts'
@@ -62,16 +74,28 @@ import AdminEventBaseTab from '@/component/event/editor/AdminEventBaseTab.vue'
 import AdminEventDatesTab from '@/component/event/editor/AdminEventDatesTab.vue'
 import UranusMeta1Tab from "@/component/event/editor/UranusMeta1Tab.vue";
 import AdminEventParticipationTab from "@/component/event/editor/AdminEventParticipationTab.vue";
-import UranusEventVenueTab from "@/component/event/editor/UranusEventVenueTab.vue";
+import AdminEventVenueTab from "@/component/event/editor/AdminEventVenueTab.vue";
 import AdminEventPriceTab from "@/component/event/editor/AdminEventPriceTab.vue";
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
 import UranusEventVisitorInfosEditor from '@/component/event/editor/UranusEventVisitorInfosEditor.vue'
+import UranusButton from "@/component/ui/UranusButton.vue";
 
 const showReleaseModal = ref(false)
 
-const { locale } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
+const router = useRouter()
 const adminEventStore = useUranusAdminEventStore()
+
+
+function goBack() {
+  const prev = getPreviousRoute()
+  if (prev?.fullPath) {
+    router.push(prev.fullPath)
+  } else {
+    router.push({ name: 'admin-dashboard' }) // fallback
+  }
+}
 
 // Add this after your store import
 const draftEvent = computed(() => adminEventStore.draft ?? {
@@ -101,7 +125,7 @@ const tabs = [
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
     case 'dates': return AdminEventDatesTab
-    case 'venue': return UranusEventVenueTab
+    case 'venue': return AdminEventVenueTab
     case 'meta1': return UranusMeta1Tab
     case 'participation': return AdminEventParticipationTab
     case 'price': return AdminEventPriceTab
@@ -182,10 +206,21 @@ async function updateReleaseField(field: 'releaseStatus' | 'releaseDate', value:
   width: 100%;
 }
 
+.event-editor-status-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--uranus-bg);
+  padding: 1rem 0;
+  width: 100%;
+  overflow: hidden;
+}
+
 .tabs {
   display: flex;
+  margin-top: 1rem;
+  flex-wrap: wrap;
   gap: 0.5rem;
-  border-bottom: 1px solid #333;
 }
 
 .tabs button {
@@ -198,7 +233,7 @@ async function updateReleaseField(field: 'releaseStatus' | 'releaseDate', value:
 }
 
 .tabs button.active {
-  border-bottom: 4px solid #000;
+  border-bottom: 3px solid #000;
   font-weight: bold;
 }
 

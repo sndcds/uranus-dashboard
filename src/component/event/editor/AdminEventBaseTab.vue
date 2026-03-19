@@ -15,6 +15,13 @@
         />
       </UranusLabel>
 
+      <UranusImageSlot
+          context="event"
+          :contextId="event.id"
+          identifier="main"
+          :width="420"
+      />
+
       <UranusFormRow>
         <UranusLabel id="event-language" :label="t('content_language')">
           <UranusLanguageSelect
@@ -23,13 +30,6 @@
           />
         </UranusLabel>
       </UranusFormRow>
-
-      <UranusImageSlot
-          context="event"
-          :contextId="event.id"
-          identifier="main"
-          :width="480"
-      />
 
       <UranusFormRow>
         <UranusTextfield id="event-title" size="big" :label="t('title')" v-model="event.title" />
@@ -49,7 +49,6 @@
         </UranusLabel>
       </UranusFormRow>
 
-      <!-- Summary -->
       <UranusFormRow>
         <UranusLabel id="event-description" :label="t('summary')">
           <UranusTextEditor
@@ -79,10 +78,8 @@
           <template #icon><Save /></template>
           {{ t('save')}}
         </UranusButton>
-
       </div>
 
-      {{ JSON.stringify(store.draft!.categories, null, 2) }}
     </UranusForm>
   </section>
 </template>
@@ -210,7 +207,7 @@ function resetBaseTab() {
 <style lang="scss" scoped>
 .base-tab {
   width: 100%;
-  max-width: 1024px;
+  max-width: var(--uranus-dashboard-content-width);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;

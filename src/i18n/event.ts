@@ -152,6 +152,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'No release date has been set yet.',
         da: 'Ingen udgivelsesdato angivet endnu.',
     },
+    edit_event_release_status: {
+        de: 'Veröffentlichungstatus',
+        en: 'Release status',
+        da: 'Udgivelsesstatus',
+    },
     event_without_venue: {
         de: 'Ohne Spielstätte',
         en: 'Without venue',
@@ -542,6 +547,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Are you sure you want to delete this date?',
         da: 'Er du sikker på, at du vil slette denne dato?',
     },
+    event_select_venue: {
+        de: 'Spielstätte wählen',
+        en: 'Select venue',
+        da: 'Vælg spillested',
+    }
 }
 
 export default uranusI18nEventTranslations

@@ -359,6 +359,7 @@ header {
   width: 100%;
   border: var(--uranus-input-border-width) solid var(--uranus-input-border-color) !important;
   border-radius: var(--uranus-input-border-radius);
+  padding: 0.5em;
 
   &:focus {
     outline: 2px solid var(--uranus-focus-color);
