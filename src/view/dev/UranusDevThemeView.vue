@@ -2,6 +2,23 @@
   <div class="inspector">
     <h1>Uranus Design</h1>
 
+    <!-- Uranus Colors -->
+    <section>
+      <h2>Hues</h2>
+      <div class="colors">
+        <div class="color-swatch" style="background: var(--uranus-color);"></div>
+        <div class="color-swatch" style="background: var(--uranus-color-1);"></div>
+        <div class="color-swatch" style="background: var(--uranus-color-2);"></div>
+        <div class="color-swatch" style="background: var(--uranus-color-3);"></div>
+        <div class="color-swatch" style="background: var(--uranus-color-4);"></div>
+        <div class="color-swatch" style="background: var(--uranus-color-5);"></div>
+        <div class="color-swatch" style="background: var(--uranus-color-6);"></div>
+        <div class="color-swatch" style="background: var(--uranus-color-7);"></div>
+        <div class="color-swatch" style="background: var(--uranus-color-8);"></div>
+        <div class="color-swatch" style="background: var(--uranus-color-9);"></div>
+      </div>
+    </section>
+
     <!-- Colors -->
     <section>
       <h2>Hues</h2>
@@ -108,7 +125,7 @@ h2 {
 }
 
 section {
-  border: 1px solid var(--uranus-dashboard-border-color);
+  border: var(--uranus-card-border);
   border-radius: var(--uranus-card-border-radius);
   padding: 1rem;
   margin-top: 1rem;
@@ -119,8 +136,15 @@ section {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 4rem;
+  width: 3rem;
+  border-radius: 3px;
   aspect-ratio: 1/ 1;
   color: white;
+}
+
+.colors {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
 }
 </style>

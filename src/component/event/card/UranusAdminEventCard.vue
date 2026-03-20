@@ -9,9 +9,6 @@
 <template>
   <UranusCard class="uranus-dashboard-card">
     <div class="card-head">
-      <div >
-        <h2>{{ event.title }}</h2>
-      </div>
       <div class="card-status">
         <UranusEventReleaseChip :releaseStatus="event.releaseStatus ?? ''" :tiny="true"/>
         <UranusEventCategoryDisplay v-if="event.categories" :categories="event.categories" />
@@ -20,25 +17,28 @@
         </span>
         <span v-else>1</span>
       </div>
+      <h2 class="event-title">{{ event.title }}</h2>
     </div>
 
     <div class="uranus-event-card-layout">
-      <img
-          v-if="event.imageUrl"
-          class="uranus-event-card-image"
-          :src="event.imageUrl + '?width=160&ratio=16:9'"
-          :alt="event.title"
-          @error="onImageError"
-      />
+      <div class="event-image-and-types">
+        <img
+            v-if="event.imageUrl"
+            class="uranus-event-card-image"
+            :src="event.imageUrl + '?width=160&ratio=16:9'"
+            :alt="event.title"
+            @error="onImageError"
+        />
 
-      <div class="uranus-dashboard-chip-wrapper">
-        <span
-            v-for="eventType in event.eventTypes ?? []"
-            :key="eventType?.typeId ?? ''"
-            class="uranus-dashboard-chip tiny"
-        >
-          {{ eventTypeGenreString(eventType) }}
-        </span>
+        <div class="uranus-dashboard-chip-wrapper">
+          <span
+              v-for="eventType in event.eventTypes ?? []"
+              :key="eventType?.typeId ?? ''"
+              class="uranus-dashboard-chip tiny"
+          >
+            {{ eventTypeGenreString(eventType) }}
+          </span>
+        </div>
       </div>
 
       <div>
@@ -60,8 +60,7 @@
 
       <div class="uranus-event-card-actions">
         <UranusButton
-            size="small"
-            variant="secondary"
+            variant="secondary" size="small"
             :to="`/event/${event.id}/date/${event.dateId}`"
         >
           <template #icon><Eye /></template>
@@ -70,8 +69,7 @@
 
         <UranusButton
             v-if="event.canEditEvent"
-            size="small"
-            variant="secondary"
+            variant="secondary" size="small"
             :to="`/admin/event/${event.id}`"
         >
           <template #icon><Pencil /></template>
@@ -80,8 +78,7 @@
 
         <UranusButton
             v-if="event.canDeleteEvent"
-            size="small"
-            variant="secondary"
+            variant="secondary" size="small"
             @click.prevent.stop="requestDelete(event)"
         >
           <template #icon><Trash /></template>
@@ -266,7 +263,7 @@ const confirmDelete = async ({password, selectedOption}: {
 .uranus-event-card-layout {
   display: flex;
   flex-direction: column;
-  padding: 0.5rem;
+  padding: 1rem;
   padding-bottom: 40px;
   gap: 6px;
   span {
@@ -298,9 +295,8 @@ const confirmDelete = async ({password, selectedOption}: {
 .card-head {
   display: flex;
   flex-direction: column;
-  padding: 0.5rem;
-  min-height:32px;
-  border-bottom: 1px solid var(--uranus-dashboard-border-color);
+  padding: 1rem;
+  padding-bottom: 0;
 }
 
 .card-status {
@@ -313,6 +309,17 @@ const confirmDelete = async ({password, selectedOption}: {
 
 .card-status > :last-child {
   margin-left: auto;
+}
+
+.event-title {
+  font-weight: 500;
+}
+
+.event-image-and-types {
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .link {

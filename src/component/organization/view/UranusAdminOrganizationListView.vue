@@ -71,6 +71,7 @@ interface Organization {
   can_edit_organization: boolean
   can_delete_organization: boolean
   can_manage_team: boolean
+  main_logo_image_id: number
 }
 
 const organizations = ref<Organization[]>([])

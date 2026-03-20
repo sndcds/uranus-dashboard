@@ -2,7 +2,7 @@
   UranusTodoListItem.vue
 -->
 <template>
-  <div class="todo-list-item" :class="{ completed: todo.completed }">
+  <UranusCard class="todo-list-item" :class="{ completed: todo.completed }">
     <div class="todo-main">
       <div class="title">{{ todo.title }}</div>
       <div v-if="todo.description" class="description" v-html="todo.description"></div>
@@ -42,7 +42,7 @@
         @confirm="confirmDelete"
         @cancel="cancelDelete"
     />
-  </div>
+  </UranusCard>
 </template>
 
 <script setup lang="ts">
@@ -53,6 +53,7 @@ import { apiFetch } from '@/api.ts'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
+import UranusCard from '@/component/ui/UranusCard.vue'
 
 interface Todo {
   id: number
@@ -119,11 +120,11 @@ const confirmDelete = async ({ password }: { password: string }) => {
 
 <style scoped>
 .todo-list-item {
-  display: flex;
+  flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   padding: 0.75rem 1rem;
-  background: var(--uranus-bg-d1);
+  background: var(--uranus-card-bg);
   border-radius: 6px;
 }
 

@@ -8,7 +8,6 @@
 @use 'combo_tag';
 @use 'dashboard';
 @use 'value_info';
-@use 'inline_editor';
 @use 'public_event';
 @use 'html';
 @use 'notification';
@@ -22,18 +21,40 @@
   --uranus-font-ui: 'Avenir', 'Google Sans', 'Helvetica Neue', 'Inter', 'Arial', sans-serif;
   --uranus-font-text: 'Avenir', 'Google Sans', 'Helvetica Neue', 'Inter', 'Arial', sans-serif;
 
-  --uranus-hue: 266deg;
-  --uranus-active-hue: 286deg;
-  --uranus-link-hue: 286deg;
+  --uranus-hue: 266;
+  --uranus-active-hue: 286;
+  --uranus-link-hue: 286;
 
-  --uranus-color: oklch(10% 0.02 var(--uranus-hue));
-  --uranus-color-dimmed: oklch(50% 0.05 var(--uranus-hue));
+  --uranus-base: oklch(60% 0.02 var(--uranus-hue));
+
+  --uranus-color: oklch(12% 0.1 var(--uranus-hue));
   --uranus-bg: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-color-0: var(--uranus-color);
+  --uranus-color-1: color-mix(in oklch, var(--uranus-color) 90%, var(--uranus-bg));
+  --uranus-color-2: color-mix(in oklch, var(--uranus-color) 75%, var(--uranus-bg));
+  --uranus-color-3: color-mix(in oklch, var(--uranus-color) 60%, var(--uranus-bg));
+  --uranus-color-4: color-mix(in oklch, var(--uranus-color) 45%, var(--uranus-bg));
+  --uranus-color-5: color-mix(in oklch, var(--uranus-color) 30%, var(--uranus-bg));
+  --uranus-color-6: color-mix(in oklch, var(--uranus-color) 20%, var(--uranus-bg));
+  --uranus-color-7: color-mix(in oklch, var(--uranus-color) 10%, var(--uranus-bg));
+  --uranus-color-8: color-mix(in oklch, var(--uranus-color) 5%,  var(--uranus-bg));
+  --uranus-color-9: var(--uranus-bg);
+
+  --uranus-secondary-color:var(--uranus-color);
+  --uranus-secondary-bg:var(--uranus-color-8);
+  --uranus-secondary-color-hover:var(--uranus-color);
+  --uranus-secondary-bg-hover:var(--uranus-color-7);
+
+  --uranus-accent-color: #1331f4;
+
+  // Used to visualize elements in dark or light mode, e.g. images on dark or light backgrounds
   --uranus-bg-dark: oklch(20% 0.03 var(--uranus-hue));
   --uranus-bg-light: oklch(96% 0.008 var(--uranus-hue));
-  --uranus-bg-d1: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-bg-d2: oklch(97% 0.01 var(--uranus-hue));
-  --uranus-bg-d3: oklch(92% 0.014 var(--uranus-hue));
+
+
+  // // //
+
+
 
   --uranus-link-color: oklch(50% 0.2 var(--uranus-link-hue));
   --uranus-link-color-hover: oklch(60% 0.2 var(--uranus-link-hue));
@@ -44,7 +65,6 @@
   --uranus-backdrop-color: oklch(96% 0.008 var(--uranus-hue) / 0.8);
 
   --uranus-dashboard-bg: var(--uranus-bg);
-  --uranus-card-bg: var(--uranus-bg-d1);
 
   --uranus-nav-color: oklch(10% 0.02 var(--uranus-hue));
   --uranus-nav-bg: oklch(100% 0.0 var(--uranus-hue));
@@ -57,22 +77,6 @@
 
   --uranus-dashboard-border-width: 1px;
   --uranus-dashboard-border-color: oklch(88% 0.014 var(--uranus-hue));
-
-  --uranus-button-color-active: oklch(100% 0.0 var(--uranus-active-hue));
-  --uranus-button-bg-active: var(--uranus-nav-bg-active);
-
-  --uranus-button-color: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-button-bg: oklch(50% 0.2 var(--uranus-hue));
-  --uranus-button-color-hover: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-button-bg-hover: oklch(44% 0.18 var(--uranus-hue));
-
-  --uranus-secondary-button-color: oklch(30% 0.04 var(--uranus-hue));
-  --uranus-secondary-button-bg: oklch(96% 0.006 var(--uranus-hue));
-  --uranus-secondary-button-color-hover: oklch(30% 0.08 var(--uranus-hue));
-  --uranus-secondary-button-bg-hover: oklch(90% 0.01 var(--uranus-hue));
-
-  --uranus-tertiary-button-color: oklch(40% 0.02 var(--uranus-hue));
-
 
   // Inputs & borders
   --uranus-input-color: oklch(10% 0.02 var(--uranus-hue));
@@ -119,7 +123,6 @@
   --uranus-ia-color-light2: #4382e6;
   --uranus-ia-color-dark1: #0150c6;
   --uranus-ia-color-dark2: #003a98;
-  --uranus-inline-label-color: #808d9c;
 
   --uranus-event-type-chip-background: #f2f2fb;
   --uranus-event-type-chip-color: #4f46e5;
@@ -155,8 +158,13 @@
   --surface-primary: #ffffff;
 
   --surface-hover: rgba(15, 23, 42, 0.06);
+  --uranus-card-bg: var(--uranus-bg);
   --uranus-card-color: var(--uranus-color);
+  --uranus-card-border-color: var(--uranus-color-6);
   --uranus-card-border-radius: 7px;
+  --uranus-card-gap: 1rem;
+  --uranus-card-border: 1px solid var(--uranus-card-border-color);
+
 
   // Application chrome
   --uranus-disabled-color: #c7cedd;
@@ -168,7 +176,6 @@
   --uranus-menu-active-bg: rgba(79, 70, 229, 0.12);
   --uranus-dialog-padding: 24px;
   --uranus-grid-gap: 12px;
-  --uranus-card-gap: 8px;
   --uranus-default-text-padding: 6px 12px;
   --uranus-input-border-radius: 5px;
   --uranus-tiny-border-radius: 3px;
@@ -195,18 +202,22 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --uranus-hue: 266deg;
-  --uranus-active-hue: 280deg;
-  --uranus-link-hue: 280deg;
+  --uranus-hue: 266;
+  --uranus-active-hue: 280;
+  --uranus-link-hue: 280;
 
   --uranus-color: oklch(92% 0.02 var(--uranus-hue));
-  --uranus-color-dimmed: oklch(74% 0.03 var(--uranus-hue));
   --uranus-bg: oklch(20% 0.03 var(--uranus-hue));
-  --uranus-bg-dark: oklch(20% 0.03 var(--uranus-hue));
-  --uranus-bg-light: oklch(96% 0.008 var(--uranus-hue));
-  --uranus-bg-d1: oklch(22% 0.033 var(--uranus-hue));
-  --uranus-bg-d2: oklch(30% 0.042 var(--uranus-hue));
-  --uranus-bg-d3: oklch(35% 0.044 var(--uranus-hue));
+
+  --uranus-secondary-color:var(--uranus-color);
+  --uranus-secondary-bg:var(--uranus-color-7);
+  --uranus-secondary-color-hover:var(--uranus-color);
+  --uranus-secondary-bg-hover:var(--uranus-color-6);
+
+  --uranus-bg-dark: oklch(20% 0.02 var(--uranus-hue));
+  --uranus-bg-light: oklch(98% 0.008 var(--uranus-hue));
+
+  // // //
 
   --uranus-link-color: oklch(55% 0.18 var(--uranus-link-hue));
   --uranus-link-color-hover: oklch(50% 0.2 var(--uranus-link-hue));
@@ -216,7 +227,8 @@
   --uranus-backdrop-color: oklch(20% 0.03 var(--uranus-hue) / 0.9);
 
   --uranus-dashboard-bg: var(--uranus-bg);
-  --uranus-card-bg: var(--uranus-bg-d1);
+  --uranus-card-bg: var(--uranus-color-8);
+  --uranus-card-border: 0 solid (--uranus-color-8);
 
   --uranus-nav-color: oklch(82% 0.02 var(--uranus-hue));
   --uranus-nav-bg: oklch(20% 0.03 var(--uranus-hue));
@@ -229,21 +241,6 @@
 
   --uranus-dashboard-border-width: 1px;
   --uranus-dashboard-border-color: oklch(28% 0.04 var(--uranus-hue));
-
-
-  // Button colors
-  --uranus-button-color: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-button-bg: oklch(50% 0.16 var(--uranus-hue));
-  --uranus-button-color-hover: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-button-bg-hover: oklch(45% 0.16 var(--uranus-hue));
-
-  --uranus-secondary-button-color: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-secondary-button-bg: oklch(50% 0.16 var(--uranus-hue));
-  --uranus-secondary-button-color-hover: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-secondary-button-bg-hover: oklch(45% 0.16 var(--uranus-hue));
-
-  --uranus-button-color-active: oklch(100% 0.0 var(--uranus-active-hue));
-  --uranus-button-bg-active: oklch(36% 0.16 var(--uranus-active-hue));
 
 
   // Inputs & borders
@@ -414,31 +411,6 @@ header {
   max-width: var(--uranus-dashboard-content-width);
 }
 
-.uranus-inline-layout {
-  h1 {
-    font-size: 2em;
-    font-weight: 600;
-  }
-  h2 {
-    font-size: 1.6em;
-    font-weight: 500;
-  }
-  h3 {
-    font-size: 1.2em;
-    font-weight: 500;
-  }
-}
-
-.uranus-inline-layout > h3 {
-  margin-left: 12px;
-  margin-bottom: 0;
-  font-weight: 400;
-}
-
-.uranus-inline-layout > .uranus-card {
-  padding: 0;
-}
-
 .uranus-dashboard-hero {
   display: flex;
   flex-direction: column;
@@ -467,6 +439,10 @@ header {
   gap: 2px;
 }
 
+.uranus-image-slot-light-bg {
+  background: var(--uranus-bg-light, white) !important;
+}
+
 .uranus-image-slot-dark-bg {
   background: var(--uranus-bg-dark, black) !important;
 }
@@ -480,7 +456,6 @@ header {
   padding: 16px;
   padding-bottom: 48px;
   overflow: hidden;
-  border: 1px solid var(--uranus-dashboard-border-color);
 }
 
 
@@ -549,13 +524,6 @@ header {
 .simple-table tr:last-child td {
   border-bottom: 1px solid #ddd;
   /* Optional bottom line */
-}
-
-@media (max-width: 600px) {
-  .uranus-inline-edit-button {
-    padding: 0.2rem 0.5rem;
-    opacity: 0.6;
-  }
 }
 
 // Fancy animated SVG background for auth page

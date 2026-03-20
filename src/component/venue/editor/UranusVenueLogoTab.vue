@@ -11,7 +11,7 @@
         context="venue"
         :contextId="venue.id"
         identifier="main_logo"
-        bgClass="light padded"
+        bgClass="padded"
         :width="220"
     />
     <UranusImageSlot
@@ -32,7 +32,7 @@
         context="venue"
         :contextId="venue.id"
         identifier="avatar"
-        bgClass="light padded"
+        bgClass="padded"
         :width="220"
     />
   </section>

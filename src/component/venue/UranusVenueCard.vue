@@ -19,8 +19,7 @@
 
       <UranusButton
           v-if="venueInfo.canEditEvent"
-          class="uranus-button tiny"
-          icon="edit"
+          variant="secondary" size="small"
           :to="`/admin/organization/${organizationId}/venue/${venueInfo.venueId}/edit`"
       >
         {{ t('edit') }}
@@ -28,8 +27,7 @@
 
       <UranusButton
           v-if="venueInfo.canDeleteEvent"
-          class="uranus-button tiny"
-          icon="delete"
+          variant="secondary" size="small"
           @click="onDeleteEvent(venueInfo)"
       >
         {{ t('delete') }}
@@ -243,7 +241,7 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
 }
 
 .space-row + .space-row {
-  border-top: 1px solid var(--uranus-dashboard-border-color)
+  border-top: 1px solid var(--uranus-color-7)
 }
 
 .space-info {

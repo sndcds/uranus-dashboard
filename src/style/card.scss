@@ -5,8 +5,8 @@
   color: var(--uranus-card-color);
   background-color: var(--uranus-card-bg);
   border-radius: var(--uranus-card-border-radius);
-  border: 1px solid var(--uranus-low-contrast-color);
-  padding: 12px;
+  border: var(--uranus-card-border);
+  padding: 1rem;
 }
 
 .uranus-card-hero {

@@ -1,5 +1,5 @@
 <!--
-  src/component/event/editor/UranusOrganizationImagesTab.vue
+  src/component/event/editor/UranusOrganizationLogoTab.vue
 
   2026-02-08, Roald
 -->
@@ -11,22 +11,25 @@
         context="organization"
         :contextId="org.id"
         identifier="main_logo"
+        bgClass="padded"
     />
     <UranusImageSlot
         context="organization"
         :contextId="org.id"
         identifier="dark_theme_logo"
-        bg-class="uranus-image-slot-dark-bg"
+        bgClass="padded dark"
     />
     <UranusImageSlot
         context="organization"
         :contextId="org.id"
         identifier="light_theme_logo"
+        bgClass="padded light"
     />
     <UranusImageSlot
         context="organization"
         :contextId="org.id"
         identifier="avatar"
+        bgClass="padded"
     />
   </section>
 </template>

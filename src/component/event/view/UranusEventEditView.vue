@@ -10,11 +10,11 @@
   <div class="event-editor">
     <div class="event-editor-status-header">
       <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-        <UranusButton size="small" variant="secondary" :onclick="goBack">
-          {{ t('finish_edit') }}
+        <UranusButton size="small" variant="tertiary" :onclick="goBack">
+          <template #icon><StepBack /></template>{{ t('finish_edit') }}
         </UranusButton>
-        <UranusButton size="small" variant="secondary" @click="showReleaseModal = true">
-          {{ t('edit_event_release_status') }}
+        <UranusButton size="small" variant="tertiary" @click="showReleaseModal = true">
+          <template #icon><Rocket /></template>{{ t('edit_event_release_status') }}
         </UranusButton>
       </div>
 
@@ -74,7 +74,9 @@ import AdminEventVenueTab from '@/component/event/editor/AdminEventVenueTab.vue'
 import AdminEventPriceTab from '@/component/event/editor/AdminEventPriceTab.vue'
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
 import UranusEventVisitorInfosEditor from '@/component/event/editor/UranusEventVisitorInfosEditor.vue'
-import UranusButton from "@/component/ui/UranusButton.vue";
+import UranusButton from '@/component/ui/UranusButton.vue'
+
+import { StepBack, Rocket } from 'lucide-vue-next'
 
 const showReleaseModal = ref(false)
 

@@ -1,7 +1,5 @@
 <template>
-  <div
-      class="uranus-card organization-card"
-  >
+  <UranusCard class="organization-card">
     <div>
       <div class="header">
         <h2>{{ organization.organization_name }}</h2>
@@ -22,28 +20,26 @@
     </div>
 
     <div class="uranus-card-button-container">
-      <button
-          class="uranus-button tiny"
-          style="min-width:100px;"
-          :class="{ 'active': appStore.organizationId === organization.organization_id }"
+      <UranusButton
+          v-if="organization.can_edit_organization"
+          variant="secondary" size="small"
           @click="assignOrganization(organization.organization_id)"
+          style="min-width: 100px;"
       >
         {{ appStore.organizationId === organization.organization_id ? t('organization_active') : t('organization_activate') }}
-      </button>
+      </UranusButton>
 
       <UranusButton
           v-if="organization.can_edit_organization"
-          class="tiny"
+          variant="secondary" size="small"
           :to="`/admin/organization/${organization.organization_id}/edit`"
-          icon="edit"
       >
         {{ t('edit') }}
       </UranusButton>
 
       <UranusButton
           v-if="organization.can_delete_organization"
-          class="tiny"
-          icon="delete"
+          variant="secondary" size="small"
           @click="deleteOrganization(organization.organization_id)"
       >
         {{ t('delete') }}
@@ -51,8 +47,7 @@
 
       <UranusButton
           v-if="organization.can_manage_team"
-          class="tiny"
-          icon="organization"
+          variant="secondary" size="small"
           :to="`/admin/organization/${organization.organization_id}/team`"
       >
         {{ t('manage_team') }}
@@ -72,7 +67,7 @@
         @confirm="confirmDelete"
         @cancel="cancelDelete"
     />
-  </div>
+  </UranusCard>
 </template>
 
 <script setup lang="ts">
@@ -84,6 +79,7 @@ import { apiFetch } from '@/api.ts'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import { buildPlutoImageUrl } from "@/util/UranusUtils.ts";
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusCard from "@/component/ui/UranusCard.vue";
 
 const appStore = useAppStore()
 const { t } = useI18n()
@@ -93,20 +89,6 @@ const deleteError = ref('')
 const isDeleting = ref(false)
 const pendingDeleteId = ref<number | null>(null)
 
-// TODO: Refactor to camelCase
-interface Space {
-  space_id: number
-  space_name: string
-  upcoming_event_count: number
-}
-
-// TODO: Refactor to camelCase
-interface Venue {
-  venue_id: number
-  venue_name: string
-  upcoming_event_count: number
-  spaces: Space[]
-}
 
 // TODO: Refactor to camelCase
 interface Organization {
@@ -197,22 +179,6 @@ const confirmDelete = async ({ password }: { password: string }) => {
   gap: 0.5rem;
 }
 
-.organization-card {
-  position: relative;
-  border: 4px solid transparent;
-  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
-
-  &.organization-card--active {
-    &::after {
-      content: attr(data-ribbon-label);
-      position: absolute;
-      font-size: 1.7rem;
-      top: 15px;
-      right: 15px;
-      pointer-events: none;
-    }
-  }
-}
 
 .organization-card .header {
   display: flex;

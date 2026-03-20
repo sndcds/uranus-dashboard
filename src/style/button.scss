@@ -25,40 +25,41 @@
 }
 
 .uranus-button--primary {
-  background: var(--uranus-button-bg);
-  color: var(--uranus-button-color);
+  background: red;
+  color: yellow;
   &:hover {
-    background: var(--uranus-button-bg-hover);
-    color: var(--uranus-button-color-hover);
+    background: deeppink;
+    color: green;
   }
 }
 
 .uranus-button--secondary {
-  background: var(--uranus-secondary-button-bg);
-  color: var(--uranus-secondary-button-color);
+  background: var(--uranus-secondary-bg);
+  color: var(--uranus-secondary-color);
   &:hover {
-    background: var(--uranus-secondary-button-bg-hover);
-    color: var(--uranus-secondary-button-color-hover);
+    background: var(--uranus-secondary-bg-hover);
+    color: var(--uranus-secondary-color-hover);
   }
 }
 
 .uranus-button--tertiary {
-  border: 1px solid var(--uranus-tertiary-button-color);
-  color: var(--uranus-tertiary-button-color);
+  border: 1px solid var(--uranus-color-6);
+  color: var(--uranus-color);
   background: none;
   &:hover {
   }
 }
 
 .uranus-button--cta {
-  border: 2px solid var(--uranus-color);
-  border-radius: 40px;
+  border: 2px solid var(--uranus-color-1);
+  border-radius: 50px;
   background: var(--uranus-bg);
   color: var(--uranus-color);
-  font-weight: 600;
+  font-weight: 500;
+  transition: all 0.2s;
   &:hover {
-    color: var(--uranus-button-bg);
-    border-color: var(--uranus-button-bg);
+    color: var(--uranus-accent-color);
+    border-color: var(--uranus-accent-color);
   }
 }
 

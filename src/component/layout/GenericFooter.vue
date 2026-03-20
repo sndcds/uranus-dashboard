@@ -85,7 +85,7 @@ const currentYear = computed(() => new Date().getFullYear())
 
 .generic-layout__footer-text {
   font-size: 0.9rem;
-  color: var(--uranus-color-dimmed);
+  color: var(--uranus-color-2);
   white-space: nowrap;
 }
 

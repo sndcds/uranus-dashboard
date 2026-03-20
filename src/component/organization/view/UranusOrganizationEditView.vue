@@ -47,7 +47,7 @@ import { apiFetch } from "@/api.ts";
 
 import OrganizationBaseTab from '@/component/organization/editor/UranusOrganizationBaseTab.vue'
 import OrganizationMapTab from '@/component/organization/editor/UranusOrganizationMapTab.vue'
-import OrganizationImagesTab from '@/component/organization/editor/UranusOrganizationImagesTab.vue'
+import OrganizationLogoTab from '@/component/organization/editor/UranusOrganizationLogoTab.vue'
 import { useUranusOrganizationStore } from '@/store/uranusOrganizationStore.ts'
 import type { UranusOrganizationDTO } from '@/api/dto/UranusOrganizationDTO.ts'
 
@@ -66,14 +66,14 @@ const activeTab = ref<TabKey>('base')
 const tabs = [
   { key: 'base', label: 'Base' },
   { key: 'map', label: 'Map' },
-  { key: 'images', label: 'Images' },
+  { key: 'logo', label: 'Logo' },
 ] as const
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
     case 'base': return OrganizationBaseTab
     case 'map': return OrganizationMapTab
-    case 'images': return OrganizationImagesTab
+    case 'logo': return OrganizationLogoTab
     default: return OrganizationBaseTab
   }
 })

@@ -67,8 +67,8 @@ const activeTab = ref<TabKey>('base')
 const tabs = [
   { key: 'base', label: 'Base' },
   { key: 'map', label: 'Map' },
-  { key: 'logos', label: 'Logos' },
-  { key: 'images', label: 'Images' },
+  { key: 'logos', label: 'Logo' },
+  { key: 'images', label: 'Image' },
 ] as const
 
 const currentTabComponent = computed(() => {
