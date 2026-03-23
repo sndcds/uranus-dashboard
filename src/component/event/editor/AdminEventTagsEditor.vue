@@ -1,177 +1,58 @@
-<!--
-  src/component/event/editor/AdminEventTagsEditor.vue
-
-  2026-02-05, Roald
--->
-
 <template>
-  <h2>Tags</h2>
+  <UranusCard class="tags-tab">
+    <h2>{{ t('event_tags') }}</h2>
 
-  <section class="tags-tab">
-    <!-- Current tags -->
-    <div class="tags-list">
-      <span
-          v-for="tag in store.draft?.tags ?? []"
-          :key="tag"
-          class="tag-chip"
-      >
+    <div class="event-tag-list">
+      <span v-for="tag in draft.tags ?? []" :key="tag" class="event-tag-chip">
         {{ tag }}
         <button @click="removeTag(tag)">×</button>
       </span>
     </div>
 
-    <!-- Add new tag -->
-    <input
-        v-model="newTag"
-        @keyup.enter="addTag"
-        placeholder="Add tag"
-    />
-
-    <!-- Dirty indicator -->
-    <div class="dirty-indicator" v-if="isDirty">
-      ⚠ You have unsaved changes
-    </div>
-
-    <!-- Discard / Save buttons -->
-    <div class="tab-actions">
-      <button @click="resetTagsTab" :disabled="store.saving || !isDirty">
-        Discard
-      </button>
-      <button @click="commitTagsTab" :disabled="store.saving || !isDirty">
-        Save
-      </button>
-    </div>
-  </section>
+    <UranusFormRow>
+      <UranusTextfield
+          id="event-tag"
+          v-model="newTag"
+          :placeholder="t('event_input_tag')"
+          @keyup.enter="addTag" />
+    </UranusFormRow>
+  </UranusCard>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
-import {apiFetch} from "@/api.ts";
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import UranusCard from '@/component/ui/UranusCard.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 
-const store = useUranusAdminEventStore()
+const props = defineProps<{
+  draft: { tags: string[] }
+}>()
+const emit = defineEmits<{
+  (e: 'update', tags: string[]): void
+}>()
+
+const { t } = useI18n({ useScope: 'global' })
 const newTag = ref('')
 
-// Initialize draft.tags as a copy of original.tags
-onMounted(() => {
-  if (store.draft) {
-    store.draft.tags = [...(store.original?.tags ?? [])]
-  }
-})
-
-// Add new tag
 function addTag() {
-  if (!newTag.value || !store.draft) return
-  if (!store.draft.tags) store.draft.tags = []
-  if (!store.draft.tags.includes(newTag.value)) {
-    store.draft.tags.push(newTag.value)
-  }
+  if (!newTag.value) return
+  if (!props.draft.tags.includes(newTag.value)) props.draft.tags.push(newTag.value)
+  emit('update', [...props.draft.tags])
   newTag.value = ''
 }
 
-// Remove tag
 function removeTag(tag: string) {
-  if (!store.draft || !store.draft.tags) return
-  store.draft.tags = store.draft.tags.filter(t => t !== tag)
-}
-
-// Dirty check
-const isDirty = computed(() => {
-  const draftTags = store.draft?.tags ?? []
-  const originalTags = store.original?.tags ?? []
-
-  if (draftTags.length !== originalTags.length) return true
-
-  const allMatch = draftTags.every(t => originalTags.includes(t))
-  const allOriginalMatch = originalTags.every(t => draftTags.includes(t))
-  return !(allMatch && allOriginalMatch)
-})
-
-// Commit changes
-async function commitTagsTab() {
-  if (!store.draft) return
-  store.saving = true
-  store.error = null
-
-  try {
-    const payload = { tags: store.draft.tags ?? [] }
-    const apiPath = `/api/admin/event/${store.draft.id}/fields`
-
-    await apiFetch(apiPath, {
-      method: 'PUT',
-      body: JSON.stringify(payload),
-    })
-
-    // Commit locally
-    if (store.original && store.draft) {
-      store.original.tags = [...(store.draft.tags ?? [])]
-    }
-  } catch (err) {
-    store.error = 'Failed to save tags'
-    console.error(err)
-  } finally {
-    store.saving = false
-  }
-}
-
-// Reset draft to original
-function resetTagsTab() {
-  if (!store.draft) return
-  store.draft.tags = [...(store.original?.tags ?? [])]
-  newTag.value = ''
+  props.draft.tags = props.draft.tags.filter(t => t !== tag)
+  emit('update', [...props.draft.tags])
 }
 </script>
 
 <style scoped lang="scss">
-.tags-tab {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  .tags-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-
-    .tag-chip {
-      background: #22d3ee;
-      padding: 0.3rem 0.6rem;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-
-      button {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-      }
-    }
-  }
-
-  .dirty-indicator {
-    color: #b00;
-    font-weight: bold;
-  }
-
-  .tab-actions {
-    display: flex;
-    gap: 0.5rem;
-
-    button {
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-  }
-
-  input {
-    padding: 0.4rem;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    width: 200px;
-  }
-}
+.tags-tab { display: flex; flex-direction: column; gap: 1rem; }
+.event-tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.event-tag-chip { color: #594d85; background-color: #e6e1f4; padding: 0.2rem 0.8rem; border-radius: 40px; display: flex; align-items: center; gap: 0.3rem; }
+.event-tag-chip button { border: none; background: inherit; color: inherit; cursor: pointer; border-radius: 50px; width: 1.8rem; aspect-ratio: 1/1; font-weight: bold; }
+.event-tag-chip button:hover { background: #d1cbea; }
 </style>

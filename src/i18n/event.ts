@@ -36,6 +36,21 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Tags',
         da: 'Tags',
     },
+    event_input_tag: {
+        de: 'Tag eingeben',
+        en: 'Insert tag',
+        da: 'Indtast tag',
+    },
+    event_languages: {
+        de: 'Sprachen',
+        en: 'Languages',
+        da: 'Sprog',
+    },
+    event_select_language: {
+        de: "Sprache auswählen",
+        en: "Select language",
+        da: "Vælg et sprog",
+    },
     event_links: {
         de: 'Externe Links',
         en: 'External links',
@@ -277,6 +292,16 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Meeting Point',
         da: 'Mødested',
     },
+    event_types_and_genre: {
+        de: "Typen und Genres",
+        en: "Type and genres",
+        da: "Typer og genrer"
+    },
+    select_event_type: {
+        de: "Veranstaltungstyp auswählen",
+        en: "Select event type",
+        da: "Vælg en begivenhedstype"
+    },
     event_age: {
         de: 'Alter',
         en: 'Age',
@@ -456,6 +481,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Ticketinformationen',
         en: 'Ticket information',
         da: 'Billetinformation',
+    },
+    event_ticket_options: {
+        de: 'Ticketoptionen',
+        en: 'Ticket options',
+        da: 'Billetmuligheder',
     },
     event_advance_ticket: {
         de: 'Vorverkauf',

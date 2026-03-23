@@ -1,15 +1,13 @@
 <template>
   <section class="venue-tab">
 
-    <UranusCard>
+    <UranusCard class="event-venue">
       <h2 class="venue-name">
         {{ t('venue') }}: <strong>{{ venueInfoStore.getVenueLabel(draft.venueId, draft.spaceId) }}</strong>
       </h2>
-      <div class="tab-actions">
-        <UranusButton variant="cta" :onclick="openVenueModal">
-          {{ t('event_select_venue') }}
-        </UranusButton>
-      </div>
+      <UranusButton variant="tertiary" size="small" :onclick="openVenueModal">
+        {{ t('event_select_venue') }}
+      </UranusButton>
     </UranusCard>
 
     <UranusVenueSelectModal
@@ -21,14 +19,12 @@
 
     <UranusTextfield
         id="meeting-point"
-        size="medium"
         :label="t('event_meeting_point')"
         v-model="draft.meetingPoint"
     />
 
     <UranusTextfield
         id="online-event-url"
-        size="medium"
         :label="t('event_online_url')"
         placeholder="https://..."
         v-model="draft.onlineLink"
@@ -204,5 +200,19 @@ function resetTab() {
     gap: 0.6rem;
     margin-top: 1rem;
   }
+}
+
+.event-venue {
+  display: flex;
+  flex-direction: row;       /* default, but explicit */
+  align-items: center;      /* vertically align nicely */
+}
+
+.event-venue h2 {
+  flex: 1;                  /* take remaining space */
+}
+
+.event-venue UranusButton {
+  margin-left: auto;        /* push it to the right */
 }
 </style>

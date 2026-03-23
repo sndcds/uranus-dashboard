@@ -45,8 +45,19 @@
 .uranus-button--tertiary {
   border: 1px solid var(--uranus-color-6);
   color: var(--uranus-color);
-  background: none;
+  background: transparent;
+  font-weight: 700;
+  transition: all 0.2s;
+
   &:hover {
+    color: var(--uranus-color);
+    border-color: var(--uranus-color);
+  }
+
+  &:disabled,
+  &:hover:disabled {
+    color: var(--uranus-color-6);
+    border-color: var(--uranus-color-6);
   }
 }
 

@@ -57,8 +57,8 @@
 
     <!-- Save / Discard buttons -->
     <div class="tab-actions">
-      <UranusButton size="medium" variant="cta" @click="addDate">
-        {{ t('event_add_date') }}
+      <UranusButton variant="cta" @click="addDate">
+        <template #icon><Plus /></template>{{ t('event_add_date') }}
       </UranusButton>
 
       <UranusButton
@@ -66,8 +66,7 @@
           :disabled="store.saving || !isDirty"
           @click="resetDates"
       >
-        <template #icon><Undo /></template>
-        {{ t('discard')}}
+        <template #icon><Undo /></template>{{ t('discard')}}
       </UranusButton>
 
       <UranusButton
@@ -77,8 +76,7 @@
           loading-text="Saving..."
           @click="commitDates"
       >
-        <template #icon><Save /></template>
-        {{ t('save')}}
+        <template #icon><Save /></template>{{ t('save')}}
       </UranusButton>
     </div>
 
@@ -101,7 +99,7 @@ import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.
 import UranusVenueSelectModal from "@/component/venue/UranusVenueSelectModal.vue";
 import UranusCard from "@/component/ui/UranusCard.vue";
 import UranusButton from "@/component/ui/UranusButton.vue";
-import {Save, Undo} from "lucide-vue-next";
+import { Save, Undo, Plus } from "lucide-vue-next";
 import UranusDateInput from "@/component/ui/UranusDateInput.vue";
 import UranusTimeInput from "@/component/ui/UranusTimeInput.vue";
 import UranusNumberInput from "@/component/ui/UranusNumberInput.vue";

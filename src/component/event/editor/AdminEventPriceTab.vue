@@ -6,82 +6,116 @@
 
 <template>
   <section class="price-tab">
-    <!-- Dirty indicator -->
-    <div class="dirty-indicator" v-if="isDirty">{{ t('unsaved_changes') }}</div>
 
-    <label>
-      {{ t('currency') }}
-      <UranusCurrencySelect v-model="draftEvent.currency" :placeholder="t('select_currency')" />
-    </label>
+    <UranusForm>
+      <div class="dirty-indicator" v-if="isDirty">{{ t('unsaved_changes') }}</div>
 
-    <!-- Price Type -->
-    <label>
-      {{ t('event_price_type') }}
-      <select v-model="draftEvent.priceType">
-        <option value="not_specified">{{ t('event_price_not_specified') }}</option>
-        <option value="free">{{ t('event_price_free') }}</option>
-        <option value="donation">{{ t('event_price_donation') }}</option>
-        <option value="regular_price">{{ t('event_price_regular') }}</option>
-        <option value="tiered_prices">{{ t('event_price_tiered') }}</option>
-      </select>
-    </label>
+      <UranusFormRow :cols="2" style="max-width: 600px;">
 
-    <!--label>
-      {{ t('currency') }}
-      <input type="text" maxlength="3" v-model="draftEvent.currency" placeholder="EUR, USD…" />
-    </label-->
+        <UranusLabel id="event-currency" :label="t('currency')">
+          <UranusCurrencySelect v-model="draftEvent.currency" :placeholder="t('select_currency')" />
+        </UranusLabel>
 
-    <label>
-      {{ t('event_min_price') }}
-      <input type="number" step="0.01" :value="draftEvent.minPrice ?? ''" @input="e => draftEvent.minPrice = parseFloatOrNull(e)" />
-    </label>
+        <UranusLabel id="event-currency" :label="t('event_price_type')">
+          <select v-model="draftEvent.priceType">
+            <option value="not_specified">{{ t('event_price_not_specified') }}</option>
+            <option value="free">{{ t('event_price_free') }}</option>
+            <option value="donation">{{ t('event_price_donation') }}</option>
+            <option value="regular_price">{{ t('event_price_regular') }}</option>
+            <option value="tiered_prices">{{ t('event_price_tiered') }}</option>
+          </select>
+        </UranusLabel>
 
-    <label>
-      {{ t('event_max_price') }}
-      <input type="number" step="0.01" :value="draftEvent.maxPrice ?? ''" @input="e => draftEvent.maxPrice = parseFloatOrNull(e)" />
-    </label>
+      </UranusFormRow>
 
-    <div class="field">
-      <span>{{ t('event_ticket_information') }}</span>
-      <div class="checkbox-group">
-        <label>
-          <input type="checkbox" value="advance_ticket" v-model="draftTicketFlags" />
-          {{ t('event_advance_ticket') }}
-        </label>
-        <label>
-          <input type="checkbox" value="ticket_required" v-model="draftTicketFlags" />
-          {{ t('event_ticket_required') }}
-        </label>
-        <label>
-          <input type="checkbox" value="on_site_ticket_sales" v-model="draftTicketFlags" />
-          {{ t('event_on_site_ticket_sales') }}
-        </label>
-        <label>
-          <input type="checkbox" value="registration_required" v-model="draftTicketFlags" />
-          {{ t('event_registration_required') }}
-        </label>
-      </div>
-    </div>
+      <UranusFormRow :cols="2" style="max-width: 600px;">
+        <UranusNumberInput
+            id="event-min-attendees"
+            :label="t('event_min_price')"
+            :min="0"
+            v-model="draftEvent.minPrice!"
+        />
+        <UranusNumberInput
+            id="event-max-attendees"
+            :label="t('event_max_price')"
+            :min="0"
+            v-model="draftEvent.maxPrice!"
+        />
+      </UranusFormRow>
+
+      <UranusLabel id="event-currency" :label="t('event_ticket_options')">
+        <UranusCard>
+          <UranusCheckbox
+              v-model="draftTicketFlags"
+              value="advance_ticket"
+              id="event-advance-ticket"
+              :label="t('event_advance_ticket')"
+          />
+          <UranusCheckbox
+              v-model="draftTicketFlags"
+              value="ticket_required"
+              id="event-ticket-required"
+              :label="t('event_ticket_required')"
+          />
+          <UranusCheckbox
+              v-model="draftTicketFlags"
+              value="on_site_ticket_sales"
+              id="event-on-site-ticket-sales"
+              :label="t('event_on_site_ticket_sales')"
+          />
+          <UranusCheckbox
+              v-model="draftTicketFlags"
+              value="event_registration_required"
+              id="event-registration-required"
+              :label="t('event_registration_required')"
+          />
+        </UranusCard>
+      </UranusLabel>
+
+    </UranusForm>
+
 
     <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
-        {{ t('discard') }}
-      </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
-        {{ t('save') }}
-      </button>
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          @click="resetTab"
+      >
+        <template #icon><Undo /></template>
+        {{ t('discard')}}
+      </UranusButton>
+
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          :loading="store.saving"
+          loading-text="Saving..."
+          @click="commitTab"
+      >
+        <template #icon><Save /></template>
+        {{ t('save')}}
+      </UranusButton>
     </div>
+
   </section>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
-import UranusCurrencySelect from '@/component/ui/UranusCurrencySelect.vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
+import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import UranusCurrencySelect from '@/component/ui/UranusCurrencySelect.vue'
 import { equalStringArrays } from '@/type/utils.ts'
 import type {UranusAdminEvent} from '@/domain/event/UranusAdminEvent.ts'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
+import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
+import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
+import UranusCard from '@/component/ui/UranusCard.vue'
+import {Save, Undo} from 'lucide-vue-next'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
@@ -208,33 +242,17 @@ function resetTab() {
     }
   }
 
+  .tab-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
   .checkbox-group {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-  }
-
-  .tab-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-
-    button {
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 4px;
-      border: 1px solid #888;
-      background-color: #f5f5f5;
-
-      &:hover:not(:disabled) {
-        background-color: #e0e0e0;
-      }
-
-      &:disabled {
-        cursor: not-allowed;
-        opacity: 0.6;
-      }
-    }
   }
 
   .dirty-indicator {

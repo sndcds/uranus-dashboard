@@ -1,55 +1,95 @@
-<!-- src/component/ui/UranusCheckbox.vue -->
+<!--
+  src/component/ui/UranusCheckbox.vue
+
+  2026-03-21, Roald
+-->
+
 <template>
-    <div class="uranus-checkbox-outlined" @click="toggle">
-      <!-- Hidden checkbox for accessibility -->
-      <input
-          type="checkbox"
-          :id="id"
-          :checked="modelValue"
-          @change="$emit('update:modelValue', $event.target.checked)"
-      />
+  <div class="uranus-checkbox-outlined" @click="toggle">
+    <input
+        type="checkbox"
+        :id="id"
+        :value="value"
+        :checked="isChecked"
+        @change="onChange"
+    />
 
-      <!-- Visible checkmark -->
-      <span class="checkmark">
-        <svg
-            v-if="modelValue"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        >
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
-      </span>
+    <span class="checkmark">
+      <svg
+          v-if="isChecked"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    </span>
 
-      <!-- Label text -->
-      <span class="label-text">{{ label }}</span>
-    </div>
-
+    <span class="label-text">{{ label }}</span>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 
 const props = defineProps<{
   id: string
-  modelValue: boolean
+  modelValue: boolean | string[]
+  value?: string
   required?: boolean
   label: string
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
+  (e: 'update:modelValue', value: boolean | string[]): void
 }>()
 
+const isChecked = computed(() => {
+  if (Array.isArray(props.modelValue)) {
+    return props.value ? props.modelValue.includes(props.value) : false
+  }
+  return props.modelValue
+})
+
+function updateArray(checked: boolean) {
+  if (!Array.isArray(props.modelValue) || !props.value) return
+
+  let newValue = [...props.modelValue]
+
+  if (checked) {
+    if (!newValue.includes(props.value)) {
+      newValue.push(props.value)
+    }
+  } else {
+    newValue = newValue.filter(v => v !== props.value)
+  }
+
+  emit('update:modelValue', newValue)
+}
+
 const toggle = (e: MouseEvent) => {
-  // Avoid double toggle if input already fired change
-  if ((e.target as HTMLElement).tagName !== 'INPUT') {
+  if ((e.target as HTMLElement).tagName === 'INPUT') return
+
+  if (Array.isArray(props.modelValue)) {
+    updateArray(!isChecked.value)
+  } else {
     emit('update:modelValue', !props.modelValue)
+  }
+}
+
+const onChange = (event: Event) => {
+  const checked = (event.target as HTMLInputElement).checked
+
+  if (Array.isArray(props.modelValue)) {
+    updateArray(checked)
+  } else {
+    emit('update:modelValue', checked)
   }
 }
 </script>

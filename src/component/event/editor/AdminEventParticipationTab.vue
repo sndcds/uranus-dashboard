@@ -7,52 +7,61 @@
 <template>
   <section class="participation-tab">
 
-    <label>
-      Max Attendees
-      <input
-          type="number"
-          :value="event.maxAttendees ?? ''"
-          @input="e => event.maxAttendees = parseNumberInput(e)"
-          placeholder="Leave empty for unlimited"
-          min="0"
-      />
-    </label>
+    <UranusForm>
+      <UranusFormRow :cols="2" style="max-width: 600px;">
+        <UranusNumberInput
+            id="event-min-age"
+            :label="t('event_min_age')"
+            :min="0"
+            placeholder="No minimum"
+            v-model="event.minAge!" />
+        <UranusNumberInput
+            id="event-max-age"
+            :label="t('event_max_age')"
+            :min="0"
+            placeholder="No maximum"
+            v-model="event.maxAge!" />
+      </UranusFormRow>
 
-    <label>
-      Min Age
-      <input
-          type="number"
-          :value="event.minAge ?? ''"
-          @input="e => event.minAge = parseNumberInput(e)"
-          placeholder="No minimum"
-          min="0"
-      />
-    </label>
+      <UranusFormRow :cols="2" style="max-width: 600px;">
+        <UranusNumberInput
+            id="event-max-attendees"
+            :label="t('event_max_attendees')"
+            :min="0"
+            v-model="event.maxAttendees!" />
+      </UranusFormRow>
 
-    <label>
-      Max Age
-      <input
-          type="number"
-          :value="event.maxAge ?? ''"
-          @input="e => event.maxAge = parseNumberInput(e)"
-          placeholder="No maximum"
-          min="0"
-      />
-    </label>
+      <UranusFormRow>
+        <UranusLabel
+            id="event-participation-info"
+           :label="t('event_participation_info')"
+        >
+          <UranusTextEditor v-model="event.participationInfo"/>
+        </UranusLabel>
+      </UranusFormRow>
 
-    <div class="field">
-      <span>Participation Info</span>
-      <textarea v-model="event.participationInfo" />
-    </div>
+    </UranusForm>
 
-    <!-- Buttons -->
     <div class="tab-actions">
-      <button @click="resetParticipationTab" :disabled="store.saving || !isParticipationTabDirty">
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          @click="resetParticipationTab"
+      >
+        <template #icon><Undo /></template>
         {{ t('discard')}}
-      </button>
-      <button @click="commitParticipationTab" :disabled="store.saving || !isParticipationTabDirty">
+      </UranusButton>
+
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          :loading="store.saving"
+          loading-text="Saving..."
+          @click="commitParticipationTab"
+      >
+        <template #icon><Save /></template>
         {{ t('save')}}
-      </button>
+      </UranusButton>
     </div>
 
   </section>
@@ -64,14 +73,19 @@ import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import type { UranusAdminEvent } from '@/domain/event/UranusAdminEvent.ts'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
+import {Save, Undo} from 'lucide-vue-next'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
 const event = computed(() => store.draft!)
 
-// ---------------------------
 // Participation Tab Types
-// ---------------------------
 type ParticipationKeys = 'maxAttendees' | 'minAge' | 'maxAge' | 'participationInfo'
 
 const participationKeys: ParticipationKeys[] = [
@@ -81,10 +95,9 @@ const participationKeys: ParticipationKeys[] = [
   'participationInfo',
 ]
 
-// ---------------------------
 // Dirty check
-// ---------------------------
-const isParticipationTabDirty = computed(() => {
+
+const isDirty = computed(() => {
   const draft = store.draft
   const original = store.original
   if (!draft || !original) return false
@@ -92,9 +105,7 @@ const isParticipationTabDirty = computed(() => {
   return participationKeys.some(key => draft[key] !== original[key])
 })
 
-// ---------------------------
 // Helpers
-// ---------------------------
 function parseNumberInput(e: Event): number | null {
   const target = e.target as HTMLInputElement
   return target.value === '' ? null : Number(target.value)
@@ -149,9 +160,7 @@ async function commitParticipationTab() {
   }
 }
 
-// ---------------------------
 // Reset tab to original values
-// ---------------------------
 function resetParticipationTab() {
   const draft = store.draft
   const original = store.original
@@ -167,7 +176,7 @@ function resetParticipationTab() {
 <style lang="scss" scoped>
 .participation-tab {
   width: 100%;
-  max-width: 1024px;
+  max-width: var(--uranus-dashboard-content-width);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -200,25 +209,6 @@ function resetParticipationTab() {
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 1rem;
-
-    button {
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 4px;
-      border: 2px solid #888;
-      background-color: #f5f5f5;
-      transition: background 0.2s;
-      font-size: 1rem;
-
-      &:hover:not(:disabled) {
-        background-color: #e0e0e0;
-      }
-
-      &:disabled {
-        cursor: not-allowed;
-        opacity: 0.6;
-      }
-    }
   }
 }
 </style>

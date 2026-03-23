@@ -1,3 +1,7 @@
+<!--
+  src/component/dashboard/OrganizationSearchPanel.vue
+-->
+
 <template>
   <section class="uranus-card">
     <h2 class="inbox-sidebar__title">{{ inboxTitle }}</h2>

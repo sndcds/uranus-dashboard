@@ -2,7 +2,7 @@
   <div class="uranus-textfield-wrapper">
     <UranusLabel
         :id="id"
-        :label="label"
+        :label="label ?? ''"
         :required="required"
         :error="error"
     >
@@ -47,7 +47,7 @@ defineOptions({ inheritAttrs: false })
 
 const props = defineProps({
   id: { type: String, required: true },
-  label: { type: String, required: true },
+  label: { type: String, required: false },
   modelValue: { type: [String, Number, null], default: '' },
   type: { type: String, default: 'text' },
   required: { type: Boolean, default: false },

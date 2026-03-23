@@ -3,23 +3,52 @@
 -->
 
 <template>
-  <UranusBigIntFlagsEditor
-      :topics="uranusI18nVisitorInformationFlags"
-      v-model="draft.visitorInfoFlags!"
-  />
-  <div class="tab-actions">
-    <button @click="onReset" :disabled="store.saving || !isDirty">Discard</button>
-    <button @click="onCommit" :disabled="store.saving || !isDirty">Save</button>
-  </div>
+  <section class="visitor-info-tab">
+    <UranusCard>
+      <UranusBigIntFlagsEditor
+          :topics="uranusI18nVisitorInformationFlags"
+          v-model="draft.visitorInfoFlags!"
+      />
+    </UranusCard>
+
+    <div class="tab-actions">
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          @click="onReset"
+      >
+        <template #icon><Undo /></template>
+        {{ t('discard')}}
+      </UranusButton>
+
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          :loading="store.saving"
+          loading-text="Saving..."
+          @click="onCommit"
+      >
+        <template #icon><Save /></template>
+        {{ t('save')}}
+      </UranusButton>
+    </div>
+
+  </section>
 </template>
 
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { apiFetch } from "@/api.ts";
+import { apiFetch } from '@/api.ts'
+import { useI18n } from 'vue-i18n'
 import UranusBigIntFlagsEditor from '@/component/uranus/UranusBigIntFlagsEditor.vue'
 import { uranusI18nVisitorInformationFlags } from '@/i18n/visitor-info.ts'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import {Save, Undo} from 'lucide-vue-next'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusCard from "@/component/ui/UranusCard.vue";
+
+const { t } = useI18n({ useScope: 'global' })
 
 const store = useUranusAdminEventStore()
 const draft = computed(() => store.draft!)
@@ -60,3 +89,20 @@ async function onCommit() {
 }
 
 </script>
+
+<style scoped>
+.visitor-info-tab {
+  width: 100%;
+  max-width: var(--uranus-dashboard-content-width);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tab-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+</style>

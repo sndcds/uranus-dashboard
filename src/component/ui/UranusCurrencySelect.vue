@@ -1,14 +1,11 @@
 <!-- src/component/ui/UranusCurrencySelect.vue -->
 <template>
-  <label>
-    <span>{{ label }}</span>
-    <select v-model="internalValue">
-      <option value="" disabled>{{ placeholder }}</option>
-      <option v-for="(name, id) in currencies" :key="id" :value="id">
-        {{ name }}
-      </option>
-    </select>
-  </label>
+  <select v-model="internalValue">
+    <option value="" disabled>{{ placeholder }}</option>
+    <option v-for="(name, id) in currencies" :key="id" :value="id">
+      {{ name }}
+    </option>
+  </select>
 </template>
 
 <script setup lang="ts">

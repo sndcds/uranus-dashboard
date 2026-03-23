@@ -12,13 +12,13 @@
       <h3>{{ t(topic.topic_name) }}</h3>
 
       <div class="accessibility-options">
-        <label
+        <UranusCheckbox
             v-for="flag in topic.flags"
             :key="flag.id"
-        >
-          <input type="checkbox" v-model="flagModels[flag.id]" />
-          {{ t(flag.name) }} .. {{ t(flag.id ) }}
-        </label>
+            :id="`flag-${flag.id}`"
+            v-model="flagModels[flag.id]"
+            :label="t(flag.name)"
+        />
       </div>
     </div>
 
@@ -29,6 +29,7 @@
 import { reactive, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBigIntFlags, setBigintByFlags, type BigIntFlags } from '@/composable/useBigIntFlags'
+import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 
 interface FlagTopic {
   topic: number

@@ -18,7 +18,7 @@
         </UranusButton>
       </div>
 
-      <h1>{{ t('edit_event') }}</h1>
+      <UranusDashboardHero :title="t('edit_event')"/>
 
       <div v-if="adminEventStore.loading">Loading…</div>
       <div v-else-if="adminEventStore.error">{{ adminEventStore.error }}</div>
@@ -68,15 +68,17 @@ import { type UranusAdminEventDTO } from '@/api/dto/UranusAdminEventDTO.ts'
 
 import AdminEventBaseTab from '@/component/event/editor/AdminEventBaseTab.vue'
 import AdminEventDatesTab from '@/component/event/editor/AdminEventDatesTab.vue'
-import UranusMeta1Tab from '@/component/event/editor/UranusMeta1Tab.vue'
+import AdminEventTagsTab from '@/component/event/editor/AdminEventTagsTab.vue'
+import UranusEventLinksTab from '@/component/event/editor/UranusEventLinksTabs.vue'
 import AdminEventParticipationTab from '@/component/event/editor/AdminEventParticipationTab.vue'
 import AdminEventVenueTab from '@/component/event/editor/AdminEventVenueTab.vue'
 import AdminEventPriceTab from '@/component/event/editor/AdminEventPriceTab.vue'
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
-import UranusEventVisitorInfosEditor from '@/component/event/editor/UranusEventVisitorInfosEditor.vue'
+import AdminEventVisitorInfo from '@/component/event/editor/AdminEventVisitorInfo.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 
 import { StepBack, Rocket } from 'lucide-vue-next'
+import UranusDashboardHero from "@/component/dashboard/UranusDashboardHero.vue";
 
 const showReleaseModal = ref(false)
 
@@ -107,15 +109,16 @@ const eventId = computed(() => {
   return Number.isFinite(id) ? id : null
 })
 
-type TabKey = 'settings' | 'base' | 'dates' | 'venue' |'meta1' | 'participation' | 'price' | 'visitor'
+type TabKey = 'settings' | 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participation' | 'price' | 'visitor'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
   { key: 'base', label: 'Was' },
   { key: 'venue', label: 'Wo' },
   { key: 'dates', label: 'Wann' },
-  { key: 'meta1', label: 'Tags und Links' },
-  { key: 'participation', label: 'Einschränkung' },
+  { key: 'tags', label: 'Tags' },
+  { key: 'links', label: 'Links' },
+  { key: 'participation', label: 'Teilnahme' },
   { key: 'price', label: 'Preis' },
   { key: 'visitor', label: 'Infos' }
 ] as const
@@ -124,10 +127,11 @@ const currentTabComponent = computed(() => {
   switch (activeTab.value) {
     case 'dates': return AdminEventDatesTab
     case 'venue': return AdminEventVenueTab
-    case 'meta1': return UranusMeta1Tab
+    case 'tags': return AdminEventTagsTab
+    case 'links': return UranusEventLinksTab
     case 'participation': return AdminEventParticipationTab
     case 'price': return AdminEventPriceTab
-    case 'visitor': return UranusEventVisitorInfosEditor
+    case 'visitor': return AdminEventVisitorInfo
     case 'base':
     default:
       return AdminEventBaseTab
