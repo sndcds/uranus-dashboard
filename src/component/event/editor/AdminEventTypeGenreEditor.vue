@@ -3,7 +3,7 @@
     <h2>{{ t('event_types_and_genre') }}</h2>
 
     <div class="event-types-list">
-      <div v-for="(pair, index) in draft.eventTypes ?? []" :key="index" class="event-type-chip">
+      <div v-for="(pair, index) in store.draft!.eventTypes ?? []" :key="index" class="event-type-chip">
         {{ getTypeGenreLabel(pair) }}
         <button @click="removePair(index)">×</button>
       </div>
@@ -37,19 +37,14 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
-import UranusCard from "@/component/ui/UranusCard.vue";
-import UranusFormRow from "@/component/ui/UranusFormRow.vue";
-import UranusButton from "@/component/ui/UranusButton.vue";
+import UranusCard from '@/component/ui/UranusCard.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTypePair.ts'
 
-interface EventTypePair { typeId: number; genreId: number | null }
 
-const props = defineProps<{
-  draft: { eventTypes: EventTypePair[] }
-}>()
-
-const emit = defineEmits<{
-  (e: 'update', eventTypes: EventTypePair[]): void
-}>()
+const store = useUranusAdminEventStore()
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const lookupStore = useEventTypeLookupStore()
@@ -81,29 +76,38 @@ function onTypeChange() {
 }
 
 function addPair() {
-  if (!selectedTypeId.value) return
-  const pair = { typeId: selectedTypeId.value, genreId: selectedGenreId.value ?? null }
+  if (!selectedTypeId.value|| !store.draft) return
+  const pair = new UranusAdminEventTypePair(
+      selectedTypeId.value ?? null,
+      selectedGenreId.value ?? null
+  )
 
-  const exists = props.draft.eventTypes?.some(
+
+  const exists = store.draft.eventTypes?.some(
       e => e.typeId === pair.typeId && e.genreId === pair.genreId
   )
-  if (!exists) props.draft.eventTypes.push(pair)
-  emit('update', [...props.draft.eventTypes])
-
+  if (!exists) store.draft.eventTypes!.push(pair)
   selectedTypeId.value = null
   selectedGenreId.value = null
 }
 
 function removePair(index: number) {
-  props.draft.eventTypes.splice(index, 1)
-  emit('update', [...props.draft.eventTypes])
+  store.draft!.eventTypes!.splice(index, 1)
 }
 
-function getTypeGenreLabel(pair: EventTypePair) {
-  const typeObj = typeLookup.value[pair.typeId]
+function getTypeGenreLabel(pair: UranusAdminEventTypePair) {
+  if (!pair) return ''
+
+  const typeId = pair.typeId
+  if (typeId == null) return ''
+
+  const typeObj = typeLookup.value[typeId]
   if (!typeObj) return ''
-  if (!pair.genreId || !typeObj.genres) return typeObj.name
-  return `${typeObj.name} / ${typeObj.genres[pair.genreId] ?? ''}`
+
+  const genreId = pair.genreId
+  if (genreId == null || !typeObj.genres) return typeObj.name
+
+  return `${typeObj.name} / ${typeObj.genres[genreId] ?? ''}`
 }
 </script>
 

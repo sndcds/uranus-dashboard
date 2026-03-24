@@ -56,6 +56,26 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'External links',
         da: 'Eksterne links',
     },
+    event_link_title: {
+        de: 'Linktitel',
+        en: 'Link title',
+        da: 'Linktitel',
+    },
+    event_link_type: {
+        de: 'Linktyp',
+        en: 'Link type',
+        da: 'Linktype',
+    },
+    event_link_url: {
+        de: 'URL',
+        en: 'URL',
+        da: 'URL',
+    },
+    event_add_link: {
+        de: 'Link hinzufügen',
+        en: 'Add link',
+        da: 'Tilføj link',
+    },
     all_events: {
         de: 'Alle Events',
         en: 'All events',

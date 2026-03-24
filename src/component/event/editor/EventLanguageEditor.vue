@@ -3,7 +3,7 @@
     <h2>{{ t('event_languages') }}</h2>
 
     <div class="event-language-list">
-      <span v-for="(lang, index) in draft.languages ?? []" :key="lang" class="event-language-chip">
+      <span v-for="(lang, index) in store.draft!.languages ?? []" :key="lang" class="event-language-chip">
         {{ langLookup[lang] ?? lang }}
         <button @click="removeLanguage(index)">×</button>
       </span>
@@ -16,7 +16,7 @@
             v-for="(name, id) in langLookup"
             :key="id"
             :value="id"
-            :disabled="draft.languages?.includes(id)"
+            :disabled="store.draft!.languages?.includes(id)"
         >
           {{ name }}
         </option>
@@ -35,33 +35,28 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useLanguageLookupStore } from '@/store/UranusLanguageLookup.ts'
-import UranusCard from "@/component/ui/UranusCard.vue";
-import UranusFormRow from "@/component/ui/UranusFormRow.vue";
-import UranusButton from "@/component/ui/UranusButton.vue";
-
-const props = defineProps<{
-  draft: { languages: string[] }
-}>()
-const emit = defineEmits<{
-  (e: 'update', languages: string[]): void
-}>()
+import UranusCard from '@/component/ui/UranusCard.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import {useUranusAdminEventStore} from '@/store/uranusAdminEventStore.ts'
 
 const { t, locale } = useI18n({ useScope: 'global' })
+const store = useUranusAdminEventStore()
+
 const langStore = useLanguageLookupStore()
 const selectedLang = ref<string | null>(null)
 
 const langLookup = computed(() => langStore.data[locale.value] ?? {})
 
 function addLanguage() {
-  if (!selectedLang.value) return
-  props.draft.languages.push(selectedLang.value)
-  emit('update', [...props.draft.languages])
+  if (!selectedLang.value || !store.draft) return
+  store.draft.languages!.push(selectedLang.value)
   selectedLang.value = null
 }
 
 function removeLanguage(index: number) {
-  props.draft.languages.splice(index, 1)
-  emit('update', [...props.draft.languages])
+  if (!store.draft) return
+  store.draft.languages!.splice(index, 1)
 }
 </script>
 

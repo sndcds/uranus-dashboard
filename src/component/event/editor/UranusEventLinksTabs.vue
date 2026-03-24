@@ -1,72 +1,75 @@
 <template>
-  <section class="release-tab">
+  <section class="release-tab" v-if="store.draft">
 
     <h2>{{ t('event_links') }}</h2>
 
-    <UranusCard v-if="store.draft" class="links-card">
-      <UranusForm
-          v-for="(url, index) in store.draft.eventLinks ?? []"
-          :key="index"
-          class="event-url"
-      >
-        <UranusLabel id="" label="sss">
-          <input type="text"
+    <UranusCard
+        v-for="(url, index) in store.draft.eventLinks ?? []">
+      <span>#{{ (index + 1) }}</span>
+      <UranusGridLayout>
+        <UranusFormCol :span="3">
+          <UranusInput
               id="event-link-title"
-              class="uranus-input link-input"
               v-model="url.label"
               :label="t('event_link_title')"
               :placeholder="t('event_link_title')"
           />
-        </UranusLabel>
+        </UranusFormCol>
 
-        <UranusLinkTypeSelect
-            :model-value="url.type"
-            @update:modelValue="val => url.type = val"
-            class="link-select"
-        />
+        <UranusFormCol :span="3">
+          <UranusLinkTypeSelect
+              :model-value="url.type"
+              @update:modelValue="val => url.type = val"
+          />
+        </UranusFormCol>
 
-        <input v-model="url.url" placeholder="URL" class="link-input" />
+        <UranusFormCol :span="6">
+          <UranusInput
+              id="event-link-url"
+              v-model="url.url"
+              :label="t('event_link_url')"
+              :placeholder="t('event_link_url')"
+          />
+        </UranusFormCol>
 
-        <button
-            v-if="store.draft.eventLinks!.length > 1"
-            @click="removeUrl(index)"
-            type="button"
-            class="remove-btn"
-        >
-          Remove
-        </button>
-      </UranusForm>
+        <UranusFormCol :span="12">
+          <UranusButton variant="tertiary" size="small" @click="removeUrl(index)"
+          >
+            {{ t('delete') }}
+          </UranusButton>
+        </UranusFormCol>
+      </UranusGridLayout>
 
-      <button @click="addUrl" type="button" class="add-btn">
-        Add URL
-      </button>
-
-      <div class="tab-actions">
-        <UranusButton
-            variant="cta"
-            :disabled="store.saving || !isDirty"
-            @click="resetUrlsTab"
-        >
-          <template #icon><Undo /></template>
-          {{ t('discard')}}
-        </UranusButton>
-
-        <UranusButton
-            variant="cta"
-            :disabled="store.saving || !isDirty"
-            :loading="store.saving"
-            loading-text="Saving..."
-            @click="commitUrlsTab"
-        >
-          <template #icon><Save /></template>
-          {{ t('save')}}
-        </UranusButton>
-      </div>
     </UranusCard>
 
-    <div v-else>
-      Loading…
+    <button @click="addUrl" type="button" class="add-btn">
+      {{ t('event_add_link') }}
+    </button>
+
+    <div class="tab-actions">
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          @click="resetUrlsTab"
+      >
+        <template #icon><Undo /></template>
+        {{ t('discard')}}
+      </UranusButton>
+
+      <UranusButton
+          variant="cta"
+          :disabled="store.saving || !isDirty"
+          :loading="store.saving"
+          loading-text="Saving..."
+          @click="commitUrlsTab"
+      >
+        <template #icon><Save /></template>
+        {{ t('save')}}
+      </UranusButton>
     </div>
+
+    <!--LayoutTest />
+    <LayoutFormExample /-->
   </section>
 </template>
 
@@ -82,6 +85,12 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusLabel from "@/component/ui/UranusLabel.vue";
+import LayoutTest from "@/component/ui/LayoutTest.vue";
+import LayoutFormExample from "@/component/ui/LayoutFormExample.vue";
+import UranusGridLayout from "@/component/ui/UranusGridLayout.vue";
+import UranusFormRow from "@/component/ui/UranusFormRow.vue";
+import UranusFormCol from "@/component/ui/UranusFormCol.vue";
+import UranusInput from "@/component/ui/UranusInput.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
@@ -179,6 +188,7 @@ function resetUrlsTab() {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-width: 1024px;
 }
 
 .links-card {

@@ -1,23 +1,22 @@
-<!--
-  src/component/event/editor/UranusMeta1Tab.vue
-  Refactored 2026-03-23, Roald
--->
-
 <template>
   <section class="tab-content">
 
-    <!-- Editors -->
+    <!-- Editors directly bound to store.draft -->
     <AdminEventTypeGenreEditor
-        :draft="draft"
-        @update="draft.eventTypes = $event"
+        v-if="store.draft"
+        :draft="store.draft"
+        @update="store.draft.eventTypes = $event"
     />
+
     <EventLanguageEditor
-        :draft="draft"
-        @update="draft.languages = $event"
+        v-if="store.draft"
+        :draft="store.draft"
+        @update="store.draft.languages = $event"
     />
+
     <AdminEventTagsEditor
-        :draft="draft"
-        @update="draft.tags = $event"
+        v-if="store.draft"
+        @update="store.draft.tags = $event"
     />
 
     <!-- Dirty indicator -->
@@ -51,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
 import { apiFetch } from '@/api.ts'
@@ -59,74 +58,69 @@ import { apiFetch } from '@/api.ts'
 import AdminEventTypeGenreEditor from '@/component/event/editor/AdminEventTypeGenreEditor.vue'
 import EventLanguageEditor from '@/component/event/editor/EventLanguageEditor.vue'
 import AdminEventTagsEditor from '@/component/event/editor/AdminEventTagsEditor.vue'
-import {Save, Undo} from 'lucide-vue-next'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import { Save, Undo } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
 
-// Local draft mirrors the store.draft
-const draft = ref({
-  eventTypes: store.draft?.eventTypes?.map(e => ({ ...e })) ?? [],
-  languages: store.draft?.languages?.slice() ?? [],
-  tags: store.draft?.tags?.slice() ?? []
-})
-
-// Computed dirty state across all sections
+// ------------------------------
+// Dirty check directly on store.draft
+// ------------------------------
 const isDirty = computed(() => {
-  // Event Types
-  const origTypes = store.original?.eventTypes ?? []
-  const typeDirty = draft.value.eventTypes.length !== origTypes.length ||
-      draft.value.eventTypes.some(d => !origTypes.some(o =>
+  if (!store.draft || !store.original) return false
+
+  // Event types
+  const typeDirty =
+      store.draft.eventTypes!.length !== (store.original.eventTypes?.length ?? 0) ||
+      store.draft.eventTypes!.some(d => !store.original!.eventTypes!.some(o =>
           o.typeId === d.typeId && o.genreId === d.genreId
       ))
 
   // Languages
-  const origLang = store.original?.languages ?? []
-  const langDirty = draft.value.languages.length !== origLang.length ||
-      draft.value.languages.some(l => !origLang.includes(l))
+  const langDirty =
+      store.draft.languages!.length !== (store.original.languages?.length ?? 0) ||
+      store.draft.languages!.some(l => !(store.original!.languages ?? []).includes(l))
 
   // Tags
-  const origTags = store.original?.tags ?? []
-  const tagsDirty = draft.value.tags.length !== origTags.length ||
-      draft.value.tags.some(t => !origTags.includes(t))
+  const tagsDirty =
+      store.draft.tags!.length !== (store.original.tags?.length ?? 0) ||
+      store.draft.tags!.some(t => !(store.original!.tags ?? []).includes(t))
 
   return typeDirty || langDirty || tagsDirty
 })
 
+// ------------------------------
 // Commit all changes
+// ------------------------------
 async function commitAll() {
-  if (!store.draft) return
+  if (!store.original || !store.draft) return
   store.saving = true
   store.error = null
   try {
-    // Event Types
     await apiFetch(`/api/admin/event/${store.draft.id}/types`, {
       method: 'PUT',
       body: JSON.stringify({
-        event_types: draft.value.eventTypes.map(e => ({
+        event_types: store.draft.eventTypes!.map(e => ({
           type_id: e.typeId,
           genre_id: e.genreId
         }))
       })
     })
 
-    // Languages
     await apiFetch(`/api/admin/event/${store.draft.id}/languages`, {
       method: 'PUT',
-      body: JSON.stringify({ languages: draft.value.languages })
+      body: JSON.stringify({ languages: store.draft.languages })
     })
 
-    // Tags
     await apiFetch(`/api/admin/event/${store.draft.id}/fields`, {
       method: 'PUT',
-      body: JSON.stringify({ tags: draft.value.tags })
+      body: JSON.stringify({ tags: store.draft.tags })
     })
 
-    // Update store.original
-    store.original!.eventTypes = draft.value.eventTypes.map(e => ({ ...e }))
-    store.original!.languages = draft.value.languages.slice()
-    store.original!.tags = draft.value.tags.slice()
+    store.original.eventTypes = store.draft.eventTypes!.map(d => ({ ...d }))
+    store.original.languages = [...store.draft.languages!]
+    store.original.tags = [...store.draft.tags!]
   } catch (err) {
     console.error(err)
     store.error = 'Failed to save changes'
@@ -135,12 +129,15 @@ async function commitAll() {
   }
 }
 
-// Reset all changes
+// ------------------------------
+// Reset changes
+// ------------------------------
 function resetAll() {
-  if (!store.draft) return
-  draft.value.eventTypes = store.original?.eventTypes?.map(e => ({ ...e })) ?? []
-  draft.value.languages = store.original?.languages?.slice() ?? []
-  draft.value.tags = store.original?.tags?.slice() ?? []
+  if (!store.draft || !store.original) return
+
+  store.draft.eventTypes = store.original.eventTypes!.map(d => ({ ...d }))
+  store.draft.languages = [...store.original.languages!]
+  store.draft.tags = [...store.original.tags!]
 }
 </script>
 

@@ -96,6 +96,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Delete',
         da: 'Slet',
     },
+    remove: {
+        de: 'Entfernen',
+        en: 'Remove',
+        da: 'Fjern',
+    },
     loading: {
         de: 'Laden…',
         en: 'Loading…',

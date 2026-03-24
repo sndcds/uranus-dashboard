@@ -6,6 +6,7 @@
 
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import {apiFetch} from "@/api.ts";
 
 export interface UranusLicenseEntry {
     label: string | null
@@ -28,12 +29,13 @@ export const useLicenseLookup = defineStore('license', () => {
         loading.value[lang] = true
 
         try {
-            const res = await fetch(`/api/choosable-license-types?lang=${lang}`)
-            if (!res.ok) throw new Error(`Failed to load licenses for lang=${lang}`)
-            const json = await res.json()
+            // apiFetch returns { data: T, status: number } or throws
+            const res = await apiFetch<{ data: Array<{ key: string, name?: string, description?: string }> }>(
+                `/api/choosable-license-types?lang=${lang}`
+            )
 
             const map: UranusLicenseMap = {}
-            for (const item of json.data ?? []) {
+            for (const item of res.data.data ?? []) {
                 map[item.key] = {
                     label: item.name ?? null,
                     description: item.description ?? null
