@@ -67,6 +67,7 @@ export async function apiFetch<T = unknown>(
 ): Promise<ApiResponse<T>> {
     const url = `${import.meta.env.VITE_API_URL}${path}`;
     const tokenStore = useTokenStore();
+    console.log("apiFetch", url);
 
     const doFetch = async (): Promise<ApiResponse<T>> => {
         const headers = new Headers(options.headers ?? undefined);
