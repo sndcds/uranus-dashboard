@@ -4,8 +4,9 @@
     2026-02-15, Roald
 */
 
-import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { apiFetch } from '@/api.ts'
 
 export interface UranusLegalFormEntry {
     label: string | null
@@ -28,12 +29,13 @@ export const useLegalFormLookupStore = defineStore('legalForm', () => {
         loading.value[lang] = true
 
         try {
-            const res = await fetch(`/api/choosable-legal-forms?lang=${lang}`)
-            if (!res.ok) throw new Error(`Failed to load legal forms for lang=${lang}`)
-            const json = await res.json()
+            // Use apiFetch instead of fetch
+            const res = await apiFetch<{ data: Array<{ key: string, name?: string, description?: string }> }>(
+                `/api/choosable-legal-forms?lang=${lang}`
+            )
 
             const map: UranusLegalFormMap = {}
-            for (const item of json.data ?? []) {
+            for (const item of res.data.data ?? []) {
                 map[item.key] = {
                     label: item.name ?? null,
                     description: item.description ?? null

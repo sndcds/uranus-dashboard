@@ -4,9 +4,9 @@
     2026-02-15, Roald
 */
 
-import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import {apiFetch} from "@/api.ts";
+import { defineStore } from 'pinia'
+import { apiFetch } from '@/api.ts'
 
 export interface UranusLicenseEntry {
     label: string | null
