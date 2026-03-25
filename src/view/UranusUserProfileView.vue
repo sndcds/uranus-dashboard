@@ -117,10 +117,9 @@ import UranusDashboardHero from "@/component/dashboard/UranusDashboardHero.vue"
 import UranusTextInput from "@/component/ui/UranusTextInput.vue"
 import UranusFormRow from "@/component/ui/UranusFormRow.vue"
 import UranusLabel from "@/component/ui/UranusLabel.vue"
-import { use } from 'marked'
 
 interface UserProfilePayload {
-    user_id?: string | number | null
+    user_uuid?: string | null
     display_name?: string | null
     email_address?: string | null
     first_name?: string | null
@@ -223,11 +222,6 @@ const mapResponseToState = (payload: UserProfilePayload | null | undefined) => {
 
     if ('username' in payload) {
         profile.username = typeof payload.username === 'string' ? payload.username : ''
-    }
-
-    const userIdValue = payload.user_id
-    if ((typeof userIdValue === 'string' || typeof userIdValue === 'number') && userIdValue !== '') {
-        userStore.setUserId(String(userIdValue))
     }
 
     if (typeof payload.display_name === 'string') {

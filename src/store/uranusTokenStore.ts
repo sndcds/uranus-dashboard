@@ -89,7 +89,7 @@ export const useTokenStore = defineStore('token', () => {
 
     // Clear user store
     const userStore = useUserStore()
-    userStore.clearUserId()
+    userStore.clearUserUuid()
     userStore.clearDisplayName()
     userStore.clearEmailAddress()
 

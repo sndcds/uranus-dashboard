@@ -39,6 +39,7 @@
     "marked": "^16.4.1",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.7.1",
+    "pinia-plugin-persistedstate-2": "^2.0.32",
     "quill": "^2.0.2",
     "simplex-noise": "^4.0.3",
     "turndown": "^7.2.2",

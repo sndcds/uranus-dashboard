@@ -11,11 +11,6 @@ export const uranusI18nDashboardTranslations: Record<string, Record<UranusLocale
         en: 'Keep track of your data and settings at a glance',
         da: 'Få et overblik over dine data og indstillinger.',
     },
-    dashboard_todo_hero: {
-        de: "Deine Aufgaben",
-        en: "Your personal Todo list",
-        da: "Dine opgaver",
-    },
     dashboard_todo_hero_description: {
         de: "Behalte alle wichtigen Aufgaben und Erinnerungen im Blick.",
         en: "Keep track of all your important tasks and reminders.",
@@ -33,9 +28,9 @@ export const uranusI18nDashboardTranslations: Record<string, Record<UranusLocale
     },
 
     todo_title: {
-        de: 'Deine Aufgaben',
-        en: 'Your tasks',
-        da: 'Dine opgaver',
+        de: 'Aufgaben',
+        en: 'Todo list',
+        da: 'Opgaver',
     },
     todo_description: {
         de: 'Behalte den Überblick über deine offenen Aufgaben.',

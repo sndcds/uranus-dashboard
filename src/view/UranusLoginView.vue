@@ -49,22 +49,19 @@
     </div>
   </div>
 
-  <UranusBlob />
 </template>
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { apiFetch } from '@/api.ts'
-import type { LoginResponse } from '@/api.ts'
+import { apiFetch, type LoginResponse } from '@/api.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { useUserStore } from '@/store/uranusUserStore.ts'
 import { useThemeStore } from '@/store/uranusThemeStore.ts'
 
 import UranusTextInput from '@/component/ui/UranusTextInput.vue'
 import UranusPasswordInput from "@/component/ui/UranusPasswordInput.vue";
-import UranusBlob from '@/component/uranus/UranusBlob.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -75,10 +72,10 @@ const themeStore = useThemeStore()
 
 const { locale } = useI18n({ useScope: 'global' })
 const selectedLocale = computed({
-    get: () => locale.value,
-    set: (value: string) => {
-        locale.value = value
-    },
+  get: () => locale.value,
+  set: (value: string) => {
+    locale.value = value
+  },
 })
 
 const email = ref('')
@@ -94,111 +91,100 @@ const fieldErrors = reactive({
 const loginSubtitle = computed(() => t('login_subtitle'))
 
 const displayError = computed(() => {
-    if (fieldErrors.email) return fieldErrors.email
-    if (fieldErrors.password) return fieldErrors.password
-    return error.value
+  if (fieldErrors.email) return fieldErrors.email
+  if (fieldErrors.password) return fieldErrors.password
+  return error.value
 })
 
 const isValidEmail = (value: string) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailPattern.test(value)
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailPattern.test(value)
 }
 
 const requiredFieldMessage = computed(() => t('required_field'))
 const invalidEmailMessage = computed(() => t('organization_form_invalid_email'))
 
 watch(email, (value) => {
-    if (fieldErrors.email && value.trim()) {
-        const trimmed = value.trim()
-        if (isValidEmail(trimmed)) {
-            fieldErrors.email = undefined
-            if (error.value === fieldErrors.email) {
-                error.value = null
-            }
-        }
+  if (fieldErrors.email && value.trim()) {
+    const trimmed = value.trim()
+    if (isValidEmail(trimmed)) {
+      fieldErrors.email = undefined
+      if (error.value === fieldErrors.email) {
+        error.value = null
+      }
     }
+  }
 })
 
 watch(password, (value) => {
-    if (fieldErrors.password && value.trim()) {
-        fieldErrors.password = undefined
-        if (error.value === fieldErrors.password) {
-            error.value = null
-        }
+  if (fieldErrors.password && value.trim()) {
+    fieldErrors.password = undefined
+    if (error.value === fieldErrors.password) {
+      error.value = null
     }
+  }
 })
 
 const login = async () => {
-    error.value = null
-    fieldErrors.email = undefined
-    fieldErrors.password = undefined
+  error.value = null
+  fieldErrors.email = undefined
+  fieldErrors.password = undefined
 
-    const trimmedEmail = email.value.trim()
-    const trimmedPassword = password.value.trim()
+  const trimmedEmail = email.value.trim()
+  const trimmedPassword = password.value.trim()
 
-    // Validate email
-    if (!trimmedEmail) {
-        fieldErrors.email = requiredFieldMessage.value
-        return
+  // Validate email
+  if (!trimmedEmail) {
+    fieldErrors.email = requiredFieldMessage.value
+    return
+  }
+  if (!isValidEmail(trimmedEmail)) {
+    fieldErrors.email = invalidEmailMessage.value
+    return
+  }
+
+  // Validate password
+  if (!trimmedPassword) {
+    fieldErrors.password = requiredFieldMessage.value
+    return
+  }
+
+  isSubmitting.value = true
+
+  try {
+    const { data, status } = await apiFetch<any>('/api/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: trimmedEmail,
+        password: trimmedPassword,
+      }),
+    })
+
+    const payload: LoginResponse = data.data
+
+    if (status === 200 && payload.access_token && payload.refresh_token) {
+      tokenStore.setTokens(payload.access_token, payload.refresh_token)
+
+      if (payload.user_uuid) userStore.setUserUuid(payload.user_uuid)
+      if (payload.display_name) userStore.setDisplayName(payload.display_name)
+
+      if (payload.locale) selectedLocale.value = payload.locale
+      if (payload.theme) themeStore.setTheme(payload.theme)
+
+      router.replace(typeof route.query.redirect === 'string' ? route.query.redirect : '/')
+    } else {
+        error.value = t('invalid_credentials')
     }
-    if (!isValidEmail(trimmedEmail)) {
-        fieldErrors.email = invalidEmailMessage.value
-        return
+  } catch (err: unknown) {
+    if (typeof err === 'object' && err && 'data' in err) {
+      const e = err as { data?: { error?: string } }
+      error.value = e.data?.error || t('login_failed')
+    } else {
+      error.value = t('login_failed')
     }
-
-    // Validate password
-    if (!trimmedPassword) {
-        fieldErrors.password = requiredFieldMessage.value
-        return
-    }
-
-    isSubmitting.value = true
-
-    try {
-        const { data, status } = await apiFetch<LoginResponse>('/api/login', {
-            method: 'POST',
-            body: JSON.stringify({
-              email: trimmedEmail,
-              password: trimmedPassword,
-            }),
-        })
-
-        console.log(JSON.stringify(data, null, 2))
-        console.log("status:", status)
-        console.log("data.message:", data.message)
-        console.log("data.accessToken:", data.access_token)
-        console.log("data.refreshToken:", data.refresh_token)
-
-        if (status === 200 && data.message === 'login successful' && data.access_token && data.refresh_token) {
-            tokenStore.setTokens(data.access_token, data.refresh_token)
-            if (data.user_id) {
-                userStore.setUserId(data.user_id)
-            }
-            if (data.display_name) {
-                userStore.setDisplayName(data.display_name)
-            }
-            if (data.locale) {
-                selectedLocale.value = data.locale
-
-            }
-            if (data.theme) {
-                themeStore.setTheme(data.theme)
-            }
-            const redirectTarget = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
-            router.replace(redirectTarget)
-        } else {
-            error.value = t('invalid_credentials')
-        }
-    } catch (err: unknown) {
-        if (typeof err === 'object' && err && 'data' in err) {
-            const e = err as { data?: { error?: string } }
-            error.value = e.data?.error || t('login_failed')
-        } else {
-            error.value = t('login_failed')
-        }
-    } finally {
-        isSubmitting.value = false
-    }
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 

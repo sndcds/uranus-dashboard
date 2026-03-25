@@ -207,14 +207,12 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { apiFetch } from '@/api.ts'
 import { applyTheme } from '@/util/theme.ts'
+import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { useUserStore } from '@/store/uranusUserStore.ts'
-
+import { useThemeStore } from '@/store/uranusThemeStore.ts'
 import UranusLogo from '@/component/ui/UranusLogo.vue'
-import { useEventsFilterStore } from '@/store/uranusEventsFilterStore.ts'
-import { useThemeStore } from "@/store/uranusThemeStore.ts";
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -222,7 +220,6 @@ const route = useRoute()
 const tokenStore = useTokenStore()
 const userStore = useUserStore()
 const themeStore = useThemeStore()
-const eventsFilterStore = useEventsFilterStore()
 
 const emit = defineEmits<{
     'toggle-sidebar': []
@@ -326,16 +323,16 @@ const fetchUserProfile = async () => {
 
   try {
     const { data } = await apiFetch<{
+      user_uuid: string
+      email: string
       display_name: string
-      email_address: string
       avatar_url: string | null
-      user_id: number
     }>('/api/admin/user/profile')
 
     if (data) {
-      userStore.setUserId(data.user_id)
+      userStore.setUserUuid(data.user_uuid)
       userStore.setDisplayName(data.display_name)
-      userStore.setEmailAddress(data.email_address)
+      userStore.setEmailAddress(data.email)
       userStore.setUserAvatar(data.avatar_url)
     }
   } catch (err) {

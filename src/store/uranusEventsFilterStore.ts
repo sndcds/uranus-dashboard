@@ -45,7 +45,6 @@ const defaultFilter: UranusEventsFilter = {
 }
 
 export const useEventsFilterStore = defineStore("calendarFilter", () => {
-
     const filter = ref<UranusEventsFilter>({ ...defaultFilter })
     const eventTypeIds = computed(() => filter.value.eventTypeIds)
 
@@ -77,7 +76,7 @@ export const useEventsFilterStore = defineStore("calendarFilter", () => {
         filter.value = { ...defaultFilter }
     }
 
-    // NEW: toggle event type
+    // Toggle event type
     function toggleEventType(typeId: number) {
         const list = filter.value.eventTypeIds
 

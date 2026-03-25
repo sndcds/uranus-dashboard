@@ -141,8 +141,8 @@ watch(
 )
 
 const loadAvatar = async () => {
-  const userId = userStore.userId
-  if (!userId) {
+  const userUuid = userStore.userUuid
+  if (!userUuid) {
     updateAvatarFromServer(null)
     return
   }
@@ -155,7 +155,7 @@ const loadAvatar = async () => {
   isLoadingAvatar.value = true
   try {
     const api_base = apiBaseUrl()
-    const res = await fetch(`${api_base}/api/user/${userId}/avatar/256`, {
+    const res = await fetch(`${api_base}/api/user/${userUuid}/avatar/256`, {
       method: 'GET',
       headers,
       cache: 'no-store',
@@ -183,7 +183,7 @@ const loadAvatar = async () => {
 }
 
 watch(
-  () => userStore.userId,
+  () => userStore.userUuid,
   (id) => {
     if (id) {
       void loadAvatar()

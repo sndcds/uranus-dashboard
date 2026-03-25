@@ -6,13 +6,14 @@ let refreshPromise: Promise<boolean> | null = null;
 
 // Use snake case here!
 export interface LoginResponse {
-    message: string;
-    user_id?: string;
+    user_uuid: string;
     locale?: string;
     theme?: ThemeMode;
     display_name?: string;
-    access_token?: string;
-    refresh_token?: string;
+    first_name?: string | null
+    last_name?: string | null
+    access_token: string;
+    refresh_token: string;
 }
 
 export interface ApiResponse<T> {

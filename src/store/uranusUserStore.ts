@@ -1,63 +1,82 @@
+/*
+    src/store/uranusUserStore.ts
+*/
+
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
-export const useUserStore = defineStore('user', () => {
-    // State as refs
-    const emailAddress = ref('')
-    const displayName = ref('')
-    const userId = ref<string | null>(null)
-    const avatarVersion = ref(0)
-    const userAvatar = ref<string | null>(null)
+export interface UranusUserState {
+    emailAddress: string | null
+    displayName: string | null
+    userUuid: string | null
+    avatarVersion: number | null,
+    userAvatar: string | null
+}
 
-    // Actions as functions
-    function setUserId(id: string | number) {
-        userId.value = String(id)
+const defaultUserState: UranusUserState = {
+    emailAddress: null,
+    displayName: null,
+    userUuid: null,
+    avatarVersion: null,
+    userAvatar: null
+}
+
+export const useUserStore = defineStore("user-state", () => {
+    const userState = ref<UranusUserState>({ ...defaultUserState })
+
+    // Load saved state from localStorage
+    const saved = localStorage.getItem("user-state")
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved)
+            userState.value = { ...defaultUserState, ...parsed }
+        } catch {
+            userState.value = { ...defaultUserState }
+        }
     }
 
+    // Persist automatically whenever state changes
+    watch(
+        userState,
+        (value) => {
+            localStorage.setItem("user-state", JSON.stringify(value))
+        },
+        { deep: true }
+    )
+
+    function setUserState(newState: Partial<UranusUserState>) {
+        Object.assign(userState.value, newState)
+    }
+
+    function resetUserState() {
+        userState.value = { ...defaultUserState }
+    }
+
+    // helper shortcuts
+    function setUserUuid(uuid: string | null) {
+        userState.value.userUuid = uuid;
+    }
+    function setDisplayName(name: string | null) {
+        userState.value.displayName = name;
+    }
+    function setEmailAddress(email: string | null) {
+        userState.value.emailAddress = email;
+    }
     function setUserAvatar(url: string | null) {
-        userAvatar.value = url
+        userState.value.userAvatar = url;
     }
-
-    function clearUserId() {
-        userId.value = null
-        avatarVersion.value = 0
-    }
-
-    function setEmailAddress(email: string) {
-        emailAddress.value = email
-    }
-
-    function clearEmailAddress() {
-        emailAddress.value = ''
-    }
-
-    function setDisplayName(name: string) {
-        displayName.value = name
-    }
-
-    function clearDisplayName() {
-        displayName.value = ''
-    }
-
     function bumpAvatarVersion() {
-        avatarVersion.value = Date.now()
+        userState.value.avatarVersion = Date.now();
     }
 
     return {
-        emailAddress,
-        displayName,
-        userId,
-        avatarVersion,
-        userAvatar,
-        setUserAvatar,
-        setUserId,
-        clearUserId,
+        userState,
+        setUserState,
+        resetUserState,
+        setUserUuid,
         setDisplayName,
-        clearDisplayName,
         setEmailAddress,
-        clearEmailAddress,
+        setUserAvatar,
         bumpAvatarVersion
     }
-}, {
-    persist: true
 })
