@@ -29,7 +29,7 @@ export const useSpaceTypeLookupStore = defineStore('spaceType', () => {
 
             const map: UranusSpaceTypeMap = {}
 
-            for (const item of res.data.data ?? []) {
+            for (const item of res.response.data ?? []) {
                 map[item.key] = {
                     label: item.name ?? null,
                     description: item.description ?? null

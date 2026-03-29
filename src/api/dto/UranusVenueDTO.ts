@@ -5,8 +5,8 @@
 */
 
 export interface UranusVenueDTO {
-    id: number | null
-    organization_id: number | null
+    uuid: string | null
+    org_uuid: string | null
     name: string
     type: string | null
 
@@ -25,7 +25,7 @@ export interface UranusVenueDTO {
 
     contact_email?: string | null
     contact_phone?: string | null
-    website_link?: string | null
+    web_link?: string | null
 
     created_at: string
     modified_at?: string | null

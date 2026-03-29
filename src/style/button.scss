@@ -25,11 +25,15 @@
 }
 
 .uranus-button--primary {
-  background: red;
-  color: yellow;
+  border: 2px solid var(--uranus-color-1);
+  border-radius: 50px;
+  background: var(--uranus-bg);
+  color: var(--uranus-color);
+  font-weight: 500;
+  transition: all 0.2s;
   &:hover {
-    background: deeppink;
-    color: green;
+    color: var(--uranus-accent-color);
+    border-color: var(--uranus-accent-color);
   }
 }
 

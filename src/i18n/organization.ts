@@ -11,6 +11,21 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         en: 'Organizations',
         da: 'Organisationer',
     },
+    organization_editor: {
+        de: 'Organisation bearbeiten',
+        en: 'Edit organization',
+        da: 'Rediger organisation',
+    },
+    organization_activate: {
+        de: 'Aktivieren',
+        en: 'Activate',
+        da: 'Aktiver',
+    },
+    organization_active: {
+        de: 'Aktiv',
+        en: 'Activate',
+        da: 'Aktiv',
+    },
     organization_name: {
         de: 'Organisationsname',
         en: 'Organization name',
@@ -22,7 +37,7 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         da: 'Gennemse og opdater oplysningerne om din arrangør.',
     },
     organization_no_membership_message: {
-        de: 'Du hast noch keine Organisation für die du agieren kannst. Erstelle eine Organisation oder bitte eine andere Organisation dich ins Team einzuladen',
+        de: 'Du hast noch keine Organisation für die du agieren kannst. Erstelle eine Organisation oder bitte eine andere Organisation dich ins Team einzuladen.',
         en: 'You don’t have an organization to act for yet. Create an organization or ask another organization to invite you to the team.',
         da: 'Du har endnu ingen organisation, som du kan handle for. Opret en organisation eller bed en anden organisation om at invitere dig til teamet.',
     },

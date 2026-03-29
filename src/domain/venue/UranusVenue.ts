@@ -7,14 +7,14 @@
 import type { UranusVenueDTO } from '@/api/dto/UranusVenueDTO.ts'
 
 export interface UranusVenueSelectItemInfo {
-    id: number
+    uuid: string
     name: string
     city?: string
 }
 
 export class UranusVenue {
-    id: number | null = null
-    organizationId: number | null = null
+    uuid: string | null = null
+    orgUuid: string | null = null
     name: string = ''
     type: string | null = null
 
@@ -33,7 +33,7 @@ export class UranusVenue {
 
     contactEmail: string | null = null
     contactPhone: string | null = null
-    websiteLink: string | null = null
+    webLink: string | null = null
 
     createdAt: string | null = null
     modifiedAt: string | null = null
@@ -46,8 +46,8 @@ export class UranusVenue {
 
     static fromDTO(dto: UranusVenueDTO): UranusVenue {
         return new UranusVenue({
-            id: dto.id,
-            organizationId: dto.organization_id ?? null,
+            uuid: dto.uuid,
+            orgUuid: dto.org_uuid ?? null,
             name: dto.name ?? '',
             type: dto.type ?? '',
 
@@ -67,7 +67,7 @@ export class UranusVenue {
 
             contactEmail: dto.contact_email ?? null,
             contactPhone: dto.contact_phone ?? null,
-            websiteLink: dto.website_link ?? null,
+            webLink: dto.web_link ?? null,
 
             createdAt: dto.created_at ?? null,
             modifiedAt: dto.modified_at ?? null,
@@ -78,8 +78,8 @@ export class UranusVenue {
 
     static empty(): UranusVenue {
         const emptyDto: UranusVenueDTO = {
-            id: -1,
-            organization_id: null,
+            uuid: null,
+            org_uuid: null,
             name: '',
             type: null,
             created_at: new Date(0).toISOString(), // required
@@ -89,8 +89,8 @@ export class UranusVenue {
 
     toDTO(): UranusVenueDTO {
         return {
-            id: this.id,
-            organization_id: this.organizationId ?? null,
+            uuid: this.uuid,
+            org_uuid: this.orgUuid ?? null,
             name: this.name,
             type: this.type,
 
@@ -109,7 +109,7 @@ export class UranusVenue {
 
             contact_email: this.contactEmail ?? '',
             contact_phone: this.contactPhone ?? '',
-            website_link: this.websiteLink ?? '',
+            web_link: this.webLink ?? '',
 
             created_at: this.createdAt ?? '',
             modified_at: this.modifiedAt ?? null,

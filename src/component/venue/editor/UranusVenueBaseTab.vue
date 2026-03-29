@@ -40,7 +40,7 @@
 
     <label>
       Website
-      <input type="url" v-model="venue.websiteLink" placeholder="https://" />
+      <input type="url" v-model="venue.webLink" placeholder="https://" />
     </label>
 
     <label>
@@ -113,7 +113,7 @@ const store = useUranusVenueStore()
 const venue = computed(() => store.draft!)
 
 const baseFields = [
-  'name', 'description', 'type', 'contactEmail', 'contactPhone', 'websiteLink',
+  'name', 'description', 'type', 'contactEmail', 'contactPhone', 'webLink',
   'street', 'houseNumber', 'postalCode', 'city', 'state', 'country', 'openedAt', 'closedAt',
 ] as const
 
@@ -148,7 +148,7 @@ function buildPayload(
   if (draft.type !== original.type) set('type', draft.type)
   if (draft.contactEmail !== original.contactEmail) set('contact_email', draft.contactEmail)
   if (draft.contactPhone !== original.contactPhone) set('contact_phone', draft.contactPhone)
-  if (draft.websiteLink !== original.websiteLink) set('website_link', draft.websiteLink)
+  if (draft.webLink !== original.webLink) set('web_link', draft.webLink)
 
   if (draft.street !== original.street) set('street', draft.street)
   if (draft.houseNumber !== original.houseNumber) set('house_number', draft.houseNumber)
@@ -169,7 +169,7 @@ function copyFields(source: UranusVenue, target: UranusVenue) {
   target.type = source.type ?? null
   target.contactEmail = source.contactEmail ?? null
   target.contactPhone = source.contactPhone ?? null
-  target.websiteLink = source.websiteLink ?? null
+  target.webLink = source.webLink ?? null
   target.street = source.street ?? null
   target.houseNumber = source.houseNumber ?? null
   target.postalCode = source.postalCode ?? null

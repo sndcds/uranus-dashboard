@@ -15,7 +15,7 @@
 
     <UranusForm>
       <UranusFormRow>
-        <UranusTextInput
+        <UranusTextfield
             id="event_title"
             :label="t('event_title')"
             :placeholder="t('event_title')"
@@ -48,8 +48,7 @@ import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
-import UranusLabel from "@/component/ui/UranusLabel.vue";
-import UranusTextInput from "@/component/ui/UranusTextInput.vue";
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 
 const { t } = useI18n()
 
@@ -87,7 +86,7 @@ async function onCreate() {
       body: JSON.stringify(payload),
     })
 
-    const eventId = res.data?.metadata?.event_id
+    const eventId = res.response?.metadata?.event_id
     if (!eventId) {
       throw new Error('no event_id returned from API')
     }

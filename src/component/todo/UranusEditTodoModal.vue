@@ -8,10 +8,9 @@
       :close-on-backdrop="false"
       @close="onCancel"
   >
-    <!-- BODY -->
-    <form class="uranus-form" @submit.prevent="onSubmit">
+    <UranusForm @submit.prevent="onSubmit">
       <UranusFormRow>
-        <UranusTextInput
+        <UranusTextfield
             id="todo_title"
             v-model="form.title"
             :label="t('title')"
@@ -28,7 +27,7 @@
       </UranusFormRow>
 
       <UranusFormRow>
-        <UranusTextInput
+        <UranusTextfield
             id="todo_due_date"
             v-model="form.due_date"
             type="date"
@@ -36,28 +35,32 @@
         />
       </UranusFormRow>
 
-      <UranusFormRow>
-        <UranusCheckbox
-            id="todo_completed"
-            v-model="form.completed"
-            :label="t('completed')"
-        />
+      <UranusFormRow :cols="2">
+        <div>
+          <UranusCheckbox
+              v-if="todo"
+              id="todo_completed"
+              v-model="form.completed"
+              :label="t('completed')"
+          />
+        </div>
+        <UranusPrioritySelect v-model="form.importance" />
       </UranusFormRow>
 
-      <p v-if="error" class="form-feedback-error">{{ error }}</p>
-    </form>
+
+      <UranusFeedback :message="error" type="error" />
+    </UranusForm>
 
     <template #actions>
-      <button
-          type="button"
+      <UranusButton
           class="uranus-button uranus-cancel-button"
           @click="onCancel"
           :disabled="saving"
       >
         {{ t('cancel') }}
-      </button>
+      </UranusButton>
 
-      <button
+      <UranusButton
           type="submit"
           class="uranus-button uranus-ok-button"
           @click="onSubmit"
@@ -65,7 +68,7 @@
       >
         <template v-if="saving">{{ t('saving') }}...</template>
         <template v-else>{{ t('save') }}</template>
-      </button>
+      </UranusButton>
     </template>
   </UranusModal>
 </template>
@@ -73,30 +76,28 @@
 <script setup lang="ts">
 import { reactive, watch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api.ts'
+import {ApiError, apiFetch} from '@/api.ts'
 
 import UranusModal from '@/component/uranus/UranusModal.vue'
-import UranusTextInput from '@/component/ui/UranusTextInput.vue'
 import UranusTextarea from '@/component/ui/UranusTextarea.vue'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
-import UranusFormRow from "@/component/ui/UranusFormRow.vue";
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusPrioritySelect from '@/component/ui/UranusPrioritySelect.vue'
+import { type UranusTodoDTO } from '@/model/uranusTodoModel.ts'
 
-interface Todo {
-  id: number
-  title: string
-  description: string | null
-  due_date: string | null
-  completed: boolean
-}
 
 const props = defineProps<{
   show: boolean
-  todo: Todo | null
+  todo: UranusTodoDTO | null
 }>()
 
 const emit = defineEmits<{
   close: []
-  updated: [todo: Todo]
+  updated: [todo: UranusTodoDTO]
 }>()
 
 const { t } = useI18n()
@@ -110,6 +111,7 @@ const form = reactive({
   description: '',
   due_date: '',
   completed: false,
+  importance: 'medium' as 'low' | 'medium' | 'high',
 })
 
 watch(
@@ -121,6 +123,7 @@ watch(
         form.description = props.todo.description ?? ''
         form.due_date = props.todo.due_date?.slice(0, 10) ?? ''
         form.completed = props.todo.completed
+        form.importance = (props.todo as UranusTodoDTO).importance ?? 'medium'
         error.value = ''
       }
     },
@@ -137,29 +140,35 @@ const onSubmit = async () => {
   error.value = ''
 
   try {
-    const payload: Todo = {
+    const payload: UranusTodoDTO = {
       id: props.todo ? props.todo.id : -1,
       title: form.title,
       description: form.description || null,
       due_date: form.due_date || null,
       completed: form.completed,
+      importance: form.importance,
     }
 
-    const { data } = await apiFetch<{ id: number }>(`/api/admin/user/todo`, {
+    const {response} = await apiFetch<{ id: number }>(`/api/admin/user/todo`, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })
 
-    if (props.todo) {
-      payload.id = data.id;
+    if (!props.todo) {
+      payload.id = response.id
     }
 
-    emit('updated', { ...payload })
+    emit('updated', {...payload})
     emit('close')
-  } catch {
-    error.value = t('failed_to_save_todo')
+  } catch (err: unknown) {
+    if (err instanceof ApiError) {
+      error.value = t(err.data?.data)
+    } else {
+      error.value = t('failed_to_save_todo')
+    }
   } finally {
     saving.value = false
   }
 }
+
 </script>

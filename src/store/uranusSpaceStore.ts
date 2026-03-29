@@ -36,7 +36,7 @@ export const useUranusSpaceStore = defineStore('uranusSpace', () => {
             o.spaceType !== d.spaceType ||
             o.buildingLevel !== d.buildingLevel ||
             o.description !== d.description ||
-            o.websiteLink !== d.websiteLink ||
+            o.webLink !== d.webLink ||
             o.totalCapacity !== d.totalCapacity ||
             o.seatingCapacity !== d.seatingCapacity ||
             o.areaSqm !== d.areaSqm ||
@@ -73,9 +73,9 @@ export const useUranusSpaceStore = defineStore('uranusSpace', () => {
         error.value = null
     }
 
-    function resetToEmpty(venueId: number) {
+    function resetToEmpty(venueUuid: string) {
         const empty = UranusSpace.empty()
-        empty.venueId = venueId
+        empty.venueUuid = venueUuid
         original.value = empty
         draft.value = cloneSpace(empty)
         error.value = null
@@ -88,7 +88,7 @@ export const useUranusSpaceStore = defineStore('uranusSpace', () => {
         spaceType?: string | null
         buildingLevel?: number | null
         description?: string | null
-        websiteLink?: string | null
+        webLink?: string | null
     }) {
         if (!draft.value) return
         Object.assign(draft.value, data)

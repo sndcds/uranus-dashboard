@@ -3,80 +3,90 @@
 */
 
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
 export interface UranusUserState {
-    emailAddress: string | null
     displayName: string | null
     userUuid: string | null
     avatarVersion: number | null,
-    userAvatar: string | null
+    userAvatarUrl: string | null
 }
 
 const defaultUserState: UranusUserState = {
-    emailAddress: null,
     displayName: null,
     userUuid: null,
     avatarVersion: null,
-    userAvatar: null
+    userAvatarUrl: null
 }
 
 export const useUserStore = defineStore("user-state", () => {
-    const userState = ref<UranusUserState>({ ...defaultUserState })
+    const displayName = ref<UranusUserState['displayName']>(defaultUserState.displayName)
+    const userUuid = ref<UranusUserState['userUuid']>(defaultUserState.userUuid)
+    const avatarVersion = ref<UranusUserState['avatarVersion']>(defaultUserState.avatarVersion)
+    const userAvatarUrl = ref<UranusUserState['userAvatarUrl']>(defaultUserState.userAvatarUrl)
 
-    // Load saved state from localStorage
-    const saved = localStorage.getItem("user-state")
-    if (saved) {
-        try {
-            const parsed = JSON.parse(saved)
-            userState.value = { ...defaultUserState, ...parsed }
-        } catch {
-            userState.value = { ...defaultUserState }
+    const userState = computed<UranusUserState>(() => ({
+        displayName: displayName.value,
+        userUuid: userUuid.value,
+        avatarVersion: avatarVersion.value,
+        userAvatarUrl: userAvatarUrl.value,
+    }))
+
+    function setUserState(newState: Partial<UranusUserState>) {
+        if ('displayName' in newState) {
+            displayName.value = newState.displayName ?? null
+        }
+        if ('userUuid' in newState) {
+            userUuid.value = newState.userUuid ?? null
+        }
+        if ('avatarVersion' in newState) {
+            avatarVersion.value = newState.avatarVersion ?? null
+        }
+        if ('userAvatarUrl' in newState) {
+            userAvatarUrl.value = newState.userAvatarUrl ?? null
         }
     }
 
-    // Persist automatically whenever state changes
-    watch(
-        userState,
-        (value) => {
-            localStorage.setItem("user-state", JSON.stringify(value))
-        },
-        { deep: true }
-    )
-
-    function setUserState(newState: Partial<UranusUserState>) {
-        Object.assign(userState.value, newState)
-    }
-
     function resetUserState() {
-        userState.value = { ...defaultUserState }
+        setUserState(defaultUserState)
     }
 
-    // helper shortcuts
     function setUserUuid(uuid: string | null) {
-        userState.value.userUuid = uuid;
+        userUuid.value = uuid
     }
     function setDisplayName(name: string | null) {
-        userState.value.displayName = name;
+        displayName.value = name
     }
-    function setEmailAddress(email: string | null) {
-        userState.value.emailAddress = email;
-    }
-    function setUserAvatar(url: string | null) {
-        userState.value.userAvatar = url;
+    function setUserAvatarUrl(url: string | null) {
+        userAvatarUrl.value = url
     }
     function bumpAvatarVersion() {
-        userState.value.avatarVersion = Date.now();
+        avatarVersion.value = Date.now()
+    }
+
+    function clearUserUuid() {
+        userUuid.value = null
+    }
+
+    function clearDisplayName() {
+        displayName.value = null
     }
 
     return {
+        displayName,
+        userUuid,
+        avatarVersion,
+        userAvatarUrl,
         userState,
         setUserState,
         resetUserState,
         setUserUuid,
         setDisplayName,
-        setEmailAddress,
-        setUserAvatar,
-        bumpAvatarVersion
+        setUserAvatarUrl,
+        bumpAvatarVersion,
+        clearUserUuid,
+        clearDisplayName
     }
+}, {
+    persist: true
 })

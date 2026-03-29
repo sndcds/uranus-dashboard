@@ -2,7 +2,7 @@
 
 export class PlutoImageMeta {
     constructor(
-        public id: number | null = null,
+        public uuid: string | null = null,
         public url: string | null = null,
         public alt_text: string | null = null,
         public description: string | null = null,
@@ -15,7 +15,7 @@ export class PlutoImageMeta {
 }
 
 export interface PlutoImageDTO {
-    id: number | null
+    uuid: string | null
     url?: string | null
     alt?: string | null
     description?: string | null

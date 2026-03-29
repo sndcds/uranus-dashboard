@@ -64,35 +64,6 @@ export const useUranusVenueStore = defineStore('uranusVenue', () => {
         error.value = null
     }
 
-    // Domain mutations
-    function setAddress(data: {
-        street?: string
-        houseNumber?: string
-        postalCode?: string
-        city?: string
-        state?: string
-        country?: string
-    }) {
-        if (!draft.value) return
-        Object.assign(draft.value, data)
-    }
-
-    function setContact(data: {
-        email?: string
-        phone?: string
-        website?: string
-    }) {
-        if (!draft.value) return
-        if (data.email !== undefined) draft.value.contactEmail = data.email
-        if (data.phone !== undefined) draft.value.contactPhone = data.phone
-        if (data.website !== undefined) draft.value.websiteLink = data.website
-    }
-
-    function setDescription(desc: string) {
-        if (!draft.value) return
-        draft.value.description = desc
-    }
-
     return {
         // State
         original,
@@ -110,10 +81,5 @@ export const useUranusVenueStore = defineStore('uranusVenue', () => {
         loadFromApi,
         clear,
         resetToEmpty,
-
-        // Domain mutations
-        setAddress,
-        setContact,
-        setDescription,
     }
 })

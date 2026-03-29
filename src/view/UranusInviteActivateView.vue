@@ -132,16 +132,16 @@ const acceptInvite = async () => {
     errorMessage.value = null
 
     try {
-        const { data } = await apiFetch<InviteAcceptResponse>('/api/admin/organization/team/invite/accept', {
+        const { response } = await apiFetch<InviteAcceptResponse>('/api/admin/organization/team/invite/accept', {
             method: 'POST',
             body: JSON.stringify({ token }),
         })
 
-        if (!data || typeof data !== 'object') {
+        if (!response || typeof response !== 'object') {
             throw new Error(t('invite_activate_error_generic'))
         }
 
-        inviteInfo.value = data
+        inviteInfo.value = response
         startRedirectCountdown()
     } catch (err: unknown) {
         if (err instanceof Error && err.message) {

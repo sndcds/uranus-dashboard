@@ -27,7 +27,7 @@
 
   --uranus-base: oklch(60% 0.02 var(--uranus-hue));
 
-  --uranus-color: oklch(12% 0.1 var(--uranus-hue));
+  --uranus-color: oklch(12% 0.05 var(--uranus-hue));
   --uranus-bg: oklch(100% 0.0 var(--uranus-hue));
   --uranus-color-0: var(--uranus-color);
   --uranus-color-1: color-mix(in oklch, var(--uranus-color) 90%, var(--uranus-bg));
@@ -51,6 +51,17 @@
   --uranus-bg-dark: oklch(20% 0.03 var(--uranus-hue));
   --uranus-bg-light: oklch(96% 0.008 var(--uranus-hue));
 
+  --uranus-notify-info-bg-color: var(--uranus-bg);
+  --uranus-notify-info-color: #aac9ff;
+  --uranus-notify-info-title-color: #000000;
+  --uranus-notify-warning-color: #fde689;
+  --uranus-notify-warning-title-color: #000000;
+  --uranus-notify-error-color: #d83535;
+  --uranus-notify-error-title-color: #ffffff;
+
+  --uranus-low-priority_color: #34d399;
+  --uranus-medium-priority_color: #facc15;
+  --uranus-high-priority_color: #f87171;
 
   // // //
 
@@ -170,6 +181,7 @@
   --uranus-disabled-color: #c7cedd;
   --uranus-low-contrast-color: #c6c6c6;
   --uranus-medium-contrast-color: #666666;
+  --uranus-compact-card-width: 640px;
   --uranus-dashboard-content-width: 1024px;
   --uranus-notification-max-width: 640px;
   --uranus-menu-active-color: #0f172a;
@@ -181,14 +193,15 @@
   --uranus-tiny-border-radius: 3px;
   --uranus-input-height: 36px;
 
-  --uranus-notify-info-color: #d2e2fa;
-  --uranus-notify-info-bg-color: #ffffff;
-  --uranus-notify-warning-color: #fde689;
-  --uranus-notify-warning-bg-color: #faf8d8;
-  --uranus-notify-error-title-bg: #d83535;
-  --uranus-notify-error-title-color: #ffffff;
-  --uranus-notify-error-bg: #fee2e2;
-  --uranus-notify-error-color: #ac1b1b;
+  --uranus-feedback-error-rgb: 217, 83, 79;
+  --uranus-feedback-warning-rgb: 237, 186, 74;
+  --uranus-feedback-success-rgb: 40, 167, 69;
+
+  --uranus-feedback-error-color: #da3a35;
+  --uranus-feedback-warning-color: #edba4a;
+  --uranus-feedback-success-color: #28a745;
+
+
 
 
   // App menu
@@ -216,6 +229,15 @@
 
   --uranus-bg-dark: oklch(20% 0.02 var(--uranus-hue));
   --uranus-bg-light: oklch(98% 0.008 var(--uranus-hue));
+
+  --uranus-notify-info-color: #9fc4fb;
+  --uranus-notify-info-bg-color: var(--uranus-bg);
+  --uranus-notify-warning-color: #fde689;
+  --uranus-notify-warning-bg-color: #faf8d8;
+  --uranus-notify-error-title-bg: #d83535;
+  --uranus-notify-error-title-color: #ffffff;
+  --uranus-notify-error-bg: #fee2e2;
+  --uranus-notify-error-color: #ac1b1b;
 
   // // //
 
@@ -313,6 +335,7 @@ a {
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
+  font-weight: 500;
 }
 
 p, span {

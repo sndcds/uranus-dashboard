@@ -86,6 +86,30 @@
       </div>
     </section>
 
+    <!-- Notifications -->
+    <section>
+      <h2>Notifications</h2>
+      <UranusNotification type="info">
+        <template #title>Info</template>
+        Info Text ...
+        <template #actions>
+          <UranusButton @click="onAccept" color="primary">Accept</UranusButton>
+          <UranusButton @click="onCancel" color="secondary">Cancel</UranusButton>
+        </template>
+      </UranusNotification>
+
+      <UranusNotification type="warning">
+        <template #title>Warning</template>
+        Warning Text ...
+      </UranusNotification>
+
+      <UranusNotification type="error">
+        <template #title>Error</template>
+        Error Text ...
+      </UranusNotification>
+
+    </section>
+
   </div>
 </template>
 
@@ -93,6 +117,7 @@
 import UranusDevColorSwatch from '@/component/dev/UranusDevColorSwatch.vue'
 import UranusDevHueSamples from '@/view/dev/UranusDevHueSamples.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusNotification from "@/component/ui/UranusNotification.vue";
 
 
 </script>

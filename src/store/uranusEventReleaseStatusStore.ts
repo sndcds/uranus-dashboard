@@ -53,7 +53,7 @@ export const useEventReleaseStatusStore = defineStore("eventReleaseStatus", {
                 const langParam = languages.join(',');
                 const response: ApiResponse<EventReleaseStatusApiResponse> =
                     await apiFetch(`/api/event/release-status-i18n?lang=${langParam}`);
-                const payload = response.data?.data;
+                const payload = response.response?.data;
 
                 if (!payload) {
                     console.warn("No i18n data returned from API");

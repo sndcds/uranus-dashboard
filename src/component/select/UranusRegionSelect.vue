@@ -104,11 +104,11 @@ const loadCountries = async () => {
   countriesLoading.value = true
   pendingCountryReload = false
   try {
-    const { data } = await apiFetch<{ country_code: string; country_name?: string | null }[]>(
+    const { response } = await apiFetch<{ country_code: string; country_name?: string | null }[]>(
       `/api/choosable-countries?lang=${locale.value}`
     )
-    countries.value = Array.isArray(data)
-      ? data
+    countries.value = Array.isArray(response)
+      ? response
         .map(item => {
           const code = (item.country_code ?? '').trim()
           const name = (item.country_name ?? code).trim()
@@ -146,11 +146,11 @@ const loadStates = async (countryCode: string) => {
 
   statesLoading.value = true
   try {
-    const { data } = await apiFetch<{ state_code: string; state_name?: string | null }[]>(
+    const { response } = await apiFetch<{ state_code: string; state_name?: string | null }[]>(
       `/api/choosable-states?country-code=${encodeURIComponent(trimmedCountry)}`
     )
-    states.value = Array.isArray(data)
-      ? data
+    states.value = Array.isArray(response)
+      ? response
         .map(item => {
           const code = (item.state_code ?? '').trim()
           const name = (item.state_name ?? code).trim()

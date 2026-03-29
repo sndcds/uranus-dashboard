@@ -58,7 +58,7 @@ export const useUranusEventVenueInfoStore = defineStore(
                     '/api/admin/user/choosable-event-venues'
                 )
 
-                items.value = (res.data?.data?.venueInfos ?? []).map(mapVenue)
+                items.value = (res.response?.data?.venueInfos ?? []).map(mapVenue)
 
             } catch (e) {
                 console.error(e)

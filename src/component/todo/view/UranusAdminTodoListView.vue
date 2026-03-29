@@ -1,28 +1,22 @@
 <!--
-  src/view/UranusDashboardTodosView.vue
+  src/component/todo/view/UranusAdminTodoListView.vue
 -->
 
 <template>
-  <div class="uranus-main-layout" style="max-width: 1600px;">
+  <div class="uranus-main-layout">
     <UranusDashboardHero
         :title="t('todo_title')"
         :subtitle="t('todo_description')"
     />
 
     <!-- Empty State -->
-    <UranusNotification
-        v-if="!loading && !todos.length"
-        type="info"
-    >
+    <UranusNotification v-if="!loading && !todos.length" type="info">
       <template #title>{{ t('notification') }}</template>
       {{ t('todo_empty_message') }}
     </UranusNotification>
 
     <div>
-      <UranusButton
-          @click="openCreate"
-          variant="cta"
-      >
+      <UranusButton @click="openCreate">
         {{ t('add_todo') }}
       </UranusButton>
     </div>
@@ -57,33 +51,25 @@
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import uranusI18nMessages from '@/i18n/messages.ts'
 
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusTodoListItem from '@/component/todo/UranusTodoListItem.vue'
 import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import { type UranusTodoDTO } from '@/model/uranusTodoModel.ts'
 
 const { t } = useI18n()
 
-interface Todo {
-  id: number
-  title: string
-  description: string | null
-  due_date: string | null
-  completed: boolean
-}
-
-const todos = ref<Todo[]>([])
+const todos = ref<UranusTodoDTO[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 const showCreateModal = ref(false)
 
 onMounted(async () => {
   try {
-    const { data } = await apiFetch<{ todos: Todo[] }>('/api/admin/user/todos')
-    todos.value = data?.todos ?? []
+    const { response } = await apiFetch<any>('/api/admin/user/todos')
+    todos.value = response.data.todos ?? []
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
@@ -100,11 +86,11 @@ const openCreate = () => {
   showCreateModal.value = true
 }
 
-const createTodo = (todo: Todo) => {
+const createTodo = (todo: UranusTodoDTO) => {
   todos.value = [todo, ...todos.value]
 }
 
-const updateTodo = (updated: Todo) => {
+const updateTodo = (updated: UranusTodoDTO) => {
   console.log("What:", JSON.stringify(updated, null, 2))
   todos.value = todos.value.map(t =>
       t.id === updated.id ? { ...updated } : t

@@ -40,9 +40,9 @@
           </p>
           <p v-if="venue.contact_email">Email: <a :href="`mailto:${venue.contact_email}`">{{ venue.contact_email }}</a></p>
           <p v-if="venue.contact_phone">Phone: {{ venue.contact_phone }}</p>
-          <p v-if="venue.website_link">
-            <a :href="venue.website_link" target="_blank" rel="noopener noreferrer">
-              {{ venue.website_link }}&nbsp;↗
+          <p v-if="venue.web_link">
+            <a :href="venue.web_link" target="_blank" rel="noopener noreferrer">
+              {{ venue.web_link }}&nbsp;↗
             </a>
           </p>
         </div>
@@ -58,9 +58,9 @@
               <span v-if="space.building_level !== undefined">, Level {{ space.building_level }}</span>
               <span v-if="space.space_type_name">, {{ space.space_type_name }}</span>
               <p v-if="space.description">{{ space.description }}</p>
-              <p v-if="space.website_link">
-                <a :href="space.website_link" target="_blank" rel="noopener noreferrer">
-                  {{ space.website_link }}&nbsp;↗
+              <p v-if="space.web_link">
+                <a :href="space.web_link" target="_blank" rel="noopener noreferrer">
+                  {{ space.web_link }}&nbsp;↗
                 </a>
               </p>
             </li>
@@ -75,8 +75,8 @@
         <!-- Organization -->
         <div v-if="venue.organization" class="uranus-public-venue-info-section">
           <p class="uranus-public-venue-info-label">{{ t('venue_organization') }}</p>
-          <p v-if="venue.organization.website_link && venue.organization.name">
-            <a :href="venue.organization.website_link" target="_blank" rel="noopener noreferrer">
+          <p v-if="venue.organization.web_link && venue.organization.name">
+            <a :href="venue.organization.web_link" target="_blank" rel="noopener noreferrer">
               {{ venue.organization.name }}&nbsp;↗
             </a>
           </p>
@@ -166,7 +166,7 @@ const loadVenue = async () => {
     const lang = locale.value || 'en'
     const apiPath = `/api/venue/${venueId}?lang=${lang}`
     const response = await apiFetch<any>(apiPath)
-    venue.value = response.data.data
+    venue.value = response.response.data
   } catch (error: unknown) {
     loadError.value = error instanceof Error ? error.message : t('error_fetch_data_failed')
   } finally {

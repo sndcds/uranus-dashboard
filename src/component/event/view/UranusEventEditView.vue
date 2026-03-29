@@ -148,7 +148,7 @@ onMounted(async () => {
   try {
     const apiPath = `/api/admin/event/${eventId.value}?lang=${locale.value}`
     const response = await apiFetch<{ data: UranusAdminEventDTO }>(apiPath)
-    adminEventStore.loadFromApi(response.data.data)
+    adminEventStore.loadFromApi(response.response.data)
   } catch (e) {
     adminEventStore.error = 'Failed to load event'
     console.log(e)

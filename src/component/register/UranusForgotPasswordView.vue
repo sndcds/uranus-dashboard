@@ -7,7 +7,7 @@
             </header>
 
             <form class="uranus-form" @submit.prevent="requestReset" :aria-busy="isSubmitting" novalidate>
-                <UranusTextInput
+                <UranusTextfield
                     id="forgot-email"
                     v-model="email"
                     type="email"
@@ -50,7 +50,7 @@
 import { ref, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import UranusTextInput from '@/component/ui/UranusTextInput.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 
 const { t, locale } = useI18n()
 

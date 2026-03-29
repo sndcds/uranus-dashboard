@@ -1,24 +1,21 @@
 <template>
   <div class="auth-page">
-    <div class="uranus-card">
-      <header class="auth-header">
-        <h1>{{ t('login') }}</h1>
-        <p>{{ loginSubtitle }}</p>
-      </header>
+    <UranusCard style="width: 400px;">
+      <h1>{{ t('login') }}</h1>
+      <p>{{ loginSubtitle }}</p>
 
-      <form class="uranus-form" @submit.prevent="login" :aria-busy="isSubmitting" novalidate>
-        <UranusTextInput
+      <UranusForm @submit.prevent="login" aria-busy="isSubmitting" novalidate>
+        <UranusTextfield
+            id="login-email"
             v-model="email"
             type="email"
-            id="login-email"
             required
             :label="t('email')"
             :error="fieldErrors.email ?? ''"
         />
-
         <UranusPasswordInput
-            v-model="password"
             id="login-password"
+            v-model="password"
             required
             :label="t('password')"
             :error="fieldErrors.password"
@@ -35,22 +32,23 @@
         </transition>
 
         <div class="form-actions">
-          <button class="uranus-secondary-button" type="submit" :disabled="isSubmitting">
+          <UranusButton
+              type="submit" :disabled="isSubmitting">
             <template v-if="!isSubmitting">{{ t('login_cta') }}</template>
             <template v-else>{{ t('login_loading') }}</template>
-          </button>
+          </UranusButton>
         </div>
-      </form>
+
+      </UranusForm>
 
       <footer class="auth-footer">
-          <span>{{ t('need_account') }}</span>
-          <router-link to="/app/signup">{{ t('signup') }}</router-link>
+        <span>{{ t('need_account') }}</span>
+        <router-link to="/app/signup">{{ t('signup') }}</router-link>
       </footer>
-    </div>
+
+    </UranusCard>
   </div>
-
 </template>
-
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -59,9 +57,11 @@ import { apiFetch, type LoginResponse } from '@/api.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { useUserStore } from '@/store/uranusUserStore.ts'
 import { useThemeStore } from '@/store/uranusThemeStore.ts'
-
-import UranusTextInput from '@/component/ui/UranusTextInput.vue'
-import UranusPasswordInput from "@/component/ui/UranusPasswordInput.vue";
+import UranusPasswordInput from '@/component/ui/UranusPasswordInput.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusCard from '@/component/ui/UranusCard.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -69,7 +69,6 @@ const route = useRoute()
 const tokenStore = useTokenStore()
 const userStore = useUserStore()
 const themeStore = useThemeStore()
-
 const { locale } = useI18n({ useScope: 'global' })
 const selectedLocale = computed({
   get: () => locale.value,
@@ -77,33 +76,26 @@ const selectedLocale = computed({
     locale.value = value
   },
 })
-
 const email = ref('')
 const password = ref('')
 const error = ref<string | null>(null)
 const isSubmitting = ref(false)
-
 const fieldErrors = reactive({
   email: undefined as string | undefined,
   password: undefined as string | undefined,
 })
-
 const loginSubtitle = computed(() => t('login_subtitle'))
-
 const displayError = computed(() => {
   if (fieldErrors.email) return fieldErrors.email
   if (fieldErrors.password) return fieldErrors.password
   return error.value
 })
-
 const isValidEmail = (value: string) => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailPattern.test(value)
 }
-
 const requiredFieldMessage = computed(() => t('required_field'))
 const invalidEmailMessage = computed(() => t('organization_form_invalid_email'))
-
 watch(email, (value) => {
   if (fieldErrors.email && value.trim()) {
     const trimmed = value.trim()
@@ -115,7 +107,6 @@ watch(email, (value) => {
     }
   }
 })
-
 watch(password, (value) => {
   if (fieldErrors.password && value.trim()) {
     fieldErrors.password = undefined
@@ -124,15 +115,12 @@ watch(password, (value) => {
     }
   }
 })
-
 const login = async () => {
   error.value = null
   fieldErrors.email = undefined
   fieldErrors.password = undefined
-
   const trimmedEmail = email.value.trim()
   const trimmedPassword = password.value.trim()
-
   // Validate email
   if (!trimmedEmail) {
     fieldErrors.email = requiredFieldMessage.value
@@ -142,17 +130,14 @@ const login = async () => {
     fieldErrors.email = invalidEmailMessage.value
     return
   }
-
   // Validate password
   if (!trimmedPassword) {
     fieldErrors.password = requiredFieldMessage.value
     return
   }
-
   isSubmitting.value = true
-
   try {
-    const { data, status } = await apiFetch<any>('/api/login', {
+    const { response, status } = await apiFetch<any>('/api/login', {
       method: 'POST',
       body: JSON.stringify({
         email: trimmedEmail,
@@ -160,20 +145,16 @@ const login = async () => {
       }),
     })
 
-    const payload: LoginResponse = data.data
-
+    const payload: LoginResponse = response.data
     if (status === 200 && payload.access_token && payload.refresh_token) {
       tokenStore.setTokens(payload.access_token, payload.refresh_token)
-
-      if (payload.user_uuid) userStore.setUserUuid(payload.user_uuid)
-      if (payload.display_name) userStore.setDisplayName(payload.display_name)
-
+      userStore.setUserUuid(payload.user_uuid)
+      userStore.setDisplayName(payload.display_name ?? '')
       if (payload.locale) selectedLocale.value = payload.locale
       if (payload.theme) themeStore.setTheme(payload.theme)
-
       router.replace(typeof route.query.redirect === 'string' ? route.query.redirect : '/')
     } else {
-        error.value = t('invalid_credentials')
+      error.value = t('invalid_credentials')
     }
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
@@ -187,73 +168,49 @@ const login = async () => {
   }
 }
 </script>
-
 <style scoped lang="scss">
 .auth-page {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.uranus-card {
-    width: 100%;
-    max-width: 500px;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .forgot-password-link {
-    margin-top: -0.5rem;
-    margin-bottom: 1rem;
-    text-align: right;
-
-    a {
-        font-size: 0.875rem;
-        color: var(--color-link);
-        text-decoration: none;
-
-        &:hover,
-        &:focus {
-            text-decoration: underline;
-        }
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  text-align: right;
+  a {
+    font-size: 0.875rem;
+    color: var(--color-link);
+    text-decoration: none;
+    &:hover,
+    &:focus {
+      text-decoration: underline;
     }
+  }
 }
 
 .form-actions {
-    display: flex;
-    justify-content: flex-end;
-}
-
-
-.feedback {
-    margin: 0.5rem 0;
-    padding: 0.75rem 1rem;
-    border-radius: 0.375rem;
-    font-size: 0.9rem;
-
-    &--error {
-        background-color: #fee;
-        color: #c00;
-        border: 1px solid #fcc;
-    }
+  display: flex;
+  justify-content: flex-end;
 }
 
 .auth-footer {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
-    color: var(--uranus-muted-text);
-    margin-top: 1.5rem;
-
-    a {
-        font-weight: 600;
-        color: var(--accent-primary);
-        transition: color 0.2s ease;
-
-        &:hover {
-            color: var(--accent-secondary);
-        }
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--uranus-muted-text);
+  margin-top: 1.5rem;
+  a {
+    font-weight: 600;
+    color: var(--accent-primary);
+    transition: color 0.2s ease;
+    &:hover {
+      color: var(--accent-secondary);
     }
+  }
 }
 </style>

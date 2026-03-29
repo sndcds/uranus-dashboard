@@ -91,7 +91,7 @@ const loadStates = async (countryCode: string) => {
         `/api/choosable-states?country-code=${encodeURIComponent(trimmed)}`
     )
 
-    const list = res.data?.data ?? []
+    const list = res.response?.data ?? []
 
     states.value = list
         .map(item => {

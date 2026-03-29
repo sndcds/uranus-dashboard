@@ -38,7 +38,7 @@ export const useEventTypeLookupStore = defineStore('eventTypesLookup', () => {
         const res = await apiFetch<EventTypesGenresAPIResponse>(endpoint)
 
         // JSON now matches the new nested structure: typeObj -> genres
-        data.value = res.data?.data ?? {}
+        data.value = res.response?.data ?? {}
         loaded.value = true
     }
 

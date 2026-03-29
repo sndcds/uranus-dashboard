@@ -86,7 +86,7 @@ async function onCreate() {
       body: JSON.stringify(payload),
     })
 
-    const spaceId = res.data?.metadata?.space_id
+    const spaceId = res.response?.metadata?.space_id
     if (!spaceId) {
       throw new Error('no space_id returned from API')
     }

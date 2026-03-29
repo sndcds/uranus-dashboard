@@ -7,15 +7,15 @@
 import type { UranusSpaceDTO } from '@/api/dto/UranusSpaceDTO.ts'
 
 export class UranusSpace {
-    id: number | null = null
-    venueId: number | null = null
+    uuid: string | null = null
+    venueUuid: string | null = null
     name: string = ''
 
     totalCapacity: number | null = null
     seatingCapacity: number | null = null
     spaceType: string | null = null
     buildingLevel: number | null = null
-    websiteLink: string | null = null
+    webLink: string | null = null
 
     accessibilitySummary: string | null = null
     accessibilityFlags: bigint | null = null
@@ -49,15 +49,15 @@ export class UranusSpace {
         }
 
         const space = new UranusSpace({
-            id: dto.id,
-            venueId: dto.venue_id ?? null,
+            uuid: dto.uuid,
+            venueUuid: dto.venue_uuid ?? null,
             name: dto.name ?? '',
 
             totalCapacity: dto.total_capacity ?? null,
             seatingCapacity: dto.seating_capacity ?? null,
             spaceType: dto.space_type ?? null,
             buildingLevel: dto.building_level ?? null,
-            websiteLink: dto.website_link ?? null,
+            webLink: dto.web_link ?? null,
 
             accessibilitySummary: dto.accessibility_summary ?? null,
 
@@ -82,8 +82,8 @@ export class UranusSpace {
 
     static empty(): UranusSpace {
         const emptyDto: UranusSpaceDTO = {
-            id: -1,
-            venue_id: null,
+            uuid: null,
+            venue_uuid: null,
             name: '',
             created_at: new Date(0).toISOString(), // required
         }
@@ -93,15 +93,15 @@ export class UranusSpace {
 
     toDTO(): UranusSpaceDTO {
         return {
-            id: this.id,
-            venue_id: this.venueId ?? null,
+            uuid: this.uuid,
+            venue_uuid: this.venueUuid ?? null,
             name: this.name,
 
             total_capacity: this.totalCapacity ?? null,
             seating_capacity: this.seatingCapacity ?? null,
             space_type: this.spaceType ?? null,
             building_level: this.buildingLevel ?? null,
-            website_link: this.websiteLink ?? null,
+            web_link: this.webLink ?? null,
 
             accessibility_summary: this.accessibilitySummary ?? null,
             accessibility_flags: this.accessibilityFlags != null

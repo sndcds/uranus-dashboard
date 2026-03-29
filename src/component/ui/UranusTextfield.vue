@@ -32,9 +32,6 @@
 
         <slot name="suffix"></slot>
       </div>
-
-      <!-- Error message -->
-      <span v-if="error" :id="id + '-error'" class="uranus-error-msg">{{ error }}</span>
     </UranusLabel>
   </div>
 </template>

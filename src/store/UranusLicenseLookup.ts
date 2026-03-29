@@ -35,7 +35,7 @@ export const useLicenseLookup = defineStore('license', () => {
             )
 
             const map: UranusLicenseMap = {}
-            for (const item of res.data.data ?? []) {
+            for (const item of res.response.data ?? []) {
                 map[item.key] = {
                     label: item.name ?? null,
                     description: item.description ?? null

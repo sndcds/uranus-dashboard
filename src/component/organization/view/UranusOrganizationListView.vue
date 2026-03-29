@@ -3,7 +3,7 @@
 -->
 
 <template>
-  <div class="uranus-main-layout" style="max-width: 1600px;">
+  <div class="uranus-main-layout">
     <UranusDashboardHero
         :title="t('organizations')"
         :subtitle="t('dashboard_organizations_hero_description')"
@@ -21,10 +21,7 @@
     </UranusNotification>
 
     <div>
-      <UranusButton
-          to="/admin/organization/create"
-          variant="cta"
-      >
+      <UranusButton to="/admin/organization/create">
         {{ t('create_organization') }}
       </UranusButton>
     </div>
@@ -39,8 +36,8 @@
     <div class="organization-grid">
       <UranusOrganizationCard
           v-for="organization in organizations"
-          :key="organization.organization_id"
-          :organization="organization"
+          :key="organization.org_uuid"
+          :organisation="organization"
           @deleted="handleOrganizationDeleted"
       />
     </div>
@@ -54,38 +51,24 @@ import { apiFetch } from '@/api.ts'
 
 import UranusOrganizationCard from '@/component/organization/UranusOrganizationCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusDashboardActionBar from '@/component/uranus/UranusDashboardActionBar.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import type { UranusOrganizationListDTO } from '@/api/dto/UranusOrganizationDTO.ts'
 
 const { t } = useI18n()
 
-interface Organization {
-  organization_id: number
-  organization_name: string
-  organization_city: string | null
-  organization_country_code: string | null
-  total_upcoming_events: number
-  venue_count: number
-  space_count: number
-  can_edit_organization: boolean
-  can_delete_organization: boolean
-  can_manage_team: boolean
-  main_logo_image_id: number
-}
-
-const organizations = ref<Organization[]>([])
+const organizations = ref<UranusOrganizationListDTO[]>([])
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 
-const handleOrganizationDeleted = (organizationId: number) => {
-  organizations.value = organizations.value.filter(org => org.organization_id !== organizationId)
+const handleOrganizationDeleted = (orgUuid: string | null) => {
+  organizations.value = organizations.value.filter(org => org.org_uuid !== orgUuid)
 }
 
 onMounted(async () => {
   try {
-    const { data } = await apiFetch<{ organizations: Organization[] }>('/api/admin/organization/dashboard')
-    organizations.value = data?.organizations || []
+    const { response } = await apiFetch<any>('/api/admin/organization/dashboard')
+    organizations.value = response?.data.organizations || []
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
@@ -109,7 +92,6 @@ onMounted(async () => {
   gap: var(--uranus-grid-gap);
   max-width: var(--uranus-dashboard-content-width);
 }
-
 
 // Empty state
 .organization-dashboard-view__empty {

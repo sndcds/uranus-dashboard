@@ -101,12 +101,11 @@ async function commitTab() {
 
     if (Object.keys(payload).length === 0) return
 
-    await apiFetch(`/api/admin/organization/${draft.id}/fields`, {
+    await apiFetch(`/api/admin/organization/${draft.uuid}/fields`, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })
 
-    // commit locally
     original.lat = draft.lat
     original.lon = draft.lon
   } catch (err) {

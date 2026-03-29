@@ -35,17 +35,12 @@
     </div>
 
     <div class="tab-actions">
-      <UranusButton
-          variant="cta"
-          :disabled="store.saving || !isDirty"
-          @click="resetTab"
-      >
+      <UranusButton :disabled="store.saving || !isDirty" @click="resetTab">
         <template #icon><Undo /></template>
         {{ t('discard')}}
       </UranusButton>
 
       <UranusButton
-          variant="cta"
           :disabled="store.saving || !isDirty"
           :loading="store.saving"
           loading-text="Saving..."

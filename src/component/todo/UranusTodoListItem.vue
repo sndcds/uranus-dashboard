@@ -1,10 +1,15 @@
-<!--
-  UranusTodoListItem.vue
--->
 <template>
   <UranusCard class="todo-list-item" :class="{ completed: todo.completed }">
     <div class="todo-main">
-      <div class="title">{{ todo.title }}</div>
+      <div class="title-wrapper">
+        <span
+            class="importance-indicator"
+            :class="todo.importance"
+            :title="t(todo.importance)"
+        ></span>
+        <div class="title">{{ todo.title }}</div>
+      </div>
+
       <div v-if="todo.description" class="description" v-html="todo.description"></div>
       <div v-if="todo.due_date" class="due-date">{{ formattedDueDate }}</div>
     </div>
@@ -54,18 +59,11 @@ import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
+import { type UranusTodoDTO } from '@/model/uranusTodoModel.ts'
 
-interface Todo {
-  id: number
-  title: string
-  description: string | null
-  due_date: string | null
-  completed: boolean
-}
-
-const props = defineProps<{ todo: Todo }>()
+const props = defineProps<{ todo: UranusTodoDTO }>()
 const emit = defineEmits<{
-  updated: [todo: Todo]
+  updated: [todo: UranusTodoDTO]
   deleted: [todoId: number]
 }>()
 
@@ -83,12 +81,11 @@ const formattedDueDate = computed(() => {
 
 const openEdit = () => { showEditModal.value = true }
 
-const onUpdated = (updatedTodo: Todo) => {
+const onUpdated = (updatedTodo: UranusTodoDTO) => {
   showEditModal.value = false
-  emit('updated', { ...updatedTodo }) // update parent array
+  emit('updated', { ...updatedTodo })
 }
 
-// Delete handlers
 const requestDelete = () => {
   deleteError.value = ''
   showDeleteModal.value = true
@@ -137,6 +134,23 @@ const confirmDelete = async ({ password }: { password: string }) => {
   display: flex;
   flex-direction: column;
 }
+
+.title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.importance-indicator {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.importance-indicator.low { background-color: var(--uranus-low-priority_color, #34d399); }
+.importance-indicator.medium { background-color: var(--uranus-medium-priority_color, #facc15); }
+.importance-indicator.high { background-color: var(--uranus-high-priority_color, #f87171); }
 
 .title {
   font-weight: 500;

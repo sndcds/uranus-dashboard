@@ -164,11 +164,11 @@ const loadOrganization = async () => {
   }
 
   try {
-    const { data } = await apiFetch<{ name: string | null }>(
+    const { response } = await apiFetch<{ name: string | null }>(
       `/api/organization/${organizationId.value}`
     )
-    if (data && data.name) {
-      organizationName.value = data.name
+    if (response && response.name) {
+      organizationName.value = response.name
     }
   } catch (err) {
     console.error('Failed to load organization details', err)
@@ -180,18 +180,18 @@ const loadPermissions = async () => {
   error.value = null
 
   try {
-    const { data } = await apiFetch<PermissionListResponse | null>(
+    const { response } = await apiFetch<PermissionListResponse | null>(
       `/api/admin/permissions/list${buildQuery()}`
     )
 
-    if (!data || typeof data !== 'object') {
+    if (!response || typeof response !== 'object') {
       permissionGroups.value = []
       selectedBits.value = []
       permissionMask.value = null
       return
     }
 
-    permissionGroups.value = Object.entries(data)
+    permissionGroups.value = Object.entries(response)
       .map(([type, entries]) => {
         const normalized = Array.isArray(entries)
           ? entries.map((entry) => ({
@@ -293,7 +293,7 @@ const loadUserPermissions = async () => {
   }
 
   try {
-    const { data } = await apiFetch<{
+    const { response } = await apiFetch<{
       permissions?: number | string | null;
       user_display_name?: string;
       user_id?: number
@@ -301,9 +301,9 @@ const loadUserPermissions = async () => {
         `/api/admin/organization/${organizationId.value}/member/${memberId.value}/permissions`
     )
 
-    memberDisplayName.value = data?.user_display_name ?? ''
+    memberDisplayName.value = response?.user_display_name ?? ''
 
-    const mask = toMaskValue(data?.permissions ?? null)
+    const mask = toMaskValue(response?.permissions ?? null)
     if (mask == null) {
       permissionMask.value = null
       selectedBits.value = []

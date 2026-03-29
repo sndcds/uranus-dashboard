@@ -285,16 +285,16 @@ const loadEvents = async (resetObserver = false) => {
   try {
     // Fetch events
     const params = buildFilterParams(true, true)
-    const { data } = await apiFetch<{
+    const { response } = await apiFetch<{
       events: CalendarEvent[]
       last_event_start_at: string
       last_event_date_id: number
     }>(`/api/events?${params.toString()}`)
 
-    if (data?.events.length) {
-      events.value.push(...data.events)
-      lastEventStartAt.value = data.last_event_start_at
-      lastEventDateId.value = data.last_event_date_id
+    if (response?.events.length) {
+      events.value.push(...response.events)
+      lastEventStartAt.value = response.last_event_start_at
+      lastEventDateId.value = response.last_event_date_id
     }
 
     // Fetch summary with same filters, but without limit
@@ -302,7 +302,7 @@ const loadEvents = async (resetObserver = false) => {
     const summaryResponse = await apiFetch<{ summary: TypeSummaryEntry[] }>(
         `/api/events/type-summary?${summaryParams.toString()}`
     )
-    typeSummary.value = summaryResponse.data.summary || []
+    typeSummary.value = summaryResponse.response.summary || []
 
   } catch (err) {
     console.error("Failed to load events:", err)

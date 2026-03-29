@@ -39,7 +39,6 @@ export const useUranusOrganizationStore = defineStore('uranusOrganization', () =
         )
     })
 
-    // Actions
     function loadFromApi(raw: any) {
         const org = UranusOrganization.fromApi(raw)
         if (!org) {
@@ -56,42 +55,6 @@ export const useUranusOrganizationStore = defineStore('uranusOrganization', () =
         error.value = null
     }
 
-    // Domain mutations
-    function setAddress(data: {
-        street?: string
-        houseNumber?: string
-        addressAddition?: string
-        postalCode?: string
-        city?: string
-        state?: string
-        country?: string
-    }) {
-        if (!draft.value) return
-        Object.assign(draft.value, data)
-    }
-
-    function setContact(data: {
-        email?: string
-        phone?: string
-        website?: string
-    }) {
-        if (!draft.value) return
-        if (data.email !== undefined) { draft.value.contactEmail = data.email }
-        if (data.phone !== undefined) { draft.value.contactPhone = data.phone }
-        if (data.website !== undefined) { draft.value.websiteLink = data.website }
-    }
-
-    function setLogos(data: {
-        main?: number
-        light?: number
-        dark?: number
-    }) {
-        if (!draft.value) return
-        if (data.main !== undefined) draft.value.imageMainLogoId = data.main
-        if (data.light !== undefined) draft.value.imageLightModeLogoId = data.light
-        if (data.dark !== undefined) draft.value.imageDarkModeLogoId = data.dark
-    }
-
     function resetToEmpty() {
         const empty = UranusOrganization.empty()
         original.value = empty
@@ -100,26 +63,18 @@ export const useUranusOrganizationStore = defineStore('uranusOrganization', () =
     }
 
     return {
-        // State
         original,
         draft,
         loading,
         saving,
         error,
 
-        // Getters
         isLoaded,
         isDirty,
         hasAddress,
 
-        // Actions
         loadFromApi,
         clear,
         resetToEmpty,
-
-        // Domain mutations
-        setAddress,
-        setContact,
-        setLogos,
     }
 })

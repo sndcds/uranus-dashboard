@@ -2,53 +2,57 @@
   <UranusCard class="organization-card">
     <div>
       <div class="header">
-        <h2>{{ organization.organization_name }}</h2>
-        <img
-            v-if="organization.main_logo_image_id"
-            class="uranus-dashboard-organization-card-logo-image"
-            :src="buildPlutoImageUrl(organization.main_logo_image_id, 120, 0, 'png', 80, true)"
+        <h2>{{ organisation.org_name }}</h2>
+        <PlutoImage
+            :mainImageUuid="organisation.main_logo_uuid"
+            :lightImageUuid="organisation.light_theme_logo_uuid"
+            :darkImageUuid="organisation.dark_theme_logo_uuid"
+            img-class="uranus-dashboard-organization-card-logo-image"
         />
+
       </div>
-      <span v-if="organization.organization_city || organization.organization_country_code">
-        {{ organization.organization_city || '' }}{{ organization.organization_city && organization.organization_country_code ? ', ' : '' }}{{ organization.organization_country_code || '' }}<br>
+      <span v-if="organisation.org_city || organisation.org_country_code">
+        {{ organisation.org_city || '' }}{{
+          organisation.org_city && organisation.org_country_code ? ', ' : ''
+        }}{{ organisation.org_country_code || '' }}<br>
       </span>
       <span>
-        {{t('venues') }}: {{ organization.venue_count }} /
-        {{t('venue_spaces') }}: {{ organization.space_count }} /
-        {{t('events') }}: {{ organization.total_upcoming_events }}
+        {{ t('venues') }}: {{ organisation.venue_count }} /
+        {{ t('venue_spaces') }}: {{ organisation.space_count }} /
+        {{ t('events') }}: {{ organisation.total_upcoming_events }}
       </span>
     </div>
 
     <div class="uranus-card-button-container">
       <UranusButton
-          v-if="organization.can_edit_organization"
+          v-if="organisation.can_edit_org"
           variant="secondary" size="small"
-          @click="assignOrganization(organization.organization_id)"
+          @click="assignOrganization(organisation.org_uuid)"
           style="min-width: 100px;"
       >
-        {{ appStore.organizationId === organization.organization_id ? t('organization_active') : t('organization_activate') }}
+        {{ appStore.orgUuid === organisation.org_uuid ? t('organization_active') : t('organization_activate') }}
       </UranusButton>
 
       <UranusButton
-          v-if="organization.can_edit_organization"
+          v-if="organisation.can_edit_org"
           variant="secondary" size="small"
-          :to="`/admin/organization/${organization.organization_id}/edit`"
+          :to="`/admin/organization/${organisation.org_uuid}/edit`"
       >
         {{ t('edit') }}
       </UranusButton>
 
       <UranusButton
-          v-if="organization.can_delete_organization"
+          v-if="organisation.can_delete_org"
           variant="secondary" size="small"
-          @click="deleteOrganization(organization.organization_id)"
+          @click="deleteOrganization(organisation.org_uuid)"
       >
         {{ t('delete') }}
       </UranusButton>
 
       <UranusButton
-          v-if="organization.can_manage_team"
+          v-if="organisation.can_manage_team"
           variant="secondary" size="small"
-          :to="`/admin/organization/${organization.organization_id}/team`"
+          :to="`/admin/organization/${organisation.org_uuid}/team`"
       >
         {{ t('manage_team') }}
       </UranusButton>
@@ -60,7 +64,7 @@
     <UranusPasswordConfirmModal
         :show="showDeleteModal"
         :title="t('confirm_delete_organization')"
-        :question="t('confirm_delete_organization_description', { name: organization.organization_name })"
+        :question="t('confirm_delete_organization_description', { name: organisation.org_name })"
         :confirm-text="t('delete_organization')"
         :loading-text="t('deleting')"
         :error="deleteError"
@@ -73,50 +77,37 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAppStore } from '@/store/uranusAppStore.ts'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
+import { useAppStore } from '@/store/uranusAppStore.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
-import { buildPlutoImageUrl } from "@/util/UranusUtils.ts";
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from "@/component/ui/UranusCard.vue";
+import type { UranusOrganizationListDTO } from '@/api/dto/UranusOrganizationDTO.ts'
+import PlutoImage from "@/component/pluto/PlutoImage.vue";
 
-const appStore = useAppStore()
 const { t } = useI18n()
+const appStore = useAppStore()
 
 const showDeleteModal = ref(false)
 const deleteError = ref('')
 const isDeleting = ref(false)
-const pendingDeleteId = ref<number | null>(null)
+const pendingDeleteUuid = ref<string | null>(null)
 
 
-// TODO: Refactor to camelCase
-interface Organization {
-  organization_id: number
-  organization_name: string
-  organization_city: string | null
-  organization_country_code: string | null
-  total_upcoming_events: number
-  venue_count: number
-  space_count: number
-  can_edit_organization: boolean
-  can_delete_organization: boolean
-  can_manage_team: boolean
-  main_logo_image_id: number | null
-}
+const props = defineProps<{ organisation: UranusOrganizationListDTO }>()
 
-defineProps<{ organization: Organization }>()
 const emit = defineEmits<{
-  deleted: [organizationId: number]
+  deleted: [orgUuid: string]
 }>()
 
-function assignOrganization(id: number) {
-  appStore.setOrganizationId(id)
+function assignOrganization(uuid: string) {
+  appStore.setOrganizationUuid(uuid)
 }
 
-const deleteOrganization = (organizationId: number) => {
-  pendingDeleteId.value = organizationId
+const deleteOrganization = (uuid: string) => {
+  pendingDeleteUuid.value = uuid
   showDeleteModal.value = true
   deleteError.value = ''
 }
@@ -124,25 +115,25 @@ const deleteOrganization = (organizationId: number) => {
 const cancelDelete = () => {
   showDeleteModal.value = false
   deleteError.value = ''
-  pendingDeleteId.value = null
+  pendingDeleteUuid.value = null
 }
 
 const confirmDelete = async ({ password }: { password: string }) => {
-  if (!pendingDeleteId.value) return
+  if (!pendingDeleteUuid.value) return
   deleteError.value = ''
   isDeleting.value = true
 
   try {
-    await apiFetch(`/api/admin/organization/${pendingDeleteId.value}`, {
+    await apiFetch(`/api/admin/organization/${pendingDeleteUuid.value}`, {
       method: 'DELETE',
       body: JSON.stringify({ password }),
     })
 
-    if (appStore.organizationId === pendingDeleteId.value) {
-      appStore.setOrganizationId(null)
+    if (appStore.orgUuid === pendingDeleteUuid.value) {
+      appStore.setOrganizationUuid(null)
     }
 
-    emit('deleted', pendingDeleteId.value)
+    emit('deleted', pendingDeleteUuid.value)
     cancelDelete()
   } catch (error: any) {
     console.error('Failed to delete organization:', error)

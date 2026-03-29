@@ -106,6 +106,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Loading…',
         da: 'Indlæser…',
     },
+    completed: {
+        de: 'Erledigt',
+        en: 'Completed',
+        da: 'Fuldført',
+    },
     click_to_upload: {
         de: 'Klicken zum Hochladen',
         en: 'Click to upload',
@@ -195,6 +200,16 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Termine',
         en: 'Dates',
         da: 'Datoer',
+    },
+    due_date: {
+        de: 'Fälligkeitsdatum',
+        en: 'Due date',
+        da: 'Forfaldsdato',
+    },
+    due_date_in_past_error: {
+        de: 'Das Fälligkeitsdatum darf nicht in der Vergangenheit liegen.',
+        en: 'The due date cannot be in the past.',
+        da: 'Forfaldsdatoen må ikke være i fortiden.',
     },
     latitude: {
         de: 'Breitengrad',

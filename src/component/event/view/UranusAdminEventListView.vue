@@ -28,10 +28,7 @@
 
     <template v-else>
       <div v-if="!isLoading && canAddEvent">
-        <UranusButton
-            :to="`/admin/organization/${organizationId}/event/create`"
-            variant="cta"
-        >
+        <UranusButton :to="`/admin/organization/${organizationId}/event/create`">
           {{ t('add_new_event') }}
         </UranusButton>
       </div>

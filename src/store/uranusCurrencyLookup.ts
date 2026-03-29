@@ -28,7 +28,7 @@ export const useCurrencyLookupStore = defineStore('currencyLookup', {
                             `/api/choosable-currencies?lang=${uiLang}`
                         )
                         // Access the actual array inside 'data'
-                        const list = res.data?.data ?? []
+                        const list = res.response?.data ?? []
                         return [uiLang, list] as const
                     })
                 )

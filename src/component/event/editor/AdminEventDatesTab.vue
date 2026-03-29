@@ -57,20 +57,15 @@
 
     <!-- Save / Discard buttons -->
     <div class="tab-actions">
-      <UranusButton variant="cta" @click="addDate">
+      <UranusButton @click="addDate">
         <template #icon><Plus /></template>{{ t('event_add_date') }}
       </UranusButton>
 
-      <UranusButton
-          variant="cta"
-          :disabled="store.saving || !isDirty"
-          @click="resetDates"
-      >
+      <UranusButton :disabled="store.saving || !isDirty" @click="resetDates">
         <template #icon><Undo /></template>{{ t('discard')}}
       </UranusButton>
 
       <UranusButton
-          variant="cta"
           :disabled="store.saving || !isDirty"
           :loading="store.saving"
           loading-text="Saving..."

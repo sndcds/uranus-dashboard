@@ -16,15 +16,32 @@
       <UranusLineChart :data="chartData" />
     </section>
 
+    <UranusSegmentedSelect
+        v-model="selected"
+        :options="options"
+        variant="chip"
+    />
+
+    <UranusSegmentedSelect
+        v-model="selected"
+        :options="options"
+    />
+
+    <UranusPrioritySelect></UranusPrioritySelect>
+
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Calendar, BarChart, Clock } from 'lucide-vue-next'
 
-import UranusDashboardHero from "@/component/dashboard/UranusDashboardHero.vue"
+import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusDashboardNotifications from '@/component/dashboard/UranusDashboardNotifications.vue'
 import UranusLineChart from '@/component/chart/UranusLineChart.vue'
+import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
+import UranusPrioritySelect from '@/component/ui/UranusPrioritySelect.vue'
 
 const { t } = useI18n()
 
@@ -49,5 +66,13 @@ const chartData = {
     { pos: 12, label: 'Dez', value: 322 },
   ],
 }
+
+const selected = ref('day')
+
+const options = [
+  { label: 'Day', value: 'day', icon: Clock },
+  { label: 'Week', value: 'week', icon: Calendar },
+  { label: 'Month', value: 'month', icon: BarChart, disabled: true }
+]
 
 </script>

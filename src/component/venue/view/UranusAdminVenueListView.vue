@@ -7,7 +7,7 @@
     <UranusDashboardHero :title="t('venues')" :subtitle="t('venues_description')" />
 
     <UranusNotification
-        v-if="!organizationId"
+        v-if="!organizationUuid"
         type="info"
     >
       <!-- No Organization Selected Message -->
@@ -27,7 +27,7 @@
     <template v-else>
       <div v-if="!isLoading" class="uranus-main-layout">
         <div v-if="organizationVenueInfos && organizationVenueInfos.canAddVenue">
-          <UranusButton :to="`/admin/organization/${organizationId}/venue/create`" variant="cta">
+          <UranusButton :to="`/admin/organization/${organizationUuid}/venue/create`">
             {{ t('venue_add') }}
           </UranusButton>
         </div>
@@ -40,9 +40,9 @@
         <div v-if="organizationVenueInfos" class="organization-venue-view__content">
           <UranusVenueCard
               v-for="venueInfo in organizationVenueInfos?.venueInfos ?? []"
-              :key="venueInfo.venueId"
+              :key="venueInfo.venueUuid"
               :venueInfo="venueInfo"
-              :organizationId="organizationId"
+              :organizationUuid="organizationUuid"
           />
         </div>
       </div>
@@ -55,8 +55,8 @@ import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/uranusAppStore.ts'
-import type { OrganizationVenueInfos, OrganizationVenueInfosApi } from '@/model/uranusVenueInfo.ts'
-import { mapApiOrganizationVenueInfosToModel } from '@/model/uranusVenueInfo.ts'
+import type { UranusOrganizationVenueList, UranusOrgVenueInfosDTO } from '@/model/uranusVenue.ts'
+import { mapApiOrganizationVenueInfosToModel } from '@/model/uranusVenue.ts'
 
 
 import UranusVenueCard from '@/component/venue/UranusVenueCard.vue'
@@ -68,13 +68,13 @@ const { t } = useI18n()
 const appStore = useAppStore()
 
 // Make organizationId reactive from the store
-const organizationId = computed({
-  get: () => appStore.organizationId,
-  set: (val: number | null) => appStore.setOrganizationId(val),
+const organizationUuid = computed({
+  get: () => appStore.orgUuid,
+  set: (val: string | null) => appStore.setOrganizationUuid(val),
 })
 
 const isLoading = ref(true)
-const organizationVenueInfos = ref<OrganizationVenueInfos | null>(null)
+const organizationVenueInfos = ref<UranusOrganizationVenueList | null>(null)
 const error = ref<string | null>(null)
 
 const handleVenueDeleted = (venueId: number) => {
@@ -88,7 +88,7 @@ const handleVenueDeleted = (venueId: number) => {
 }
 
 watch(
-    organizationId,
+    organizationUuid,
     async (id) => {
       isLoading.value = true
       if (id === null) {
@@ -98,13 +98,11 @@ watch(
       }
 
       try {
-        const response = await apiFetch<OrganizationVenueInfosApi>(
-            `/api/admin/organization/${id}/venues`
-        )
-        const apiData = response.data
+        const { response } = await apiFetch<any>(`/api/admin/organization/${id}/venues`)
+        const data = response?.data
 
-        // Map API data to model
-        organizationVenueInfos.value = mapApiOrganizationVenueInfosToModel(apiData)
+        console.log(JSON.stringify(data, null, 2))
+        organizationVenueInfos.value = mapApiOrganizationVenueInfosToModel(data)
 
         // Sort spaces by spaceName in each venue
         organizationVenueInfos.value.venueInfos.forEach(venue => {

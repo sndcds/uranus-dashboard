@@ -338,10 +338,10 @@ const refreshMessages = async (): Promise<void> => {
   messagesLoading.value = true
 
   try {
-    const { data } = await apiFetch<unknown>('/api/admin/user/messages')
-    console.log('Raw API data:', data)
+    const { response } = await apiFetch<unknown>('/api/admin/user/messages')
+    console.log('Raw API data:', response)
 
-    const normalizedMessages = normalizeMessages(data)
+    const normalizedMessages = normalizeMessages(response)
     console.log('Normalized messages:', normalizedMessages)
 
     messages.value = normalizedMessages

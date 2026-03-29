@@ -24,12 +24,12 @@ export async function plutoOnImageSave(
     if (meta.focusY !== null) formData.append('focus_y', String(meta.focusY))
 
     const endpoint = `/api/admin/${context}/${contextId}/image/${identifier}`
-    const { data } = await apiFetch<PlutoImageDTO>(endpoint, {
+    const { response } = await apiFetch<PlutoImageDTO>(endpoint, {
         method: 'POST',
         body: formData,
     })
 
-    return data
+    return response
 }
 
 /**

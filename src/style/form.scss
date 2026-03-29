@@ -21,8 +21,16 @@
   }
 
   textarea {
+    font-family: "Helvetica Neue";
     border-radius: var(--uranus-input-border-radius);
   }
+}
+
+.uranus-form-action-bar {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  align-items: end;
 }
 
 .uranus-label {
@@ -46,9 +54,9 @@
 }
 
 .uranus-textarea {
-  @apply w-full border border-gray-300 rounded-md p-2; // TODO: Check!
-  min-height: 4rem;
+  min-height: 8rem;
   resize: vertical;
+  border: var(--uranus-input-border-width) solid var(--uranus-input-border-color) !important;
 }
 
 .uranus-form-row {

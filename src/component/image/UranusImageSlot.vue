@@ -11,7 +11,7 @@
     <div class="image-wrapper" @click="openDialog">
 
       <img
-          v-if="imageId && imageUrl"
+          v-if="imageUuid && imageUrl"
           :key="reloadCounter"
           :src="imageUrl"
           :alt="imageMeta?.alt_text ?? ''"
@@ -21,7 +21,7 @@
       <div v-else class="placeholder">+</div>
 
       <!-- Hover buttons -->
-      <div v-if="imageId" class="hover-actions">
+      <div v-if="imageUuid" class="hover-actions">
         <button @click.stop="openDialog">Edit</button>
         <button @click.stop="removeImage">Remove</button>
       </div>
@@ -34,9 +34,9 @@
 
     <!-- Modal -->
     <UranusImageEditDialog
-        v-if="dialogOpen && contextId && identifier"
+        v-if="dialogOpen && contextUuid && identifier"
         :context="context"
-        :contextId="contextId"
+        :contextUuid="contextUuid"
         :identifier="identifier"
         :fitMode="fitMode"
         @close="dialogOpen = false"
@@ -59,7 +59,7 @@ const { t } = useI18n()
 // Props
 const props = defineProps<{
   context: string
-  contextId: number | null
+  contextUuid: string | null
   identifier: string | null
   label?: string | null
   width?: number | null
@@ -71,7 +71,7 @@ const props = defineProps<{
 const dialogOpen = ref(false)
 const reloadCounter = ref(0)
 const imageMeta = ref<PlutoImageMeta | null>(null)
-const imageId = ref<number | null>(null)
+const imageUuid = ref<string | null>(null)
 
 // Computed
 const fitMode = computed(() =>
@@ -85,11 +85,11 @@ const cardStyle = computed(() => {
 })
 
 const imageUrl = computed(() => {
-  if (!imageId.value) return ''
+  if (!imageUuid.value) return ''
 
   const width = props.width ?? 220
   const baseUrl = buildPlutoSlotImageUrl(
-      imageId.value,
+      imageUuid.value,
       width,
       null,
       props.fitMode ?? 'contain'
@@ -104,21 +104,21 @@ const imageUrl = computed(() => {
 async function loadMeta() {
   try {
     const res = await apiFetch<any>(
-        `/api/image/meta/${props.context}/${props.contextId}/${props.identifier}`
+        `/api/image/meta/${props.context}/${props.contextUuid}/${props.identifier}`
     )
 
-    if (!res.data) {
-      imageId.value = null
+    if (!res.response) {
+      imageUuid.value = null
       imageMeta.value = null
       return
     }
 
-    const meta = res.data.data
+    const meta = res.response.data
     imageMeta.value = meta
-    imageId.value = meta.id ?? null
+    imageUuid.value = meta.uuid ?? null
 
   } catch {
-    imageId.value = null
+    imageUuid.value = null
     imageMeta.value = null
   }
 }
@@ -139,7 +139,7 @@ async function onSave(
 
   form.append('payload', JSON.stringify(payload))
 
-  const apiPath = `/api/admin/image/${props.context}/${props.contextId}/${props.identifier}`
+  const apiPath = `/api/admin/image/${props.context}/${props.contextUuid}/${props.identifier}`
   await apiFetch(apiPath,{ method: 'POST', body: form })
 
   dialogOpen.value = false
@@ -150,18 +150,17 @@ async function onSave(
 
 
 async function removeImage() {
-  if (!imageId.value) return
+  if (!imageUuid.value) return
 
   // Ask the user for confirmation
   const ok = confirm(t('delete_image_alert'))
   if (!ok) return  // user canceled
 
   try {
-    const apiPath = `/api/admin/image/${props.context}/${props.contextId}/${props.identifier}`
+    const apiPath = `/api/admin/image/${props.context}/${props.contextUuid}/${props.identifier}`
     await apiFetch(apiPath, { method: 'DELETE'})
 
-    // Clear the reactive values
-    imageId.value = null
+    imageUuid.value = null
     imageMeta.value = null
   } catch (err) {
     console.error('Failed to delete image', err)

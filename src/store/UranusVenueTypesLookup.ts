@@ -21,7 +21,7 @@ export const useVenueTypeLookupStore = defineStore('venueType', () => {
 
         try {
             const res = await apiFetch(`/api/choosable-venue-types?lang=${lang}`)
-            const json = res.data
+            const json = res.response
             const map: UranusVenueTypeMap = {}
             for (const item of (json as any).data ?? []) {
                 map[item.key] = {

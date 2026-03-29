@@ -61,7 +61,7 @@ export const buildPlutoPreviewImageUrl = (imageId: number) => {
 export type ImageFitMode = 'cover' | 'contain'
 
 export const buildPlutoSlotImageUrl = (
-    imageId: number,
+    imageUuid: string,
     width: number = 480,
     ratio: string | null = null,
     mode: ImageFitMode = 'cover'
@@ -78,11 +78,11 @@ export const buildPlutoSlotImageUrl = (
     }
 
     const apiBase = import.meta.env.VITE_API_URL
-    return `${apiBase}/api/image/${imageId}?${params.toString()}`
+    return `${apiBase}/api/image/${imageUuid}?${params.toString()}`
 }
 
 export const buildPlutoImageUrl = (
-    imageId: number,
+    imageUuid: string,
     width: number,
     height: number,
     type: string,
@@ -101,16 +101,16 @@ export const buildPlutoImageUrl = (
         : searchParams.toString()
 
     const apiBase = import.meta.env.VITE_API_URL
-    return `${apiBase}/api/image/${imageId}?${queryString}`
+    return `${apiBase}/api/image/${imageUuid}?${queryString}`
 }
 
 export const buildPlutoEditImageUrl = (
-    imageId: number,
+    imageUuid: string,
     width: number = 1920,
     quality: number = 90,
     type: string = 'webp'
 ) => {
-    if (imageId == null) return null
+    if (imageUuid == null) return null
 
     const params = new URLSearchParams({
         width: String(width),
@@ -119,7 +119,7 @@ export const buildPlutoEditImageUrl = (
     })
 
     const apiBase = import.meta.env.VITE_API_URL
-    return `${apiBase}/api/image/${imageId}?${params.toString()}`
+    return `${apiBase}/api/image/${imageUuid}?${params.toString()}`
 }
 
 export const uranusParseDate = (str: string): Date | null => {

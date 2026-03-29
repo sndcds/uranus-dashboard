@@ -35,7 +35,7 @@ export const useCountryLookupStore = defineStore('countryLookup', {
                         const rawData = await apiFetch<UranusApiResponse<UranusCountryDTO[]>>(
                             `/api/choosable-countries?lang=${uiLang}`
                         )
-                        const list = rawData.data?.data ?? []
+                        const list = rawData.response?.data ?? []
                         return [uiLang, list] as const
                     })
                 )

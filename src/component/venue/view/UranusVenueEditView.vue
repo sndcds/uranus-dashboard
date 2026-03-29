@@ -17,7 +17,7 @@
   <template v-else-if="venueStore.isLoaded">
     <header class="editor-header">
       <h1 class="uranus-admin-page-title">Venue Editor</h1>
-      <p>Venue: {{ venueStore.draft?.name }} / #{{ venueId }}</p>
+      <p>Venue: {{ venueStore.draft?.name }} / #{{ venueUuid }}</p>
     </header>
 
     <!-- tabs -->
@@ -56,9 +56,8 @@ import type { UranusVenueDTO } from '@/api/dto/UranusVenueDTO.ts'
 const route = useRoute()
 const venueStore = useUranusVenueStore()
 
-const venueId = computed(() => {
-  const id = Number(route.params.venueId)
-  return Number.isFinite(id) ? id : null
+const venueUuid = computed(() => {
+  return route.params.venueUuid
 })
 
 type TabKey = 'base' | 'map' | 'logos' | 'images'
@@ -82,7 +81,7 @@ const currentTabComponent = computed(() => {
 })
 
 onMounted(async () => {
-  if (!venueId.value) {
+  if (!venueUuid.value) {
     venueStore.resetToEmpty?.() // optional chaining in case method doesn't exist
     venueStore.error = 'Invalid venueId'
     return
@@ -90,9 +89,9 @@ onMounted(async () => {
 
   venueStore.loading = true
   try {
-    const apiPath = `/api/admin/venue/${venueId.value}`
+    const apiPath = `/api/admin/venue/${venueUuid.value}`
     const response = await apiFetch<{ data: UranusVenueDTO }>(apiPath)
-    const venueData = response.data?.data ?? response.data
+    const venueData = response.response?.data ?? response.response
     if (venueData) {
       venueStore.loadFromApi?.(venueData) // optional chaining
     } else {

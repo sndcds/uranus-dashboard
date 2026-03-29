@@ -33,7 +33,7 @@
       Website
       <input
           type="url"
-          v-model="space.websiteLink"
+          v-model="space.webLink"
           placeholder="https://"
       />
     </label>
@@ -89,7 +89,7 @@ const space = computed(() => store.draft!)
 const baseFields = [
   'name',
   'description',
-  'websiteLink',
+  'webLink',
   'spaceType',
   'buildingLevel',
   'areaSqm',
@@ -123,7 +123,7 @@ function buildPayload(
 
   if (draft.name !== original.name) set('name', draft.name)
   if (draft.description !== original.description) set('description', draft.description)
-  if (draft.websiteLink !== original.websiteLink) set('website_link', draft.websiteLink)
+  if (draft.webLink !== original.webLink) set('web_link', draft.webLink)
   if (draft.spaceType !== original.spaceType) set('space_type', draft.spaceType)
   if (draft.buildingLevel !== original.buildingLevel) set('building_level', draft.buildingLevel)
   if (draft.areaSqm !== original.areaSqm) set('area_sqm', draft.areaSqm)
@@ -137,7 +137,7 @@ function buildPayload(
 function copyFields(source: UranusSpace, target: UranusSpace) {
   target.name = source.name ?? ''
   target.description = source.description ?? null
-  target.websiteLink = source.websiteLink ?? null
+  target.webLink = source.webLink ?? null
   target.spaceType = source.spaceType ?? null
   target.buildingLevel = source.buildingLevel ?? null
   target.areaSqm = source.areaSqm ?? null

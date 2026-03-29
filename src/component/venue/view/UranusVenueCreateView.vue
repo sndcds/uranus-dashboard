@@ -5,37 +5,42 @@
 -->
 
 <template>
-  <UranusDashboardHero
-      :title="t('create_venue')"
-      :subtitle="t('create_venue_description')"
-  />
+  <div class="uranus-main-layout">
+    <UranusDashboardHero
+        :title="t('create_venue')"
+        :subtitle="t('create_venue_description')"
+    />
 
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
-    <div class="full-width">
-      <h3>Was ist eine Spielstätte?</h3>
-      <p>
-        Eine Spielstätte ist der Ort, an dem Veranstaltungen stattfinden.
-        Sie kann ein Raum oder ein Platz sein, z B. ein Veranstaltungsraum oder ein
-        öffentlicher Ort sein. Trage den genauen Namen der Spielstätte ein, damit Besucher:innen die Veranstaltungen
-        leicht finden können.
-      </p>
-    </div>
+    <UranusForm>
+      <div class="full-width">
+        <!-- TODO: i18n -->
+        <h3>Was ist eine Spielstätte?</h3>
+        <p>
+          Eine Spielstätte ist der Ort, an dem Veranstaltungen stattfinden.
+          Sie kann ein Raum oder ein Platz sein, z B. ein Veranstaltungsraum oder ein
+          öffentlicher Ort sein. Trage den genauen Namen der Spielstätte ein, damit Besucher:innen die Veranstaltungen
+          leicht finden können.
+        </p>
+      </div>
 
-    <label class="full-width">
-      Name
-      <input class="big" type="text" v-model="venueName" required />
-    </label>
+      <UranusTextfield
+          v-model="venueName",
+          size="medium"
+          id="venue_name"
+          :label="t('venue_name')"
+          required
+      />
 
-    <div class="button-bar full-width">
-      <UranusButton
-          :disabled="venueName.trim().length === 0"
-          @click="onCreate"
-      >
-        Jetzt erstellen
-      </UranusButton>
-    </div>
-  </section>
-
+      <UranusFormActions>
+        <UranusButton
+            :disabled="venueName.trim().length === 0"
+            @click="onCreate"
+        >
+          Jetzt erstellen
+        </UranusButton>
+      </UranusFormActions>
+    </UranusForm>
+  </div>
 </template>
 
 
@@ -47,51 +52,43 @@ import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusTextfield from "@/component/ui/UranusTextfield.vue";
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 const { t } = useI18n()
 
-const venueName = ref<string>('')
-
-
 const route = useRoute()
-const organizationId = Number(route.params.id)
-
-
-interface CreateVenueResponse {
-  metadata: {
-    venue_id: number
-  }
-}
+const venueName = ref<string>('')
+const orgUuid = route.params.orgUuid
 
 async function onCreate() {
-  // Simple validation
   if (venueName.value.trim().length < 1) {
-    // replace with your own toast / notification system if you have one
+    // TODO: Render UranusFeedback
     alert(t('venue_name_required'))
     return
   }
 
   try {
     const payload = {
-      organization_id: organizationId,
+      org_uuid: orgUuid,
       venue_name: venueName.value.trim()
     }
 
     const apiPath = '/api/admin/venue/create'
-    const res = await apiFetch<CreateVenueResponse>(apiPath, {
+    const { response } = await apiFetch<any>(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
 
-    const venueId = res.data?.metadata?.venue_id
-    if (!venueId) {
-      throw new Error('no venue_id returned from API')
+    const venueUuid = response.metadata.venue_uuid ?? ''
+    if (venueUuid == '') {
+      throw new Error('no venue_uuid returned from API')
     }
-
-    router.push(`/admin/organization/${organizationId}/venue/${venueId}/edit`)
+    router.push(`/admin/organization/${orgUuid}/venue/${venueUuid}/edit`)
   } catch (error) {
-    console.error('Failed to create organization', error)
+    // TODO: Render UranusFeedback
     alert('Spielstätte konnte nicht erstellt werden')
   }
 }

@@ -415,7 +415,7 @@ const loadEvent = async () => {
     const lang = locale.value || 'de'
     const apiPath = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
     const response = await apiFetch<any>(apiPath)
-    const mappedEvent = UranusEvent.fromApi(response.data.data, eventDateId)
+    const mappedEvent = UranusEvent.fromApi(response.response.data, eventDateId)
     if (!mappedEvent) {
       loadError.value = t('error_incomplete_data')
       return
@@ -454,17 +454,17 @@ const onDownloadIcs = async () => {
     const eventId = event.value.eventId
     const eventDateId = eventDate.value.id
     const endpoint = `/api/event/${eventId}/date/${eventDateId}/ics?lang=${locale.value}`
-    const { data } = await apiFetch<string>(endpoint, {
+    const { response } = await apiFetch<string>(endpoint, {
       headers: {
         Accept: 'text/calendar,*/*;q=0.8',
       },
     })
 
-    if (typeof data !== 'string' || !data.trim()) {
+    if (typeof response !== 'string' || !response.trim()) {
       throw new Error('Empty ICS payload')
     }
 
-    const blob = new Blob([data], { type: 'text/calendar;charset=utf-8' })
+    const blob = new Blob([response], { type: 'text/calendar;charset=utf-8' })
     const blobUrl = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = blobUrl

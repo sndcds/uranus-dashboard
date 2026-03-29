@@ -4,7 +4,7 @@
 
 <template>
   <section>
-    <h2 class="section-title">{{ t('notifications') }}</h2>
+    <h2>{{ t('notifications') }}</h2>
 
     <div v-if="error" class="feedback feedback--error" role="alert">
       {{ error }}
@@ -147,12 +147,12 @@ const loadNotifications = async () => {
   error.value = null
 
   try {
-    const { data } = await apiFetch<{ notifications: Notification[] }>(
+    const { response } = await apiFetch<{ notifications: Notification[] }>(
         `/api/admin/user/event/notifications?lang=${locale.value}`
     )
 
-    if (Array.isArray(data?.notifications)) {
-      notifications.value = data.notifications
+    if (Array.isArray(response?.notifications)) {
+      notifications.value = response.notifications
     } else {
       notifications.value = []
     }
@@ -170,12 +170,6 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.section-title {
-  margin: 0 0 1rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
 .notification-card {
   position: relative;
   display: flex;

@@ -6,8 +6,9 @@
   <!-- Modal overlay -->
   <div class="uranus-modal-backdrop uranus-form">
     <UranusCard class="uranus-modal-card">
-
       <h2>{{ title }}</h2>
+
+      apiPath: {{ apiPath }}
 
       <!-- Image preview -->
       <div class="uranus-image-preview" @click="onImageClick($event)">
@@ -32,7 +33,7 @@
 
       <!-- Metadata fields -->
       <UranusFormRow>
-        <UranusTextInput
+        <UranusTextfield
             id="alt-text"
             v-model="localImageMeta.alt_text as string"
             :label="t('image_alt_text')"
@@ -40,7 +41,7 @@
       </UranusFormRow>
 
       <UranusFormRow>
-        <UranusTextInput
+        <UranusTextfield
             id="creator-name"
             v-model="localImageMeta.creator as string"
             :label="t('image_creator_name')"
@@ -48,7 +49,7 @@
       </UranusFormRow>
 
       <UranusFormRow>
-        <UranusTextInput
+        <UranusTextfield
             id="copyright"
             v-model="localImageMeta.copyright as string"
             :label="t('image_copyright')"
@@ -58,13 +59,13 @@
             v-model="localImageMeta.licenseType"
         />
 
-        <UranusTextInput
+        <UranusTextfield
             id="focus-x"
             v-model.number="localImageMeta.focusX as number"
             :label="t('image_focus_x')"
         />
 
-        <UranusTextInput
+        <UranusTextfield
             id="focus-y"
             v-model.number="localImageMeta.focusY as number"
             :label="t('image_focus_y')"
@@ -101,21 +102,21 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch, ApiError } from '@/api.ts'
 import { PlutoImageMeta } from '@/model/plutoImageModel.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
-import UranusTextInput from '@/component/ui/UranusTextInput.vue'
-import UranusFormRow from "@/component/ui/UranusFormRow.vue";
-import { buildPlutoEditImageUrl } from "@/util/UranusUtils.ts";
-import UranusInlineSaveButton from "@/component/ui/UranusInlineSaveButton.vue";
-import UranusInlineCancelButton from "@/component/ui/UranusInlineCancelButton.vue";
-import UranusInlineActionBar from "@/component/ui/UranusInlineActionBar.vue";
-import UranusTextarea from "@/component/ui/UranusTextarea.vue";
-import UranusLicenseSelect from "@/component/select/UranusLicenseSelect.vue";
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import { buildPlutoEditImageUrl } from '@/util/UranusUtils.ts'
+import UranusInlineSaveButton from '@/component/ui/UranusInlineSaveButton.vue'
+import UranusInlineCancelButton from '@/component/ui/UranusInlineCancelButton.vue'
+import UranusInlineActionBar from '@/component/ui/UranusInlineActionBar.vue'
+import UranusTextarea from '@/component/ui/UranusTextarea.vue'
+import UranusLicenseSelect from '@/component/select/UranusLicenseSelect.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 
 const props = defineProps<{
   addModeTitle?: string | null
   editModeTitle?: string | null
-  context: string                 // eg. 'event', 'venue'
-  contextId: number               // pluto image id
-  identifier: string              // "main", "gallery1"
+  context: string
+  contextUuid: string
+  identifier: string
   fitMode?: 'cover' | 'contain'
 }>()
 
@@ -133,14 +134,14 @@ const descriptionValue = computed({
 })
 
 const apiPath = computed(() => {
-  return `/api/image/meta/${props.context}/${props.contextId}/${props.identifier}`
+  return `/api/image/meta/${props.context}/${props.contextUuid}/${props.identifier}`
 })
 
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'save', imageMeta: any, file: File | null, ctx: {
     context: string
-    contextId: number
+    contextUuid: string
     identifier: string
   }): void
 }>()
@@ -152,7 +153,7 @@ const localImageFile = ref<File | null>(null)
 
 
 function clearLocalImageMeta() {
-  localImageMeta.id = null
+  localImageMeta.uuid = null
   localImageMeta.url = null
   localImageMeta.alt_text = null
   localImageMeta.description = null
@@ -209,7 +210,7 @@ function onCancel() {
 
 function onSave() {
   const payload = {
-    id: localImageMeta.id,
+    uuid: localImageMeta.uuid,
     alt_text: localImageMeta.alt_text,
     description: localImageMeta.description,
     copyright: localImageMeta.copyright,
@@ -221,7 +222,7 @@ function onSave() {
 
   emit('save', payload, localImageFile.value, {
     context: props.context,
-    contextId: props.contextId,
+    contextUuid: props.contextUuid,
     identifier: props.identifier,
   })
 }
@@ -229,13 +230,13 @@ function onSave() {
 onMounted(async () => {
     try {
       const response = await apiFetch<any>(apiPath.value)
-      if (!response.data) return
+      if (!response.response) return
 
-      const meta = response.data.data
+      const meta = response.response.data
 
-      localImageMeta.id = meta.id ?? null
-      localImageMeta.url = localImageMeta.id !== null
-          ? buildPlutoEditImageUrl(localImageMeta.id, 800)
+      localImageMeta.uuid = meta.uuid ?? null
+      localImageMeta.url = localImageMeta.uuid !== null
+          ? buildPlutoEditImageUrl(localImageMeta.uuid, 800)
           : null
       localImageMeta.alt_text = meta.alt_text ?? null
       localImageMeta.description = meta.description ?? null

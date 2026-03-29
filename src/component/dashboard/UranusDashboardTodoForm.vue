@@ -1,6 +1,6 @@
 <template>
   <section class="todo-editor__card">
-    <UranusTextInput
+    <UranusTextfield
       :id="`${idPrefix}-title`"
       v-model="titleModel"
       :label="titleLabel"
@@ -39,7 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import UranusTextInput from '@/component/ui/UranusTextInput.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'

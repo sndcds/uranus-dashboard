@@ -57,11 +57,9 @@ const hasVenueInfo = computed(() => {
   )
 })
 
-
 const logoUrl = computed(() => {
   const e = props.eventDate
   if (!e) return ''
-  console.log(themeStore.theme)
   return themeStore.theme === 'dark'
       ? e.venueDarkThemeLogoUrl ?? ''
       : e.venueLightThemeLogoUrl ?? ''

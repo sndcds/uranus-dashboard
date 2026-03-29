@@ -5,101 +5,64 @@
 -->
 
 <template>
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+  <section class="base-tab">
+    <UranusForm>
 
-    legalForm: {{ org.legalForm }}
-    <label class="full-width">
-      Name
-      <input class="big"
-          type="text"
-          v-model="org.name"
-          required
-      />
-    </label>
+      <UranusFormRow>
+        <UranusTextfield id="event-title" size="big" :label="t('title')" v-model="org.name" required/>
+      </UranusFormRow>
 
-    <label class="full-width">
-      Description
-      <textarea v-model="org.description" />
-    </label>
+      <UranusFormRow>
+        <UranusLabel id="organization-description" :label="t('description')">
+          <UranusTextEditor v-model="org.description"/>
+        </UranusLabel>
+      </UranusFormRow>
 
-    <label>
-      Legal form
-      <UranusLegalFormSelect v-model="org.legalForm" />
-    </label>
+      <UranusFormRow :cols="2">
+        <UranusLabel id="organization-legal-form" :label="t('legal_form')">
+          <UranusLegalFormSelect v-model="org.legalForm" />
+        </UranusLabel>
+        <UranusTextfield id="organization-website" type="url" :label="t('website')" v-model="org.webLink"/>
+      </UranusFormRow>
 
-    <label>
-      Website
-      <input
-          type="url"
-          v-model="org.websiteLink"
-          placeholder="https://"
-      />
-    </label>
+      <UranusFormRow :cols="2">
+        <UranusTextfield id="organization-email" :label="t('email')" v-model="org.contactEmail" />
+        <UranusTextfield id="organization-phone" type="email" :label="t('phone')" v-model="org.contactPhone" />
+      </UranusFormRow>
 
-    <label>
-      Contact Email
-      <input
-          type="email"
-          v-model="org.contactEmail"
-      />
-    </label>
+      <UranusFormRow :cols="2">
+        <UranusTextfield id="organization-street" :label="t('street')" v-model="org.street" />
+        <UranusTextfield id="organization-house-number" :label="t('house_number')" v-model="org.houseNumber" />
+      </UranusFormRow>
 
-    <label>
-      Contact Phone
-      <input
-          type="tel"
-          v-model="org.contactPhone"
-      />
-    </label>
+      <UranusFormRow>
+        <UranusTextfield id="organization-address-addition" type="email" :label="t('address_addition')" v-model="org.addressAddition" />
+      </UranusFormRow>
 
-    <label class="start-new-row">
-      Street
-      <input type="text" v-model="org.street" />
-    </label>
+      <UranusFormRow :cols="2">
+        <UranusTextfield id="organization-postal-code" :label="t('postal_code')" v-model="org.postalCode" />
+        <UranusTextfield id="organization-city" :label="t('city')" v-model="org.city" />
+      </UranusFormRow>
 
-    <label>
-      House Number
-      <input type="text" v-model="org.houseNumber" />
-    </label>
+      <UranusFormRow :cols="2">
+        <UranusLabel id="organization-country" :label="t('country')">
+          <UranusCountrySelect  v-model="org.country" />
+        </UranusLabel>
+        <UranusLabel id="organization-state" :label="t('state')">
+          <UranusStateSelect v-model="org.state" :country-code="org.country" />
+        </UranusLabel>
+      </UranusFormRow>
 
-    <label class="full-width">
-      Address Addition
-      <input type="text" v-model="org.addressAddition" />
-    </label>
+      <UranusFormActions>
+        <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
+          {{ t('discard') }}
+        </UranusButton>
+        <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">
+          {{ t('save') }}
+        </UranusButton>
+      </UranusFormActions>
 
-    <label class="start-new-row">
-      Postal Code
-      <input type="text" v-model="org.postalCode" />
-    </label>
-
-    <label>
-      City
-      <input type="text" v-model="org.city" />
-    </label>
-
-    <label>
-      Country
-      <UranusCountrySelect  v-model="org.country" />
-    </label>
-
-    <label>
-      State
-      <UranusStateSelect
-          v-model="org.state"
-          :country-code="org.country"
-      />
-    </label>
-
-    <!-- Actions -->
-    <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
-        {{ t('discard') }}
-      </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
-        {{ t('save') }}
-      </button>
-    </div>
-
+    </UranusForm>
   </section>
 </template>
 
@@ -113,6 +76,13 @@ import type { UranusOrganization } from '@/domain/organization/UranusOrganizatio
 import UranusCountrySelect from '@/component/select/UranusCountrySelect.vue'
 import UranusStateSelect from '@/component/select/UranusStateSelect.vue'
 import UranusLegalFormSelect from '@/component/select/UranusLegalFormSelect.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -120,7 +90,7 @@ const store = useUranusOrganizationStore()
 const org = computed(() => store.draft!)
 
 const baseFields = [
-  'name', 'description', 'legalForm', 'contactEmail', 'contactPhone', 'websiteLink',
+  'name', 'description', 'legalForm', 'contactEmail', 'contactPhone', 'webLink',
     'street', 'houseNumber', 'addressAddition', 'postalCode', 'city', 'state', 'country',
 ] as const
 
@@ -155,7 +125,7 @@ function buildPayload(
   if (draft.legalForm !== original.legalForm) set('legal_form', draft.legalForm)
   if (draft.contactEmail !== original.contactEmail) set('contact_email', draft.contactEmail)
   if (draft.contactPhone !== original.contactPhone) set('contact_phone', draft.contactPhone)
-  if (draft.websiteLink !== original.websiteLink) set('website_link', draft.websiteLink)
+  if (draft.webLink !== original.webLink) set('web_link', draft.webLink)
 
   if (draft.street !== original.street) set('street', draft.street)
   if (draft.houseNumber !== original.houseNumber) set('house_number', draft.houseNumber)
@@ -174,7 +144,7 @@ function copyFields(source: UranusOrganization, target: UranusOrganization) {
   target.legalForm = source.legalForm ?? null
   target.contactEmail = source.contactEmail ?? null
   target.contactPhone = source.contactPhone ?? null
-  target.websiteLink = source.websiteLink ?? null
+  target.webLink = source.webLink ?? null
   target.street = source.street ?? null
   target.houseNumber = source.houseNumber ?? null
   target.addressAddition = source.addressAddition ?? null
@@ -188,7 +158,6 @@ async function commitTab() {
   const draft = store.draft
   const original = store.original
   if (!draft || !original) return
-  console.log("draft:", draft.addressAddition, "original:", original.addressAddition)
 
   store.saving = true
   store.error = null
@@ -200,7 +169,7 @@ async function commitTab() {
       return
     }
 
-    const apiPath = `/api/admin/organization/${draft.id}/fields`
+    const apiPath = `/api/admin/organization/${draft.uuid}/fields`
     await apiFetch(apiPath, {
       method: 'PUT',
       body: JSON.stringify(payload),

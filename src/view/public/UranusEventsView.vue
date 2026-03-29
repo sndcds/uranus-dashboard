@@ -63,9 +63,7 @@ const isSidebarVisible = ref(window.innerWidth >= 1024)
 window.addEventListener('resize', () => {
   isSidebarVisible.value = window.innerWidth >= 1024
 })
-
 const onCancelFilter = () => showFilterModal.value = false
-
 </script>
 
 <style scoped lang="scss">

@@ -12,17 +12,12 @@
     </UranusCard>
 
     <div class="tab-actions">
-      <UranusButton
-          variant="cta"
-          :disabled="store.saving || !isDirty"
-          @click="onReset"
-      >
+      <UranusButton :disabled="store.saving || !isDirty" @click="onReset">
         <template #icon><Undo /></template>
         {{ t('discard')}}
       </UranusButton>
 
       <UranusButton
-          variant="cta"
           :disabled="store.saving || !isDirty"
           :loading="store.saving"
           loading-text="Saving..."

@@ -5,38 +5,39 @@
 -->
 
 <template>
-  <UranusDashboardHero
-      :title="t('create_organization')"
-      :subtitle="t('create_organization_description')"
-  />
+  <div class="uranus-main-layout">
+    <UranusForm>
+      <UranusDashboardHero
+          :title="t('create_organization')"
+          :subtitle="t('create_organization_description')"
+      />
 
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
-
-    <div class="full-width">
+      <!-- TODO: i18n -->
       <h3>Was ist eine Organisation?</h3>
       <p>
         Um Inhalte in Uranus zu erstellen, brauchst du eine Organisation. Sie ist offiziell
         verantwortlich für alle Inhalte, die du erstellst. Verwende den genauen juristischen Namen,
         z. B. für Veranstalter oder Betreiberangaben.
       </p>
-    </div>
 
-    <label class="full-width">
-      Name
-      <input class="big" type="text" v-model="orgName" required
+      <UranusTextfield
+          size="medium"
+          id="organization_name"
+          :label="t('organization_name')"
+          required
+          v-model="orgName"
       />
-    </label>
 
-    <div class="button-bar full-width">
-      <UranusButton
-          :disabled="orgName.trim().length === 0"
-          @click="onCreate"
-      >
-        Jetzt erstellen
-      </UranusButton>
-    </div>
-  </section>
-
+      <UranusFormActions>
+        <UranusButton
+            :disabled="orgName.trim().length === 0"
+            @click="onCreate"
+        >
+          Jetzt erstellen
+        </UranusButton>
+      </UranusFormActions>
+    </UranusForm>
+  </div>
 </template>
 
 
@@ -47,44 +48,40 @@ import router from '@/router/index.ts'
 import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
 
 const { t } = useI18n()
 
 const orgName = ref<string>('')
 
-interface CreateOrgResponse {
-  metadata: {
-    organization_id: number
-  }
-}
-
 async function onCreate() {
-  const name = orgName.value.trim()
-
-  // Simple validation
-  if (name.length < 1) {
-    // replace with your own toast / notification system if you have one
+  if (orgName.value.trim().length < 1) {
+    // TODO: Render UranusFeedback
     alert(t('organization_name_required'))
     return
   }
 
+  const payload = {
+    org_name: orgName.value.trim()
+  }
+
   try {
     const apiPath = '/api/admin/organization/create'
-    const res = await apiFetch<CreateOrgResponse>(apiPath, {
+    const { response } = await apiFetch<any>(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name }), // <-- stringify the object
+      body: JSON.stringify(payload),
     })
 
-    const orgId = res.data?.metadata?.organization_id
-    if (!orgId) {
-      throw new Error('No organizationId returned from API')
+    const orgUuid = response.metadata.org_uuid ?? ''
+    if (orgUuid == '') {
+      throw new Error('no org_uuid returned from API')
     }
-
-    router.push(`/admin/organization/${orgId}/edit`)
+    router.push(`/admin/organization/${orgUuid}/edit`)
   } catch (error) {
-    console.error('Failed to create venue', error)
-    alert('Spielstätte konnte nicht erstellt werden')
+    // TODO: Render UranusFeedback
+    alert('Organisation konnte nicht erstellt werden')
   }
 }
 

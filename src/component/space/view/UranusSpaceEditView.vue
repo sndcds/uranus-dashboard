@@ -106,7 +106,7 @@ onMounted(async () => {
   try {
     const apiPath = `/api/admin/space/${spaceId.value}`
     const response = await apiFetch<{ data: UranusSpaceDTO }>(apiPath)
-    spaceStore.loadFromApi(response.data.data)
+    spaceStore.loadFromApi(response.response.data)
   } catch (e) {
     spaceStore.error = 'Failed to load space'
   } finally {

@@ -1,17 +1,17 @@
 // src/model/uranusVenueInfo.ts
 
-export interface VenueInfoSpaceInfo {
-    spaceId: number
+export interface UranusVenueSpaceInfo {
+    spaceUuid: string
     spaceName: string
     upcomingEventCount: number
 }
 
-export interface UranusVenueInfo {
-    venueId: number
+export interface UranusVenue {
+    venueUuid: string
     venueName: string
     venueLogoImageId: number
     upcomingEventCount: number
-    spaceInfos: VenueInfoSpaceInfo[]
+    spaceInfos: UranusVenueSpaceInfo[]
     canEdit: boolean
     canEditVenue: boolean
     canDeleteVenue: boolean
@@ -24,30 +24,30 @@ export interface UranusVenueInfo {
     canReleaseEvent: boolean
 }
 
-export interface OrganizationVenueInfos {
-    organizationId: number
-    organizationName: string
-    canEditOrganization?: boolean
-    canDeleteOrganization?: boolean
+export interface UranusOrganizationVenueList {
+    orgUuid: string
+    orgName: string
+    canEditOrg?: boolean
+    canDeleteOrg?: boolean
     canAddVenue?: boolean
     canAddSpace?: boolean
     canAddEvent?: boolean
     totalUpcomingEvents: number
-    venueInfos: UranusVenueInfo[]
+    venueInfos: UranusVenue[]
 }
 
-export interface VenueInfoSpaceInfoApi {
-    space_id: number
+export interface UranusVenueSpaceInfoDTO {
+    space_uuid: string
     space_name: string
     upcoming_event_count: number
 }
 
-export interface VenueInfoApi {
-    venue_id: number
+export interface UranusVenueInfoDTO {
+    venue_uuid: string
     venue_name: string
     venue_logo_image_id: number
     upcoming_event_count: number
-    spaces: VenueInfoSpaceInfoApi[]
+    spaces: UranusVenueSpaceInfoDTO[]
 
     can_edit_venue: boolean
     can_delete_venue: boolean
@@ -60,29 +60,29 @@ export interface VenueInfoApi {
     can_release_event: boolean
 }
 
-export interface OrganizationVenueInfosApi {
-    organization_id: number
-    organization_name: string
+export interface UranusOrgVenueInfosDTO {
+    org_uuid: string
+    org_name: string
     total_upcoming_events: number
     can_edit_organization?: boolean
     can_delete_organization?: boolean
     can_add_venue?: boolean
     can_add_space?: boolean
     can_add_event?: boolean
-    venues: VenueInfoApi[]
+    venues: UranusVenueInfoDTO[]
 }
 
-function mapApiVenueInfosSpaceInfosToModel(space: VenueInfoSpaceInfoApi): VenueInfoSpaceInfo {
+function mapApiVenueInfosSpaceInfosToModel(space: UranusVenueSpaceInfoDTO): UranusVenueSpaceInfo {
     return {
-        spaceId: space.space_id,
+        spaceUuid: space.space_uuid,
         spaceName: space.space_name,
         upcomingEventCount: space.upcoming_event_count,
     }
 }
 
-function mapApiVenueInfosToModel(venue: VenueInfoApi): UranusVenueInfo {
+function mapApiVenueInfosToModel(venue: UranusVenueInfoDTO): UranusVenue {
     return {
-        venueId: venue.venue_id,
+        venueUuid: venue.venue_uuid,
         venueName: venue.venue_name,
         venueLogoImageId: venue.venue_logo_image_id,
         upcomingEventCount: venue.upcoming_event_count,
@@ -101,14 +101,14 @@ function mapApiVenueInfosToModel(venue: VenueInfoApi): UranusVenueInfo {
 }
 
 export function mapApiOrganizationVenueInfosToModel(
-    apiData: OrganizationVenueInfosApi
-): OrganizationVenueInfos {
+    apiData: UranusOrgVenueInfosDTO
+): UranusOrganizationVenueList {
     return {
-        organizationId: apiData.organization_id,
-        organizationName: apiData.organization_name,
+        orgUuid: apiData.org_uuid,
+        orgName: apiData.org_name,
         totalUpcomingEvents: apiData.total_upcoming_events,
-        canEditOrganization: apiData.can_edit_organization ?? false,
-        canDeleteOrganization: apiData.can_delete_organization ?? false,
+        canEditOrg: apiData.can_edit_organization ?? false,
+        canDeleteOrg: apiData.can_delete_organization ?? false,
         canAddVenue: apiData.can_add_venue ?? false,
         canAddSpace: apiData.can_add_space ?? false,
         canAddEvent: apiData.can_add_event ?? false,

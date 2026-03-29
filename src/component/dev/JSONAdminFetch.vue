@@ -57,13 +57,13 @@ const handleSubmit = async () => {
 
   loading.value = true
   try {
-    const { status, data } = await apiFetch(apiPath, {
+    const { status, response } = await apiFetch(apiPath, {
       method: 'POST',
       body: JSON.stringify(deepClean(parsedJson)),
     })
 
     httpStatus.value = status
-    response.value = data
+    response.value = response
 
     if (status < 200 || status >= 300) {
       error.value = `API returned error status ${status}`

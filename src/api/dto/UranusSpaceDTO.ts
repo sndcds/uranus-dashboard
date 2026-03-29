@@ -5,16 +5,16 @@
 */
 
 export interface UranusSpaceDTO {
-    id: number | null
+    uuid: string | null
 
-    venue_id: number | null
+    venue_uuid: string | null
     name: string
 
     total_capacity?: number | null
     seating_capacity?: number | null
     space_type?: string | null
     building_level?: number | null
-    website_link?: string | null
+    web_link?: string | null
 
     accessibility_summary?: string | null
     accessibility_flags?: string | null

@@ -31,13 +31,13 @@ export function useUranusAdminListEvents() {
             // Use your apiFetch wrapper
             const res = await apiFetch<UranusApiResponse<any[]>>(path);
 
-            if (res.data.status !== "ok") {
-                throw new Error(res.data.error || "Unknown API error");
+            if (res.response.status !== "ok") {
+                throw new Error(res.response.error || "Unknown API error");
             }
 
             // Map snake_case → camelCase
-            adminListEvents.value = camelCaseKeys<UranusAdminListEvent[]>(res.data.data ?? []);
-            metadata.value = res.data.metadata ?? {};
+            adminListEvents.value = camelCaseKeys<UranusAdminListEvent[]>(res.response.data ?? []);
+            metadata.value = res.response.metadata ?? {};
 
             console.log(JSON.stringify(adminListEvents.value, null, 2));
         } catch (e: any) {

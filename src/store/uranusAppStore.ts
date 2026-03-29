@@ -3,18 +3,23 @@ import { ref } from 'vue'
 
 export const useAppStore = defineStore('app', () => {
     // State
-    const organizationId = ref<number | null>(null)
-    const organizationName = ref<string | null>(null)
+    const orgUuid = ref<string | null>(null)
+    const orgName = ref<string | null>(null)
     const eventViewMode = ref<'detailed' | 'compact' | 'tiles' | 'map'>('detailed')
     const eventGroupingMode = ref<'daily' | 'monthly'>('daily')
 
     // Actions
-    function setOrganizationId(id: number | null) {
-        organizationId.value = id
+    function setOrganizationUuid(uuid: string | null) {
+        orgUuid.value = uuid
     }
 
     function setOrganizationName(name: string | null) {
-        organizationName.value = name
+        orgName.value = name
+    }
+
+    function clearOrganization() {
+        orgUuid.value = null
+        orgName.value = null
     }
 
     function setViewMode(mode: 'detailed' | 'compact' | 'tiles' | 'map') {
@@ -25,21 +30,17 @@ export const useAppStore = defineStore('app', () => {
         eventGroupingMode.value = mode
     }
 
-    function clearOrganizationId() {
-        organizationId.value = null
-        organizationName.value = null
-    }
 
     return {
-        organizationId,
-        organizationName,
+        orgUuid,
+        orgName,
         eventViewMode,
         eventGroupingMode,
-        setOrganizationId,
+        setOrganizationUuid,
         setOrganizationName,
+        clearOrganization,
         setViewMode,
         setGroupingMode,
-        clearOrganizationId
     }
 }, {
     persist: true
