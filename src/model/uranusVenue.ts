@@ -22,6 +22,10 @@ export interface UranusVenue {
     canEditEvent: boolean
     canDeleteEvent: boolean
     canReleaseEvent: boolean
+    mainLogoUuid: string | null
+    lightThemeLogoUuid: string | null
+    darkThemeLogoUuid: string | null
+    avatarImageUuid: string | null
 }
 
 export interface UranusOrganizationVenueList {
@@ -58,6 +62,11 @@ export interface UranusVenueInfoDTO {
     can_edit_event: boolean
     can_delete_event: boolean
     can_release_event: boolean
+
+    mein_logo_uuid: string | null
+    dark_theme_logo_uuid: string | null
+    light_theme_logo_uuid: string | null
+    avatar_image_uuid: string | null
 }
 
 export interface UranusOrgVenueInfosDTO {
@@ -97,21 +106,25 @@ function mapApiVenueInfosToModel(venue: UranusVenueInfoDTO): UranusVenue {
         canEditEvent: venue.can_edit_event,
         canDeleteEvent: venue.can_delete_event,
         canReleaseEvent: venue.can_release_event,
+        mainLogoUuid: venue.mein_logo_uuid,
+        lightThemeLogoUuid: venue.light_theme_logo_uuid,
+        darkThemeLogoUuid: venue.dark_theme_logo_uuid,
+        avatarImageUuid: venue.avatar_image_uuid,
     }
 }
 
 export function mapApiOrganizationVenueInfosToModel(
-    apiData: UranusOrgVenueInfosDTO
+    raw: UranusOrgVenueInfosDTO
 ): UranusOrganizationVenueList {
     return {
-        orgUuid: apiData.org_uuid,
-        orgName: apiData.org_name,
-        totalUpcomingEvents: apiData.total_upcoming_events,
-        canEditOrg: apiData.can_edit_organization ?? false,
-        canDeleteOrg: apiData.can_delete_organization ?? false,
-        canAddVenue: apiData.can_add_venue ?? false,
-        canAddSpace: apiData.can_add_space ?? false,
-        canAddEvent: apiData.can_add_event ?? false,
-        venueInfos: apiData.venues.map(mapApiVenueInfosToModel),
+        orgUuid: raw.org_uuid,
+        orgName: raw.org_name,
+        totalUpcomingEvents: raw.total_upcoming_events,
+        canEditOrg: raw.can_edit_organization ?? false,
+        canDeleteOrg: raw.can_delete_organization ?? false,
+        canAddVenue: raw.can_add_venue ?? false,
+        canAddSpace: raw.can_add_space ?? false,
+        canAddEvent: raw.can_add_event ?? false,
+        venueInfos: raw.venues.map(mapApiVenueInfosToModel),
     }
 }

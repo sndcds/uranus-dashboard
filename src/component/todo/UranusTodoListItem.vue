@@ -38,8 +38,8 @@
     <!-- Delete Modal -->
     <UranusPasswordConfirmModal
         :show="showDeleteModal"
-        :title="t('confirm_delete_todo')"
-        :question="t('confirm_delete_todo_description', { name: todo.title })"
+        :title="t('delete_todo')"
+        :question="t('delete_todo_question')"
         :confirm-text="t('delete')"
         :loading-text="t('deleting')"
         :error="deleteError"

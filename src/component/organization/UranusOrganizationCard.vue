@@ -2,69 +2,67 @@
   <UranusCard class="organization-card">
     <div>
       <div class="header">
-        <h2>{{ organisation.org_name }}</h2>
+        <h2>{{ organisation.name }}</h2>
         <PlutoImage
-            :mainImageUuid="organisation.main_logo_uuid"
-            :lightImageUuid="organisation.light_theme_logo_uuid"
-            :darkImageUuid="organisation.dark_theme_logo_uuid"
-            img-class="uranus-dashboard-organization-card-logo-image"
+            :mainImageUuid="organisation.mainLogoUuid"
+            :lightImageUuid="organisation.lightThemeLogoUuid"
+            :darkImageUuid="organisation.darkThemeLogoUuid"
         />
 
       </div>
-      <span v-if="organisation.org_city || organisation.org_country_code">
-        {{ organisation.org_city || '' }}{{
-          organisation.org_city && organisation.org_country_code ? ', ' : ''
-        }}{{ organisation.org_country_code || '' }}<br>
+
+      <span v-if="organisation.city || organisation.countryCode">
+        {{ organisation.city || '' }}{{
+          organisation.city && organisation.countryCode ? ', ' : ''
+        }}{{ organisation.countryCode || '' }}<br>
       </span>
       <span>
-        {{ t('venues') }}: {{ organisation.venue_count }} /
-        {{ t('venue_spaces') }}: {{ organisation.space_count }} /
-        {{ t('events') }}: {{ organisation.total_upcoming_events }}
+        {{ t('venues') }}: {{ organisation.venueCount }} /
+        {{ t('venue_spaces') }}: {{ organisation.spaceCount }} /
+        {{ t('events') }}: {{ organisation.totalUpcomingEvents }}
       </span>
     </div>
 
     <div class="uranus-card-button-container">
       <UranusButton
-          v-if="organisation.can_edit_org"
+          v-if="organisation.canEditOrg"
           variant="secondary" size="small"
-          @click="assignOrganization(organisation.org_uuid)"
+          @click="assignOrganization(organisation.uuid)"
           style="min-width: 100px;"
       >
-        {{ appStore.orgUuid === organisation.org_uuid ? t('organization_active') : t('organization_activate') }}
+        {{ appStore.orgUuid === organisation.uuid ? t('organization_active') : t('organization_activate') }}
       </UranusButton>
 
       <UranusButton
-          v-if="organisation.can_edit_org"
+          v-if="organisation.canEditOrg"
           variant="secondary" size="small"
-          :to="`/admin/organization/${organisation.org_uuid}/edit`"
+          :to="`/admin/organization/${organisation.uuid}/edit`"
       >
         {{ t('edit') }}
       </UranusButton>
 
       <UranusButton
-          v-if="organisation.can_delete_org"
+          v-if="organisation.canDeleteOrg"
           variant="secondary" size="small"
-          @click="deleteOrganization(organisation.org_uuid)"
+          @click="deleteOrganization(organisation.uuid)"
       >
         {{ t('delete') }}
       </UranusButton>
 
       <UranusButton
-          v-if="organisation.can_manage_team"
+          v-if="organisation.canManageTeam"
           variant="secondary" size="small"
-          :to="`/admin/organization/${organisation.org_uuid}/team`"
+          :to="`/admin/organization/${organisation.uuid}/team`"
       >
         {{ t('manage_team') }}
       </UranusButton>
 
     </div>
 
-
-    <!-- Delete confirmation modal -->
     <UranusPasswordConfirmModal
         :show="showDeleteModal"
         :title="t('confirm_delete_organization')"
-        :question="t('confirm_delete_organization_description', { name: organisation.org_name })"
+        :question="t('confirm_delete_organization_description', { name: organisation.name })"
         :confirm-text="t('delete_organization')"
         :loading-text="t('deleting')"
         :error="deleteError"
@@ -84,7 +82,7 @@ import { useAppStore } from '@/store/uranusAppStore.ts'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from "@/component/ui/UranusCard.vue";
-import type { UranusOrganizationListDTO } from '@/api/dto/UranusOrganizationDTO.ts'
+import type { OrganizationListItem } from '@/domain/organization/organizationListItem.model.ts'
 import PlutoImage from "@/component/pluto/PlutoImage.vue";
 
 const { t } = useI18n()
@@ -96,7 +94,7 @@ const isDeleting = ref(false)
 const pendingDeleteUuid = ref<string | null>(null)
 
 
-const props = defineProps<{ organisation: UranusOrganizationListDTO }>()
+defineProps<{ organisation: OrganizationListItem }>()
 
 const emit = defineEmits<{
   deleted: [orgUuid: string]
@@ -149,29 +147,6 @@ const confirmDelete = async ({ password }: { password: string }) => {
 </script>
 
 <style scoped lang="scss">
-.organization-card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 0;
-  p { margin: 0; }
-}
-
-.stats-wrapper {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  width: 100%;
-}
-
-.organization-actions {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-
 .organization-card .header {
   display: flex;
   align-items: start; // optional, vertically center items
@@ -179,30 +154,6 @@ const confirmDelete = async ({ password }: { password: string }) => {
 
 .organization-card .header > :nth-child(2) {
   margin-left: auto;
-}
-
-.organization-card__content {
-  flex: 1;
-  margin-bottom: 1rem;
-}
-
-.organization-card__table {
-  font-size: 0.9rem;
-
-  &-header { font-weight: 600; border-bottom: 2px solid var(--border-soft); padding: 0.5rem; }
-  &-header--right { text-align: right; }
-  &-cell { padding: 0.5rem; &--right { text-align: right; } }
-  &-row--total { border-top: 2px solid var(--border-soft); font-weight: 700; }
-}
-
-.organization-card__empty {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
-
-  .organization-card__empty-text { font-style: italic; text-align: center; color: var(--uranus-muted-text); }
 }
 
 </style>

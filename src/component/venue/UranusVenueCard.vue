@@ -2,12 +2,15 @@
   <UranusCard custom-style="width:100%;">
 
     <div>
+      venueInfo.mainLogoUuid: {{ venueInfo.mainLogoUuid }}
+      venueInfo.lightThemeLogoUuid: {{ venueInfo.lightThemeLogoUuid }}<br>
+      venueInfo.darkThemeLogoUuid: {{ venueInfo.darkThemeLogoUuid }}<br>
       <div class="header">
         <h2>{{ venueInfo.venueName }}</h2>
-        <img
-            v-if="venueInfo.venueLogoImageId"
-            class="uranus-dashboard-organization-card-logo-image"
-            :src="buildPlutoImageUrl(venueInfo.venueLogoImageId, 120, 0, 'png', 80, true)"
+        <PlutoImage
+            :mainImageUuid="venueInfo.mainLogoUuid"
+            :lightImageUuid="venueInfo.lightThemeLogoUuid"
+            :darkImageUuid="venueInfo.darkThemeLogoUuid"
         />
       </div>
       <span>
@@ -106,9 +109,9 @@ import { apiFetch } from '@/api.ts'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
-import { buildPlutoImageUrl } from '@/util/UranusUtils.ts'
 import type { UranusVenue, UranusVenueSpaceInfo } from '@/model/uranusVenue.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import PlutoImage from '@/component/pluto/PlutoImage.vue'
 
 const { t } = useI18n()
 

@@ -1,12 +1,10 @@
 <template>
   <UranusForm>
-    <!-- Location form -->
     <UranusLocationForm
         v-model:modelValueLat="latModel"
         v-model:modelValueLon="lonModel"
     />
 
-    <!-- Action buttons -->
     <UranusFormActions>
       <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
         {{ t('discard') }}
@@ -61,14 +59,14 @@ const isDirty = computed(() => {
   return draft.lat !== original.lat || draft.lon !== original.lon
 })
 
-const latModel = computed<number>({
-  get: () => store.draft?.lat ?? 0,
-  set: (val: number) => { if (store.draft) store.draft.lat = val }
+const latModel = computed<number | null>({
+  get: () => store.draft?.lat ?? null,
+  set: (val: number | null) => { if (store.draft) store.draft.lat = val }
 })
 
-const lonModel = computed<number>({
-  get: () => store.draft?.lon ?? 0,
-  set: (val: number) => { if (store.draft) store.draft.lon = val }
+const lonModel = computed<number | null>({
+  get: () => store.draft?.lon ?? null,
+  set: (val: number | null) => { if (store.draft) store.draft.lon = val }
 })
 
 async function commitTab() {

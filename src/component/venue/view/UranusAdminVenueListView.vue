@@ -55,7 +55,7 @@ import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/uranusAppStore.ts'
-import type { UranusOrganizationVenueList, UranusOrgVenueInfosDTO } from '@/model/uranusVenue.ts'
+import type { UranusOrganizationVenueList } from '@/model/uranusVenue.ts'
 import { mapApiOrganizationVenueInfosToModel } from '@/model/uranusVenue.ts'
 
 
@@ -77,28 +77,28 @@ const isLoading = ref(true)
 const organizationVenueInfos = ref<UranusOrganizationVenueList | null>(null)
 const error = ref<string | null>(null)
 
-const handleVenueDeleted = (venueId: number) => {
+const handleVenueDeleted = (venueUuid: string) => {
   if (!organizationVenueInfos.value) {
     return
   }
   organizationVenueInfos.value = {
     ...organizationVenueInfos.value,
-    venueInfos: organizationVenueInfos.value.venueInfos.filter((venueInfo) => venueInfo.venueId !== venueId),
+    venueInfos: organizationVenueInfos.value.venueInfos.filter((venueInfo) => venueInfo.venueUuid !== venueUuid),
   }
 }
 
 watch(
     organizationUuid,
-    async (id) => {
+    async (uuid) => {
       isLoading.value = true
-      if (id === null) {
+      if (uuid === null) {
         organizationVenueInfos.value = null
         isLoading.value = false
         return
       }
 
       try {
-        const { response } = await apiFetch<any>(`/api/admin/organization/${id}/venues`)
+        const { response } = await apiFetch<any>(`/api/admin/organization/${uuid}/venues`)
         const data = response?.data
 
         console.log(JSON.stringify(data, null, 2))

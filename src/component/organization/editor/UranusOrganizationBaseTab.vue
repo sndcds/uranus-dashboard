@@ -70,7 +70,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useUranusOrganizationStore } from '@/store/uranusOrganizationStore.ts'
-import type { UranusOrganization } from '@/domain/organization/UranusOrganization'
+import type { OrganizationModel } from '@/domain/organization/organization.model.ts'
 import UranusCountrySelect from '@/component/select/UranusCountrySelect.vue'
 import UranusStateSelect from '@/component/select/UranusStateSelect.vue'
 import UranusLegalFormSelect from '@/component/select/UranusLegalFormSelect.vue'
@@ -109,8 +109,8 @@ const isDirty = computed(() => {
 
 
 function buildPayload(
-    draft: UranusOrganization,
-    original: UranusOrganization
+    draft: OrganizationModel,
+    original: OrganizationModel
 ) {
   const payload: Record<string, any> = {}
 
@@ -136,7 +136,7 @@ function buildPayload(
   return payload
 }
 
-function copyFields(source: UranusOrganization, target: UranusOrganization) {
+function copyFields(source: OrganizationModel, target: OrganizationModel) {
   target.name = source.name ?? null
   target.description = source.description ?? null
   target.legalForm = source.legalForm ?? null

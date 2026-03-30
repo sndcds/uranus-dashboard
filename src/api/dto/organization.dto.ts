@@ -1,4 +1,4 @@
-export interface UranusOrganizationDTO {
+export interface OrganizationDto {
     uuid: string | null
     name: string
     description?: string | null
@@ -35,18 +35,3 @@ export interface UranusOrganizationDTO {
     api_key?: string | null
 }
 
-export interface UranusOrganizationListDTO {
-    org_uuid: string
-    org_name: string
-    org_city: string | null
-    org_country_code: string | null
-    total_upcoming_events: number
-    venue_count: number
-    space_count: number
-    can_edit_org: boolean
-    can_delete_org: boolean
-    can_manage_team: boolean
-    main_logo_uuid?: string | null
-    light_theme_logo_uuid?: string | null
-    dark_theme_logo_uuid?: string | null
-}

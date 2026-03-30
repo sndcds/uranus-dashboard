@@ -50,6 +50,7 @@ import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 
 const { t } = useI18n()
 

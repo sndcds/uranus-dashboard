@@ -5,32 +5,31 @@
 -->
 
 <template>
-  {{ venue.id }}
   <section class="uranus-admin-edit-section venue-images-tab">
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="main_logo"
         bgClass="padded"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="dark_theme_logo"
         bgClass="dark padded"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="light_theme_logo"
         bgClass="light padded"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="avatar"
         bgClass="padded"
         :width="220"

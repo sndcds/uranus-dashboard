@@ -11,7 +11,7 @@
 
     <!-- Empty State Message -->
     <UranusNotification
-        v-if="!isLoading && organizations.length === 0"
+        v-if="!isLoading && organizationListItems.length === 0"
         type="info"
         :button-text="t('show_manual_page')"
         button-link="/help/permissions"
@@ -27,17 +27,15 @@
     </div>
 
 
-    <!-- Error Message -->
     <div v-if="error" class="organization-dashboard-view__error">
       <p class="form-feedback-error">{{ error }}</p>
     </div>
 
-    <!-- Organization Cards Grid -->
     <div class="organization-grid">
       <UranusOrganizationCard
-          v-for="organization in organizations"
-          :key="organization.org_uuid"
-          :organisation="organization"
+          v-for="item in organizationListItems"
+          :key="item.uuid"
+          :organisation="item"
           @deleted="handleOrganizationDeleted"
       />
     </div>
@@ -53,31 +51,53 @@ import UranusOrganizationCard from '@/component/organization/UranusOrganizationC
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import type { UranusOrganizationListDTO } from '@/api/dto/UranusOrganizationDTO.ts'
+import type { UranusOrganizationListItemDTO } from '@/api/dto/organizationListItem.dto.ts'
+import { mapOrganizationListItem } from '@/domain/organization/organizationListItem.model.ts'
 
 const { t } = useI18n()
 
-const organizations = ref<UranusOrganizationListDTO[]>([])
+const organizationListItems = ref<UranusOrganizationListItemDTO[]>([])
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 
-const handleOrganizationDeleted = (orgUuid: string | null) => {
-  organizations.value = organizations.value.filter(org => org.org_uuid !== orgUuid)
+interface ApiOrganizationListResponse {
+  service: string
+  api_version: string
+  response_type: string
+  status: string
+  timestamp: string
+  metadata: {
+    response_time_ms: number
+  }
+  data: {
+    organizations: UranusOrganizationListItemDTO[]
+  }
 }
+
+
+
+const handleOrganizationDeleted = (orgUuid: string | null) => {
+  organizationListItems.value = organizationListItems.value.filter(org => org.uuid !== orgUuid)
+}
+
 
 onMounted(async () => {
   try {
-    const { response } = await apiFetch<any>('/api/admin/organization/dashboard')
-    organizations.value = response?.data.organizations || []
+    const { response } = await apiFetch<ApiOrganizationListResponse>('/api/admin/organization/list')
+
+    organizationListItems.value = (response?.data.organizations || []).map(dto =>
+        mapOrganizationListItem(dto)
+    )
+
+    console.log('Mapped organizations:', JSON.stringify(organizationListItems.value, null, 2))
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
-      error.value = e.data?.error || 'Failed to load dashboard'
+      error.value = e.data?.error || 'Failed to load organization list'
     } else {
       error.value = 'Unknown error'
     }
-  }
-  finally {
+  } finally {
     isLoading.value = false
   }
 })
