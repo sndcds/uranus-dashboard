@@ -11,7 +11,6 @@
         />
       </div>
       <span>
-        venueUuid: {{ venueInfo.venueUuid }}
         {{ t('events') }}: {{ venueInfo.upcomingEventCount }}
       </span>
     </div>

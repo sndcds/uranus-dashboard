@@ -1,51 +1,37 @@
-<!--
-  src/component/event/editor/UranusOrganizationMapTab.vue
-
-  2026-02-08, Roald
--->
-
 <template>
-  <section class="uranus-admin-edit-section organization-map-tab">
-
-    <div class="map-label">
-      {{ t('geo_location') }}
-    </div>
-
-    <UranusMapLocationPicker
-        class="location-map"
-        v-model="location"
-        :zoom="12"
-        :selectable="true"
+  <UranusForm>
+    <!-- Location form -->
+    <UranusLocationForm
+        v-model:modelValueLat="latModel"
+        v-model:modelValueLon="lonModel"
     />
 
-    <div class="location-summary">
-      {{ locationSummary }}
-    </div>
-
-    <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
+    <!-- Action buttons -->
+    <UranusFormActions>
+      <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
         {{ t('discard') }}
-      </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
+      </UranusButton>
+      <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">
         {{ t('save') }}
-      </button>
-    </div>
-
-  </section>
+      </UranusButton>
+    </UranusFormActions>
+  </UranusForm>
 </template>
-
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useUranusOrganizationStore } from '@/store/uranusOrganizationStore.ts'
-import UranusMapLocationPicker from '@/component/UranusMapLocationPicker.vue'
+import UranusLocationForm from '@/component/uranus/UranusLocationForm.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import { useI18n } from 'vue-i18n'
 
 type MapLocation = { lat: number; lng: number } | null
 
-const { t } = useI18n({ useScope: 'global' })
 const store = useUranusOrganizationStore()
+const { t } = useI18n({ useScope: 'global' })
 
 const location = ref<MapLocation>(null)
 
@@ -54,12 +40,9 @@ watch(
     () => store.draft,
     (draft) => {
       if (!draft) return
-
-      if (draft.lat != null && draft.lon != null) {
-        location.value = { lat: draft.lat, lng: draft.lon }
-      } else {
-        location.value = null
-      }
+      location.value = draft.lat != null && draft.lon != null
+          ? { lat: draft.lat, lng: draft.lon }
+          : null
     },
     { immediate: true }
 )
@@ -67,7 +50,6 @@ watch(
 // Sync map → store
 watch(location, (loc) => {
   if (!store.draft) return
-
   store.draft.lat = loc?.lat ?? null
   store.draft.lon = loc?.lng ?? null
 })
@@ -76,13 +58,17 @@ const isDirty = computed(() => {
   const draft = store.draft
   const original = store.original
   if (!draft || !original) return false
-
   return draft.lat !== original.lat || draft.lon !== original.lon
 })
 
-const locationSummary = computed(() => {
-  if (!location.value) return t('organization_map_no_selection')
-  return `${location.value.lat.toFixed(5)}, ${location.value.lng.toFixed(5)}`
+const latModel = computed<number>({
+  get: () => store.draft?.lat ?? 0,
+  set: (val: number) => { if (store.draft) store.draft.lat = val }
+})
+
+const lonModel = computed<number>({
+  get: () => store.draft?.lon ?? 0,
+  set: (val: number) => { if (store.draft) store.draft.lon = val }
 })
 
 async function commitTab() {
@@ -95,10 +81,8 @@ async function commitTab() {
 
   try {
     const payload: Record<string, any> = {}
-
     if (draft.lat !== original.lat) payload.lat = draft.lat
     if (draft.lon !== original.lon) payload.lon = draft.lon
-
     if (Object.keys(payload).length === 0) return
 
     await apiFetch(`/api/admin/organization/${draft.uuid}/fields`, {
@@ -124,42 +108,14 @@ function resetTab() {
   draft.lat = original.lat
   draft.lon = original.lon
 
-  if (original.lat != null && original.lon != null) {
-    location.value = { lat: original.lat, lng: original.lon }
-  } else {
-    location.value = null
-  }
+  location.value = original.lat != null && original.lon != null
+      ? { lat: original.lat, lng: original.lon }
+      : null
 }
 </script>
 
-
 <style scoped lang="scss">
-.organization-map-tab {
-  width: 100%;
-  max-width: 1024px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .location-map {
   height: 600px;
-}
-
-.map-label {
-  font-weight: 500;
-  color: #999;
-}
-
-.location-summary {
-  font-size: 0.9rem;
-  color: #aaa;
-}
-
-.tab-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
 }
 </style>

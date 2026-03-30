@@ -31,7 +31,7 @@ const defaultFilter: UranusEventsFilter = {
     city: "",
     startDate: "",
     endDate: "",
-    venue: { id: -1, name: "" },
+    venue: { uuid: null, name: "" },
     useCurrentLocation: false,
     radiusKm: 10.0,
     latitude: null,

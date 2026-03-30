@@ -5,65 +5,63 @@
 -->
 
 <template>
-  <section class="base-tab">
-    <UranusForm>
+  <UranusForm>
 
-      <UranusFormRow>
-        <UranusTextfield id="event-title" size="big" :label="t('title')" v-model="org.name" required/>
-      </UranusFormRow>
+    <UranusFormRow>
+      <UranusTextfield id="org-name" size="big" :label="t('name')" v-model="org.name" required/>
+    </UranusFormRow>
 
-      <UranusFormRow>
-        <UranusLabel id="organization-description" :label="t('description')">
-          <UranusTextEditor v-model="org.description"/>
-        </UranusLabel>
-      </UranusFormRow>
+    <UranusFormRow>
+      <UranusLabel id="org-description" :label="t('description')">
+        <UranusTextEditor v-model="org.description"/>
+      </UranusLabel>
+    </UranusFormRow>
 
-      <UranusFormRow :cols="2">
-        <UranusLabel id="organization-legal-form" :label="t('legal_form')">
-          <UranusLegalFormSelect v-model="org.legalForm" />
-        </UranusLabel>
-        <UranusTextfield id="organization-website" type="url" :label="t('website')" v-model="org.webLink"/>
-      </UranusFormRow>
+    <UranusFormRow :cols="2">
+      <UranusLabel id="org-legal-form" :label="t('legal_form')">
+        <UranusLegalFormSelect v-model="org.legalForm" />
+      </UranusLabel>
+      <UranusTextfield id="org-web-link" type="url" :label="t('website')" v-model="org.webLink" placeholder="https://"/>
+    </UranusFormRow>
 
-      <UranusFormRow :cols="2">
-        <UranusTextfield id="organization-email" :label="t('email')" v-model="org.contactEmail" />
-        <UranusTextfield id="organization-phone" type="email" :label="t('phone')" v-model="org.contactPhone" />
-      </UranusFormRow>
+    <UranusFormRow :cols="2">
+      <UranusTextfield id="org-email" type="email" :label="t('email')" v-model="org.contactEmail" />
+      <UranusTextfield id="org-phone":label="t('phone')" v-model="org.contactPhone" />
+    </UranusFormRow>
 
-      <UranusFormRow :cols="2">
-        <UranusTextfield id="organization-street" :label="t('street')" v-model="org.street" />
-        <UranusTextfield id="organization-house-number" :label="t('house_number')" v-model="org.houseNumber" />
-      </UranusFormRow>
+    <UranusFormRow :cols="2">
+      <UranusTextfield id="org-street" :label="t('street')" v-model="org.street" />
+      <UranusTextfield id="org-house-number" :label="t('house_number')" v-model="org.houseNumber" />
+    </UranusFormRow>
 
-      <UranusFormRow>
-        <UranusTextfield id="organization-address-addition" type="email" :label="t('address_addition')" v-model="org.addressAddition" />
-      </UranusFormRow>
+    <UranusFormRow>
+      <UranusTextfield id="org-address-addition" :label="t('address_addition')" v-model="org.addressAddition" />
+    </UranusFormRow>
 
-      <UranusFormRow :cols="2">
-        <UranusTextfield id="organization-postal-code" :label="t('postal_code')" v-model="org.postalCode" />
-        <UranusTextfield id="organization-city" :label="t('city')" v-model="org.city" />
-      </UranusFormRow>
+    <UranusFormRow :cols="2">
+      <UranusTextfield id="org-postal-code" :label="t('postal_code')" v-model="org.postalCode" />
+      <UranusTextfield id="org-city" :label="t('city')" v-model="org.city" />
+    </UranusFormRow>
 
-      <UranusFormRow :cols="2">
-        <UranusLabel id="organization-country" :label="t('country')">
-          <UranusCountrySelect  v-model="org.country" />
-        </UranusLabel>
-        <UranusLabel id="organization-state" :label="t('state')">
-          <UranusStateSelect v-model="org.state" :country-code="org.country" />
-        </UranusLabel>
-      </UranusFormRow>
+    <UranusFormRow :cols="2">
+      <UranusLabel id="org-country" :label="t('country')">
+        <UranusCountrySelect  v-model="org.country" />
+      </UranusLabel>
+      <UranusLabel id="org-state" :label="t('state')">
+        <UranusStateSelect v-model="org.state" :country-code="org.country" />
+      </UranusLabel>
+    </UranusFormRow>
 
-      <UranusFormActions>
-        <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
-          {{ t('discard') }}
-        </UranusButton>
-        <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">
-          {{ t('save') }}
-        </UranusButton>
-      </UranusFormActions>
+    <UranusFormActions>
+      <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
+        {{ t('discard') }}
+      </UranusButton>
+      <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">
+        {{ t('save') }}
+      </UranusButton>
+    </UranusFormActions>
 
-    </UranusForm>
-  </section>
+  </UranusForm>
 </template>
 
 
@@ -191,44 +189,3 @@ function resetTab() {
   copyFields(original, draft)
 }
 </script>
-
-
-<style scoped lang="scss">
-.organization-contact-tab {
-  width: 100%;
-  max-width: 1024px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
-  label {
-    display: flex;
-    flex-direction: column;
-    font-weight: 500;
-    color: #999;
-    gap: 0.25rem;
-
-    input,
-    textarea {
-      padding: 0.5rem;
-      border: 2px solid #fff;
-      border-radius: 5px;
-      font-size: 1rem;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-  }
-
-  .tab-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-}
-</style>

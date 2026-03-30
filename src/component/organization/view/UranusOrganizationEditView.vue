@@ -10,8 +10,8 @@
     <div v-else-if="orgStore.error">{{ orgStore.error }}</div>
 
     <template v-else-if="orgStore.isLoaded">
-        <h1>{{ t('organization_editor') }}</h1>
-        <p>Organization: {{ orgStore.draft?.name }}</p>
+      <h1>{{ t('organization_editor') }}</h1>
+      <p>{{ orgStore.draft?.name }}</p>
 
       <nav class="tabs">
         <button
@@ -36,7 +36,6 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
-
 import OrganizationBaseTab from '@/component/organization/editor/UranusOrganizationBaseTab.vue'
 import OrganizationMapTab from '@/component/organization/editor/UranusOrganizationMapTab.vue'
 import OrganizationLogoTab from '@/component/organization/editor/UranusOrganizationLogoTab.vue'
@@ -46,7 +45,9 @@ const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const orgStore = useUranusOrganizationStore()
 
-const orgUuid = computed(() => { return route.params.orgUuid })
+const orgUuid = computed(() => {
+  return route.params.orgUuid
+})
 
 type TabKey = 'base' | 'map' | 'logo'
 const activeTab = ref<TabKey>('base')
@@ -72,7 +73,6 @@ onMounted(async () => {
     // orgStore.error = 'Invalid organizationId'
     return
   }
-  console.log(orgUuid.value)
 
   orgStore.loading = true
   try {

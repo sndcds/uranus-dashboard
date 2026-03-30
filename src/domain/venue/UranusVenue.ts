@@ -7,7 +7,7 @@
 import type { UranusVenueDTO } from '@/api/dto/UranusVenueDTO.ts'
 
 export interface UranusVenueSelectItemInfo {
-    uuid: string
+    uuid: string | null
     name: string
     city?: string
 }

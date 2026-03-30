@@ -5,95 +5,64 @@
 -->
 
 <template>
-  id: {{ venue.id }}
-  name: {{ venue.name }}
-  type: {{ venue.type }}
-  openedAt: {{ venue.openedAt }}
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+  <UranusForm>
 
-    <label class="full-width">
-      Name
-      <input class="big" type="text" v-model="venue.name" required />
-    </label>
+    <UranusFormRow>
+      <UranusTextfield id="venue-name" size="big" :label="t('name')" v-model="venue.name" required/>
+    </UranusFormRow>
 
-    <label class="full-width">
-      Description
-      <textarea v-model="venue.description" />
-    </label>
+    <UranusFormRow>
+      <UranusLabel id="venue-description" :label="t('description')">
+        <UranusTextEditor v-model="venue.description"/>
+      </UranusLabel>
+    </UranusFormRow>
 
-    <label>
-      Venue type
-      <UranusVenueTypeSelect v-model="venue.type" />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusDateInput id="venue-opened-at" :label="t('opened_at')" v-model="venue.openedAt"/>
+      <UranusDateInput id="venue-closed-at" :label="t('closed_at')" v-model="venue.closedAt"/>
+    </UranusFormRow>
 
+    <UranusFormRow :cols="2">
+      <UranusLabel id="venue-type" :label="t('venue_type')">
+        <UranusVenueTypeSelect v-model="venue.type" />
+      </UranusLabel>
+      <UranusTextfield id="venue-web-link" type="url" :label="t('website')" v-model="venue.webLink" placeholder="https://"/>
+    </UranusFormRow>
 
-    <label class="start-new-row">
-      Opened at
-      <input type="date" v-model="venue.openedAt" />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusTextfield id="venue-email" type="email" :label="t('email')" v-model="venue.contactEmail" />
+      <UranusTextfield id="venue-phone" :label="t('phone')" v-model="venue.contactPhone" />
+    </UranusFormRow>
 
-    <label>
-      Closed at
-      <input type="date" v-model="venue.closedAt" />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusTextfield id="venue-street" :label="t('street')" v-model="venue.street" />
+      <UranusTextfield id="venue-house-number" :label="t('house_number')" v-model="venue.houseNumber" />
+    </UranusFormRow>
 
+    <UranusFormRow :cols="2">
+      <UranusTextfield id="venue-postal-code" :label="t('postal_code')" v-model="venue.postalCode" />
+      <UranusTextfield id="ve ue-city" :label="t('city')" v-model="venue.city" />
+    </UranusFormRow>
 
-    <label>
-      Website
-      <input type="url" v-model="venue.webLink" placeholder="https://" />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusLabel id="venue-country" :label="t('country')">
+        <UranusCountrySelect  v-model="venue.country" />
+      </UranusLabel>
+      <UranusLabel id="venue-state" :label="t('state')">
+        <UranusStateSelect v-model="venue.state" :country-code="venue.country" />
+      </UranusLabel>
+    </UranusFormRow>
 
-    <label>
-      Contact Email
-      <input type="email" v-model="venue.contactEmail" />
-    </label>
-
-    <label>
-      Contact Phone
-      <input type="tel" v-model="venue.contactPhone" />
-    </label>
-
-    <label class="start-new-row">
-      Street
-      <input type="text" v-model="venue.street" />
-    </label>
-
-    <label>
-      House Number
-      <input type="text" v-model="venue.houseNumber" />
-    </label>
-
-    <label class="start-new-row">
-      Postal Code
-      <input type="text" v-model="venue.postalCode" />
-    </label>
-
-    <label>
-      City
-      <input type="text" v-model="venue.city" />
-    </label>
-
-    <label>
-      Country
-      <UranusCountrySelect  v-model="venue.country" />
-    </label>
-
-    <label>
-      State
-      <UranusStateSelect v-model="venue.state" :country-code="venue.country" />
-    </label>
-
-    <!-- Actions -->
-    <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
+    <UranusFormActions>
+      <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
         {{ t('discard') }}
-      </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
+      </UranusButton>
+      <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">
         {{ t('save') }}
-      </button>
-    </div>
+      </UranusButton>
+    </UranusFormActions>
 
-  </section>
+  </UranusForm>
 </template>
 
 
@@ -106,6 +75,14 @@ import type { UranusVenue } from '@/domain/venue/UranusVenue'
 import UranusCountrySelect from '@/component/select/UranusCountrySelect.vue'
 import UranusStateSelect from "@/component/select/UranusStateSelect.vue";
 import UranusVenueTypeSelect from "@/component/select/UranusVenueTypeSelect.vue";
+import UranusForm from "@/component/ui/UranusForm.vue";
+import UranusFormRow from "@/component/ui/UranusFormRow.vue";
+import UranusTextfield from "@/component/ui/UranusTextfield.vue";
+import UranusLabel from "@/component/ui/UranusLabel.vue";
+import UranusTextEditor from "@/component/ui/UranusTextEditor.vue";
+import UranusDateInput from "@/component/ui/UranusDateInput.vue";
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
+import UranusButton from "@/component/ui/UranusButton.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -195,7 +172,7 @@ async function commitTab() {
       return
     }
 
-    const apiPath = `/api/admin/venue/${draft.id}/fields`
+    const apiPath = `/api/admin/venue/${draft.uuid}/fields`
     await apiFetch(apiPath, {
       method: 'PUT',
       body: JSON.stringify(payload),
@@ -217,44 +194,3 @@ function resetTab() {
   copyFields(original, draft)
 }
 </script>
-
-
-<style scoped lang="scss">
-.venue-contact-tab {
-  width: 100%;
-  max-width: 1024px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
-  label {
-    display: flex;
-    flex-direction: column;
-    font-weight: 500;
-    color: #999;
-    gap: 0.25rem;
-
-    input,
-    textarea {
-      padding: 0.5rem;
-      border: 2px solid #fff;
-      border-radius: 5px;
-      font-size: 1rem;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-  }
-
-  .tab-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-}
-</style>

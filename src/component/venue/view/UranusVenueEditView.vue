@@ -15,12 +15,9 @@
   <div v-else-if="venueStore.error">{{ venueStore.error }}</div>
 
   <template v-else-if="venueStore.isLoaded">
-    <header class="editor-header">
-      <h1 class="uranus-admin-page-title">Venue Editor</h1>
-      <p>Venue: {{ venueStore.draft?.name }} / #{{ venueUuid }}</p>
-    </header>
+    <h1 class="uranus-admin-page-title">Venue Editor</h1>
+    <p>{{ venueStore.draft?.name }}</p>
 
-    <!-- tabs -->
     <nav class="tabs">
       <button
           v-for="tab in tabs"
@@ -42,9 +39,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-// import { useI18n } from "vue-i18n";
-import { apiFetch } from "@/api.ts";
-
+import { apiFetch } from '@/api.ts'
 import VenueBaseTab from '@/component/venue/editor/UranusVenueBaseTab.vue'
 import VenueMapTab from '@/component/venue/editor/UranusVenueMapTab.vue'
 import UranusVenueLogoTab from '@/component/venue/editor/UranusVenueLogoTab.vue'
@@ -52,7 +47,6 @@ import UranusVenueImageTab from '@/component/venue/editor/UranusVenueImageTab.vu
 import { useUranusVenueStore } from '@/store/UranusVenueStore.ts'
 import type { UranusVenueDTO } from '@/api/dto/UranusVenueDTO.ts'
 
-// const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const venueStore = useUranusVenueStore()
 
@@ -90,10 +84,11 @@ onMounted(async () => {
   venueStore.loading = true
   try {
     const apiPath = `/api/admin/venue/${venueUuid.value}`
-    const response = await apiFetch<{ data: UranusVenueDTO }>(apiPath)
-    const venueData = response.response?.data ?? response.response
+    const response = await apiFetch<any>(apiPath)
+    const venueData = response.response?.data
+    console.log(JSON.stringify(venueData, null, 2))
     if (venueData) {
-      venueStore.loadFromApi?.(venueData) // optional chaining
+      venueStore.loadFromApi?.(venueData)
     } else {
       venueStore.error = 'No data returned from API'
     }
