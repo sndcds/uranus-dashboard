@@ -46,25 +46,25 @@
 
       <template v-if="venueListItem.spaces?.length">
         <div
-            v-for="(spaceInfo, index) in venueListItem.spaces"
-            :key="spaceInfo.uuid"
+            v-for="(space, index) in venueListItem.spaces"
+            :key="space.uuid"
             class="space-row"
         >
           <div class="space-info">
-            <span>{{ spaceInfo.name }}</span>
-            <span>&nbsp;/ {{ spaceInfo.upcomingEventCount }}</span>
+            <span>{{ space.name }}</span>
+            <span>&nbsp;/ {{ space.upcomingEventCount }}</span>
           </div>
 
           <div class="space-actions">
             <UranusIconAction
                 mode="edit"
                 v-if="venueListItem.canEditSpace"
-                :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/space/${spaceInfo.uuid}/edit`"
+                :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/space/${space.uuid}/edit`"
             />
             <UranusIconAction
                 mode="delete"
                 title="Delete"
-                :onClick="() => requestDeleteSpace(spaceInfo)"
+                :onClick="() => requestDeleteSpace(space)"
             />
           </div>
         </div>

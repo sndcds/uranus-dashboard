@@ -57,7 +57,15 @@ export function mapVenueListItem(dto: VenueListItemDTO): VenueListItem {
         uuid: dto.uuid,
         name: dto.name,
         upcomingEventCount: dto.upcoming_event_count,
-        spaces: (dto.spaces ?? []).map(mapVenueListSpace),
+        spaces: (dto.spaces ?? [])
+            .map(space => ({
+                uuid: space.uuid,
+                name: space.name,
+                upcomingEventCount: space.upcoming_event_count,
+            }))
+            .sort((a, b) =>
+                a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+            ),
 
         canAddEvent: dto.can_add_event,
         canAddSpace: dto.can_add_space,

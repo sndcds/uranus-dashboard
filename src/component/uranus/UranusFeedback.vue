@@ -1,28 +1,31 @@
-<!--
-  src/component/ui/UranusFeedback.vue
--->
-
+<!-- src/component/ui/UranusFeedback.vue -->
 <template>
   <transition name="fade">
-    <div v-if="$slots.default" :class="feedbackClass" role="status">
+    <!-- Render only if there is content -->
+    <div v-if="hasContent" :class="feedbackClass" role="status">
       <slot />
     </div>
   </transition>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, useSlots } from 'vue'
 
 interface Props {
   type?: 'error' | 'success' | 'warning'
+  show?: boolean // optional prop to control visibility
 }
 
 const props = defineProps<Props>()
+const slots = useSlots()  // <-- must call this!
 
 const feedbackClass = computed(() => [
   'feedback',
   props.type ? `feedback--${props.type}` : 'feedback--error'
 ])
+
+// Decide whether to render
+const hasContent = computed(() => props.show ?? !!(slots.default && slots.default().length))
 </script>
 
 <style scoped>

@@ -54,8 +54,8 @@ import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 const { t } = useI18n()
 
 const route = useRoute()
-const venueName = ref<string>('')
 const orgUuid = route.params.orgUuid
+const venueName = ref<string>('')
 
 async function onCreate() {
   if (venueName.value.trim().length < 1) {
