@@ -9,24 +9,20 @@
     <UranusNotification
         v-if="!organizationUuid"
         type="info"
+        :action-label="t('notification_cant_see_venues_action')"
+        action-to="/admin/organizations"
     >
-      <!-- No Organization Selected Message -->
       <template #title>
         {{ t('notification_cant_see_venues_title') }}
       </template>
-      <template #default>
-        <div v-html="t('notification_cant_see_venues_message')"></div>
-      </template>
-      <template #actions>
-        <RouterLink to="/admin/organizations" class="uranus-notification-button">
-          {{ t('notification_cant_see_venues_action') }}
-        </RouterLink>
-      </template>
+
+      <div v-html="t('notification_cant_see_venues_message')"></div>
     </UranusNotification>
+
 
     <template v-else>
       <div v-if="!isLoading" class="uranus-main-layout">
-        <div v-if="organizationVenueInfos && organizationVenueInfos.canAddVenue">
+        <div v-if="venueList && venueList.canAddVenue">
           <UranusButton :to="`/admin/organization/${organizationUuid}/venue/create`">
             {{ t('venue_add') }}
           </UranusButton>
@@ -37,11 +33,11 @@
           <p class="form-feedback-error">{{ error }}</p>
         </div>
 
-        <div v-if="organizationVenueInfos" class="organization-venue-view__content">
+        <div v-if="venueList" class="organization-venue-view__content">
           <UranusVenueCard
-              v-for="venueInfo in organizationVenueInfos?.venueInfos ?? []"
-              :key="venueInfo.venueUuid"
-              :venueInfo="venueInfo"
+              v-for="item in venueList?.venues ?? []"
+              :key="item.uuid"
+              :venueListItem="item"
               :organizationUuid="organizationUuid"
           />
         </div>
@@ -55,9 +51,7 @@ import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/uranusAppStore.ts'
-import type { UranusOrganizationVenueList } from '@/model/uranusVenue.ts'
-import { mapApiOrganizationVenueInfosToModel } from '@/model/uranusVenue.ts'
-
+import { mapVenueList, type VenueList } from '@/domain/organization/venueList.ts'
 
 import UranusVenueCard from '@/component/venue/UranusVenueCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
@@ -74,17 +68,19 @@ const organizationUuid = computed({
 })
 
 const isLoading = ref(true)
-const organizationVenueInfos = ref<UranusOrganizationVenueList | null>(null)
+const venueList = ref<VenueList | null>(null)
 const error = ref<string | null>(null)
 
 const handleVenueDeleted = (venueUuid: string) => {
-  if (!organizationVenueInfos.value) {
+  /*
+  if (!organizationVenueList.value) {
     return
   }
-  organizationVenueInfos.value = {
-    ...organizationVenueInfos.value,
-    venueInfos: organizationVenueInfos.value.venueInfos.filter((venueInfo) => venueInfo.venueUuid !== venueUuid),
+  organizationVenueList.value = {
+    ...organizationVenueList.value,
+    venueInfos: organizationVenueList.value.venueInfos.filter((venueInfo) => venueInfo.venueUuid !== venueUuid),
   }
+  */
 }
 
 watch(
@@ -92,25 +88,25 @@ watch(
     async (uuid) => {
       isLoading.value = true
       if (uuid === null) {
-        organizationVenueInfos.value = null
+        venueList.value = null
         isLoading.value = false
         return
       }
 
       try {
         const { response } = await apiFetch<any>(`/api/admin/organization/${uuid}/venues`)
-        const data = response?.data
 
-        console.log(JSON.stringify(data, null, 2))
-        organizationVenueInfos.value = mapApiOrganizationVenueInfosToModel(data)
+        venueList.value = mapVenueList(response?.data)
+        console.log('Mapped organizations:', JSON.stringify(venueList.value, null, 2))
 
+/*
         // Sort spaces by spaceName in each venue
         organizationVenueInfos.value.venueInfos.forEach(venue => {
           venue.spaceInfos.sort((a, b) =>
               a.spaceName.localeCompare(b.spaceName, undefined, { sensitivity: 'base' })
           )
         })
-
+*/
         error.value = null
       } catch (err: unknown) {
         if (typeof err === 'object' && err && 'data' in err) {
@@ -119,7 +115,7 @@ watch(
         } else {
           error.value = 'Unknown error'
         }
-        organizationVenueInfos.value = null
+        organizationVenueList.value = null
       } finally {
         isLoading.value = false
       }

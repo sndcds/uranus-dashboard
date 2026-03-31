@@ -4,6 +4,7 @@
   gap: var(--uranus-grid-gap);
 
   input, textarea {
+    font-family: var(--uranus-font-ui) !important;
     font-size: 1rem;
     padding: 0.2rem 0.6rem 0.2rem 0.6rem;
     border-radius: var(--uranus-input-border-radius);
@@ -14,6 +15,7 @@
   }
 
   input[type="date"] {
+    font-family: var(--uranus-font-ui) !important;
     font-weight: 500;
   }
   input[type="date"]::placeholder {

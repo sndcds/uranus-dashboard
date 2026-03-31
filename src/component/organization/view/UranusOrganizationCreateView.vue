@@ -6,20 +6,17 @@
 
 <template>
   <div class="uranus-main-layout">
+    <UranusDashboardHero :title="t('create_organization')" :subtitle="t('create_organization_description')" />
+
+    <!-- TODO: i18n -->
+    <h3>Was ist eine Organisation?</h3>
+    <p>
+      Um Inhalte in Uranus zu erstellen, brauchst du eine Organisation. Sie ist offiziell
+      verantwortlich für alle Inhalte, die du erstellst. Verwende den genauen juristischen Namen,
+      z. B. für Veranstalter oder Betreiberangaben.
+    </p>
+
     <UranusForm>
-      <UranusDashboardHero
-          :title="t('create_organization')"
-          :subtitle="t('create_organization_description')"
-      />
-
-      <!-- TODO: i18n -->
-      <h3>Was ist eine Organisation?</h3>
-      <p>
-        Um Inhalte in Uranus zu erstellen, brauchst du eine Organisation. Sie ist offiziell
-        verantwortlich für alle Inhalte, die du erstellst. Verwende den genauen juristischen Namen,
-        z. B. für Veranstalter oder Betreiberangaben.
-      </p>
-
       <UranusTextfield
           size="medium"
           id="organization_name"

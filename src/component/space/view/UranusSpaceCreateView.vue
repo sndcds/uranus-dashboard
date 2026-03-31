@@ -5,36 +5,35 @@
 -->
 
 <template>
-  <UranusDashboardHero
-      :title="t('create_space')"
-      :subtitle="t('create_space_description')"
-  />
+  <div class="uranus-main-layout">
+    <UranusDashboardHero :title="t('create_space')" :subtitle="t('create_space_description')" />
 
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
-    <div class="full-width">
-      <h3>Was ist ein Raum?</h3>
-      <p>
-        Ein Raum ist ein Bereich oder Ort einer Spielstätte, in dem/an dem Veranstaltungen stattfinden,
-        z. B. ein Saal, Studio, Club oder Außenbereich.<br>
-        Trage den Namen des Raums ein. Danach kannst du alle Details wie Ausstattung, Kapazität
-        oder Adresse bearbeiten.
-      </p>
-    </div>
+    <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+      <div class="full-width">
+        <h3>Was ist ein Raum?</h3>
+        <p>
+          Ein Raum ist ein Bereich oder Ort einer Spielstätte, in dem/an dem Veranstaltungen stattfinden,
+          z. B. ein Saal, Studio, Club oder Außenbereich.<br>
+          Trage den Namen des Raums ein. Danach kannst du alle Details wie Ausstattung, Kapazität
+          oder Adresse bearbeiten.
+        </p>
+      </div>
 
-    <label class="full-width">
-      Name
-      <input class="big" type="text" v-model="spaceName" required />
-    </label>
+      <label class="full-width">
+        Name
+        <input class="big" type="text" v-model="spaceName" required />
+      </label>
 
-    <div class="button-bar full-width">
-      <UranusButton
-          :disabled="spaceName.trim().length === 0"
-          @click="onCreate"
-      >
-        Jetzt erstellen
-      </UranusButton>
-    </div>
-  </section>
+      <div class="button-bar full-width">
+        <UranusButton
+            :disabled="spaceName.trim().length === 0"
+            @click="onCreate"
+        >
+          Jetzt erstellen
+        </UranusButton>
+      </div>
+    </section>
+  </div>
 
 </template>
 

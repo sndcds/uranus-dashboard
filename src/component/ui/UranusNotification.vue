@@ -17,14 +17,25 @@
       <slot />
     </div>
 
-    <div v-if="$slots.actions" class="notification-actions">
-      <slot name="actions" />
+    <div v-if="$slots.actions || actionLabel" class="notification-actions">
+      <!-- Custom slot wins -->
+      <slot name="actions">
+        <!-- Fallback: built-in button -->
+        <UranusButton
+            v-if="actionLabel && actionTo"
+            :to="actionTo"
+            size="small"
+        >
+          {{ actionLabel }}
+        </UranusButton>
+      </slot>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import UranusButton from "@/component/ui/UranusButton.vue";
 
 const props = defineProps({
   type: {
@@ -32,6 +43,9 @@ const props = defineProps({
     default: 'info',
     validator: (v: string) => ['info', 'warning', 'error'].includes(v),
   },
+
+  actionLabel: String,
+  actionTo: String,
 })
 
 const notificationTypeClass = computed(() => {

@@ -8,13 +8,12 @@
     <UranusCard class="uranus-modal-card">
       <h2>{{ title }}</h2>
 
-      apiPath: {{ apiPath }}
-
+      {{ cacheBustedUrl }}
       <!-- Image preview -->
       <div class="uranus-image-preview" @click="onImageClick($event)">
         <img
             v-if="localImageMeta.url"
-            :src="localImageMeta.url"
+            :src="cacheBustedUrl"
             class="uranus-preview-img"
         />
         <div v-else class="uranus-no-img">{{ t('click_to_upload') }}</div>
@@ -135,6 +134,20 @@ const descriptionValue = computed({
 
 const apiPath = computed(() => {
   return `/api/image/meta/${props.context}/${props.contextUuid}/${props.identifier}`
+})
+
+
+const cacheBustedUrl = computed(() => {
+  if (!localImageMeta.url) return ''
+
+  // If a new file was selected, use that URL directly
+  if (localImageFile.value) {
+    return localImageMeta.url
+  }
+
+  // Otherwise, use API URL with cache-busting
+  const separator = localImageMeta.url.includes('?') ? '&' : '?'
+  return `${localImageMeta.url}${separator}t=${Date.now()}`
 })
 
 const emit = defineEmits<{

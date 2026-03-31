@@ -1,6 +1,7 @@
 <!--
-  UranusEditTodoModal.vue
+  src/component/todo/UranusEditTodoModal.vue
 -->
+
 <template>
   <UranusModal
       :show="show"

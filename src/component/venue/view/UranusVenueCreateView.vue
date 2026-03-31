@@ -6,23 +6,18 @@
 
 <template>
   <div class="uranus-main-layout">
-    <UranusDashboardHero
-        :title="t('create_venue')"
-        :subtitle="t('create_venue_description')"
-    />
+    <UranusDashboardHero :title="t('create_venue')" :subtitle="t('create_venue_description')" />
+
+    <!-- TODO: i18n -->
+    <h3>Was ist eine Spielstätte?</h3>
+    <p>
+      Eine Spielstätte ist der Ort, an dem Veranstaltungen stattfinden.
+      Sie kann ein Raum oder ein Platz sein, z B. ein Veranstaltungsraum oder ein
+      öffentlicher Ort sein. Trage den genauen Namen der Spielstätte ein, damit Besucher:innen die Veranstaltungen
+      leicht finden können.
+    </p>
 
     <UranusForm>
-      <div class="full-width">
-        <!-- TODO: i18n -->
-        <h3>Was ist eine Spielstätte?</h3>
-        <p>
-          Eine Spielstätte ist der Ort, an dem Veranstaltungen stattfinden.
-          Sie kann ein Raum oder ein Platz sein, z B. ein Veranstaltungsraum oder ein
-          öffentlicher Ort sein. Trage den genauen Namen der Spielstätte ein, damit Besucher:innen die Veranstaltungen
-          leicht finden können.
-        </p>
-      </div>
-
       <UranusTextfield
           v-model="venueName",
           size="medium"

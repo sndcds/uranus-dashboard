@@ -2,35 +2,32 @@
   <UranusCard custom-style="width:100%;">
 
     <div>
-      venueInfo.mainLogoUuid: {{ venueInfo.mainLogoUuid }}
-      venueInfo.lightThemeLogoUuid: {{ venueInfo.lightThemeLogoUuid }}<br>
-      venueInfo.darkThemeLogoUuid: {{ venueInfo.darkThemeLogoUuid }}<br>
       <div class="header">
-        <h2>{{ venueInfo.venueName }}</h2>
+        <h2>{{ venueListItem.name }}</h2>
         <PlutoImage
-            :mainImageUuid="venueInfo.mainLogoUuid"
-            :lightImageUuid="venueInfo.lightThemeLogoUuid"
-            :darkImageUuid="venueInfo.darkThemeLogoUuid"
+            :mainImageUuid="venueListItem.mainLogoUuid ?? null"
+            :lightImageUuid="venueListItem.lightThemeLogoUuid ?? null"
+            :darkImageUuid="venueListItem.darkThemeLogoUuid ?? null"
         />
       </div>
       <span>
-        {{ t('events') }}: {{ venueInfo.upcomingEventCount }}
+        {{ t('events') }}: {{ venueListItem.upcomingEventCount }}
       </span>
     </div>
 
     <div class="uranus-card-button-container">
       <UranusButton
-          v-if="venueInfo.canEditEvent"
+          v-if="venueListItem.canEditEvent"
           variant="secondary" size="small"
-          :to="`/admin/organization/${organizationUuid}/venue/${venueInfo.venueUuid}/edit`"
+          :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/edit`"
       >
         {{ t('edit') }}
       </UranusButton>
 
       <UranusButton
-          v-if="venueInfo.canDeleteEvent"
+          v-if="venueListItem.canDeleteEvent"
           variant="secondary" size="small"
-          @click="onDeleteEvent(venueInfo)"
+          @click="onDeleteEvent(venueListItem)"
       >
         {{ t('delete') }}
       </UranusButton>
@@ -41,28 +38,28 @@
         <h3>{{ t('venue_spaces') }}
           <UranusIconAction
               mode="add"
-              v-if="venueInfo.canEditVenue"
-              :to="`/admin/organization/${organizationUuid}/venue/${venueInfo.venueUuid}/space/create`"
+              v-if="venueListItem.canEditVenue"
+              :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/space/create`"
           />
         </h3>
       </div>
 
-      <template v-if="venueInfo.spaceInfos.length">
+      <template v-if="venueListItem.spaces?.length">
         <div
-            v-for="(spaceInfo, index) in venueInfo.spaceInfos"
-            :key="spaceInfo.spaceUuid"
+            v-for="(spaceInfo, index) in venueListItem.spaces"
+            :key="spaceInfo.uuid"
             class="space-row"
         >
           <div class="space-info">
-            <span>{{ spaceInfo.spaceName }}</span>
+            <span>{{ spaceInfo.name }}</span>
             <span>&nbsp;/ {{ spaceInfo.upcomingEventCount }}</span>
           </div>
 
           <div class="space-actions">
             <UranusIconAction
                 mode="edit"
-                v-if="venueInfo.canEditSpace"
-                :to="`/admin/organization/${organizationUuid}/venue/${venueInfo.venueUuid}/space/${spaceInfo.spaceUuid}/edit`"
+                v-if="venueListItem.canEditSpace"
+                :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/space/${spaceInfo.uuid}/edit`"
             />
             <UranusIconAction
                 mode="delete"
@@ -105,18 +102,18 @@
 import { ref } from 'vue'
 import { useI18n } from "vue-i18n"
 import { apiFetch } from '@/api.ts'
+import { type VenueListItem } from '@/domain/organization/venueList.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
-import type { UranusVenue, UranusVenueSpaceInfo } from '@/model/uranusVenue.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import PlutoImage from '@/component/pluto/PlutoImage.vue'
 
 const { t } = useI18n()
 
 const props = defineProps<{
-  venueInfo: UranusVenue
+  venueListItem: VenueListItem
   organizationUuid: string
 }>()
 
@@ -135,10 +132,10 @@ const isDeletingSpace = ref(false)
 const pendingSpaceUuid = ref<string | null>(null)
 const pendingSpaceName = ref('')
 
-const onDeleteEvent = (venue: UranusVenue) => {
+const onDeleteEvent = (venue: VenueListItem) => {
   if (!venue.canDeleteVenue) return
-  pendingVenueUuid.value = venue.venueUuid
-  pendingVenueName.value = venue.venueName
+  pendingVenueUuid.value = venue.uuid
+  pendingVenueName.value = venue.name
   deleteError.value = ''
   showDeleteModal.value = true
 }
@@ -177,8 +174,8 @@ const confirmDelete = async ({ password }: { password: string }) => {
   }
 }
 
-const requestDeleteSpace = (spaceInfo: UranusVenueSpaceInfo) => {
-  if (!props.venueInfo.canDeleteSpace) return
+const requestDeleteSpace = (spaceInfo: any) => {
+  if (!props.venueListItem.canDeleteSpace) return
   pendingSpaceUuid.value = spaceInfo.spaceUuid
   pendingSpaceName.value = spaceInfo.spaceName
   deleteSpaceError.value = ''
@@ -204,9 +201,9 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
       body: JSON.stringify({ password }),
     })
 
-    const index = props.venueInfo.spaceInfos.findIndex(spaceInfo => spaceInfo.spaceUuid === pendingSpaceUuid.value)
+    const index = props.venueListItem.spaces.findIndex(spaceInfo => spaceInfo.uuid === pendingSpaceUuid.value)
     if (index !== -1) {
-      props.venueInfo.spaceInfos.splice(index, 1)
+      props.venueListItem.spaces.splice(index, 1)
     }
 
     cancelDeleteSpace()

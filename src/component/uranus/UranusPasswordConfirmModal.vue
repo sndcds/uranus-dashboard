@@ -32,7 +32,9 @@
         />
       </UranusFormRow>
 
-      <UranusErrorMessage v-if="error" :message="error" />
+      <UranusFeedback v-if="error" type="error">
+        {{ error }}
+      </UranusFeedback>
     </form>
 
     <template #actions>
@@ -56,8 +58,8 @@ import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusRadioButton from '@/component/ui/UranusRadioButton.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusPasswordInput from '@/component/ui/UranusPasswordInput.vue'
-import UranusErrorMessage from '@/component/ui/UranusErrorMessage.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -90,6 +92,7 @@ const emit = defineEmits<{
   cancel: []
 }>()
 
+const question = computed(() => props.question ?? '')
 const password = ref('')
 const formId = `password-confirm-${Math.random().toString(36).slice(2, 9)}`
 const selectedOption = ref(props.options?.[0]?.value ?? '')
@@ -102,16 +105,19 @@ watch(() => props.show, (newValue) => {
   }
 })
 
-
-
 const handleSubmit = () => {
-  emit('confirm', {
+  const payload: { password: string; selectedOption?: string | number } = {
     password: password.value,
-    selectedOption: props.options?.length ? selectedOption.value : undefined
-  })
+  }
+
+  if (props.options?.length) {
+    payload.selectedOption = selectedOption.value
+  }
+
+  emit('confirm', payload)
 }
 
-const question = computed(() => props.question ?? '')
+
 </script>
 
 <style scoped lang="scss">

@@ -1,3 +1,7 @@
+<!--
+  src/component/todo/UranusTodoCard.vue
+-->
+
 <template>
   <UranusCard class="todo-list-item" :class="{ completed: todo.completed }">
     <div class="todo-main">

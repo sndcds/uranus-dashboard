@@ -11,39 +11,116 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Error loading data',
         da: 'Fejl ved indlæsning af data',
     },
-    password_required: {
-        de: 'Ein Passwort ist erforderlich',
-        en: 'A password is required',
-        da: 'Adgangskode er påkrævet',
+    error_notification: {
+        de: 'Ein Fehler ist aufgetreten',
+        en: 'An error has occurred',
+        da: 'Der opstod en fejl',
+    },
+    unknown_error: {
+        de: 'Ein unbekannter Fehler ist aufgetreten',
+        en: 'An unknown error has occurred',
+        da: 'Der opstod en ukendt fejl',
     },
     notification: {
         de: 'Hinweis',
         en: 'Notification',
         da: 'Bemærk',
     },
-    error_notification: {
-        de: 'Ein Fehler ist aufgetreten',
-        en: 'An error has occurred',
-        da: 'Der opstod en fejl',
+    password_required: {
+        de: 'Ein Passwort ist erforderlich',
+        en: 'A password is required',
+        da: 'Adgangskode er påkrævet',
     },
-    yes: { de: 'Ja', en: 'Yes', da: 'Ja' },
-    no: { de: 'Nein', en: 'No', da: 'Nej' },
-    low: { de: 'Niedrig', en: 'Low', da: 'Lav' },
-    mid: { de: 'Mittel', en: 'Medium', da: 'Mellem' },
-    high: { de: 'Hoch', en: 'High',  da: 'Høj' },
-    not_specified: { de: 'Nicht angegeben', en: 'Not specified', da: 'Ikke angivet' },
-    title: { de: 'Titel', en: 'Title', da: 'Overskrift' },
-    subtitle: { de: 'Untertitel', en: 'Subtitle', da: 'Underoverskrift' },
-    ok: { de: 'OK', en: 'OK', da: 'OK' },
-    edit: { de: 'Bearbeiten', en: 'Edit', da: 'Rediger' },
-    cancel: { de: 'Abbrechen', en: 'Cancel', da: 'Annuller' },
-    discard: { de: 'Verwerfen', en: 'Discard', da: 'Forkast' },
-    save: { de: 'Speichern', en: 'Save', da: 'Gem' },
-    saving: { de: 'Speichere', en: 'Saving', da: 'Gemmer' },
-    delete: { de: 'Löschen', en: 'Delete', da: 'Slet' },
-    remove: { de: 'Entfernen', en: 'Remove', da: 'Fjern' },
-    loading: { de: 'Laden…', en: 'Loading…', da: 'Indlæser…' },
-    completed: { de: 'Erledigt', en: 'Completed', da: 'Fuldført' },
+    yes: {
+        de: 'Ja',
+        en: 'Yes',
+        da: 'Ja'
+    },
+    no: {
+        de: 'Nein',
+        en: 'No',
+        da: 'Nej'
+    },
+    low: {
+        de: 'Niedrig',
+        en: 'Low',
+        da: 'Lav'
+    },
+    mid: {
+        de: 'Mittel',
+        en: 'Medium',
+        da: 'Mellem'
+    },
+    high: {
+        de: 'Hoch',
+        en: 'High',
+        da: 'Høj'
+    },
+    not_specified: {
+        de: 'Nicht angegeben',
+        en: 'Not specified',
+        da: 'Ikke angivet'
+    },
+    title: {
+        de: 'Titel',
+        en: 'Title',
+        da: 'Overskrift'
+    },
+    subtitle: {
+        de: 'Untertitel',
+        en: 'Subtitle',
+        da: 'Underoverskrift'
+    },
+    ok: {
+        de: 'OK',
+        en: 'OK',
+        da: 'OK'
+    },
+    edit: {
+        de: 'Bearbeiten',
+        en: 'Edit',
+        da: 'Rediger'
+    },
+    cancel: {
+        de: 'Abbrechen',
+        en: 'Cancel',
+        da: 'Annuller'
+    },
+    discard: {
+        de: 'Verwerfen',
+        en: 'Discard',
+        da: 'Forkast'
+    },
+    save: {
+        de: 'Speichern',
+        en: 'Save',
+        da: 'Gem'
+    },
+    saving: {
+        de: 'Speichere',
+        en: 'Saving',
+        da: 'Gemmer'
+    },
+    delete: {
+        de: 'Löschen',
+        en: 'Delete',
+        da: 'Slet'
+    },
+    remove: {
+        de: 'Entfernen',
+        en: 'Remove',
+        da: 'Fjern'
+    },
+    loading: {
+        de: 'Laden…',
+        en: 'Loading…',
+        da: 'Indlæser…'
+    },
+    completed: {
+        de: 'Erledigt',
+        en: 'Completed',
+        da: 'Fuldført'
+    },
     finish_edit: {
         de: 'Bearbeitung beenden',
         en: 'Finish Editing',

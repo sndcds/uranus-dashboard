@@ -14,15 +14,15 @@
       <template #default>{{ deleteError }}</template>
     </UranusNotification>
 
-    <UranusNotification v-if="!organizationId" type="info">
+    <UranusNotification
+        v-if="!organizationId"
+        type="info"
+        :action-label="t('notification_cant_see_events_action')"
+        action-to="/admin/organizations"
+    >
       <template #title>{{ t('notification_cant_see_events_title') }}</template>
       <template #default>
         <div v-html="t('notification_cant_see_events_message')"></div>
-      </template>
-      <template #actions>
-        <RouterLink to="/admin/organizations" class="uranus-notification-button">
-          {{ t('notification_cant_see_events_action') }}
-        </RouterLink>
       </template>
     </UranusNotification>
 

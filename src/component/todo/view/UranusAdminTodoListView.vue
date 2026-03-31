@@ -1,5 +1,7 @@
 <!--
   src/component/todo/view/UranusAdminTodoListView.vue
+
+  todos - DTO data from API
 -->
 
 <template>
@@ -9,7 +11,6 @@
         :subtitle="t('todo_description')"
     />
 
-    <!-- Empty State -->
     <UranusNotification v-if="!loading && !todos.length" type="info">
       <template #title>{{ t('notification') }}</template>
       {{ t('todo_empty_message') }}
@@ -21,14 +22,12 @@
       </UranusButton>
     </div>
 
-    <!-- Error -->
-    <div v-if="error" class="todo-dashboard-view__error">
-      <p class="form-feedback-error">{{ error }}</p>
-    </div>
+    <UranusFeedback v-if="error" type="error">
+      {{ error }}
+    </UranusFeedback>
 
-    <!-- Todos -->
     <div class="todo-list" v-if="!loading && todos.length">
-      <UranusTodoListItem
+      <UranusTodoCard
           v-for="todo in todos"
           :key="todo.id"
           :todo="todo"
@@ -54,10 +53,11 @@ import { apiFetch } from '@/api.ts'
 
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
-import UranusTodoListItem from '@/component/todo/UranusTodoListItem.vue'
+import UranusTodoCard from '@/component/todo/UranusTodoCard.vue'
 import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { type UranusTodoDTO } from '@/model/uranusTodoModel.ts'
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const { t } = useI18n()
 
@@ -73,9 +73,9 @@ onMounted(async () => {
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
-      error.value = e.data?.error || 'Failed to load todos'
+      error.value = e.data?.error || t('failed_to_load_todos')
     } else {
-      error.value = 'Unknown error'
+      error.value = t('unknown_error')
     }
   } finally {
     loading.value = false
@@ -108,9 +108,5 @@ const deleteTodo = (todoId: number) => {
   flex-direction: column;
   gap: 0.75rem;
   max-width: var(--uranus-dashboard-content-width);
-}
-
-.todo-dashboard-view__error {
-  max-width: 600px;
 }
 </style>

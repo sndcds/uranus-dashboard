@@ -18,8 +18,8 @@
 :root {
   color-scheme: light;
 
-  --uranus-font-ui: 'Avenir', 'Google Sans', 'Helvetica Neue', 'Inter', 'Arial', sans-serif;
-  --uranus-font-text: 'Avenir', 'Google Sans', 'Helvetica Neue', 'Inter', 'Arial', sans-serif;
+  --uranus-font-ui: 'Inter', 'Helvetica Neue', 'Avenir', 'Arial', sans-serif;
+  --uranus-font-text: 'Inter', 'Helvetica Neue', 'Avenir', 'Arial', sans-serif;
 
   --uranus-hue: 266;
   --uranus-active-hue: 286;
@@ -314,13 +314,13 @@
 }
 
 body {
+  font-family: var(--uranus-font-ui) !important;
   width: 100%;
   height: 100%;
   margin: 0;
   min-height: 100dvh;
   background-color: var(--uranus-bg);
   color: var(--uranus-color);
-  font-family: 'Avenir', 'Google Sans', 'Helvetica Neue', 'Inter', 'Arial', sans-serif;
 }
 
 a {
@@ -347,10 +347,11 @@ button {
 
 select {
   width: 100%;
+  font-family: var(--uranus-font-ui) !important;
+  font-size: 1rem;
   padding: 0.5rem 2rem 0.5rem 0.5rem;
   border-radius: var(--uranus-input-border-radius);
   border: 1px solid var(--uranus-input-border-color) !important;
-  font-size: 1rem;
   appearance: none; /* Remove native arrow */
   background-color: var(--uranus-input-bg);
 
@@ -377,13 +378,13 @@ header {
 }
 
 .uranus-input {
-  font-weight: 400;
+  font-family: var(--uranus-font-ui) !important;
+  font-size: 1rem;
   height: var(--uranus-input-height);
   width: 100%;
   border: var(--uranus-input-border-width) solid var(--uranus-input-border-color) !important;
   border-radius: var(--uranus-input-border-radius);
   padding: 0.5em;
-  font-size: 1rem;
 
   &:focus {
     outline: 2px solid var(--uranus-focus-color);
@@ -412,7 +413,6 @@ header {
 }
 
 .uranus-md-editor {
-
 }
 
 .uranus-main-content {
