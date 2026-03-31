@@ -22,6 +22,7 @@ import UranusInviteActivateView from '@/view/UranusInviteActivateView.vue'
 import UranusOrganizationTeamView from '@/component/organization/view/UranusOrganizationTeamView.vue'
 import UranusOrganizationMemberPermissionView from '@/view/UranusOrganizationMemberPermissionView.vue'
 import UranusEventsView from '@/view/public/UranusEventsView.vue'
+import UranusEventCalendarView from '@/view/public/UranusEventCalendarView.vue'
 import UranusEventSlideshowView from '@/view/public/UranusEventSlideshowView.vue'
 import UranusDevThemeView from '@/view/dev/UranusDevThemeView.vue'
 
@@ -196,6 +197,12 @@ const routes = [
                 path: 'map',
                 name: 'map',
                 component: UranusMapView,
+                meta: { layoutMode: 'zero-padding' },
+            },
+            {
+                path: 'calendar-demo',
+                name: 'calendar-demo',
+                component: UranusEventCalendarView,
                 meta: { layoutMode: 'zero-padding' },
             },
             {
