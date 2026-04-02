@@ -76,6 +76,11 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Upload images and logos for your venue.',
         da: 'Upload billeder og logoer for dit spillested.',
     },
+    create_venue: {
+        de: 'Spielstätte erstellen',
+        en: 'Create venue',
+        da: 'Opret spillested',
+    }
 }
 
 export default uranusI18nVenueTranslations

@@ -44,10 +44,7 @@ import { useUranusOrganizationStore } from '@/store/uranusOrganizationStore.ts'
 const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const orgStore = useUranusOrganizationStore()
-
-const orgUuid = computed(() => {
-  return route.params.orgUuid
-})
+const orgUuid = computed(() => { return route.params.orgUuid as string})
 
 type TabKey = 'base' | 'map' | 'logo'
 const activeTab = ref<TabKey>('base')

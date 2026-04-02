@@ -1,6 +1,6 @@
 import { UranusImage } from '@/domain/image/UranusImage.ts'
 
-export interface UranusImageDTO {
+export interface ImageDTO {
     id?: number
     url?: string
     alt?: string
@@ -10,7 +10,7 @@ export interface UranusImageDTO {
     license?: number
 }
 
-export function mapUranusImageFromApi(dto: UranusImageDTO): UranusImage {
+export function mapUranusImageFromApi(dto: ImageDTO): UranusImage {
     return new UranusImage(
         dto.id ?? null,
         dto.url ?? null,

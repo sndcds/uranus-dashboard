@@ -3,7 +3,7 @@
   2026-03-30, Roald
 */
 
-import type { VenueListDTO, VenueListItemDTO, VenueListSpaceDTO } from '@/api/dto/venueListDTO.ts'
+import type { VenueListDto, VenueListItemDTO, VenueListSpaceDTO } from '@/api/dto/venueList.dto.ts'
 
 export interface VenueListSpace {
     uuid: string
@@ -87,7 +87,7 @@ export function mapVenueListItem(dto: VenueListItemDTO): VenueListItem {
     }
 }
 
-export function mapVenueList(dto: VenueListDTO): VenueList {
+export function mapVenueList(dto: VenueListDto): VenueList {
     return {
         uuid: dto.org_uuid,
         name: dto.org_name,
@@ -136,7 +136,7 @@ export function toVenueItemDTO(model: VenueListItem): VenueListItemDTO {
     }
 }
 
-export function toVenueListDTO(model: VenueList): VenueListDTO {
+export function toVenueListDTO(model: VenueList): VenueListDto {
     return {
         org_uuid: model.uuid,
         org_name: model.name,

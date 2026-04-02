@@ -5,29 +5,28 @@
 -->
 
 <template>
-  {{ venue.id }}
-  <section class="uranus-admin-edit-section venue-images-tab">
+  <section class="uranus-admin-edit-section">
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="main_photo"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="gallery_photo_1"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="gallery_photo_2"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="gallery_photo_3"
         :width="220"
     />
@@ -41,10 +40,4 @@ import { computed } from "vue";
 
 const store = useUranusVenueStore()
 const venue = computed(() => store.draft!)
-
-
 </script>
-
-
-<style lang="scss" scoped>
-</style>

@@ -29,7 +29,7 @@ export interface VenueListItemDTO {
     dark_theme_logo_uuid?: string | null
 }
 
-export interface VenueListDTO {
+export interface VenueListDto {
     org_uuid: string
     org_name: string
     total_upcoming_events: number

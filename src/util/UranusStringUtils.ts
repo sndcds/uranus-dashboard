@@ -4,13 +4,13 @@ export function uranusCapitalizeFirst(str: string) {
 
 /**
  * Replace placeholders in a string with values.
- * Example: "Hello {name}" with { name: "Alice" } => "Hello Alice"
+ * Example: "Hello ~~name~~" with { name: "Alice" } => "Hello Alice"
  */
 export function uranusStringInterpolate(
     template: string,
     values: Record<string, string | number | undefined | null>
 ): string {
-    return template.replace(/\{(\w+)\}/g, (_, key) => {
+    return template.replace(/~~(\w+)~~/g, (_, key) => {
         const val = values[key];
         // Convert undefined/null to empty string, otherwise use value
         return val != null ? String(val) : '';

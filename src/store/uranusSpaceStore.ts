@@ -1,29 +1,25 @@
 /*
     src/store/uranusSpaceStore.ts
-    2026-02-15, Roald
 */
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { UranusSpace } from '@/domain/space/UranusSpace.ts'
+import {
+    type SpaceModel,
+    fromApi,
+    createEmptySpace,
+} from '@/domain/space/space.model.ts'
 
 export const useUranusSpaceStore = defineStore('uranusSpace', () => {
-    const original = ref<UranusSpace | null>(null)
-    const draft = ref<UranusSpace | null>(null)
+    // ---------- State ----------
+    const original = ref<SpaceModel | null>(null)
+    const draft = ref<SpaceModel | null>(null)
 
     const loading = ref(false)
     const saving = ref(false)
     const error = ref<string | null>(null)
 
-    // Helpers
-
-    /** Safe deep clone that preserves BigInt */
-    function cloneSpace(space: UranusSpace): UranusSpace {
-        return new UranusSpace({ ...space })
-    }
-
-    // Getters
-
+    // ---------- Getters ----------
     const isLoaded = computed(() => !!draft.value)
 
     const isDirty = computed(() => {
@@ -55,10 +51,15 @@ export const useUranusSpaceStore = defineStore('uranusSpace', () => {
         return draft.value.areaSqm != null
     })
 
-    // Actions
+    // ---------- Helpers ----------
+    /** Safe deep clone for reactive usage */
+    function cloneSpace(space: SpaceModel): SpaceModel {
+        return { ...space }
+    }
 
+    // ---------- Actions ----------
     function loadFromApi(raw: any) {
-        const space = UranusSpace.fromApi(raw)
+        const space = fromApi(raw)
         if (!space) {
             error.value = 'Failed to map space'
             return
@@ -74,15 +75,14 @@ export const useUranusSpaceStore = defineStore('uranusSpace', () => {
     }
 
     function resetToEmpty(venueUuid: string) {
-        const empty = UranusSpace.empty()
+        const empty = createEmptySpace()
         empty.venueUuid = venueUuid
         original.value = empty
         draft.value = cloneSpace(empty)
         error.value = null
     }
 
-    // Domain mutations
-
+    // ---------- Domain mutations ----------
     function setBasicInfo(data: {
         name?: string
         spaceType?: string | null
@@ -111,18 +111,12 @@ export const useUranusSpaceStore = defineStore('uranusSpace', () => {
         if (data.accessibilityFlags !== undefined) draft.value.accessibilityFlags = data.accessibilityFlags
     }
 
-    function setFeatures(data: {
-        environmentalFeatures?: number | null
-        audioFeatures?: number | null
-        presentationFeatures?: number | null
-        lightingFeatures?: number | null
-        climateFeatures?: number | null
-        miscFeatures?: number | null
-    }) {
+    function setFeatures(data: Partial<Record<string, number | null>>) {
         if (!draft.value) return
         Object.assign(draft.value, data)
     }
 
+    // ---------- Expose ----------
     return {
         // State
         original,

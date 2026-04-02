@@ -145,8 +145,8 @@ const onChange = (event: Event) => {
   }
 
   .label-text {
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 400;
   }
 }
 </style>

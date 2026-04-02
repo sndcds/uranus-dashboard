@@ -5,7 +5,7 @@
 -->
 
 <template>
-  <section class="uranus-admin-edit-section venue-images-tab">
+  <section class="uranus-admin-edit-section">
     <UranusImageSlot
         context="venue"
         :contextUuid="venue.uuid"
@@ -44,10 +44,4 @@ import { computed } from "vue";
 
 const store = useUranusVenueStore()
 const venue = computed(() => store.draft!)
-
-
 </script>
-
-
-<style lang="scss" scoped>
-</style>

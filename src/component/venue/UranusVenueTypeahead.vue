@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import { apiBaseUrl } from '@/util/UranusUtils.ts'
-import type { UranusVenueSelectItemInfo } from '@/domain/venue/UranusVenue.ts'
+import type { UranusVenueSelectItemInfo } from '@/domain/venue/venue.model.ts'
 
 const props = defineProps<{
   selectedVenue: UranusVenueSelectItemInfo | null

@@ -346,6 +346,41 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Could not download the calendar file.',
         da: 'Kunne ikke downloade kalenderfilen.',
     },
+    settings: {
+        de: 'Einstellungen',
+        en: 'Settings',
+        da: 'Indstillinger',
+    },
+    opened_at: {
+        de: 'Eröffnet am',
+        en: 'Opened at',
+        da: 'Åbningsdato',
+    },
+    closed_at: {
+        de: 'Geschlossen am',
+        en: 'Closed at',
+        da: 'Lukkedato',
+    },
+    area_sqm: {
+        de: 'Fläche (m²)',
+        en: 'Area (m²)',
+        da: 'Areal (m²)',
+    },
+    building_level: {
+        de: 'Etage',
+        en: 'Level',
+        da: 'Etage',
+    },
+    total_capacity: {
+        de: 'Gesamtkapazität',
+        en: 'Total capacity',
+        da: 'Samlet kapacitet',
+    },
+    seating_capacity: {
+        de: 'Sitzplätze',
+        en: 'Seating capacity',
+        da: 'Siddepladser',
+    },
 }
 
 export default uranusI18nStandardTranslations

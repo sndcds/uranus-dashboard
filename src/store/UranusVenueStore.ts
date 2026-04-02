@@ -1,25 +1,25 @@
 /*
     src/store/uranusVenueStore.ts
-
-    2026-02-10, Roald
+    2026-04-02, refactored
 */
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { UranusVenue } from '@/domain/venue/UranusVenue.ts'
+import { type VenueModel, fromApi, createEmptyVenue } from '@/domain/venue/venue.model.ts'
 
 export const useUranusVenueStore = defineStore('uranusVenue', () => {
     // State
-    const original = ref<UranusVenue | null>(null)
-    const draft = ref<UranusVenue | null>(null)
+    const original = ref<VenueModel | null>(null)
+    const draft = ref<VenueModel | null>(null)
 
     const loading = ref(false)
     const saving = ref(false)
     const error = ref<string | null>(null)
 
     // Helpers
-    function cloneVenue(venue: UranusVenue): UranusVenue {
-        return new UranusVenue(JSON.parse(JSON.stringify(venue)))
+    /** Safe deep clone for reactive objects */
+    function cloneVenue(venue: VenueModel): VenueModel {
+        return JSON.parse(JSON.stringify(venue))
     }
 
     // Getters
@@ -42,7 +42,7 @@ export const useUranusVenueStore = defineStore('uranusVenue', () => {
 
     // Actions
     function loadFromApi(raw: any) {
-        const venue = UranusVenue.fromApi(raw)
+        const venue = fromApi(raw)
         if (!venue) {
             error.value = 'Failed to map venue'
             return
@@ -58,7 +58,7 @@ export const useUranusVenueStore = defineStore('uranusVenue', () => {
     }
 
     function resetToEmpty() {
-        const empty = UranusVenue.empty()
+        const empty = createEmptyVenue()
         original.value = empty
         draft.value = cloneVenue(empty)
         error.value = null

@@ -113,7 +113,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { marked } from 'marked'
 import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'
-import type {UranusVenueSelectItemInfo} from '@/domain/venue/UranusVenue.ts'
+import type {UranusVenueSelectItemInfo} from '@/domain/venue/venue.model.ts'
 
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })

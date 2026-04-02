@@ -53,12 +53,8 @@
     </UranusFormRow>
 
     <UranusFormActions>
-      <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
-        {{ t('discard') }}
-      </UranusButton>
-      <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">
-        {{ t('save') }}
-      </UranusButton>
+      <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">{{ t('discard') }}</UranusButton>
+      <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">{{ t('save') }}</UranusButton>
     </UranusFormActions>
 
   </UranusForm>

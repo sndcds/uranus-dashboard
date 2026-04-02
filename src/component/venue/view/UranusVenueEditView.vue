@@ -35,7 +35,6 @@
   </template>
 </template>
 
-
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
@@ -45,14 +44,10 @@ import VenueMapTab from '@/component/venue/editor/UranusVenueMapTab.vue'
 import UranusVenueLogoTab from '@/component/venue/editor/UranusVenueLogoTab.vue'
 import UranusVenueImageTab from '@/component/venue/editor/UranusVenueImageTab.vue'
 import { useUranusVenueStore } from '@/store/UranusVenueStore.ts'
-import type { UranusVenueDTO } from '@/api/dto/UranusVenueDTO.ts'
 
 const route = useRoute()
 const venueStore = useUranusVenueStore()
-
-const venueUuid = computed(() => {
-  return route.params.venueUuid
-})
+const venueUuid = computed(() => { return route.params.venueUuid as string })
 
 type TabKey = 'base' | 'map' | 'logos' | 'images'
 const activeTab = ref<TabKey>('base')

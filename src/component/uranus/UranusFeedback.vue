@@ -24,8 +24,19 @@ const feedbackClass = computed(() => [
   props.type ? `feedback--${props.type}` : 'feedback--error'
 ])
 
-// Decide whether to render
-const hasContent = computed(() => props.show ?? !!(slots.default && slots.default().length))
+const hasContent = computed(() => {
+  if (props.show !== undefined) return props.show
+  const slot = slots.default?.()
+  if (!slot || slot.length === 0) return false
+  // Check if any vnode has text or children
+  return slot.some(node => {
+    // string content
+    if (typeof node.children === 'string') return !!node.children.trim()
+    // nested nodes
+    if (Array.isArray(node.children)) return node.children.length > 0
+    return false
+  })
+})
 </script>
 
 <style scoped>

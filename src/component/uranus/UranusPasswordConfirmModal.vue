@@ -1,14 +1,12 @@
 <template>
-  <UranusModal
-      :show="show"
-      :title="title"
-      max-width="520px"
-      @close="$emit('cancel')"
-  >
+  <UranusModal :show="show" :title="title" max-width="520px" @close="$emit('cancel')">
     <form :id="formId" @submit.prevent="handleSubmit" class="uranus-form">
       <span class="form-label">{{ question }}</span>
 
-      <!-- Option Selection -->
+      <UranusFeedback :show="!!props.error" type="error">
+        {{ props.error }}
+      </UranusFeedback>
+
       <UranusFormRow v-if="options?.length" class="options">
         <UranusRadioButton
             v-for="opt in options"
@@ -22,7 +20,6 @@
         </UranusRadioButton>
       </UranusFormRow>
 
-      <!-- Password Input -->
       <UranusFormRow>
         <UranusPasswordInput
             v-model="password"
@@ -31,14 +28,10 @@
             :label="t('enter_password_to_confirm')"
         />
       </UranusFormRow>
-
-      <UranusFeedback v-if="error" type="error">
-        {{ error }}
-      </UranusFeedback>
     </form>
 
     <template #actions>
-      <div class="modal-actions">
+      <div class="actions">
         <UranusButton type="button" @click="$emit('cancel')">
           {{ t('cancel') }}
         </UranusButton>
@@ -59,9 +52,11 @@ import UranusRadioButton from '@/component/ui/UranusRadioButton.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusPasswordInput from '@/component/ui/UranusPasswordInput.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 
-const { t, locale } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
+
+const localError = ref('')
 
 interface Option {
   label: string
@@ -73,15 +68,14 @@ interface Props {
   title: string
   confirmText: string
   loadingText: string
-  error?: string
   isSubmitting?: boolean
   // Flexible mode: either single confirmation or multiple options
+  error: string
   question?: string
   options?: Option[] | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  locationError: '',
   isSubmitting: false,
   question: '',
   options: null,
@@ -105,7 +99,7 @@ watch(() => props.show, (newValue) => {
   }
 })
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const payload: { password: string; selectedOption?: string | number } = {
     password: password.value,
   }
@@ -114,12 +108,17 @@ const handleSubmit = () => {
     payload.selectedOption = selectedOption.value
   }
 
-  emit('confirm', payload)
+  try {
+    // Await the parent handler
+    await emit('confirm', payload)
+    localError.value = ''
+  } catch (err: any) {
+    // Show error inside UranusFeedback
+    localError.value = err.message || t('unexpected_error')
+  }
 }
 
-
 </script>
-
 <style scoped lang="scss">
 .uranus-form {
   display: flex;
@@ -127,14 +126,13 @@ const handleSubmit = () => {
   gap: 1rem;
 }
 
-.modal-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-}
-
 .options {
   display: flex;
   flex-direction: column;
+}
+
+.actions {
+  display: flex;
+  gap: 0.6rem;
 }
 </style>

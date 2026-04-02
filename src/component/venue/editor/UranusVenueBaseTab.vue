@@ -54,12 +54,8 @@
     </UranusFormRow>
 
     <UranusFormActions>
-      <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
-        {{ t('discard') }}
-      </UranusButton>
-      <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">
-        {{ t('save') }}
-      </UranusButton>
+      <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">{{ t('discard') }}</UranusButton>
+      <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">{{ t('save') }}</UranusButton>
     </UranusFormActions>
 
   </UranusForm>
@@ -71,7 +67,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useUranusVenueStore } from '@/store/UranusVenueStore.ts'
-import type { UranusVenue } from '@/domain/venue/UranusVenue'
+import type { VenueModel } from '@/domain/venue/venue.model.ts'
 import UranusCountrySelect from '@/component/select/UranusCountrySelect.vue'
 import UranusStateSelect from "@/component/select/UranusStateSelect.vue";
 import UranusVenueTypeSelect from "@/component/select/UranusVenueTypeSelect.vue";
@@ -111,8 +107,8 @@ const isDirty = computed(() => {
 
 
 function buildPayload(
-    draft: UranusVenue,
-    original: UranusVenue
+    draft: VenueModel,
+    original: VenueModel
 ) {
   const payload: Record<string, any> = {}
 
@@ -140,7 +136,7 @@ function buildPayload(
   return payload
 }
 
-function copyFields(source: UranusVenue, target: UranusVenue) {
+function copyFields(source: VenueModel, target: VenueModel) {
   target.name = source.name ?? null
   target.description = source.description ?? null
   target.type = source.type ?? null

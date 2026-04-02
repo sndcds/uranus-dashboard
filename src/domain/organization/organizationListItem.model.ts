@@ -1,6 +1,5 @@
 /*
-  OrganizationListItem domain module
-  2026-03-30, Roald
+    src/domain/organization/organizationListItem.model.ts
 */
 
 import type { UranusOrganizationListItemDTO } from '@/api/dto/organizationListItem.dto.ts'

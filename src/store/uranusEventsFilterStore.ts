@@ -4,7 +4,7 @@
 
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
-import type { UranusVenueSelectItemInfo } from '@/domain/venue/UranusVenue'
+import type { UranusVenueSelectItemInfo } from '@/domain/venue/venue.model.ts'
 
 export interface UranusEventsFilter {
     categories: number[] | null

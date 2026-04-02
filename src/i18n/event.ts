@@ -227,11 +227,6 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Unknown license',
         da: 'Ukendt licens',
     },
-    event_building_level_label: {
-        de: 'Etage',
-        en: 'Level',
-        da: 'Etage',
-    },
     event_seating_capacity_label: {
         de: 'Sitzplatzkapazität',
         en: 'Seating capacity',

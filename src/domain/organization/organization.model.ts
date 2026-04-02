@@ -1,6 +1,5 @@
 /*
-  Organization domain module
-  2026-03-30, Roald
+    src/domain/organization/organization.model.ts
 */
 
 import type { OrganizationDto } from '@/api/dto/organization.dto.ts'

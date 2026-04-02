@@ -15,16 +15,9 @@
   <div v-else-if="spaceStore.error">{{ spaceStore.error }}</div>
 
   <template v-else-if="spaceStore.isLoaded">
-    <header class="editor-header">
-      <h1 class="uranus-admin-page-title">Space Editor</h1>
-      <p>
-        Space: {{ spaceStore.draft?.name }} /
-        #{{ spaceId }}
-        <span v-if="venueId"> (Venue #{{ venueId }})</span>
-      </p>
-    </header>
+    <h1 class="uranus-admin-page-title">Space Editor</h1>
+    <p>{{ spaceStore.draft?.name }}</p>
 
-    <!-- tabs -->
     <nav class="tabs">
       <button
           v-for="tab in tabs"
@@ -46,66 +39,50 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
-
 import SpaceBaseTab from '@/component/space/editor/UranusSpaceBaseTab.vue'
-import SpaceCapacityTab from '@/component/space/editor/UranusSpaceCapacityTab.vue'
 import SpaceAccessibilityTab from '@/component/space/editor/UranusSpaceAccessibilityTab.vue'
-import SpaceFeaturesTab from '@/component/space/editor/UranusSpaceFeaturesTab.vue'
-
 import { useUranusSpaceStore } from '@/store/uranusSpaceStore.ts'
-import type { UranusSpaceDTO } from '@/api/dto/UranusSpaceDTO.ts'
+import type { SpaceDto } from '@/api/dto/space.dto.ts'
 
 const route = useRoute()
 const spaceStore = useUranusSpaceStore()
+const spaceUuid = computed(() => { return route.params.spaceUuid as string })
+const venueUuid = computed(() => route.params.venueUuid as string)
 
-const spaceId = computed(() => {
-  const id = Number(route.params.spaceId)
-  return Number.isFinite(id) ? id : null
-})
-
-const venueId = computed(() => {
-  const id = Number(route.params.venueId)
-  return Number.isFinite(id) ? id : null
-})
-
-type TabKey = 'base' | 'capacity' | 'accessibility' | 'features'
+type TabKey = 'base' | 'accessibility'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
   { key: 'base', label: 'Base' },
-  { key: 'capacity', label: 'Capacity' },
   { key: 'accessibility', label: 'Accessibility' },
-  { key: 'features', label: 'Features' },
 ] as const
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
     case 'base': return SpaceBaseTab
-    case 'capacity': return SpaceCapacityTab
     case 'accessibility': return SpaceAccessibilityTab
-    case 'features': return SpaceFeaturesTab
     default: return SpaceBaseTab
   }
 })
 
 onMounted(async () => {
   // Create Mode
-  if (!spaceId.value) {
-    if (!venueId.value) {
+  if (!spaceUuid.value) {
+    if (!venueUuid.value) {
       spaceStore.resetToEmpty(null as any)
-      spaceStore.error = 'Missing venueId for new space'
+      spaceStore.error = 'Missing venueUuid for new space'
       return
     }
 
-    spaceStore.resetToEmpty(venueId.value)
+    spaceStore.resetToEmpty(venueUuid.value)
     return
   }
 
   // Edit Mode
   spaceStore.loading = true
   try {
-    const apiPath = `/api/admin/space/${spaceId.value}`
-    const response = await apiFetch<{ data: UranusSpaceDTO }>(apiPath)
+    const apiPath = `/api/admin/space/${spaceUuid.value}`
+    const response = await apiFetch<{ data: SpaceDto }>(apiPath)
     spaceStore.loadFromApi(response.response.data)
   } catch (e) {
     spaceStore.error = 'Failed to load space'

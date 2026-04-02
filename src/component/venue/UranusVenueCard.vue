@@ -73,21 +73,21 @@
     </section>
 
     <UranusPasswordConfirmModal
-      :show="showDeleteModal"
-      :title="t('confirm_delete_venue')"
-      :question="t('confirm_delete_venue_description', { name: pendingVenueName })"
-      :confirm-text="t('venue_delete')"
-      :loading-text="t('deleting')"
-      :error="deleteError"
-      :is-submitting="isDeleting"
-      @confirm="confirmDelete"
-      @cancel="cancelDelete"
+        :show="showDeleteVenueModal"
+        :title="t('confirm_delete_venue')"
+        :question="getConfirmDeleteDescription(pendingVenueName)"
+        :confirm-text="t('venue_delete')"
+        :loading-text="t('deleting')"
+        :error="deleteVenueError"
+        :is-submitting="isDeletingVenue"
+        @confirm="confirmDeleteVenue"
+        @cancel="cancelDeleteVenue"
     />
 
     <UranusPasswordConfirmModal
       :show="showDeleteSpaceModal"
       :title="t('confirm_delete_space')"
-      :question="t('confirm_delete_space_description', { name: pendingSpaceName })"
+      :question="getConfirmDeleteDescription(pendingSpaceName)"
       :confirm-text="t('delete_space')"
       :loading-text="t('deleting')"
       :error="deleteSpaceError"
@@ -102,13 +102,14 @@
 import { ref } from 'vue'
 import { useI18n } from "vue-i18n"
 import { apiFetch } from '@/api.ts'
-import { type VenueListItem } from '@/domain/organization/venueList.ts'
+import {type VenueListItem, type VenueListSpace} from '@/domain/organization/venueList.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import PlutoImage from '@/component/pluto/PlutoImage.vue'
+import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
 
 const { t } = useI18n()
 
@@ -121,9 +122,9 @@ const emit = defineEmits<{
   deleted: [venueId: string]
 }>()
 
-const showDeleteModal = ref(false)
-const deleteError = ref('')
-const isDeleting = ref(false)
+const showDeleteVenueModal = ref(false)
+const deleteVenueError = ref('Hello')
+const isDeletingVenue = ref(false)
 const pendingVenueUuid = ref<string | null>(null)
 const pendingVenueName = ref('')
 const showDeleteSpaceModal = ref(false)
@@ -132,26 +133,31 @@ const isDeletingSpace = ref(false)
 const pendingSpaceUuid = ref<string | null>(null)
 const pendingSpaceName = ref('')
 
+function getConfirmDeleteDescription(name: string): string {
+  const template = t('confirm_delete_description');
+  return uranusStringInterpolate(template, {name});
+}
+
 const onDeleteEvent = (venue: VenueListItem) => {
   if (!venue.canDeleteVenue) return
   pendingVenueUuid.value = venue.uuid
   pendingVenueName.value = venue.name
-  deleteError.value = ''
-  showDeleteModal.value = true
+  deleteVenueError.value = ''
+  showDeleteVenueModal.value = true
 }
 
-const cancelDelete = () => {
-  showDeleteModal.value = false
-  deleteError.value = ''
+const cancelDeleteVenue = () => {
+  showDeleteVenueModal.value = false
+  deleteVenueError.value = ''
   pendingVenueUuid.value = null
   pendingVenueName.value = ''
 }
 
-const confirmDelete = async ({ password }: { password: string }) => {
+const confirmDeleteVenue = async ({ password }: { password: string }) => {
   if (!pendingVenueUuid.value) return
 
-  deleteError.value = ''
-  isDeleting.value = true
+  deleteVenueError.value = ''
+  isDeletingVenue.value = true
 
   try {
     await apiFetch(`/api/admin/venue/${pendingVenueUuid.value}`, {
@@ -160,24 +166,29 @@ const confirmDelete = async ({ password }: { password: string }) => {
     })
 
     emit('deleted', pendingVenueUuid.value)
-    cancelDelete()
+    cancelDeleteVenue()
   } catch (err: unknown) {
-    console.error('Failed to delete venue:', err)
-    const status = typeof err === 'object' && err !== null ? (err as { status?: number }).status : undefined
+    const status =
+        typeof err === 'object' && err !== null
+            ? (err as { status?: number }).status
+            : undefined
+
     if (status === 401 || status === 403) {
-      deleteError.value = t('incorrect_password')
+      deleteVenueError.value = t('incorrect_password')
     } else {
-      deleteError.value = t('failed_to_delete_venue')
+      deleteVenueError.value = t('failed_to_delete_venue')
     }
+
+    // NO throw here — just set the error for the modal
   } finally {
-    isDeleting.value = false
+    isDeletingVenue.value = false
   }
 }
 
-const requestDeleteSpace = (spaceInfo: any) => {
+const requestDeleteSpace = (space: VenueListSpace) => {
   if (!props.venueListItem.canDeleteSpace) return
-  pendingSpaceUuid.value = spaceInfo.spaceUuid
-  pendingSpaceName.value = spaceInfo.spaceName
+  pendingSpaceUuid.value = space.uuid
+  pendingSpaceName.value = space.name
   deleteSpaceError.value = ''
   showDeleteSpaceModal.value = true
 }
