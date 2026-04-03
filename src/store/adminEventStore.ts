@@ -6,12 +6,13 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { UranusAdminEvent } from '@/domain/event/UranusAdminEvent.ts'
+import { type AdminEventModel } from '@/domain/event/adminEvent.model.ts'
+import { fromApi } from '@/domain/event/adminEvent.model.ts'
 
 export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
     // State
-    const original = ref<UranusAdminEvent | null>(null)
-    const draft = ref<UranusAdminEvent | null>(null)
+    const original = ref<AdminEventModel | null>(null)
+    const draft = ref<AdminEventModel | null>(null)
 
     const loading = ref(false)
     const saving = ref(false)
@@ -19,9 +20,8 @@ export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
 
 
     // Helpers
-    function cloneEvent(event: UranusAdminEvent): UranusAdminEvent {
-        // safest clone for class-based models
-        return new UranusAdminEvent(structuredClone(event))
+    function cloneEvent(event: AdminEventModel): AdminEventModel {
+        return structuredClone(event)
     }
 
     // Getters
@@ -49,7 +49,7 @@ export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
     })
 
     function loadFromApi(raw: any) {
-        const event = UranusAdminEvent.fromApi(raw)
+        const event = fromApi(raw)
         if (!event) {
             error.value = 'Failed to map event'
             return

@@ -7,6 +7,9 @@ import { ref, watch, onMounted, onBeforeUnmount, toRaw } from 'vue'
 import type { FeatureCollection } from 'geojson'
 import maplibregl, { Popup, type LngLatLike } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import { useThemeStore } from '@/store/uranusThemeStore.ts'
+
+const themeStore = useThemeStore()
 
 // Props
 const props = defineProps<{
@@ -230,6 +233,20 @@ onMounted(() => {
   document.addEventListener('keydown', handleKeyDown)
 
   if (!mapContainer.value) return
+
+  const map = new maplibregl.Map({
+    container: mapContainer.value,
+    style:
+        themeStore.theme === 'dark'
+            ? '/versatiles-dark-style.json'
+            : '/versatiles-style.json',
+    center: defaultCenter,
+    zoom: 12,
+    minZoom: 2,
+    maxZoom: 19
+  });
+
+/*
   const map = new maplibregl.Map({
     container: mapContainer.value,
     style: {
@@ -243,6 +260,8 @@ onMounted(() => {
     center: defaultCenter,
     zoom: defaultZoom
   })
+
+ */
 
   map.addControl(new maplibregl.NavigationControl())
   mapInstance.value = map

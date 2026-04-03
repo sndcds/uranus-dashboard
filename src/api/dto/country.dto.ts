@@ -1,11 +1,13 @@
-// src/api/dto/UranusCountryDTO.ts
+/*
+    src/api/dto/country.dto.ts
+ */
 
-export interface UranusCountryDTO {
+export interface CountryDTO {
     country_code: string
     country_name?: string | null
 }
 
-export interface UranusStateDTO {
+export interface CountryStateDTO {
     state_code: string
     state_name?: string | null
 }

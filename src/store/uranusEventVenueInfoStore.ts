@@ -1,37 +1,22 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { apiFetch } from '@/api.ts'
+import { type VenueInfo } from '@/domain/venue/venueInfo.model.ts'
+import type { VenueInfoDTO } from "@/api/dto/venueInfo.dto.ts";
 
-export interface UranusEventVenueInfo {
-    venueId: number
-    venueName: string
-    spaceId: number | null
-    spaceName: string | null
-    city: string
-    country: string
-}
-
-interface UranusEventVenueInfoDTO {
-    venue_id: number
-    venue_name: string
-    space_id: number | null
-    space_name: string | null
-    city: string
-    country: string
-}
 
 interface ChoosableVenuesApiResponse {
     data: {
         total_count: number
-        venueInfos: UranusEventVenueInfoDTO[]
+        venueInfos: VenueInfoDTO[]
     }
 }
 
-function mapVenue(dto: UranusEventVenueInfoDTO): UranusEventVenueInfo {
+function mapVenue(dto: VenueInfoDTO): VenueInfo {
     return {
-        venueId: dto.venue_id,
+        venueUuid: dto.venue_uuid,
         venueName: dto.venue_name,
-        spaceId: dto.space_id,
+        spaceUuid: dto.space_uuid,
         spaceName: dto.space_name,
         city: dto.city,
         country: dto.country,
@@ -41,7 +26,7 @@ function mapVenue(dto: UranusEventVenueInfoDTO): UranusEventVenueInfo {
 export const useUranusEventVenueInfoStore = defineStore(
     'uranusEventVenueInfo',
     () => {
-        const items = ref<UranusEventVenueInfo[]>([])
+        const items = ref<VenueInfo[]>([])
         const loading = ref(false)
         const error = ref<string | null>(null)
 
@@ -74,12 +59,12 @@ export const useUranusEventVenueInfoStore = defineStore(
             loading.value = false
         }
 
-        function getVenueLabel(venueId: number | null, spaceId: number | null): string {
-            if (!venueId) return ''
+        function getVenueLabel(venueUuid: string | null, spaceUuid: string | null): string {
+            if (!venueUuid) return ''
 
             const exact = items.value.find(v =>
-                v.venueId === venueId &&
-                (spaceId == null ? v.spaceId == null : v.spaceId === spaceId)
+                v.venueUuid === venueUuid &&
+                (spaceUuid == null ? v.spaceUuid == null : v.spaceUuid === spaceUuid)
             )
 
             if (exact) {
@@ -88,7 +73,7 @@ export const useUranusEventVenueInfoStore = defineStore(
                     : exact.venueName
             }
 
-            const venueOnly = items.value.find(v => v.venueId === venueId)
+            const venueOnly = items.value.find(v => v.venueUuid === venueUuid)
             return venueOnly ? venueOnly.venueName : ''
         }
 

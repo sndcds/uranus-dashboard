@@ -3,94 +3,98 @@
 -->
 
 <template>
-  <!-- Modal overlay -->
-  <div class="uranus-modal-backdrop uranus-form">
+  <div class="uranus-modal-backdrop">
     <UranusCard class="uranus-modal-card">
-      <h2>{{ title }}</h2>
+      <UranusForm class="uranus-form-wide" style="max-height: 800px;">
+        <h2>{{ title }}</h2>
 
-      {{ cacheBustedUrl }}
-      <!-- Image preview -->
-      <div class="uranus-image-preview" @click="onImageClick($event)">
-        <img
-            v-if="localImageMeta.url"
-            :src="cacheBustedUrl"
-            class="uranus-preview-img"
-        />
-        <div v-else class="uranus-no-img">{{ t('click_to_upload') }}</div>
-        <input
-            ref="fileInput"
-            type="file"
-            accept="image/*"
-            class="uranus-hidden-file"
-            @change="onFileSelected"
-        />
-        <div v-if="localImageMeta.focusX !== null && localImageMeta.focusY !== null"
-             class="focus-point"
-             :style="{ left: `${localImageMeta.focusX * 100}%`, top: `${localImageMeta.focusY * 100}%`}">
-        </div>
-      </div>
+        <UranusFormRow>
 
-      <!-- Metadata fields -->
-      <UranusFormRow>
-        <UranusTextfield
-            id="alt-text"
-            v-model="localImageMeta.alt_text as string"
-            :label="t('image_alt_text')"
-        />
-      </UranusFormRow>
+          <!-- TODO: dark mode, light mode -->
+          <div class="uranus-image-preview" @click="onImageClick($event)">
+            <img
+                v-if="localImageMeta.url"
+                :src="cacheBustedUrl"
+                class="uranus-preview-img"
+            />
+            <div v-else class="uranus-no-img">{{ t('click_to_upload') }}</div>
+            <input
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                class="uranus-hidden-file"
+                @change="onFileSelected"
+            />
+            <div v-if="localImageMeta.focusX !== null && localImageMeta.focusY !== null"
+                 class="focus-point"
+                 :style="{ left: `${localImageMeta.focusX * 100}%`, top: `${localImageMeta.focusY * 100}%`}">
+            </div>
+          </div>
+        </UranusFormRow>
 
-      <UranusFormRow>
-        <UranusTextfield
-            id="creator-name"
-            v-model="localImageMeta.creator as string"
-            :label="t('image_creator_name')"
-        />
-      </UranusFormRow>
+        <UranusFormRow>
+          <UranusTextfield
+              id="alt-text"
+              v-model="localImageMeta.alt_text as string"
+              :label="t('image_alt_text')"
+          />
+        </UranusFormRow>
 
-      <UranusFormRow>
-        <UranusTextfield
-            id="copyright"
-            v-model="localImageMeta.copyright as string"
-            :label="t('image_copyright')"
-        />
+        <UranusFormRow>
+          <UranusTextfield
+              id="creator-name"
+              v-model="localImageMeta.creator as string"
+              :label="t('image_creator_name')"
+          />
+        </UranusFormRow>
 
-        <UranusLicenseSelect
-            v-model="localImageMeta.licenseType"
-        />
+        <UranusFormRow :cols="2">
+          <UranusTextfield
+              id="copyright"
+              v-model="localImageMeta.copyright as string"
+              :label="t('image_copyright')"
+          />
 
-        <UranusTextfield
-            id="focus-x"
-            v-model.number="localImageMeta.focusX as number"
-            :label="t('image_focus_x')"
-        />
+          <UranusLicenseSelect
+              v-model="localImageMeta.licenseType"
+          />
+        </UranusFormRow>
 
-        <UranusTextfield
-            id="focus-y"
-            v-model.number="localImageMeta.focusY as number"
-            :label="t('image_focus_y')"
-        />
-      </UranusFormRow>
+        <UranusFormRow :cols="2">
+          <UranusTextfield
+              id="focus-x"
+              v-model.number="localImageMeta.focusX as number"
+              :label="t('image_focus_x')"
+          />
 
-      <UranusFormRow>
-        <UranusTextarea
-            id="description"
-            v-model="descriptionValue"
-            :label="t('image_description')"
-        />
-      </UranusFormRow>
+          <UranusTextfield
+              id="focus-y"
+              v-model.number="localImageMeta.focusY as number"
+              :label="t('image_focus_y')"
+          />
+        </UranusFormRow>
 
-      <!-- Actions -->
-      <UranusInlineActionBar style="margin-top:12px;">
-        <UranusInlineCancelButton
-            :label="t('cancel')"
-            :onClick="onCancel"
-        />
+        <UranusFormRow>
+          <UranusTextarea
+              id="description"
+              v-model="descriptionValue"
+              :label="t('image_description')"
+          />
+        </UranusFormRow>
 
-        <UranusInlineSaveButton
-            :label="t('save')"
-            :onClick="onSave"
-        />
-      </UranusInlineActionBar>
+        <!-- Actions -->
+        <UranusInlineActionBar style="margin-top:12px;">
+          <UranusInlineCancelButton
+              :label="t('cancel')"
+              :onClick="onCancel"
+          />
+
+          <UranusInlineSaveButton
+              :label="t('save')"
+              :onClick="onSave"
+          />
+        </UranusInlineActionBar>
+      </UranusForm>
     </UranusCard>
   </div>
 </template>
@@ -109,6 +113,7 @@ import UranusInlineActionBar from '@/component/ui/UranusInlineActionBar.vue'
 import UranusTextarea from '@/component/ui/UranusTextarea.vue'
 import UranusLicenseSelect from '@/component/select/UranusLicenseSelect.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusForm from "@/component/ui/UranusForm.vue";
 
 const props = defineProps<{
   addModeTitle?: string | null
@@ -287,6 +292,10 @@ onMounted(async () => {
   max-width: 600px;
   border-radius: 16px;
   padding: var(--uranus-dialog-padding);
+}
+
+.uranus-form {
+  background: red;
 }
 
 .uranus-image-preview {

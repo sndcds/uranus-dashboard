@@ -1,10 +1,10 @@
-import { UranusAdminEvent } from '@/domain/event/UranusAdminEvent.ts'
-import { type UranusAdminEventDTO } from '@/api/dto/UranusAdminEventDTO.ts'
-import type { UranusAdminEventDateDTO } from "@/api/dto/UranusAdminEventDateDTO.ts";
-import type { UranusAdminEventDate } from "@/domain/event/UranusAdminEventDate.ts";
+import { type AdminEventModel } from '@/domain/event/adminEvent.model.ts'
+import { type AdminEventDTO } from '@/api/dto/adminEvent.dto.ts'
+import type { AdminEventDateDTO } from "@/api/dto/adminEventDate.dto.ts";
+import type { AdminEventDateModel } from "@/domain/event/adminEventDate.model.ts";
+import { fromDTO } from '@/domain/event/adminEvent.model.ts'
 
-
-export function mapUranusAdminEvent(raw: any): UranusAdminEvent | null {
+export function mapUranusAdminEvent(raw: any): AdminEventModel | null {
     if (!raw || typeof raw !== 'object') return null
 
     let visitorInfoFlags = '0'
@@ -12,8 +12,8 @@ export function mapUranusAdminEvent(raw: any): UranusAdminEvent | null {
         visitorInfoFlags = raw.visitor_info_flags
     }
 
-    const dto: UranusAdminEventDTO = {
-        id: raw.id,
+    const dto: AdminEventDTO = {
+        uuid: raw.id,
         release_status: raw.release_status ?? null,
         release_date: raw.release_date ?? null,
         external_id: raw.external_id ?? null,
@@ -23,9 +23,9 @@ export function mapUranusAdminEvent(raw: any): UranusAdminEvent | null {
         content_language: raw.content_language ?? null,
         title: raw.title ?? '',
         subtitle: raw.subtitle ?? null,
-        organization_id: raw.organization_id ?? 0,
-        venue_id: raw.venue_id ?? null,
-        space_id: raw.space_id ?? null,
+        org_uuid: raw.organization_id ?? 0,
+        venue_uuid: raw.venue_uuid ?? null,
+        space_uuid: raw.space_uuid ?? null,
         categories: raw.categories ?? [],
         event_types: raw.event_types ?? [],
         tags: raw.tags ?? [],
@@ -49,15 +49,15 @@ export function mapUranusAdminEvent(raw: any): UranusAdminEvent | null {
         event_links: raw.event_links ?? [],
     }
 
-    return UranusAdminEvent.fromDTO(dto)
+    return fromDTO(dto)
 }
 
 export function mapAdminEventDateFromApi(
-    json: UranusAdminEventDateDTO
-): UranusAdminEventDate {
+    json: AdminEventDateDTO
+): AdminEventDateModel {
     return {
-        id: json.id,
-        eventId: json.event_id,
+        uuid: json.uuid,
+        eventUuid: json.event_uuid,
 
         startDate: json.start_date ?? null,
         startTime: json.start_time ?? null,
@@ -68,25 +68,25 @@ export function mapAdminEventDateFromApi(
         duration: json.duration ?? null,
         accessibilityInfo: json.accessibility_info ?? null,
 
-        venueId: json.venue_id ?? null,
-        spaceId: json.space_id ?? null,
+        venueUuid: json.venue_uuid ?? null,
+        spaceUuid: json.space_uuid ?? null,
         allDay: json.all_day ?? null
     }
 }
 
 export function mapAdminEventDatesFromApi(
-    raw: UranusAdminEventDateDTO[] | null | undefined
-): UranusAdminEventDate[] {
+    raw: AdminEventDateDTO[] | null | undefined
+): AdminEventDateModel[] {
     if (!raw) return []
     return raw.map(mapAdminEventDateFromApi)
 }
 
 export function mapAdminEventDateToApi(
-    date: UranusAdminEventDate
-): UranusAdminEventDateDTO {
+    date: AdminEventDateModel
+): AdminEventDateDTO {
     return {
-        id: date.id,
-        event_id: date.eventId,
+        uuid: date.uuid,
+        event_uuid: date.eventUuid,
 
         start_date: date.startDate ?? null,
         start_time: date.startTime ?? null,
@@ -97,14 +97,14 @@ export function mapAdminEventDateToApi(
         duration: date.duration ?? null,
         accessibility_info: date.accessibilityInfo ?? null,
 
-        venue_id: date.venueId ?? null,
-        space_id: date.spaceId ?? null,
+        venue_uuid: date.venueUuid ?? null,
+        space_uuid: date.spaceUuid ?? null,
     }
 }
 
 export function mapAdminEventDatesToApi(
-    dates: UranusAdminEventDate[] | null | undefined
-): UranusAdminEventDateDTO[] {
+    dates: AdminEventDateModel[] | null | undefined
+): AdminEventDateDTO[] {
     if (!dates) return []
     return dates.map(mapAdminEventDateToApi)
 }

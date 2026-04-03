@@ -1,4 +1,4 @@
-export interface OrganizationDto {
+export interface OrganizationDTO {
     uuid: string | null
     name: string
     description?: string | null

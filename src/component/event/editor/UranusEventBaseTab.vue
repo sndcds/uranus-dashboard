@@ -1,7 +1,5 @@
 <!--
-  src/component/event/editor/AdminEventBaseTab.vue
-
-  2026-02-13, Roald
+  src/component/event/editor/UranusEventBaseTab.vue
 -->
 
 <template>
@@ -17,7 +15,7 @@
 
       <UranusImageSlot
           context="event"
-          :contextUuid="event.id"
+          :contextUuid="event.uuid"
           identifier="main"
           :width="420"
       />
@@ -83,13 +81,13 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 
 import UranusLanguageSelect from '@/component/ui/UranusLanguageSelect.vue'
 import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
 import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
 
-import type { UranusAdminEvent } from '@/domain/event/UranusAdminEvent.ts'
+import type { AdminEventModel } from '@/domain/event/adminEvent.model.ts'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
@@ -142,7 +140,7 @@ const isDirty = computed(() => {
 })
 
 // Build payload for API
-function buildPayload(draft: UranusAdminEvent, original: UranusAdminEvent) {
+function buildPayload(draft: AdminEventModel, original: AdminEventModel) {
   const payload: Record<string, any> = {}
 
   if (draft.releaseStatus !== original.releaseStatus) payload.release_status = draft.releaseStatus
@@ -169,7 +167,7 @@ async function commitBaseTab() {
     const payload = buildPayload(draft, original)
     if (Object.keys(payload).length === 0) return
 
-    const apiPath = `/api/admin/event/${draft.id}/fields`
+    const apiPath = `/api/admin/event/${draft.uuid}/fields`
     await apiFetch(apiPath, {
       method: 'PUT',
       body: JSON.stringify(payload),

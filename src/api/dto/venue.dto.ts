@@ -4,7 +4,7 @@
     2026-02-10, Roald
 */
 
-export interface VenueDto {
+export interface VenueDTO {
     uuid: string | null
     org_uuid: string | null
     name: string

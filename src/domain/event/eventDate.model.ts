@@ -22,7 +22,7 @@ export interface EventDateModel {
     seatingCapacity: number | null
     buildingLevel: number | null
 
-    venueId: number | null
+    venueUuid: string | null
     venueName: string | null
     venueStreet: string | null
     venueHouseNumber: string | null
@@ -40,7 +40,7 @@ export interface EventDateModel {
     venueLightThemeLogoUrl: string | null
     venueDarkThemeLogoUrl: string | null
 
-    spaceId: number | null
+    spaceUuid: string | null
     spaceName: string | null
     spaceWebsite: string | null
 }
@@ -71,7 +71,7 @@ export function mapEventDate(dto: any): EventDateModel {
         seatingCapacity: dto.seating_capacity ?? null,
         buildingLevel: dto.building_level ?? null,
 
-        venueId: dto.venue_id ?? null,
+        venueUuid: dto.venue_uuid ?? null,
         venueName: dto.venue_name ?? null,
         venueStreet: dto.venue_street ?? null,
         venueHouseNumber: dto.venue_house_number ?? null,
@@ -89,7 +89,7 @@ export function mapEventDate(dto: any): EventDateModel {
         venueLightThemeLogoUrl: dto.venue_light_theme_logo_url ?? null,
         venueDarkThemeLogoUrl: dto.venue_dark_theme_logo_url ?? null,
 
-        spaceId: dto.space_id ?? null,
+        spaceUuid: dto.space_uuid ?? null,
         spaceName: dto.space_name ?? null,
         spaceWebsite: dto.space_web_url ?? null,
     }

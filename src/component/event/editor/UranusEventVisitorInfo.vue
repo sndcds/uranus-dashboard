@@ -1,5 +1,5 @@
 <!--
-  src/component/event/editor/UranusEventVisitorInfosEditor.vue
+  src/component/event/editor/UranusEventVisitorInfo.vue
 -->
 
 <template>
@@ -38,7 +38,7 @@ import { apiFetch } from '@/api.ts'
 import { useI18n } from 'vue-i18n'
 import UranusBigIntFlagsEditor from '@/component/uranus/UranusBigIntFlagsEditor.vue'
 import { uranusI18nVisitorInformationFlags } from '@/i18n/visitor-info.ts'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import {Save, Undo} from 'lucide-vue-next'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from "@/component/ui/UranusCard.vue";

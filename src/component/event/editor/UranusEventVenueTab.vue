@@ -1,9 +1,13 @@
+<!--
+  src/component/event/editor/UranusEventVenueTab.vue
+-->
+
 <template>
   <section class="venue-tab">
 
     <UranusCard class="event-venue">
       <h2 class="venue-name">
-        {{ t('venue') }}: <strong>{{ venueInfoStore.getVenueLabel(draft.venueId, draft.spaceId) }}</strong>
+        {{ t('venue') }}: <strong>{{ venueInfoStore.getVenueLabel(draft.venueUuid, draft.spaceUuid) }}</strong>
       </h2>
       <UranusButton variant="tertiary" size="small" :onclick="openVenueModal">
         {{ t('event_select_venue') }}
@@ -58,7 +62,7 @@
 import { onMounted, computed, ref } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { useI18n } from 'vue-i18n'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
 import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
@@ -78,25 +82,25 @@ const showModal = ref(false)
 const activeDraft = ref<typeof draft.value | null>(null)
 
 interface SelectedPlace {
-  venueId: number | null
-  spaceId: number | null
+  venueUuid: string | null
+  spaceUuid: string | null
 }
 
-const selectedPlace = ref<SelectedPlace>({ venueId: null, spaceId: null })
+const selectedPlace = ref<SelectedPlace>({ venueUuid: null, spaceUuid: null })
 
 function openVenueModal() {
   activeDraft.value = draft.value
   selectedPlace.value = {
-    venueId: draft.value?.venueId ?? null,
-    spaceId: draft.value?.spaceId ?? null,
+    venueUuid: draft.value?.venueUuid ?? null,
+    spaceUuid: draft.value?.spaceUuid ?? null,
   }
   showModal.value = true
 }
 
 function closeVenueModal() {
   if (activeDraft.value && selectedPlace.value) {
-    activeDraft.value.venueId = selectedPlace.value.venueId
-    activeDraft.value.spaceId = selectedPlace.value.spaceId
+    activeDraft.value.venueUuid = selectedPlace.value.venueUuid
+    activeDraft.value.spaceUuid = selectedPlace.value.spaceUuid
   }
   showModal.value = false
   activeDraft.value = null
@@ -111,8 +115,8 @@ const isDirty = computed(() => {
   const d = store.draft
   const o = store.original
   return (
-      (d.venueId ?? null) !== (o.venueId ?? null) ||
-      (d.spaceId ?? null) !== (o.spaceId ?? null) ||
+      (d.venueUuid ?? null) !== (o.venueUuid ?? null) ||
+      (d.spaceUuid ?? null) !== (o.spaceUuid ?? null) ||
       (d.meetingPoint ?? '') !== (o.meetingPoint ?? '') ||
       (d.onlineLink ?? '') !== (o.onlineLink ?? '')
   )
@@ -125,19 +129,19 @@ async function commitTab() {
 
   try {
     const payload = {
-      venue_id: draft.value.venueId,
-      space_id: draft.value.spaceId,
+      venue_uuid: draft.value.venueUuid,
+      space_uuid: draft.value.spaceUuid,
       meeting_point: draft.value.meetingPoint,
       online_link: draft.value.onlineLink,
     }
 
-    await apiFetch(`/api/admin/event/${draft.value.id}/venue`, {
+    await apiFetch(`/api/admin/event/${draft.value.uuid}/venue`, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })
 
-    store.original.venueId = draft.value.venueId
-    store.original.spaceId = draft.value.spaceId
+    store.original.venueUuid = draft.value.venueUuid
+    store.original.spaceUuid = draft.value.spaceUuid
     store.original.meetingPoint = draft.value.meetingPoint
     store.original.onlineLink = draft.value.onlineLink
   } catch (err) {
@@ -150,8 +154,8 @@ async function commitTab() {
 
 function resetTab() {
   if (!draft.value || !store.original) return
-  draft.value.venueId = store.original.venueId
-  draft.value.spaceId = store.original.spaceId
+  draft.value.venueUuid = store.original.venueUuid
+  draft.value.spaceUuid = store.original.spaceUuid
   draft.value.meetingPoint = store.original.meetingPoint
   draft.value.onlineLink = store.original.onlineLink
 }

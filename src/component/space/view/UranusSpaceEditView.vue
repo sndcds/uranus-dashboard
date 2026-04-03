@@ -42,7 +42,7 @@ import { apiFetch } from '@/api.ts'
 import SpaceBaseTab from '@/component/space/editor/UranusSpaceBaseTab.vue'
 import SpaceAccessibilityTab from '@/component/space/editor/UranusSpaceAccessibilityTab.vue'
 import { useUranusSpaceStore } from '@/store/uranusSpaceStore.ts'
-import type { SpaceDto } from '@/api/dto/space.dto.ts'
+import type { SpaceDTO } from '@/api/dto/space.dto.ts'
 
 const route = useRoute()
 const spaceStore = useUranusSpaceStore()
@@ -82,7 +82,7 @@ onMounted(async () => {
   spaceStore.loading = true
   try {
     const apiPath = `/api/admin/space/${spaceUuid.value}`
-    const response = await apiFetch<{ data: SpaceDto }>(apiPath)
+    const response = await apiFetch<{ data: SpaceDTO }>(apiPath)
     spaceStore.loadFromApi(response.response.data)
   } catch (e) {
     spaceStore.error = 'Failed to load space'

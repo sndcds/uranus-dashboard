@@ -7,7 +7,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { OrganizationModel } from '@/domain/organization/organization.model'
 import { mapOrganization, createEmptyOrganization } from '@/domain/organization/organization.model'
-import type { OrganizationDto } from '@/api/dto/organization.dto.ts'
+import type { OrganizationDTO } from '@/api/dto/organization.dto.ts'
 
 export const useUranusOrganizationStore = defineStore('uranusOrganization', () => {
     // State
@@ -39,7 +39,7 @@ export const useUranusOrganizationStore = defineStore('uranusOrganization', () =
     })
 
     // Actions
-    function loadFromApi(raw: OrganizationDto) {
+    function loadFromApi(raw: OrganizationDTO) {
         const org = mapOrganization(raw)
         original.value = org
         draft.value = cloneOrganization(org)

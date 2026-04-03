@@ -152,8 +152,8 @@ const resolveRouteParam = (param: string | string[] | undefined) =>
     Array.isArray(param) ? param[0] : param
 
 const loadVenue = async () => {
-  const venueId = Number(resolveRouteParam(route.params.id))
-  if (!venueId) {
+  const venueUuid = Number(resolveRouteParam(route.params.uuid))
+  if (!venueUuid) {
     loadError.value = t('error_missing_params')
     isLoading.value = false
     return
@@ -164,7 +164,7 @@ const loadVenue = async () => {
 
   try {
     const lang = locale.value || 'en'
-    const apiPath = `/api/venue/${venueId}?lang=${lang}`
+    const apiPath = `/api/venue/${venueUuid}?lang=${lang}`
     const response = await apiFetch<any>(apiPath)
     venue.value = response.response.data
   } catch (error: unknown) {

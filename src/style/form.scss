@@ -3,6 +3,11 @@
   flex-direction: column;
   gap: var(--uranus-grid-gap);
 
+  > * {
+    flex-shrink: 0;
+  }
+
+
   input, textarea {
     font-family: var(--uranus-font-ui) !important;
     font-size: 1rem;

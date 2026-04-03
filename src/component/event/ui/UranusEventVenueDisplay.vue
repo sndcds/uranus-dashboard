@@ -22,7 +22,7 @@
       </p>
     </template>
 
-    <template v-if="eventDate?.spaceId">
+    <template v-if="eventDate?.spaceUuid">
       <span class="uranus-public-event-info-label ">{{ t('venue_space') }}:</span>
       <p>{{ eventDate?.spaceName }}</p>
     </template>

@@ -7,7 +7,7 @@
 import { defineStore } from 'pinia'
 import { apiFetch } from '@/api.ts'
 import type { UranusApiResponse } from '@/model/uranusApiResponse.ts'
-import { type UranusCountryDTO } from '@/api/dto/UranusCountryDTO.ts'
+import { type CountryDTO } from '@/api/dto/country.dto.ts'
 
 
 // Map of code → name
@@ -32,7 +32,7 @@ export const useCountryLookupStore = defineStore('countryLookup', {
             try {
                 const results = await Promise.all(
                     languages.map(async (uiLang) => {
-                        const rawData = await apiFetch<UranusApiResponse<UranusCountryDTO[]>>(
+                        const rawData = await apiFetch<UranusApiResponse<CountryDTO[]>>(
                             `/api/choosable-countries?lang=${uiLang}`
                         )
                         const list = rawData.response?.data ?? []

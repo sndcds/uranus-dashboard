@@ -1,3 +1,7 @@
+<!--
+  src/component/event/editor/UranusEventTagsEditor.vue
+-->
+
 <template>
   <UranusCard class="tags-tab">
     <h2>{{ t('event_tags') }}</h2>
@@ -27,7 +31,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'

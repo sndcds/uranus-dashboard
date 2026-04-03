@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import { UranusEventLink } from '@/domain/event/UranusEventLink.ts'
 import { apiFetch } from '@/api.ts'
 import UranusLinkTypeSelect from '@/component/select/UranusLinkTypeSelect.vue'

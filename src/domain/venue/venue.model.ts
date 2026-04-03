@@ -3,7 +3,7 @@
     2026-04-02, refactored
 */
 
-import type { VenueDto } from '@/api/dto/venue.dto.ts'
+import type { VenueDTO } from '@/api/dto/venue.dto.ts'
 
 /**
  * Frontend-friendly venue model
@@ -41,7 +41,7 @@ export interface VenueModel {
 /**
  * Convert DTO → frontend model
  */
-export function mapVenue(dto: VenueDto): VenueModel {
+export function mapVenue(dto: VenueDTO): VenueModel {
     return {
         uuid: dto.uuid ?? null,
         orgUuid: dto.org_uuid ?? null,
@@ -75,7 +75,7 @@ export function mapVenue(dto: VenueDto): VenueModel {
 /**
  * Convert frontend model → DTO
  */
-export function toVenueDTO(model: VenueModel): VenueDto {
+export function toVenueDTO(model: VenueModel): VenueDTO {
     return {
         uuid: model.uuid,
         org_uuid: model.orgUuid ?? null,
@@ -145,5 +145,5 @@ export function createEmptyVenue(): VenueModel {
  */
 export function fromApi(raw: any): VenueModel | null {
     if (!raw) return null
-    return mapVenue(raw as VenueDto)
+    return mapVenue(raw as VenueDTO)
 }

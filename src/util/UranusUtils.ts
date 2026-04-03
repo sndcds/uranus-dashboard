@@ -292,10 +292,10 @@ export const formatEventDateTime = (date: EventDateModel, locale: string) => {
     }
 }
 
-export function buildVenueSpaceKey(venue_id: number | null, space_id: number | null): string {
-    if (venue_id === null || venue_id === undefined) return ""
-    if (space_id === null || space_id === undefined) return `${venue_id}`
-    return `${venue_id}_${space_id}`
+export function buildVenueSpaceKey(venue_uuid: string | null, space_uuid: string | null): string {
+    if (venue_uuid === null || venue_uuid === undefined) return ""
+    if (space_uuid === null || space_uuid === undefined) return `${venue_uuid}`
+    return `${venue_uuid}_${space_uuid}`
 }
 
 

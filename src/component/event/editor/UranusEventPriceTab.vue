@@ -1,7 +1,5 @@
 <!--
-  src/component/event/editor/AdminEventPriceTab.vue
-
-  2026-02-05, Roald
+  src/component/event/editor/UranusEventPriceTab.vue
 -->
 
 <template>
@@ -99,10 +97,10 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import UranusCurrencySelect from '@/component/ui/UranusCurrencySelect.vue'
 import { equalStringArrays } from '@/type/utils.ts'
-import type {UranusAdminEvent} from '@/domain/event/UranusAdminEvent.ts'
+import type {AdminEventModel} from '@/domain/event/adminEvent.model.ts'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
@@ -148,8 +146,8 @@ function parseFloatOrNull(e: Event): number | null {
 }
 
 function buildPayload(
-    draft: UranusAdminEvent,
-    original: UranusAdminEvent
+    draft: AdminEventModel,
+    original: AdminEventModel
 ) {
   const payload: Record<string, any> = {}
 

@@ -4,9 +4,9 @@
     2026-02-05, Roald
  */
 
-export interface UranusAdminEventDateDTO {
-    id: number
-    event_id: number
+export interface AdminEventDateDTO {
+    uuid: string
+    event_uuid: string
     start_date?: string | null
     start_time?: string | null
     end_date?: string | null
@@ -14,7 +14,7 @@ export interface UranusAdminEventDateDTO {
     entry_time?: string | null
     duration?: number | null
     accessibility_info?: string | null
-    venue_id?: number | null
-    space_id?: number | null
+    venue_uuid?: string | null
+    space_uuid?: string | null
     all_day?: boolean | null
 }

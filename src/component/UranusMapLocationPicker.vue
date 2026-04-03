@@ -132,7 +132,20 @@ const onMapClick = (e: maplibregl.MapMouseEvent) => {
 // Mount
 onMounted(() => {
   if (!mapContainer.value) return
+  const m = new maplibregl.Map({
+    container: mapContainer.value,
+    style: "/versatiles-style.json",
+    center: props.modelValue
+        ? [props.modelValue.lng, props.modelValue.lat]
+        : [13.405, 52.52],
+    zoom: 12,
+    minZoom: 2,
+    maxZoom: 19
+  });
 
+  m.addControl(new maplibregl.NavigationControl());
+
+/*
   const m = new maplibregl.Map({
     container: mapContainer.value,
     center: props.modelValue
@@ -151,11 +164,11 @@ onMounted(() => {
           tileSize: 256,
         },
       },
-      layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
+      layers: [{id: 'osm', type: 'raster', source: 'osm'}],
     },
   })
+ */
 
-  m.addControl(new maplibregl.NavigationControl())
   map.value = m
 
   m.on('load', () => {

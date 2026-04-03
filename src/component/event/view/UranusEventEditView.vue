@@ -1,9 +1,5 @@
 <!--
   src/view/admin/UranusEditEventView.vue
-
-  Uranus Event Editor
-
-  2026-02-05, Roald
 -->
 
 <template>
@@ -63,18 +59,18 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { getPreviousRoute } from '@/router'
 
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
-import { type UranusAdminEventDTO } from '@/api/dto/UranusAdminEventDTO.ts'
+import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
+import { type AdminEventDTO } from '@/api/dto/adminEvent.dto.ts'
 
-import AdminEventBaseTab from '@/component/event/editor/AdminEventBaseTab.vue'
-import AdminEventDatesTab from '@/component/event/editor/AdminEventDatesTab.vue'
-import AdminEventTagsTab from '@/component/event/editor/AdminEventTagsTab.vue'
+import UranusEventBaseTab from '@/component/event/editor/UranusEventBaseTab.vue'
+import UranusEventDatesTab from '@/component/event/editor/UranusEventDatesTab.vue'
+import UranusEventTagsTab from '@/component/event/editor/UranusEventTagsTab.vue'
 import UranusEventLinksTab from '@/component/event/editor/UranusEventLinksTabs.vue'
-import AdminEventParticipationTab from '@/component/event/editor/AdminEventParticipationTab.vue'
-import AdminEventVenueTab from '@/component/event/editor/AdminEventVenueTab.vue'
-import AdminEventPriceTab from '@/component/event/editor/AdminEventPriceTab.vue'
+import UranusEventParticipationTab from '@/component/event/editor/UranusEventParticipationTab.vue'
+import UranusEventVenueTab from '@/component/event/editor/UranusEventVenueTab.vue'
+import UranusEventPriceTab from '@/component/event/editor/UranusEventPriceTab.vue'
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
-import AdminEventVisitorInfo from '@/component/event/editor/AdminEventVisitorInfo.vue'
+import UranusEventVisitorInfo from '@/component/event/editor/UranusEventVisitorInfo.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 
 import { StepBack, Rocket } from 'lucide-vue-next'
@@ -122,16 +118,16 @@ const tabs = [
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
-    case 'dates': return AdminEventDatesTab
-    case 'venue': return AdminEventVenueTab
-    case 'tags': return AdminEventTagsTab
+    case 'dates': return UranusEventDatesTab
+    case 'venue': return UranusEventVenueTab
+    case 'tags': return UranusEventTagsTab
     case 'links': return UranusEventLinksTab
-    case 'participation': return AdminEventParticipationTab
-    case 'price': return AdminEventPriceTab
-    case 'visitor': return AdminEventVisitorInfo
+    case 'participation': return UranusEventParticipationTab
+    case 'price': return UranusEventPriceTab
+    case 'visitor': return UranusEventVisitorInfo
     case 'base':
     default:
-      return AdminEventBaseTab
+      return UranusEventBaseTab
   }
 })
 
@@ -144,7 +140,7 @@ onMounted(async () => {
   adminEventStore.loading = true
   try {
     const apiPath = `/api/admin/event/${eventUuid.value}?lang=${locale.value}`
-    const response = await apiFetch<{ data: UranusAdminEventDTO }>(apiPath)
+    const response = await apiFetch<{ data: AdminEventDTO }>(apiPath)
     adminEventStore.loadFromApi(response.response.data)
   } catch (e) {
     adminEventStore.error = 'Failed to load event'
@@ -152,9 +148,6 @@ onMounted(async () => {
   } finally {
     adminEventStore.loading = false
   }
-
-  console.log("/// original: ", adminEventStore?.original?.visitorInfoFlags)
-  console.log("/// draft: ", adminEventStore?.draft?.visitorInfoFlags)
 })
 
 onUnmounted(() => {
@@ -184,7 +177,7 @@ async function updateReleaseField(field: 'releaseStatus' | 'releaseDate', value:
   if (Object.keys(payload).length === 0) return
 
   try {
-    await apiFetch(`/api/admin/event/${draftEvent.value.id}/fields`, {
+    await apiFetch(`/api/admin/event/${eventUuid.value}/fields`, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })

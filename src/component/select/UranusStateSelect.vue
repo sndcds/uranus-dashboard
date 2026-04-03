@@ -26,7 +26,7 @@ import { ref, computed, watch, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import type { UranusApiResponse } from '@/model/uranusApiResponse.ts'
-import { type UranusStateDTO } from '@/api/dto/UranusCountryDTO.ts'
+import { type CountryStateDTO } from '@/api/dto/country.dto.ts'
 
 // Props / v-model
 
@@ -87,7 +87,7 @@ const loadStates = async (countryCode: string) => {
 
   loading.value = true
   try {
-    const res = await apiFetch<UranusApiResponse<UranusStateDTO[]>>(
+    const res = await apiFetch<UranusApiResponse<CountryStateDTO[]>>(
         `/api/choosable-states?country-code=${encodeURIComponent(trimmed)}`
     )
 

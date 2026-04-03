@@ -1,3 +1,7 @@
+<!--
+  src/component/event/editor/UranusEventTypeGenreEditor.vue
+-->
+
 <template>
   <UranusCard class="event-types-card">
     <h2>{{ t('event_types_and_genre') }}</h2>
@@ -40,7 +44,7 @@ import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import {createEventTypePair, type EventTypePairModel} from '@/domain/event/eventTypePair.model.ts'
 
 

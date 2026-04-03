@@ -1,7 +1,5 @@
 <!--
-  src/component/event/editor/AdminEventParticipationTab.vue
-
-  2026-02-05, Roald
+  src/component/event/editor/UranusEventParticipationTab.vue
 -->
 
 <template>
@@ -64,10 +62,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import type { UranusAdminEvent } from '@/domain/event/UranusAdminEvent.ts'
+import type { AdminEventModel } from '@/domain/event/adminEvent.model.ts'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
@@ -107,8 +105,8 @@ function parseNumberInput(e: Event): number | null {
 }
 
 function buildPayload(
-    draft: UranusAdminEvent,
-    original: UranusAdminEvent
+    draft: AdminEventModel,
+    original: AdminEventModel
 ) {
   const payload: Record<string, any> = {}
 

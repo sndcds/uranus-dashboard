@@ -1,3 +1,7 @@
+<!--
+  src/component/event/editor/UranusEventLanguageEditor.vue
+-->
+
 <template>
   <UranusCard class="languages-tab">
     <h2>{{ t('event_languages') }}</h2>
@@ -38,7 +42,7 @@ import { useLanguageLookupStore } from '@/store/UranusLanguageLookup.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import {useUranusAdminEventStore} from '@/store/uranusAdminEventStore.ts'
+import {useUranusAdminEventStore} from '@/store/adminEventStore.ts'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()

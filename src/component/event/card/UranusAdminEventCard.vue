@@ -119,7 +119,7 @@ import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirm
 import UranusCard from "@/component/ui/UranusCard.vue";
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
-import type { EventAdminListItemModel } from '@/domain/event/eventAdminListItem.model.ts'
+import type { AdminEventListItemModel } from '@/domain/event/adminEventListItem.model.ts'
 import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Eye, Pencil, Trash } from 'lucide-vue-next'
@@ -136,7 +136,7 @@ const emit = defineEmits<{
   deleted: [payload: { eventUuid: string; dateUuid: string | null; deleteSeries: boolean }]
 }>()
 
-const props = defineProps<{ event: EventAdminListItemModel }>()
+const props = defineProps<{ event: AdminEventListItemModel }>()
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const typeLookupStore = useEventTypeLookupStore()
@@ -178,7 +178,7 @@ const seriesOptions = computed(() => {
 })
 
 // Request deletion
-const requestDelete = (event: EventAdminListItemModel) => {
+const requestDelete = (event: AdminEventListItemModel) => {
   if (!event.canDeleteEvent) return
   pendingDeleteUuid.value = event.uuid
   pendingDeleteTitle.value = event.title

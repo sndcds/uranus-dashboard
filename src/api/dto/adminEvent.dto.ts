@@ -4,10 +4,10 @@
     2026-02-05, Roald
  */
 
-import { type UranusAdminEventDateDTO } from '@/api/dto/UranusAdminEventDateDTO.ts'
+import { type AdminEventDateDTO } from '@/api/dto/adminEventDate.dto.ts'
 
-export interface UranusAdminEventDTO {
-    id: number
+export interface AdminEventDTO {
+    uuid: string
     release_status: string | null
     release_date: string | null
     external_id: string | null
@@ -20,9 +20,9 @@ export interface UranusAdminEventDTO {
     title: string
     subtitle: string | null
 
-    organization_id: number
-    venue_id: number | null
-    space_id: number | null
+    org_uuid: string
+    venue_uuid: string | null
+    space_uuid: string | null
 
     categories?: number[] | null
     event_types: { type_id: number | null; genre_id: number | null }[] | null
@@ -50,6 +50,6 @@ export interface UranusAdminEventDTO {
     online_link?: string | null
 
     languages?: string[]
-    event_dates?: UranusAdminEventDateDTO[] | null
+    event_dates?: AdminEventDateDTO[] | null
     event_links: { label: string | null; type: string | null; url: string | null }[] | null
 }

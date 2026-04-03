@@ -1,4 +1,6 @@
-<!-- src/component/event/editor/AdminEventDatesTab.vue -->
+<!--
+  src/component/event/editor/UranusEventDatesTab.vue
+-->
 
 <template>
   <section class="dates-tab">
@@ -8,8 +10,8 @@
         :key="index"
         class="date-card"
     >
-      <div v-if="date.venueId" class="date-venue-name">
-        <h2>{{ t('venue') }}: <strong>{{ venueInfoStore.getVenueLabel(date.venueId, date.spaceId) }}</strong></h2>
+      <div v-if="date.venueUuid" class="date-venue-name">
+        <h2>{{ t('venue') }}: <strong>{{ venueInfoStore.getVenueLabel(date.venueUuid, date.spaceUuid) }}</strong></h2>
       </div>
 
       <div class="date-pair">
@@ -89,7 +91,7 @@
 import { computed, ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from "@/api.ts";
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
+import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
 import UranusVenueSelectModal from "@/component/venue/UranusVenueSelectModal.vue";
 import UranusCard from "@/component/ui/UranusCard.vue";
@@ -106,11 +108,11 @@ const store = useUranusAdminEventStore()
 const venueInfoStore = useUranusEventVenueInfoStore()
 
 interface SelectedPlace {
-  venueId: number | null
-  spaceId: number | null
+  venueUuid: string | null
+  spaceUuid: string | null
 }
 
-const selectedPlace = ref<SelectedPlace>({ venueId: null, spaceId: null })
+const selectedPlace = ref<SelectedPlace>({ venueUuid: null, spaceUuid: null })
 const showModal = ref(false)
 const activeDate = ref<any | null>(null)
 
@@ -137,8 +139,8 @@ function openVenueModal(date: any) {
 // Sync selected venue back to the active date
 watch(selectedPlace, (val) => {
   if (!activeDate.value || !val) return
-  activeDate.value.venueId = val.venueId
-  activeDate.value.spaceId = val.spaceId
+  activeDate.value.venueUuid = val.venueUuid
+  activeDate.value.spaceUuid = val.spaceUuid
 }, { deep: true })
 
 // Reset active date when modal closes
@@ -147,10 +149,10 @@ watch(showModal, (val) => {
 })
 
 function clearVenue(date: any) {
-  date.venueId = null
-  date.spaceId = null
+  date.venueUuid = null
+  date.spaceUuid = null
   if (activeDate.value === date) {
-    selectedPlace.value = { venueId: null, spaceId: null }
+    selectedPlace.value = { venueUuid: null, spaceUuid: null }
   }
 }
 
@@ -185,7 +187,7 @@ async function commitDates() {
 
     const wrappedPayload = { event_dates: payload }
 
-    const apiPath = `/api/admin/event/${store.draft.id}/dates`
+    const apiPath = `/api/admin/event/${store.draft.uuid}/dates`
     await apiFetch(apiPath, {
       method: 'PUT',
       body: JSON.stringify(wrappedPayload),

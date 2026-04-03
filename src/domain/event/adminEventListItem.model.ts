@@ -2,7 +2,7 @@ import { type EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 
 
 // Used for event lists in admin dashboards
-export interface EventAdminListItemModel {
+export interface AdminEventListItemModel {
     uuid: string
     dateUuid: string
     releaseStatus?: string | null

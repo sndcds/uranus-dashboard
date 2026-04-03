@@ -2,7 +2,7 @@
     src/domain/space/space.model.ts
 */
 
-import type { SpaceDto } from '@/api/dto/space.dto.ts'
+import type { SpaceDTO } from '@/api/dto/space.dto.ts'
 
 /**
  * Frontend-friendly space model
@@ -32,7 +32,7 @@ export interface SpaceModel {
 /**
  * Convert DTO → frontend model
  */
-export function mapSpace(dto: SpaceDto): SpaceModel {
+export function mapSpace(dto: SpaceDTO): SpaceModel {
     let accessibilityFlags: bigint | null = 0n
     try {
         if (dto.accessibility_flags != null && dto.accessibility_flags !== '') {
@@ -69,7 +69,7 @@ export function mapSpace(dto: SpaceDto): SpaceModel {
  * Convert frontend model → DTO
  * suitable for API calls
  */
-export function toSpaceDTO(model: SpaceModel): SpaceDto {
+export function toSpaceDTO(model: SpaceModel): SpaceDTO {
     return {
         uuid: model.uuid,
         venue_uuid: model.venueUuid ?? null,
@@ -125,5 +125,5 @@ export function createEmptySpace(): SpaceModel {
  */
 export function fromApi(raw: any): SpaceModel | null {
     if (!raw) return null
-    return mapSpace(raw as SpaceDto)
+    return mapSpace(raw as SpaceDTO)
 }

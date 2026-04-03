@@ -72,7 +72,7 @@ const currentTabComponent = computed(() => {
 onMounted(async () => {
   if (!venueUuid.value) {
     venueStore.resetToEmpty?.() // optional chaining in case method doesn't exist
-    venueStore.error = 'Invalid venueId'
+    venueStore.error = 'Invalid venueUuid'
     return
   }
 

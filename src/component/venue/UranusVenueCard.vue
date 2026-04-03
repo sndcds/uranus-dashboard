@@ -119,7 +119,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  deleted: [venueId: string]
+  deleted: [venueUuid: string]
 }>()
 
 const showDeleteVenueModal = ref(false)

@@ -4,7 +4,7 @@
     2026-02-13, Roald
 */
 
-export interface SpaceDto {
+export interface SpaceDTO {
     uuid: string | null
 
     venue_uuid: string | null
