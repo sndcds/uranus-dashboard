@@ -15,7 +15,7 @@
     </UranusNotification>
 
     <UranusNotification
-        v-if="!organizationId"
+        v-if="!orgUuid"
         type="info"
         :action-label="t('notification_cant_see_events_action')"
         action-to="/admin/organizations"
@@ -28,12 +28,12 @@
 
     <template v-else>
       <div v-if="!isLoading && canAddEvent">
-        <UranusButton :to="`/admin/organization/${organizationId}/event/create`">
+        <UranusButton :to="`/admin/organization/${orgUuid}/event/create`">
           {{ t('add_new_event') }}
         </UranusButton>
       </div>
 
-      <div v-if="organizationId" class="uranus-dashboard-card-grid uranus-max-layout">
+      <div v-if="orgUuid" class="uranus-dashboard-card-grid uranus-max-layout">
         <UranusAdminEventCard
             v-for="event in events"
             :key="`${event.id}-${event.dateId ?? 'series'}`"
@@ -47,9 +47,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-
+import { useAppStore } from '@/store/appStore.ts'
 import UranusAdminEventCard from '@/component/event/card/UranusAdminEventCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
@@ -57,12 +56,12 @@ import { useUranusAdminListEvents } from '@/composable/useUranusAdminListEvents.
 import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n({ useScope: 'global' })
-const route = useRoute()
+const appStore = useAppStore()
 
 const { adminListEvents, metadata, loading: isLoading, fetchAdminListEvents } = useUranusAdminListEvents();
 
 const deleteError = ref('')
-const organizationId = Number(route.params.id)
+const orgUuid = computed(() => appStore.orgUuid)
 
 const canAddEvent = computed(() => !!metadata.value.can_add_event);
 const events = adminListEvents;
@@ -90,7 +89,7 @@ const onEventDeleted = async ({eventId, dateId, deleteSeries}: {
     // e.g., isLoading.value = true
 
     // Refetch events from API
-    await fetchAdminListEvents(organizationId)
+    await fetchAdminListEvents(orgUuid)
     // Optionally, show a success toast or message
     console.log(`Event ${eventId} deleted successfully`)
   } catch (err) {
@@ -105,8 +104,8 @@ const onEventDeleted = async ({eventId, dateId, deleteSeries}: {
 
 
 onMounted(async () => {
-  if (organizationId) {
-    await fetchAdminListEvents(organizationId);
+  if (orgUuid) {
+    await fetchAdminListEvents(orgUuid.value ?? '');
   }
 });
 </script>

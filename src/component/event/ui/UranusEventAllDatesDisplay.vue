@@ -22,12 +22,12 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import type { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
+import type { EventDateModel } from '@/domain/event/eventDate.model.ts'
 import { formatDate } from '@/util/uranus-format-date-time.ts'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
 defineProps<{
-  dates: UranusEventDate[]
+  dates: EventDateModel[]
 }>()
 </script>

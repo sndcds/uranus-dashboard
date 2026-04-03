@@ -110,7 +110,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useAppStore } from '@/store/uranusAppStore.ts'
+import { useAppStore } from '@/store/appStore.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { LayoutDashboard, ListChecks, Building, Spotlight, Calendar } from 'lucide-vue-next'
 
@@ -136,11 +136,11 @@ const handleLinkClick = () => {
 
 // Dynamic routes based on organizationId
 const venuesRoute = computed(() => {
-  return `/admin/organization/${appStore.organizationId}/venues`
+  return `/admin/organization/${appStore.orgUuid}/venues`
 })
 
 const eventsRoute = computed(() => {
-  return `/admin/organization/${appStore.organizationId}/events`
+  return `/admin/organization/${appStore.orgUuid}/events`
 })
 </script>
 

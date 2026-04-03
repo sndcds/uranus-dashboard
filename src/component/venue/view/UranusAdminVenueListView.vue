@@ -50,7 +50,7 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { useAppStore } from '@/store/uranusAppStore.ts'
+import { useAppStore } from '@/store/appStore.ts'
 import { mapVenueList, type VenueList } from '@/domain/organization/venueList.ts'
 
 import UranusVenueCard from '@/component/venue/UranusVenueCard.vue'

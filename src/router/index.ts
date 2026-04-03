@@ -134,16 +134,9 @@ const routes = [
                 path: 'organization/:uuid/member/:memberId/permissions',
                 name: 'admin-edit-member-permission',
                 component: UranusOrganizationMemberPermissionView,
-            }
-        ],
-    },
-    {
-        path: '/admin/organization/:orgUuid/event/create',
-        component: ContentOnlyLayout,
-        meta: { requiresAuth: true },
-        children: [
+            },
             {
-                path: '',
+                path: 'organization/:orgUuid/event/create',
                 name: 'admin-create-event',
                 component: UranusEventCreateView,
             },

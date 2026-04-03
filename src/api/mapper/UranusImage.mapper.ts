@@ -1,5 +1,5 @@
 // src/domain/event/mappers/eventMappers.ts
-import { UranusImage } from '@/domain/image/UranusImage.ts'
+import { UranusImage } from '@/domain/image/image.model.ts'
 
 export function mapEventImage(raw: any): UranusImage | null {
     if (!raw || typeof raw !== 'object') return null

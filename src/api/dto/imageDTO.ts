@@ -1,4 +1,4 @@
-import { UranusImage } from '@/domain/image/UranusImage.ts'
+import { type ImageModel, mapImage } from '@/domain/image/image.model.ts'
 
 export interface ImageDTO {
     id?: number
@@ -10,14 +10,17 @@ export interface ImageDTO {
     license?: number
 }
 
-export function mapUranusImageFromApi(dto: ImageDTO): UranusImage {
-    return new UranusImage(
-        dto.id ?? null,
-        dto.url ?? null,
-        dto.alt ?? null,
-        dto.creator ?? null,
-        dto.copyright ?? null,
-        dto.description ?? null,
-        dto.license ?? null
-    )
+/**
+ * Map API DTO → frontend model
+ */
+export function mapUranusImageFromApi(dto: ImageDTO): ImageModel {
+    return mapImage({
+        id: dto.id ?? null,
+        url: dto.url ?? null,
+        alt: dto.alt ?? null,
+        creator: dto.creator ?? null,
+        copyright: dto.copyright ?? null,
+        description: dto.description ?? null,
+        license: dto.license ?? null,
+    })
 }

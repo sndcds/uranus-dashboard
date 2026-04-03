@@ -566,7 +566,7 @@
   "event_add_link": "Tilføj link",
   "all_events": "Alle begivenheder",
   "create_event": "Opret en ny begivenheder",
-  "create_event_definition": "En begivenhed er en hændelse, der finder sted på et sted,\nf.eks. en koncert, teaterforestilling eller workshop.\nIndtast den præcise titel på begivenheden. Derefter kan du redigere alle detaljer.",
+  "create_event_definition": "Indtast titel, derefter kan du redigere detaljer.",
   "edit_event": "Rediger begivenheder",
   "edit_event_image": "Rediger begivenhedsbillede",
   "event_release_settings": "Rediger udgivelse",

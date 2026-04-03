@@ -1,4 +1,4 @@
-import { UranusEventType } from '@/domain/event/UranusEventType.ts'
+import { UranusEventType } from '@/domain/event/eventType.model.ts'
 
 export interface UranusEventTypeDTO {
     type_id: number

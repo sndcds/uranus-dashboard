@@ -572,7 +572,7 @@
   "event_add_link": "Link hinzufügen",
   "all_events": "Alle Events",
   "create_event": "Neues Event erstellen",
-  "create_event_definition": "Ein Event ist ein Ereignis, das an einer Spielstätte stattfindet,\nz. B. ein Konzert, Theaterstück oder Workshop.\nTrage den genauen Titel des Events ein. Danach kannst du alle Details bearbeiten.",
+  "create_event_definition": "Gib den Titel ein, danach kannst du Details bearbeiten.",
   "edit_event": "Event bearbeiten",
   "edit_event_image": "Eventbild bearbeiten",
   "event_release_settings": "Veröffentlichung einstellen",

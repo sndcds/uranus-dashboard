@@ -19,7 +19,7 @@ export function useUranusAdminListEvents() {
     /**
      * Fetch the admin list of events for a given organization
      */
-    async function fetchAdminListEvents(organizationId: number, startDate?: string) {
+    async function fetchAdminListEvents(orgUuid: string, startDate?: string) {
         loading.value = true;
         error.value = null;
 
@@ -27,7 +27,7 @@ export function useUranusAdminListEvents() {
             const params = new URLSearchParams();
             if (startDate) params.set("start", startDate);
 
-            const path = `/api/admin/organization/${organizationId}/events?${params.toString()}`;
+            const path = `/api/admin/organization/${orgUuid}/events?${params.toString()}`;
             // Use your apiFetch wrapper
             const res = await apiFetch<UranusApiResponse<any[]>>(path);
 

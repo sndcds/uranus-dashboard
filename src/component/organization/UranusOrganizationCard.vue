@@ -77,7 +77,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { useAppStore } from '@/store/uranusAppStore.ts'
+import { useAppStore } from '@/store/appStore.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'

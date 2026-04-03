@@ -572,7 +572,7 @@
   "event_add_link": "Add link",
   "all_events": "All events",
   "create_event": "Create a new event",
-  "create_event_definition": "An event is an occurrence taking place at a venue,\ne.g., a concert, theater performance, or workshop.\nEnter the exact title of the event. Afterwards, you can edit all details.",
+  "create_event_definition": "Enter the title, then edit details.",
   "edit_event_image": "Edit event image",
   "event_release_settings": "Edit release setting",
   "add_event_image": "Add event image",

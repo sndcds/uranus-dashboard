@@ -13,13 +13,14 @@
 @use 'notification';
 @use 'map_popup';
 @use 'editor';
+@use 'help';
 
 
 :root {
   color-scheme: light;
 
-  --uranus-font-ui: 'Inter', 'Helvetica Neue', 'Avenir', 'Arial', sans-serif;
-  --uranus-font-text: 'Inter', 'Helvetica Neue', 'Avenir', 'Arial', sans-serif;
+  --uranus-font-ui: 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --uranus-font-text: 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
 
   --uranus-hue: 266;
   --uranus-active-hue: 286;

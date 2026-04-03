@@ -217,8 +217,8 @@ import { useLanguageLookupStore } from '@/store/UranusLanguageLookup.ts'
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
 import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'
 
-import { UranusEvent } from '@/domain/event/UranusEvent.ts'
-import { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
+import { type EventModel, mapEventFromApi } from '@/domain/event/event.model.ts'
+import { type EventDateModel } from '@/domain/event/eventDate.model.ts'
 import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
@@ -236,8 +236,8 @@ const getTypeGenreName = (typeId: number, genreId: number | null) => typeLookupS
 const languageLookupStore = useLanguageLookupStore()
 
 // State
-const event = ref<UranusEvent | null>(null)
-const eventDate = ref<UranusEventDate | null>(null)
+const event = ref<EventModel | null>(null)
+const eventDate = ref<EventDateModel | null>(null)
 const isLoading = ref(true)
 const showLoading = ref(false)
 const loadingLabel = computed(() => t('loading'))
@@ -415,14 +415,14 @@ const loadEvent = async () => {
     const lang = locale.value || 'de'
     const apiPath = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
     const response = await apiFetch<any>(apiPath)
-    const mappedEvent = UranusEvent.fromApi(response.response.data, eventDateId)
+
+    const mappedEvent: EventModel | null = mapEventFromApi(response.response.data, eventDateId)
     if (!mappedEvent) {
       loadError.value = t('error_incomplete_data')
       return
     }
     event.value = mappedEvent
     eventDate.value = mappedEvent.date
-
   } catch (error: unknown) {
     loadError.value = error instanceof Error ? error.message : t('error_fetch_data_failed')
     console.log('error', error)
