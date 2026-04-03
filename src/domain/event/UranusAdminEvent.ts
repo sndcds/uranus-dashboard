@@ -5,7 +5,7 @@
  */
 
 import { UranusEventLink } from './UranusEventLink.ts'
-import { UranusAdminEventTypePair } from './UranusAdminEventTypePair.ts'
+import {createEventTypePair, type EventTypePairModel} from '@/domain/event/eventTypePair.model.ts'
 import { type UranusAdminEventDTO } from '@/api/dto/UranusAdminEventDTO.ts'
 import { type UranusAdminEventDate } from '@/domain/event/UranusAdminEventDate.ts'
 import {
@@ -33,7 +33,7 @@ export class UranusAdminEvent {
 
     occasionTypeId: number | null = null
     categories: number[] | null = null
-    eventTypes: UranusAdminEventTypePair[] | null = null
+    eventTypes: EventTypePairModel[] | null = null
     tags: string[] | null = null
 
     eventDates: UranusAdminEventDate[] | null = null
@@ -90,7 +90,7 @@ export class UranusAdminEvent {
             summary: dto.summary ?? null,
             eventLinks: (dto.event_links ?? []).map(e => new UranusEventLink(e.label, e.type, e.url)),
             occasionTypeId: dto.occasion_type_id ?? null,
-            eventTypes: (dto.event_types ?? []).map(e => new UranusAdminEventTypePair(e.type_id, e.genre_id)),
+            eventTypes: (dto.event_types ?? []).map(e => createEventTypePair(e.type_id, e.genre_id)),
             tags: dto.tags ?? null,
             eventDates: mapAdminEventDatesFromApi(dto.event_dates),
             organizationId: dto.organization_id,

@@ -5,13 +5,13 @@
  */
 
 import { ref } from "vue";
-import type { UranusAdminListEvent } from '@/domain/event/UranusAdminListEvent.ts'
+import type { EventAdminListItemModel } from '@/domain/event/eventAdminListItem.model.ts'
 import type { UranusApiResponse } from '@/model/uranusApiResponse.ts'
 import { camelCaseKeys } from "./useAPI.ts";
 import { apiFetch } from "@/api.ts";
 
 export function useUranusAdminListEvents() {
-    const adminListEvents = ref<UranusAdminListEvent[]>([]);
+    const adminListEvents = ref<EventAdminListItemModel[]>([]);
     const metadata = ref<Record<string, any>>({});
     const loading = ref(false);
     const error = ref<string | null>(null);
@@ -19,11 +19,15 @@ export function useUranusAdminListEvents() {
     /**
      * Fetch the admin list of events for a given organization
      */
-    async function fetchAdminListEvents(orgUuid: string, startDate?: string) {
+    async function fetchAdminListEvents(orgUuid: string | null, startDate?: string) {
         loading.value = true;
         error.value = null;
 
         try {
+            if (!orgUuid) {
+                throw new Error("orgUuid required");
+            }
+
             const params = new URLSearchParams();
             if (startDate) params.set("start", startDate);
 
@@ -35,11 +39,8 @@ export function useUranusAdminListEvents() {
                 throw new Error(res.response.error || "Unknown API error");
             }
 
-            // Map snake_case → camelCase
-            adminListEvents.value = camelCaseKeys<UranusAdminListEvent[]>(res.response.data ?? []);
+            adminListEvents.value = camelCaseKeys<EventAdminListItemModel[]>(res.response.data ?? []);
             metadata.value = res.response.metadata ?? {};
-
-            console.log(JSON.stringify(adminListEvents.value, null, 2));
         } catch (e: any) {
             error.value = e.message ?? "Unknown error";
             adminListEvents.value = [];

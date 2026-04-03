@@ -36,7 +36,7 @@
       <div v-if="orgUuid" class="uranus-dashboard-card-grid uranus-max-layout">
         <UranusAdminEventCard
             v-for="event in events"
-            :key="`${event.id}-${event.dateId ?? 'series'}`"
+            :key="`${event.uuid}-${event.dateUuid ?? 'series'}`"
             :event="event"
             @deleted="onEventDeleted"
         />
@@ -79,9 +79,9 @@ interface DeleteEventPayload {
 }
 
 
-const onEventDeleted = async ({eventId, dateId, deleteSeries}: {
-  eventId: number
-  dateId: number | null
+const onEventDeleted = async ({eventUuid, dateUuid, deleteSeries}: {
+  eventUuid: string
+  dateUuid: string | null
   deleteSeries: boolean
 }) => {
   try {
@@ -89,9 +89,9 @@ const onEventDeleted = async ({eventId, dateId, deleteSeries}: {
     // e.g., isLoading.value = true
 
     // Refetch events from API
-    await fetchAdminListEvents(orgUuid)
+    await fetchAdminListEvents(orgUuid.value)
     // Optionally, show a success toast or message
-    console.log(`Event ${eventId} deleted successfully`)
+    console.log(`Event ${eventUuid} deleted successfully`)
   } catch (err) {
     console.error("Failed to refetch events after delete:", err)
     // Optionally, set an error state
@@ -106,6 +106,7 @@ const onEventDeleted = async ({eventId, dateId, deleteSeries}: {
 onMounted(async () => {
   if (orgUuid) {
     await fetchAdminListEvents(orgUuid.value ?? '');
+    console.log('Fetched events:', adminListEvents.value)
   }
 });
 </script>

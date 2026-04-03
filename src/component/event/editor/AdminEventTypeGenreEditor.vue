@@ -41,7 +41,7 @@ import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
-import { UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTypePair.ts'
+import {createEventTypePair, type EventTypePairModel} from '@/domain/event/eventTypePair.model.ts'
 
 
 const store = useUranusAdminEventStore()
@@ -77,7 +77,7 @@ function onTypeChange() {
 
 function addPair() {
   if (!selectedTypeId.value|| !store.draft) return
-  const pair = new UranusAdminEventTypePair(
+  const pair = createEventTypePair(
       selectedTypeId.value ?? null,
       selectedGenreId.value ?? null
   )
@@ -95,7 +95,7 @@ function removePair(index: number) {
   store.draft!.eventTypes!.splice(index, 1)
 }
 
-function getTypeGenreLabel(pair: UranusAdminEventTypePair) {
+function getTypeGenreLabel(pair: EventTypePairModel) {
   if (!pair) return ''
 
   const typeId = pair.typeId

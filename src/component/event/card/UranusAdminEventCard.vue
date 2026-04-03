@@ -55,13 +55,13 @@
           {{ t('venue')}}: {{ event.venueName }}
           <template v-if="hasSpace"> / {{ event.spaceName }}</template>
         </span><br>
-        <span>{{ t('event_organizer')}}: {{ event.organizationName }}</span>
+        <span>{{ t('event_organizer')}}: {{ event.orgName }}</span>
       </div>
 
       <div class="uranus-event-card-actions">
         <UranusButton
             variant="secondary" size="small"
-            :to="`/event/${event.id}/date/${event.dateId}`"
+            :to="`/event/${event.uuid}/date/${event.dateUuid}`"
         >
           <template #icon><Eye /></template>
           {{ t('preview') }}
@@ -70,7 +70,7 @@
         <UranusButton
             v-if="event.canEditEvent"
             variant="secondary" size="small"
-            :to="`/admin/event/${event.id}`"
+            :to="`/admin/event/${event.uuid}`"
         >
           <template #icon><Pencil /></template>
           {{ t('edit') }}
@@ -119,8 +119,8 @@ import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirm
 import UranusCard from "@/component/ui/UranusCard.vue";
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
-import type { UranusAdminListEvent } from '@/domain/event/UranusAdminListEvent.ts'
-import type { UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTypePair.ts'
+import type { EventAdminListItemModel } from '@/domain/event/eventAdminListItem.model.ts'
+import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Eye, Pencil, Trash } from 'lucide-vue-next'
 import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
@@ -133,31 +133,31 @@ const onImageError = (e: Event) => {
 }
 
 const emit = defineEmits<{
-  deleted: [payload: { eventId: number; dateId: number | null; deleteSeries: boolean }]
+  deleted: [payload: { eventUuid: string; dateUuid: string | null; deleteSeries: boolean }]
 }>()
 
-const props = defineProps<{ event: UranusAdminListEvent }>()
+const props = defineProps<{ event: EventAdminListItemModel }>()
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const typeLookupStore = useEventTypeLookupStore()
 
-const eventTypeGenreString = (type: UranusAdminEventTypePair) => {
+const eventTypeGenreString = (type: EventTypePairModel) => {
   const name = typeLookupStore.getTypeGenreName(type.typeId, type.genreId ?? null, locale.value)
   return name || 'Unknown'
 }
 
 // Computed for presence checks
-const hasVenue = computed(() => !!props.event.venueId)
-const hasSpace = computed(() => !!props.event.spaceId)
+const hasVenue = computed(() => !!props.event.venueUuid)
+const hasSpace = computed(() => !!props.event.spaceUuid)
 
 // Delete modal state
 const showDeleteModal = ref(false)
 const deleteError = ref('')
 const isDeleting = ref(false)
-const pendingDeleteId = ref<number | null>(null)
+const pendingDeleteUuid = ref<string | null>(null)
 const pendingDeleteTitle = ref('')
 const pendingTimeSeriesTotal = ref(1)
-const pendingEventDateId = ref<number | null>(null)
+const pendingEventDateUuid = ref<string | null>(null)
 
 
 const deleteQuestion = computed(() => {
@@ -178,12 +178,12 @@ const seriesOptions = computed(() => {
 })
 
 // Request deletion
-const requestDelete = (event: UranusAdminListEvent) => {
+const requestDelete = (event: EventAdminListItemModel) => {
   if (!event.canDeleteEvent) return
-  pendingDeleteId.value = event.id
+  pendingDeleteUuid.value = event.uuid
   pendingDeleteTitle.value = event.title
   pendingTimeSeriesTotal.value = event.seriesTotal ?? 1
-  pendingEventDateId.value = event.dateId
+  pendingEventDateUuid.value = event.dateUuid
   deleteError.value = ''
   showDeleteModal.value = true
 }
@@ -192,17 +192,17 @@ const requestDelete = (event: UranusAdminListEvent) => {
 const cancelDelete = () => {
   showDeleteModal.value = false
   deleteError.value = ''
-  pendingDeleteId.value = null
+  pendingDeleteUuid.value = null
   pendingDeleteTitle.value = ''
   pendingTimeSeriesTotal.value = 1
-  pendingEventDateId.value = null
+  pendingEventDateUuid.value = null
 }
 
 const confirmDelete = async ({password, selectedOption}: {
   password: string
   selectedOption?: string | number
 }) => {
-  if (!password || !pendingDeleteId.value) return
+  if (!password || !pendingDeleteUuid.value) return
 
   isDeleting.value = true
   deleteError.value = ''
@@ -215,11 +215,11 @@ const confirmDelete = async ({password, selectedOption}: {
 
     let url: string
     if (deleteEntireSeries) {
-      url = `/api/admin/delete/event/${pendingDeleteId.value}`
-    } else if (pendingEventDateId.value !== null) {
-      url = `/api/admin/delete/event/${pendingDeleteId.value}/date/${pendingEventDateId.value}`
+      url = `/api/admin/delete/event/${pendingDeleteUuid.value}`
+    } else if (pendingEventDateUuid.value !== null) {
+      url = `/api/admin/delete/event/${pendingDeleteUuid.value}/date/${pendingEventDateUuid.value}`
     } else {
-      url = `/api/admin/delete/event/${pendingDeleteId.value}`
+      url = `/api/admin/delete/event/${pendingDeleteUuid.value}`
     }
 
     const response = await apiFetch(url, {
@@ -231,8 +231,8 @@ const confirmDelete = async ({password, selectedOption}: {
 
     // Success → emit deleted
     emit('deleted', {
-      eventId: pendingDeleteId.value,
-      dateId: pendingEventDateId.value,
+      eventUuid: pendingDeleteUuid.value,
+      dateUuid: pendingEventDateUuid.value,
       deleteSeries: deleteEntireSeries,
     })
 

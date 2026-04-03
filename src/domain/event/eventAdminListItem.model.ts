@@ -1,23 +1,23 @@
-import { type UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTypePair.ts'
+import { type EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 
 
 // Used for event lists in admin dashboards
-export interface UranusAdminListEvent {
-    id: number
-    dateId: number
+export interface EventAdminListItemModel {
+    uuid: string
+    dateUuid: string
     releaseStatus?: string | null
     releaseDate?: string | null
     categories: number[] | null
     canEditEvent: boolean
     canDeleteEvent: boolean
     canReleaseEvent: boolean
-    organizationId: number
-    organizationName?: string | null
-    venueId?: number | null
+    orgUuid: string
+    orgName?: string | null
+    venueUuid?: string | null
     venueName?: string | null
-    spaceId?: number | null
+    spaceUuid?: string | null
     spaceName?: string | null
-    imageId?: number | null
+    imageUuid?: string | null
     imageUrl?: string | null
     seriesIndex?: number | null
     seriesTotal?: number | null
@@ -27,5 +27,5 @@ export interface UranusAdminListEvent {
     endTime?: string | null
     title: string
     subtitle?: string | null
-    eventTypes?: UranusAdminEventTypePair[] | null
+    eventTypes?: EventTypePairModel[] | null
 }

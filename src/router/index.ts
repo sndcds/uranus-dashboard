@@ -143,13 +143,13 @@ const routes = [
         ],
     },
     {
-        path: '/admin/event/:id',
+        path: '/admin/event/:uuid',
         component: ContentOnlyLayout,
         meta: { requiresAuth: true },
         children: [
             {
                 path: '',
-                name: 'admin-event-details',
+                name: 'admin-event-edit',
                 component: UranusEventEditView,
             },
         ],

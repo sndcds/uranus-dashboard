@@ -1,4 +1,4 @@
-import { UranusAdminEventTypePair } from '@/domain/event/UranusAdminEventTypePair.ts'
+import { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 
 
 export interface UranusEventTypePairDTO {
@@ -7,21 +7,21 @@ export interface UranusEventTypePairDTO {
 }
 
 
-export function mapEventTypePairFromDTO(dto: UranusEventTypePairDTO): UranusAdminEventTypePair {
-    return new UranusAdminEventTypePair(dto.type_id, dto.genre_id)
+export function mapEventTypePairFromDTO(dto: UranusEventTypePairDTO): EventTypePairModel {
+    return new EventTypePairModel(dto.type_id, dto.genre_id)
 }
 
-export function mapEventTypePairToDTO(pair: UranusAdminEventTypePair): UranusEventTypePairDTO {
+export function mapEventTypePairToDTO(pair: EventTypePairModel): UranusEventTypePairDTO {
     return {
         type_id: pair.typeId,
         genre_id: pair.genreId,
     }
 }
 
-export function mapEventTypePairsFromDTO(dtos: UranusEventTypePairDTO[]): UranusAdminEventTypePair[] {
+export function mapEventTypePairsFromDTO(dtos: UranusEventTypePairDTO[]): EventTypePairModel[] {
     return dtos.map(mapEventTypePairFromDTO)
 }
 
-export function mapEventTypePairsToDTO(pairs: UranusAdminEventTypePair[]): UranusEventTypePairDTO[] {
+export function mapEventTypePairsToDTO(pairs: EventTypePairModel[]): UranusEventTypePairDTO[] {
     return pairs.map(mapEventTypePairToDTO)
 }

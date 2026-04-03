@@ -104,10 +104,7 @@ const draftEvent = computed(() => adminEventStore.draft ?? {
   releaseDate: null,
 })
 
-const eventId = computed(() => {
-  const id = Number(route.params.id)
-  return Number.isFinite(id) ? id : null
-})
+const eventUuid = computed(() => { return route.params.uuid })
 
 type TabKey = 'settings' | 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participation' | 'price' | 'visitor'
 const activeTab = ref<TabKey>('base')
@@ -139,14 +136,14 @@ const currentTabComponent = computed(() => {
 })
 
 onMounted(async () => {
-  if (!eventId.value) {
+  if (!eventUuid.value) {
     adminEventStore.error = 'Invalid eventId'
     return
   }
 
   adminEventStore.loading = true
   try {
-    const apiPath = `/api/admin/event/${eventId.value}?lang=${locale.value}`
+    const apiPath = `/api/admin/event/${eventUuid.value}?lang=${locale.value}`
     const response = await apiFetch<{ data: UranusAdminEventDTO }>(apiPath)
     adminEventStore.loadFromApi(response.response.data)
   } catch (e) {

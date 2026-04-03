@@ -17,7 +17,7 @@
 
       <UranusImageSlot
           context="event"
-          :contextId="event.id"
+          :contextUuid="event.id"
           identifier="main"
           :width="420"
       />
