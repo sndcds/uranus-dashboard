@@ -1,5 +1,15 @@
 // src/domain/event.ts
 
+export interface EventListTypeSummary {
+    typeId: number
+    count: number
+}
+
+export interface EventListItemEventType {
+    typeId: number
+    genreId: number
+}
+
 export interface EventListItem {
     uuid: string
     dateUuid: string
@@ -33,10 +43,7 @@ export interface EventListItem {
     imageUrl: string | null
 
     categories: number[]
-    eventTypes: {
-        typeId: number
-        genreId: number
-    }[]
+    eventTypes: EventListItemEventType[]
 
     languages: string[]
     tags: string[]

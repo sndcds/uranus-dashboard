@@ -47,7 +47,7 @@ export interface EventModel {
 /**
  * Map API → frontend model
  */
-export function mapEventFromApi(raw: any, dateId?: number): EventModel | null {
+export function mapEventFromApi(raw: any, dateUuid?: string): EventModel | null {
     if (!raw || typeof raw !== 'object') return null
 
     const mapDate = (d: any): EventDateModel => mapEventDate(d)
@@ -68,8 +68,8 @@ export function mapEventFromApi(raw: any, dateId?: number): EventModel | null {
         ? raw.further_dates.map(mapDate)
         : []
 
-    const date: EventDateModel = dateId
-        ? furtherDates.find(fd => fd.id === dateId) ?? mapDate(raw.date)
+    const date: EventDateModel = dateUuid
+        ? furtherDates.find(fd => fd.uuid === dateUuid) ?? mapDate(raw.date)
         : mapDate(raw.date)
 
     const types: EventTypeModel[] = Array.isArray(raw.event_types)

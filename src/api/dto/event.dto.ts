@@ -1,5 +1,12 @@
 import { type EventTypeModel } from '@/domain/event/eventType.model.ts'
 
+
+
+export interface EventListTypeSummaryDTO {
+    type_id: number
+    count: number
+}
+
 export interface EventTypePairDTO {
     type_id: number | null
     genre_id: number | null

@@ -400,23 +400,18 @@ const hasLonLat = computed(() => {
 
 
 const loadEvent = async () => {
-  const eventId = Number(resolveRouteParam(route.params.id))
-  const eventDateId = Number(resolveRouteParam(route.params.eventDateId))
-  if (!eventId || !eventDateId) {
-    loadError.value = t('error_missing_params')
-    isLoading.value = false
-    return
-  }
+  const eventUuid = resolveRouteParam(route.params.uuid)
+  const eventDateUuid = resolveRouteParam(route.params.eventDateUuid)
 
   isLoading.value = true
   loadError.value = null
 
   try {
     const lang = locale.value || 'de'
-    const apiPath = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
+    const apiPath = `/api/event/${eventUuid}/date/${eventDateUuid}?lang=${lang}`
     const response = await apiFetch<any>(apiPath)
 
-    const mappedEvent: EventModel | null = mapEventFromApi(response.data, eventDateId)
+    const mappedEvent: EventModel | null = mapEventFromApi(response.data, eventDateUuid)
     if (!mappedEvent) {
       loadError.value = t('error_incomplete_data')
       return

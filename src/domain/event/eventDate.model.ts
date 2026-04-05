@@ -1,8 +1,8 @@
 // src/domain/event/UranusEventDate.ts
 
 export interface EventDateModel {
-    id: number | null
-    eventId: number | null
+    uuid: string | null
+    eventUuid: string | null
     releaseStatus: string | null
 
     startDate: string | null
@@ -50,8 +50,8 @@ export interface EventDateModel {
  */
 export function mapEventDate(dto: any): EventDateModel {
     return {
-        id: dto.id ?? null,
-        eventId: dto.event_id ?? null,
+        uuid: dto.uuid ?? null,
+        eventUuid: dto.event_uuid ?? null,
         releaseStatus: dto.release_status ?? null,
 
         startDate: dto.start_date ?? null,

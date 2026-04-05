@@ -15,13 +15,13 @@
         <UranusHorizontalScroller>
         <div class="calendar-type-chips">
           <span
-              v-for="entry in typeSummary"
-              :key="entry.type_id"
+              v-for="entry in eventListStore.typeSummary"
+              :key="entry.typeId"
               class="type-chip"
-              :class="{ active: filterStore.eventTypeIds.includes(entry.type_id) }"
-              @click="toggleType(entry.type_id)"
+              :class="{ active: filterStore.eventTypeIds.includes(entry.typeId) }"
+              @click="toggleType(entry.typeId)"
           >
-            {{ getTypeName(entry.type_id) }} ({{ entry.date_count }})
+            {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
           </span>
         </div>
         </UranusHorizontalScroller>
@@ -57,13 +57,13 @@
             <span>{{ event.venue.name }} · {{ event.venue.city }}</span>
             <!-- Render only event type (no genres) -->
             <div v-if="event.eventTypes && event.eventTypes.length" class="uranus-public-event-detail-tags">
-              <!--div
+              <div
                   v-for="typeId in getUniqueEventTypes(event.eventTypes)"
                   :key="typeId"
                   class="uranus-public-event-detail-tag"
               >
                 {{ getTypeName(typeId) }}
-              </div-->
+              </div>
             </div>
           </div>
 
@@ -87,8 +87,6 @@
         Loading more events…
       </div>
 
-      {{ JSON.stringify(eventListStore.events, null, 2) }}
-
     </div>
   </div>
 
@@ -98,16 +96,16 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useEventsFilterStore } from '@/store/uranusEventsFilterStore.ts'
+import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
-import { urlParamsSetIfPresent, urlParamsSetArrayIfPresent } from '@/util/UranusUtils.ts'
 import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
 import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
+import type { EventListItemEventType } from "@/domain/event/eventListItem.model.ts";
 
-const { t, locale } = useI18n({ useScope: 'global' })
+const { locale } = useI18n({ useScope: 'global' })
 
 
 const eventReleaseStatusStore = useEventReleaseStatusStore()
@@ -115,15 +113,17 @@ const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
 const eventListStore = useEventListStore()
 
-const showFilterModal = ref(false)
 const searchQuery = ref('')
+
+const getTypeName = (typeId: number) =>
+    typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
 
 
 watch(
     () => filterStore.filter,
     () => {
-      eventListStore.reset()
       eventListStore.loadEvents(true)
+      eventListStore.loadTypeSummary()
     },
     { deep: true }
 )
@@ -135,26 +135,15 @@ onBeforeUnmount(() => {
 })
 
 
-// Types
-interface TypeSummaryEntry {
-  type_id: number;
-  date_count: number;
-}
 
-const typeSummary = ref<TypeSummaryEntry[]>([])
-const getTypeName = (typeId: number) =>
-    typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
 
 // Return unique type IDs from the event_types array
-/*
-const getUniqueEventTypes = (types: CalendarEventType[]): number[] => {
+
+const getUniqueEventTypes = (types: EventListItemEventType[]): number[] => {
   const unique = new Set<number>()
-  types.forEach(t => unique.add(t.type_id))
+  types.forEach(t => unique.add(t.typeId))
   return Array.from(unique)
 }
-*/
-
-const limit = 8
 
 
 const loadMoreTrigger = ref<HTMLElement | null>(null)
@@ -167,90 +156,20 @@ watch(searchQuery, () => {
   if (searchTimeout) clearTimeout(searchTimeout)
 
   searchTimeout = window.setTimeout(() => {
-    eventListStore.reset()
-    eventListStore.loadEvents()
+    eventListStore.loadEvents(true)
+    eventListStore.loadTypeSummary()
   }, 300)
 })
 
-
-const buildFilterParams = (paginationMode = false, typesMode = false) => {
-  const params = new URLSearchParams()
-  const f = filterStore.filter // pull current filter from store
-
-  if (paginationMode) {
-    params.set("limit", limit.toString())
-
-    console.log("eventListStore.lastEventStartAt:", eventListStore.lastEventStartAt)
-    if (eventListStore.lastEventStartAt) {
-      params.set("last_event_start_at", eventListStore.lastEventStartAt)
-      if (eventListStore.lastEventDateUuid !== null) {
-        params.set("last_event_date_id", eventListStore.lastEventDateUuid.toString())
-      }
-    }
-  }
-
-  urlParamsSetArrayIfPresent(params, "categories", f.categories)
-
-  // Only add params if they are not empty
-  urlParamsSetIfPresent(params, "search", f.search)
-  urlParamsSetIfPresent(params, "city", f.city)
-  urlParamsSetIfPresent(params, "start", f.startDate)
-  urlParamsSetIfPresent(params, "end", f.endDate)
-
-  // Venue
-  if (f.venue?.id != null && f.venue.id >= 0) {
-    urlParamsSetIfPresent(params, "venues", f.venue.id.toString())
-  }
-
-  // Location
-  if (f.useCurrentLocation &&
-      typeof f.latitude === 'number' &&
-      typeof f.longitude === 'number' &&
-      typeof f.radiusKm === 'number') {
-    params.set("lat", f.latitude.toString())
-    params.set("lon", f.longitude.toString())
-
-    // Convert km → m and round
-    const radiusMeters = Math.round(f.radiusKm * 1000)
-    params.set("radius", radiusMeters.toString())
-  }
-
-  // Age
-  if (f.minAge !== null && f.maxAge !== null) {
-    params.set("age", f.minAge + ',' + f.maxAge)
-  }
-  else if (typeof f.minAge === 'number') {
-    params.set("age", f.minAge?.toString())
-  }
-  else if (typeof f.maxAge === 'number') {
-    params.set("age", f.maxAge?.toString())
-  }
-
-  // Price
-  if (f.priceType !== 'not_specified') {
-    if (f.priceType === 'free' || f.priceType === 'donation') {
-      params.set("price", f.priceType)
-    } else if (typeof f.maxPrice === 'number') {
-      params.set("price", f.maxPrice?.toString() + ',' + f.priceCurrency)
-    }
-  }
-
-  // Event types
-  if (typesMode && f.eventTypeIds?.length) {
-    params.set("event_types", f.eventTypeIds.join(","))
-  }
-
-  return params
-}
-
 onMounted(async () => {
-  await eventListStore.loadEvents()
+  // await eventListStore.loadEvents()
 
   observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
         if (entry?.isIntersecting) {  // Optional chaining
           eventListStore.loadEvents()
+          eventListStore.loadTypeSummary()
         }
       },
       {
@@ -269,25 +188,6 @@ function toggleType(typeId: number) {
   filterStore.toggleEventType(typeId)
 }
 
-const onResetFilter = () => {
-  // Reset the filter in the store
-  filterStore.setFilter({
-    search: '',
-    city: '',
-    startDate: '',
-    endDate: '',
-    venue: { id: -1, name: '' }
-  })
-
-  // Reset the event list and pagination cursors
-  eventListStore.reset()
-
-  // Scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-
-  // Reload events (observer will re-trigger if needed)
-  eventListStore.loadEvents()
-}
 
 onBeforeUnmount(() => {
   observer?.disconnect()
@@ -320,12 +220,13 @@ onBeforeUnmount(() => {
 }
 
 /* Featured cards */
-.calendar-layout > .calendar-card:first-child,
-.calendar-layout > .calendar-card:nth-child(6) {
+/*
+.calendar-layout > .calendar-card:first-child {
   grid-column: span 2;
   grid-row: span 2;
   font-size: 1.4rem;
 }
+*/
 
 .calendar-image {
   width: 100%;
@@ -362,13 +263,15 @@ onBeforeUnmount(() => {
 .calendar-type-chips {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
 }
 
 .type-chip {
-  background-color: #eee;
+  color: #666;
+  background-color: transparent;
+  border: 1px solid #eeeeee;
   padding: 4px 8px;
-  border-radius: 16px;
+  border-radius: 5px;
   font-size: 0.9rem;
   cursor: default;
   user-select: none;

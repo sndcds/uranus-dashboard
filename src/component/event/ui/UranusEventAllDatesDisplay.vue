@@ -12,8 +12,8 @@
 
     <router-link
         v-for="date in dates"
-        :key="date.id!"
-        :to="`/event/${date.eventId}/date/${date.id}`"
+        :key="date.uuid!"
+        :to="`/event/${date.eventUuid}/date/${date.uuid}`"
     >
       {{ formatDate(date.startDate ?? '', locale) }}<br>
     </router-link>

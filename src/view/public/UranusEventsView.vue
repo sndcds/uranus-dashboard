@@ -42,7 +42,7 @@ import { useI18n } from 'vue-i18n'
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
 import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'
-import { type UranusEventsFilter, useEventsFilterStore } from '@/store/uranusEventsFilterStore.ts'
+import { type UranusEventsFilter, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 
 const filterStore = useEventsFilterStore()
 
