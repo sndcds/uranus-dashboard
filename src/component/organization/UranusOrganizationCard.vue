@@ -134,7 +134,6 @@ const confirmDelete = async ({ password }: { password: string }) => {
     emit('deleted', pendingDeleteUuid.value)
     cancelDelete()
   } catch (error: any) {
-    console.error('Failed to delete organization:', error)
     if (error.status === 401 || error.status === 403) {
       deleteError.value = t('incorrect_password')
     } else {

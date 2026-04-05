@@ -28,7 +28,7 @@ export const useLanguageLookupStore = defineStore('languageLookup', {
                         const res = await apiFetch<LanguageEntry[]>(
                             `/api/choosable-languages?lang=${uiLang}`
                         )
-                        return [uiLang, res.response ?? []] as const
+                        return [uiLang, res.data ?? []] as const
                     })
                 )
 

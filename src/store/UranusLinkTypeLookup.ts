@@ -46,7 +46,7 @@ export const useLinkTypeLookupStore = defineStore('linkTypeLookup', {
 
                         return {
                             lang,
-                            list: Array.isArray(res?.response?.data) ? res.response.data : []
+                            list: Array.isArray(res.data) ? res.data : []
                         }
                     })
                 )

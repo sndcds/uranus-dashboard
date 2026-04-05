@@ -7,7 +7,7 @@
     <h2>{{ t('event_languages') }}</h2>
 
     <div class="event-language-list">
-      <span v-for="(lang, index) in store.draft!.languages ?? []" :key="lang" class="event-language-chip">
+      <span v-for="(lang, index) in store.draft!.languages ?? []" :key="lang" class="uranus-chip">
         {{ langLookup[lang] ?? lang }}
         <button @click="removeLanguage(index)">×</button>
       </span>
@@ -26,11 +26,11 @@
         </option>
       </select>
 
-      <div>
-        <UranusButton variant="tertiary" :disabled="!selectedLang" @click="addLanguage">
+      <UranusFormActions>
+        <UranusButton size="small" variant="tertiary" :disabled="!selectedLang" @click="addLanguage">
           {{ t('add') }}
         </UranusButton>
-      </div>
+      </UranusFormActions>
     </UranusFormRow>
   </UranusCard>
 </template>
@@ -43,6 +43,7 @@ import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import {useUranusAdminEventStore} from '@/store/adminEventStore.ts'
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
@@ -67,7 +68,4 @@ function removeLanguage(index: number) {
 <style scoped lang="scss">
 .languages-tab { display: flex; flex-direction: column; gap: 1rem; }
 .event-language-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.event-language-chip { color: #594d85; background-color: #e6e1f4; padding: 0.2rem 0.8rem; border-radius: 40px; display: flex; align-items: center; gap: 0.3rem; }
-.event-language-chip button { border: none; background: inherit; color: inherit; cursor: pointer; border-radius: 50px; width: 1.8rem; aspect-ratio: 1/1; font-weight: bold; }
-.event-language-chip button:hover { background: #d1cbea; }
 </style>

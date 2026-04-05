@@ -1,5 +1,5 @@
 <template>
-  <section class="release-tab" v-if="store.draft">
+  <section class="links-tab" v-if="store.draft">
 
     <h2>{{ t('event_links') }}</h2>
 
@@ -28,25 +28,26 @@
               id="event-link-url"
               v-model="url.url"
               :label="t('event_link_url')"
-              :placeholder="t('event_link_url')"
+              placeholder="https://"
           />
         </UranusFormCol>
 
-        <UranusFormCol :span="12">
-          <UranusButton variant="tertiary" size="small" @click="removeUrl(index)"
-          >
-            {{ t('delete') }}
-          </UranusButton>
-        </UranusFormCol>
       </UranusGridLayout>
 
+      <UranusFormActions>
+        <UranusButton size="small" variant="tertiary" @click="removeUrl(index)"
+        >
+          {{ t('delete') }}
+        </UranusButton>
+      </UranusFormActions>
     </UranusCard>
 
-    <button @click="addUrl" type="button" class="add-btn">
-      {{ t('event_add_link') }}
-    </button>
 
     <div class="tab-actions">
+      <UranusButton @click="addUrl" type="button" class="add-btn">
+        {{ t('event_add_link') }}
+      </UranusButton>
+
       <UranusButton :disabled="store.saving || !isDirty" @click="resetUrlsTab">
         <template #icon><Undo /></template>
         {{ t('discard')}}
@@ -63,9 +64,8 @@
       </UranusButton>
     </div>
 
-    <!--LayoutTest />
-    <LayoutFormExample /-->
   </section>
+
 </template>
 
 <script setup lang="ts">
@@ -78,14 +78,10 @@ import UranusLinkTypeSelect from '@/component/select/UranusLinkTypeSelect.vue'
 import {Save, Undo} from 'lucide-vue-next'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
-import UranusForm from '@/component/ui/UranusForm.vue'
-import UranusLabel from "@/component/ui/UranusLabel.vue";
-import LayoutTest from "@/component/ui/LayoutTest.vue";
-import LayoutFormExample from "@/component/ui/LayoutFormExample.vue";
 import UranusGridLayout from "@/component/ui/UranusGridLayout.vue";
-import UranusFormRow from "@/component/ui/UranusFormRow.vue";
 import UranusFormCol from "@/component/ui/UranusFormCol.vue";
 import UranusInput from "@/component/ui/UranusInput.vue";
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
@@ -139,7 +135,7 @@ async function commitUrlsTab() {
       url: u.url,
     }))
 
-    await apiFetch(`/api/admin/event/${store.draft.id}/links`, {
+    await apiFetch(`/api/admin/event/${store.draft.uuid}/links`, {
       method: 'PUT',
       body: JSON.stringify({ event_links: payload }),
     })
@@ -179,7 +175,7 @@ function resetUrlsTab() {
 </style>
 
 <style scoped lang="scss">
-.release-tab {
+.links-tab {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -233,11 +229,11 @@ function resetUrlsTab() {
       background-color: #e0e0e0;
     }
   }
+}
 
-  .tab-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-  }
+.tab-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 </style>

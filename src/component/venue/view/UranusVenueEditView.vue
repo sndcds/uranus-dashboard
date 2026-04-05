@@ -79,16 +79,14 @@ onMounted(async () => {
   venueStore.loading = true
   try {
     const apiPath = `/api/admin/venue/${venueUuid.value}`
-    const response = await apiFetch<any>(apiPath)
-    const venueData = response.response?.data
-    console.log(JSON.stringify(venueData, null, 2))
+    const apiResponse = await apiFetch<any>(apiPath)
+    const venueData = apiResponse.data
     if (venueData) {
       venueStore.loadFromApi?.(venueData)
     } else {
       venueStore.error = 'No data returned from API'
     }
   } catch (e) {
-    console.error(e)
     venueStore.error = 'Failed to load venue'
   } finally {
     venueStore.loading = false

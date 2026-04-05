@@ -33,7 +33,7 @@
         <UranusCheckbox
             id="todo_completed"
             v-model="date.allDay!"
-            :label="t('all_day')"
+            :label="t('event_all_day')"
         />
       </div>
 

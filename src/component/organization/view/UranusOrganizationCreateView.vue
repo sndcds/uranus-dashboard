@@ -42,7 +42,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import router from '@/router/index.ts'
-import { apiFetch } from '@/api.ts'
+import {apiFetch, type ApiResponse} from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
@@ -66,19 +66,18 @@ async function onCreate() {
 
   try {
     const apiPath = '/api/admin/organization/create'
-    const { response } = await apiFetch<any>(apiPath, {
+    const apiResponse = await apiFetch<ApiResponse<any>>(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
 
-    const orgUuid = response.metadata.org_uuid ?? ''
+    const orgUuid = apiResponse.metadata!.org_uuid ?? ''
     if (orgUuid == '') {
       throw new Error('no org_uuid returned from API')
     }
     router.push(`/admin/organization/${orgUuid}/edit`)
-  } catch (error) {
-    // TODO: Render UranusFeedback
+  } catch (err) {
     alert('Organisation konnte nicht erstellt werden')
   }
 }

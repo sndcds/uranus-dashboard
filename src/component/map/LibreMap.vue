@@ -280,8 +280,8 @@ onMounted(() => {
       map.addSource(layerName, {
         type: 'geojson',
         data: layerData.data,
-        cluster: layerData.cluster ?? false,
-        clusterRadius: 50,
+        cluster: false, // layerData.cluster ?? false,
+        clusterRadius: 1,
         clusterProperties: layerData.clusterProperties
       })
 

@@ -147,12 +147,12 @@ const loadNotifications = async () => {
   error.value = null
 
   try {
-    const { response } = await apiFetch<{ notifications: Notification[] }>(
+    const res = await apiFetch<{ notifications: Notification[] }>(
         `/api/admin/user/event/notifications?lang=${locale.value}`
     )
 
-    if (Array.isArray(response?.notifications)) {
-      notifications.value = response.notifications
+    if (Array.isArray(res.data?.notifications)) {
+      notifications.value = res.data?.notifications
     } else {
       notifications.value = []
     }

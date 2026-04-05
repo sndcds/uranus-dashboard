@@ -8,12 +8,12 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { apiFetch } from '@/api.ts'
 
-export interface UranusLegalFormEntry {
+export interface LegalFormEntryDTO {
     label: string | null
     description: string | null
 }
 
-export type UranusLegalFormMap = Record<string, UranusLegalFormEntry>
+export type UranusLegalFormMap = Record<string, LegalFormEntryDTO>
 
 export const useLegalFormLookupStore = defineStore('legalForm', () => {
     // Store structure: data[lang][key] => { label, description }
@@ -35,7 +35,9 @@ export const useLegalFormLookupStore = defineStore('legalForm', () => {
             )
 
             const map: UranusLegalFormMap = {}
-            for (const item of res.response.data ?? []) {
+            const items: LegalFormEntryDTO[] | any = res.data ?? []
+
+            for (const item of items) {
                 map[item.key] = {
                     label: item.name ?? null,
                     description: item.description ?? null
@@ -70,7 +72,7 @@ export const useLegalFormLookupStore = defineStore('legalForm', () => {
     /**
      * Get full entry for a key
      */
-    function getEntry(key: string, lang?: string): UranusLegalFormEntry | null {
+    function getEntry(key: string, lang?: string): LegalFormEntryDTO | null {
         const uiLang = lang || 'en'
         return data.value[uiLang]?.[key] ?? null
     }
@@ -78,7 +80,7 @@ export const useLegalFormLookupStore = defineStore('legalForm', () => {
     /**
      * Get all legal forms for a given language
      */
-    function getAll(lang?: string): UranusLegalFormEntry[] {
+    function getAll(lang?: string): LegalFormEntryDTO[] {
         const uiLang = lang || 'en'
         return Object.values(data.value[uiLang] ?? [])
     }

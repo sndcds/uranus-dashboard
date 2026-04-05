@@ -7,7 +7,7 @@
     <h2>{{ t('event_types_and_genre') }}</h2>
 
     <div class="event-types-list">
-      <div v-for="(pair, index) in store.draft!.eventTypes ?? []" :key="index" class="event-type-chip">
+      <div v-for="(pair, index) in store.draft!.eventTypes ?? []" :key="index" class="uranus-chip">
         {{ getTypeGenreLabel(pair) }}
         <button @click="removePair(index)">×</button>
       </div>
@@ -28,11 +28,11 @@
         </option>
       </select>
 
-      <div>
-        <UranusButton variant="tertiary" :disabled="!selectedTypeId" @click="addPair">
+      <UranusFormActions>
+        <UranusButton size="small" variant="tertiary" :disabled="!selectedTypeId" @click="addPair">
           {{ t('add') }}
         </UranusButton>
-      </div>
+      </UranusFormActions>
     </UranusFormRow>
   </UranusCard>
 </template>
@@ -46,6 +46,7 @@ import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import {createEventTypePair, type EventTypePairModel} from '@/domain/event/eventTypePair.model.ts'
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 
 const store = useUranusAdminEventStore()
@@ -116,9 +117,15 @@ function getTypeGenreLabel(pair: EventTypePairModel) {
 </script>
 
 <style scoped lang="scss">
-.event-types-card { display: flex; flex-direction: column; gap: 1rem; }
-.event-types-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.event-type-chip { color: #594d85; background: #e6e1f4; padding: 0.2rem 0.8rem; border-radius: 40px; display: flex; align-items: center; gap: 0.3rem; }
-.event-type-chip button { border: none; background: inherit; color: inherit; cursor: pointer; border-radius: 50px; width: 1.8rem; aspect-ratio: 1/1; font-weight: bold; }
-.event-type-chip button:hover { background: #d1cbea; }
+.event-types-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.event-types-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 </style>

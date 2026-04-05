@@ -9,7 +9,7 @@
         :key="topic.topic"
         class="accessibility-card"
     >
-      <h3>{{ t(topic.topic_name) }}</h3>
+      <h2>{{ t(topic.topic_name) }}</h2>
 
       <div class="accessibility-options">
         <UranusCheckbox

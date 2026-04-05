@@ -74,8 +74,8 @@ onMounted(async () => {
   orgStore.loading = true
   try {
     const apiPath = `/api/admin/organization/${orgUuid.value}`
-    const response = await apiFetch<any>(apiPath)
-    orgStore.loadFromApi(response.response.data)
+    const apiResponse = await apiFetch<any>(apiPath)
+    orgStore.loadFromApi(apiResponse.data)
   } catch (e) {
     orgStore.error = 'Failed to load organization'
   } finally {

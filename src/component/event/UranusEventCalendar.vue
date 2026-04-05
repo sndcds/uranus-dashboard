@@ -28,42 +28,42 @@
       </div>
 
       <!-- TODO: Message for viewer -->
-      <div v-if="events.length === 0 && !loading">
+      <div v-if="!eventListStore.hasEvents() && !eventListStore.loading">
         No events to display
       </div>
 
       <div v-else class="calendar-layout">
         <router-link
-            v-for="event in events"
-            :key="`${event.id}-${event.event_date_id}`"
-            :to="{ name: 'event-details', params: { id: event.id, eventDateId: event.event_date_id } }"
+            v-for="event in eventListStore.events"
+            :key="`${event.uuid}-${event.uuid}`"
+            :to="{ name: 'event-details', params: { uuid: event.uuid, eventDateUuid: event.dateUuid } }"
             class="calendar-card custom-link"
         >
 
           <div class="calendar-image">
-            <img :src="getEventImageUrl(event)" alt="Event image" />
+            <img :src="eventListStore.getEventImageUrl(event)" alt="Event image" />
           </div>
 
           <div class="calendar-text">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span>{{ uranusFormatDateTime(event.start_date, event.start_time, locale) }}</span>
+              <span>{{ uranusFormatDateTime(event.startDate, event.startTime, locale) }}</span>
               <UranusEventReleaseChip
-                  v-if="eventReleaseStatusStore.isReleased(event.release_status ?? '')"
-                  :releaseStatus="event.release_status"
+                  v-if="eventReleaseStatusStore.isReleased(event.releaseStatus ?? '')"
+                  :releaseStatus="event.releaseStatus"
                   tiny
               />
             </div>
             <h3>{{ event.title }}</h3>
-            <span>{{ event.venue_name }} · {{ event.venue_city }}</span>
+            <span>{{ event.venue.name }} · {{ event.venue.city }}</span>
             <!-- Render only event type (no genres) -->
-            <div v-if="event.event_types && event.event_types.length" class="uranus-public-event-detail-tags">
-              <div
-                  v-for="typeId in getUniqueEventTypes(event.event_types)"
+            <div v-if="event.eventTypes && event.eventTypes.length" class="uranus-public-event-detail-tags">
+              <!--div
+                  v-for="typeId in getUniqueEventTypes(event.eventTypes)"
                   :key="typeId"
                   class="uranus-public-event-detail-tag"
               >
                 {{ getTypeName(typeId) }}
-              </div>
+              </div-->
             </div>
           </div>
 
@@ -83,9 +83,11 @@
           v-show="true"
       ></div>
 
-      <div v-if="loading" class="loading-indicator">
+      <div v-if="eventListStore.loading" class="loading-indicator">
         Loading more events…
       </div>
+
+      {{ JSON.stringify(eventListStore.events, null, 2) }}
 
     </div>
   </div>
@@ -96,8 +98,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api.ts'
 import { useEventsFilterStore } from '@/store/uranusEventsFilterStore.ts'
+import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import { urlParamsSetIfPresent, urlParamsSetArrayIfPresent } from '@/util/UranusUtils.ts'
 import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
@@ -111,6 +113,7 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const eventReleaseStatusStore = useEventReleaseStatusStore()
 const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
+const eventListStore = useEventListStore()
 
 const showFilterModal = ref(false)
 const searchQuery = ref('')
@@ -119,13 +122,8 @@ const searchQuery = ref('')
 watch(
     () => filterStore.filter,
     () => {
-      // Reset pagination
-      events.value = []
-      lastEventStartAt.value = null
-      lastEventDateId.value = null
-
-      // Reload events
-      loadEvents(true)
+      eventListStore.reset()
+      eventListStore.loadEvents(true)
     },
     { deep: true }
 )
@@ -138,33 +136,6 @@ onBeforeUnmount(() => {
 
 
 // Types
-
-interface CalendarEventType {
-  genre_id: number | null
-  genre_name: string | null
-  type_id: number
-  type_name: string
-}
-
-interface CalendarEvent {
-  id: number
-  event_date_id: number
-  title: string
-  subtitle: string | null
-  image_path: string | null
-  summary: string | null
-  description: string | null
-  start_date: string
-  start_time: string | null
-  end_date: string | null
-  end_time: string | null
-  venue_name: string | null
-  venue_city: string | null
-  event_types: CalendarEventType[] | null
-  organization_name: string | null,
-  release_status: string | null
-}
-
 interface TypeSummaryEntry {
   type_id: number;
   date_count: number;
@@ -175,19 +146,15 @@ const getTypeName = (typeId: number) =>
     typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
 
 // Return unique type IDs from the event_types array
+/*
 const getUniqueEventTypes = (types: CalendarEventType[]): number[] => {
   const unique = new Set<number>()
   types.forEach(t => unique.add(t.type_id))
   return Array.from(unique)
 }
+*/
 
-
-const events = ref<CalendarEvent[]>([])
-const limit = 32
-const loading = ref(false)
-
-const lastEventStartAt = ref<string | null>(null)
-const lastEventDateId = ref<number | null>(null)
+const limit = 8
 
 
 const loadMoreTrigger = ref<HTMLElement | null>(null)
@@ -200,10 +167,8 @@ watch(searchQuery, () => {
   if (searchTimeout) clearTimeout(searchTimeout)
 
   searchTimeout = window.setTimeout(() => {
-    events.value = []
-    lastEventStartAt.value = null
-    lastEventDateId.value = null
-    loadEvents()
+    eventListStore.reset()
+    eventListStore.loadEvents()
   }, 300)
 })
 
@@ -214,10 +179,12 @@ const buildFilterParams = (paginationMode = false, typesMode = false) => {
 
   if (paginationMode) {
     params.set("limit", limit.toString())
-    if (lastEventStartAt.value) {
-      params.set("last_event_start_at", lastEventStartAt.value)
-      if (lastEventDateId.value !== null) {
-        params.set("last_event_date_id", lastEventDateId.value.toString())
+
+    console.log("eventListStore.lastEventStartAt:", eventListStore.lastEventStartAt)
+    if (eventListStore.lastEventStartAt) {
+      params.set("last_event_start_at", eventListStore.lastEventStartAt)
+      if (eventListStore.lastEventDateUuid !== null) {
+        params.set("last_event_date_id", eventListStore.lastEventDateUuid.toString())
       }
     }
   }
@@ -276,63 +243,14 @@ const buildFilterParams = (paginationMode = false, typesMode = false) => {
   return params
 }
 
-const loadEvents = async (resetObserver = false) => {
-  if (loading.value) return
-  loading.value = true
-
-  if (resetObserver && observer) observer.disconnect()
-
-  try {
-    // Fetch events
-    const params = buildFilterParams(true, true)
-    const { response } = await apiFetch<{
-      events: CalendarEvent[]
-      last_event_start_at: string
-      last_event_date_id: number
-    }>(`/api/events?${params.toString()}`)
-
-    if (response?.events.length) {
-      events.value.push(...response.events)
-      lastEventStartAt.value = response.last_event_start_at
-      lastEventDateId.value = response.last_event_date_id
-    }
-
-    // Fetch summary with same filters, but without limit
-    const summaryParams = buildFilterParams(false, false)
-    const summaryResponse = await apiFetch<{ summary: TypeSummaryEntry[] }>(
-        `/api/events/type-summary?${summaryParams.toString()}`
-    )
-    typeSummary.value = summaryResponse.response.summary || []
-
-  } catch (err) {
-    console.error("Failed to load events:", err)
-  } finally {
-    loading.value = false
-    if (resetObserver && observer && loadMoreTrigger.value) {
-      observer.observe(loadMoreTrigger.value)
-    }
-  }
-}
-
-const getEventImageUrl = (event: CalendarEvent) => {
-  if (!event.image_path)
-    return import.meta.env.BASE_URL + "assets/event_dummy.png"
-
-  const url = new URL(event.image_path, window.location.origin)
-  url.searchParams.set("width", "480")
-  url.searchParams.set("ratio", "16:9")
-
-  return url.toString()
-}
-
 onMounted(async () => {
-  await loadEvents()
+  await eventListStore.loadEvents()
 
   observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
         if (entry?.isIntersecting) {  // Optional chaining
-          loadEvents()
+          eventListStore.loadEvents()
         }
       },
       {
@@ -362,15 +280,13 @@ const onResetFilter = () => {
   })
 
   // Reset the event list and pagination cursors
-  events.value = []
-  lastEventStartAt.value = null
-  lastEventDateId.value = null
+  eventListStore.reset()
 
   // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' })
 
   // Reload events (observer will re-trigger if needed)
-  loadEvents(true)
+  eventListStore.loadEvents()
 }
 
 onBeforeUnmount(() => {

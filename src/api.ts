@@ -18,8 +18,14 @@ export interface LoginResponse {
 }
 
 export interface ApiResponse<T> {
-    response: T
+    service: string
+    api_version: string
+    response_type: string
     status: number
+    message?: string
+    timestamp: string
+    metadata?: Record<string, any>
+    data?: T
 }
 
 export interface NominatimResult {
@@ -32,12 +38,12 @@ export interface NominatimResult {
  */
 export class ApiError extends Error {
     status: number
-    data: any
+    error: string
 
-    constructor(message: string, status: number, data: any) {
+    constructor(message: string, status: number) {
         super(message)
         this.status = status
-        this.data = data
+        this.error = message
     }
 }
 
@@ -73,49 +79,43 @@ export async function apiFetch<T = unknown>(
     const doFetch = async (): Promise<ApiResponse<T>> => {
         const headers = new Headers(options.headers ?? undefined)
 
-        // Only set JSON Content-Type if body is NOT FormData
         if (!(options.body instanceof FormData) && !headers.has('Content-Type')) {
             headers.set('Content-Type', 'application/json')
         }
 
         if (tokenStore.accessToken) {
             headers.set('Authorization', `Bearer ${tokenStore.accessToken}`)
-        } else {
-            headers.delete('Authorization')
         }
 
-        const res = await fetch(url, { ...options, headers })
+        const raw = await fetch(url, { ...options, headers })
 
-        const contentType = res.headers.get('content-type') ?? ''
-        let data: unknown = null
+        const contentType = raw.headers.get('content-type') ?? ''
+        let apiResonse: ApiResponse<T> | null = null
 
         if (contentType.includes('application/json')) {
             try {
-                data = await res.json()
+                apiResonse = await raw.json() as ApiResponse<T>
             } catch {
-                data = null
+                apiResonse = null
             }
         } else {
-            try {
-                data = await res.text()
-            } catch {
-                data = null
+            // If server returns plain text (rare)
+            const text = await raw.text().catch(() => '')
+            apiResonse = {
+                service: 'unknown',
+                api_version: 'unknown',
+                response_type: 'unknown',
+                status: raw.status,
+                timestamp: new Date().toISOString(),
+                data: text as any,
             }
         }
 
-        if (!res.ok) {
-            const message =
-                (data && typeof data === 'object' && 'error' in data
-                    ? (data as { error?: string }).error
-                    : null) || res.statusText
-
-            throw new ApiError(message, res.status, data)
+        if (!raw.ok) {
+            throw new ApiError(apiResonse?.message || raw.statusText, raw.status)
         }
 
-        return {
-            response: data as T,
-            status: res.status,
-        }
+        return apiResonse!
     }
 
     try {

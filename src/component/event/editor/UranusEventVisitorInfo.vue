@@ -4,12 +4,10 @@
 
 <template>
   <section class="visitor-info-tab">
-    <UranusCard>
       <UranusBigIntFlagsEditor
           :topics="uranusI18nVisitorInformationFlags"
           v-model="draft.visitorInfoFlags!"
       />
-    </UranusCard>
 
     <div class="tab-actions">
       <UranusButton :disabled="store.saving || !isDirty" @click="onReset">
@@ -69,7 +67,7 @@ async function onCommit() {
     const payload = {
       visitor_info_flags: store.draft.visitorInfoFlags?.toString() ?? '0'
     }
-    const apiPath = `/api/admin/event/${store.draft.id}/fields`
+    const apiPath = `/api/admin/event/${store.draft.uuid}/fields`
     await apiFetch(apiPath, {
       method: 'PUT',
       body: JSON.stringify(payload),

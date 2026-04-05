@@ -4,41 +4,37 @@
 
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { apiFetch } from '@/api.ts'
+import { apiFetch, type ApiResponse } from '@/api.ts'
 
-/** Single Type object from API, including nested genres */
 export interface TypeWithGenres {
     name: string
     genres?: Record<string, string>
 }
 
-/** Per-locale lookup: typeId -> TypeWithGenres */
 export interface LanguageLookup {
     types: Record<string, TypeWithGenres>
 }
 
-/** API response wrapper */
 export interface EventTypesGenresAPIResponse {
-    data: Record<string, LanguageLookup> // locale -> LanguageLookup
+    [locale: string]: LanguageLookup
 }
 
 export const useEventTypeLookupStore = defineStore('eventTypesLookup', () => {
     const data = ref<Record<string, LanguageLookup>>({})
     const loaded = ref(false)
-    const locale = ref('en') // can be set dynamically
+    const locale = ref('en')
 
     /** Load types/genres from API */
-    async function load(languages: string[] = ['de', 'da', 'en']) {
+    async function initialize(languages: string[] = ['de', 'da', 'en']) {
         if (loaded.value) return
 
         const params = new URLSearchParams()
         params.append('lang', languages.join(','))
 
-        const endpoint = `/api/event/type-genre-lookup?${params.toString()}`
-        const res = await apiFetch<EventTypesGenresAPIResponse>(endpoint)
-
-        // JSON now matches the new nested structure: typeObj -> genres
-        data.value = res.response?.data ?? {}
+        const apiPath = `/api/event/type-genre-lookup?${params.toString()}`
+        const apiResponse = await apiFetch<ApiResponse<Record<string, LanguageLookup>>>(apiPath)
+        // @ts-ignore
+        data.value = apiResponse.data ?? {}
         loaded.value = true
     }
 
@@ -53,12 +49,7 @@ export const useEventTypeLookupStore = defineStore('eventTypesLookup', () => {
     const getGenreName = (typeId: number | null, genreId: number | null, localeStr: string): string => {
         if (typeId == null || genreId == null) return ''
         const typeObj = data.value[localeStr]?.types?.[typeId.toString()]
-        if (!typeObj || !typeObj.genres) return ''
-        const genreName =
-            genreId != null
-                ? typeObj.genres[String(genreId)] ?? ''
-                : '11111'
-        return genreName
+        return typeObj?.genres?.[genreId.toString()] ?? ''
     }
 
     /** Combined type / genre label */
@@ -72,7 +63,7 @@ export const useEventTypeLookupStore = defineStore('eventTypesLookup', () => {
         data,
         loaded,
         locale,
-        load,
+        initialize,
         getTypeName,
         getGenreName,
         getTypeGenreName

@@ -1,5 +1,5 @@
 <template>
-  <div class="help-popup-container">
+  <div>
     <button @click="togglePopup" class="help-icon" aria-label="Help">
       <MessageCircleQuestionMark />
     </button>
@@ -62,8 +62,13 @@ watch(locale, async () => {
 .help-icon {
   background: none;
   border: none;
+  border-radius: 999px;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1rem;
+
+  &:hover {
+    color: var(--uranus-link-color-hover);
+  }
 }
 
 .popup-overlay {

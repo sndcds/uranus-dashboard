@@ -56,20 +56,23 @@ import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusTodoCard from '@/component/todo/UranusTodoCard.vue'
 import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { type UranusTodoDTO } from '@/model/uranusTodoModel.ts'
+import { type TodoDTO } from '@/model/uranusTodoModel.ts'
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const { t } = useI18n()
 
-const todos = ref<UranusTodoDTO[]>([])
+const todos = ref<TodoDTO[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 const showCreateModal = ref(false)
 
-onMounted(async () => {
+const loadTodos = async () => {
+  loading.value = true
+  error.value = null
+
   try {
-    const { response } = await apiFetch<any>('/api/admin/user/todos')
-    todos.value = response.data.todos ?? []
+    const res = await apiFetch<{ todos: TodoDTO[] }>('/api/admin/user/todos')
+    todos.value = res.data?.todos ?? []
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
@@ -80,25 +83,25 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
-})
+}
+
+onMounted(loadTodos)
 
 const openCreate = () => {
   showCreateModal.value = true
 }
 
-const createTodo = (todo: UranusTodoDTO) => {
-  todos.value = [todo, ...todos.value]
+const createTodo = async () => {
+  showCreateModal.value = false
+  await loadTodos()
 }
 
-const updateTodo = (updated: UranusTodoDTO) => {
-  console.log("What:", JSON.stringify(updated, null, 2))
-  todos.value = todos.value.map(t =>
-      t.id === updated.id ? { ...updated } : t
-  )
+const updateTodo = async () => {
+  await loadTodos()
 }
 
-const deleteTodo = (todoId: number) => {
-  todos.value = todos.value.filter(t => t.id !== todoId)
+const deleteTodo = async () => {
+  await loadTodos()
 }
 </script>
 

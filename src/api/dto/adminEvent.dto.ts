@@ -1,7 +1,5 @@
 /*
     src/api/dto/UranusAdminEventDTO.ts
-
-    2026-02-05, Roald
  */
 
 import { type AdminEventDateDTO } from '@/api/dto/adminEventDate.dto.ts'

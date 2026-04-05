@@ -78,20 +78,19 @@ async function onCreate() {
     }
 
     const apiPath = '/api/admin/event/initial'
-    const res = await apiFetch<CreateEventResponse>(apiPath, {
+    const apiResponse = await apiFetch<CreateEventResponse>(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
 
-    const eventId = res.response?.metadata?.event_id
-    if (!eventId) {
+    const eventUuid = apiResponse.metadata?.event_uuid
+    if (!eventUuid) {
       throw new Error('no event_id returned from API')
     }
 
-    router.push(`/admin/event/${eventId}`)
+    router.push(`/admin/event/${eventUuid}`)
   } catch (error) {
-    console.error('Failed to create event', error)
     alert('Event konnte nicht erstellt werden')
   }
 }

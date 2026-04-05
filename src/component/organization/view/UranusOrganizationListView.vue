@@ -71,11 +71,9 @@ const handleOrganizationDeleted = (orgUuid: string | null) => {
 
 onMounted(async () => {
   try {
-    const { response } = await apiFetch<any>('/api/admin/organization/list')
-    const data = response.data.organizations as UranusOrganizationListItemDTO[]
+    const res = await apiFetch<any>('/api/admin/organization/list')
+    const data = res.data.organizations as UranusOrganizationListItemDTO[]
     organizationListItems.value = (data || []).map(dto => mapOrganizationListItem(dto))
-
-    console.log('Mapped organizations:', JSON.stringify(organizationListItems.value, null, 2))
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }

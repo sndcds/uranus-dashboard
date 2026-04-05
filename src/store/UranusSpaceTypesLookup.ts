@@ -1,82 +1,86 @@
-import { apiFetch } from '@/api'
+/*
+    src/store/uranusSpaceTypeLookup.ts
+*/
+
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { apiFetch, type ApiResponse } from '@/api.ts'
 
+/** Single space type entry from API */
 export interface UranusSpaceTypeEntry {
     label: string | null
     description: string | null
 }
 
-export type UranusSpaceTypeMap = Record<string, UranusSpaceTypeEntry>
+/** Per-locale lookup: key -> UranusSpaceTypeEntry */
+export interface LanguageLookup {
+    types: Record<string, UranusSpaceTypeEntry>
+}
 
-export const useSpaceTypeLookupStore = defineStore('spaceType', () => {
-    // Store structure: data[lang][key] => { label, description }
-    const data = ref<Record<string, UranusSpaceTypeMap>>({})
+export const useSpaceTypeLookupStore = defineStore('spaceTypesLookup', () => {
+    const data = ref<Record<string, LanguageLookup>>({})
     const loaded = ref<Record<string, boolean>>({})
     const loading = ref<Record<string, boolean>>({})
+    const locale = ref('en')
 
-    /**
-     * Fetch space types for a given language
-     */
+    /** Load a specific language */
     async function fetchLang(lang: string) {
         if (loaded.value[lang] || loading.value[lang]) return
         loading.value[lang] = true
 
         try {
-            const res = await apiFetch<{ data: any[] }>(
+            const res = await apiFetch<ApiResponse<UranusSpaceTypeEntry[]>>(
                 `/api/choosable-space-types?lang=${lang}`
             )
 
-            const map: UranusSpaceTypeMap = {}
-
-            for (const item of res.response.data ?? []) {
+            const map: Record<string, UranusSpaceTypeEntry> = {}
+            const items: UranusSpaceTypeEntry | any = res.data ?? []
+            for (const item of items) {
                 map[item.key] = {
                     label: item.name ?? null,
                     description: item.description ?? null
                 }
             }
 
-            data.value[lang] = map
+            data.value[lang] = { types: map }
             loaded.value[lang] = true
-
         } catch (err) {
             console.error(`Error fetching space types for lang=${lang}`, err)
-            data.value[lang] = {}
+            data.value[lang] = { types: {} }
         } finally {
             loading.value[lang] = false
         }
     }
 
-    /**
-     * Initialize multiple languages at once
-     */
-    async function initialize(languages: string[] = ['en']) {
+    /** Load multiple languages */
+    async function initialize(languages: string[] = ['de', 'da', 'en']) {
         await Promise.all(languages.map(lang => fetchLang(lang)))
     }
 
-    /**
-     * Get label for a key in a given language
-     */
-    function getLabel(key: string, lang?: string): string {
-        const uiLang = lang || 'en'
-        return data.value[uiLang]?.[key]?.label ?? ''
+    /** Get a space type by key and locale */
+    function getType(key: string, lang: string): UranusSpaceTypeEntry | null {
+        return data.value[lang]?.types?.[key] ?? null
     }
 
-    /**
-     * Get full entry for a key
-     */
-    function getEntry(key: string, lang?: string): UranusSpaceTypeEntry | null {
-        const uiLang = lang || 'en'
-        return data.value[uiLang]?.[key] ?? null
+    /** Get label only */
+    function getLabel(key: string, lang: string): string {
+        return getType(key, lang)?.label ?? ''
     }
 
-    /**
-     * Get all space types for a given language
-     */
-    function getAll(lang?: string): UranusSpaceTypeEntry[] {
-        const uiLang = lang || 'en'
-        return Object.values(data.value[uiLang] ?? [])
+    /** Get description only */
+    function getDescription(key: string, lang: string): string {
+        return getType(key, lang)?.description ?? ''
     }
 
-    return { data, loaded, loading, fetchLang, initialize, getLabel, getEntry, getAll }
+    return {
+        data,
+        loaded,
+        loading,
+        locale,
+        fetchLang,
+        initialize,
+        getType,
+        getLabel,
+        getDescription
+    }
 })

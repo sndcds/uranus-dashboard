@@ -1,44 +1,47 @@
+<!--
+  src/component/venue/UranusVenueCard.vue
+-->
+
 <template>
   <UranusCard custom-style="width:100%;">
 
     <div>
       <div class="header">
-        <h2>{{ venueListItem.name }}</h2>
+        <div>
+          <h2>{{ venueListItem.name }}</h2>
+          <p>{{ eventCountText }}</p>
+          <div class="uranus-card-button-container">
+          <UranusButton
+              v-if="venueListItem.canEditEvent"
+              variant="secondary" size="small"
+              :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/edit`"
+          >
+            {{ t('edit') }}
+          </UranusButton>
+
+          <UranusButton
+              v-if="venueListItem.canDeleteEvent"
+              variant="secondary" size="small"
+              @click="onDeleteEvent(venueListItem)"
+          >
+            {{ t('delete') }}
+          </UranusButton>
+          </div>
+        </div>
         <PlutoImage
             :mainImageUuid="venueListItem.mainLogoUuid ?? null"
             :lightImageUuid="venueListItem.lightThemeLogoUuid ?? null"
             :darkImageUuid="venueListItem.darkThemeLogoUuid ?? null"
         />
       </div>
-      <span>
-        {{ t('events') }}: {{ venueListItem.upcomingEventCount }}
-      </span>
-    </div>
-
-    <div class="uranus-card-button-container">
-      <UranusButton
-          v-if="venueListItem.canEditEvent"
-          variant="secondary" size="small"
-          :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/edit`"
-      >
-        {{ t('edit') }}
-      </UranusButton>
-
-      <UranusButton
-          v-if="venueListItem.canDeleteEvent"
-          variant="secondary" size="small"
-          @click="onDeleteEvent(venueListItem)"
-      >
-        {{ t('delete') }}
-      </UranusButton>
     </div>
 
     <section>
       <div>
         <h3>{{ t('venue_spaces') }}
           <UranusIconAction
-              mode="add"
-              v-if="venueListItem.canEditVenue"
+              :icon="Plus"
+              :title="t('add')"
               :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/space/create`"
           />
         </h3>
@@ -52,20 +55,24 @@
         >
           <div class="space-info">
             <span>{{ space.name }}</span>
-            <span>&nbsp;/ {{ space.upcomingEventCount }}</span>
           </div>
 
           <div class="space-actions">
+            <span>
+              <template v-if="space.upcomingEventCount">
+                {{ space.upcomingEventCount }}
+              </template>
+              <template v-else></template>
+            </span>
             <UranusIconAction
-                mode="edit"
                 v-if="venueListItem.canEditSpace"
+                :icon="Edit" :title="t('edit')"
                 :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/space/${space.uuid}/edit`"
             />
             <UranusIconAction
-                mode="delete"
-                title="Delete"
-                :onClick="() => requestDeleteSpace(space)"
-            />
+                v-if="venueListItem.canDeleteSpace"
+                :icon="Trash2" :title="t('delete')"
+                :onClick="() => requestDeleteSpace(space)" />
           </div>
         </div>
       </template>
@@ -99,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from "vue-i18n"
 import { apiFetch } from '@/api.ts'
 import {type VenueListItem, type VenueListSpace} from '@/domain/organization/venueList.ts'
@@ -110,6 +117,8 @@ import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import PlutoImage from '@/component/pluto/PlutoImage.vue'
 import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
+import { Edit, Trash2, Plus } from 'lucide-vue-next'
+
 
 const { t } = useI18n()
 
@@ -117,6 +126,14 @@ const props = defineProps<{
   venueListItem: VenueListItem
   organizationUuid: string
 }>()
+
+const eventCountText = computed(() => {
+  // Pass locale.value to your interpolation function if needed
+  const count = props.venueListItem.upcomingEventCount
+  const key = count === 1 ? 'event_count_singular' : 'event_count_plural'
+  const template = t(key) // t automatically picks the correct language
+  return uranusStringInterpolate(template, { count })
+})
 
 const emit = defineEmits<{
   deleted: [venueUuid: string]
@@ -178,7 +195,6 @@ const confirmDeleteVenue = async ({ password }: { password: string }) => {
     } else {
       deleteVenueError.value = t('failed_to_delete_venue')
     }
-
     // NO throw here — just set the error for the modal
   } finally {
     isDeletingVenue.value = false
@@ -260,6 +276,7 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
 
 .space-actions {
   display: flex;
-  gap: 0.25rem; /* spacing between edit and delete icons */
+  align-items: center;
+  gap: 1rem; /* spacing between edit and delete icons */
 }
 </style>

@@ -39,7 +39,7 @@ const linkTypeLookupStore = useLinkTypeLookupStore()
 await linkTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES])
 
 const eventTypeLookupStore = useEventTypeLookupStore()
-await eventTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES])
+await eventTypeLookupStore.initialize([...SUPPORTED_UI_LANGUAGES])
 
 const currencyStore = useCurrencyLookupStore()
 await currencyStore.load([...SUPPORTED_UI_LANGUAGES])

@@ -1,5 +1,5 @@
 .uranus-html-page {
-  font-family: 'Avenir', 'Open Sans', sans-serif;
+  font-family: font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
   font-size: 1.1rem;       // base font size
   color: var(--uranus-color);
   line-height: 1.5;
@@ -7,10 +7,11 @@
 
   * {
     font-size: 1.1rem;
+    font-weight: 300;
   }
 
   h1, h2, h3, h4, h5 {
-    font-weight: 500;
+    font-weight: 400;
     margin-top: 3rem;
     margin-bottom: 0.5rem;
 

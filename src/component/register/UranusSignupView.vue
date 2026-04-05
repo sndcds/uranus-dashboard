@@ -75,7 +75,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {apiFetch, type ApiResponse} from '@/api.ts'
+import { apiFetch } from '@/api.ts'
 
 import UranusPasswordInput from '@/component/ui/UranusPasswordInput.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'

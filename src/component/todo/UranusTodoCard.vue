@@ -19,16 +19,8 @@
     </div>
 
     <div class="todo-actions">
-      <UranusIconAction
-          mode="edit"
-          :title="t('edit')"
-          @click="openEdit"
-      />
-      <UranusIconAction
-          mode="delete"
-          :title="t('delete')"
-          @click="requestDelete"
-      />
+      <UranusIconAction :icon="Edit" :title="t('edit')" @click="openEdit" />
+      <UranusIconAction :icon="Trash2" :title="t('delete')" @click="requestDelete" />
     </div>
 
     <!-- Edit Modal -->
@@ -63,11 +55,12 @@ import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
-import { type UranusTodoDTO } from '@/model/uranusTodoModel.ts'
+import { type TodoDTO } from '@/model/uranusTodoModel.ts'
+import {Edit, Trash2} from "lucide-vue-next";
 
-const props = defineProps<{ todo: UranusTodoDTO }>()
+const props = defineProps<{ todo: TodoDTO }>()
 const emit = defineEmits<{
-  updated: [todo: UranusTodoDTO]
+  updated: [todo: TodoDTO]
   deleted: [todoId: number]
 }>()
 
@@ -85,7 +78,7 @@ const formattedDueDate = computed(() => {
 
 const openEdit = () => { showEditModal.value = true }
 
-const onUpdated = (updatedTodo: UranusTodoDTO) => {
+const onUpdated = (updatedTodo: TodoDTO) => {
   showEditModal.value = false
   emit('updated', { ...updatedTodo })
 }

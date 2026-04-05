@@ -140,9 +140,10 @@ onMounted(async () => {
   adminEventStore.loading = true
   try {
     const apiPath = `/api/admin/event/${eventUuid.value}?lang=${locale.value}`
-    const response = await apiFetch<{ data: AdminEventDTO }>(apiPath)
-    adminEventStore.loadFromApi(response.response.data)
+    const apiResponse = await apiFetch<{ data: AdminEventDTO }>(apiPath)
+    adminEventStore.loadFromApi(apiResponse.data)
   } catch (e) {
+    console.log(e)
     adminEventStore.error = 'Failed to load event'
     console.log(e)
   } finally {

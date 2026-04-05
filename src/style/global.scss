@@ -5,6 +5,7 @@
 @use 'app_menu';
 @use 'card';
 @use 'form';
+@use 'chip';
 @use 'combo_tag';
 @use 'dashboard';
 @use 'value_info';
@@ -19,8 +20,8 @@
 :root {
   color-scheme: light;
 
-  --uranus-font-ui: 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
-  --uranus-font-text: 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --uranus-font-ui: font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --uranus-font-text: font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
 
   --uranus-hue: 266;
   --uranus-active-hue: 286;
@@ -63,6 +64,12 @@
   --uranus-low-priority_color: #34d399;
   --uranus-medium-priority_color: #facc15;
   --uranus-high-priority_color: #f87171;
+
+  --uranus-chip-bg: #ededf8;
+  --uranus-chip-color: #504b85;
+  --uranus-chip-bg-hover: #504b85;
+  --uranus-chip-color-hover: #ededf8;
+
 
   // // //
 

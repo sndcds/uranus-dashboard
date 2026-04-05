@@ -1,3 +1,5 @@
+import { useI18n } from 'vue-i18n'
+
 export function uranusCapitalizeFirst(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1)
 }
@@ -15,6 +17,16 @@ export function uranusStringInterpolate(
         // Convert undefined/null to empty string, otherwise use value
         return val != null ? String(val) : '';
     });
+}
+
+export function usePluralizedText(
+    singularKey: string,
+    pluralKey: string,
+    count: number
+): string {
+    const { t } = useI18n()
+    const template = count === 1 ? t(singularKey) : t(pluralKey)
+    return uranusStringInterpolate(template, { count })
 }
 
 export function uranusFormatSimpleDate(input: string, locale = 'en') {

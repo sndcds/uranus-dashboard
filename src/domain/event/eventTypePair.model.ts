@@ -1,7 +1,6 @@
 export interface EventTypePairModel {
     typeId: number | null
     genreId: number | null
-    isComplete(): boolean
 }
 
 // Factory function to create the object
@@ -11,9 +10,10 @@ export function createEventTypePair(
 ): EventTypePairModel {
     return {
         typeId,
-        genreId,
-        isComplete() {
-            return this.typeId != null && this.genreId != null
-        },
+        genreId
     }
+}
+
+export function isEventTypePairComplete(pair: EventTypePairModel): boolean {
+    return pair.typeId != null && pair.genreId != null
 }

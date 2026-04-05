@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
-import { apiFetch } from '@/api.ts'
-import type { UranusApiResponse } from '@/model/uranusApiResponse.ts'
+import { apiFetch, type ApiResponse } from '@/api.ts'
 
 export interface CurrencyEntry {
     id: string
@@ -22,23 +21,29 @@ export const useCurrencyLookupStore = defineStore('currencyLookup', {
             this.loading = true
 
             try {
+                // Fetch all languages concurrently
                 const results = await Promise.all(
                     languages.map(async (uiLang) => {
-                        const res = await apiFetch<UranusApiResponse<CurrencyEntry[]>>(
+                        const res = await apiFetch<ApiResponse<CurrencyEntry[]>>(
                             `/api/choosable-currencies?lang=${uiLang}`
                         )
-                        // Access the actual array inside 'data'
-                        const list = res.response?.data ?? []
+
+                        // Ensure we always have an array
+                        const list: CurrencyEntry[] = Array.isArray(res.data) ? res.data : []
+
                         return [uiLang, list] as const
                     })
                 )
 
+                // Map data by language
                 const mapped: Record<string, CurrencyMap> = {}
 
                 for (const [uiLang, list] of results) {
                     mapped[uiLang] = {}
                     for (const currency of list) {
-                        mapped[uiLang][currency.id] = currency.name
+                        const id = (currency.id ?? '').trim()
+                        if (!id) continue
+                        mapped[uiLang][id] = (currency.name ?? id).trim()
                     }
                 }
 

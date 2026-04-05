@@ -39,6 +39,7 @@
               :key="item.uuid"
               :venueListItem="item"
               :organizationUuid="organizationUuid"
+              @deleted="handleVenueDeleted"
           />
         </div>
       </div>
@@ -71,55 +72,38 @@ const isLoading = ref(true)
 const venueList = ref<VenueList | null>(null)
 const error = ref<string | null>(null)
 
-const handleVenueDeleted = (venueUuid: string) => {
-  /*
-  if (!organizationVenueList.value) {
+const loadVenues = async (uuid: string | null) => {
+  isLoading.value = true
+
+  if (!uuid) {
+    venueList.value = null
+    isLoading.value = false
     return
   }
-  organizationVenueList.value = {
-    ...organizationVenueList.value,
-    venueInfos: organizationVenueList.value.venueInfos.filter((venueInfo) => venueInfo.venueUuid !== venueUuid),
+
+  try {
+    const res = await apiFetch<any>(`/api/admin/organization/${uuid}/venues`)
+    venueList.value = mapVenueList(res.data)
+    error.value = null
+  } catch (err: unknown) {
+    if (typeof err === 'object' && err && 'data' in err) {
+      const e = err as { data?: { error?: string } }
+      error.value = e.data?.error || 'Failed to load organization venues'
+    } else {
+      error.value = 'Unknown error'
+    }
+  } finally {
+    isLoading.value = false
   }
-  */
+}
+
+const handleVenueDeleted = async () => {
+  await loadVenues(organizationUuid.value)
 }
 
 watch(
     organizationUuid,
-    async (uuid) => {
-      isLoading.value = true
-      if (uuid === null) {
-        venueList.value = null
-        isLoading.value = false
-        return
-      }
-
-      try {
-        const { response } = await apiFetch<any>(`/api/admin/organization/${uuid}/venues`)
-
-        venueList.value = mapVenueList(response?.data)
-        console.log('Mapped organizations:', JSON.stringify(venueList.value, null, 2))
-
-/*
-        // Sort spaces by spaceName in each venue
-        organizationVenueInfos.value.venueInfos.forEach(venue => {
-          venue.spaceInfos.sort((a, b) =>
-              a.spaceName.localeCompare(b.spaceName, undefined, { sensitivity: 'base' })
-          )
-        })
-*/
-        error.value = null
-      } catch (err: unknown) {
-        if (typeof err === 'object' && err && 'data' in err) {
-          const e = err as { data?: { error?: string } }
-          error.value = e.data?.error || 'Failed to load organization venues'
-        } else {
-          error.value = 'Unknown error'
-        }
-        organizationVenueList.value = null
-      } finally {
-        isLoading.value = false
-      }
-    },
+    (uuid) => loadVenues(uuid),
     { immediate: true }
 )
 </script>

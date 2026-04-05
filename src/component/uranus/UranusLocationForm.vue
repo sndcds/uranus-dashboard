@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import UranusMapLocationPicker from '@/component/UranusMapLocationPicker.vue'
+import UranusMapLocationPicker from '@/component/uranus/UranusMapLocationPicker.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'

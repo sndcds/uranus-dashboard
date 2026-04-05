@@ -8,12 +8,12 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { apiFetch } from '@/api.ts'
 
-export interface UranusLicenseEntry {
+export interface LicenseEntryDTO {
     label: string | null
     description: string | null
 }
 
-export type UranusLicenseMap = Record<string, UranusLicenseEntry>
+export type UranusLicenseMap = Record<string, LicenseEntryDTO>
 
 export const useLicenseLookup = defineStore('license', () => {
     // Store structure: data[lang][key] => { label, description }
@@ -35,7 +35,9 @@ export const useLicenseLookup = defineStore('license', () => {
             )
 
             const map: UranusLicenseMap = {}
-            for (const item of res.response.data ?? []) {
+            const items: LicenseEntryDTO[] | any = res.data ?? []
+
+            for (const item of items) {
                 map[item.key] = {
                     label: item.name ?? null,
                     description: item.description ?? null
@@ -70,7 +72,7 @@ export const useLicenseLookup = defineStore('license', () => {
     /**
      * Get full entry for a key
      */
-    function getEntry(key: string, lang?: string): UranusLicenseEntry | null {
+    function getEntry(key: string, lang?: string): LicenseEntryDTO | null {
         const uiLang = lang || 'en'
         return data.value[uiLang]?.[key] ?? null
     }
@@ -78,7 +80,7 @@ export const useLicenseLookup = defineStore('license', () => {
     /**
      * Get all licenses for a given language
      */
-    function getAll(lang?: string): UranusLicenseEntry[] {
+    function getAll(lang?: string): LicenseEntryDTO[] {
         const uiLang = lang || 'en'
         return Object.values(data.value[uiLang] ?? [])
     }

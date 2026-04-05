@@ -215,19 +215,22 @@ const confirmDelete = async ({password, selectedOption}: {
 
     let url: string
     if (deleteEntireSeries) {
-      url = `/api/admin/delete/event/${pendingDeleteUuid.value}`
+      url = `/api/admin/event/${pendingDeleteUuid.value}`
     } else if (pendingEventDateUuid.value !== null) {
-      url = `/api/admin/delete/event/${pendingDeleteUuid.value}/date/${pendingEventDateUuid.value}`
+      url = `/api/admin/event/${pendingDeleteUuid.value}/date/${pendingEventDateUuid.value}`
     } else {
-      url = `/api/admin/delete/event/${pendingDeleteUuid.value}`
+      url = `/api/admin/event/${pendingDeleteUuid.value}`
     }
 
-    const response = await apiFetch(url, {
-      method: 'POST',
+    const apiResponse = await apiFetch(url, {
+      method: 'DELETE',
       body: JSON.stringify(body),
     })
 
-    console.log(response) // TODO: Validate response
+    console.log(apiResponse)
+    console.log("pendingDeleteUuid.value", pendingDeleteUuid.value)
+    console.log("pendingEventDateUuid.value", pendingEventDateUuid.value)
+    console.log("deleteEntireSeries", deleteEntireSeries)
 
     // Success → emit deleted
     emit('deleted', {
@@ -239,13 +242,13 @@ const confirmDelete = async ({password, selectedOption}: {
     cancelDelete()
   } catch (err) {
     if (err instanceof ApiError) {
-      // Show error from server
-      console.error(err)
-      deleteError.value = err.message || t('failed_to_delete_event')
+      if (err.status === 401 || err.status === 403) {
+        deleteError.value = t('incorrect_password')
+      } else {
+        deleteError.value = t('failed_to_delete_event')
+      }
     } else {
-      console.error("unknown error", err)
-      // Show fallback error
-      deleteError.value = t('failed_to_delete_event')
+      deleteError.value = t('unknown_error')
     }
   } finally {
     isDeleting.value = false

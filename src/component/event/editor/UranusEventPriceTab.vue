@@ -5,6 +5,34 @@
 <template>
   <section class="price-tab">
 
+    <UranusCard class="ticket-options">
+      <h2>{{ t('event_ticket_options') }}</h2>
+      <UranusCheckbox
+          v-model="draftTicketFlags"
+          value="advance_ticket"
+          id="event-advance-ticket"
+          :label="t('event_advance_ticket')"
+      />
+      <UranusCheckbox
+          v-model="draftTicketFlags"
+          value="ticket_required"
+          id="event-ticket-required"
+          :label="t('event_ticket_required')"
+      />
+      <UranusCheckbox
+          v-model="draftTicketFlags"
+          value="on_site_ticket_sales"
+          id="event-on-site-ticket-sales"
+          :label="t('event_on_site_ticket_sales')"
+      />
+      <UranusCheckbox
+          v-model="draftTicketFlags"
+          value="registration_required"
+          id="event-registration-required"
+          :label="t('event_registration_required')"
+      />
+    </UranusCard>
+
     <UranusForm>
       <div class="dirty-indicator" v-if="isDirty">{{ t('unsaved_changes') }}</div>
 
@@ -40,35 +68,6 @@
             v-model="draftEvent.maxPrice!"
         />
       </UranusFormRow>
-
-      <UranusLabel id="event-currency" :label="t('event_ticket_options')">
-        <UranusCard>
-          <UranusCheckbox
-              v-model="draftTicketFlags"
-              value="advance_ticket"
-              id="event-advance-ticket"
-              :label="t('event_advance_ticket')"
-          />
-          <UranusCheckbox
-              v-model="draftTicketFlags"
-              value="ticket_required"
-              id="event-ticket-required"
-              :label="t('event_ticket_required')"
-          />
-          <UranusCheckbox
-              v-model="draftTicketFlags"
-              value="on_site_ticket_sales"
-              id="event-on-site-ticket-sales"
-              :label="t('event_on_site_ticket_sales')"
-          />
-          <UranusCheckbox
-              v-model="draftTicketFlags"
-              value="event_registration_required"
-              id="event-registration-required"
-              :label="t('event_registration_required')"
-          />
-        </UranusCard>
-      </UranusLabel>
 
     </UranusForm>
 
@@ -174,7 +173,7 @@ async function commitTab() {
     const payload = buildPayload(draft, original)
     if (Object.keys(payload).length === 0) return
 
-    const apiPath = `/api/admin/event/${draftEvent.value.id}/fields`
+    const apiPath = `/api/admin/event/${draftEvent.value.uuid}/fields`
     await apiFetch(apiPath, {
       method: 'PUT',
       body: JSON.stringify(payload),
@@ -213,7 +212,7 @@ function resetTab() {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-width: 600px;
+  max-width: var(--uranus-dashboard-content-width);
 
   label {
     display: flex;
@@ -238,7 +237,7 @@ function resetTab() {
   .tab-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
+    gap: 0.5rem;
     margin-top: 1rem;
   }
 
@@ -252,5 +251,10 @@ function resetTab() {
     color: #c00;
     font-weight: 500;
   }
+}
+
+.ticket-options {
+  display: flex;
+  gap: 0.5rem;
 }
 </style>

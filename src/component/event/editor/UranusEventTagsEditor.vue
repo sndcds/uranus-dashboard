@@ -10,7 +10,7 @@
       <span
           v-for="tag in store.draft?.tags ?? []"
           :key="tag"
-          class="event-tag-chip"
+          class="uranus-chip"
       >
         {{ tag }}
         <button @click="removeTag(tag)">×</button>
@@ -69,30 +69,5 @@ function removeTag(tag: string) {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-}
-
-.event-tag-chip {
-  color: #594d85;
-  background-color: #e6e1f4;
-  padding: 0.2rem 0.8rem;
-  border-radius: 40px;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.event-tag-chip button {
-  border: none;
-  background: inherit;
-  color: inherit;
-  cursor: pointer;
-  border-radius: 50px;
-  width: 1.8rem;
-  aspect-ratio: 1/1;
-  font-weight: bold;
-}
-
-.event-tag-chip button:hover {
-  background: #d1cbea;
 }
 </style>

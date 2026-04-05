@@ -3,7 +3,7 @@
 -->
 
 <template>
-  <section class="tab-content">
+  <div class="tab-content">
 
     <!-- Editors directly bound to store.draft -->
     <UranusEventTypeGenreEditor
@@ -45,7 +45,7 @@
       </UranusButton>
     </div>
 
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -63,9 +63,6 @@ import { Save, Undo } from 'lucide-vue-next'
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusAdminEventStore()
 
-// ------------------------------
-// Dirty check directly on store.draft
-// ------------------------------
 const isDirty = computed(() => {
   if (!store.draft || !store.original) return false
 
@@ -86,18 +83,16 @@ const isDirty = computed(() => {
       store.draft.tags!.length !== (store.original.tags?.length ?? 0) ||
       store.draft.tags!.some(t => !(store.original!.tags ?? []).includes(t))
 
+  console.log("typeDirty", typeDirty, "langDirty", langDirty, "tagsDirty", tagsDirty)
   return typeDirty || langDirty || tagsDirty
 })
 
-// ------------------------------
-// Commit all changes
-// ------------------------------
 async function commitAll() {
   if (!store.original || !store.draft) return
   store.saving = true
   store.error = null
   try {
-    await apiFetch(`/api/admin/event/${store.draft.id}/types`, {
+    await apiFetch(`/api/admin/event/${store.draft.uuid}/types`, {
       method: 'PUT',
       body: JSON.stringify({
         event_types: store.draft.eventTypes!.map(e => ({
@@ -107,17 +102,20 @@ async function commitAll() {
       })
     })
 
-    await apiFetch(`/api/admin/event/${store.draft.id}/languages`, {
+    await apiFetch(`/api/admin/event/${store.draft.uuid}/languages`, {
       method: 'PUT',
       body: JSON.stringify({ languages: store.draft.languages })
     })
 
-    await apiFetch(`/api/admin/event/${store.draft.id}/fields`, {
+    await apiFetch(`/api/admin/event/${store.draft.uuid}/fields`, {
       method: 'PUT',
       body: JSON.stringify({ tags: store.draft.tags })
     })
 
-    store.original.eventTypes = store.draft.eventTypes!.map(d => ({ ...d }))
+    store.original.eventTypes = (store.draft.eventTypes ?? []).map(d => ({
+      typeId: d.typeId,
+      genreId: d.genreId
+    }))
     store.original.languages = [...store.draft.languages!]
     store.original.tags = [...store.draft.tags!]
   } catch (err) {
@@ -128,9 +126,6 @@ async function commitAll() {
   }
 }
 
-// ------------------------------
-// Reset changes
-// ------------------------------
 function resetAll() {
   if (!store.draft || !store.original) return
 
@@ -146,6 +141,7 @@ function resetAll() {
   flex-direction: column;
   gap: 1rem;
   max-width: var(--uranus-dashboard-content-width);
+  padding: 0 !important;
 }
 
 .dirty-indicator {

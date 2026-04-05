@@ -16,6 +16,16 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Title',
         da: 'Overskrift',
     },
+    event_count_singular: {
+        de: '~~count~~ Veranstaltung',
+        en: '~~count~~ event',
+        da: '~~count~~ begivenhed',
+    },
+    event_count_plural: {
+        de: '~~count~~ Veranstaltungen',
+        en: '~~count~~ events',
+        da: '~~count~~ begivenheder'
+    },
     event_category: {
         de: 'Kategorie',
         en: 'Category',
@@ -231,6 +241,41 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Unknown type',
         da: 'Ukendt type',
     },
+    event_start_date: {
+        de: 'Startdatum',
+        en: 'Start date',
+        da: 'Startdato',
+    },
+    event_start_time: {
+        de: 'Startzeit',
+        en: 'Start time',
+        da: 'Starttid',
+    },
+    event_end_date: {
+        de: 'Enddatum',
+        en: 'End date',
+        da: 'Slutdato',
+    },
+    event_end_time: {
+        de: 'Endzeit',
+        en: 'End time',
+        da: 'Sluttid',
+    },
+    event_entry_time: {
+        de: 'Einlasszeit',
+        en: 'Entry time',
+        da: 'Indgangstid',
+    },
+    event_duration: {
+        de: 'Dauer',
+        en: 'Duration',
+        da: 'Varighed',
+    },
+    event_all_day: {
+        de: 'Ganztägig',
+        en: 'All day',
+        da: 'Hele dagen',
+    },
     event_starts_short: {
         de: 'Beginn',
         en: 'Starts',
@@ -310,6 +355,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: "Veranstaltungstyp auswählen",
         en: "Select event type",
         da: "Vælg en begivenhedstype"
+    },
+    select_event_genre: {
+        de: "Genre auswählen",
+        en: "Select genre",
+        da: "Vælg genre"
     },
     event_age: {
         de: 'Alter',

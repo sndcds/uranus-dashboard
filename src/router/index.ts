@@ -177,7 +177,7 @@ const routes = [
                 meta: { layoutMode: 'zero-padding' },
             },
             {
-                path: 'event/:id/date/:eventDateId',
+                path: 'event/:uuid/date/:eventDateUuid',
                 name: 'event-details',
                 component: UranusEventView,
             },

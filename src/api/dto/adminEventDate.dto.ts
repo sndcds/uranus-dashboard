@@ -1,7 +1,5 @@
 /*
     src/api/dto/UranusAdminEventDateDTO.ts
-
-    2026-02-05, Roald
  */
 
 export interface AdminEventDateDTO {

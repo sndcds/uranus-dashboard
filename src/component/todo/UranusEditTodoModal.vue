@@ -48,8 +48,10 @@
         <UranusPrioritySelect v-model="form.importance" />
       </UranusFormRow>
 
+      <UranusFeedback :show="!!error" type="error">
+        {{ t(error) }}
+      </UranusFeedback>
 
-      <UranusFeedback :message="error" type="error" />
     </UranusForm>
 
     <template #actions>
@@ -77,7 +79,7 @@
 <script setup lang="ts">
 import { reactive, watch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {ApiError, apiFetch} from '@/api.ts'
+import {ApiError, apiFetch, type ApiResponse} from '@/api.ts'
 
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusTextarea from '@/component/ui/UranusTextarea.vue'
@@ -88,17 +90,17 @@ import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusPrioritySelect from '@/component/ui/UranusPrioritySelect.vue'
-import { type UranusTodoDTO } from '@/model/uranusTodoModel.ts'
+import { type TodoDTO } from '@/model/uranusTodoModel.ts'
 
 
 const props = defineProps<{
   show: boolean
-  todo: UranusTodoDTO | null
+  todo: TodoDTO | null
 }>()
 
 const emit = defineEmits<{
   close: []
-  updated: [todo: UranusTodoDTO]
+  updated: [todo: TodoDTO]
 }>()
 
 const { t } = useI18n()
@@ -124,7 +126,7 @@ watch(
         form.description = props.todo.description ?? ''
         form.due_date = props.todo.due_date?.slice(0, 10) ?? ''
         form.completed = props.todo.completed
-        form.importance = (props.todo as UranusTodoDTO).importance ?? 'medium'
+        form.importance = (props.todo as TodoDTO).importance ?? 'medium'
         error.value = ''
       }
     },
@@ -141,7 +143,7 @@ const onSubmit = async () => {
   error.value = ''
 
   try {
-    const payload: UranusTodoDTO = {
+    const payload: TodoDTO = {
       id: props.todo ? props.todo.id : -1,
       title: form.title,
       description: form.description || null,
@@ -150,20 +152,20 @@ const onSubmit = async () => {
       importance: form.importance,
     }
 
-    const {response} = await apiFetch<{ id: number }>(`/api/admin/user/todo`, {
+    const apiResonse = await apiFetch<ApiResponse<TodoDTO>>(`/api/admin/user/todo`, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })
 
-    if (!props.todo) {
-      payload.id = response.id
+    if (apiResonse.status !== 200) {
+      throw new ApiError(apiResonse.message ?? '', apiResonse.status)
     }
 
     emit('updated', {...payload})
     emit('close')
   } catch (err: unknown) {
     if (err instanceof ApiError) {
-      error.value = t(err.data?.data)
+      error.value = err.error
     } else {
       error.value = t('failed_to_save_todo')
     }

@@ -416,7 +416,7 @@ const loadEvent = async () => {
     const apiPath = `/api/event/${eventId}/date/${eventDateId}?lang=${lang}`
     const response = await apiFetch<any>(apiPath)
 
-    const mappedEvent: EventModel | null = mapEventFromApi(response.response.data, eventDateId)
+    const mappedEvent: EventModel | null = mapEventFromApi(response.data, eventDateId)
     if (!mappedEvent) {
       loadError.value = t('error_incomplete_data')
       return
@@ -453,18 +453,18 @@ const onDownloadIcs = async () => {
   try {
     const eventId = event.value.eventId
     const eventDateId = eventDate.value.id
-    const endpoint = `/api/event/${eventId}/date/${eventDateId}/ics?lang=${locale.value}`
-    const { response } = await apiFetch<string>(endpoint, {
+    const apiPath = `/api/event/${eventId}/date/${eventDateId}/ics?lang=${locale.value}`
+    const apiResponse = await apiFetch<string>(apiPath, {
       headers: {
         Accept: 'text/calendar,*/*;q=0.8',
       },
     })
 
-    if (typeof response !== 'string' || !response.trim()) {
+    if (typeof apiResponse.data !== 'string' || !apiResponse.data.trim()) {
       throw new Error('Empty ICS payload')
     }
 
-    const blob = new Blob([response], { type: 'text/calendar;charset=utf-8' })
+    const blob = new Blob([apiResponse.data], { type: 'text/calendar;charset=utf-8' })
     const blobUrl = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = blobUrl

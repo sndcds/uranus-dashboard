@@ -132,7 +132,7 @@ async function commitParticipationTab() {
 
     if (Object.keys(payload).length === 0) return
 
-    const apiPath = `/api/admin/event/${draft.id}/fields`
+    const apiPath = `/api/admin/event/${draft.uuid}/fields`
 
     await apiFetch(apiPath, {
       method: 'PUT',
@@ -200,7 +200,7 @@ function resetParticipationTab() {
   .tab-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
+    gap: 0.5rem;
     margin-top: 1rem;
   }
 }

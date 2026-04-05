@@ -71,13 +71,13 @@ async function onCreate() {
     }
 
     const apiPath = '/api/admin/venue/create'
-    const { response } = await apiFetch<any>(apiPath, {
+    const apiResponse = await apiFetch<any>(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
 
-    const venueUuid = response.metadata.venue_uuid ?? ''
+    const venueUuid = apiResponse.metadata!.venue_uuid ?? ''
     if (venueUuid == '') {
       throw new Error('no venue_uuid returned from API')
     }
