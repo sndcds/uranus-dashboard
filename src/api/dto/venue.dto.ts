@@ -1,7 +1,5 @@
 /*
-    src/api/dto/UranusVenueDTO.ts
-
-    2026-02-10, Roald
+    src/api/dto/venue.dto.ts
 */
 
 export interface VenueDTO {

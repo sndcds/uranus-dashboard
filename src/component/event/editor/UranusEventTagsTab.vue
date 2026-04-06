@@ -66,24 +66,27 @@ const store = useUranusAdminEventStore()
 const isDirty = computed(() => {
   if (!store.draft || !store.original) return false
 
-  // Event types
+  const draftTypes = store.draft.eventTypes ?? []
+  const origTypes = store.original.eventTypes ?? []
+
+  const draftLangs = store.draft.languages ?? []
+  const origLangs = store.original.languages ?? []
+
+  const draftTags = store.draft.tags ?? []
+  const origTags = store.original.tags ?? []
+
   const typeDirty =
-      store.draft.eventTypes!.length !== (store.original.eventTypes?.length ?? 0) ||
-      store.draft.eventTypes!.some(d => !store.original!.eventTypes!.some(o =>
-          o.typeId === d.typeId && o.genreId === d.genreId
-      ))
+      draftTypes.length !== origTypes.length ||
+      draftTypes.some(d => !origTypes.some(o => o.typeId === d.typeId && o.genreId === d.genreId))
 
-  // Languages
   const langDirty =
-      store.draft.languages!.length !== (store.original.languages?.length ?? 0) ||
-      store.draft.languages!.some(l => !(store.original!.languages ?? []).includes(l))
+      draftLangs.length !== origLangs.length ||
+      draftLangs.some(l => !origLangs.includes(l))
 
-  // Tags
   const tagsDirty =
-      store.draft.tags!.length !== (store.original.tags?.length ?? 0) ||
-      store.draft.tags!.some(t => !(store.original!.tags ?? []).includes(t))
+      draftTags.length !== origTags.length ||
+      draftTags.some(t => !origTags.includes(t))
 
-  console.log("typeDirty", typeDirty, "langDirty", langDirty, "tagsDirty", tagsDirty)
   return typeDirty || langDirty || tagsDirty
 })
 

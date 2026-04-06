@@ -7,7 +7,7 @@
 import { ref } from "vue";
 import type { AdminEventListItemModel } from '@/domain/event/adminEventListItem.model.ts'
 import { camelCaseKeys } from "./useAPI.ts";
-import { apiFetch, type ApiResponse } from "@/api.ts";
+import { apiFetch } from "@/api.ts";
 
 export function useUranusAdminListEvents() {
     const adminListEvents = ref<AdminEventListItemModel[]>([]);
@@ -31,10 +31,7 @@ export function useUranusAdminListEvents() {
             if (startDate) params.set("start", startDate);
 
             const apiPath = `/api/admin/organization/${orgUuid}/events?${params.toString()}`;
-            // Use your apiFetch wrapper
-            const apiResonse = await apiFetch<ApiResponse<any[]>>(apiPath);
-
-
+            const apiResonse = await apiFetch<any[]>(apiPath);
             adminListEvents.value = camelCaseKeys<AdminEventListItemModel[]>(apiResonse.data ?? []);
             metadata.value = apiResonse.metadata ?? {};
         } catch (e: any) {

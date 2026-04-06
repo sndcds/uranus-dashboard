@@ -28,7 +28,7 @@
                 :src="event.image.url.includes('?')
                   ? `${event.image.url}&ratio=16:9&width=1280`
                   : `${event.image.url}?ratio=16:9&width=1280`"
-                :alt="event.image.alt ?? event.title ?? ''"
+                :alt="event.image.altText ?? event.title ?? ''"
                 class="uranus-public-event-image"
             />
           </div>
@@ -111,6 +111,7 @@
               :endDate="eventEndDate"
               :endTime="eventEndTime"
               :entryTime="eventEntryTime"
+              :allDay="eventAllDay"
           />
 
           <!-- Venue, Space, Location -->
@@ -188,7 +189,7 @@
           </button>
 
           <button
-              v-if="eventDate?.eventId && eventDate?.id"
+              v-if="eventDate?.eventUuid && eventDate?.eventUuid"
               type="button"
               class="uranus-public-event-detail-link"
               @click="onDownloadIcs">
@@ -212,12 +213,12 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { marked } from 'marked'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
-import { useLanguageLookupStore } from '@/store/UranusLanguageLookup.ts'
+import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
 import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'
 
-import { type EventModel, mapEventFromApi } from '@/domain/event/event.model.ts'
+import { type PublicEvent, mapEventFromApi } from '@/domain/event/publicEvent.model.ts'
 import { type EventDateModel } from '@/domain/event/eventDate.model.ts'
 import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
@@ -236,7 +237,7 @@ const getTypeGenreName = (typeId: number, genreId: number | null) => typeLookupS
 const languageLookupStore = useLanguageLookupStore()
 
 // State
-const event = ref<EventModel | null>(null)
+const event = ref<PublicEvent | null>(null)
 const eventDate = ref<EventDateModel | null>(null)
 const isLoading = ref(true)
 const showLoading = ref(false)
@@ -326,6 +327,7 @@ const eventStartTime = computed(() => eventDate.value?.startTime ?? event.value?
 const eventEndDate = computed(() => eventDate.value?.endDate ?? event.value?.date.endDate ?? null)
 const eventEndTime = computed(() => eventDate.value?.endTime ?? event.value?.date.endTime ?? null)
 const eventEntryTime = computed(() => eventDate.value?.entryTime ?? event.value?.date.entryTime ?? null)
+const eventAllDay = computed(() => eventDate.value?.allDay ?? event.value?.date.allDay ?? false)
 
 const ageLabel = computed(() => {
   const min = event.value?.minAge
@@ -409,9 +411,9 @@ const loadEvent = async () => {
   try {
     const lang = locale.value || 'de'
     const apiPath = `/api/event/${eventUuid}/date/${eventDateUuid}?lang=${lang}`
-    const response = await apiFetch<any>(apiPath)
+    const apiResponse = await apiFetch<any>(apiPath)
 
-    const mappedEvent: EventModel | null = mapEventFromApi(response.data, eventDateUuid)
+    const mappedEvent: PublicEvent | null = mapEventFromApi(apiResponse.data, eventDateUuid)
     if (!mappedEvent) {
       loadError.value = t('error_incomplete_data')
       return

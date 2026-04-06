@@ -1,5 +1,5 @@
 /*
-    src/domain/event/adminEventDate.ts
+    src/domain/event/adminEventDate.model.ts
  */
 
 export type AdminEventDate = {
@@ -17,7 +17,7 @@ export type AdminEventDate = {
     allDay: boolean
 }
 
-export function createUranusAdminEventDate(
+export function createAdminEventDate(
     props: Partial<AdminEventDate> = {}
 ): AdminEventDate {
     return {

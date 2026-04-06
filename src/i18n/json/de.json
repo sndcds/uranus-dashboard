@@ -588,6 +588,7 @@
   "confirm_delete_event": "Möchtest du dieses Event wirklich löschen?",
   "failed_to_delete_event": "Das Event konnte nicht gelöscht werden. Bitte versuche es erneut.",
   "choose_event_type": "Eventtyp wählen",
+  "event_no_dates_defined": "Für dieses Event wurden noch keine Termine festgelegt.",
   "event_add_date": "Datum hinzufügen",
   "event_edit_date": "Datum bearbeiten",
   "event_organizer": "Veranstalter",

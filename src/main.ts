@@ -6,7 +6,7 @@ import router from './router/index.ts'
 
 import { SUPPORTED_UI_LANGUAGES } from '@/store/uranusConstants.ts'
 import { useThemeStore } from '@/store/uranusThemeStore.ts'
-import { useLanguageLookupStore } from '@/store/UranusLanguageLookup.ts'
+import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 import { useLinkTypeLookupStore } from '@/store/UranusLinkTypeLookup.ts'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import { useCurrencyLookupStore } from '@/store/uranusCurrencyLookup.ts'

@@ -66,7 +66,7 @@ async function onCreate() {
 
   try {
     const apiPath = '/api/admin/organization/create'
-    const apiResponse = await apiFetch<ApiResponse<any>>(apiPath, {
+    const apiResponse = await apiFetch<any>(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

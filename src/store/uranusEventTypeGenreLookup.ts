@@ -4,7 +4,7 @@
 
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { apiFetch, type ApiResponse } from '@/api.ts'
+import { apiFetch } from '@/api.ts'
 
 export interface TypeWithGenres {
     name: string
@@ -32,7 +32,7 @@ export const useEventTypeLookupStore = defineStore('eventTypesLookup', () => {
         params.append('lang', languages.join(','))
 
         const apiPath = `/api/event/type-genre-lookup?${params.toString()}`
-        const apiResponse = await apiFetch<ApiResponse<Record<string, LanguageLookup>>>(apiPath)
+        const apiResponse = await apiFetch<Record<string, LanguageLookup>>(apiPath)
         // @ts-ignore
         data.value = apiResponse.data ?? {}
         loaded.value = true

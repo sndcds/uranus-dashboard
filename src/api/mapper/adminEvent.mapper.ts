@@ -1,12 +1,18 @@
-import {type AdminEvent, createAdminEvent} from '@/domain/event/adminEvent.ts'
+/*
+    src/api/mapper/adminEvent.mapper.ts
+ */
+
+import { type AdminEvent, createAdminEvent } from '@/domain/event/adminEvent.model.ts'
 import { type AdminEventDTO } from '@/api/dto/adminEvent.dto.ts'
-import type { AdminEventDateDTO } from "@/api/dto/adminEventDate.dto.ts";
-import type { AdminEventDate } from "@/domain/event/adminEventDate.ts";
-import { EventLinkModel } from "@/domain/event/eventLink.model.ts";
-import { createEventTypePair } from "@/domain/event/eventTypePair.model.ts";
+import { type AdminEventDateDTO } from '@/api/dto/adminEventDate.dto.ts'
+import { type AdminEventDate } from '@/domain/event/adminEventDate.model.ts'
+import { EventLinkModel } from '@/domain/event/eventLink.model.ts'
+import { createEventTypePair } from '@/domain/event/eventTypePair.model.ts'
 
 
 export function mapAdminEventFromDTO(dto: AdminEventDTO): AdminEvent {
+
+    console.log(JSON.stringify(dto, null, 2))
     let visitorInfoFlags: bigint = 0n
     try {
         if (dto.visitor_info_flags && dto.visitor_info_flags !== '') {
@@ -19,7 +25,7 @@ export function mapAdminEventFromDTO(dto: AdminEventDTO): AdminEvent {
     return createAdminEvent({
         uuid: dto.uuid,
         releaseStatus: dto.release_status,
-        releaseDate: dto.release_date,
+        releaseDate: dto.release_date ?? null,
         categories: dto.categories ? [...dto.categories] : null,
         externalId: dto.external_id,
         sourceUrl: dto.source_url ?? null,
@@ -34,7 +40,7 @@ export function mapAdminEventFromDTO(dto: AdminEventDTO): AdminEvent {
         occasionTypeId: dto.occasion_type_id ?? null,
         eventTypes: (dto.event_types ?? []).map(e => createEventTypePair(e.type_id, e.genre_id)),
         tags: dto.tags ?? null,
-        eventDates: mapAdminEventDatesFromApi(dto.event_dates),
+        eventDates: mapAdminEventDateArrayFromDTO(dto.dates),
         orgUuid: dto.org_uuid,
         venueUuid: dto.venue_uuid,
         spaceUuid: dto.space_uuid,
@@ -54,36 +60,36 @@ export function mapAdminEventFromDTO(dto: AdminEventDTO): AdminEvent {
     })
 }
 
-export function mapAdminEventDateFromApi( // TODO: !!!!
-    json: AdminEventDateDTO
+export function mapAdminEventDateFromDTO(
+    dto: AdminEventDateDTO
 ): AdminEventDate {
     return {
-        uuid: json.uuid,
-        eventUuid: json.event_uuid,
+        uuid: dto.uuid,
+        eventUuid: dto.event_uuid,
 
-        startDate: json.start_date ?? null,
-        startTime: json.start_time ?? null,
-        endDate: json.end_date ?? null,
-        endTime: json.end_time ?? null,
-        entryTime: json.entry_time ?? null,
+        startDate: dto.start_date ?? null,
+        startTime: dto.start_time ?? null,
+        endDate: dto.end_date ?? null,
+        endTime: dto.end_time ?? null,
+        entryTime: dto.entry_time ?? null,
 
-        duration: json.duration ?? null,
-        accessibilityInfo: json.accessibility_info ?? null,
+        duration: dto.duration ?? null,
+        accessibilityInfo: dto.accessibility_info ?? null,
 
-        venueUuid: json.venue_uuid ?? null,
-        spaceUuid: json.space_uuid ?? null,
-        allDay: json.all_day ?? false
+        venueUuid: dto.venue_uuid ?? null,
+        spaceUuid: dto.space_uuid ?? null,
+        allDay: dto.all_day ?? false
     }
 }
 
-export function mapAdminEventDatesFromApi(
+export function mapAdminEventDateArrayFromDTO(
     raw: AdminEventDateDTO[] | null | undefined
 ): AdminEventDate[] {
     if (!raw) return []
-    return raw.map(mapAdminEventDateFromApi)
+    return raw.map(mapAdminEventDateFromDTO)
 }
 
-export function mapAdminEventDateToApi( // TODO: !!!!
+export function mapAdminEventDateToDTO(
     date: AdminEventDate
 ): AdminEventDateDTO {
     return {
@@ -104,11 +110,11 @@ export function mapAdminEventDateToApi( // TODO: !!!!
     }
 }
 
-export function mapAdminEventDatesToApi( // TODO: !!!!
+export function mapAdminEventDateArrayToDTO(
     dates: AdminEventDate[] | null | undefined
 ): AdminEventDateDTO[] {
     if (!dates) return []
-    return dates.map(mapAdminEventDateToApi)
+    return dates.map(mapAdminEventDateToDTO)
 }
 
 export function mapAdminEventToDTO(event: AdminEvent): AdminEventDTO {
@@ -144,7 +150,7 @@ export function mapAdminEventToDTO(event: AdminEvent): AdminEventDTO {
         custom: event.custom,
         style: event.style,
         languages: event.languages ?? [],
-        event_dates: mapAdminEventDatesToApi(event.eventDates),
+        dates: mapAdminEventDateArrayToDTO(event.eventDates),
         event_links: event.eventLinks,
         tags: event.tags,
     }

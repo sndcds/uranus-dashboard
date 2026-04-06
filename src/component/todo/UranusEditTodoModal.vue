@@ -152,7 +152,8 @@ const onSubmit = async () => {
       importance: form.importance,
     }
 
-    const apiResonse = await apiFetch<ApiResponse<TodoDTO>>(`/api/admin/user/todo`, {
+    const apiPath = `/api/admin/user/todo`
+    const apiResonse = await apiFetch<TodoDTO>(apiPath, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })

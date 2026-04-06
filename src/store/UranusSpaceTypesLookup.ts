@@ -2,9 +2,9 @@
     src/store/uranusSpaceTypeLookup.ts
 */
 
-import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { apiFetch, type ApiResponse } from '@/api.ts'
+import { defineStore } from 'pinia'
+import { apiFetch } from '@/api.ts'
 
 /** Single space type entry from API */
 export interface UranusSpaceTypeEntry {
@@ -29,12 +29,11 @@ export const useSpaceTypeLookupStore = defineStore('spaceTypesLookup', () => {
         loading.value[lang] = true
 
         try {
-            const res = await apiFetch<ApiResponse<UranusSpaceTypeEntry[]>>(
-                `/api/choosable-space-types?lang=${lang}`
-            )
+            const apiPath = `/api/choosable-space-types?lang=${lang}`
+            const apiResponse = await apiFetch<UranusSpaceTypeEntry[]>(apiPath)
 
             const map: Record<string, UranusSpaceTypeEntry> = {}
-            const items: UranusSpaceTypeEntry | any = res.data ?? []
+            const items: UranusSpaceTypeEntry | any = apiResponse.data ?? []
             for (const item of items) {
                 map[item.key] = {
                     label: item.name ?? null,

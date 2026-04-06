@@ -1,7 +1,5 @@
 /*
-    src/api/dto/UranusSpaceDTO.ts
-
-    2026-02-13, Roald
+    src/api/dto/space.dto.ts
 */
 
 export interface SpaceDTO {

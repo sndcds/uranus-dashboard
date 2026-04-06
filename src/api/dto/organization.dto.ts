@@ -1,3 +1,7 @@
+/*
+    src/api/dto/organization.dto.ts
+ */
+
 export interface OrganizationDTO {
     uuid: string | null
     name: string

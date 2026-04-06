@@ -6,9 +6,10 @@
   <section class="venue-tab">
 
     <UranusCard class="event-venue">
-      <h2 class="venue-name">
-        <MapPin /> {{ venueInfoStore.getVenueLabel(draft.venueUuid, draft.spaceUuid) }}
-      </h2>
+      <UranusInfoHeading :icon="MapPin" :strokeWidth="1.5">
+        {{ venueInfoStore.getVenueLabel(draft.venueUuid, draft.spaceUuid) }}
+      </UranusInfoHeading>
+
       <UranusButton variant="tertiary" size="small" :onclick="openVenueModal">
         {{ t('event_select_venue') }}
       </UranusButton>
@@ -67,8 +68,9 @@ import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue
 import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
-import { Save, Undo, MapPin, DoorOpen } from "lucide-vue-next";
-import UranusCard from "@/component/ui/UranusCard.vue";
+import UranusCard from '@/component/ui/UranusCard.vue'
+import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
+import { Save, Undo, MapPin } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -169,6 +171,9 @@ function resetTab() {
   max-width: var(--uranus-dashboard-content-width);
 
   .venue-name {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
     font-weight: 500;
   }
 
@@ -203,15 +208,12 @@ function resetTab() {
 
 .event-venue {
   display: flex;
-  flex-direction: row;       /* default, but explicit */
-  align-items: center;      /* vertically align nicely */
+  flex-direction: row;  /* horizontal layout */
+  align-items: center;  /* vertically center items */
+  gap: 1rem;            /* optional spacing */
 }
 
-.event-venue h2 {
-  flex: 1;                  /* take remaining space */
-}
-
-.event-venue UranusButton {
-  margin-left: auto;        /* push it to the right */
+.event-venue > :first-child {
+  flex: 1;              /* take remaining space */
 }
 </style>

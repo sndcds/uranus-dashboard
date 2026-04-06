@@ -93,8 +93,8 @@
         <template #title>Info</template>
         Info Text ...
         <template #actions>
-          <UranusButton @click="onAccept" color="primary">Accept</UranusButton>
-          <UranusButton @click="onCancel" color="secondary">Cancel</UranusButton>
+          <UranusButton @click="" color="primary">Accept</UranusButton>
+          <UranusButton @click="" color="secondary">Cancel</UranusButton>
         </template>
       </UranusNotification>
 

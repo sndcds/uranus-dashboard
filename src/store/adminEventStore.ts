@@ -6,8 +6,8 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { type AdminEvent } from '@/domain/event/adminEvent.ts'
-import { fromApi } from '@/domain/event/adminEvent.ts'
+import { type AdminEvent } from '@/domain/event/adminEvent.model.ts'
+import { fromApi } from '@/domain/event/adminEvent.model.ts'
 
 export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
     // State
@@ -32,6 +32,10 @@ export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
         return JSON.stringify(original.value) !== JSON.stringify(draft.value)
     })
 
+    const hasDates = computed(() =>
+        (draft.value?.eventDates?.length ?? 0) > 0
+    )
+
     const hasMultipleDates = computed(() =>
         (draft.value?.eventDates?.length ?? 0) > 1
     )
@@ -54,6 +58,12 @@ export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
             error.value = 'Failed to map event'
             return
         }
+
+        // Keep arrays valid in case they are null or undefined
+        event.eventTypes ??= []
+        event.languages ??= []
+        event.tags ??= []
+
         original.value = event
         draft.value = cloneEvent(event)
         draft.value.visitorInfoFlags = original.value.visitorInfoFlags
@@ -102,6 +112,7 @@ export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
         // Getters
         isLoaded,
         isDirty,
+        hasDates,
         hasMultipleDates,
         primaryDate,
         effectiveReleaseDate,

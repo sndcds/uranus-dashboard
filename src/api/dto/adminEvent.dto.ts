@@ -48,6 +48,6 @@ export interface AdminEventDTO {
     online_link?: string | null
 
     languages?: string[]
-    event_dates?: AdminEventDateDTO[] | null
+    dates?: AdminEventDateDTO[] | null
     event_links: { label: string | null; type: string | null; url: string | null }[] | null
 }

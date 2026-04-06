@@ -1,3 +1,7 @@
+/*
+    src/store/languageLookupStore.ts
+ */
+
 import { defineStore } from 'pinia'
 import { apiFetch } from '@/api.ts'
 
@@ -25,20 +29,17 @@ export const useLanguageLookupStore = defineStore('languageLookup', {
             try {
                 const results = await Promise.all(
                     languages.map(async (uiLang) => {
-                        const res = await apiFetch<LanguageEntry[]>(
+                        const apiResponse = await apiFetch<LanguageEntry[]>(
                             `/api/choosable-languages?lang=${uiLang}`
                         )
-                        return [uiLang, res.data ?? []] as const
+                        return [uiLang, apiResponse.data ?? []] as const
                     })
                 )
 
                 const mapped: Record<string, LanguageMap> = {}
 
                 for (const [uiLang, list] of results) {
-                    mapped[uiLang] = {}
-                    for (const lang of list) {
-                        mapped[uiLang][lang.id] = lang.name
-                    }
+                    mapped[uiLang] = Object.fromEntries(list.map(lang => [lang.id, lang.name]))
                 }
 
                 this.data = mapped

@@ -582,6 +582,7 @@
   "confirm_delete_event": "Vil du virkelig slette denne begivenhed?",
   "failed_to_delete_event": "Begivenheden kunne ikke slettes. Prøv igen.",
   "choose_event_type": "Vælg en begivenhedstype",
+  "event_no_dates_defined": "Der er endnu ingen datoer defineret for denne begivenhed.",
   "event_add_date": "Tilføj dato",
   "event_edit_date": "Rediger dato",
   "event_organizer": "Arrangør",

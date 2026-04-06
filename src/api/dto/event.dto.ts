@@ -1,3 +1,7 @@
+/*
+    src/api/dto/event.dto.ts
+ */
+
 import { type EventTypeModel } from '@/domain/event/eventType.model.ts'
 
 export interface EventListTypeSummaryDTO {
@@ -47,13 +51,13 @@ export interface EventListItemDTO {
     release_status: string
 }
 
-export interface EventListItemsApiData {
+export interface EventListItemsApiData { // TODO: !!!!!
     events: EventListItemDTO[]
     last_event_start_at?: string
     last_event_date_uuid?: string
 }
 
-export function mapEventTypeFromDTO(dto: EventTypeDTO): EventTypeModel {
+export function mapEventTypeFromDTO(dto: EventTypeDTO): EventTypeModel { // TODO: !!!!!
     return {
         typeId: dto.type_id,
         typeName: dto.type_name,

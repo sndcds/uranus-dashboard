@@ -6,13 +6,28 @@
   <section class="dates-tab">
 
     <UranusCard
+        v-if="!store.hasDates"
+        type="info"
+    >
+      <UranusInfoHeading :icon="Info">
+        {{ t('event_no_dates_defined') }}
+      </UranusInfoHeading>
+    </UranusCard>
+
+
+    <UranusCard
         v-for="(date, index) in store.draft?.eventDates"
         :key="index"
         class="date-card"
     >
-      <div v-if="date.venueUuid" class="date-venue-name">
-        <h2><MapPin /> {{ venueInfoStore.getVenueLabel(date.venueUuid, date.spaceUuid) }}</h2>
-      </div>
+      <UranusInfoHeading
+          v-if="date.venueUuid"
+          :icon="MapPin"
+          :strokeWidth="1.5"
+          class="date-venue-name"
+      >
+        {{ venueInfoStore.getVenueLabel(date.venueUuid, date.spaceUuid) }}
+      </UranusInfoHeading>
 
       <div class="date-pair">
         <UranusDateInput id="start-date" v-model="date.startDate" :label="t('event_start_date')" style="width: 100%;"/>
@@ -90,18 +105,19 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from "@/api.ts";
+import { apiFetch } from '@/api.ts'
 import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
-import UranusVenueSelectModal from "@/component/venue/UranusVenueSelectModal.vue";
-import UranusCard from "@/component/ui/UranusCard.vue";
-import UranusButton from "@/component/ui/UranusButton.vue";
-import { Save, Undo, Plus } from "lucide-vue-next";
-import UranusDateInput from "@/component/ui/UranusDateInput.vue";
-import UranusTimeInput from "@/component/ui/UranusTimeInput.vue";
-import UranusNumberInput from "@/component/ui/UranusNumberInput.vue";
-import UranusCheckbox from "@/component/ui/UranusCheckbox.vue";
-import { MapPin } from 'lucide-vue-next'
+import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
+import UranusCard from '@/component/ui/UranusCard.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import {Save, Undo, Plus, CheckCircle} from 'lucide-vue-next'
+import UranusDateInput from '@/component/ui/UranusDateInput.vue'
+import UranusTimeInput from '@/component/ui/UranusTimeInput.vue'
+import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
+import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
+import { MapPin, Info } from 'lucide-vue-next'
+import UranusInfoHeading from "@/component/ui/UranusInfoHeading.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -259,7 +275,7 @@ function resetDates() {
   display: flex;
   flex-basis: 100%;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 0.5rem;
   margin-top: 1rem;
 }
 </style>

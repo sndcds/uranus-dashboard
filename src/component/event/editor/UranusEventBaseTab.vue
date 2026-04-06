@@ -5,7 +5,6 @@
 <template>
   <section class="base-tab">
     <UranusForm>
-
       <UranusLabel id="event-description" :label="t('event_category')">
         <UranusEventCategorySelector
             v-model="store.draft!.categories"
@@ -87,7 +86,7 @@ import UranusLanguageSelect from '@/component/ui/UranusLanguageSelect.vue'
 import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
 import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
 
-import type { AdminEvent } from '@/domain/event/adminEvent.ts'
+import type { AdminEvent } from '@/domain/event/adminEvent.model.ts'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'

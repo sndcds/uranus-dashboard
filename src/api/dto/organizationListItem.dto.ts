@@ -1,3 +1,7 @@
+/*
+    src/api/dto/organizationListItem.dto.ts
+ */
+
 export interface UranusOrganizationListItemDTO {
     uuid: string
     name: string

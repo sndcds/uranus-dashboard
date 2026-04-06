@@ -5,7 +5,7 @@
  */
 
 import { defineStore } from 'pinia'
-import { apiFetch, type ApiResponse } from '@/api.ts'
+import { apiFetch } from '@/api.ts'
 import { type CountryDTO } from '@/api/dto/country.dto.ts'
 
 
@@ -32,14 +32,11 @@ export const useCountryLookupStore = defineStore('countryLookup', {
                 // Fetch all languages concurrently
                 const results = await Promise.all(
                     languages.map(async (uiLang) => {
-                        // Fetch API data
-                        const rawData = await apiFetch<ApiResponse<CountryDTO[]>>(
-                            `/api/choosable-countries?lang=${uiLang}`
+                        const apiPath = `/api/choosable-countries?lang=${uiLang}`
+                        const apiResponse = await apiFetch<CountryDTO[]>(
+                            apiPath
                         )
-
-                        // Ensure we always have an array
-                        const list: CountryDTO[] = Array.isArray(rawData.data) ? rawData.data : []
-
+                        const list: CountryDTO[] = Array.isArray(apiResponse.data) ? apiResponse.data : []
                         return [uiLang, list] as const
                     })
                 )

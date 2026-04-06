@@ -1,3 +1,7 @@
+/*
+    src/api/dto/venueInfo.dto.ts
+ */
+
 export interface VenueInfoDTO {
     venue_uuid: string
     venue_name: string

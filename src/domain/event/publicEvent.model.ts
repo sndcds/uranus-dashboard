@@ -4,7 +4,7 @@ import { type EventDateModel, mapEventDate } from './eventDate.model.ts'
 import { type EventTypeModel, mapEventTypeFromDTO } from './eventType.model.ts'
 import { type EventLinkModel } from './eventLink.model.ts'
 
-export interface EventModel {
+export interface PublicEvent {
     eventId: number | null
     releaseStatus: string | null
     lang: string | null
@@ -47,7 +47,7 @@ export interface EventModel {
 /**
  * Map API → frontend model
  */
-export function mapEventFromApi(raw: any, dateUuid?: string): EventModel | null {
+export function mapEventFromApi(raw: any, dateUuid?: string): PublicEvent | null {
     if (!raw || typeof raw !== 'object') return null
 
     const mapDate = (d: any): EventDateModel => mapEventDate(d)

@@ -1,6 +1,5 @@
 /*
-  src/api/dto/organizationVenueList.dto.ts
-  2026-03-30, Roald
+  src/api/dto/venueList.dto.ts
 */
 
 export interface VenueListSpaceDTO {

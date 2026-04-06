@@ -86,12 +86,9 @@ const loadStates = async (countryCode: string) => {
 
   loading.value = true
   try {
-    const res = await apiFetch<ApiResponse<CountryStateDTO[]>>(
-        `/api/choosable-states?country-code=${encodeURIComponent(trimmed)}`
-    )
-
-    const list = res.data ?? []
-
+    const apiPath = `/api/choosable-states?country-code=${encodeURIComponent(trimmed)}`
+    const apiResponse = await apiFetch<CountryStateDTO[]>(apiPath)
+    const list = apiResponse.data ?? []
     states.value = list
         .map(item => {
           const code = item.state_code.trim()
@@ -99,8 +96,6 @@ const loadStates = async (countryCode: string) => {
           return { code, name }
         })
         .filter(s => s.code)
-
-    // Ensure prefilled value exists
     if (
         stateModel.value &&
         !states.value.some(s => s.code === stateModel.value)

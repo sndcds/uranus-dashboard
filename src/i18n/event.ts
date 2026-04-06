@@ -166,6 +166,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Choose an event type',
         da: 'Vælg en begivenhedstype',
     },
+    event_no_dates_defined: {
+        de: 'Für dieses Event wurden noch keine Termine festgelegt.',
+        en: 'No dates have been defined for this event yet.',
+        da: 'Der er endnu ingen datoer defineret for denne begivenhed.',
+    },
     event_add_date: {
         de: 'Datum hinzufügen',
         en: 'Add date',
