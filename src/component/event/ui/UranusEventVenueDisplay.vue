@@ -22,10 +22,10 @@
       </p>
     </template>
 
-    <template v-if="eventDate?.spaceUuid">
+    <div class="uranus-public-event-top-space" v-if="eventDate?.spaceUuid">
       <span class="uranus-public-event-info-label ">{{ t('venue_space') }}:</span>
       <p>{{ eventDate?.spaceName }}</p>
-    </template>
+    </div>
 
     <img style="margin-top: 16px"
         v-if="logoUrl"
@@ -39,14 +39,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { EventDateModel } from '@/domain/event/eventDate.model.ts'
+import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { useThemeStore } from '@/store/uranusThemeStore.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 const themeStore = useThemeStore()
 
 // Accept the entire currentEventDate object
-const props = defineProps<{ eventDate: EventDateModel | null }>()
+const props = defineProps<{ eventDate: PublicEventDate | null }>()
 
 const hasVenueInfo = computed(() => {
   const e = props.eventDate

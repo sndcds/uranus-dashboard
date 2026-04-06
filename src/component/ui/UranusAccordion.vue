@@ -1,3 +1,7 @@
+<!--
+  src/component/ui/UranusAccordion.vue
+-->
+
 <template>
   <div class="accordion">
     <div class="accordion-header" @click="isOpen = !isOpen">
@@ -86,6 +90,7 @@ watch(isOpen, val => {
 
 .accordion-title {
   flex: 1;
+  font-weight: 300;
 }
 
 .accordion-body {

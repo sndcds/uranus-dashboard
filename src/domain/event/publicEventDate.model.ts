@@ -1,8 +1,8 @@
 /*
-    src/domain/event/eventDate.model.ts
+    src/domain/event/publicEventDate.model.ts
  */
 
-export interface EventDateModel {
+export interface PublicEventDate {
     uuid: string | null
     eventUuid: string | null
     releaseStatus: string | null
@@ -50,7 +50,7 @@ export interface EventDateModel {
 /**
  * Map API → frontend model
  */
-export function mapEventDate(dto: any): EventDateModel {
+export function mapEventDate(dto: any): PublicEventDate {
     return {
         uuid: dto.uuid ?? null,
         eventUuid: dto.event_uuid ?? null,

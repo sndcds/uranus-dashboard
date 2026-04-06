@@ -1,23 +1,27 @@
-// src/domain/event/event.model.ts
+/*
+    src/domain/event/publicEvent.model.ts
+ */
+
 import { type PlutoImage, mapPlutoImageFromDTO } from '@/domain/image/plutoImage.model.ts'
-import { type EventDateModel, mapEventDate } from './eventDate.model.ts'
+import { type PublicEventDate, mapEventDate } from './publicEventDate.model.ts'
 import { type EventTypeModel, mapEventTypeFromDTO } from './eventType.model.ts'
-import { type EventLinkModel } from './eventLink.model.ts'
+import { type EventLink } from './eventLink.model.ts'
+import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 
 export interface PublicEvent {
-    eventId: number | null
+    uuid: string | null
     releaseStatus: string | null
-    lang: string | null
+    contentLanguage: string | null
 
-    organizationId: number | null
-    organizationName: string | null
-    organizationUrl: string | null
+    orgUuid: string | null
+    orgName: string | null
+    orgWebLink: string | null
 
     title: string | null
     subtitle: string | null
     description: string | null
     summary: string | null
-    types: EventTypeModel[]
+    types: EventTypeModel[] // TODO: !!!!!
     tags: string[]
 
     minAge: number | null
@@ -26,107 +30,89 @@ export interface PublicEvent {
 
     meetingPoint: string | null
     participationInfo: string | null
-    onlineUrl: string | null
+    onlineLink: string | null
 
     maxAttendees: number | null
-    priceType: number | null
-    ticketAdvance: number | null
-    ticketRequired: boolean | null
-    registrationRequired: boolean | null
+    priceType: string | null
+    ticketFlags: string[] | []
     currency: string | null
     minPrice: number | null
     maxPrice: number | null
 
     image: PlutoImage | null
-    eventUrls: EventLinkModel[]
+    eventLinks: EventLink[] // TODO: !!!!
 
-    date: EventDateModel
-    furtherDates: EventDateModel[]
+    date: PublicEventDate    // TODO: !!!!
+    furtherDates: PublicEventDate[]  // TODO: !!!!
 }
 
-/**
- * Map API → frontend model
- */
-export function mapEventFromApi(raw: any, dateUuid?: string): PublicEvent | null {
-    if (!raw || typeof raw !== 'object') return null
+export function mapPublicEventFromDTO(dto: PublicEventDTO, dateUuid?: string): PublicEvent | null {
+    if (!dto || typeof dto !== 'object') return null
 
-    const mapDate = (d: any): EventDateModel => mapEventDate(d)
+    const mapDate = (d: any): PublicEventDate => mapEventDate(d)
 
-    const image: PlutoImage | null = raw.image
-        ? mapPlutoImageFromDTO({
-            uuid: raw.image.id ?? null,
-            url: raw.image.url ?? null,
-            alt: raw.image.alt ?? null,
-            creator: raw.image.creator ?? null,
-            copyright: raw.image.copyright ?? null,
-            description: raw.image.description ?? null,
-            license: raw.image.license ?? null,
-        })
+    const image: PlutoImage | null = dto.image
+        ? mapPlutoImageFromDTO(dto.image)
         : null
 
-    const furtherDates: EventDateModel[] = Array.isArray(raw.further_dates)
-        ? raw.further_dates.map(mapDate)
+    const furtherDates: PublicEventDate[] = Array.isArray(dto.further_dates)
+        ? dto.further_dates.map(mapDate)
         : []
 
-    const date: EventDateModel = dateUuid
-        ? furtherDates.find(fd => fd.uuid === dateUuid) ?? mapDate(raw.date)
-        : mapDate(raw.date)
+    const date: PublicEventDate = dateUuid
+        ? furtherDates.find(fd => fd.uuid === dateUuid) ?? mapDate(dto.date)
+        : mapDate(dto.date)
 
-    const types: EventTypeModel[] = Array.isArray(raw.event_types)
-        ? (raw.event_types as any[]).map(mapEventTypeFromDTO)
+    const types: EventTypeModel[] = Array.isArray(dto.event_types)
+        ? (dto.event_types as any[]).map(mapEventTypeFromDTO)
         : []
 
-    const urls: EventLinkModel[] = Array.isArray(raw.event_links)
-        ? raw.event_links.map((u: any) => ({
+    const eventLinks: EventLink[] = Array.isArray(dto.event_links)
+        ? dto.event_links.map((u: any) => ({
             label: u.label ?? null,
             url: u.url ?? null,
-            urlType: u.url_type ?? null,
+            type: u.type ?? null,
         }))
         : []
 
     return {
-        eventId: raw.event_id ?? null,
-        releaseStatus: raw.release_status ?? null,
-        lang: raw.lang ?? null,
+        uuid: dto.uuid ?? null,
+        releaseStatus: dto.release_status ?? null,
+        contentLanguage: dto.content_language ?? null,
 
-        organizationId: raw.organization_id ?? null,
-        organizationName: raw.organization_name ?? null,
-        organizationUrl: raw.organization_website ?? null,
+        orgUuid: dto.org_uuid ?? null,
+        orgName: dto.org_name ?? null,
+        orgWebLink: dto.org_web_link ?? null,
 
-        title: raw.title ?? null,
-        subtitle: raw.subtitle ?? null,
-        description: raw.description ?? null,
-        summary: raw.summary ?? null,
+        title: dto.title ?? null,
+        subtitle: dto.subtitle ?? null,
+        description: dto.description ?? null,
+        summary: dto.summary ?? null,
         types,
-        tags: Array.isArray(raw.tags) ? raw.tags.map(String) : [],
+        tags: Array.isArray(dto.tags) ? dto.tags.map(String) : [],
 
-        minAge: raw.min_age ?? null,
-        maxAge: raw.max_age ?? null,
-        participationInfo: raw.participation_info ?? null,
-        languages: Array.isArray(raw.languages) ? raw.languages.map(String) : [],
+        minAge: dto.min_age ?? null,
+        maxAge: dto.max_age ?? null,
+        participationInfo: dto.participation_info ?? null,
+        languages: Array.isArray(dto.languages) ? dto.languages.map(String) : [],
 
-        meetingPoint: raw.meeting_point ?? null,
-        onlineUrl: raw.online_url ?? null,
+        meetingPoint: dto.meeting_point ?? null,
+        onlineLink: dto.online_link ?? null,
 
-        maxAttendees: raw.max_attendees ?? null,
-        priceType: raw.price_type ?? null,
-        ticketAdvance: raw.ticket_advance ?? null,
-        ticketRequired: raw.ticket_required ?? null,
-        registrationRequired: raw.registration_required ?? null,
-        currency: raw.currency ?? null,
-        minPrice: raw.min_price ?? null,
-        maxPrice: raw.max_price ?? null,
+        maxAttendees: dto.max_attendees ?? null,
+        priceType: dto.price_type ?? null,
+        ticketFlags: dto.ticket_flags ?? [],
+        currency: dto.currency ?? null,
+        minPrice: dto.min_price ?? null,
+        maxPrice: dto.max_price ?? null,
 
         image,
-        eventUrls: urls,
+        eventLinks,
         date,
         furtherDates,
     }
 }
 
-/**
- * Helper for release status chip
- */
 export function showReleaseStatusChip(releaseStatus: string): boolean {
     switch (releaseStatus) {
         case 'draft':

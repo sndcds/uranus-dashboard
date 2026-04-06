@@ -102,7 +102,7 @@ const draftEvent = computed(() => adminEventStore.draft ?? {
 
 const eventUuid = computed(() => { return route.params.uuid })
 
-type TabKey = 'settings' | 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participation' | 'price' | 'visitor'
+type TabKey = 'settings' | 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participation' | 'ticket' | 'visitor'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
@@ -112,7 +112,7 @@ const tabs = [
   { key: 'tags', label: 'Tags' },
   { key: 'links', label: 'Links' },
   { key: 'participation', label: 'Teilnahme' },
-  { key: 'price', label: 'Preis' },
+  { key: 'ticket', label: 'Ticket' },
   { key: 'visitor', label: 'Infos' }
 ] as const
 
@@ -123,7 +123,7 @@ const currentTabComponent = computed(() => {
     case 'tags': return UranusEventTagsTab
     case 'links': return UranusEventLinksTab
     case 'participation': return UranusEventParticipationTab
-    case 'price': return UranusEventPriceTab
+    case 'ticket': return UranusEventPriceTab
     case 'visitor': return UranusEventVisitorInfo
     case 'base':
     default:

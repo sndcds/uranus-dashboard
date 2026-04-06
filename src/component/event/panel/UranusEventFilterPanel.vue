@@ -103,7 +103,7 @@
       </UranusAccordion>
 
       <UranusAccordion v-model="priceOpen">
-        <template #title>Preis</template>
+        <template #title>{{ t('price') }}</template>
         <UranusFormRow :cols="1">
           <UranusLabel id="price-type" label="Preisart">
             <select v-model="filter.priceType">

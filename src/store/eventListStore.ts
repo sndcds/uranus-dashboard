@@ -69,7 +69,7 @@ export const useEventListStore = defineStore('events', () => {
         if (f.endDate) params.set("end", f.endDate)
 
         // Venue filter
-        if (f.venue?.id != null && f.venue.id >= 0) params.set("venues", f.venue.id.toString())
+        if (f.venue?.uuid != null) params.set("venues", f.venue.uuid)
 
         // Location filter
         if (f.useCurrentLocation && typeof f.latitude === 'number' && typeof f.longitude === 'number' && typeof f.radiusKm === 'number') {
@@ -100,6 +100,9 @@ export const useEventListStore = defineStore('events', () => {
         if (typesMode && f.eventTypeIds?.length) {
             params.set("event_types", f.eventTypeIds.join(","))
         }
+
+        console.log("paginationMode", paginationMode, "typesMode", typesMode)
+        console.log(JSON.stringify(params, null, 2))
 
         return params
     }
@@ -133,7 +136,7 @@ export const useEventListStore = defineStore('events', () => {
         if (resetPage) reset()
 
         try {
-            const params = buildFilterParams(true, false) // paginationMode + typesMode
+            const params = buildFilterParams(true, true) // paginationMode + typesMode
             const apiPath = `/api/events?${params.toString()}`
             const apiResponse = await apiFetch<EventListItemsApiData>(apiPath)
 

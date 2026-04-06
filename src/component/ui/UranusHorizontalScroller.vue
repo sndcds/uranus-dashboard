@@ -1,3 +1,7 @@
+<!--
+  src/component/ui/UranusHorizontalScroller.vue
+-->
+
 <template>
   <div class="uranus-horizontal-scroller">
 

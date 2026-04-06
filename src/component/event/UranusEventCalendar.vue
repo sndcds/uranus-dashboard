@@ -10,7 +10,6 @@
 <template>
   <div class="calendar-page">
     <div class="calendar-body">
-
       <div class="calendar-settings">
         <UranusHorizontalScroller>
         <div class="calendar-type-chips">

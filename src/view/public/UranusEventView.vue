@@ -1,7 +1,5 @@
 <!--
   src/view/public/UranusEventView.vue
-
-  2026-02-05, Roald
 -->
 
 <template>
@@ -87,9 +85,9 @@
         </div>
 
         <!-- URLs -->
-        <div v-if="event.eventUrls && event.eventUrls.length > 0" class="uranus-public-event-section">
+        <div v-if="event.eventLinks && event.eventLinks.length > 0" class="uranus-public-event-section">
           <div class="uranus-public-event-detail-links">
-            <a v-for="(link, index) in event.eventUrls" :key="index" :href="link.url!" target="_blank"
+            <a v-for="(link, index) in event.eventLinks" :key="index" :href="link.url!" target="_blank"
                rel="noopener noreferrer" class="uranus-public-event-detail-link">
               {{ link.label || link.url }}&nbsp;↗
             </a>
@@ -149,14 +147,14 @@
           <br>
 
           <!-- Organization -->
-          <div v-if="event.organizationName">
+          <div v-if="event.orgName">
             <p class="uranus-public-event-info-label">{{ t('event_organizer') }}</p>
-            <p v-if="event?.organizationUrl && event?.organizationName">
-              <a :href="event.organizationUrl" target="_blank" rel="noopener noreferrer">
-                {{ event?.organizationName }}&nbsp;↗
+            <p v-if="event?.orgWebLink && event?.orgName">
+              <a :href="event.orgWebLink" target="_blank" rel="noopener noreferrer">
+                {{ event?.orgName }}&nbsp;↗
               </a>
             </p>
-            <p v-else>{{ event.organizationName }}</p>
+            <p v-else>{{ event.orgName }}</p>
           </div>
 
           <UranusEventAllDatesDisplay
@@ -218,13 +216,14 @@ import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
 import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'
 
-import { type PublicEvent, mapEventFromApi } from '@/domain/event/publicEvent.model.ts'
-import { type EventDateModel } from '@/domain/event/eventDate.model.ts'
+import { type PublicEvent, mapPublicEventFromDTO } from '@/domain/event/publicEvent.model.ts'
+import { type PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
 import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
-// import UranusEmbedYoutubeVideo from '@/component/video/UranusEmbedYoutubeVideo.vue'
+
+import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 
 const route = useRoute()
 
@@ -238,7 +237,7 @@ const languageLookupStore = useLanguageLookupStore()
 
 // State
 const event = ref<PublicEvent | null>(null)
-const eventDate = ref<EventDateModel | null>(null)
+const eventDate = ref<PublicEventDate | null>(null)
 const isLoading = ref(true)
 const showLoading = ref(false)
 const loadingLabel = computed(() => t('loading'))
@@ -402,24 +401,26 @@ const hasLonLat = computed(() => {
 
 
 const loadEvent = async () => {
-  const eventUuid = resolveRouteParam(route.params.uuid)
-  const eventDateUuid = resolveRouteParam(route.params.eventDateUuid)
 
   isLoading.value = true
   loadError.value = null
 
   try {
+    const eventUuid = resolveRouteParam(route.params.uuid)
+    const eventDateUuid = resolveRouteParam(route.params.eventDateUuid)
+
     const lang = locale.value || 'de'
     const apiPath = `/api/event/${eventUuid}/date/${eventDateUuid}?lang=${lang}`
-    const apiResponse = await apiFetch<any>(apiPath)
-
-    const mappedEvent: PublicEvent | null = mapEventFromApi(apiResponse.data, eventDateUuid)
-    if (!mappedEvent) {
-      loadError.value = t('error_incomplete_data')
-      return
+    const apiResponse = await apiFetch<PublicEventDTO>(apiPath)
+    if (apiResponse.data) {
+      const mappedEvent: PublicEvent | null = mapPublicEventFromDTO(apiResponse.data, eventDateUuid)
+      if (!mappedEvent) {
+        loadError.value = t('error_incomplete_data')
+        return
+      }
+      event.value = mappedEvent
+      eventDate.value = mappedEvent.date
     }
-    event.value = mappedEvent
-    eventDate.value = mappedEvent.date
   } catch (error: unknown) {
     loadError.value = error instanceof Error ? error.message : t('error_fetch_data_failed')
     console.log('error', error)
@@ -440,7 +441,7 @@ const onShowAccessibility = () => {
 }
 
 const onDownloadIcs = async () => {
-  if (!event.value?.eventId || !eventDate.value?.id) {
+  if (!event.value?.uuid || !eventDate.value?.uuid) {
     return
   }
   if (isDownloadingIcs.value) return
@@ -448,9 +449,9 @@ const onDownloadIcs = async () => {
   isDownloadingIcs.value = true
 
   try {
-    const eventId = event.value.eventId
-    const eventDateId = eventDate.value.id
-    const apiPath = `/api/event/${eventId}/date/${eventDateId}/ics?lang=${locale.value}`
+    const eventUuid = event.value.uuid
+    const eventDateUuid = eventDate.value.uuid
+    const apiPath = `/api/event/${eventUuid}/date/${eventDateUuid}/ics?lang=${locale.value}`
     const apiResponse = await apiFetch<string>(apiPath, {
       headers: {
         Accept: 'text/calendar,*/*;q=0.8',
@@ -465,7 +466,7 @@ const onDownloadIcs = async () => {
     const blobUrl = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = blobUrl
-    link.download = createIcsFileName(event.value.title ?? '', eventDateId)
+    link.download = createIcsFileName(event.value.title ?? '', eventDateUuid)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -477,14 +478,14 @@ const onDownloadIcs = async () => {
   }
 }
 
-const createIcsFileName = (title: string, eventDateId: number) => {
+const createIcsFileName = (title: string, eventDateUuid: string) => {
   const normalized = title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .replace(/-+/g, '-')
   const base = normalized || 'event'
-  return `${base}-${eventDateId}.ics`
+  return `${base}-${eventDateUuid}.ics`
 }
 
 onMounted(() => void loadEvent())

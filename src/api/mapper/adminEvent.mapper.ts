@@ -6,7 +6,7 @@ import { type AdminEvent, createAdminEvent } from '@/domain/event/adminEvent.mod
 import { type AdminEventDTO } from '@/api/dto/adminEvent.dto.ts'
 import { type AdminEventDateDTO } from '@/api/dto/adminEventDate.dto.ts'
 import { type AdminEventDate } from '@/domain/event/adminEventDate.model.ts'
-import { EventLinkModel } from '@/domain/event/eventLink.model.ts'
+import { EventLink } from '@/domain/event/eventLink.model.ts'
 import { createEventTypePair } from '@/domain/event/eventTypePair.model.ts'
 
 
@@ -36,7 +36,7 @@ export function mapAdminEventFromDTO(dto: AdminEventDTO): AdminEvent {
         subtitle: dto.subtitle,
         description: dto.description ?? null,
         summary: dto.summary ?? null,
-        eventLinks: (dto.event_links ?? []).map(e => new EventLinkModel(e.label, e.type, e.url)),
+        eventLinks: (dto.event_links ?? []).map(e => new EventLink(e.label, e.type, e.url)),
         occasionTypeId: dto.occasion_type_id ?? null,
         eventTypes: (dto.event_types ?? []).map(e => createEventTypePair(e.type_id, e.genre_id)),
         tags: dto.tags ?? null,

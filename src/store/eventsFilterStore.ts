@@ -4,7 +4,7 @@
 
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
-import type { UranusVenueSelectItemInfo } from '@/domain/venue/venue.model.ts'
+import { type VenueSelectInfo } from '@/domain/venue/venueSelectInfo.model.ts'
 
 export interface UranusEventsFilter {
     categories: number[] | null
@@ -12,7 +12,7 @@ export interface UranusEventsFilter {
     city: string | null
     startDate?: string | null
     endDate?: string | null
-    venue: UranusVenueSelectItemInfo | null
+    venue: VenueSelectInfo | null
     useCurrentLocation: boolean
     radiusKm: number
     latitude?: number | null
@@ -27,11 +27,11 @@ export interface UranusEventsFilter {
 
 const defaultFilter: UranusEventsFilter = {
     categories: null,
-    search: "",
-    city: "",
-    startDate: "",
-    endDate: "",
-    venue: { uuid: null, name: "" },
+    search: '',
+    city: '',
+    startDate: '',
+    endDate: '',
+    venue: { uuid: '', name: '' },
     useCurrentLocation: false,
     radiusKm: 10.0,
     latitude: null,

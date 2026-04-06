@@ -1,4 +1,4 @@
-import { type EventDateModel } from "@/domain/event/eventDate.model.ts"
+import { type PublicEventDate } from "@/domain/event/publicEventDate.model.ts"
 
 
 export function toNumberOrNull(value: unknown): number | null {
@@ -259,7 +259,7 @@ export const formatTime = (timeStr: string | null, locale: string) => {
     return intlTime.format(date)
 }
 
-export const formatEventDateTime = (date: EventDateModel, locale: string) => {
+export const formatEventDateTime = (date: PublicEventDate, locale: string) => {
     if (!date || !date.startDate) return null
 
     // Local formatter that includes weekday

@@ -8,7 +8,7 @@
   <div style="display: flex; flex-direction: column; justify-content: center;">
 
     <template v-if="model.type === 'single'">
-      <h2>{{ model.date }}</h2>
+      <h2 class="uranus-public-main-date">{{ model.date }}</h2>
       <p v-if="model.time">
         {{ model.time }}
       </p>

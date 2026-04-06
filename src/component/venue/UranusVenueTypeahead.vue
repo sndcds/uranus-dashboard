@@ -15,7 +15,7 @@
       <ul v-if="isOpen" class="popover" :style="popoverStyle">
         <li
             v-for="(venue, index) in results"
-            :key="venue.id"
+            :key="venue.uuid"
             :class="{ selected: index === selectedIndex }"
             @click="selectVenue(venue)"
             @mouseenter="selectedIndex = index"
@@ -30,18 +30,18 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import { apiBaseUrl } from '@/util/UranusUtils.ts'
-import type { UranusVenueSelectItemInfo } from '@/domain/venue/venue.model.ts'
+import type { VenueSelectInfo } from '@/domain/venue/venueSelectInfo.model.ts'
 
 const props = defineProps<{
-  selectedVenue: UranusVenueSelectItemInfo | null
+  selectedVenue: VenueSelectInfo | null
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:selectedVenue', value: UranusVenueSelectItemInfo | null): void
+  (e: 'update:selectedVenue', value: VenueSelectInfo | null): void
 }>()
 
 const query = ref('')
-const results = ref<UranusVenueSelectItemInfo[]>([])
+const results = ref<VenueSelectInfo[]>([])
 const selectedIndex = ref(-1)
 const isOpen = ref(false)
 const ignoreQueryWatch = ref(false)
@@ -124,7 +124,7 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 
-function selectVenue(venue: UranusVenueSelectItemInfo) {
+function selectVenue(venue: VenueSelectInfo) {
   emit('update:selectedVenue', venue)
   ignoreQueryWatch.value = true
   query.value = venue.name

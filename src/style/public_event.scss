@@ -103,6 +103,10 @@
     line-height: 1.2;
     font-weight: 400 !important;
   }
+
+  p {
+    color: var(--uranus-color-2);
+  }
 }
 
 .uranus-public-event-info-section {
@@ -167,6 +171,15 @@
   padding: 0.1rem 0.4rem;
 }
 
+
+.uranus-public-event-top-space {
+  margin-top: 0.6rem;
+}
+
+.uranus-public-main-date {
+  font-size: 2rem !important;
+  margin-bottom: 0.6rem;
+}
 
 .uranus-public-event-description {
   p {
