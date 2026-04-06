@@ -35,7 +35,7 @@
         <UranusFormRow>
           <UranusTextfield
               id="alt-text"
-              v-model="localImageMeta.alt_text as string"
+              v-model="localImageMeta.altText as string"
               :label="t('image_alt_text')"
           />
         </UranusFormRow>
@@ -103,7 +103,8 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, ApiError } from '@/api.ts'
-import { PlutoImageMeta } from '@/model/plutoImageModel.ts'
+import { createPlutoImage } from '@/domain/image/plutoImage.model.ts'
+import type { PlutoImageDTO } from "@/api/dto/plutoImage.dto.ts";
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import { buildPlutoEditImageUrl } from '@/util/UranusUtils.ts'
@@ -166,14 +167,14 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const fileInput = ref<HTMLInputElement | null>(null)
-const localImageMeta = reactive(new PlutoImageMeta())
+const localImageMeta = reactive(createPlutoImage())
 const localImageFile = ref<File | null>(null)
 
 
 function clearLocalImageMeta() {
   localImageMeta.uuid = null
   localImageMeta.url = null
-  localImageMeta.alt_text = null
+  localImageMeta.altText = null
   localImageMeta.description = null
   localImageMeta.copyright = null
   localImageMeta.creator = null
@@ -229,7 +230,7 @@ function onCancel() {
 function onSave() {
   const payload = {
     uuid: localImageMeta.uuid,
-    alt_text: localImageMeta.alt_text,
+    alt_text: localImageMeta.altText,
     description: localImageMeta.description,
     copyright: localImageMeta.copyright,
     creator: localImageMeta.creator,
@@ -247,16 +248,16 @@ function onSave() {
 
 onMounted(async () => {
     try {
-      const response = await apiFetch<any>(apiPath.value)
-      if (!response.response) return
+      const apiResponse = await apiFetch<PlutoImageDTO>(apiPath.value)
+      if (!apiResponse.data) return
 
-      const meta = response.response.data
+      const meta = apiResponse.data
 
       localImageMeta.uuid = meta.uuid ?? null
       localImageMeta.url = localImageMeta.uuid !== null
           ? buildPlutoEditImageUrl(localImageMeta.uuid, 800)
           : null
-      localImageMeta.alt_text = meta.alt_text ?? null
+      localImageMeta.altText = meta.alt ?? null
       localImageMeta.description = meta.description ?? null
       localImageMeta.copyright = meta.copyright ?? null
       localImageMeta.creator = meta.creator ?? null

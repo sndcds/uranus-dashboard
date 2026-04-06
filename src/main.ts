@@ -14,7 +14,7 @@ import { useVenueTypeLookupStore } from '@/store/UranusVenueTypesLookup.ts'
 import { useSpaceTypeLookupStore } from '@/store/UranusSpaceTypesLookup.ts'
 import { useLegalFormLookupStore } from '@/store/UranusLegalFormLookup.ts'
 import { useLicenseLookup } from '@/store/UranusLicenseLookup.ts'
-import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
+import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 
 
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'

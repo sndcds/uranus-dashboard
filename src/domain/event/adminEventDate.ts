@@ -1,4 +1,8 @@
-export type AdminEventDateModel = {
+/*
+    src/domain/event/adminEventDate.ts
+ */
+
+export type AdminEventDate = {
     uuid: string
     eventUuid: string
     startDate: string | null
@@ -10,12 +14,12 @@ export type AdminEventDateModel = {
     accessibilityInfo: string | null
     venueUuid: string | null
     spaceUuid: string | null
-    allDay: boolean | null
+    allDay: boolean
 }
 
 export function createUranusAdminEventDate(
-    props: Partial<AdminEventDateModel> = {}
-): AdminEventDateModel {
+    props: Partial<AdminEventDate> = {}
+): AdminEventDate {
     return {
         uuid: props.uuid ?? '',
         eventUuid: props.eventUuid ?? '',
@@ -28,6 +32,6 @@ export function createUranusAdminEventDate(
         accessibilityInfo: props.accessibilityInfo ?? null,
         venueUuid: props.venueUuid ?? null,
         spaceUuid: props.spaceUuid ?? null,
-        allDay: props.allDay ?? null,
+        allDay: props.allDay ?? false
     }
 }

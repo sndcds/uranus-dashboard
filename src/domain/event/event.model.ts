@@ -1,8 +1,8 @@
 // src/domain/event/event.model.ts
-import { type ImageModel, mapImage } from '@/domain/image/image.model.ts'
+import { type PlutoImage, mapPlutoImageFromDTO } from '@/domain/image/plutoImage.model.ts'
 import { type EventDateModel, mapEventDate } from './eventDate.model.ts'
 import { type EventTypeModel, mapEventTypeFromDTO } from './eventType.model.ts'
-import { type UranusEventLink } from './UranusEventLink.ts'
+import { type EventLinkModel } from './eventLink.model.ts'
 
 export interface EventModel {
     eventId: number | null
@@ -37,8 +37,8 @@ export interface EventModel {
     minPrice: number | null
     maxPrice: number | null
 
-    image: ImageModel | null
-    eventUrls: UranusEventLink[]
+    image: PlutoImage | null
+    eventUrls: EventLinkModel[]
 
     date: EventDateModel
     furtherDates: EventDateModel[]
@@ -52,9 +52,9 @@ export function mapEventFromApi(raw: any, dateUuid?: string): EventModel | null 
 
     const mapDate = (d: any): EventDateModel => mapEventDate(d)
 
-    const image: ImageModel | null = raw.image
-        ? mapImage({
-            id: raw.image.id ?? null,
+    const image: PlutoImage | null = raw.image
+        ? mapPlutoImageFromDTO({
+            uuid: raw.image.id ?? null,
             url: raw.image.url ?? null,
             alt: raw.image.alt ?? null,
             creator: raw.image.creator ?? null,
@@ -76,7 +76,7 @@ export function mapEventFromApi(raw: any, dateUuid?: string): EventModel | null 
         ? (raw.event_types as any[]).map(mapEventTypeFromDTO)
         : []
 
-    const urls: UranusEventLink[] = Array.isArray(raw.event_links)
+    const urls: EventLinkModel[] = Array.isArray(raw.event_links)
         ? raw.event_links.map((u: any) => ({
             label: u.label ?? null,
             url: u.url ?? null,

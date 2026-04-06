@@ -87,7 +87,7 @@ import UranusLanguageSelect from '@/component/ui/UranusLanguageSelect.vue'
 import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
 import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
 
-import type { AdminEventModel } from '@/domain/event/adminEvent.model.ts'
+import type { AdminEvent } from '@/domain/event/adminEvent.ts'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
@@ -140,7 +140,7 @@ const isDirty = computed(() => {
 })
 
 // Build payload for API
-function buildPayload(draft: AdminEventModel, original: AdminEventModel) {
+function buildPayload(draft: AdminEvent, original: AdminEvent) {
   const payload: Record<string, any> = {}
 
   if (draft.releaseStatus !== original.releaseStatus) payload.release_status = draft.releaseStatus

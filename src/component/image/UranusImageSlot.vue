@@ -9,12 +9,11 @@
 
     <!-- Preview -->
     <div class="image-wrapper" @click="openDialog">
-
       <img
           v-if="imageUuid && imageUrl"
           :key="reloadCounter"
           :src="imageUrl"
-          :alt="imageMeta?.alt_text ?? ''"
+          :alt="image?.altText ?? ''"
           :class="fitMode"
       />
 
@@ -52,7 +51,7 @@ import { useI18n } from 'vue-i18n'
 import UranusImageEditDialog from './UranusImageEditDialog.vue'
 import { apiFetch } from '@/api'
 import { buildPlutoSlotImageUrl } from '@/util/UranusUtils'
-import type { PlutoImageMeta } from '@/model/plutoImageModel'
+import { type PlutoImage, loadPlutoImage } from '@/domain/image/plutoImage.model.ts'
 
 const { t } = useI18n()
 
@@ -70,10 +69,12 @@ const props = defineProps<{
 // State
 const dialogOpen = ref(false)
 const reloadCounter = ref(0)
-const imageMeta = ref<PlutoImageMeta | null>(null)
-const imageUuid = ref<string | null>(null)
+const image = ref<PlutoImage | null>(null)
 
-// Computed
+const imageUuid = computed(() =>
+    image.value ? image.value.uuid : null
+)
+
 const fitMode = computed(() =>
     props.fitMode === 'contain' ? 'contain' : 'cover'
 )
@@ -101,26 +102,9 @@ const imageUrl = computed(() => {
 })
 
 
-async function loadMeta() {
-  try {
-    const res = await apiFetch<any>(
-        `/api/image/meta/${props.context}/${props.contextUuid}/${props.identifier}`
-    )
-
-    if (!res.response) {
-      imageUuid.value = null
-      imageMeta.value = null
-      return
-    }
-
-    const meta = res.response.data
-    imageMeta.value = meta
-    imageUuid.value = meta.uuid ?? null
-
-  } catch {
-    imageUuid.value = null
-    imageMeta.value = null
-  }
+async function loadImage() {
+  const apiPath = `/api/image/meta/${props.context}/${props.contextUuid}/${props.identifier}`
+  image.value = await loadPlutoImage(apiPath)
 }
 
 
@@ -144,7 +128,7 @@ async function onSave(
 
   dialogOpen.value = false
 
-  await loadMeta()
+  await loadImage()
   incReloadCounter()
 }
 
@@ -159,9 +143,7 @@ async function removeImage() {
   try {
     const apiPath = `/api/admin/image/${props.context}/${props.contextUuid}/${props.identifier}`
     await apiFetch(apiPath, { method: 'DELETE'})
-
-    imageUuid.value = null
-    imageMeta.value = null
+    image.value = null
   } catch (err) {
     console.error('Failed to delete image', err)
     alert('Failed to delete image')
@@ -174,10 +156,9 @@ function incReloadCounter() {
 }
 
 
-defineExpose({ incReloadCounter })
+// defineExpose({ incReloadCounter })
 
-
-onMounted(loadMeta)
+onMounted(loadImage)
 </script>
 
 <style lang="scss">

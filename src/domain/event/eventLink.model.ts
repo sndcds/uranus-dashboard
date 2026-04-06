@@ -1,4 +1,4 @@
-export class UranusEventLink {
+export class EventLinkModel {
     constructor(
         public label: string | null = null,
         public type: string | null = null,

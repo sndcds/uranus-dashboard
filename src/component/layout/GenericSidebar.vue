@@ -39,7 +39,7 @@
 
         <router-link :to="venuesRoute" class="generic-sidebar__nav-item"
           active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
-          <Spotlight class="generic-sidebar__nav-icon"/>
+          <MapPin class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_venues') }}</span>
         </router-link>
 
@@ -112,7 +112,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/appStore.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import { LayoutDashboard, ListChecks, Building, Spotlight, Calendar } from 'lucide-vue-next'
+import { LayoutDashboard, ListChecks, Building, MapPin, Calendar } from 'lucide-vue-next'
 
 interface Props {
   isOpen: boolean

@@ -1,4 +1,6 @@
-// src/domain/event/UranusEventDate.ts
+/*
+    src/domain/event/eventDate.model.ts
+ */
 
 export interface EventDateModel {
     uuid: string | null

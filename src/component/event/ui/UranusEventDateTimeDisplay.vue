@@ -51,13 +51,11 @@ interface Props {
   endDate?: string | null   // YYYY-MM-DD
   endTime?: string | null   // HH:mm
   entryTime?: string | null   // HH:mm
-  allDay?: boolean
-  mode?: 'short' | 'long' // formatting mode
+  allDay: boolean
 }
 
 const props = defineProps<Props>()
 const { locale, t } = useI18n()
-const mode = props.mode || 'short'
 
 // Computed render model
 const model = computed(() => {

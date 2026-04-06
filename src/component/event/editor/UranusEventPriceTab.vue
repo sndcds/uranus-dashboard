@@ -99,7 +99,7 @@ import { apiFetch } from '@/api.ts'
 import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import UranusCurrencySelect from '@/component/ui/UranusCurrencySelect.vue'
 import { equalStringArrays } from '@/type/utils.ts'
-import type {AdminEventModel} from '@/domain/event/adminEvent.model.ts'
+import type {AdminEvent} from '@/domain/event/adminEvent.ts'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
@@ -145,8 +145,8 @@ function parseFloatOrNull(e: Event): number | null {
 }
 
 function buildPayload(
-    draft: AdminEventModel,
-    original: AdminEventModel
+    draft: AdminEvent,
+    original: AdminEvent
 ) {
   const payload: Record<string, any> = {}
 

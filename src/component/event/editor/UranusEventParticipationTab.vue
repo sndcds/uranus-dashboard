@@ -65,7 +65,7 @@ import { computed } from 'vue'
 import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import type { AdminEventModel } from '@/domain/event/adminEvent.model.ts'
+import type { AdminEvent } from '@/domain/event/adminEvent.ts'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
@@ -105,8 +105,8 @@ function parseNumberInput(e: Event): number | null {
 }
 
 function buildPayload(
-    draft: AdminEventModel,
-    original: AdminEventModel
+    draft: AdminEvent,
+    original: AdminEvent
 ) {
   const payload: Record<string, any> = {}
 

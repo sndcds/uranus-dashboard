@@ -12,7 +12,7 @@ export async function plutoOnImageSave(
     context: string,
     contextId: number,
     identifier: string
-): Promise<PlutoImageDTO> { // <-- must return PlutoImageRaw
+): Promise<PlutoImageDTO> {
     const formData = new FormData()
     if (file) formData.append('image', file)
     if (meta.alt_text) formData.append('alt', meta.alt_text)
@@ -24,12 +24,12 @@ export async function plutoOnImageSave(
     if (meta.focusY !== null) formData.append('focus_y', String(meta.focusY))
 
     const endpoint = `/api/admin/${context}/${contextId}/image/${identifier}`
-    const { response } = await apiFetch<PlutoImageDTO>(endpoint, {
+    const apiResponse = await apiFetch<PlutoImageDTO>(endpoint, {
         method: 'POST',
         body: formData,
     })
 
-    return response
+    return apiResponse.data!
 }
 
 /**
@@ -39,8 +39,8 @@ export function plutoNormalizeImage(raw?: PlutoImageDTO | null): PlutoImageMeta 
     if (!raw) return null
 
     return new PlutoImageMeta(
-        raw.id ?? null,
-        raw.url ?? (raw.id ? `/api/image/${raw.id}` : null),
+        raw.uuid ?? null,
+        raw.url ?? (raw.uuid ? `/api/image/${raw.uuid}` : null),
         raw.alt ?? null,
         raw.description ?? null,
         raw.copyright ?? null,

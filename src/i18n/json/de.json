@@ -572,6 +572,7 @@
   "event_link_type": "Linktyp",
   "event_link_url": "URL",
   "event_add_link": "Link hinzufügen",
+  "event_online_url": "Link zur Online-Veranstaltung",
   "all_events": "Alle Events",
   "create_event": "Neues Event erstellen",
   "create_event_definition": "Gib den Titel ein, danach kannst du Details bearbeiten.",

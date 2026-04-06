@@ -39,14 +39,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { UranusEventDate } from '@/domain/event/eventDate.model.ts'
+import type { EventDateModel } from '@/domain/event/eventDate.model.ts'
 import { useThemeStore } from '@/store/uranusThemeStore.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 const themeStore = useThemeStore()
 
 // Accept the entire currentEventDate object
-const props = defineProps<{ eventDate: UranusEventDate | null }>()
+const props = defineProps<{ eventDate: EventDateModel | null }>()
 
 const hasVenueInfo = computed(() => {
   const e = props.eventDate

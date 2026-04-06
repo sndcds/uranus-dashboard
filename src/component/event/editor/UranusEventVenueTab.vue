@@ -7,7 +7,7 @@
 
     <UranusCard class="event-venue">
       <h2 class="venue-name">
-        {{ t('venue') }}: <strong>{{ venueInfoStore.getVenueLabel(draft.venueUuid, draft.spaceUuid) }}</strong>
+        <MapPin /> {{ venueInfoStore.getVenueLabel(draft.venueUuid, draft.spaceUuid) }}
       </h2>
       <UranusButton variant="tertiary" size="small" :onclick="openVenueModal">
         {{ t('event_select_venue') }}
@@ -67,7 +67,7 @@ import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue
 import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
-import {Save, Undo} from "lucide-vue-next";
+import { Save, Undo, MapPin, DoorOpen } from "lucide-vue-next";
 import UranusCard from "@/component/ui/UranusCard.vue";
 
 const { t } = useI18n({ useScope: 'global' })

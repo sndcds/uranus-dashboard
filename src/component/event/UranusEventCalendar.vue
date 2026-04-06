@@ -100,7 +100,7 @@ import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
-import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
+import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
 import type { EventListItemEventType } from "@/domain/event/eventListItem.model.ts";

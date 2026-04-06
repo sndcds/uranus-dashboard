@@ -72,7 +72,7 @@
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
-import { UranusEventLink } from '@/domain/event/UranusEventLink.ts'
+import { EventLinkModel } from '@/domain/event/eventLink.model.ts'
 import { apiFetch } from '@/api.ts'
 import UranusLinkTypeSelect from '@/component/select/UranusLinkTypeSelect.vue'
 import {Save, Undo} from 'lucide-vue-next'
@@ -90,7 +90,7 @@ onMounted(() => {
   if (store.draft) {
     store.draft.eventLinks =
         store.original?.eventLinks?.map(
-            u => new UranusEventLink(u.label, u.type, u.url)
+            u => new EventLinkModel(u.label, u.type, u.url)
         ) ?? []
   }
 })
@@ -101,7 +101,7 @@ const isDirty = computed(() => {
 
   if (draft.length !== original.length) return true
 
-  const isEqual = (a: UranusEventLink, b: UranusEventLink) =>
+  const isEqual = (a: EventLinkModel, b: EventLinkModel) =>
       a.label === b.label &&
       a.type === b.type &&
       a.url === b.url
@@ -115,7 +115,7 @@ const isDirty = computed(() => {
 function addUrl() {
   if (!store.draft) return
   if (!store.draft.eventLinks) store.draft.eventLinks = []
-  store.draft.eventLinks.push(new UranusEventLink())
+  store.draft.eventLinks.push(new EventLinkModel())
 }
 
 function removeUrl(index: number) {
@@ -141,7 +141,7 @@ async function commitUrlsTab() {
     })
 
     store.original!.eventLinks = store.draft.eventLinks!.map(
-        u => new UranusEventLink(u.label, u.type, u.url)
+        u => new EventLinkModel(u.label, u.type, u.url)
     )
   } catch (err) {
     console.error(err)
@@ -154,7 +154,7 @@ async function commitUrlsTab() {
 function resetUrlsTab() {
   if (!store.draft) return
   store.draft.eventLinks = store.original?.eventLinks?.map(
-      u => new UranusEventLink(u.label, u.type, u.url)
+      u => new EventLinkModel(u.label, u.type, u.url)
   ) ?? []
 }
 </script>

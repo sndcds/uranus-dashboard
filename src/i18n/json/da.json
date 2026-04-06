@@ -566,6 +566,7 @@
   "event_link_type": "Linktype",
   "event_link_url": "URL",
   "event_add_link": "Tilføj link",
+  "event_online_url": "Link til online begivenhed",
   "all_events": "Alle begivenheder",
   "create_event": "Opret en ny begivenheder",
   "create_event_definition": "Indtast titel, derefter kan du redigere detaljer.",

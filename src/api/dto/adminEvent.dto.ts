@@ -1,5 +1,5 @@
 /*
-    src/api/dto/UranusAdminEventDTO.ts
+    src/api/dto/adminEvent.dto.ts
  */
 
 import { type AdminEventDateDTO } from '@/api/dto/adminEventDate.dto.ts'

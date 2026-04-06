@@ -86,6 +86,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Add link',
         da: 'Tilføj link',
     },
+    event_online_url: {
+        de: 'Link zur Online-Veranstaltung',
+        en: 'Online Event Link',
+        da: 'Link til online begivenhed',
+    },
     all_events: {
         de: 'Alle Events',
         en: 'All events',

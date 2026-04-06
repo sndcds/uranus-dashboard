@@ -2,17 +2,9 @@ import { defineStore } from "pinia";
 import { apiFetch, type ApiResponse } from '@/api.ts'
 
 
-interface EventReleaseStatusApiResponse {
-    service: string;
-    api_version: string;
-    response_type: string;
-    status: string;
-    timestamp: string;
-    metadata: Record<string, any>;
-    data: {
-        i18n: Record<string, Record<string, string>>;
-        order: string[];
-    };
+interface EventReleaseStatusDTO {
+    i18n: Record<string, Record<string, string>>;
+    order: string[];
 }
 
 export const useEventReleaseStatusStore = defineStore("eventReleaseStatus", {
@@ -51,9 +43,9 @@ export const useEventReleaseStatusStore = defineStore("eventReleaseStatus", {
 
             try {
                 const langParam = languages.join(',');
-                const response: ApiResponse<EventReleaseStatusApiResponse> =
+                const response: ApiResponse<EventReleaseStatusDTO> =
                     await apiFetch(`/api/event/release-status-i18n?lang=${langParam}`);
-                const payload = response.response?.data;
+                const payload = response.data;
 
                 if (!payload) {
                     console.warn("No i18n data returned from API");

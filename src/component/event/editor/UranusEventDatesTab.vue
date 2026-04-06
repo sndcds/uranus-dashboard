@@ -11,7 +11,7 @@
         class="date-card"
     >
       <div v-if="date.venueUuid" class="date-venue-name">
-        <h2>{{ t('venue') }}: <strong>{{ venueInfoStore.getVenueLabel(date.venueUuid, date.spaceUuid) }}</strong></h2>
+        <h2><MapPin /> {{ venueInfoStore.getVenueLabel(date.venueUuid, date.spaceUuid) }}</h2>
       </div>
 
       <div class="date-pair">
@@ -32,7 +32,7 @@
       <div class="date-pair" style="padding-top: 1.6rem;">
         <UranusCheckbox
             id="todo_completed"
-            v-model="date.allDay!"
+            v-model="date.allDay"
             :label="t('event_all_day')"
         />
       </div>
@@ -101,6 +101,7 @@ import UranusDateInput from "@/component/ui/UranusDateInput.vue";
 import UranusTimeInput from "@/component/ui/UranusTimeInput.vue";
 import UranusNumberInput from "@/component/ui/UranusNumberInput.vue";
 import UranusCheckbox from "@/component/ui/UranusCheckbox.vue";
+import { MapPin } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 

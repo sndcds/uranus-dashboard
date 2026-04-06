@@ -6,13 +6,13 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { type AdminEventModel } from '@/domain/event/adminEvent.model.ts'
-import { fromApi } from '@/domain/event/adminEvent.model.ts'
+import { type AdminEvent } from '@/domain/event/adminEvent.ts'
+import { fromApi } from '@/domain/event/adminEvent.ts'
 
 export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
     // State
-    const original = ref<AdminEventModel | null>(null)
-    const draft = ref<AdminEventModel | null>(null)
+    const original = ref<AdminEvent | null>(null)
+    const draft = ref<AdminEvent | null>(null)
 
     const loading = ref(false)
     const saving = ref(false)
@@ -20,7 +20,7 @@ export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
 
 
     // Helpers
-    function cloneEvent(event: AdminEventModel): AdminEventModel {
+    function cloneEvent(event: AdminEvent): AdminEvent {
         return structuredClone(event)
     }
 

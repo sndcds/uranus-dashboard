@@ -6,10 +6,8 @@ import type { VenueInfoDTO } from "@/api/dto/venueInfo.dto.ts";
 
 
 interface ChoosableVenuesApiResponse {
-    data: {
-        total_count: number
-        venueInfos: VenueInfoDTO[]
-    }
+    total_count: number
+    venueInfos: VenueInfoDTO[]
 }
 
 function mapVenue(dto: VenueInfoDTO): VenueInfo {
@@ -39,11 +37,12 @@ export const useUranusEventVenueInfoStore = defineStore(
             error.value = null
 
             try {
-                const res = await apiFetch<ChoosableVenuesApiResponse>(
-                    '/api/admin/user/choosable-event-venues'
+                const apiPath = '/api/admin/user/choosable-event-venues'
+                const apiResponse = await apiFetch<ChoosableVenuesApiResponse>(
+                    apiPath
                 )
 
-                items.value = (res.response?.data?.venueInfos ?? []).map(mapVenue)
+                items.value = (apiResponse?.data?.venueInfos ?? []).map(mapVenue)
 
             } catch (e) {
                 console.error(e)
@@ -63,13 +62,13 @@ export const useUranusEventVenueInfoStore = defineStore(
             if (!venueUuid) return ''
 
             const exact = items.value.find(v =>
-                v.venueUuid === venueUuid &&
-                (spaceUuid == null ? v.spaceUuid == null : v.spaceUuid === spaceUuid)
+                v.venueUuid == venueUuid &&
+                (spaceUuid == null ? v.spaceUuid == null : v.spaceUuid == spaceUuid)
             )
 
             if (exact) {
                 return exact.spaceName
-                    ? `${exact.venueName} – ${exact.spaceName}`
+                    ? `${exact.venueName} | ${exact.spaceName}`
                     : exact.venueName
             }
 
