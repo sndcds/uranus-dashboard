@@ -6,14 +6,12 @@
     </UranusFormRow>
 
     <UranusFormRow>
-      <UranusLabel id="org-map" :label="t('geo_location')">
-        <UranusMapLocationPicker
-            class="location-map"
-            v-model="internalLocation"
-            :zoom="12"
-            :selectable="true"
-        />
-      </UranusLabel>
+      <UranusMapLocationPicker
+          class="location-map"
+          v-model="internalLocation"
+          :zoom="12"
+          :selectable="true"
+      />
     </UranusFormRow>
 
     <UranusFormRow :cols="2">

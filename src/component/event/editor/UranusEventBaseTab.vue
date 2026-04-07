@@ -130,12 +130,40 @@ const baseFields = [
   'summary',
 ] as const
 
+
+function deepEqual(a: any, b: any): boolean {
+  if (a === b) return true
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false
+    return a.every((v, i) => deepEqual(v, b[i]))
+  }
+  if (typeof a === 'object' && typeof b === 'object' && a && b) {
+    const keysA = Object.keys(a)
+    const keysB = Object.keys(b)
+    if (keysA.length !== keysB.length) return false
+    return keysA.every(k => deepEqual(a[k], b[k]))
+  }
+  return false
+}
+
 const isDirty = computed(() => {
   const draft = store.draft
   const original = store.original
   if (!draft || !original) return false
 
-  return baseFields.some(key => JSON.stringify(draft[key]) !== JSON.stringify(original[key]))
+  const changedKeys: string[] = []
+  const x: string[] = []
+  baseFields.forEach(key => {
+    if (!deepEqual(draft[key] ?? null, original[key] ?? null)) {
+      changedKeys.push(key)
+      x.push(JSON.stringify(original[key]))
+      x.push(JSON.stringify(draft[key]))
+    }
+  })
+
+  console.log(JSON.stringify(x, null, 2))
+
+  return changedKeys.length > 0
 })
 
 // Build payload for API

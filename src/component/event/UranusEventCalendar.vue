@@ -9,6 +9,7 @@
 
 <template>
   <div class="calendar-page">
+    {{ eventListStore.getLoadEventsCount() }}
     <div class="calendar-body">
       <div class="calendar-settings">
         <UranusHorizontalScroller>
@@ -117,23 +118,30 @@ const searchQuery = ref('')
 const getTypeName = (typeId: number) =>
     typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
 
+let isResetting = false
+let filterTimeout: number | null = null
 
 watch(
     () => filterStore.filter,
     () => {
-      eventListStore.loadEvents(true)
-      eventListStore.loadTypeSummary()
+      if (filterTimeout) clearTimeout(filterTimeout)
+
+      filterTimeout = window.setTimeout(() => {
+        isResetting = true
+        eventListStore.loadEvents(true)
+        eventListStore.loadTypeSummary()
+        isResetting = false
+      }, 200)
     },
     { deep: true }
 )
+
 
 onMounted(() => {
 })
 
 onBeforeUnmount(() => {
 })
-
-
 
 
 // Return unique type IDs from the event_types array
@@ -166,7 +174,7 @@ onMounted(async () => {
   observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
-        if (entry?.isIntersecting) {  // Optional chaining
+        if (entry?.isIntersecting && !isResetting) {
           eventListStore.loadEvents()
           eventListStore.loadTypeSummary()
         }

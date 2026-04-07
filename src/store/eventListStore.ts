@@ -10,22 +10,28 @@ import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 
 export const useEventListStore = defineStore('events', () => {
     const events = ref<EventListItem[]>([])
+    const typeSummary = ref<EventListTypeSummary[]>([])
     const lastEventStartAt = ref<string | null>(null)
     const lastEventDateUuid = ref<string | null>(null)
+    const filterStore = useEventsFilterStore()
     const limit = 20
     const loading = ref(false)
     const error = ref<string | null>(null)
     const hasMore = ref(true) // for infinite scroll
-    const eventsFilterStore = useEventsFilterStore()
-    const typeSummary = ref<EventListTypeSummary[]>([])
+    const loadEventsCounter = ref(0) // for infinite scroll
 
     function reset() {
         events.value = []
+        typeSummary.value = []
         lastEventStartAt.value = null
         lastEventDateUuid.value = null
         loading.value = false
         error.value = null
         hasMore.value = true
+    }
+
+    function getLoadEventsCount(): number {
+        return loadEventsCounter.value
     }
 
     function hasEvents(): boolean {
@@ -46,7 +52,7 @@ export const useEventListStore = defineStore('events', () => {
 
     function buildFilterParams(paginationMode = false, typesMode = false): URLSearchParams {
         const params = new URLSearchParams()
-        const f = eventsFilterStore.filter
+        const filter = filterStore.filter
 
         // Pagination
         if (paginationMode) {
@@ -60,49 +66,46 @@ export const useEventListStore = defineStore('events', () => {
         }
 
         // Categories
-        if (f.categories?.length) params.set("categories", f.categories.join(","))
+        if (filter.categories?.length) params.set("categories", filter.categories.join(","))
 
         // Basic filters
-        if (f.search) params.set("search", f.search)
-        if (f.city) params.set("city", f.city)
-        if (f.startDate) params.set("start", f.startDate)
-        if (f.endDate) params.set("end", f.endDate)
+        if (filter.search) params.set("search", filter.search)
+        if (filter.city) params.set("city", filter.city)
+        if (filter.startDate) params.set("start", filter.startDate)
+        if (filter.endDate) params.set("end", filter.endDate)
 
         // Venue filter
-        if (f.venue?.uuid != null) params.set("venues", f.venue.uuid)
+        if (filter.venue?.uuid != null) params.set("venues", filter.venue.uuid)
 
         // Location filter
-        if (f.useCurrentLocation && typeof f.latitude === 'number' && typeof f.longitude === 'number' && typeof f.radiusKm === 'number') {
-            params.set("lat", f.latitude.toString())
-            params.set("lon", f.longitude.toString())
-            params.set("radius", Math.round(f.radiusKm * 1000).toString()) // km → m
+        if (filter.useCurrentLocation && filter.latitude && filter.longitude && filter.radiusKm) {
+            params.set("lat", filter.latitude.toString())
+            params.set("lon", filter.longitude.toString())
+            params.set("radius", Math.round(filter.radiusKm * 1000).toString()) // km → m
         }
 
         // Age filter
-        if (typeof f.minAge === 'number' && typeof f.maxAge === 'number') {
-            params.set("age", `${f.minAge},${f.maxAge}`)
-        } else if (typeof f.minAge === 'number') {
-            params.set("age", f.minAge.toString())
-        } else if (typeof f.maxAge === 'number') {
-            params.set("age", f.maxAge.toString())
+        if (filter.minAge && filter.maxAge) {
+            params.set("age", `${filter.minAge},${filter.maxAge}`)
+        } else if (filter.minAge) {
+            params.set("age", filter.minAge.toString())
+        } else if (filter.maxAge) {
+            params.set("age", filter.maxAge.toString())
         }
 
         // Price filter
-        if (f.priceType !== 'not_specified') {
-            if (f.priceType === 'free' || f.priceType === 'donation') {
-                params.set("price", f.priceType)
-            } else if (typeof f.maxPrice === 'number') {
-                params.set("price", `${f.maxPrice},${f.priceCurrency}`)
+        if (filter.priceType !== 'not_specified') {
+            if (filter.priceType === 'free' || filter.priceType === 'donation') {
+                params.set("price", filter.priceType)
+            } else if (filter.maxPrice) {
+                params.set("price", `${filter.maxPrice},${filter.priceCurrency}`)
             }
         }
 
         // Event types filter
-        if (typesMode && f.eventTypeIds?.length) {
-            params.set("event_types", f.eventTypeIds.join(","))
+        if (typesMode && filter.eventTypeIds?.length > 0) {
+            params.set("event_types", filter.eventTypeIds.join(","))
         }
-
-        console.log("paginationMode", paginationMode, "typesMode", typesMode)
-        console.log(JSON.stringify(params, null, 2))
 
         return params
     }
@@ -130,10 +133,12 @@ export const useEventListStore = defineStore('events', () => {
     }
 
     async function loadEvents(resetPage: boolean = false) {
-        if (loading.value || (!hasMore.value && !resetPage)) return
-        loading.value = true
+        if (loading.value) return
+        if (!resetPage && !hasMore.value) return
 
         if (resetPage) reset()
+
+        loading.value = true
 
         try {
             const params = buildFilterParams(true, true) // paginationMode + typesMode
@@ -160,6 +165,7 @@ export const useEventListStore = defineStore('events', () => {
             }
 
             error.value = null
+            loadEventsCounter.value++
         } catch (err: unknown) {
             error.value = 'Failed to load events'
             console.error(err)
@@ -169,6 +175,7 @@ export const useEventListStore = defineStore('events', () => {
     }
 
     return {
+        getLoadEventsCount,
         events,
         typeSummary,
         lastEventStartAt,

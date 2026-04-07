@@ -1,3 +1,16 @@
+<!--
+  src/component/event/panel/UranusEventFilterPanel.vue
+
+  UranusEventFilterPanel provides the UI for configuring event search filters.
+  It manages user input for criteria such as categories, search text, location
+  (including GPS-based filtering), date range, audience age, and pricing.
+
+  The component keeps the filter state in sync with the global filter store,
+  normalizes input values (e.g. numbers, nullable fields), and emits updates
+  when filters are applied or reset. It also integrates optional GPS-based
+  location detection to enhance proximity-based event queries.
+-->
+
 <template>
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
@@ -75,6 +88,7 @@
               v-model="filter.radiusKm"
               type="number"
               min="0"
+              max="200"
               step="0.1"
               label="Radius (km)"
               placeholder="Radius in km"

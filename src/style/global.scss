@@ -100,7 +100,7 @@
   // Inputs & borders
   --uranus-input-color: oklch(10% 0.02 var(--uranus-hue));
   --uranus-input-bg: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-input-border-color: oklch(72% 0.01 var(--uranus-hue));
+  --uranus-input-border-color: oklch(85% 0.01 var(--uranus-hue));
   --uranus-input-border-width: 1px;
   --uranus-input-placeholder-color: oklch(70% 0.0 var(--uranus-hue));
 
@@ -404,6 +404,24 @@ header {
 .uranus-md-editor {
   border: var(--uranus-input-border-width) solid var(--uranus-input-border-color) !important;
   border-radius: var(--uranus-input-border-radius);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  font-size: 18px;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 0;
+
+  ul li,
+  ol li {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  ul li p,
+  ol li p {
+    line-height: 1;
+    margin: 0.4rem;
+  }
 }
 
 .uranus-tiny-text {
@@ -418,9 +436,6 @@ header {
 .uranus-big-text {
   font-size: 1.7rem !important;
   height: 3.2rem;
-}
-
-.uranus-md-editor {
 }
 
 .uranus-main-content {

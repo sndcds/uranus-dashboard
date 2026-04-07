@@ -11,8 +11,6 @@ import { createEventTypePair } from '@/domain/event/eventTypePair.model.ts'
 
 
 export function mapAdminEventFromDTO(dto: AdminEventDTO): AdminEvent {
-
-    console.log(JSON.stringify(dto, null, 2))
     let visitorInfoFlags: bigint = 0n
     try {
         if (dto.visitor_info_flags && dto.visitor_info_flags !== '') {
@@ -26,7 +24,7 @@ export function mapAdminEventFromDTO(dto: AdminEventDTO): AdminEvent {
         uuid: dto.uuid,
         releaseStatus: dto.release_status,
         releaseDate: dto.release_date ?? null,
-        categories: dto.categories ? [...dto.categories] : null,
+        categories: dto.categories ? [...dto.categories].sort((a, b) => a - b) : null,
         externalId: dto.external_id,
         sourceUrl: dto.source_url ?? null,
         custom: dto.custom ?? null,

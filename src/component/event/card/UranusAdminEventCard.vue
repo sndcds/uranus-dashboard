@@ -42,20 +42,23 @@
       </div>
 
       <div>
-        <span><strong>
-          {{ uranusFormatEventDateTime(
-            event.startDate,
-            event.startTime,
-            event.endDate,
-            event.endTime,
-            locale
-        ) }}
-        </strong></span><br>
-        <span v-if="hasVenue">
-          {{ t('venue')}}: {{ event.venueName }}
+        <div class="icon-and-info">
+          <Calendar class="small-icon"/>
+            {{ uranusFormatEventDateTime(
+              event.startDate,
+              event.startTime,
+              event.endDate,
+              event.endTime,
+              locale
+          ) }}
+        </div>
+        <div v-if="hasVenue" class="icon-and-info">
+          <MapPin class="small-icon"/> {{ event.venueName }}
           <template v-if="hasSpace"> / {{ event.spaceName }}</template>
-        </span><br>
-        <span>{{ t('event_organizer')}}: {{ event.orgName }}</span>
+        </div>
+        <div v-if="hasVenue" class="icon-and-info">
+          <Building class="small-icon"/> {{ event.orgName }}
+        </div>
       </div>
 
       <div class="uranus-event-card-actions">
@@ -122,7 +125,7 @@ import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import type { AdminEventListItemModel } from '@/domain/event/adminEventListItem.model.ts'
 import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { Eye, Pencil, Trash } from 'lucide-vue-next'
+import { Eye, Pencil, Trash, Calendar, MapPin, Building } from 'lucide-vue-next'
 import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
 
 const placeholderImage = '/assets/event-dummy.png'
@@ -329,6 +332,20 @@ const confirmDelete = async ({password, selectedOption}: {
   display: flex;
   align-items: center;
   margin-right: 1rem;
+}
+
+.icon-and-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.small-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--uranus-color-4)
 }
 
 </style>

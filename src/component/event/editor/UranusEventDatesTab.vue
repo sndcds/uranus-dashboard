@@ -111,13 +111,12 @@ import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.
 import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import {Save, Undo, Plus, CheckCircle} from 'lucide-vue-next'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 import UranusTimeInput from '@/component/ui/UranusTimeInput.vue'
 import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
-import { MapPin, Info } from 'lucide-vue-next'
-import UranusInfoHeading from "@/component/ui/UranusInfoHeading.vue";
+import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
+import { Save, Undo, Plus, MapPin, Info } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 

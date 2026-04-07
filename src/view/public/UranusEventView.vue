@@ -1,5 +1,14 @@
 <!--
   src/view/public/UranusEventView.vue
+
+  UranusEventView is responsible for displaying a single public event
+  in detail. It fetches the event and selected event date from the API
+  based on the current route parameters, handles loading and error states,
+  and renders all relevant event information such as image, description,
+  dates, venue, pricing, accessibility, and external links.
+
+  The component also supports localization, dynamic route updates,
+  and auxiliary actions like downloading the event as an ICS file.
 -->
 
 <template>
@@ -122,7 +131,7 @@
 
 
           <div v-if="priceLabel || priceTypeLabel">
-            <strong>{{ t('event_price') }}</strong><br>
+            <p class="uranus-public-event-info-label">{{ t('event_price') }}</p>
             <template v-if="priceTypeLabel">
               {{ priceTypeLabel }}<br>
             </template>
@@ -132,7 +141,7 @@
           </div>
 
           <div v-if="event.maxAttendees || ageLabel">
-            <strong>{{ t('event_participation_info') }}</strong><br>
+            <p class="uranus-public-event-info-label">{{ t('event_participation_info') }}</p>
             <template v-if="event.maxAttendees">
               {{ t('event_max_attendees', { count: event.maxAttendees }) }}<br>
             </template>
@@ -351,23 +360,19 @@ const priceLabel = computed(() => {
     }).format(value)
   }
 
-  if (min != null && max != null) {
+  if (min && max) {
     return uranusStringInterpolate(t('event_price_between_sentence'), {
-      min: formatNumber(min),
-      max: formatNumber(max),
-      currency: currency
+      min: formatNumber(min), max: formatNumber(max), currency: currency
     });
   }
-  if (min != null) {
+  if (min) {
     return uranusStringInterpolate(t('event_price_from_sentence'), {
-      min: formatNumber(min),
-      currency: currency
+      min: formatNumber(min), currency: currency
     });
   }
-  if (max != null) {
+  if (max) {
     return uranusStringInterpolate(t('event_price_until_sentence'), {
-      max: formatNumber(max),
-      currency: currency
+      max: formatNumber(max), currency: currency
     });
   }
   return null

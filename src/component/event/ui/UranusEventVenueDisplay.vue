@@ -6,6 +6,15 @@
 
 <template>
   <div v-if="hasVenueInfo">
+
+    <div v-if="logoUrl">
+      <img
+          style="margin-top: 1rem; margin-bottom: 1rem;"
+          :src="`${logoUrl}?width=120&type=png&v=${Date.now()}`"
+          :alt="'Venue logo'"
+      />
+    </div>
+
     <span class="uranus-public-event-info-label ">{{ t('location') }}</span><br>
 
     <p v-if="eventDate?.venueWebsite && eventDate?.venueName">
@@ -26,12 +35,6 @@
       <span class="uranus-public-event-info-label ">{{ t('venue_space') }}:</span>
       <p>{{ eventDate?.spaceName }}</p>
     </div>
-
-    <img style="margin-top: 16px"
-        v-if="logoUrl"
-        :src="`${logoUrl}?width=120&type=png&v=${Date.now()}`"
-        :alt="'Venue logo'"
-    />
 
   </div>
 </template>

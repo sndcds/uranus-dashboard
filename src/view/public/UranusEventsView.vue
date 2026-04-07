@@ -1,3 +1,19 @@
+<!--
+  src/view/public/UranusEventsView.vue
+
+  UranusEventsView acts as the main container for the public events page.
+  It composes the event filter panel and the event calendar, handling their
+  layout and interaction.
+
+  The component is responsible for:
+  - Managing and applying filter changes via the global filter store
+  - Rendering the filter panel as a sidebar on desktop and as a modal on mobile
+  - Coordinating UI state such as modal visibility and responsive layout behavior
+
+  It serves as the integration layer between filtering controls and the
+  event listing, without containing business logic for data fetching itself.
+-->
+
 <template>
 
   <div class="calendar-view">
