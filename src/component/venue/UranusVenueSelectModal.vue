@@ -12,7 +12,7 @@
     <!-- Container for autoscroll -->
     <div class="venue-space-list" ref="containerRef">
       <div
-          v-for="venue in groupedVenues"
+          v-for="venue in venueSpaceInfos"
           :key="venue.venueUuid"
           class="venue-group"
       >
@@ -43,24 +43,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, nextTick, watch } from 'vue'
+import { ref, nextTick, watch } from 'vue'
 import UranusModal from '@/component/uranus/UranusModal.vue'
-import { type VenueInfo } from '@/domain/venue/venueInfo.model.ts'
-
-interface VenueSpaceOption {
-  venueUuid: string
-  venueName: string
-  city: string
-  spaces: {
-    spaceUuid: string | null
-    spaceName: string | null
-    city: string
-  }[]
-}
+import { type BasicVenueSpacesInfo } from '@/domain/venue/basicVenueInfo.model.ts'
 
 const props = defineProps<{
   show: boolean
-  venueInfos: VenueInfo[]
+  venueSpaceInfos: BasicVenueSpacesInfo[]
   modelValue: { venueUuid: string | null; spaceUuid: string | null }
 }>()
 
@@ -71,33 +60,6 @@ const emit = defineEmits<{
 
 const containerRef = ref<HTMLDivElement | null>(null)
 
-// Group venues + spaces
-const groupedVenues = computed<VenueSpaceOption[]>(() => {
-  const map = new Map<string, VenueSpaceOption>()
-
-  for (const v of props.venueInfos) {
-    if (!map.has(v.venueUuid)) {
-      map.set(v.venueUuid, {
-        venueUuid: v.venueUuid,
-        venueName: v.venueName,
-        city: v.city,
-        spaces: [],
-      })
-    }
-
-    if (v.spaceUuid != null) {
-      map.get(v.venueUuid)!.spaces.push({
-        spaceUuid: v.spaceUuid,
-        spaceName: v.spaceName,
-        city: v.city,
-      })
-    }
-  }
-
-  return Array.from(map.values()).sort((a, b) =>
-      a.venueName.localeCompare(b.venueName)
-  )
-})
 
 // Select a venue/space
 function select(venueUuid: string, spaceUuid: string | null) {

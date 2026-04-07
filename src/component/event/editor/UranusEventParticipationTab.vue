@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import type { AdminEvent } from '@/domain/event/adminEvent.model.ts'
@@ -75,7 +75,7 @@ import {Save, Undo} from 'lucide-vue-next'
 import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n({ useScope: 'global' })
-const store = useUranusAdminEventStore()
+const store = useAdminEventStore()
 const event = computed(() => store.draft!)
 
 // Participation Tab Types

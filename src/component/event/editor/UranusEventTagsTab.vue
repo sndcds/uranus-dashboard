@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { apiFetch } from '@/api.ts'
 
 import UranusEventTypeGenreEditor from '@/component/event/editor/UranusEventTypeGenreEditor.vue'
@@ -61,7 +61,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import { Save, Undo } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
-const store = useUranusAdminEventStore()
+const store = useAdminEventStore()
 
 const isDirty = computed(() => {
   if (!store.draft || !store.original) return false

@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { EventLink } from '@/domain/event/eventLink.model.ts'
 import { apiFetch } from '@/api.ts'
 import UranusLinkTypeSelect from '@/component/select/UranusLinkTypeSelect.vue'
@@ -84,7 +84,7 @@ import UranusInput from "@/component/ui/UranusInput.vue";
 import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 const { t } = useI18n({ useScope: 'global' })
-const store = useUranusAdminEventStore()
+const store = useAdminEventStore()
 
 onMounted(() => {
   if (store.draft) {

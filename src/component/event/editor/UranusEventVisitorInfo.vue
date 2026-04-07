@@ -36,14 +36,14 @@ import { apiFetch } from '@/api.ts'
 import { useI18n } from 'vue-i18n'
 import UranusBigIntFlagsEditor from '@/component/uranus/UranusBigIntFlagsEditor.vue'
 import { uranusI18nVisitorInformationFlags } from '@/i18n/visitor-info.ts'
-import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import {Save, Undo} from 'lucide-vue-next'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from "@/component/ui/UranusCard.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 
-const store = useUranusAdminEventStore()
+const store = useAdminEventStore()
 const draft = computed(() => store.draft!)
 
 const isDirty = computed(() => {

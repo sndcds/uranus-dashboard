@@ -44,23 +44,48 @@
         </div>
       </div>
     </template>
+
+    <div class="venue-space-list" ref="containerRef" style="margin-top: 2rem;">
+      <h2>Diesen Spielstätten kannst du für Events auswählen</h2>
+      <div
+          class="uranus-card venue-group"
+          v-for="venue in choosableVenuesStore.getVenueSpacesInfos()"
+          :key="venue.venueUuid"
+      >
+        <div class="venue-item">
+          {{ venue.venueName }} ({{ venue.city }})
+        </div>
+
+        <div
+            v-for="space in venue.spaces"
+            :key="space.spaceUuid ?? 0"
+            class="space-item"
+        >
+          {{ space.spaceName }}
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import {ref, computed, watch, onMounted} from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 import { mapVenueList, type VenueList } from '@/domain/organization/venueList.ts'
+import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
 
 import UranusVenueCard from '@/component/venue/UranusVenueCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 
+
 const { t } = useI18n()
 const appStore = useAppStore()
+const choosableVenuesStore = useChoosableVenuesStore()
 
 // Make organizationId reactive from the store
 const organizationUuid = computed({
@@ -106,9 +131,29 @@ watch(
     (uuid) => loadVenues(uuid),
     { immediate: true }
 )
+
+onMounted(() => {
+  choosableVenuesStore.fetchAll()
+})
 </script>
 
 <style scoped lang="scss">
+
+.venue-space-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.venue-group {
+  font-weight: 500;
+}
+
+.space-item {
+  font-weight: 300;
+  padding-left: 2rem;
+}
+
 // Error feedback
 .organization-venue-view__error {
   width: 100%;

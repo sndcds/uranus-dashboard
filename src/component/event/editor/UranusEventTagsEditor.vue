@@ -31,14 +31,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
 
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 
 const { t } = useI18n({ useScope: 'global' })
-const store = useUranusAdminEventStore()
+const store = useAdminEventStore()
 const newTag = ref('')
 
 // ------------------------------

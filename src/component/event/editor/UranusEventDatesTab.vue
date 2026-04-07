@@ -26,7 +26,7 @@
           :strokeWidth="1.5"
           class="date-venue-name"
       >
-        {{ venueInfoStore.getVenueLabel(date.venueUuid, date.spaceUuid) }}
+        {{ choosableVenuesStore.getVenueLabel(date.venueUuid, date.spaceUuid) }}
       </UranusInfoHeading>
 
       <div class="date-pair">
@@ -95,7 +95,7 @@
     <!-- Venue selection modal -->
     <UranusVenueSelectModal
         :show="showModal"
-        :venueInfos="venueInfos"
+        :venueSpaceInfos="choosableVenuesStore.getVenueSpacesInfos()"
         v-model="selectedPlace"
         @close="showModal = false"
     />
@@ -106,8 +106,8 @@
 import { computed, ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
-import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
+import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
 import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
@@ -120,8 +120,8 @@ import { Save, Undo, Plus, MapPin, Info } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 
-const store = useUranusAdminEventStore()
-const venueInfoStore = useUranusEventVenueInfoStore()
+const store = useAdminEventStore()
+const choosableVenuesStore = useChoosableVenuesStore()
 
 interface SelectedPlace {
   venueUuid: string | null
@@ -132,9 +132,6 @@ const selectedPlace = ref<SelectedPlace>({ venueUuid: null, spaceUuid: null })
 const showModal = ref(false)
 const activeDate = ref<any | null>(null)
 
-// Computed list of venues for modal
-const venueInfos = computed(() => venueInfoStore.items)
-
 // Compute if dates tab is dirty
 const isDirty = computed(() => {
   const draft = store.draft?.eventDates
@@ -144,7 +141,7 @@ const isDirty = computed(() => {
 })
 
 onMounted(() => {
-  venueInfoStore.fetchAll()
+  choosableVenuesStore.fetchAll()
 })
 
 function openVenueModal(date: any) {

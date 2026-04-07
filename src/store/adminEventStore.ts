@@ -1,7 +1,5 @@
 /*
-    src/store/uranusAdminEventStore.ts
-
-    2026-02-05, Roald
+    src/store/adminEventStore.ts
  */
 
 import { defineStore } from 'pinia'
@@ -9,7 +7,7 @@ import { ref, computed } from 'vue'
 import { type AdminEvent } from '@/domain/event/adminEvent.model.ts'
 import { fromApi } from '@/domain/event/adminEvent.model.ts'
 
-export const useUranusAdminEventStore = defineStore('uranusAdminEvent', () => {
+export const useAdminEventStore = defineStore('uranusAdminEvent', () => {
     // State
     const original = ref<AdminEvent | null>(null)
     const draft = ref<AdminEvent | null>(null)

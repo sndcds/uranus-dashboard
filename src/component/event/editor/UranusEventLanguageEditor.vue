@@ -42,11 +42,11 @@ import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import {useUranusAdminEventStore} from '@/store/adminEventStore.ts'
+import {useAdminEventStore} from '@/store/adminEventStore.ts'
 import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })
-const store = useUranusAdminEventStore()
+const store = useAdminEventStore()
 
 const langStore = useLanguageLookupStore()
 const selectedLang = ref<string | null>(null)

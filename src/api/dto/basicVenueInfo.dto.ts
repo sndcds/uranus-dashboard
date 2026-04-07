@@ -1,8 +1,8 @@
 /*
-    src/api/dto/venueInfo.dto.ts
+    src/api/dto/basicVenueInfo.dto.ts
  */
 
-export interface VenueInfoDTO {
+export interface BasicVenueInfoDTO {
     venue_uuid: string
     venue_name: string
     space_uuid: string | null

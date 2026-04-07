@@ -80,7 +80,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
 
 import UranusLanguageSelect from '@/component/ui/UranusLanguageSelect.vue'
 import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
@@ -96,7 +96,7 @@ import { Save, Undo } from 'lucide-vue-next'
 import UranusEventCategorySelector from '@/component/event/ui/UranusEventCategorySelector.vue'
 
 const { t } = useI18n({ useScope: 'global' })
-const store = useUranusAdminEventStore()
+const store = useAdminEventStore()
 const event = computed(() => store.draft!)
 
 

@@ -59,7 +59,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { getPreviousRoute } from '@/router'
 
-import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { type AdminEventDTO } from '@/api/dto/adminEvent.dto.ts'
 
 import UranusEventBaseTab from '@/component/event/editor/UranusEventBaseTab.vue'
@@ -81,7 +81,7 @@ const showReleaseModal = ref(false)
 const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const router = useRouter()
-const adminEventStore = useUranusAdminEventStore()
+const adminEventStore = useAdminEventStore()
 
 
 function goBack() {

@@ -44,12 +44,12 @@ import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import {createEventTypePair, type EventTypePairModel} from '@/domain/event/eventTypePair.model.ts'
 import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 
-const store = useUranusAdminEventStore()
+const store = useAdminEventStore()
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const lookupStore = useEventTypeLookupStore()

@@ -7,7 +7,7 @@
 
     <UranusCard class="event-venue">
       <UranusInfoHeading :icon="MapPin" :strokeWidth="1.5">
-        {{ venueInfoStore.getVenueLabel(draft.venueUuid, draft.spaceUuid) }}
+        {{ choosableVenuesStore.getVenueLabel(draft.venueUuid, draft.spaceUuid) }}
       </UranusInfoHeading>
 
       <UranusButton variant="tertiary" size="small" :onclick="openVenueModal">
@@ -17,7 +17,7 @@
 
     <UranusVenueSelectModal
         :show="showModal"
-        :venueInfos="venueInfos"
+        :venueSpaceInfos="choosableVenuesStore.getVenueSpacesInfos()"
         v-model="selectedPlace"
         @close="closeVenueModal"
     />
@@ -63,9 +63,9 @@
 import { onMounted, computed, ref } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { useI18n } from 'vue-i18n'
-import { useUranusAdminEventStore } from '@/store/adminEventStore.ts'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
-import { useUranusEventVenueInfoStore } from '@/store/uranusEventVenueInfoStore.ts'
+import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
@@ -74,11 +74,9 @@ import { Save, Undo, MapPin } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 
-const store = useUranusAdminEventStore()
-const venueInfoStore = useUranusEventVenueInfoStore()
+const store = useAdminEventStore()
 const draft = computed(() => store.draft!)
-
-const venueInfos = computed(() => venueInfoStore.items)
+const choosableVenuesStore = useChoosableVenuesStore()
 
 const showModal = ref(false)
 const activeDraft = ref<typeof draft.value | null>(null)
@@ -109,7 +107,7 @@ function closeVenueModal() {
 }
 
 onMounted(async () => {
-  await venueInfoStore.fetchAll()
+  await choosableVenuesStore.fetchAll()
 })
 
 const isDirty = computed(() => {

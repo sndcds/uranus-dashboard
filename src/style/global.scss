@@ -20,8 +20,8 @@
 :root {
   color-scheme: light;
 
-  --uranus-font-ui: font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
-  --uranus-font-text: font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --uranus-font-ui: "MomoTrustSans", font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --uranus-font-text: "MomoTrustSans", font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
 
   --uranus-hue: 266;
   --uranus-active-hue: 286;
@@ -502,8 +502,32 @@ header {
   padding: 16px;
   padding-bottom: 48px;
   overflow: hidden;
-}
 
+  &.draft {
+    border-width: 4px;
+    border-color: var(--uranus-event-release-background-draft);
+  }
+
+  &.review {
+    border-width: 4px;
+    border-color: var(--uranus-event-release-background-review);
+  }
+
+  &.cancelled {
+    border-width: 4px;
+    border-color: var(--uranus-event-release-background-cancelled);
+  }
+
+  &.deferred {
+    border-width: 4px;
+    border-color: var(--uranus-event-release-background-deferred);
+  }
+
+  &.rescheduled {
+    border-width: 4px;
+    border-color: var(--uranus-event-release-background-rescheduled);
+  }
+}
 
 /* Tablet and up: Sidebar layout */
 @media (min-width: 768px) {
