@@ -1,4 +1,7 @@
-<!-- src/component/ui/UranusFeedback.vue -->
+<!--
+  src/component/ui/UranusFeedback.vue
+-->
+
 <template>
   <transition name="fade">
     <!-- Render only if there is content -->

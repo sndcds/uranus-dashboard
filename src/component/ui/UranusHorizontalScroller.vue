@@ -5,9 +5,7 @@
 <template>
   <div class="uranus-horizontal-scroller">
 
-    <button class="scroll-btn" @click="scrollLeft">
-      ‹
-    </button>
+    <ArrowLeft class="arrow arrow-left" @click="scrollLeft" />
 
     <div
         ref="container"
@@ -24,15 +22,14 @@
       </div>
     </div>
 
-    <button class="scroll-btn" @click="scrollRight">
-      ›
-    </button>
+    <ArrowRight class="arrow arrow-right" @click="scrollRight" />
 
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { ArrowLeft, ArrowRight } from 'lucide-vue-next'
 
 const container = ref<HTMLElement | null>(null)
 
@@ -76,13 +73,13 @@ let touchStartX = 0
 let touchScrollLeft = 0
 
 const onTouchStart = (e: TouchEvent) => {
-  if (!container.value) return
+  if (!container.value || !e.touches[0]) return
   touchStartX = e.touches[0].pageX
   touchScrollLeft = container.value.scrollLeft
 }
 
 const onTouchMove = (e: TouchEvent) => {
-  if (!container.value) return
+  if (!container.value || !e.touches[0]) return
   const walk = e.touches[0].pageX - touchStartX
   container.value.scrollLeft = touchScrollLeft - walk
 }
@@ -91,33 +88,45 @@ const onTouchMove = (e: TouchEvent) => {
 <style scoped lang="scss">
 
 .uranus-horizontal-scroller {
-  display: grid;
-  grid-template-columns: 36px 1fr 36px;
+  display: flex;
   align-items: center;
+  grid-template-columns: 36px 1fr 36px;
   width: 100%;
+  height: 80px;
+  padding: 10px;
   gap: 6px;
 }
 
-.scroll-btn {
-  height: 36px;
-  width: 36px;
-  border: none;
-  border-radius: 18px;
-  background: rgba(0,0,0,0.04);
-  color: rgba(0,0,0,0.6);
-  font-size: 32px;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;     /* vertical center */
-  justify-content: center; /* horizontal center */
-}
-
 .scroll-container {
+  position: absolute;
+  left: 3.6rem;
+  right: 3.6rem;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
   white-space: nowrap;
+  padding: 2px;
+}
+
+.arrow {
+  width: 2.6rem;
+  height: 2.6rem;
+  position: absolute;
+  color: var(--uranus-color);
+  cursor: pointer;
+  padding: 0.4rem;
+  transition: color 0.2s ease-in-out;
+  &:hover {
+    color: var(--uranus-link-color-hover);
+  }
+}
+
+.arrow-left {
+  left: 1rem;
+}
+
+.arrow-right {
+  right: 1rem;
 }
 
 .scroll-content {

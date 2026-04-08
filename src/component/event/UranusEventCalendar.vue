@@ -9,7 +9,6 @@
 
 <template>
   <div class="calendar-page">
-    {{ eventListStore.getLoadEventsCount() }}
     <div class="calendar-body">
       <div class="calendar-settings">
         <UranusHorizontalScroller>
@@ -45,18 +44,22 @@
           </div>
 
           <div class="calendar-text">
-            <div style="display: flex; align-items: center; gap: 8px;">
+            <h2>{{ event.title }}</h2>
+            <div style="display: flex; flex-direction: column; gap: 0.2rem;">
               <span>{{ uranusFormatDateTime(event.startDate, event.startTime, locale) }}</span>
+              <span>{{ event.venue.name }} · {{ event.venue.city }}</span>
               <UranusEventReleaseChip
                   v-if="eventReleaseStatusStore.isReleased(event.releaseStatus ?? '')"
                   :releaseStatus="event.releaseStatus"
                   tiny
               />
             </div>
-            <h3>{{ event.title }}</h3>
-            <span>{{ event.venue.name }} · {{ event.venue.city }}</span>
             <!-- Render only event type (no genres) -->
-            <div v-if="event.eventTypes && event.eventTypes.length" class="uranus-public-event-detail-tags">
+            <div
+                v-if="event.eventTypes && event.eventTypes.length"
+                class="uranus-public-event-detail-tags"
+                style="margin-top: 0.5rem;"
+            >
               <div
                   v-for="typeId in getUniqueEventTypes(event.eventTypes)"
                   :key="typeId"
@@ -208,9 +211,10 @@ onBeforeUnmount(() => {
 
 .calendar-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 12px;
   width: 100%;
+  padding: 1rem;
 }
 
 .calendar-card {
@@ -218,6 +222,12 @@ onBeforeUnmount(() => {
   cursor: pointer;
   overflow: hidden;
   background: var(--uranus-bg-d1);
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--uranus-color-7);
+  border-radius: 2px;
+
   width: 100%;
   transition: transform 0.25s ease;
 }
@@ -225,15 +235,6 @@ onBeforeUnmount(() => {
 .calendar-card:hover {
   transform: translateY(-3px);
 }
-
-/* Featured cards */
-/*
-.calendar-layout > .calendar-card:first-child {
-  grid-column: span 2;
-  grid-row: span 2;
-  font-size: 1.4rem;
-}
-*/
 
 .calendar-image {
   width: 100%;
@@ -248,10 +249,20 @@ onBeforeUnmount(() => {
 }
 
 .calendar-text {
-  padding: 16px;
+  padding: 0.8rem;
   display: flex;
   flex-direction: column;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  color: var(--uranus-color-3);
   gap: 4px;
+
+  h2 {
+    font-size: 1.6rem;
+    color: var(--uranus-color);
+    margin-bottom: 0.6rem;
+    letter-spacing: 0;
+  }
 }
 
 .calendar-settings {
@@ -262,8 +273,8 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
   top: 80px;
   z-index: 10;
-  padding: 12px 16px;
-  min-height: 100px;
+  // padding: 12px 16px;
+  // min-height: 100px;
   background: var(--uranus-dashboard-bg);
 }
 
@@ -274,14 +285,18 @@ onBeforeUnmount(() => {
 }
 
 .type-chip {
-  color: #666;
+  color: var(--uranus-color-2);
   background-color: transparent;
-  border: 1px solid #eeeeee;
+  border: 1px solid var(--uranus-color-6);
   padding: 4px 8px;
   border-radius: 5px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: default;
   user-select: none;
+
+  &:hover {
+    border: 1px solid var(--uranus-color-2);
+  }
 }
 
 .type-chip.active {
@@ -323,16 +338,9 @@ onBeforeUnmount(() => {
 .loading-indicator {
   text-align: center;
   padding: 24px;
-  color: #666;
 }
 
 @media (max-width: 640px) {
-  .calendar-layout > .calendar-card:first-child,
-  .calendar-layout > .calendar-card:nth-child(6) {
-    grid-column: span 1;
-    grid-row: span 1;
-    font-size: 1rem;
-  }
 }
 </style>
 

@@ -10,12 +10,13 @@
 
     <UranusDashboardNotifications />
 
+    <!--
     <section class="chart-card">
       <h2>Monatsumsatz &ndash; Standard</h2>
       <p class="subtitle">Standard-Theme (CSS Custom Properties)</p>
       <UranusLineChart :data="chartData" />
     </section>
-
+    -->
     <UranusSegmentedSelect
         v-model="selected"
         :options="options"

@@ -16,8 +16,8 @@
     <!-- Loading state -->
     <span>{{ loadingLabel }}</span>
   </div>
-  <div v-else-if="loadError" class="uranus-public-event-state-info--alert">
-    <!-- Error state -->
+  <div v-else-if="loadError" class="uranus-public-event-state-info">
+    <h1 style="font-size:8rem;">404</h1>
     <span>{{ loadError }}</span>
   </div>
   <div v-else-if="event" class="uranus-public-event-frame">
@@ -119,6 +119,7 @@
               :endTime="eventEndTime"
               :entryTime="eventEntryTime"
               :allDay="eventAllDay"
+              style="padding-top: 1rem;"
           />
 
           <!-- Venue, Space, Location -->
@@ -217,7 +218,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api.ts'
+import { apiFetch, ApiError } from '@/api.ts'
 import { marked } from 'marked'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
@@ -233,6 +234,8 @@ import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
 import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
 
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
+import UranusForm from "@/component/ui/UranusForm.vue";
 
 const route = useRoute()
 
@@ -406,7 +409,6 @@ const hasLonLat = computed(() => {
 
 
 const loadEvent = async () => {
-
   isLoading.value = true
   loadError.value = null
 
@@ -427,8 +429,14 @@ const loadEvent = async () => {
       eventDate.value = mappedEvent.date
     }
   } catch (error: unknown) {
-    loadError.value = error instanceof Error ? error.message : t('error_fetch_data_failed')
-    console.log('error', error)
+    if (error instanceof ApiError) {
+      if (error.status === 404) {
+        loadError.value = t('error_fetch_data_failed')
+      } else {
+        loadError.value = error.message // : t('error_fetch_data_failed')
+      }
+      console.log('ApiError', JSON.stringify(error, null, 2))
+    }
   } finally {
     isLoading.value = false
   }

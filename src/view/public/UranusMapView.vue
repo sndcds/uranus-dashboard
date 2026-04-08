@@ -1,14 +1,13 @@
 <!--
   src/view/public/UranusMapView.vue
 
-  2026-02-28, Roald
 -->
 
 <template>
     <UranusMap
-        :showStations="true"
+        :showStations="false"
         :showVenues="true"
-        :showEvents="true"
+        :showEvents="false"
     />
 </template>
 

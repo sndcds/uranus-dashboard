@@ -3,7 +3,7 @@
 .uranus-public-event-frame {
   display: flex;
   flex-direction: column;
-  max-width: 1024px;
+  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
   gap: 12px;
@@ -72,6 +72,8 @@
   display: block;
   width: 100%;
   font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--uranus-color-4);
   padding: 8px 4px;
 }
 
@@ -158,9 +160,19 @@
   font-size: 0.95rem;
 }
 
+.uranus-public-event-tag {
+  font-weight: 300;
+  font-size: 1rem;
+  color: var(--uranus-color-4);
+}
+
 .uranus-public-event-detail-tag {
-  background: var(--uranus-event-tag-background);
+  // background: var(--uranus-event-tag-background);
   color: var(--uranus-event-tag-color);
+  font-size: 0.9rem;
+  border: 1px solid var(--uranus-event-tag-color);
+  border-radius: 30px;
+  font-weight: 300;
 }
 
 .uranus-public-event-language-tag {
@@ -183,18 +195,28 @@
 }
 
 .uranus-public-event-description {
+  * {
+    margin-bottom: 0;
+  }
+
   p {
     margin: 0 0 1rem 0; /* bottom spacing for paragraphs */
+  }
+
+  p + p {
+    margin-top: 1.4rem;
   }
 
   hr { /* Used as spacer */
     opacity: 0;
     height: 3rem;
+    margin-bottom: 3rem;
   }
 
   h1, h2, h3, h4 {
     margin: 0;
     font-weight: 300;
+    margin-bottom: 2rem;
   }
 
   h1 { font-size: 2.6rem; font-weight: 300; }
@@ -213,8 +235,8 @@
   h1 + h4, h2 + h4 { margin-top: 3rem; }
 
   ul, ol {
-    font-size: 1rem;
-    line-height: 1.3rem;
+    line-height: 1.6rem;
+    margin-bottom: 2rem;
   }
   ul li, ol li {
     font-size: 1.15rem;

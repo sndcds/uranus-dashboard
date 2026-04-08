@@ -24,7 +24,7 @@ const handleSubmit = (event: SubmitEvent) => {
 .uranus-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1rem;
   width: 100%;
 }
 </style>

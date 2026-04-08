@@ -7,13 +7,13 @@
 <template>
   <div v-if="hasVenueInfo">
 
-    <div v-if="logoUrl">
-      <img
-          style="margin-top: 1rem; margin-bottom: 1rem;"
-          :src="`${logoUrl}?width=120&type=png&v=${Date.now()}`"
-          :alt="'Venue logo'"
-      />
-    </div>
+    <UranusLogoImage
+        v-if="logoUrl"
+        :src="logoUrl"
+        alt="Venue logo"
+        :maxWidth="180"
+        :maxHeight="80"
+    />
 
     <span class="uranus-public-event-info-label ">{{ t('location') }}</span><br>
 
@@ -44,6 +44,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { useThemeStore } from '@/store/uranusThemeStore.ts'
+import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const themeStore = useThemeStore()
@@ -62,9 +63,16 @@ const hasVenueInfo = computed(() => {
 
 const logoUrl = computed(() => {
   const e = props.eventDate
-  if (!e) return ''
-  return themeStore.theme === 'dark'
-      ? e.venueDarkThemeLogoUrl ?? ''
-      : e.venueLightThemeLogoUrl ?? ''
+  if (!e) return null
+
+  if (themeStore.theme === 'dark') {
+    if (e.venueDarkThemeLogoUrl) return e.venueDarkThemeLogoUrl + '?width=240&type=png&quality=80'
+  } else {
+    if (e.venueLightThemeLogoUrl) return e.venueLightThemeLogoUrl + '?width=240&type=png&quality=80'
+  }
+
+  if (e.venueLogoUrl) return e.venueLogoUrl + '?width=240&type=png&quality=80'
+  return null
 })
+
 </script>

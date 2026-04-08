@@ -79,6 +79,8 @@ export const useChoosableVenuesStore = defineStore(
         function getVenueSpacesInfos(): BasicVenueSpacesInfo[] {
             const map = new Map<string, BasicVenueSpacesInfo>()
 
+            fetchAll()
+
             for (const v of basicVenueInfos.value) {
                 if (!map.has(v.venueUuid)) {
                     map.set(v.venueUuid, {

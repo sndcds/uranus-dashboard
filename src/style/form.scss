@@ -9,7 +9,7 @@
 
 
   input, textarea {
-    font-family: var(--uranus-font-ui) !important;
+    font-family: var(--uranus-font-ui), sans-serif;
     font-size: 1rem;
     padding: 0.2rem 0.6rem 0.2rem 0.6rem;
     border-radius: var(--uranus-input-border-radius);
@@ -20,7 +20,7 @@
   }
 
   input[type="date"] {
-    font-family: var(--uranus-font-ui) !important;
+    font-family: var(--uranus-font-ui), sans-serif;
     font-weight: 500;
   }
   input[type="date"]::placeholder {
@@ -28,7 +28,7 @@
   }
 
   textarea {
-    font-family: "Helvetica Neue";
+    font-family: var(--uranus-font-ui), sans-serif;;
     border-radius: var(--uranus-input-border-radius);
   }
 }
@@ -43,7 +43,7 @@
 .uranus-label {
   display: flex;
   flex-direction: column;
-  padding-top: 0.25rem;
+  padding-top: 0.4rem;
   gap: 4px;
 }
 

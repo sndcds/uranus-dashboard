@@ -38,7 +38,7 @@
             </li>
             <li>
               <span class="event-card__value">
-                {{ t('event_release_date') }}: {{ formatReleaseCountdown(notification.days_until_release) }}
+                {{ t('event_release_date') }}: {{ formatReleaseCountdown(notification.days_until_event) }}
               </span>
             </li>
           </ul>
@@ -46,7 +46,7 @@
             <UranusButton
                 class="uranus-button tiny"
                 icon="edit"
-                :to="`/admin/event/${notification.event_id}`"
+                :to="`/admin/event/${notification.event_uuid}`"
             >
               {{ t('edit') }}
             </UranusButton>
@@ -101,7 +101,6 @@ const formatDate = (value: string) => {
     return value
   }
 }
-
 
 const formatReleaseStatus = (notification: Notification) => {
   if (notification.release_status_name && notification.release_status_name.trim().length > 0) {

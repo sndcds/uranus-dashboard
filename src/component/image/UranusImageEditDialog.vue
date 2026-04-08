@@ -55,12 +55,12 @@
               :label="t('image_copyright')"
           />
 
-          <UranusLicenseSelect
-              v-model="localImageMeta.licenseType"
-          />
+          <UranusLabel id="event-description" :label="t('license')">
+            <UranusLicenseSelect v-model="localImageMeta.licenseType" />
+          </UranusLabel>
         </UranusFormRow>
 
-        <UranusFormRow :cols="2">
+        <!--UranusFormRow :cols="2">
           <UranusTextfield
               id="focus-x"
               v-model.number="localImageMeta.focusX as number"
@@ -72,7 +72,7 @@
               v-model.number="localImageMeta.focusY as number"
               :label="t('image_focus_y')"
           />
-        </UranusFormRow>
+        </UranusFormRow-->
 
         <UranusFormRow>
           <UranusTextarea
@@ -83,17 +83,10 @@
         </UranusFormRow>
 
         <!-- Actions -->
-        <UranusInlineActionBar style="margin-top:12px;">
-          <UranusInlineCancelButton
-              :label="t('cancel')"
-              :onClick="onCancel"
-          />
-
-          <UranusInlineSaveButton
-              :label="t('save')"
-              :onClick="onSave"
-          />
-        </UranusInlineActionBar>
+        <UranusFormActions>
+          <UranusButton :onClick="onCancel">{{ t('cancel') }}</UranusButton>
+          <UranusButton :onClick="onSave">{{ t('save') }}</UranusButton>
+        </UranusFormActions>
       </UranusForm>
     </UranusCard>
   </div>
@@ -115,6 +108,9 @@ import UranusTextarea from '@/component/ui/UranusTextarea.vue'
 import UranusLicenseSelect from '@/component/select/UranusLicenseSelect.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusForm from "@/component/ui/UranusForm.vue";
+import UranusLabel from "@/component/ui/UranusLabel.vue";
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
+import UranusButton from "@/component/ui/UranusButton.vue";
 
 const props = defineProps<{
   addModeTitle?: string | null
@@ -296,16 +292,14 @@ onMounted(async () => {
 }
 
 .uranus-form {
-  background: red;
 }
 
 .uranus-image-preview {
   display: flex;
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 2 / 1;
   justify-content: center;
-  margin-bottom: 1rem;
   align-items: center;
   cursor: pointer;
   overflow: hidden;

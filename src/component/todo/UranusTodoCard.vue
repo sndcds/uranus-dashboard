@@ -56,7 +56,7 @@ import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import { type TodoDTO } from '@/model/uranusTodoModel.ts'
-import {Edit, Trash2} from "lucide-vue-next";
+import { Edit, Trash2 } from "lucide-vue-next";
 
 const props = defineProps<{ todo: TodoDTO }>()
 const emit = defineEmits<{

@@ -14,15 +14,9 @@
 <template>
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
-    <UranusFormRow :cols="2">
-      <UranusButton
-          size="medium"
-          variant="secondary"
-          @click="onResetFilter"
-      >
-        <template #icon><FunnelX /></template>
-        {{ t('reset') }}
-      </UranusButton>
+    <UranusFormRow>
+      <FunnelX class="uranus-icon"
+          @click="onResetFilter" />
     </UranusFormRow>
 
 

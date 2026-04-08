@@ -6,18 +6,9 @@
 
 <template>
   <div class="uranus-main-layout">
-
-    orgUuid: {{ orgUuid }}<br>
-    venueUuid: {{ venueUuid }}<br>
     <UranusDashboardHero :title="t('create_space')" :subtitle="t('create_space_description')" />
 
-    <h3>Was ist ein Raum?</h3>
-    <p>
-      Ein Raum ist ein Bereich oder Ort einer Spielstätte, in dem/an dem Veranstaltungen stattfinden,
-      z. B. ein Saal, Studio, Club oder Außenbereich.<br>
-      Trage den Namen des Raums ein. Danach kannst du alle Details wie Ausstattung, Kapazität
-      oder Adresse bearbeiten.
-    </p>
+    <UranusHelpPopup baseUrl="/help/create-space" />
 
     <UranusForm>
       <UranusTextfield
@@ -57,6 +48,7 @@ import UranusForm from "@/component/ui/UranusForm.vue";
 import UranusTextfield from "@/component/ui/UranusTextfield.vue";
 import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
+import UranusHelpPopup from "@/component/uranus/UranusHelpPopup.vue";
 
 const { t } = useI18n()
 
@@ -88,21 +80,21 @@ async function onCreate() {
     }
 
     const apiPath = '/api/admin/space/create'
-    const res = await apiFetch<CreateSpaceResponse>(apiPath, {
+    const apiResponse = await apiFetch<CreateSpaceResponse>(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
 
-    const spaceUuid = res.response?.metadata?.space_uuid
+    const spaceUuid = apiResponse.metadata?.space_uuid
     if (!spaceUuid) {
-      i18nErrorKey.value = 'error_1'
+      i18nErrorKey.value = 'error_1' // TODO: !!!!
       return
     }
 
     router.push(`/admin/organization/${orgUuid}/venue/${venueUuid}/space/${spaceUuid}/edit`)
   } catch (error) {
-    i18nErrorKey.value = 'error_2'
+    i18nErrorKey.value = 'error_2'  // TODO: !!!!
   }
 }
 

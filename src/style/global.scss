@@ -20,8 +20,8 @@
 :root {
   color-scheme: light;
 
-  --uranus-font-ui: "MomoTrustSans", font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
-  --uranus-font-text: "MomoTrustSans", font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --uranus-font-ui: 'Mulish', "MomoTrustSans", font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --uranus-font-text: 'Mulish', "MomoTrustSans", font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
 
   --uranus-hue: 266;
   --uranus-active-hue: 286;
@@ -451,6 +451,19 @@ header {
   justify-content: flex-start;
   gap: var(--uranus-grid-gap);
   width: 100%;
+}
+
+.uranus-icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  color: var(--uranus-color);
+  cursor: pointer;
+  padding: 0.2rem;
+  transition: color 0.2s ease-in-out;
+  &:hover {
+    color: var(--uranus-link-color-hover);
+  }
 }
 
 .uranus-main-layout {
