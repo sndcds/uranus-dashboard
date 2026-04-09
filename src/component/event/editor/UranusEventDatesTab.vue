@@ -1,20 +1,15 @@
-<!--
-  src/component/event/editor/UranusEventDatesTab.vue
--->
-
+<!-- src/component/event/editor/UranusEventDatesTab.vue -->
 <template>
   <section class="dates-tab">
 
-    <UranusCard
-        v-if="!store.hasDates"
-        type="info"
-    >
+    <!-- No dates info -->
+    <UranusCard v-if="!store.hasDates" type="info">
       <UranusInfoHeading :icon="Info">
         {{ t('event_no_dates_defined') }}
       </UranusInfoHeading>
     </UranusCard>
 
-
+    <!-- Event dates -->
     <UranusCard
         v-for="(date, index) in store.draft?.eventDates"
         :key="index"
@@ -45,11 +40,7 @@
       </div>
 
       <div class="date-pair" style="padding-top: 1.6rem;">
-        <UranusCheckbox
-            id="todo_completed"
-            v-model="date.allDay"
-            :label="t('event_all_day')"
-        />
+        <UranusCheckbox id="todo_completed" v-model="date.allDay" :label="t('event_all_day')" />
       </div>
 
       <div class="date-actions">
@@ -65,12 +56,12 @@
             v-if="store.hasMultipleDates"
             size="small"
             variant="tertiary"
-            @click="removeDate(index)">
+            @click="removeDate(index)"
+        >
           {{ t('event_remove_date') }}
         </UranusButton>
       </div>
     </UranusCard>
-
 
     <!-- Save / Discard buttons -->
     <div class="tab-actions">
@@ -95,17 +86,16 @@
     <!-- Venue selection modal -->
     <UranusVenueSelectModal
         :show="showModal"
-        :venueSpaceInfos="choosableVenuesStore.getVenueSpacesInfos()"
+        :venueSpaceInfos="venueSpacesInfos"
         v-model="selectedPlace"
-        @close="showModal = false"
+        @close="closeVenueModal"
     />
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
 import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
@@ -117,22 +107,18 @@ import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
 import { Save, Undo, Plus, MapPin, Info } from 'lucide-vue-next'
+import { apiFetch } from '@/api.ts'
 
 const { t } = useI18n({ useScope: 'global' })
-
 const store = useAdminEventStore()
 const choosableVenuesStore = useChoosableVenuesStore()
 
-interface SelectedPlace {
-  venueUuid: string | null
-  spaceUuid: string | null
-}
-
-const selectedPlace = ref<SelectedPlace>({ venueUuid: null, spaceUuid: null })
+// ---- Venue modal state ----
 const showModal = ref(false)
 const activeDate = ref<any | null>(null)
+const selectedPlace = ref<{ venueUuid: string | null, spaceUuid: string | null }>({ venueUuid: null, spaceUuid: null })
 
-// Compute if dates tab is dirty
+// ---- Computed ----
 const isDirty = computed(() => {
   const draft = store.draft?.eventDates
   const original = store.original?.eventDates
@@ -140,26 +126,34 @@ const isDirty = computed(() => {
   return JSON.stringify(draft) !== JSON.stringify(original)
 })
 
-onMounted(() => {
-  choosableVenuesStore.fetchAll()
+// Refresh venues on mount
+onMounted(async () => {
+  await choosableVenuesStore.refresh()
 })
 
+// Compute venue spaces for modal
+const venueSpacesInfos = computed(() =>
+    choosableVenuesStore.getVenueSpacesInfos()
+)
+
+// ---- Event handlers ----
 function openVenueModal(date: any) {
   activeDate.value = date
+  selectedPlace.value = {
+    venueUuid: date.venueUuid ?? null,
+    spaceUuid: date.spaceUuid ?? null,
+  }
   showModal.value = true
 }
 
-// Sync selected venue back to the active date
-watch(selectedPlace, (val) => {
-  if (!activeDate.value || !val) return
-  activeDate.value.venueUuid = val.venueUuid
-  activeDate.value.spaceUuid = val.spaceUuid
-}, { deep: true })
-
-// Reset active date when modal closes
-watch(showModal, (val) => {
-  if (!val) activeDate.value = null
-})
+function closeVenueModal() {
+  if (activeDate.value && selectedPlace.value) {
+    activeDate.value.venueUuid = selectedPlace.value.venueUuid
+    activeDate.value.spaceUuid = selectedPlace.value.spaceUuid
+  }
+  activeDate.value = null
+  showModal.value = false
+}
 
 function clearVenue(date: any) {
   date.venueUuid = null
@@ -198,12 +192,9 @@ async function commitDates() {
       return result
     }) ?? []
 
-    const wrappedPayload = { event_dates: payload }
-
-    const apiPath = `/api/admin/event/${store.draft.uuid}/dates`
-    await apiFetch(apiPath, {
+    await apiFetch(`/api/admin/event/${store.draft.uuid}/dates`, {
       method: 'PUT',
-      body: JSON.stringify(wrappedPayload),
+      body: JSON.stringify({ event_dates: payload }),
     })
 
     store.original.eventDates = store.draft.eventDates

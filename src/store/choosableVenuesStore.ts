@@ -31,6 +31,12 @@ export const useChoosableVenuesStore = defineStore(
 
         const isEmpty = computed(() => basicVenueInfos.value.length === 0)
 
+        function clear() {
+            basicVenueInfos.value = []
+            error.value = null
+            loading.value = false
+        }
+
         async function fetchAll() {
             if (basicVenueInfos.value.length > 0) return
 
@@ -52,10 +58,9 @@ export const useChoosableVenuesStore = defineStore(
             }
         }
 
-        function clear() {
-            basicVenueInfos.value = []
-            error.value = null
-            loading.value = false
+        async function refresh() {
+            clear()
+            await fetchAll()
         }
 
         function getVenueLabel(venueUuid: string | null, spaceUuid: string | null): string {
@@ -78,8 +83,6 @@ export const useChoosableVenuesStore = defineStore(
 
         function getVenueSpacesInfos(): BasicVenueSpacesInfo[] {
             const map = new Map<string, BasicVenueSpacesInfo>()
-
-            fetchAll()
 
             for (const v of basicVenueInfos.value) {
                 if (!map.has(v.venueUuid)) {
@@ -110,8 +113,9 @@ export const useChoosableVenuesStore = defineStore(
             loading,
             error,
             isEmpty,
-            fetchAll,
             clear,
+            fetchAll,
+            refresh,
             getVenueLabel,
             getVenueSpacesInfos
         }

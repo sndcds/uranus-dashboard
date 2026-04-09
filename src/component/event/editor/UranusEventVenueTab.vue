@@ -17,7 +17,7 @@
 
     <UranusVenueSelectModal
         :show="showModal"
-        :venueSpaceInfos="choosableVenuesStore.getVenueSpacesInfos()"
+        :venueSpaceInfos="venueSpacesInfos"
         v-model="selectedPlace"
         @close="closeVenueModal"
     />
@@ -81,6 +81,10 @@ const choosableVenuesStore = useChoosableVenuesStore()
 const showModal = ref(false)
 const activeDraft = ref<typeof draft.value | null>(null)
 
+const venueSpacesInfos = computed(() =>
+    choosableVenuesStore.getVenueSpacesInfos()
+)
+
 interface SelectedPlace {
   venueUuid: string | null
   spaceUuid: string | null
@@ -107,7 +111,7 @@ function closeVenueModal() {
 }
 
 onMounted(async () => {
-  await choosableVenuesStore.fetchAll()
+  await choosableVenuesStore.refresh()
 })
 
 const isDirty = computed(() => {

@@ -153,13 +153,15 @@ const login = async () => {
       }),
     })
 
-    const payload: LoginResponse = apiResponse.data
-    if (apiResponse.status === 200 && payload.access_token && payload.refresh_token) {
-      tokenStore.setTokens(payload.access_token, payload.refresh_token)
-      userStore.setUserUuid(payload.user_uuid)
-      userStore.setDisplayName(payload.display_name ?? '')
-      if (payload.locale) selectedLocale.value = payload.locale
-      if (payload.theme) themeStore.setTheme(payload.theme)
+    const responseData: LoginResponse = apiResponse.data
+    if (apiResponse.status === 200 && responseData.access_token && responseData.refresh_token) {
+      tokenStore.setTokens(responseData.access_token, responseData.refresh_token)
+      userStore.setUserUuid(responseData.user_uuid)
+      userStore.setDisplayName(responseData.display_name ?? '')
+      userStore.setUserAvatarUrl(responseData.avatar_url ?? null)
+      if (responseData.locale) selectedLocale.value = responseData.locale
+      if (responseData.theme) themeStore.setTheme(responseData.theme)
+      console.log(JSON.stringify(responseData, null, 2))
       router.replace(typeof route.query.redirect === 'string' ? route.query.redirect : '/')
     } else {
       error.value = t('invalid_credentials')

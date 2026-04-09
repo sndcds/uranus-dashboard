@@ -49,7 +49,7 @@
       <h2>Diesen Spielstätten kannst du für Events auswählen</h2>
       <div
           class="uranus-card venue-group"
-          v-for="venue in choosableVenuesStore.getVenueSpacesInfos()"
+          v-for="venue in choosableVenuesStore.getVenueSpacesInfos(true)"
           :key="venue.venueUuid"
       >
         <div class="venue-item">
