@@ -35,7 +35,8 @@ const props = defineProps({
 }
 
 .uranus-field-required {
-  width: 16px;
+  width: 1rem;
+  height: 1rem;
   margin: 0;
   color: var(--uranus-error-color) !important;
 }

@@ -1,43 +1,43 @@
 /*
-    src/store/uranusUserStore.ts
+    src/store/userStore.ts
 */
 
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
-export interface UranusUserState {
+export interface UserState {
+    uuid: string | null
     displayName: string | null
-    userUuid: string | null
     avatarVersion: number | null,
     userAvatarUrl: string | null
 }
 
-const defaultUserState: UranusUserState = {
+const defaultUserState: UserState = {
+    uuid: null,
     displayName: null,
-    userUuid: null,
     avatarVersion: null,
     userAvatarUrl: null
 }
 
 export const useUserStore = defineStore("user-state", () => {
-    const displayName = ref<UranusUserState['displayName']>(defaultUserState.displayName)
-    const userUuid = ref<UranusUserState['userUuid']>(defaultUserState.userUuid)
-    const avatarVersion = ref<UranusUserState['avatarVersion']>(defaultUserState.avatarVersion)
-    const userAvatarUrl = ref<UranusUserState['userAvatarUrl']>(defaultUserState.userAvatarUrl)
+    const uuid = ref<UserState['uuid']>(defaultUserState.uuid)
+    const displayName = ref<UserState['displayName']>(defaultUserState.displayName)
+    const avatarVersion = ref<UserState['avatarVersion']>(defaultUserState.avatarVersion)
+    const userAvatarUrl = ref<UserState['userAvatarUrl']>(defaultUserState.userAvatarUrl)
 
-    const userState = computed<UranusUserState>(() => ({
+    const userState = computed<UserState>(() => ({
+        uuid: uuid.value,
         displayName: displayName.value,
-        userUuid: userUuid.value,
         avatarVersion: avatarVersion.value,
         userAvatarUrl: userAvatarUrl.value,
     }))
 
-    function setUserState(newState: Partial<UranusUserState>) {
+    function setUserState(newState: Partial<UserState>) {
         if ('displayName' in newState) {
             displayName.value = newState.displayName ?? null
         }
-        if ('userUuid' in newState) {
-            userUuid.value = newState.userUuid ?? null
+        if ('uuid' in newState) {
+            uuid.value = newState.uuid ?? null
         }
         if ('avatarVersion' in newState) {
             avatarVersion.value = newState.avatarVersion ?? null
@@ -51,11 +51,11 @@ export const useUserStore = defineStore("user-state", () => {
         setUserState(defaultUserState)
     }
 
-    function setUserUuid(uuid: string | null) {
-        userUuid.value = uuid
+    function setUserUuid(newUuid: string | null) {
+        uuid.value = newUuid
     }
-    function setDisplayName(name: string | null) {
-        displayName.value = name
+    function setDisplayName(newDisplayName: string | null) {
+        displayName.value = newDisplayName
     }
     function setUserAvatarUrl(url: string | null) {
         userAvatarUrl.value = url
@@ -65,7 +65,7 @@ export const useUserStore = defineStore("user-state", () => {
     }
 
     function clearUserUuid() {
-        userUuid.value = null
+        uuid.value = null
     }
 
     function clearDisplayName() {
@@ -74,7 +74,7 @@ export const useUserStore = defineStore("user-state", () => {
 
     return {
         displayName,
-        userUuid,
+        userUuid: uuid,
         avatarVersion,
         userAvatarUrl,
         userState,

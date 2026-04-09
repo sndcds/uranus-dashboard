@@ -1,6 +1,11 @@
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleKey, string>> = {
+    dashboard: {
+        de: 'Dashboard',
+        en: 'Dashboard',
+        da: 'Dashboard',
+    },
     error_incomplete_data: {
         de: 'Unvollständige Daten',
         en: 'Incomplete data',
@@ -255,6 +260,21 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'E-Mail',
         en: 'email',
         da: 'e-mail',
+    },
+    repeat_email: {
+        de: 'E-Mail wiederholen',
+        en: 'Repeat email',
+        da: 'Gentag e-mail',
+    },
+    emails_do_not_match: {
+        de: 'Die E-Mail-Adressen stimmen nicht überein',
+        en: 'Email addresses do not match',
+        da: 'E-mailadresserne matcher ikke',
+    },
+    input_invalid_email: {
+        de: 'Bitte gib eine gültige E-Mail-Adresse an.',
+        en: 'Please enter a valid email address.',
+        da: 'Angiv venligst en gyldig e-mailadresse.',
     },
     password: {
         de: 'Passwort',

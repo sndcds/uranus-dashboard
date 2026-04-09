@@ -128,12 +128,13 @@
   --color-text: #0f172a;
   --color-text-secondary: #475569;
   --color-link: #2563eb;
-  --uranus-muted-text: #64748b;
-  --text-primary: var(--color-text-primary);
+  --uranus-muted-text: var(--uranus-color-5);
   --text-secondary: var(--color-text-secondary);
 
   // Brand system colors
   --uranus-brand-color: #235df1;
+  --uranus-notice-color-rgb: 73, 131, 246;
+  --uranus-notice-color: #4983f6;
   --uranus-success-color: #31b580;
   --uranus-error-color: #ed6056;
   --uranus-error-color-rgb: 237, 96, 86;

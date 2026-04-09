@@ -1,10 +1,10 @@
 <!--
-  src/view/UranusSignupView.vue
+  src/component/register/UranusSignupView.vue
 -->
 
 <template>
   <div class="auth-page">
-    <UranusCard style="width: 400px;">
+    <UranusCard v-if="!signupSuccess" class="card">
       <h1>{{ t('signup') }}</h1>
       <p>{{ signupSubtitle }}</p>
 
@@ -29,7 +29,7 @@
 
         <UranusPasswordInput
             id="signup-password"
-            label="Password"
+            :label="t('password')"
             v-model="password"
             :required="true"
             :error="fieldErrors.password"
@@ -38,36 +38,41 @@
             autocomplete="new-password"
         />
 
-        <UranusFeedback v-if="signupSuccess" type="success">
+        <UranusFeedback v-if="!!signupSuccess" type="success">
           <p><strong>{{ t('signup_success_title') || 'Account created successfully!' }}</strong></p>
           <p>{{ t('signup_success_message') || 'Please check your email to confirm your account. You will need to verify your email address before you can log in.' }}</p>
         </UranusFeedback>
-        <UranusFeedback v-if="error" type="error">
+
+        <UranusFeedback :show="!!error" type="error">
           {{ error }}
         </UranusFeedback>
 
-        <div class="form-actions">
-          <UranusButton
-              v-if="!signupSuccess"
-              type="submit"
-              :disabled="isSubmitting"
-          >
-            <span v-if="!isSubmitting">{{ t('signup_cta') }}</span>
+        <UranusFormActions>
+          <UranusButton type="submit" :disabled="isSubmitting">
+            <span v-if="!isSubmitting">{{ t('signup') }}</span>
             <span v-else>{{ t('signup_loading') }}</span>
           </UranusButton>
-          <router-link
-              v-else to="/app/login"
-              class="uranus-button"
-          >
-            {{ t('go_to_login') || 'Go to Login' }}
-          </router-link>
-        </div>
+        </UranusFormActions>
       </UranusForm>
 
-      <footer class="signup-footer">
-        <span>{{ t('have_account') }}</span>
-        <router-link to="/app/login">{{ t('login') }}</router-link>
+      <footer class="footer">
+        <div class="footer-row">
+          <router-link to="/page/terms">{{ t('terms_read') }}</router-link>
+        </div>
+        <div class="footer-row">
+          <span>{{ t('have_account') }}</span>
+          <router-link to="/app/login">{{ t('login') }}</router-link>
+        </div>
       </footer>
+
+    </UranusCard>
+
+    <UranusCard v-else class="card">
+      <h1>{{ t('signup_success_title')}}</h1>
+      <p>{{ t('signup_success_message')}}</p>
+      <UranusButton to="/app/login">
+        {{ t('go_to_login') }}
+      </UranusButton>
     </UranusCard>
   </div>
 </template>
@@ -83,6 +88,7 @@ import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import UranusButton from "@/component/ui/UranusButton.vue";
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 type SignupResponse = { message?: string;[key: string]: unknown }
 
@@ -118,9 +124,9 @@ const isValidEmail = (value: string) => {
     return emailPattern.test(value)
 }
 
-const requiredFieldMessage = computed(() => (te('required_field') ? t('required_field') : 'This field is required'))
-const invalidEmailMessage = computed(() => (te('organization_form_invalid_email') ? t('organization_form_invalid_email') : 'Please provide a valid email address.'))
-const emailsDoNotMatchMessage = computed(() => (te('emails_do_not_match') ? t('emails_do_not_match') : 'Email addresses do not match'))
+const requiredFieldMessage = computed(() => t('input_required'))
+const invalidEmailMessage = computed(() => t('input_invalid_email'))
+const emailsDoNotMatchMessage = computed(() => t('emails_do_not_match'))
 
 watch(email, (value) => {
     if (fieldErrors.email && value.trim()) {
@@ -201,7 +207,7 @@ const signup = async () => {
   isSubmitting.value = true
 
   try {
-    const { response, status } = await apiFetch<SignupResponse | null>(`/api/signup?lang=${locale.value}`, {
+    const apiResponse = await apiFetch<SignupResponse | null>(`/api/signup?lang=${locale.value}`, {
       method: 'POST',
       body: JSON.stringify({
         email: trimmedEmail,
@@ -209,7 +215,7 @@ const signup = async () => {
       }),
     })
 
-    if (status !== 201) {
+    if (apiResponse.status !== 201) {
       error.value = te('signup_failed') ? t('signup_failed') : 'Signup failed'
       return
     }
@@ -244,28 +250,22 @@ const signup = async () => {
   justify-content: center;
 }
 
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 0.5rem;
+.card {
+  width: 400px;
 }
 
-.signup-footer {
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--uranus-color-4);
+  margin-top: 1.5rem;
+}
+
+.footer-row {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 0.95rem;
-  color: var(--uranus-muted-text);
-  margin-top: 1.5rem;
-
-  a {
-    font-weight: 600;
-    color: var(--accent-primary);
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: var(--accent-secondary);
-    }
-  }
 }
 </style>

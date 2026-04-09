@@ -35,11 +35,11 @@
 
       </UranusForm>
 
-      <footer class="auth-footer">
-        <div class="auth-footer-row">
+      <footer class="footer">
+        <div class="footer-row">
           <router-link to="/page/terms">{{ t('terms_read') }}</router-link>
         </div>
-        <div class="auth-footer-row">
+        <div class="footer-row">
           <span>{{ t('need_account') }}</span>
           <router-link to="/app/signup">{{ t('signup') }}</router-link>
         </div>
@@ -55,7 +55,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch, type LoginResponse } from '@/api.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import { useUserStore } from '@/store/uranusUserStore.ts'
+import { useUserStore } from '@/store/userStore.ts'
 import { useThemeStore } from '@/store/uranusThemeStore.ts'
 import UranusPasswordInput from '@/component/ui/UranusPasswordInput.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
@@ -192,7 +192,7 @@ const login = async () => {
   font-size: 0.9rem;
 }
 
-.auth-footer {
+.footer {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -201,10 +201,9 @@ const login = async () => {
   margin-top: 1.5rem;
 }
 
-.auth-footer-row {
+.footer-row {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
 }
-
 </style>

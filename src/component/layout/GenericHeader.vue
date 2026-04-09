@@ -183,7 +183,7 @@ import { apiFetch, type LoginResponse } from '@/api.ts'
 import { applyTheme } from '@/util/theme.ts'
 import { Inbox, Send, UserRoundCog, LogOut, Settings, Menu, Sun, Moon } from 'lucide-vue-next'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import { useUserStore } from '@/store/uranusUserStore.ts'
+import { useUserStore } from '@/store/userStore.ts'
 import { useThemeStore } from '@/store/uranusThemeStore.ts'
 import UranusLogo from '@/component/ui/UranusLogo.vue'
 
@@ -332,6 +332,7 @@ const handleClickOutside = (event: MouseEvent) => {
 
 const handleLogout = () => {
   tokenStore.clearTokens()
+  userStore.resetUserState()
   router.push('/app/login')
 }
 

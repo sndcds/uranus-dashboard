@@ -162,7 +162,7 @@ const requestReset = async () => {
         font-size: clamp(1.75rem, 4vw, 2.25rem);
         font-weight: 700;
         margin: 0;
-        color: var(--text-primary);
+        color: var(--uranus-color);
     }
 
     p {

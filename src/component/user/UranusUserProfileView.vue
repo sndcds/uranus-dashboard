@@ -33,7 +33,7 @@
                 id="profile_display_name"
                 v-model="profile.displayName"
                 :label="t('user_profile_display_name')"
-                required autocomplete="nickname"
+                autocomplete="nickname"
                 :disabled="isSubmitting"
             />
             <UranusTextfield
@@ -41,7 +41,8 @@
                 v-model="profile.email"
                 type="email"
                 :label="t('user_profile_email')"
-                required autocomplete="email"
+                required
+                autocomplete="email"
                 :disabled="isSubmitting"
             />
           </UranusFormRow>
@@ -113,7 +114,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useThemeStore } from '@/store/uranusThemeStore.ts'
-import { useUserStore } from '@/store/uranusUserStore.ts'
+import { useUserStore } from '@/store/userStore.ts'
 import type { ThemeMode } from '@/util/theme.ts'
 import { apiFetch } from '@/api.ts'
 import UserAvatarUpload from '@/component/UserAvatarUpload.vue'
@@ -248,8 +249,8 @@ const loadProfile = async () => {
   loadError.value = null
 
   try {
-    const { response } = await apiFetch<any>('/api/admin/user/profile')
-    mapResponseToState(response.data as UserProfilePayload)
+    const apiResonse = await apiFetch<UserProfilePayload>('/api/admin/user/profile')
+    mapResponseToState(apiResonse.data)
   } catch (err: unknown) {
     if (err instanceof Error && err.message) {
       loadError.value = err.message
@@ -289,12 +290,12 @@ const submitProfile = async () => {
   }
 
   try {
-    const { response } = await apiFetch<any>('/api/admin/user/profile', {
+    const apiResponse = await apiFetch<any>('/api/admin/user/profile', {
       method: 'PUT',
       body: JSON.stringify(payload),
     })
 
-    mapResponseToState(response.data as UserProfilePayload)
+    mapResponseToState(apiResponse.data as UserProfilePayload)
     userStore.setDisplayName(payload.display_name)
     submitSuccess.value = t('user_profile_save_success')
   } catch (err: unknown) {

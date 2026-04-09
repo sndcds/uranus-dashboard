@@ -1,5 +1,10 @@
 <!--
   src/component/ui/UranusFeedback.vue
+
+  Usage:
+    <UranusFeedback :show="!!displayErrorFeedback" type="error">
+      {{ displayErrorFeedback }}
+    </UranusFeedback>
 -->
 
 <template>
@@ -15,7 +20,7 @@
 import { computed } from 'vue'
 
 interface Props {
-  type?: 'error' | 'success' | 'warning'
+  type?: 'notice' | 'success' | 'warning' | 'error'
   show?: boolean | null
 }
 
@@ -23,7 +28,7 @@ const props = defineProps<Props>()
 
 const feedbackClass = computed(() => [
   'feedback',
-  props.type ? `feedback--${props.type}` : 'feedback--error'
+  props.type ? `feedback--${props.type}` : 'feedback--notice'
 ])
 
 const hasContent = computed(() => {
@@ -40,9 +45,14 @@ const hasContent = computed(() => {
   border-radius: var(--uranus-tiny-border-radius);
 }
 
-.feedback--error {
-  background: rgba(var(--uranus-error-color-rgb), 0.08);
-  color: rgb(var(--uranus-error-color-rgb));
+.feedback--notice {
+  background: rgba(var(--uranus-notice-color-rgb), 0.08);
+  color: rgb(var(--uranus-notice-color-rgb));
+}
+
+.feedback--success {
+  background: rgba(var(--uranus-feedback-success-rgb), 0.08);
+  color: rgb(var(--uranus-feedback-success-rgb));
 }
 
 .feedback--warning {
@@ -50,9 +60,9 @@ const hasContent = computed(() => {
   color: rgb(var(--uranus-feedback-warning-rgb));
 }
 
-.feedback--success {
-  background: rgba(var(--uranus-feedback-success-rgb), 0.08);
-  color: rgb(var(--uranus-feedback-success-rgb));
+.feedback--error {
+  background: rgba(var(--uranus-error-color-rgb), 0.08);
+  color: rgb(var(--uranus-error-color-rgb));
 }
 
 .fade-enter-active,

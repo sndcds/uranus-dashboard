@@ -10,10 +10,6 @@
 
     <UranusDashboardNotifications />
 
-    <UranusFeedback :show="true" type="error">
-      Something went wrong. xxx
-    </UranusFeedback>
-
     <!--
     <section class="chart-card">
       <h2>Monatsumsatz &ndash; Standard</h2>
