@@ -93,7 +93,6 @@ const onInput = (event: Event) => {
 }
 </script>
 
-
 <style lang="scss">
 .uranus-textfield-wrapper {
   display: flex;
@@ -106,11 +105,4 @@ const onInput = (event: Event) => {
   align-items: center;
   position: relative;
 }
-
-.uranus-error-msg {
-  color: #f44336;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
 </style>

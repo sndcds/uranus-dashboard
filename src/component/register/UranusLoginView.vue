@@ -1,10 +1,10 @@
 <template>
   <div class="auth-page">
     <UranusCard style="width: 400px;">
-      <h1>{{ t('login') }}</h1>
-      <p>{{ loginSubtitle }}</p>
+      <h1>{{ t('login_title') }}</h1>
+      <p>{{ t('login_subtitle') }}</p>
 
-      <UranusForm @submit.prevent="login" aria-busy="isSubmitting" novalidate>
+      <UranusForm @submit.prevent="login" novalidate>
         <UranusTextfield
             id="login-email"
             v-model="email"
@@ -25,28 +25,28 @@
           <router-link to="/app/forgot-password">{{ t('forgot_password') }}</router-link>
         </div>
 
-        <transition name="fade">
-          <p v-if="displayError" class="feedback feedback--error" role="alert" aria-live="assertive">
-            {{ displayError }}
-          </p>
-        </transition>
+        <UranusFeedback :show="!!displayErrorFeedback" type="error">
+          {{ displayErrorFeedback }}
+        </UranusFeedback>
 
-        <div class="form-actions">
-          <UranusButton
-              type="submit" :disabled="isSubmitting">
-            <template v-if="!isSubmitting">{{ t('login_cta') }}</template>
-            <template v-else>{{ t('login_loading') }}</template>
-          </UranusButton>
-        </div>
+        <UranusFormActions>
+          <UranusButton type="submit" :disabled="isSubmitting">{{ t('login') }}</UranusButton>
+        </UranusFormActions>
 
       </UranusForm>
 
       <footer class="auth-footer">
-        <span>{{ t('need_account') }}</span>
-        <router-link to="/app/signup">{{ t('signup') }}</router-link>
+        <div class="auth-footer-row">
+          <router-link to="/page/terms">{{ t('terms_read') }}</router-link>
+        </div>
+        <div class="auth-footer-row">
+          <span>{{ t('need_account') }}</span>
+          <router-link to="/app/signup">{{ t('signup') }}</router-link>
+        </div>
       </footer>
 
     </UranusCard>
+
   </div>
 </template>
 <script setup lang="ts">
@@ -62,6 +62,8 @@ import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -84,18 +86,21 @@ const fieldErrors = reactive({
   email: undefined as string | undefined,
   password: undefined as string | undefined,
 })
-const loginSubtitle = computed(() => t('login_subtitle'))
-const displayError = computed(() => {
-  if (fieldErrors.email) return fieldErrors.email
-  if (fieldErrors.password) return fieldErrors.password
-  return error.value
+
+const displayErrorFeedback = computed<string | null>(() => {
+  if (fieldErrors.email || fieldErrors.password) return t('input_required_notice')
+  return error.value ?? null
 })
+
+
 const isValidEmail = (value: string) => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailPattern.test(value)
 }
-const requiredFieldMessage = computed(() => t('required_field'))
+
+const requiredFieldMessage = computed(() => t('input_required'))
 const invalidEmailMessage = computed(() => t('organization_form_invalid_email'))
+
 watch(email, (value) => {
   if (fieldErrors.email && value.trim()) {
     const trimmed = value.trim()
@@ -107,6 +112,7 @@ watch(email, (value) => {
     }
   }
 })
+
 watch(password, (value) => {
   if (fieldErrors.password && value.trim()) {
     fieldErrors.password = undefined
@@ -115,6 +121,7 @@ watch(password, (value) => {
     }
   }
 })
+
 const login = async () => {
   error.value = null
   fieldErrors.email = undefined
@@ -137,7 +144,8 @@ const login = async () => {
   }
   isSubmitting.value = true
   try {
-    const { response, status } = await apiFetch<any>('/api/login', {
+    const apiPath = '/api/login'
+    const apiResponse = await apiFetch<any>(apiPath, {
       method: 'POST',
       body: JSON.stringify({
         email: trimmedEmail,
@@ -145,8 +153,8 @@ const login = async () => {
       }),
     })
 
-    const payload: LoginResponse = response.data
-    if (status === 200 && payload.access_token && payload.refresh_token) {
+    const payload: LoginResponse = apiResponse.data
+    if (apiResponse.status === 200 && payload.access_token && payload.refresh_token) {
       tokenStore.setTokens(payload.access_token, payload.refresh_token)
       userStore.setUserUuid(payload.user_uuid)
       userStore.setDisplayName(payload.display_name ?? '')
@@ -159,7 +167,7 @@ const login = async () => {
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
-      error.value = e.data?.error || t('login_failed')
+      error.value = e.data?.error ?? t('login_failed')
     } else {
       error.value = t('login_failed')
     }
@@ -181,36 +189,22 @@ const login = async () => {
   margin-top: -0.5rem;
   margin-bottom: 1rem;
   text-align: right;
-  a {
-    font-size: 0.875rem;
-    color: var(--color-link);
-    text-decoration: none;
-    &:hover,
-    &:focus {
-      text-decoration: underline;
-    }
-  }
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
+  font-size: 0.9rem;
 }
 
 .auth-footer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 0.95rem;
-  color: var(--uranus-muted-text);
+  color: var(--uranus-color-4);
   margin-top: 1.5rem;
-  a {
-    font-weight: 600;
-    color: var(--accent-primary);
-    transition: color 0.2s ease;
-    &:hover {
-      color: var(--accent-secondary);
-    }
-  }
 }
+
+.auth-footer-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
 </style>

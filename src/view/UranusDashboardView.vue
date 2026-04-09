@@ -10,6 +10,10 @@
 
     <UranusDashboardNotifications />
 
+    <UranusFeedback :show="true" type="error">
+      Something went wrong. xxx
+    </UranusFeedback>
+
     <!--
     <section class="chart-card">
       <h2>Monatsumsatz &ndash; Standard</h2>
@@ -43,6 +47,7 @@ import UranusDashboardNotifications from '@/component/dashboard/UranusDashboardN
 import UranusLineChart from '@/component/chart/UranusLineChart.vue'
 import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
 import UranusPrioritySelect from '@/component/ui/UranusPrioritySelect.vue'
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const { t } = useI18n()
 

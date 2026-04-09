@@ -136,6 +136,7 @@
   --uranus-brand-color: #235df1;
   --uranus-success-color: #31b580;
   --uranus-error-color: #ed6056;
+  --uranus-error-color-rgb: 237, 96, 86;
   --uranus-required-color: #ed6056;
   --uranus-ia-color: #005ce6;
   --uranus-ia-color-light1: #246fea;
@@ -201,11 +202,10 @@
   --uranus-tiny-border-radius: 3px;
   --uranus-input-height: 36px;
 
-  --uranus-feedback-error-rgb: 217, 83, 79;
   --uranus-feedback-warning-rgb: 237, 186, 74;
   --uranus-feedback-success-rgb: 40, 167, 69;
 
-  --uranus-feedback-error-color: #da3a35;
+  --uranus-feedback-error-color: var(--uranus-error-color);
   --uranus-feedback-warning-color: #edba4a;
   --uranus-feedback-success-color: #28a745;
 

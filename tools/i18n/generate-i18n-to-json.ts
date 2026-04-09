@@ -8,7 +8,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 import { uranusI18nStandardTranslations } from '../../src/i18n/standard.ts'
-import { uranusI18nMessages } from '../../src/i18n/messages.ts'
+// import { uranusI18nMessages } from '../../src/i18n/messages.ts'
+import { uranusI18nRegisterAndLoginTranslations } from '../../src/i18n/register_and_login.ts'
 import { uranusI18nTodoTranslations } from '../../src/i18n/todo.ts'
 import { uranusI18nDashboardTranslations } from '../../src/i18n/dashboard.ts'
 import { uranusI18nNavigationTranslations } from '../../src/i18n/navigation.ts'
@@ -31,7 +32,8 @@ if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true })
 locales.forEach((locale) => {
     const merged = {
         ...Object.fromEntries(Object.entries(uranusI18nStandardTranslations).map(([k, v]) => [k, v[locale]])),
-        ...uranusI18nMessages[locale],
+        // ...uranusI18nMessages[locale],
+        ...Object.fromEntries(Object.entries(uranusI18nRegisterAndLoginTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nTodoTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nDashboardTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nNavigationTranslations).map(([k, v]) => [k, v[locale]])),

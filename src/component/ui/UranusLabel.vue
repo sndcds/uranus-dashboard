@@ -5,26 +5,20 @@
       :style="{ flex: props.flex ?? 1 }"
   >
     <span class="uranus-label-row">
-      {{ label }}
-      <span
-          v-if="required"
-          class="uranus-input-required"
-          aria-hidden="true"
-      >*</span>
+      {{ label }}<Asterisk v-if="required" class="uranus-field-required" aria-hidden="true"/>
     </span>
 
     <slot />
 
-    <span
-        v-if="error"
-        class="uranus-field-error"
-    >
+    <span v-if="error" class="uranus-field-error">
       {{ error }}
     </span>
   </label>
 </template>
 
 <script setup>
+import { Asterisk } from 'lucide-vue-next'
+
 const props = defineProps({
   id: { type: String, required: true },
   label: { type: String, required: true },
@@ -36,12 +30,14 @@ const props = defineProps({
 
 <style lang="scss">
 .uranus-field-error {
-  margin: 0;
-  color: var(--uranus-required-color);
+  margin-left: 0.5rem;
+  color: var(--uranus-error-color) !important;
 }
 
-.uranus-input-required {
-  color: var(--uranus-required-color);
-  font-weight: 700;
+.uranus-field-required {
+  width: 16px;
+  margin: 0;
+  color: var(--uranus-error-color) !important;
 }
+
 </style>

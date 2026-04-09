@@ -21,7 +21,7 @@
       <div v-else class="uranus-dashboard-card-grid uranus-max-layout">
         <article
             v-for="notification in notifications"
-            :key="notification.event_id"
+            :key="notification.event_uuid"
             class="uranus-card notification-card"
         >
           <UranusEventReleaseChip :releaseStatus="notification.release_status" />
@@ -65,7 +65,7 @@ import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.
 import UranusButton from '@/component/ui/UranusButton.vue'
 
 interface Notification {
-  event_id: number
+  event_uuid: string
   event_title: string
   organization_id: number
   organization_name: string

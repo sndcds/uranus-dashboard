@@ -336,6 +336,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'required',
         da: 'påkrævet',
     },
+    input_required_notice: {
+        de: 'Pflichtfelder bitte ausfüllen',
+        en: 'Please fill out the required fields',
+        da: 'Udfyld venligst obligatoriske felter',
+    },
     download_ics: {
         de: 'Datum speichern',
         en: 'Save date',

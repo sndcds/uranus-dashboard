@@ -12,15 +12,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
+import { computed } from 'vue'
 
 interface Props {
   type?: 'error' | 'success' | 'warning'
-  show?: boolean // optional prop to control visibility
+  show?: boolean | null
 }
 
 const props = defineProps<Props>()
-const slots = useSlots()  // <-- must call this!
 
 const feedbackClass = computed(() => [
   'feedback',
@@ -28,17 +27,8 @@ const feedbackClass = computed(() => [
 ])
 
 const hasContent = computed(() => {
-  if (props.show !== undefined) return props.show
-  const slot = slots.default?.()
-  if (!slot || slot.length === 0) return false
-  // Check if any vnode has text or children
-  return slot.some(node => {
-    // string content
-    if (typeof node.children === 'string') return !!node.children.trim()
-    // nested nodes
-    if (Array.isArray(node.children)) return node.children.length > 0
-    return false
-  })
+  if (props.show == true) return props.show
+  return false
 })
 </script>
 
@@ -51,8 +41,8 @@ const hasContent = computed(() => {
 }
 
 .feedback--error {
-  background: rgba(var(--uranus-feedback-error-rgb), 0.08);
-  color: rgb(var(--uranus-feedback-error-rgb));
+  background: rgba(var(--uranus-error-color-rgb), 0.08);
+  color: rgb(var(--uranus-error-color-rgb));
 }
 
 .feedback--warning {
@@ -67,7 +57,7 @@ const hasContent = computed(() => {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.25s ease;
+  transition: opacity 0.4s ease;
 }
 
 .fade-enter-from,
