@@ -406,6 +406,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Seating capacity',
         da: 'Siddepladser',
     },
+    preview: {
+        de: 'Vorschau',
+        en: 'Preview',
+        da: 'Vis',
+    },
 }
 
 export default uranusI18nStandardTranslations

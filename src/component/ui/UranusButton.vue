@@ -1,3 +1,16 @@
+<!--
+
+  Usage:
+    <UranusButton
+        variant="secondary" size="small"
+        :to="`/event/${event.uuid}/date/${event.dateUuid}`"
+        target="_blank"
+    >
+      <template #icon><Eye /></template>{{ t('preview') }}
+    </UranusButton>
+
+-->
+
 <template>
   <!-- Use router-link if `to` is provided -->
   <component
@@ -29,6 +42,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import {Eye} from "lucide-vue-next";
 
 const props = defineProps({
   to: { type: [String, Object], default: null },

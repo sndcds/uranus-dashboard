@@ -12,16 +12,16 @@
 -->
 
 <template>
+
   <div v-if="showLoading" class="uranus-public-event-state-info--loading">
     <!-- Loading state -->
     <span>{{ loadingLabel }}</span>
   </div>
-  <div v-else-if="loadError" class="uranus-public-event-state-info">
+  <div v-else-if="loadError !== null" class="uranus-public-event-state-info">
     <h1 style="font-size:8rem;">404</h1>
     <span>{{ loadError }}</span>
   </div>
   <div v-else-if="event" class="uranus-public-event-frame">
-
     <!-- Event content -->
     <div class="uranus-public-event-detail-layout">
 
@@ -234,8 +234,6 @@ import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
 import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
 
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
-import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
-import UranusForm from "@/component/ui/UranusForm.vue";
 
 const route = useRoute()
 
@@ -255,6 +253,8 @@ const showLoading = ref(false)
 const loadingLabel = computed(() => t('loading'))
 const loadError = ref<string | null>(null)
 const isDownloadingIcs = ref(false)
+const isPreview = computed(() => route.params.mode === 'preview')
+
 
 // Watch for changes in route params
 watch(
@@ -417,7 +417,17 @@ const loadEvent = async () => {
     const eventDateUuid = resolveRouteParam(route.params.eventDateUuid)
 
     const lang = locale.value || 'de'
-    const apiPath = `/api/event/${eventUuid}/date/${eventDateUuid}?lang=${lang}`
+    let apiPath = null
+    if (isPreview.value) {
+      apiPath = `/api/admin/event/${eventUuid}/date/${eventDateUuid}?lang=${lang}`
+    } else {
+      apiPath = `/api/event/${eventUuid}/date/${eventDateUuid}?lang=${lang}`
+    }
+    if (!apiPath) {
+      loadError.value = t('permission_denied')
+      return
+    }
+
     const apiResponse = await apiFetch<PublicEventDTO>(apiPath)
     if (apiResponse.data) {
       const mappedEvent: PublicEvent | null = mapPublicEventFromDTO(apiResponse.data, eventDateUuid)

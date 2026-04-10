@@ -67,7 +67,8 @@
       <div class="uranus-event-card-actions">
         <UranusButton
             variant="secondary" size="small"
-            :to="`/event/${event.uuid}/date/${event.dateUuid}`"
+            :to="`/event/${event.uuid}/date/${event.dateUuid}/preview`"
+            target="_blank"
         >
           <template #icon><Eye /></template>
           {{ t('preview') }}
@@ -132,20 +133,6 @@ import { Eye, Pencil, Trash, Calendar, MapPin, Building } from 'lucide-vue-next'
 import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
 
 const placeholderImage = '/assets/event-dummy.png'
-
-
-const cardBgColors: Record<string, string> = {
-  draft: 'var(--uranus-event-release-background-draft)',
-  review: 'var(--uranus-event-release-background-review)',
-}
-
-const label = computed((status: string) => {
-  if (status === 'draft') return t('event_release_draft')
-  if (status === 'review') return t('event_release_review')
-  return ''
-})
-
-
 
 const onImageError = (e: Event) => {
   const img = e.target as HTMLImageElement
