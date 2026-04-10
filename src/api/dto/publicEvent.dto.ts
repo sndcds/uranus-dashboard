@@ -85,6 +85,7 @@ export interface PublicEventDTO {
     meeting_point?: string
 
     ticket_flags?: string[]
+    ticket_link?: string
 
     date: PublicEventDateDTO
     further_dates: PublicEventDateDTO[]

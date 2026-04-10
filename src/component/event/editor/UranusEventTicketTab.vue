@@ -140,7 +140,7 @@ const priceFields = [
     'maxPrice',
     'currency',
     'ticketFlags',
-    'ticketLink'
+    'link'
 ] as const
 
 const isDirty = computed(() => {
@@ -198,6 +198,7 @@ async function commitTab() {
     original.maxPrice = draft.maxPrice ?? null
     original.currency = draft.currency ?? null
     original.ticketFlags = draft.ticketFlags ?? null
+    original.ticketLink = draft.ticketLink ?? null
   } catch (err) {
     store.error = t('failed_to_save_tab')
     console.error(err)

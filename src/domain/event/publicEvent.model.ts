@@ -35,6 +35,7 @@ export interface PublicEvent {
     maxAttendees: number | null
     priceType: string | null
     ticketFlags: string[] | []
+    ticketLink: string | null
     currency: string | null
     minPrice: number | null
     maxPrice: number | null
@@ -102,6 +103,7 @@ export function mapPublicEventFromDTO(dto: PublicEventDTO, dateUuid?: string): P
         maxAttendees: dto.max_attendees ?? null,
         priceType: dto.price_type ?? null,
         ticketFlags: dto.ticket_flags ?? [],
+        ticketLink: dto.ticket_link ?? null,
         currency: dto.currency ?? null,
         minPrice: dto.min_price ?? null,
         maxPrice: dto.max_price ?? null,

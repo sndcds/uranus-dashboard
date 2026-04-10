@@ -141,6 +141,13 @@
             </template>
           </div>
 
+          <UranusExternalLink
+              :link="event.ticketLink"
+              :label="t('event_ticket_link')"
+              :icon="Ticket"
+              :iconSize="30"
+          />
+
           <div v-if="event.maxAttendees || ageLabel">
             <p class="uranus-public-event-info-label">{{ t('event_participation_info') }}</p>
             <template v-if="event.maxAttendees">
@@ -222,18 +229,19 @@ import { apiFetch, ApiError } from '@/api.ts'
 import { marked } from 'marked'
 import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
 import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
+import { type PublicEvent, mapPublicEventFromDTO } from '@/domain/event/publicEvent.model.ts'
+import { type PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
+import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
+import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
+import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
 import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'
-
-import { type PublicEvent, mapPublicEventFromDTO } from '@/domain/event/publicEvent.model.ts'
-import { type PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
-import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
-import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
 
-import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
+import UranusExternalLink from '@/component/ui/UranusExternalLink.vue'
+import { Ticket } from 'lucide-vue-next'
 
 const route = useRoute()
 
