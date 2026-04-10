@@ -48,6 +48,7 @@ export type AdminEvent = {
     minPrice: number | null
     maxPrice: number | null
     ticketFlags: string[] | null
+    ticketLink: string | null
 }
 
 export function createAdminEvent(props: Partial<AdminEvent> = {}): AdminEvent {
@@ -92,6 +93,7 @@ export function createAdminEvent(props: Partial<AdminEvent> = {}): AdminEvent {
         minPrice: null,
         maxPrice: null,
         ticketFlags: null,
+        ticketLink: null,
 
         ...props
     }

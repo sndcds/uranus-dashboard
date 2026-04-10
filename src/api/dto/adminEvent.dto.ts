@@ -41,6 +41,7 @@ export interface AdminEventDTO {
     max_price?: number | null
 
     ticket_flags?: string[] | null
+    ticket_link?: string | null
 
     currency?: string | null
     occasion_type_id?: number | null

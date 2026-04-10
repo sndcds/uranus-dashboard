@@ -11,6 +11,16 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Events',
         da: 'Begivenheder',
     },
+    events_: {
+        de: 'Events',
+        en: 'Events',
+        da: 'Begivenheder',
+    },
+    events_hero_subtitle : {
+        de: 'Alle anstehenden Aktivitäten auf einen Blick.',
+        en: 'Track upcoming and ongoing happenings at a glance.',
+        da: 'Få et overblik over kommende og igangværende aktiviteter.'
+    },
     event_title: {
         de: 'Titel',
         en: 'Title',
@@ -575,6 +585,16 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Registrierung erforderlich',
         en: 'Registration required',
         da: 'Tilmelding påkrævet',
+    },
+    event_reduced_price_available: {
+        de: 'Reduzierter Preis verfügbar',
+        en: 'Reduced-price tickets available',
+        da: 'Billetter med reduceret pris tilgængelige'
+    },
+    event_ticket_link: {
+        de: 'Link zu Tickets',
+        en: 'Link to tickets',
+        da: 'Link til billetter'
     },
     event_occasion_type: {
         de: 'Anlass',

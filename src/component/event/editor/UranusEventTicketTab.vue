@@ -31,13 +31,25 @@
           id="event-registration-required"
           :label="t('event_registration_required')"
       />
+      <UranusCheckbox
+          v-model="draftTicketFlags"
+          value="reduced_price_available"
+          id="event-reduced-price-available"
+          :label="t('event_reduced_price_available')"
+      />
     </UranusCard>
 
     <UranusForm>
-      <div class="dirty-indicator" v-if="isDirty">{{ t('unsaved_changes') }}</div>
+      <UranusFormRow>
+        <UranusInput
+            id="event-ticket-link"
+            :label="t('event_ticket_link')"
+            placeholder="https://"
+            v-model="draftEvent.ticketLink"
+        />
+      </UranusFormRow>
 
       <UranusFormRow :cols="2" style="max-width: 600px;">
-
         <UranusLabel id="event-currency" :label="t('currency')">
           <UranusCurrencySelect v-model="draftEvent.currency" :placeholder="t('select_currency')" />
         </UranusLabel>
@@ -108,6 +120,7 @@ import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import {Save, Undo} from 'lucide-vue-next'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusInput from "@/component/ui/UranusInput.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
@@ -122,11 +135,12 @@ const draftTicketFlags = computed({
 
 // Fields tracked for this tab
 const priceFields = [
-  'priceType',
-  'minPrice',
-  'maxPrice',
-  'currency',
-  'ticketFlags',
+    'priceType',
+    'minPrice',
+    'maxPrice',
+    'currency',
+    'ticketFlags',
+    'ticketLink'
 ] as const
 
 const isDirty = computed(() => {
@@ -155,8 +169,7 @@ function buildPayload(
   if (draft.maxPrice !== original.maxPrice) { payload.max_price = draft.maxPrice }
   if (draft.currency !== original.currency) { payload.currency = draft.currency }
   if (!equalStringArrays(draft.ticketFlags, original.ticketFlags)) { payload.ticket_flags = draft.ticketFlags }
-
-  console.log(JSON.stringify(payload, null, 2))
+  if (draft.ticketLink !== original.ticketLink) { payload.ticket_link = draft.ticketLink }
   return payload
 }
 
@@ -245,11 +258,6 @@ function resetTab() {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-  }
-
-  .dirty-indicator {
-    color: #c00;
-    font-weight: 500;
   }
 }
 

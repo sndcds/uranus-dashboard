@@ -55,6 +55,7 @@ export function mapAdminEventFromDTO(dto: AdminEventDTO): AdminEvent {
         minPrice: dto.min_price ?? null,
         maxPrice: dto.max_price ?? null,
         ticketFlags: dto.ticket_flags ?? null,
+        ticketLink: dto.ticket_link ?? null,
     })
 }
 
@@ -140,6 +141,7 @@ export function mapAdminEventToDTO(event: AdminEvent): AdminEventDTO {
         min_price: event.minPrice,
         max_price: event.maxPrice,
         ticket_flags: event.ticketFlags,
+        ticket_link: event.ticketLink,
         currency: event.currency,
         visitor_info_flags: event.visitorInfoFlags?.toString() ?? null,
         occasion_type_id: event.occasionTypeId,

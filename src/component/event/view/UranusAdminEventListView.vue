@@ -5,8 +5,8 @@
 <template>
   <div class="uranus-max-layout">
     <UranusDashboardHero
-        :title="t('events_title')"
-        :subtitle="t('events_subtitle')" />
+        :title="t('events')"
+        :subtitle="t('events_hero_subtitle')" />
 
     <!-- No Organization Selected Message -->
     <UranusNotification v-if="deleteError" type="error">

@@ -68,7 +68,7 @@ import UranusEventTagsTab from '@/component/event/editor/UranusEventTagsTab.vue'
 import UranusEventLinksTab from '@/component/event/editor/UranusEventLinksTabs.vue'
 import UranusEventParticipationTab from '@/component/event/editor/UranusEventParticipationTab.vue'
 import UranusEventVenueTab from '@/component/event/editor/UranusEventVenueTab.vue'
-import UranusEventPriceTab from '@/component/event/editor/UranusEventPriceTab.vue'
+import UranusEventTicketTab from '@/component/event/editor/UranusEventTicketTab.vue'
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
 import UranusEventVisitorInfo from '@/component/event/editor/UranusEventVisitorInfo.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
@@ -123,7 +123,7 @@ const currentTabComponent = computed(() => {
     case 'tags': return UranusEventTagsTab
     case 'links': return UranusEventLinksTab
     case 'participation': return UranusEventParticipationTab
-    case 'ticket': return UranusEventPriceTab
+    case 'ticket': return UranusEventTicketTab
     case 'visitor': return UranusEventVisitorInfo
     case 'base':
     default:
