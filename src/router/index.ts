@@ -248,6 +248,10 @@ const routes = [
             }
         ],
     },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: '/page/404'
+    },
 ]
 
 const router = createRouter({
