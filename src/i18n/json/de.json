@@ -236,6 +236,8 @@
   "organization_avatar": "Avatar",
   "edit_organization_image": "Organisationsbild bearbeiten",
   "add_organization_image": "Organisationsbild hinzufügen",
+  "create_organization": "Organisation erstellen",
+  "create_organization_definition": "Gib die exakte Organisationsbezeichnung ein, danach kannst du Details bearbeiten.",
   "venue": "Spielstätte",
   "venues": "Spielstätten",
   "unspecified_venue_type": "Unbestimmte Spielstättentyp",

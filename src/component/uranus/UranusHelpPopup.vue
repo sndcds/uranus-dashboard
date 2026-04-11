@@ -1,4 +1,5 @@
 <template>
+
   <div>
     <button @click="togglePopup" class="help-icon" aria-label="Help">
       <MessageCircleQuestionMark />
@@ -43,6 +44,7 @@ async function loadContent() {
     content.value = res.ok ? html : '<p>Failed to load help content.</p>'
     console.log(html)
   } catch (err) {
+    console.error('Error loading help content.')
     content.value = `<p>Error: ${(err as Error).message}</p>`
   } finally {
     loading.value = false

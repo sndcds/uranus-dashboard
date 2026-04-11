@@ -236,6 +236,8 @@
   "organization_avatar": "Avatar",
   "edit_organization_image": "Rediger organisationsbillede",
   "add_organization_image": "Tilføj organisationsbillede",
+  "create_organization": "Opret en ny organisation",
+  "create_organization_definition": "Indtast det præcise organisationsnavn. Du kan redigere detaljerne bagefter.",
   "venue": "Spillested",
   "venues": "Spillesteder",
   "unspecified_venue_type": "uspecificeret spillesteds type",

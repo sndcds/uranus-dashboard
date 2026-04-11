@@ -6,15 +6,9 @@
 
 <template>
   <div class="uranus-main-layout">
-    <UranusDashboardHero :title="t('create_organization')" :subtitle="t('create_organization_description')" />
+    <UranusDashboardHero :title="t('create_organization')" :subtitle="t('create_organization_definition')" />
 
-    <!-- TODO: i18n -->
-    <h3>Was ist eine Organisation?</h3>
-    <p>
-      Um Inhalte in Uranus zu erstellen, brauchst du eine Organisation. Sie ist offiziell
-      verantwortlich für alle Inhalte, die du erstellst. Verwende den genauen juristischen Namen,
-      z. B. für Veranstalter oder Betreiberangaben.
-    </p>
+    <UranusHelpPopup baseUrl="/help/create-organization" />
 
     <UranusForm>
       <UranusTextfield
@@ -42,12 +36,13 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import router from '@/router/index.ts'
-import {apiFetch, type ApiResponse} from '@/api.ts'
+import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusHelpPopup from '@/component/uranus/UranusHelpPopup.vue'
 
 const { t } = useI18n()
 

@@ -97,20 +97,17 @@ import { ref, reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, ApiError } from '@/api.ts'
 import { createPlutoImage } from '@/domain/image/plutoImage.model.ts'
-import type { PlutoImageDTO } from "@/api/dto/plutoImage.dto.ts";
+import type { PlutoImageDTO } from '@/api/dto/plutoImage.dto.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import { buildPlutoEditImageUrl } from '@/util/UranusUtils.ts'
-import UranusInlineSaveButton from '@/component/ui/UranusInlineSaveButton.vue'
-import UranusInlineCancelButton from '@/component/ui/UranusInlineCancelButton.vue'
-import UranusInlineActionBar from '@/component/ui/UranusInlineActionBar.vue'
 import UranusTextarea from '@/component/ui/UranusTextarea.vue'
 import UranusLicenseSelect from '@/component/select/UranusLicenseSelect.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
-import UranusForm from "@/component/ui/UranusForm.vue";
-import UranusLabel from "@/component/ui/UranusLabel.vue";
-import UranusFormActions from "@/component/ui/UranusFormActions.vue";
-import UranusButton from "@/component/ui/UranusButton.vue";
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const props = defineProps<{
   addModeTitle?: string | null

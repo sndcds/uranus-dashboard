@@ -236,6 +236,8 @@
   "organization_avatar": "Avatar",
   "edit_organization_image": "Edit organization image",
   "add_organization_image": "Add organization image",
+  "create_organization": "Create a new organization",
+  "create_organization_definition": "Enter the exact organization name. You can edit the details afterwards.",
   "venue": "Venue",
   "venues": "Venues",
   "unspecified_venue_type": "Unspecified venue type",

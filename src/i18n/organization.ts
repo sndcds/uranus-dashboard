@@ -85,7 +85,17 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         de: 'Organisationsbild hinzufügen',
         en: 'Add organization image',
         da: 'Tilføj organisationsbillede',
-    }
+    },
+    create_organization: {
+        de: 'Organisation erstellen',
+        en: 'Create a new organization',
+        da: 'Opret en ny organisation',
+    },
+    create_organization_definition: {
+        de: 'Gib die exakte Organisationsbezeichnung ein, danach kannst du Details bearbeiten.',
+        en: 'Enter the exact organization name. You can edit the details afterwards.',
+        da: 'Indtast det præcise organisationsnavn. Du kan redigere detaljerne bagefter.',
+    },
 }
 
 export default uranusI18nOrganizationTranslations
