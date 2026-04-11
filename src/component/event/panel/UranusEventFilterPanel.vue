@@ -21,14 +21,14 @@
 
 
     <div class="uranus-filter-accordions">
-      <UranusEventCategorySelectorAccordion v-model="filter.categories" :multiple="true" />
+      <UranusEventCategorySelectorAccordion v-model="filterStore.filter.categories" :multiple="true" />
 
       <UranusAccordion v-model="searchOpen">
         <template #title>Suche</template>
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="search-input"
-              v-model="filter.search!"
+              v-model="filterStore.filter.search!"
               :label="t('calendar_filter_search_label')"
               :placeholder="t('calendar_filter_search_placeholder')"
           />
@@ -37,7 +37,7 @@
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="city-input"
-              v-model="filter.city!"
+              v-model="filterStore.filter.city!"
               :label="t('calendar_filter_city_label')"
           />
         </UranusFormRow>
@@ -46,13 +46,13 @@
         <UranusFormRow :cols="2">
           <UranusDateInput
               id="start-date"
-              v-model="filter.startDate"
+              v-model="filterStore.filter.startDate"
               :label="t('calendar_filter_start_date')"
               style="width: 100%;"
           />
           <UranusDateInput
               id="end-date"
-              v-model="filter.endDate"
+              v-model="filterStore.filter.endDate"
               :label="t('calendar_filter_end_date')"
               style="width: 100%;"
           />
@@ -60,7 +60,7 @@
 
         <UranusFormRow :cols="1">
           <UranusLabel id="venue" label="Spielstätte">
-            <UranusVenueTypeahead v-model:selectedVenue="filter.venue"/>
+            <UranusVenueTypeahead v-model:selectedVenue="filterStore.filter.venue"/>
           </UranusLabel>
         </UranusFormRow>
 
@@ -71,7 +71,7 @@
         <UranusFormRow :cols="1">
           <UranusCheckbox
               id="use-gps"
-              v-model="filter.useCurrentLocation!"
+              v-model="filterStore.filter.useCurrentLocation!"
               label="Use GPS"
           />
         </UranusFormRow>
@@ -79,14 +79,14 @@
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="radius-km"
-              v-model="filter.radiusKm"
+              v-model="filterStore.filter.radiusKm"
               type="number"
               min="0"
               max="200"
               step="0.1"
               label="Radius (km)"
               placeholder="Radius in km"
-              :disabled="!filter.useCurrentLocation"
+              :disabled="!filterStore.filter.useCurrentLocation"
           />
         </UranusFormRow>
         <div v-if="locationError" class="uranus-error-message">{{ locationError }}</div>
@@ -114,7 +114,7 @@
         <template #title>{{ t('price') }}</template>
         <UranusFormRow :cols="1">
           <UranusLabel id="price-type" label="Preisart">
-            <select v-model="filter.priceType">
+            <select v-model="filterStore.filter.priceType">
               <option value="not_specified">{{ t('event_price_not_specified') }}</option>
               <option value="free">{{ t('event_price_free') }}</option>
               <option value="donation">{{ t('event_price_donation') }}</option>
@@ -131,7 +131,7 @@
               v-model="maxPriceModel"
           />
           <UranusLabel id="price-currency" label="Währung">
-            <select v-model="filter.priceCurrency" style="height: var(--uranus-input-height)">
+            <select v-model="filterStore.filter.priceCurrency" style="height: var(--uranus-input-height)">
               <option value="EUR">Euro</option>
               <option value="DKK">DKK</option>
             </select>
@@ -151,74 +151,72 @@ import UranusVenueTypeahead from '@/component/venue/UranusVenueTypeahead.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
-import { useEventsFilterStore, type UranusEventsFilter } from '@/store/eventsFilterStore.ts'
+import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import { useGpsLocation } from '@/composable/useGpsLocation'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusEventCategorySelectorAccordion from '@/component/event/panel/UranusEventCategorySelectorAccordion.vue'
-import UranusButton from '@/component/ui/UranusButton.vue'
 import { FunnelX } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 
-const eventsFilterStore = useEventsFilterStore()
-const filter: UranusEventsFilter = eventsFilterStore.filter
+const filterStore = useEventsFilterStore()
 
 // Add defaults if missing
-if (filter.useCurrentLocation === undefined) filter.useCurrentLocation = false
-if (filter.radiusKm === undefined) filter.radiusKm = 3.0
+if (filterStore.filter.useCurrentLocation === undefined) filterStore.filter.useCurrentLocation = false
+if (filterStore.filter.radiusKm === undefined) filterStore.filter.radiusKm = 3.0
 
 // GPS composable reads filter.useCurrentLocation directly
-const useCurrentLocationRef = toRef(filter, 'useCurrentLocation')
+const useCurrentLocationRef = toRef(filterStore.filter, 'useCurrentLocation')
 const { latitude, longitude, locationError } = useGpsLocation(useCurrentLocationRef)
 
 
 const minAgeModel = computed({
-  get: () => filter.minAge ?? '',
+  get: () => filterStore.filter.minAge ?? '',
   set: (v: string | number | null) => {
     if (v === '' || v === null) {
-      filter.minAge = null
+      filterStore.filter.minAge = null
     } else {
       const n = Number(v)
-      filter.minAge = Number.isNaN(n) ? null : n
+      filterStore.filter.minAge = Number.isNaN(n) ? null : n
     }
   }
 })
 
 const maxAgeModel = computed({
-  get: () => filter.maxAge ?? '',
+  get: () => filterStore.filter.maxAge ?? '',
   set: (v: string | number | null) => {
     if (v === '' || v === null) {
-      filter.maxAge = null
+      filterStore.filter.maxAge = null
     } else {
       const n = Number(v)
-      filter.maxAge = Number.isNaN(n) ? null : n
+      filterStore.filter.maxAge = Number.isNaN(n) ? null : n
     }
   }
 })
 
 const maxPriceModel = computed({
-  get: () => filter.maxPrice ?? '',
+  get: () => filterStore.filter.maxPrice ?? '',
   set: (v: string | number | null) => {
     if (v === '' || v === null) {
-      filter.maxPrice = null
+      filterStore.filter.maxPrice = null
     } else {
       const n = Number(v)
-      filter.maxPrice = Number.isNaN(n) ? null : n
+      filterStore.filter.maxPrice = Number.isNaN(n) ? null : n
     }
   }
 })
 
 
 // Sync coordinates to filter store
-watch([() => filter.useCurrentLocation, latitude, longitude], ([gpsActive, lat, lon]) => {
+watch([() => filterStore.filter.useCurrentLocation, latitude, longitude], ([gpsActive, lat, lon]) => {
   if (gpsActive && lat != null && lon != null) {
-    filter.latitude = lat
-    filter.longitude = lon
+    filterStore.filter.latitude = lat
+    filterStore.filter.longitude = lon
   } else {
-    filter.latitude = null
-    filter.longitude = null
+    filterStore.filter.latitude = null
+    filterStore.filter.longitude = null
   }
 })
 
@@ -228,20 +226,11 @@ const audienceOpen = ref(false)
 const priceOpen = ref(false)
 
 const onSaveFilter = () => {
-  eventsFilterStore.setFilter({ ...filter })
+  filterStore.setFilter({ ...filterStore.filter })
 }
 
 const onResetFilter = () => {
-  eventsFilterStore.setFilter({
-    categories: null,
-    search: '',
-    city: '',
-    startDate: '',
-    endDate: '',
-    venue: { id: -1, name: '' },
-    useCurrentLocation: false,
-    radiusKm: 10.0
-  })
+  filterStore.resetFilter()
 }
 
 </script>

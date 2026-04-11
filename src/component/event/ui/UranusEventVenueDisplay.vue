@@ -7,15 +7,16 @@
 <template>
   <div v-if="hasVenueInfo">
 
-    <UranusLogoImage
-        v-if="logoUrl"
-        :src="logoUrl"
-        alt="Venue logo"
+    <!--UranusLogoImage
+        :logoURL="logoUrl ?? ''"
+        :lightThemeLogoURL="lightThemeLogoUrl ?? ''"
+        :darkThemeLogoURL="darkThemeLogoUrl ?? ''"
+        :theme="themeStore.theme"
         :maxWidth="180"
         :maxHeight="80"
-    />
+    /-->
 
-    <span class="uranus-public-event-info-label ">{{ t('location') }}</span><br>
+    <div class="uranus-public-event-info-label label-space-above">{{ t('event_location') }}</div>
 
     <p v-if="eventDate?.venueWebsite && eventDate?.venueName">
       <a :href="eventDate.venueWebsite" target="_blank" rel="noopener noreferrer">
@@ -43,7 +44,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
-import { useThemeStore } from '@/store/uranusThemeStore.ts'
+import { useThemeStore } from '@/store/themeStore.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 
 const { t } = useI18n({ useScope: 'global' })
@@ -61,18 +62,19 @@ const hasVenueInfo = computed(() => {
   )
 })
 
-const logoUrl = computed(() => {
-  const e = props.eventDate
-  if (!e) return null
+const logoUrl = computed(() => props.eventDate?.venueLogoUrl ?? null)
 
-  if (themeStore.theme === 'dark') {
-    if (e.venueDarkThemeLogoUrl) return e.venueDarkThemeLogoUrl + '?width=240&type=png&quality=80'
-  } else {
-    if (e.venueLightThemeLogoUrl) return e.venueLightThemeLogoUrl + '?width=240&type=png&quality=80'
-  }
+const lightThemeLogoUrl = computed(
+    () => props.eventDate?.venueLightThemeLogoUrl ?? null
+)
 
-  if (e.venueLogoUrl) return e.venueLogoUrl + '?width=240&type=png&quality=80'
-  return null
-})
-
+const darkThemeLogoUrl = computed(
+    () => props.eventDate?.venueDarkThemeLogoUrl ?? null
+)
 </script>
+
+<style scoped lang="scss">
+.label-space-above {
+  margin-top: 2rem;
+}
+</style>

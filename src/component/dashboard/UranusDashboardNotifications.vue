@@ -4,7 +4,7 @@
 
 <template>
   <section>
-    <h2>{{ t('notifications') }}</h2>
+    <h2>{{ t('messages') }}</h2>
 
     <div v-if="error" class="feedback feedback--error" role="alert">
       {{ error }}
@@ -15,8 +15,7 @@
         {{ t('notifications_loading') }}
       </div>
       <div v-else-if="!notifications.length" class="events-feedback">
-        <!-- TODO: UranusNotification -->
-        {{ t('notifications_empty') }}
+        {{ t('no_messages') }}
       </div>
       <div v-else class="uranus-dashboard-card-grid uranus-max-layout">
         <article

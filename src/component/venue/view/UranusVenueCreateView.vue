@@ -8,14 +8,7 @@
   <div class="uranus-main-layout">
     <UranusDashboardHero :title="t('create_venue')" :subtitle="t('create_venue_description')" />
 
-    <!-- TODO: i18n -->
-    <h3>Was ist eine Spielstätte?</h3>
-    <p>
-      Eine Spielstätte ist der Ort, an dem Veranstaltungen stattfinden.
-      Sie kann ein Raum oder ein Platz sein, z B. ein Veranstaltungsraum oder ein
-      öffentlicher Ort sein. Trage den genauen Namen der Spielstätte ein, damit Besucher:innen die Veranstaltungen
-      leicht finden können.
-    </p>
+    <UranusHelpPopup baseUrl="/help/create-venue" />
 
     <UranusForm>
       <UranusTextfield
@@ -50,6 +43,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusTextfield from "@/component/ui/UranusTextfield.vue";
 import UranusFormActions from "@/component/ui/UranusFormActions.vue";
+import UranusHelpPopup from "@/component/uranus/UranusHelpPopup.vue";
 
 const { t } = useI18n()
 

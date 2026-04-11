@@ -3,7 +3,6 @@ import type {UranusLocaleKey} from "@/i18n/uranus-i18n-index.ts";
 export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>> = {
     de: {
         organization_unknown: 'Unbekannter Veranstalter',
-        one_of_n: 'von',
         price_types: 'Preisarten',
         occasion: 'Anlass',
         invite_activate_title: 'Einladung bestätigen',
@@ -114,7 +113,6 @@ export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>>
         dashboard_inbox_placeholder_label: 'Wähle eine Nachricht, um den Inhalt zu lesen.',
         dashboard_inbox_loading_label: 'Nachrichten werden geladen...',
         dashboard_inbox_unknown_sender_label: 'System',
-        notifications: 'Benachrichtigungen',
         notifications_loading: 'Benachrichtigungen werden geladen...',
         notifications_empty: 'Keine Benachrichtigungen vorhanden.',
         notifications_load_error: 'Benachrichtigungen konnten nicht geladen werden.',
@@ -311,8 +309,6 @@ export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>>
         organization_unknown: 'Unknown organization',
 
         edit_event: 'Edit event',
-
-        one_of_n: 'of',
         price_types: 'Price type',
         occasion: 'Occasion',
 
@@ -425,7 +421,6 @@ export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>>
         dashboard_inbox_loading_label: 'Loading messages...',
         dashboard_inbox_unknown_sender_label: 'System',
 
-        notifications: 'Notifications',
         notifications_loading: 'Loading notifications...',
         notifications_empty: 'No notifications.',
         notifications_load_error: 'Failed to load notifications.',
@@ -618,7 +613,6 @@ export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>>
     },
     da: {
         organization_unknown: 'Ukendt arrangør',
-        one_of_n: 'af',
         price_types: 'Pristyper',
         min_price: 'Mindste pris',
         max_price: 'Højeste pris',
@@ -734,7 +728,6 @@ export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>>
         dashboard_inbox_loading_label: 'Indlæser beskeder...',
         dashboard_inbox_unknown_sender_label: 'System',
 
-        notifications: 'Notifikationer',
         notifications_loading: 'Indlæser notifikationer...',
         notifications_empty: 'Ingen notifikationer.',
         notifications_load_error: 'Notifikationer kunne ikke indlæses.',

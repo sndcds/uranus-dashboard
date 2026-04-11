@@ -79,6 +79,7 @@ export interface PublicEventDTO {
     org_uuid: string
     org_name?: string
     org_web_link?: string
+    org_logos?: any
 
     visitor_info_flag: string
     participation_info?: string

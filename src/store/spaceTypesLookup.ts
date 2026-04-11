@@ -71,6 +71,16 @@ export const useSpaceTypeLookupStore = defineStore('spaceTypesLookup', () => {
         return getType(key, lang)?.description ?? ''
     }
 
+    function getLocalizedTypes(lang: string) {
+        const map = data.value[lang]?.types ?? {}
+
+        return Object.entries(map).map(([key, entry]) => ({
+            key,
+            label: entry.label,
+            description: entry.description
+        }))
+    }
+
     return {
         data,
         loaded,
@@ -78,6 +88,7 @@ export const useSpaceTypeLookupStore = defineStore('spaceTypesLookup', () => {
         locale,
         fetchLang,
         initialize,
+        getLocalizedTypes,
         getType,
         getLabel,
         getDescription

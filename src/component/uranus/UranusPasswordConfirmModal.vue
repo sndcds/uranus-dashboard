@@ -1,6 +1,6 @@
 <template>
   <UranusModal :show="show" :title="title" max-width="520px" @close="$emit('cancel')">
-    <form :id="formId" @submit.prevent="handleSubmit" class="uranus-form">
+    <UranusForm :id="formId" @submit.prevent="handleSubmit">
       <span class="form-label">{{ question }}</span>
 
       <UranusFeedback :show="!!props.error" type="error">
@@ -28,18 +28,18 @@
             :label="t('enter_password_to_confirm')"
         />
       </UranusFormRow>
-    </form>
 
-    <template #actions>
-      <div class="actions">
+      <UranusFormActions>
         <UranusButton type="button" @click="$emit('cancel')">
           {{ t('cancel') }}
         </UranusButton>
         <UranusButton type="submit" :form="formId" :disabled="isSubmitting">
           {{ isSubmitting ? loadingText : confirmText }}
         </UranusButton>
-      </div>
-    </template>
+      </UranusFormActions>
+
+    </UranusForm>
+
   </UranusModal>
 </template>
 
@@ -53,6 +53,8 @@ import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusPasswordInput from '@/component/ui/UranusPasswordInput.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 

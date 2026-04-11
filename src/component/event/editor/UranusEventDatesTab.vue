@@ -207,7 +207,7 @@ async function commitDates() {
         : []
   } catch (err) {
     console.error(err)
-    store.error = t('stage_failed_check_data')
+    store.error = t('form_validation_failed')
   } finally {
     store.saving = false
   }

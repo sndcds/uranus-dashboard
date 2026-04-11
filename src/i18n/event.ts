@@ -71,6 +71,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: "Select language",
         da: "Vælg et sprog",
     },
+    event_location: {
+        de: "Ort",
+        en: "Location",
+        da: "Sted",
+    },
     event_links: {
         de: 'Externe Links',
         en: 'External links',
@@ -672,9 +677,9 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Fjern dato',
     },
     event_release_notice: {
-        de: 'Bitte veröffentliche ausschließlich Inhalte, für die du über alle erforderlichen Nutzungsrechte verfügst. Mit dem Klick auf „Speichern“ bestätigst du dies.',
-        en: 'Please ensure that you only publish content for which you have all necessary usage rights. By clicking “Save”, you confirm this.',
-        da: 'Sørg for kun at offentliggøre indhold, som du har alle nødvendige brugsrettigheder til. Ved at klikke på “Gem” bekræfter du dette.',
+        de: 'Bitte veröffentliche ausschließlich Inhalte, für die du über alle erforderlichen Nutzungsrechte verfügst und die keine Urheberrechte Dritter verletzen. Mit dem Klick auf „Speichern“ bestätigst du dies.',
+        en: 'Please publish only content for which you hold all necessary usage rights and which does not infringe third-party copyrights. By clicking “Save”, you confirm this.',
+        da: 'Publicér kun indhold, som du har alle nødvendige brugsrettigheder til, og som ikke krænker tredjeparts ophavsret. Ved at klikke på “Gem” bekræfter du dette.',
     }
 }
 

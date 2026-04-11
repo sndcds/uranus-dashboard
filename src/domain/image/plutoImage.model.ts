@@ -6,6 +6,13 @@ import type { PlutoImageDTO } from '@/api/dto/plutoImage.dto.ts'
 import { apiFetch } from '@/api.ts'
 
 
+export interface PlutoLogoImageRef {
+    uuid: string
+    url: string
+}
+
+export type PlutoLogoImage = Record<string, PlutoLogoImageRef>
+
 export interface PlutoImage {
     uuid: string | null
     url: string | null

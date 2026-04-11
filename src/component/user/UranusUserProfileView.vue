@@ -113,7 +113,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useThemeStore } from '@/store/uranusThemeStore.ts'
+import { useThemeStore } from '@/store/themeStore.ts'
 import { useUserStore } from '@/store/userStore.ts'
 import type { ThemeMode } from '@/util/theme.ts'
 import { apiFetch } from '@/api.ts'

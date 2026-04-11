@@ -44,8 +44,29 @@ const defaultFilter: UranusEventsFilter = {
     eventTypeIds: []
 }
 
+function createDefaultFilter(): UranusEventsFilter {
+    return {
+        categories: null,
+        search: '',
+        city: '',
+        startDate: '',
+        endDate: '',
+        venue: { uuid: '', name: '' },
+        useCurrentLocation: false,
+        radiusKm: 10.0,
+        latitude: null,
+        longitude: null,
+        minAge: null,
+        maxAge: null,
+        priceType: 'not_specified',
+        maxPrice: null,
+        priceCurrency: 'EUR',
+        eventTypeIds: []
+    }
+}
+
 export const useEventsFilterStore = defineStore("calendarFilter", () => {
-    const filter = ref<UranusEventsFilter>({ ...defaultFilter })
+    const filter = ref<UranusEventsFilter>(createDefaultFilter())
     const eventTypeIds = computed(() => filter.value.eventTypeIds)
 
     // Load saved filter from localStorage
@@ -73,7 +94,7 @@ export const useEventsFilterStore = defineStore("calendarFilter", () => {
     }
 
     function resetFilter() {
-        filter.value = { ...defaultFilter }
+        filter.value = createDefaultFilter()
     }
 
     // Toggle event type

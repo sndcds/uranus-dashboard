@@ -184,7 +184,7 @@ import { applyTheme } from '@/util/theme.ts'
 import { Inbox, Send, UserRoundCog, LogOut, Settings, Menu, Sun, Moon } from 'lucide-vue-next'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { useUserStore } from '@/store/userStore.ts'
-import { useThemeStore } from '@/store/uranusThemeStore.ts'
+import { useThemeStore } from '@/store/themeStore.ts'
 import UranusLogo from '@/component/ui/UranusLogo.vue'
 
 const { t, locale } = useI18n()

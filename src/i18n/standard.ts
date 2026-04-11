@@ -411,7 +411,22 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Preview',
         da: 'Vis',
     },
-    stage_failed_check_data: {
+    messages: {
+        de: 'Nachrichten',
+        en: 'Messages',
+        da: 'Beskeder',
+    },
+    no_messages: {
+        de: 'Keine Nachrichten vorhanden.',
+        en: 'No messages available.',
+        da: 'Ingen beskeder.',
+    },
+    one_of_n: {
+        de: 'von',
+        en: 'of',
+        da: 'af',
+    },
+    form_validation_failed: {
         de: 'Mindestens ein Feld ist unvollständig oder enthält ungültige Daten. Bitte korrigiere dies.',
         en: 'At least one field is incomplete or contains invalid data. Please correct it.',
         da: 'Mindst ét felt er ufuldstændigt eller indeholder ugyldige data. Ret det venligst.',

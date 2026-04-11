@@ -1,14 +1,16 @@
 <template>
-  <UranusCard class="organization-card">
+  <UranusCard class="organization-card" :class="{ active: isActiveOrganisation }">
     <div>
       <div class="header">
         <h2>{{ organisation.name }}</h2>
-        <PlutoImage
-            :mainImageUuid="organisation.mainLogoUuid"
-            :lightImageUuid="organisation.lightThemeLogoUuid"
-            :darkImageUuid="organisation.darkThemeLogoUuid"
+        <UranusLogoImage
+            :logoURL="organisation.logoUrl ?? ''"
+            :lightThemeLogoURL="organisation.lightThemeLogoUrl ?? ''"
+            :darkThemeLogoURL="organisation.darkThemeLogoUrl ?? ''"
+            :theme="'light'"
+            :maxWidth="220"
+            :maxHeight="80"
         />
-
       </div>
 
       <span v-if="organisation.city || organisation.countryCode">
@@ -30,7 +32,7 @@
           @click="assignOrganization(organisation.uuid)"
           style="min-width: 100px;"
       >
-        {{ appStore.orgUuid === organisation.uuid ? t('organization_active') : t('organization_activate') }}
+        {{ isActiveOrganisation ? t('organization_active') : t('organization_activate') }}
       </UranusButton>
 
       <UranusButton
@@ -74,16 +76,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import UranusCard from "@/component/ui/UranusCard.vue";
+import UranusCard from '@/component/ui/UranusCard.vue'
 import type { OrganizationListItem } from '@/domain/organization/organizationListItem.model.ts'
-import PlutoImage from "@/component/pluto/PlutoImage.vue";
+import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 
 const { t } = useI18n()
 const appStore = useAppStore()
@@ -93,8 +95,11 @@ const deleteError = ref('')
 const isDeleting = ref(false)
 const pendingDeleteUuid = ref<string | null>(null)
 
+const props = defineProps<{ organisation: OrganizationListItem }>()
 
-defineProps<{ organisation: OrganizationListItem }>()
+const isActiveOrganisation = computed(() => {
+  return appStore.orgUuid === props.organisation.uuid
+})
 
 const emit = defineEmits<{
   deleted: [orgUuid: string]
@@ -148,11 +153,15 @@ const confirmDelete = async ({ password }: { password: string }) => {
 <style scoped lang="scss">
 .organization-card .header {
   display: flex;
-  align-items: start; // optional, vertically center items
+  align-items: end;
+  margin-bottom: 1rem;
 }
 
 .organization-card .header > :nth-child(2) {
   margin-left: auto;
+  min-width: 100px;
+  padding-left: 30px;
 }
+
 
 </style>

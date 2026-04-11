@@ -7,7 +7,7 @@ import { ref, watch, onMounted, onBeforeUnmount, toRaw } from 'vue'
 import type { FeatureCollection } from 'geojson'
 import maplibregl, { Popup, type LngLatLike } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { useThemeStore } from '@/store/uranusThemeStore.ts'
+import { useThemeStore } from '@/store/themeStore.ts'
 
 const themeStore = useThemeStore()
 

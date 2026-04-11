@@ -122,6 +122,8 @@
               style="padding-top: 1rem;"
           />
 
+          <UranusEventOrganizationDisplay :event="event" />
+
           <!-- Venue, Space, Location -->
           <UranusEventVenueDisplay :eventDate="eventDate" />
 
@@ -129,7 +131,6 @@
             <p class="uranus-public-event-info-label">{{ t('event_meeting_point') }}</p>
             <p>{{ event.meetingPoint }}</p>
           </div>
-
 
           <div v-if="priceLabel || priceTypeLabel">
             <p class="uranus-public-event-info-label">{{ t('event_price') }}</p>
@@ -162,17 +163,6 @@
           </div>
 
           <br>
-
-          <!-- Organization -->
-          <div v-if="event.orgName">
-            <p class="uranus-public-event-info-label">{{ t('event_organizer') }}</p>
-            <p v-if="event?.orgWebLink && event?.orgName">
-              <a :href="event.orgWebLink" target="_blank" rel="noopener noreferrer">
-                {{ event?.orgName }}&nbsp;↗
-              </a>
-            </p>
-            <p v-else>{{ event.orgName }}</p>
-          </div>
 
           <UranusEventAllDatesDisplay
               v-if="event?.furtherDates?.length"
@@ -237,6 +227,7 @@ import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
 import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'
+import UranusEventOrganizationDisplay from '@/component/event/ui/UranusEventOrganizationDisplay.vue'
 import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 

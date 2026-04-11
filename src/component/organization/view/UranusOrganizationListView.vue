@@ -51,7 +51,7 @@
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import UranusOrganizationCard from '@/component/organization/UranusOrganizationCard.vue'
+import UranusOrganizationCard from '@/component/organization/card/UranusOrganizationCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'

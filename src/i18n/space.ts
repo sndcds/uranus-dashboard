@@ -1,6 +1,11 @@
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nSpaceTranslations: Record<string, Record<UranusLocaleKey, string>> = {
+    space_type: {
+        de: 'Raumtyp',
+        en: 'Space type',
+        da: 'Lokaletype',
+    },
     unspecified_space_type: {
         de: 'Unbestimmter Raumtyp',
         en: 'Unspecified space type',

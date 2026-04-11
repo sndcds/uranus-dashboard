@@ -13,7 +13,7 @@ export interface UranusOrganizationListItemDTO {
     can_edit_org: boolean
     can_delete_org: boolean
     can_manage_team: boolean
-    main_logo_uuid?: string | null
-    light_theme_logo_uuid?: string | null
-    dark_theme_logo_uuid?: string | null
+    logo_url?: string | null
+    light_theme_logo_url?: string | null
+    dark_theme_logo_url?: string | null
 }

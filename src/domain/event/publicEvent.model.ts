@@ -2,11 +2,14 @@
     src/domain/event/publicEvent.model.ts
  */
 
-import { type PlutoImage, mapPlutoImageFromDTO } from '@/domain/image/plutoImage.model.ts'
+import { type PlutoImage, mapPlutoImageFromDTO, type PlutoLogoImageRef } from '@/domain/image/plutoImage.model.ts'
 import { type PublicEventDate, mapEventDate } from './publicEventDate.model.ts'
 import { type EventTypeModel, mapEventTypeFromDTO } from './eventType.model.ts'
 import { type EventLink } from './eventLink.model.ts'
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
+
+
+export type OrgLogos = Record<string, PlutoLogoImageRef>
 
 export interface PublicEvent {
     uuid: string | null
@@ -16,6 +19,7 @@ export interface PublicEvent {
     orgUuid: string | null
     orgName: string | null
     orgWebLink: string | null
+    orgLogos: OrgLogos
 
     title: string | null
     subtitle: string | null
@@ -76,6 +80,10 @@ export function mapPublicEventFromDTO(dto: PublicEventDTO, dateUuid?: string): P
         }))
         : []
 
+    const orgLogos: OrgLogos = dto.org_logos && typeof dto.org_logos === 'object'
+        ? dto.org_logos
+        : {}
+
     return {
         uuid: dto.uuid ?? null,
         releaseStatus: dto.release_status ?? null,
@@ -84,6 +92,7 @@ export function mapPublicEventFromDTO(dto: PublicEventDTO, dateUuid?: string): P
         orgUuid: dto.org_uuid ?? null,
         orgName: dto.org_name ?? null,
         orgWebLink: dto.org_web_link ?? null,
+        orgLogos,
 
         title: dto.title ?? null,
         subtitle: dto.subtitle ?? null,

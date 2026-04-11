@@ -19,9 +19,9 @@ export interface OrganizationListItem {
     canEditOrg: boolean
     canDeleteOrg: boolean
     canManageTeam: boolean
-    mainLogoUuid?: string | null
-    lightThemeLogoUuid?: string | null
-    darkThemeLogoUuid?: string | null
+    logoUrl?: string | null
+    lightThemeLogoUrl?: string | null
+    darkThemeLogoUrl?: string | null
 }
 
 /**
@@ -39,9 +39,9 @@ export function mapOrganizationListItem(dto: UranusOrganizationListItemDTO): Org
         canEditOrg: dto.can_edit_org,
         canDeleteOrg: dto.can_delete_org,
         canManageTeam: dto.can_manage_team,
-        mainLogoUuid: dto.main_logo_uuid ?? null,
-        lightThemeLogoUuid: dto.light_theme_logo_uuid ?? null,
-        darkThemeLogoUuid: dto.dark_theme_logo_uuid ?? null,
+        logoUrl: dto.logo_url ?? null,
+        lightThemeLogoUrl: dto.light_theme_logo_url ?? null,
+        darkThemeLogoUrl: dto.dark_theme_logo_url ?? null,
     }
 }
 
@@ -60,9 +60,9 @@ export function toOrganizationListItemDTO(model: OrganizationListItem): UranusOr
         can_edit_org: model.canEditOrg,
         can_delete_org: model.canDeleteOrg,
         can_manage_team: model.canManageTeam,
-        main_logo_uuid: model.mainLogoUuid ?? null,
-        light_theme_logo_uuid: model.lightThemeLogoUuid ?? null,
-        dark_theme_logo_uuid: model.darkThemeLogoUuid ?? null,
+        logo_url: model.logoUrl ?? null,
+        light_theme_logo_url: model.lightThemeLogoUrl ?? null,
+        dark_theme_logo_url: model.darkThemeLogoUrl ?? null,
     }
 }
 
@@ -81,8 +81,8 @@ export function createEmptyOrganizationListItem(): OrganizationListItem {
         canEditOrg: false,
         canDeleteOrg: false,
         canManageTeam: false,
-        mainLogoUuid: null,
-        lightThemeLogoUuid: null,
-        darkThemeLogoUuid: null,
+        logoUrl: null,
+        lightThemeLogoUrl: null,
+        darkThemeLogoUrl: null,
     }
 }
