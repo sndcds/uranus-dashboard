@@ -10,14 +10,12 @@
           <template #icon><StepBack /></template>{{ t('finish_edit') }}
         </UranusButton>
         <UranusButton size="small" variant="tertiary" @click="showReleaseModal = true">
-          <template #icon><Rocket /></template>{{ t('edit_event_release_status') }}
+          <template #icon><Rocket /></template>{{ t('event_release_settings') }}
         </UranusButton>
       </div>
 
       <UranusDashboardHero :title="t('edit_event')"/>
-
       <div v-if="adminEventStore.loading">Loading…</div>
-      <div v-else-if="adminEventStore.error">{{ adminEventStore.error }}</div>
       <template v-else-if="adminEventStore.isLoaded && adminEventStore.draft">
         <nav class="tabs">
           <button
@@ -75,6 +73,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 
 import { StepBack, Rocket } from 'lucide-vue-next'
 import UranusDashboardHero from "@/component/dashboard/UranusDashboardHero.vue";
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const showReleaseModal = ref(false)
 

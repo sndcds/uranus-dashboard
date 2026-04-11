@@ -411,6 +411,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Preview',
         da: 'Vis',
     },
+    stage_failed_check_data: {
+        de: 'Mindestens ein Feld ist unvollständig oder enthält ungültige Daten. Bitte korrigiere dies.',
+        en: 'At least one field is incomplete or contains invalid data. Please correct it.',
+        da: 'Mindst ét felt er ufuldstændigt eller indeholder ugyldige data. Ret det venligst.',
+    }
 }
 
 export default uranusI18nStandardTranslations

@@ -9,6 +9,10 @@
       </UranusInfoHeading>
     </UranusCard>
 
+    <UranusFeedback :show="!!store.error" type="error">
+      {{ store.error }}
+    </UranusFeedback>
+
     <!-- Event dates -->
     <UranusCard
         v-for="(date, index) in store.draft?.eventDates"
@@ -25,8 +29,8 @@
       </UranusInfoHeading>
 
       <div class="date-pair">
-        <UranusDateInput id="start-date" v-model="date.startDate" :label="t('event_start_date')" style="width: 100%;"/>
-        <UranusTimeInput id="start-time" v-model="date.startTime" :label="t('event_start_time')" style="width: 100%;"/>
+        <UranusDateInput id="start-date" v-model="date.startDate" :label="t('event_start_date')" required style="width: 100%;"/>
+        <UranusTimeInput id="start-time" v-model="date.startTime" :label="t('event_start_time')" required style="width: 100%;"/>
       </div>
 
       <div class="date-pair">
@@ -36,7 +40,7 @@
 
       <div class="date-pair">
         <UranusTimeInput id="entry-time" v-model="date.entryTime" :label="t('event_entry_time')" style="width: 100%;"/>
-        <UranusNumberInput id="duration" v-model="date.duration!" min="0" :label="t('event_duration')" />
+        <UranusNumberInput id="duration" v-model="date.duration!" min="1" :label="t('event_duration')" />
       </div>
 
       <div class="date-pair" style="padding-top: 1.6rem;">
@@ -108,6 +112,7 @@ import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
 import { Save, Undo, Plus, MapPin, Info } from 'lucide-vue-next'
 import { apiFetch } from '@/api.ts'
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
@@ -202,7 +207,7 @@ async function commitDates() {
         : []
   } catch (err) {
     console.error(err)
-    store.error = 'Failed to save event dates'
+    store.error = t('stage_failed_check_data')
   } finally {
     store.saving = false
   }

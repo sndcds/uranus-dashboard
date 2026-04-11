@@ -5,21 +5,34 @@
       @close="$emit('close')"
       :maxWidth="'500px'"
   >
-    <div class="modal-content">
-      <UranusLabel id="" label="Release Status">
-        <UranusEventReleaseStatusSelect
-            v-model="localReleaseStatus" />
-      </UranusLabel>
 
-      <UranusLabel id="" label="Release Date">
-        <input type="date" v-model="localReleaseDate" />
-      </UranusLabel>
-    </div>
+    <UranusForm>
+      <UranusFormRow>
+        <UranusLabel id="release-status" :label="t('event_release_status')">
+          <UranusEventReleaseStatusSelect v-model="localReleaseStatus" />
+        </UranusLabel>
+      </UranusFormRow>
 
-    <div class="modal-actions">
-      <button @click="save">Save</button>
-      <button @click="$emit('close')">Cancel</button>
-    </div>
+      <UranusFormRow>
+        <UranusDateInput
+            id="release-date"
+            :label="t('event_release_date')"
+            v-model="localReleaseDate">
+        </UranusDateInput>
+      </UranusFormRow>
+    </UranusForm>
+
+    <UranusFormRow>
+      <div class="release-notice">
+        <AlertTriangle /><br>
+        {{ t('event_release_notice') }}
+      </div>
+    </UranusFormRow>
+
+    <UranusFormActions>
+      <UranusButton @click="$emit('close')">{{ t('cancel') }}</UranusButton>
+      <UranusButton @click="onSave">{{ t('save') }}</UranusButton>
+    </UranusFormActions>
   </UranusModal>
 </template>
 
@@ -29,6 +42,12 @@ import { useI18n } from 'vue-i18n'
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusEventReleaseStatusSelect from '@/component/event/ui/UranusEventReleaseStatusSelect.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
+import UranusForm from "@/component/ui/UranusForm.vue";
+import UranusFormRow from "@/component/ui/UranusFormRow.vue";
+import UranusDateInput from "@/component/ui/UranusDateInput.vue";
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
+import UranusButton from "@/component/ui/UranusButton.vue";
+import { AlertTriangle } from 'lucide-vue-next'
 
 const { t } = useI18n()
 
@@ -52,7 +71,7 @@ const localReleaseDate = ref(props.releaseDate)
 watch(() => props.releaseStatus, val => localReleaseStatus.value = val)
 watch(() => props.releaseDate, val => localReleaseDate.value = val)
 
-function save() {
+function onSave() {
   emit('update:releaseStatus', localReleaseStatus.value)
   emit('update:releaseDate', localReleaseDate.value)
   emit('close')
@@ -60,26 +79,7 @@ function save() {
 </script>
 
 <style scoped>
-.modal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
-
-  button {
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    border: 1px solid #aaa;
-    background: #fff;
-
-    &:hover { background: #e0e0e0; }
-  }
+.release-notice {
+  margin: 2rem 0.5rem;
 }
 </style>

@@ -127,9 +127,9 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Rediger begivenhedsbillede',
     },
     event_release_settings: {
-        de: 'Veröffentlichung einstellen',
-        en: 'Edit release setting',
-        da: 'Rediger udgivelse',
+        de: 'Veröffentlichung',
+        en: 'Release setting',
+        da: 'Udgivelse',
     },
     add_event_image: {
         de: 'Eventbild hinzufügen',
@@ -210,11 +210,6 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Noch kein Veröffentlichungsdatum festgelegt.',
         en: 'No release date has been set yet.',
         da: 'Ingen udgivelsesdato angivet endnu.',
-    },
-    edit_event_release_status: {
-        de: 'Veröffentlichungstatus',
-        en: 'Release status',
-        da: 'Udgivelsesstatus',
     },
     event_without_venue: {
         de: 'Ohne Spielstätte',
@@ -641,11 +636,6 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Reschreduled',
         da: 'Flyttet',
     },
-    event_release_status_label: {
-        de: 'Veröffentlichungsstatus',
-        en: 'Release status',
-        da: 'Udgivelsesstatus',
-    },
     notification_cant_see_events_title: {
         de: 'Warum kann ich keine Events sehen?',
         en: 'Why can’t I see any events?',
@@ -680,6 +670,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Datum entfernen',
         en: 'Remove date',
         da: 'Fjern dato',
+    },
+    event_release_notice: {
+        de: 'Bitte veröffentliche ausschließlich Inhalte, für die du über alle erforderlichen Nutzungsrechte verfügst. Mit dem Klick auf „Speichern“ bestätigst du dies.',
+        en: 'Please ensure that you only publish content for which you have all necessary usage rights. By clicking “Save”, you confirm this.',
+        da: 'Sørg for kun at offentliggøre indhold, som du har alle nødvendige brugsrettigheder til. Ved at klikke på “Gem” bekræfter du dette.',
     }
 }
 

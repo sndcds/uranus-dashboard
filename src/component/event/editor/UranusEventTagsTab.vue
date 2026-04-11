@@ -23,11 +23,6 @@
         @update="store.draft.tags = $event"
     />
 
-    <!-- Dirty indicator -->
-    <div class="dirty-indicator" v-if="isDirty">
-      ⚠ You have unsaved changes
-    </div>
-
     <div class="tab-actions">
       <UranusButton :disabled="store.saving || !isDirty" @click="resetAll">
         <template #icon><Undo /></template>

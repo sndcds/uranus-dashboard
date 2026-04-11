@@ -35,10 +35,6 @@
         v-model="draft.onlineLink"
     />
 
-    <div class="dirty-indicator" v-if="isDirty">
-      ⚠ You have unsaved changes
-    </div>
-
     <div class="tab-actions">
       <UranusButton :disabled="store.saving || !isDirty" @click="resetTab">
         <template #icon><Undo /></template>
