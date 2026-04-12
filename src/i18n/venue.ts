@@ -80,7 +80,17 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Spielstätte erstellen',
         en: 'Create venue',
         da: 'Opret spillested',
-    }
+    },
+    delete_venue: {
+        de: 'Spielstätte löschen',
+        en: 'Delete venue',
+        da: 'Slet spillested',
+    },
+    confirm_delete_venue: {
+        de: 'Du bist dabei die Spielstätte "~~name~~" zu löschen. Gib dein Passwort ein, um fortzufahren.',
+        en: 'You are about to delete the venu "{name}". Enter your password to continue.',
+        da: 'Du er ved at slette spillestedet "{name}". Indtast din adgangskode for at fortsætte.',
+    },
 }
 
 export default uranusI18nVenueTranslations

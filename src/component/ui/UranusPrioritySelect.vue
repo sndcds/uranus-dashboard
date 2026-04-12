@@ -16,13 +16,16 @@
         :style="selected === option.value ? { backgroundColor: option.color, color: '#fff' } : {}"
         @click="select(option.value)"
     >
-      {{ option.label }}
+      {{ t(option.label) }}
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, defineProps, defineEmits, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Option {
   label: string
@@ -40,7 +43,7 @@ const emit = defineEmits<{
 }>()
 
 // Internal selected state
-const selected = ref(props.modelValue ?? 'medium')
+const selected = ref(props.modelValue ?? 'mid')
 
 // Watch prop changes to update internal state
 watch(() => props.modelValue, (newVal) => {
@@ -49,9 +52,9 @@ watch(() => props.modelValue, (newVal) => {
 
 // Options
 const options: Option[] = [
-  { label: 'Low', value: 'low', color: '#34d399' },
-  { label: 'Medium', value: 'medium', color: '#facc15' },
-  { label: 'High', value: 'high', color: '#f87171' }
+  { label: 'low', value: 'low', color: 'var(--uranus-low-priority_color)' },
+  { label: 'mid', value: 'mid', color: 'var(--uranus-medium-priority_color)' },
+  { label: 'high', value: 'high', color: 'var(--uranus-high-priority_color)' }
 ]
 
 // Select function
@@ -64,28 +67,48 @@ const select = (value: string) => {
 <style scoped lang="scss">
 .priority-chip-select {
   display: inline-flex;
-  flex: 0 0 auto;
   width: max-content;
   align-self: flex-start;
-  gap: 0.4rem;
+  padding: 0;
   margin-left: auto;
-  padding: 0.4rem;
+}
 
-  &__button {
-    border: none;
-    border-radius: 9999px;
-    padding: 0.3rem 0.6rem;
-    background: #f0f0f0;
-    cursor: pointer;
-    transition: all 0.2s ease;
+/* base button */
+.priority-chip-select__button {
+  border: 1px solid var(--uranus-color-6);
+  background: var(--uranus-color-9);
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  margin: 0;
+}
 
-    &:hover {
-      background: #e0e0e0;
-    }
+/* remove double borders between buttons */
+.priority-chip-select__button:not(:first-child) {
+  margin-left: -1px;
+}
 
-    &.is-active {
-      /* background color is set inline from option.color */
-    }
-  }
+/* rounded group */
+.priority-chip-select__button:first-child {
+  border-top-left-radius: 9999px;
+  border-bottom-left-radius: 9999px;
+}
+
+.priority-chip-select__button:last-child {
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
+}
+
+/* hover */
+.priority-chip-select__button:hover {
+  background: var(--uranus-color-8);
+}
+
+/* active state = colored border */
+.priority-chip-select__button.is-active {
+  z-index: 1;
+  background: #fff;
+  border-width: 1px;
 }
 </style>

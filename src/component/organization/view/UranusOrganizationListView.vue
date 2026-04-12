@@ -8,7 +8,7 @@
   <div class="uranus-main-layout">
     <UranusDashboardHero
         :title="t('organizations')"
-        :subtitle="t('dashboard_organizations_hero_description')"
+        :subtitle="t('organizations_manage_description')"
     />
 
     <!-- Empty State Message -->

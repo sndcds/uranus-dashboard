@@ -1,11 +1,9 @@
 <!--
   src/component/ui/UranusCheckbox.vue
-
-  2026-03-21, Roald
 -->
 
 <template>
-  <div class="uranus-checkbox-outlined" @click="toggle">
+  <label class="uranus-checkbox-outlined">
     <input
         type="checkbox"
         :id="id"
@@ -32,7 +30,7 @@
     </span>
 
     <span class="label-text">{{ label }}</span>
-  </div>
+  </label>
 </template>
 
 <script setup lang="ts">
@@ -73,25 +71,16 @@ function updateArray(checked: boolean) {
   emit('update:modelValue', newValue)
 }
 
-const toggle = (e: MouseEvent) => {
-  if ((e.target as HTMLElement).tagName === 'INPUT') return
-
-  if (Array.isArray(props.modelValue)) {
-    updateArray(!isChecked.value)
-  } else {
-    emit('update:modelValue', !props.modelValue)
-  }
-}
-
 const onChange = (event: Event) => {
   const checked = (event.target as HTMLInputElement).checked
-
   if (Array.isArray(props.modelValue)) {
     updateArray(checked)
   } else {
     emit('update:modelValue', checked)
   }
 }
+
+
 </script>
 
 <style lang="scss">

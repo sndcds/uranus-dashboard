@@ -8,6 +8,7 @@
 
 <template>
   <UranusCard
+      v-if="canPreviewEvent"
       class="uranus-dashboard-card"
       :class="event.releaseStatus ?? 'default'"
   >
@@ -16,7 +17,7 @@
         <UranusEventReleaseChip :releaseStatus="event.releaseStatus ?? ''" :tiny="true"/>
         <UranusEventCategoryDisplay v-if="event.categories" :categories="event.categories" />
         <span v-if="event.seriesTotal && event.seriesTotal > 1">
-          {{ event.seriesIndex }} {{ t('one_of_n') }} {{ event.seriesTotal }}
+          {{ event.seriesIndex }} {{ t('one_of') }} {{ event.seriesTotal }}
         </span>
         <span v-else>1</span>
       </div>
@@ -66,6 +67,7 @@
 
       <div class="uranus-event-card-actions">
         <UranusButton
+            v-if="canPreviewEvent"
             variant="secondary" size="small"
             :to="`/event/${event.uuid}/date/${event.dateUuid}/preview`"
             target="_blank"
@@ -156,6 +158,15 @@ const eventTypeGenreString = (type: EventTypePairModel) => {
 // Computed for presence checks
 const hasVenue = computed(() => !!props.event.venueUuid)
 const hasSpace = computed(() => !!props.event.spaceUuid)
+
+
+const canPreviewEvent = computed(() => {
+  const event = props.event
+  if (event.canViewEventInsights) return true
+  else if (event.releaseStatus == 'draft' || event.releaseStatus == 'review') return false
+  return true
+})
+
 
 // Delete modal state
 const showDeleteModal = ref(false)

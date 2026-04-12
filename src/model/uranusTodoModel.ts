@@ -4,5 +4,5 @@ export interface TodoDTO {
     description: string | null
     due_date: string | null
     completed: boolean
-    importance: 'low' | 'medium' | 'high'
+    importance: 'low' | 'mid' | 'high'
 }

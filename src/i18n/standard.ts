@@ -46,6 +46,26 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'No',
         da: 'Nej'
     },
+    light: {
+        de: 'Hell',
+        en: 'Light',
+        da: 'Lys'
+    },
+    dark: {
+        de: 'Dunkel',
+        en: 'Dark',
+        da: 'Mørk'
+    },
+    priority: {
+        de: 'Priorität',
+        en: 'Priority',
+        da: 'Prioritet'
+    },
+    importance: {
+        de: 'Relevanz',
+        en: 'Relevance',
+        da: 'Relevans'
+    },
     low: {
         de: 'Niedrig',
         en: 'Low',
@@ -291,6 +311,26 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'License',
         da: 'Licens',
     },
+    team: {
+        de: 'Team',
+        en: 'Team',
+        da: 'Team',
+    },
+    team_members: {
+        de: 'Teammitglieder',
+        en: 'Team members',
+        da: 'Medlemmer i teamet',
+    },
+    manage_team: {
+        de: 'Team',
+        en: 'Manage team',
+        da: 'Administrer team',
+    },
+    permissions: {
+        de: 'Berechtigungen',
+        en: 'Permissions',
+        da: 'Rettigheder',
+    },
     show_map: {
         de: 'Karte anzeigen',
         en: 'Show map',
@@ -421,16 +461,51 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'No messages available.',
         da: 'Ingen beskeder.',
     },
+    today: {
+        de: 'Heute',
+        en: 'Today',
+        da: 'I dag',
+    },
+    tomorrow: {
+        de: 'Morgen',
+        en: 'Tomorrow',
+        da: 'I morgen',
+    },
+    days_left: {
+        de: 'Tage verbleibend',
+        en: 'days left',
+        da: 'dage tilbage',
+    },
+    days_overdue: {
+        de: 'Tage überfällig',
+        en: 'days overdue',
+        da: 'dage forsinket',
+    },
+    n_days_ago: {
+        de: '~~n~~ Tage her',
+        en: '~~n~~ days ago',
+        da: '~~n~~ dage siden',
+    },
+    in_n_days: {
+        de: 'in ~~n~~ Tagen',
+        en: 'in ~~n~~ days',
+        da: 'om ~~n~~ dage',
+    },
     one_of_n: {
-        de: 'von',
-        en: 'of',
-        da: 'af',
+        de: '~~n~~ von ~~m~~',
+        en: '~~n~~ of ~~m~~',
+        da: '~~n~~ af ~~m~~',
     },
     form_validation_failed: {
         de: 'Mindestens ein Feld ist unvollständig oder enthält ungültige Daten. Bitte korrigiere dies.',
         en: 'At least one field is incomplete or contains invalid data. Please correct it.',
         da: 'Mindst ét felt er ufuldstændigt eller indeholder ugyldige data. Ret det venligst.',
-    }
+    },
+    enter_password_to_confirm: {
+        de: 'Passwort zur Bestätigung eingeben',
+        en: 'Enter password to confirm',
+        da: 'Indtast adgangskode for at bekræfte',
+    },
 }
 
 export default uranusI18nStandardTranslations

@@ -166,8 +166,8 @@ const localeOptions: Array<{ value: string; label: string }> = [
 ]
 
 const themeOptions: Array<{ value: ThemeMode; label: string }> = [
-  { value: 'light', label: 'settings_theme_light' },
-  { value: 'dark', label: 'settings_theme_dark' },
+  { value: 'light', label: 'light' },
+  { value: 'dark', label: 'dark' },
 ]
 
 const selectedLocale = computed({

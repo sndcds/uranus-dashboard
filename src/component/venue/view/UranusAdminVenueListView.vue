@@ -46,10 +46,10 @@
     </template>
 
     <div class="venue-space-list" ref="containerRef" style="margin-top: 2rem;">
-      <h2>Diesen Spielstätten kannst du für Events auswählen</h2>
+      <h2>Diese Spielstätten kannst du für Events auswählen</h2>
       <div
           class="uranus-card venue-group"
-          v-for="venue in choosableVenuesStore.getVenueSpacesInfos(true)"
+          v-for="venue in choosableVenuesStore.getVenueSpacesInfos()"
           :key="venue.venueUuid"
       >
         <div class="venue-item">

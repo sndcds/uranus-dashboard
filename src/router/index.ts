@@ -20,7 +20,7 @@ import UranusHtmlView from '@/view/public/UranusHTMLView.vue'
 import UserActivateView from '@/view/UserActivateView.vue'
 import UranusInviteActivateView from '@/view/UranusInviteActivateView.vue'
 import UranusOrganizationTeamView from '@/component/organization/view/UranusOrganizationTeamView.vue'
-import UranusOrganizationMemberPermissionView from '@/view/UranusOrganizationMemberPermissionView.vue'
+import UranusOrganizationMemberPermissionView from '@/component/organization/view/UranusOrganizationMemberPermissionView.vue'
 import UranusEventsView from '@/view/public/UranusEventsView.vue'
 import UranusEventCalendarView from '@/view/public/UranusEventCalendarView.vue'
 import UranusEventSlideshowView from '@/view/public/UranusEventSlideshowView.vue'
@@ -32,12 +32,13 @@ import UranusOrganizationEditView from '@/component/organization/view/UranusOrga
 import UranusOrganizationCreateView from '@/component/organization/view/UranusOrganizationCreateView.vue'
 import UranusVenueCreateView from '@/component/venue/view/UranusVenueCreateView.vue'
 import UranusVenueEditView from '@/component/venue/view/UranusVenueEditView.vue'
-import UranusAdminEventListView from '@/component/event/view/UranusAdminEventListView.vue'
+import UranusEventListView from '@/component/event/view/UranusEventListView.vue'
 import UranusEventCreateView from '@/component/event/view/UranusEventCreateView.vue'
 import UranusEventEditView from '@/component/event/view/UranusEventEditView.vue'
 import UranusDevGetEventsView from '@/component/dev/UranusDevGetEventsView.vue'
 import UranusMapView from '@/view/public/UranusMapView.vue'
 import ContentOnlyLayout from '@/component/layout/ContentOnlyLayout.vue'
+import UranusDevI18nTestsView from '@/view/dev/UranusDevI18nTestsView.vue'
 
 
 const routes = [
@@ -108,7 +109,7 @@ const routes = [
             {
                 path: 'organization/:orgUuid/events',
                 name: 'admin-organization-events',
-                component: UranusAdminEventListView,
+                component: UranusEventListView,
             },
             {
                 path: 'user/profile',
@@ -131,7 +132,7 @@ const routes = [
                 component: UranusInviteActivateView,
             },
             {
-                path: 'organization/:uuid/member/:memberId/permissions',
+                path: 'organization/:uuid/member/:memberUuid/permissions',
                 name: 'admin-edit-member-permission',
                 component: UranusOrganizationMemberPermissionView,
             },
@@ -207,6 +208,12 @@ const routes = [
                 path: 'dev-theme-view',
                 name: 'dev-theme-view',
                 component: UranusDevThemeView,
+                meta: { layoutMode: 'zero-padding' },
+            },
+            {
+                path: 'dev-i18n-tests-view',
+                name: 'dev-i18n-tests-view',
+                component: UranusDevI18nTestsView,
                 meta: { layoutMode: 'zero-padding' },
             },
             {

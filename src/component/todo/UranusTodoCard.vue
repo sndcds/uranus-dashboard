@@ -145,9 +145,9 @@ const confirmDelete = async ({ password }: { password: string }) => {
   flex-shrink: 0;
 }
 
-.importance-indicator.low { background-color: var(--uranus-low-priority_color, #34d399); }
-.importance-indicator.medium { background-color: var(--uranus-medium-priority_color, #facc15); }
-.importance-indicator.high { background-color: var(--uranus-high-priority_color, #f87171); }
+.importance-indicator.low { background-color: var(--uranus-low-priority_color); }
+.importance-indicator.mid { background-color: var(--uranus-medium-priority_color); }
+.importance-indicator.high { background-color: var(--uranus-high-priority_color); }
 
 .title {
   font-weight: 500;

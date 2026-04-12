@@ -116,16 +116,6 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'Loading permissions…',
         da: 'Indlæser rettigheder…',
     },
-    user_permissions_entities: {
-        de: '[count] Einträge',
-        en: '[count] entries',
-        da: '[count] poster',
-    },
-    user_permissions_relation: {
-        de: 'Relation-ID [id]',
-        en: 'Relation #{id}',
-        da: 'Relations-ID {id}',
-    },
     user_permissions_add_event: {
         de: 'Event anlegen',
         en: 'Create event',

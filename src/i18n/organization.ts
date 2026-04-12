@@ -31,6 +31,11 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         en: 'Organization name',
         da: 'Organisationsnavn',
     },
+    organizations_manage_description: {
+        de: 'Verwalte deine Organisationen und Organisationen bei denen du im Team bist.',
+        en: 'Manage your organizations and the teams you are part of.',
+        da: 'Administrer dine organisationer og de organisationer, hvor du er en del af teamet.',
+    },
     organization_edit_description: {
         de: 'Überprüfe und aktualisiere die Daten deiner Organisation.',
         en: 'Review and update your organization details.',
@@ -96,6 +101,12 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         en: 'Enter the exact organization name. You can edit the details afterwards.',
         da: 'Indtast det præcise organisationsnavn. Du kan redigere detaljerne bagefter.',
     },
+    organization_manage_team_description: {
+        de: 'Verwalte Mitglieder, Rollen und Einladungen deiner Organisation.',
+        en: 'Manage members, roles, and invitations for your organization team.',
+        da: 'Administrer medlemmer, roller og invitationer for din organisation.',
+
+    }
 }
 
 export default uranusI18nOrganizationTranslations

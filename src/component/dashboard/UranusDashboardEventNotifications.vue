@@ -32,7 +32,7 @@
             <li>
               <span class="event-card__value">
                 {{ t('event_starts') }}: {{ formatDate(notification.earliest_event_date) }}
-                {{ formatEventCountdown(notification.days_until_event) }}
+                ({{ formatEventCountdown(notification.days_until_event) }})
               </span>
             </li>
             <li>
@@ -62,6 +62,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
 
 interface Notification {
   event_uuid: string
@@ -132,12 +133,17 @@ const formatEventCountdown = (days: number) => {
     return ''
   }
   if (days === 0) {
-    return `(${t('today')})`
+    return t('today')
   }
   if (days < 0) {
-    return `(${Math.abs(days)} ${t('days_ago')})`
+    return uranusStringInterpolate(t('n_days_ago'), {
+      n: Math.abs(days)
+    })
   }
-  return `(${t('in')} ${days} ${t('days')})`
+
+  return uranusStringInterpolate(t('in_n_days'), {
+    n: days + 10
+  });
 }
 
 const loadNotifications = async () => {

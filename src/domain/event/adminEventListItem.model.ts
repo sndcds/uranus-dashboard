@@ -11,6 +11,7 @@ export interface AdminEventListItemModel {
     canEditEvent: boolean
     canDeleteEvent: boolean
     canReleaseEvent: boolean
+    canViewEventInsights: boolean
     orgUuid: string
     orgName?: string | null
     venueUuid?: string | null

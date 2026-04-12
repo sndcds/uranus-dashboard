@@ -42,8 +42,7 @@
       :show="showReleaseModal"
       :releaseStatus="draftEvent.releaseStatus"
       :releaseDate="draftEvent.releaseDate"
-      @update:releaseStatus="val => updateReleaseField('releaseStatus', val)"
-      @update:releaseDate="val => updateReleaseField('releaseDate', val)"
+      @save="updateReleaseFields"
       @close="showReleaseModal = false"
   />
 
@@ -56,10 +55,8 @@ import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { getPreviousRoute } from '@/router'
-
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { type AdminEventDTO } from '@/api/dto/adminEvent.dto.ts'
-
 import UranusEventBaseTab from '@/component/event/editor/UranusEventBaseTab.vue'
 import UranusEventDatesTab from '@/component/event/editor/UranusEventDatesTab.vue'
 import UranusEventTagsTab from '@/component/event/editor/UranusEventTagsTab.vue'
@@ -70,10 +67,8 @@ import UranusEventTicketTab from '@/component/event/editor/UranusEventTicketTab.
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
 import UranusEventVisitorInfo from '@/component/event/editor/UranusEventVisitorInfo.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-
+import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import { StepBack, Rocket } from 'lucide-vue-next'
-import UranusDashboardHero from "@/component/dashboard/UranusDashboardHero.vue";
-import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const showReleaseModal = ref(false)
 
@@ -158,33 +153,40 @@ onUnmounted(() => {
   }
 })
 
-async function updateReleaseField(field: 'releaseStatus' | 'releaseDate', value: any) {
+async function updateReleaseFields(payload: {
+  releaseStatus: string | null
+  releaseDate: string | null
+}) {
   if (!draftEvent.value || !adminEventStore.original) return
 
-  // Update local draft
-  draftEvent.value[field] = value
+  // update local draft
+  draftEvent.value.releaseStatus = payload.releaseStatus
+  draftEvent.value.releaseDate = payload.releaseDate
 
-  // Build payload: only include changed fields
-  const payload: Record<string, any> = {}
-  if (draftEvent.value.releaseStatus !== adminEventStore.original.releaseStatus) {
-    payload.release_status = draftEvent.value.releaseStatus
-  }
-  if (draftEvent.value.releaseDate !== adminEventStore.original.releaseDate) {
-    payload.release_date = draftEvent.value.releaseDate
+  const body: Record<string, any> = {}
+
+  if (payload.releaseStatus !== adminEventStore.original.releaseStatus) {
+    body.release_status = payload.releaseStatus
   }
 
-  // Nothing changed
-  if (Object.keys(payload).length === 0) return
+  if (payload.releaseDate !== adminEventStore.original.releaseDate) {
+    body.release_date = payload.releaseDate
+  }
+
+  if (Object.keys(body).length === 0) return
 
   try {
     await apiFetch(`/api/admin/event/${eventUuid.value}/fields`, {
       method: 'PUT',
-      body: JSON.stringify(payload),
+      body: JSON.stringify(body),
     })
 
-    // Commit changes locally
-    if (payload.release_status !== undefined) adminEventStore.original.releaseStatus = draftEvent.value.releaseStatus
-    if (payload.release_date !== undefined) adminEventStore.original.releaseDate = draftEvent.value.releaseDate
+    if (body.release_status !== undefined) {
+      adminEventStore.original.releaseStatus = payload.releaseStatus
+    }
+    if (body.release_date !== undefined) {
+      adminEventStore.original.releaseDate = payload.releaseDate
+    }
   } catch (err) {
     console.error("Failed to update release fields", err)
     adminEventStore.error = 'Failed to save release fields'

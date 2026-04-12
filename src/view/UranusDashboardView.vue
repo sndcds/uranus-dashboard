@@ -8,15 +8,15 @@
         :subtitle="t('dashboard_hero_description')"
     />
 
-    <UranusDashboardNotifications />
+    <UranusDashboardEventNotifications />
 
-    <!--
+    <!-- TODO: Tests
     <section class="chart-card">
       <h2>Monatsumsatz &ndash; Standard</h2>
       <p class="subtitle">Standard-Theme (CSS Custom Properties)</p>
       <UranusLineChart :data="chartData" />
     </section>
-    -->
+
     <UranusSegmentedSelect
         v-model="selected"
         :options="options"
@@ -29,6 +29,7 @@
     />
 
     <UranusPrioritySelect></UranusPrioritySelect>
+    -->
 
   </div>
 </template>
@@ -39,7 +40,7 @@ import { useI18n } from 'vue-i18n'
 import { Calendar, BarChart, Clock } from 'lucide-vue-next'
 
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusDashboardNotifications from '@/component/dashboard/UranusDashboardNotifications.vue'
+import UranusDashboardEventNotifications from '@/component/dashboard/UranusDashboardEventNotifications.vue'
 import UranusLineChart from '@/component/chart/UranusLineChart.vue'
 import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
 import UranusPrioritySelect from '@/component/ui/UranusPrioritySelect.vue'

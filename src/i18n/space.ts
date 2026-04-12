@@ -11,11 +11,21 @@ export const uranusI18nSpaceTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Unspecified space type',
         da: 'uspecificeret lokale',
     },
-    confirm_delete_description: {
-        de: 'Du bist dabei "~~name~~" zu löschen. Gib dein Passwort ein, um fortzufahren.',
-        en: 'You are about to delete "{name}". Enter your password to continue.',
-        da: 'Du er ved at slette "{name}". Indtast din adgangskode for at fortsætte.',
-    }
+    delete_space: {
+        de: 'Raum löschen',
+        en: 'Delete space',
+        da: 'Slet lokale',
+    },
+    confirm_delete_space: {
+        de: 'Du bist dabei den Raum "~~name~~" zu löschen. Gib dein Passwort ein, um fortzufahren.',
+        en: 'You are about to delete the space "{name}". Enter your password to continue.',
+        da: 'Du er ved at slette lokale "{name}". Indtast din adgangskode for at fortsætte.',
+    },
+    spaces_empty: {
+        de: 'Noch keine Räume angelegt.',
+        en: 'No spaces added yet.',
+        da: 'Ingen lokaler oprettet endnu.',
+    },
 }
 
 export default uranusI18nSpaceTranslations

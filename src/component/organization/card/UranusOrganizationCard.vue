@@ -7,7 +7,7 @@
             :logoURL="organisation.logoUrl ?? ''"
             :lightThemeLogoURL="organisation.lightThemeLogoUrl ?? ''"
             :darkThemeLogoURL="organisation.darkThemeLogoUrl ?? ''"
-            :theme="'light'"
+            :theme="themeStore.theme"
             :maxWidth="220"
             :maxHeight="80"
         />
@@ -27,7 +27,6 @@
 
     <div class="uranus-card-button-container">
       <UranusButton
-          v-if="organisation.canEditOrg"
           variant="secondary" size="small"
           @click="assignOrganization(organisation.uuid)"
           style="min-width: 100px;"
@@ -80,6 +79,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
+import { useThemeStore } from '@/store/themeStore.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
@@ -89,6 +89,8 @@ import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 
 const { t } = useI18n()
 const appStore = useAppStore()
+const themeStore = useThemeStore()
+
 
 const showDeleteModal = ref(false)
 const deleteError = ref('')

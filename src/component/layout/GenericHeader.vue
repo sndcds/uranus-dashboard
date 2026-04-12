@@ -77,12 +77,12 @@
                 <button @click.stop="setTheme('light')" class="generic-header__dropdown-option"
                     :class="{ 'generic-header__dropdown-option--active': currentTheme === 'light' }">
                   <Sun />
-                  {{ t('settings_theme_light') }}
+                  {{ t('light') }}
                 </button>
                   <button @click.stop="setTheme('dark')" class="generic-header__dropdown-option"
                       :class="{ 'generic-header__dropdown-option--active': currentTheme === 'dark' }">
                       <Moon />
-                    {{ t('settings_theme_dark') }}
+                    {{ t('dark') }}
                   </button>
               </div>
             </div>
@@ -293,9 +293,9 @@ const fetchUserProfile = async () => {
   if (!tokenStore.isAuthenticated) return
 
   try {
-    const { response } = await apiFetch<any>('/api/admin/user/profile')
-    if (response) {
-      const payload: LoginResponse = response.data
+    const apiResponse = await apiFetch<any>('/api/admin/user/profile')
+    if (apiResponse) {
+      const payload: LoginResponse = apiResponse.data
       userStore.setUserUuid(payload.user_uuid)
       userStore.setDisplayName(payload.display_name ?? '')
       userStore.setUserAvatarUrl(payload.avatar_url ?? null)
@@ -512,30 +512,15 @@ onUnmounted(() => {
 }
 
 .generic-header__dropdown-section {
-  padding: 0.75rem 0;
+  padding: 0;
 }
 
-.generic-header__dropdown-section-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--uranus-muted-text);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-
-  svg {
-    opacity: 0.6;
-  }
-}
 
 .generic-header__dropdown-options {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  padding: 0.25rem 0;
+  padding: 0;
 }
 
 .generic-header__dropdown-option {
@@ -562,8 +547,8 @@ onUnmounted(() => {
   }
 
   &--active {
-    background: var(--uranus-nav-bg-active);
-    color: var(--uranus-nav-color-active);
+    // background: var(--uranus-nav-bg-active);
+    // color: var(--uranus-nav-color-active);
     &::before {
       content: '✓';
       position: absolute;

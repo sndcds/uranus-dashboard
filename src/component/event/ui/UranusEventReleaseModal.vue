@@ -1,3 +1,7 @@
+<!--
+  src/component/event/ui/UranusEventReleaseModal.vue
+-->
+
 <template>
   <UranusModal
       :show="show"
@@ -58,8 +62,7 @@ interface Props {
 }
 const props = defineProps<Props>()
 const emit = defineEmits<{
-  (e: 'update:releaseStatus', val: string | null): void
-  (e: 'update:releaseDate', val: string | null): void
+  (e: 'save', payload: { releaseStatus: string | null; releaseDate: string | null }): void
   (e: 'close'): void
 }>()
 
@@ -72,8 +75,10 @@ watch(() => props.releaseStatus, val => localReleaseStatus.value = val)
 watch(() => props.releaseDate, val => localReleaseDate.value = val)
 
 function onSave() {
-  emit('update:releaseStatus', localReleaseStatus.value)
-  emit('update:releaseDate', localReleaseDate.value)
+  emit('save', {
+    releaseStatus: localReleaseStatus.value,
+    releaseDate: localReleaseDate.value,
+  })
   emit('close')
 }
 </script>

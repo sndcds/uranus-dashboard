@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+defineProps({
   span: { type: Number, default: 12 } // grid column span
 })
 </script>

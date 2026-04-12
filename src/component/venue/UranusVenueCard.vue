@@ -12,7 +12,7 @@
           <p>{{ eventCountText }}</p>
           <div class="uranus-card-button-container">
           <UranusButton
-              v-if="venueListItem.canEditEvent"
+              v-if="venueListItem.canEditVenue"
               variant="secondary" size="small"
               :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/edit`"
           >
@@ -20,7 +20,7 @@
           </UranusButton>
 
           <UranusButton
-              v-if="venueListItem.canDeleteEvent"
+              v-if="venueListItem.canDeleteVenue"
               variant="secondary" size="small"
               @click="onDeleteEvent(venueListItem)"
           >
@@ -40,6 +40,7 @@
       <div>
         <h3>{{ t('venue_spaces') }}
           <UranusIconAction
+              v-if="venueListItem.canAddSpace"
               :icon="Plus"
               :title="t('add')"
               :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/space/create`"
@@ -72,7 +73,8 @@
             <UranusIconAction
                 v-if="venueListItem.canDeleteSpace"
                 :icon="Trash2" :title="t('delete')"
-                :onClick="() => requestDeleteSpace(space)" />
+                :onClick="() => requestDeleteSpace(space)"
+            />
           </div>
         </div>
       </template>
@@ -81,8 +83,8 @@
 
     <UranusPasswordConfirmModal
         :show="showDeleteVenueModal"
-        :title="t('confirm_delete_venue')"
-        :question="getConfirmDeleteDescription(pendingVenueName)"
+        :title="t('delete_venue')"
+        :question="getConfirmDeleteVenue(pendingVenueName)"
         :confirm-text="t('venue_delete')"
         :loading-text="t('deleting')"
         :error="deleteVenueError"
@@ -93,8 +95,8 @@
 
     <UranusPasswordConfirmModal
       :show="showDeleteSpaceModal"
-      :title="t('confirm_delete_space')"
-      :question="getConfirmDeleteDescription(pendingSpaceName)"
+      :title="t('delete_space')"
+      :question="getConfirmDeleteSpace(pendingSpaceName)"
       :confirm-text="t('delete_space')"
       :loading-text="t('deleting')"
       :error="deleteSpaceError"
@@ -150,8 +152,13 @@ const isDeletingSpace = ref(false)
 const pendingSpaceUuid = ref<string | null>(null)
 const pendingSpaceName = ref('')
 
-function getConfirmDeleteDescription(name: string): string {
-  const template = t('confirm_delete_description');
+function getConfirmDeleteVenue(name: string): string {
+  const template = t('confirm_delete_venu');
+  return uranusStringInterpolate(template, {name});
+}
+
+function getConfirmDeleteSpace(name: string): string {
+  const template = t('confirm_delete_space');
   return uranusStringInterpolate(template, {name});
 }
 
@@ -277,6 +284,7 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
 .space-actions {
   display: flex;
   align-items: center;
+  min-height: 2.4rem;
   gap: 1rem; /* spacing between edit and delete icons */
 }
 </style>
