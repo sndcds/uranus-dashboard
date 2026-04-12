@@ -1,6 +1,6 @@
 /*
-    src/store/uranusSpaceTypeLookup.ts
-*/
+    src/store/spaceTypeLookupStore.ts
+ */
 
 import { ref } from 'vue'
 import { defineStore } from 'pinia'

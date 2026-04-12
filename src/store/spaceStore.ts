@@ -1,6 +1,6 @@
 /*
-    src/store/uranusSpaceStore.ts
-*/
+    src/store/spaceStore.ts
+ */
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'

@@ -41,7 +41,7 @@ import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import SpaceBaseTab from '@/component/space/editor/UranusSpaceBaseTab.vue'
 import SpaceAccessibilityTab from '@/component/space/editor/UranusSpaceAccessibilityTab.vue'
-import { useUranusSpaceStore } from '@/store/uranusSpaceStore.ts'
+import { useUranusSpaceStore } from '@/store/spaceStore.ts'
 import type { SpaceDTO } from '@/api/dto/space.dto.ts'
 
 const route = useRoute()

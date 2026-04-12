@@ -52,7 +52,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import { useUranusSpaceStore } from '@/store/uranusSpaceStore.ts'
+import { useUranusSpaceStore } from '@/store/spaceStore.ts'
 import type { UranusSpace } from '@/domain/space/space.model.ts'
 import UranusSpaceTypeSelect from '@/component/select/UranusSpaceTypeSelect.vue'
 import UranusForm from "@/component/ui/UranusForm.vue";

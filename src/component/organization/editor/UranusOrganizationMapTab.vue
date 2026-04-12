@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { apiFetch } from '@/api'
-import { useUranusOrganizationStore } from '@/store/uranusOrganizationStore.ts'
+import { useUranusOrganizationStore } from '@/store/organizationStore.ts'
 import UranusLocationForm from '@/component/uranus/UranusLocationForm.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'

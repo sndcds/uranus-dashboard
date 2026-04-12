@@ -1,41 +1,39 @@
 /*
-    src/store/UranusLicenseLookup.ts
-
-    2026-02-15, Roald
-*/
+    src/store/legalFormStore.ts
+ */
 
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { apiFetch } from '@/api.ts'
 
-export interface LicenseEntryDTO {
+export interface LegalFormEntryDTO {
     label: string | null
     description: string | null
 }
 
-export type UranusLicenseMap = Record<string, LicenseEntryDTO>
+export type UranusLegalFormMap = Record<string, LegalFormEntryDTO>
 
-export const useLicenseLookup = defineStore('license', () => {
+export const useLegalFormLookupStore = defineStore('legalForm', () => {
     // Store structure: data[lang][key] => { label, description }
-    const data = ref<Record<string, UranusLicenseMap>>({})
+    const data = ref<Record<string, UranusLegalFormMap>>({})
     const loaded = ref<Record<string, boolean>>({})
     const loading = ref<Record<string, boolean>>({})
 
     /**
-     * Fetch licenses for a given language
+     * Fetch legal forms for a given language
      */
     async function fetchLang(lang: string) {
         if (loaded.value[lang] || loading.value[lang]) return
         loading.value[lang] = true
 
         try {
-            // apiFetch returns { data: T, status: number } or throws
+            // Use apiFetch instead of fetch
             const res = await apiFetch<{ data: Array<{ key: string, name?: string, description?: string }> }>(
-                `/api/choosable-license-types?lang=${lang}`
+                `/api/choosable-legal-forms?lang=${lang}`
             )
 
-            const map: UranusLicenseMap = {}
-            const items: LicenseEntryDTO[] | any = res.data ?? []
+            const map: UranusLegalFormMap = {}
+            const items: LegalFormEntryDTO[] | any = res.data ?? []
 
             for (const item of items) {
                 map[item.key] = {
@@ -47,7 +45,7 @@ export const useLicenseLookup = defineStore('license', () => {
             data.value[lang] = map
             loaded.value[lang] = true
         } catch (err) {
-            console.error(`Error fetching licenses for lang=${lang}`, err)
+            console.error(`Error fetching legal forms for lang=${lang}`, err)
             data.value[lang] = {}
         } finally {
             loading.value[lang] = false
@@ -72,15 +70,15 @@ export const useLicenseLookup = defineStore('license', () => {
     /**
      * Get full entry for a key
      */
-    function getEntry(key: string, lang?: string): LicenseEntryDTO | null {
+    function getEntry(key: string, lang?: string): LegalFormEntryDTO | null {
         const uiLang = lang || 'en'
         return data.value[uiLang]?.[key] ?? null
     }
 
     /**
-     * Get all licenses for a given language
+     * Get all legal forms for a given language
      */
-    function getAll(lang?: string): LicenseEntryDTO[] {
+    function getAll(lang?: string): LegalFormEntryDTO[] {
         const uiLang = lang || 'en'
         return Object.values(data.value[uiLang] ?? [])
     }

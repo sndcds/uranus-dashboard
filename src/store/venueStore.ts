@@ -1,7 +1,6 @@
 /*
-    src/store/uranusVenueStore.ts
-    2026-04-02, refactored
-*/
+    src/store/venueStore.ts
+ */
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'

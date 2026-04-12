@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
+import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'

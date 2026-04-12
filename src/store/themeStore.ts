@@ -1,3 +1,7 @@
+/*
+    src/store/themeStore.ts
+ */
+
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { applyTheme, type ThemeMode } from '@/util/theme.ts'

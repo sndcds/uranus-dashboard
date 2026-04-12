@@ -1,7 +1,6 @@
 /*
-    src/store/uranusOrganizationStore.ts
-    2026-03-30, Roald
-*/
+    src/store/organizationStore.ts
+ */
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'

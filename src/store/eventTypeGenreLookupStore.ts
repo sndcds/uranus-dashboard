@@ -1,6 +1,6 @@
 /*
-    src/store/uranusEventTypeGenreLookup.ts
-*/
+    src/store/eventTypeGenreLookup.ts
+ */
 
 import { defineStore } from 'pinia'
 import { ref } from 'vue'

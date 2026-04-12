@@ -1,3 +1,7 @@
+/*
+    src/store/linkTypeLookupStore.ts
+ */
+
 import { defineStore } from 'pinia'
 import { apiFetch } from '@/api.ts'
 

@@ -1,7 +1,5 @@
 /*
-    src/store/uranusCountryLookupStore.ts
-
-    2026-02-08, Roald
+    src/store/countryLookupStore.ts
  */
 
 import { defineStore } from 'pinia'

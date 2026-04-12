@@ -1,4 +1,7 @@
-// src/store/eventsStore.ts
+/*
+    src/store/eventListStore.ts
+ */
+
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { apiFetch } from '@/api.ts'

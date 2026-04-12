@@ -43,7 +43,7 @@ import VenueBaseTab from '@/component/venue/editor/UranusVenueBaseTab.vue'
 import VenueMapTab from '@/component/venue/editor/UranusVenueMapTab.vue'
 import UranusVenueLogoTab from '@/component/venue/editor/UranusVenueLogoTab.vue'
 import UranusVenueImageTab from '@/component/venue/editor/UranusVenueImageTab.vue'
-import { useUranusVenueStore } from '@/store/UranusVenueStore.ts'
+import { useUranusVenueStore } from '@/store/venueStore.ts'
 
 const route = useRoute()
 const venueStore = useUranusVenueStore()

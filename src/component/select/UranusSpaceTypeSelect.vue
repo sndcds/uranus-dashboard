@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useSpaceTypeLookupStore } from '@/store/spaceTypesLookup.ts'
+import { useSpaceTypeLookupStore } from '@/store/spaceTypesLookupStore.ts'
 
 type UiLang = 'de' | 'en' | 'da'
 

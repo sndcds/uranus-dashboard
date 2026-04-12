@@ -1,3 +1,7 @@
+/*
+    src/store/eventReleaseStatusStore.ts
+ */
+
 import { defineStore } from "pinia";
 import { apiFetch, type ApiResponse } from '@/api.ts'
 

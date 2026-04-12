@@ -21,7 +21,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import { useUranusVenueStore } from '@/store/UranusVenueStore.ts'
+import { useUranusVenueStore } from '@/store/venueStore.ts'
 import UranusLocationForm from '@/component/uranus/UranusLocationForm.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'

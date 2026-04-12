@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
   import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
-  import { useUranusOrganizationStore } from "@/store/uranusOrganizationStore.ts";
+  import { useUranusOrganizationStore } from "@/store/organizationStore.ts";
   import { computed } from "vue";
 
   const store = useUranusOrganizationStore()

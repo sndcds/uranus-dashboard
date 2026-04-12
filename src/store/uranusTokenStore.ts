@@ -1,3 +1,7 @@
+/*
+  src/store/uranusTokenStore.ts
+ */
+
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 

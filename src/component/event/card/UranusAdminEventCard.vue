@@ -125,7 +125,7 @@ import {uranusFormatEventDateTime } from '@/util/UranusUtils.ts'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from "@/component/ui/UranusCard.vue";
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
-import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
+import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import type { AdminEventListItemModel } from '@/domain/event/adminEventListItem.model.ts'
 import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'

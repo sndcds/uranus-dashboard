@@ -66,7 +66,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import { useUranusVenueStore } from '@/store/UranusVenueStore.ts'
+import { useUranusVenueStore } from '@/store/venueStore.ts'
 import type { VenueModel } from '@/domain/venue/venue.model.ts'
 import UranusCountrySelect from '@/component/select/UranusCountrySelect.vue'
 import UranusStateSelect from "@/component/select/UranusStateSelect.vue";

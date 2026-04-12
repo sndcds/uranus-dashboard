@@ -1,6 +1,6 @@
 /*
     src/store/userStore.ts
-*/
+ */
 
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -8,7 +8,7 @@ import { computed, ref } from 'vue'
 export interface UserState {
     uuid: string | null
     displayName: string | null
-    avatarVersion: number | null,
+    avatarVersion: number | null,   // Used for cache-busting avatar updates
     userAvatarUrl: string | null
 }
 
@@ -54,12 +54,15 @@ export const useUserStore = defineStore("user-state", () => {
     function setUserUuid(newUuid: string | null) {
         uuid.value = newUuid
     }
+
     function setDisplayName(newDisplayName: string | null) {
         displayName.value = newDisplayName
     }
+
     function setUserAvatarUrl(url: string | null) {
         userAvatarUrl.value = url
     }
+
     function bumpAvatarVersion() {
         avatarVersion.value = Date.now()
     }

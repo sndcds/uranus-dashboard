@@ -1,3 +1,7 @@
+/*
+    src/store/choosableVenuesStore.ts
+ */
+
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { apiFetch } from '@/api.ts'

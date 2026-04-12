@@ -1,3 +1,7 @@
+/*
+    src/store/venueTypesLookupStore.ts
+ */
+
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { apiFetch } from '@/api.ts'

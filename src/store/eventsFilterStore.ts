@@ -1,6 +1,6 @@
 /*
-    src/store/uranusEventsFilterStore.ts
-*/
+    src/store/eventsFilterStore.ts
+ */
 
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'

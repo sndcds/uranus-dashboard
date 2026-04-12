@@ -39,7 +39,7 @@ import { apiFetch } from '@/api.ts'
 import OrganizationBaseTab from '@/component/organization/editor/UranusOrganizationBaseTab.vue'
 import OrganizationMapTab from '@/component/organization/editor/UranusOrganizationMapTab.vue'
 import OrganizationLogoTab from '@/component/organization/editor/UranusOrganizationLogoTab.vue'
-import { useUranusOrganizationStore } from '@/store/uranusOrganizationStore.ts'
+import { useUranusOrganizationStore } from '@/store/organizationStore.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
