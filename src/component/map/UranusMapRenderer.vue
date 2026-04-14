@@ -76,8 +76,7 @@ onMounted(() => {
   map.value = instance
 
   instance.once('style.load', () => {
-    layerIds.clear()
-    renderLayers(instance, props.layers)
+    syncLayers(instance, props.layers)
     emit('loaded', instance)
   })
 })
@@ -96,7 +95,7 @@ watch(
       currentMap.setStyle(newStyle)
 
       currentMap.once('style.load', () => {
-        renderLayers(currentMap, props.layers)
+        syncLayers(currentMap, props.layers)
       })
     }
 )
@@ -110,15 +109,7 @@ watch(
       const m = map.value
       if (!m) return
 
-      for (const layer of layers) {
-        if (!layer.data) continue
-
-        const source = m.getSource(layer.sourceId) as maplibregl.GeoJSONSource | undefined
-
-        if (source) {
-          source.setData(layer.data)
-        }
-      }
+      syncLayers(m, layers)
     },
     { deep: true }
 )
@@ -126,10 +117,29 @@ watch(
 /**
  * CORE RENDER ENGINE
  */
+function syncLayers(map: MapLibreMap, layers: MapLayer[]) {
+  if (!map.isStyleLoaded()) return
+
+  renderLayers(map, layers)
+  updateLayerData(map, layers)
+}
+
 function renderLayers(map: MapLibreMap, layers: MapLayer[]) {
   for (const layer of layers) {
     addSourceIfNeeded(map, layer)
     addLayer(map, layer)
+  }
+}
+
+function updateLayerData(map: MapLibreMap, layers: MapLayer[]) {
+  for (const layer of layers) {
+    if (!layer.data) continue
+
+    const source = map.getSource(layer.sourceId) as maplibregl.GeoJSONSource | undefined
+
+    if (source) {
+      source.setData(layer.data)
+    }
   }
 }
 
