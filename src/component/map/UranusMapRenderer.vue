@@ -107,9 +107,9 @@ watch(
     () => props.layers,
     (layers) => {
       const m = map.value
-      if (!m) return
+      if (!m || !m.isStyleLoaded()) return
 
-      syncLayers(m, layers)
+      updateLayerData(m, layers)
     },
     { deep: true }
 )
@@ -118,8 +118,6 @@ watch(
  * CORE RENDER ENGINE
  */
 function syncLayers(map: MapLibreMap, layers: MapLayer[]) {
-  if (!map.isStyleLoaded()) return
-
   renderLayers(map, layers)
   updateLayerData(map, layers)
 }
