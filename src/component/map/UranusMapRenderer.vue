@@ -86,7 +86,7 @@ onMounted(() => {
     console.error(DEBUG_PREFIX, 'map:error', event?.error ?? event)
   })
 
-  runWhenStyleReady(instance, () => {
+  instance.once('load', () => {
     console.debug(DEBUG_PREFIX, 'style:ready:init')
     syncLayers(instance, props.layers)
     emit('loaded', instance)
@@ -108,7 +108,7 @@ watch(
 
       currentMap.setStyle(unref(newStyle))
 
-      runWhenStyleReady(currentMap, () => {
+      waitForStyleData(currentMap, () => {
         console.debug(DEBUG_PREFIX, 'style:ready:switch')
         syncLayers(currentMap, props.layers)
       })
@@ -139,15 +139,8 @@ function syncLayers(map: MapLibreMap, layers: MapLayer[]) {
   updateLayerData(map, layers)
 }
 
-function runWhenStyleReady(map: MapLibreMap, callback: () => void) {
-  if (map.isStyleLoaded()) {
-    callback()
-    return
-  }
-
+function waitForStyleData(map: MapLibreMap, callback: () => void) {
   const onStyleData = () => {
-    if (!map.isStyleLoaded()) return
-
     map.off('styledata', onStyleData)
     callback()
   }
