@@ -153,7 +153,7 @@ const pendingSpaceUuid = ref<string | null>(null)
 const pendingSpaceName = ref('')
 
 function getConfirmDeleteVenue(name: string): string {
-  const template = t('confirm_delete_venu');
+  const template = t('confirm_delete_venue');
   return uranusStringInterpolate(template, {name});
 }
 
@@ -258,7 +258,7 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
 <style scoped lang="scss">
 .header {
   display: flex;
-  align-items: start; // optional, vertically center items
+  align-items: start;
 }
 
 .header > :nth-child(2) {
@@ -268,8 +268,8 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
 .space-row {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Push left/right content apart */
-  gap: 1rem; /* optional spacing */
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .space-row + .space-row {
@@ -278,13 +278,13 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
 
 .space-info {
   display: flex;
-  gap: 0.25rem; /* small spacing between name and count */
+  gap: 0.25rem;
 }
 
 .space-actions {
   display: flex;
   align-items: center;
   min-height: 2.4rem;
-  gap: 1rem; /* spacing between edit and delete icons */
+  gap: 1rem;
 }
 </style>

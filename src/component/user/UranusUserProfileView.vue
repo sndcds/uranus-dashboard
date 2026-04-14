@@ -1,7 +1,5 @@
 <!--
-  src/view/UranusUserProfileView.vue
-
-  2026-03-25
+  src/component/user/UranusUserProfileView.vue
 -->
 
 <template>
@@ -21,7 +19,6 @@
             :remove-label="t('user_profile_remove_photo')"
             :initials="avatarInitial"
             :disabled="isSubmitting"
-            @busy-change="handleAvatarBusyChange"
             @error="handleAvatarError"
             @clear-feedback="handleAvatarFeedbackClear"
             @avatar-updated="handleAvatarUpdated"
@@ -99,10 +96,9 @@
         <UranusFeedback :message="submitSuccess" type="success" />
 
         <div class="uranus-form-action-bar">
-          <UranusButton
-              type="submit" :disabled="saveDisabled">
-              <span v-if="!isSubmitting">{{ t('user_profile_save') }}</span>
-              <span v-else>{{ t('form_saving') }}</span>
+          <UranusButton type="submit" :disabled="isDirty">
+            <span v-if="!isSubmitting">{{ t('user_profile_save') }}</span>
+            <span v-else>{{ t('form_saving') }}</span>
           </UranusButton>
         </div>
       </UranusForm>
@@ -149,20 +145,21 @@ const profile = reactive({
   email: '',
   firstName: '',
   lastName: '',
-  username: ''
+  username: '',
+  locale: '',
+  theme: ''
 })
 
 const isLoading = ref(true)
 const isSubmitting = ref(false)
-const isAvatarBusy = ref(false)
 const loadError = ref<string | null>(null)
 const submitError = ref<string | null>(null)
 const submitSuccess = ref<string | null>(null)
 
 const localeOptions: Array<{ value: string; label: string }> = [
-  { value: 'en', label: 'English' },
-  { value: 'da', label: 'Dansk' },
   { value: 'de', label: 'Deutsch' },
+  { value: 'da', label: 'Dansk' },
+  { value: 'en', label: 'English' },
 ]
 
 const themeOptions: Array<{ value: ThemeMode; label: string }> = [
@@ -186,9 +183,8 @@ const avatarInitial = computed(() => {
   return source.charAt(0).toUpperCase()
 })
 
-const saveDisabled = computed(() => {
-  if (isLoading.value || isSubmitting.value || isAvatarBusy.value) return true
-  return !profile.displayName.trim() || !profile.email.trim()
+const isDirty = computed(() => {
+  return !profile.email.trim()
 })
 
 const resolveProfileError = (err: unknown): string => {
@@ -266,18 +262,13 @@ const submitProfile = async () => {
   submitError.value = null
   submitSuccess.value = null
 
-  if (!profile.displayName.trim() || !profile.email.trim()) {
+  const trimmedEmail = profile.email.trim()
+  if (trimmedEmail.length < 8) {
     submitError.value = t('user_profile_validation_error')
     return
   }
 
-  if (isAvatarBusy.value) {
-    return
-  }
-
   isSubmitting.value = true
-
-  const trimmedEmail = profile.email.trim()
 
   const payload = {
     email: trimmedEmail,
@@ -308,10 +299,6 @@ const submitProfile = async () => {
 onMounted(() => {
   void loadProfile()
 })
-
-const handleAvatarBusyChange = (value: boolean) => {
-  isAvatarBusy.value = value
-}
 
 const handleAvatarError = (message: string | null) => {
   if (message) {

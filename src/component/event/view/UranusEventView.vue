@@ -206,7 +206,17 @@
             {{ t('download_ics') }}
           </button>
         </div>
+
+
       </aside>
+      <div style="width: 100%; height: 400px; border-radius: 7px;overflow: clip">
+        <UranusSinglePointMap
+            v-if="eventDate && eventDate.venueLat && eventDate.venueLon"
+            :lat="parseFloat(eventDate.venueLat)"
+            :lon="parseFloat(eventDate.venueLon)"
+            :name="'Name der Venue'"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -230,6 +240,7 @@ import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDispla
 import UranusEventOrganizationDisplay from '@/component/event/ui/UranusEventOrganizationDisplay.vue'
 import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
+import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 
 import UranusExternalLink from '@/component/ui/UranusExternalLink.vue'
 import { Ticket } from 'lucide-vue-next'

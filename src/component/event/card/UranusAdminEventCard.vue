@@ -162,7 +162,7 @@ const hasSpace = computed(() => !!props.event.spaceUuid)
 
 const canPreviewEvent = computed(() => {
   const event = props.event
-  if (event.canViewEventInsights) return true
+  if (event.canViewEventInsights || event.canEditEvent || event.canDeleteEvent) return true
   else if (event.releaseStatus == 'draft' || event.releaseStatus == 'review') return false
   return true
 })

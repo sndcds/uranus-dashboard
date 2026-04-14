@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteLocationNormalized } from 'vue-router'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 
-import UranusDashboardView from '@/view/UranusDashboardView.vue'
+import UranusDashboardView from '@/component/dashboard/view/UranusDashboardView.vue'
 import UranusAdminTodoListView from '@/component/todo/view/UranusAdminTodoListView.vue'
 import UranusLoginView from '@/component/register/UranusLoginView.vue'
 import UranusAdminVenueListView from '@/component/venue/view/UranusAdminVenueListView.vue'
@@ -18,8 +18,9 @@ import UranusVenueView from '@/view/public/UranusVenueView.vue'
 import UranusEventView from '@/component/event/view/UranusEventView.vue'
 import UranusHtmlView from '@/view/public/UranusHTMLView.vue'
 import UserActivateView from '@/view/UserActivateView.vue'
-import UranusInviteActivateView from '@/view/UranusInviteActivateView.vue'
+import UranusInviteActivateView from '@/component/user/UranusInviteActivateView.vue'
 import UranusOrganizationTeamView from '@/component/organization/view/UranusOrganizationTeamView.vue'
+import UranusOrganizationInviteTeamMemberView from '@/component/organization/view/UranusOrganizationInviteTeamMemberView.vue'
 import UranusOrganizationMemberPermissionView from '@/component/organization/view/UranusOrganizationMemberPermissionView.vue'
 import UranusEventsView from '@/view/public/UranusEventsView.vue'
 import UranusEventCalendarView from '@/view/public/UranusEventCalendarView.vue'
@@ -80,6 +81,11 @@ const routes = [
                 path: 'organization/:orgUuid/team',
                 name: 'admin-team-organization',
                 component: UranusOrganizationTeamView,
+            },
+            {
+                path: 'organization/:orgUuid/invite-team-member',
+                name: 'admin-organization-invite-team-member',
+                component: UranusOrganizationInviteTeamMemberView,
             },
             {
                 path: 'organization/:orgUuid/venue/create',

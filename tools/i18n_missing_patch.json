@@ -96,7 +96,7 @@
     "src/component/event/editor/EventLanguageEditor.vue",
     "src/view/UranusDashboardView.vue",
     "src/view/UserActivateView.vue",
-    "src/view/UranusInviteActivateView.vue",
+    "src/component/user/UranusInviteActivateView.vue",
     "src/view/UranusMessageInboxView.vue",
     "src/view/UranusMessageSendView.vue",
     "src/view/UranusOrganizationMemberPermissionView.vue",

@@ -376,6 +376,11 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'Account activation failed. Please try again or contact support.',
         da: 'Kontoaktivering mislykkedes. Prøv igen eller kontakt support.',
     },
+    invite_team_member: {
+        de: 'Teammitglied einladen',
+        en: 'Invite team member',
+        da: 'Inviter team medlem',
+    }
 }
 
 export default uranusI18nUserTranslations

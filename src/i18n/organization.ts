@@ -105,8 +105,12 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         de: 'Verwalte Mitglieder, Rollen und Einladungen deiner Organisation.',
         en: 'Manage members, roles, and invitations for your organization team.',
         da: 'Administrer medlemmer, roller og invitationer for din organisation.',
-
-    }
+    },
+    invite_organization_team_member: {
+        de: 'Sende eine Einladung an ein neues Teammitglied für die Organisation.',
+        en: 'Send an invitation to a new team member for the organization.',
+        da: 'Send en invitation til et nyt teammedlem til organisationen.',
+    },
 }
 
 export default uranusI18nOrganizationTranslations

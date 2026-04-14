@@ -6,6 +6,16 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Dashboard',
         da: 'Dashboard',
     },
+    error: {
+        de: 'Ein Fehler ist aufgetreten',
+        en: 'An error has occurred',
+        da: 'Der er opstået en fejl',
+    },
+    error_missing_permissions: {
+        de: 'Du hast nicht die erforderlichen Berechtigungen für diese Aktion.',
+        en: 'You do not have the required permissions for this action.',
+        da: 'Du har ikke de nødvendige rettigheder til denne handling.',
+    },
     error_incomplete_data: {
         de: 'Unvollständige Daten',
         en: 'Incomplete data',
@@ -506,6 +516,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Enter password to confirm',
         da: 'Indtast adgangskode for at bekræfte',
     },
+    send_invitation: {
+        de: "Einladung versenden",
+        en: "Send invitation",
+        da: "Send invitation",
+    }
 }
 
 export default uranusI18nStandardTranslations

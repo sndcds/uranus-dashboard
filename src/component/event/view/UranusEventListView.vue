@@ -105,7 +105,6 @@ const onEventDeleted = async ({eventUuid, dateUuid, deleteSeries}: {
 onMounted(async () => {
   if (orgUuid) {
     await fetchAdminListEvents(orgUuid.value ?? '');
-    console.log('Fetched events:', adminListEvents.value)
   }
 });
 </script>

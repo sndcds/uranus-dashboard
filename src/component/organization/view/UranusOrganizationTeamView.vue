@@ -5,21 +5,17 @@
         :subtitle="t('organization_manage_team_description')"
     />
 
-    <p v-if="isLoading">{{ t('organization_team_loading') }}</p>
-    <p v-else-if="error">{{ error }}</p>
+    <!-- Todo: UranusFeedback -->
+    <p v-if="error">{{ error }}</p>
+
+    <div>
+      <UranusButton :to="`/admin/organization/${orgUuid}/invite-team-member`">
+        {{ t('invite_team_member') }}
+      </UranusButton>
+    </div>
 
     <div class="team-members-grid">
       <UranusCard v-for="member in members" :key="member.user_uuid" class="team-member-card">
-
-        <!--
-          "user_uuid": "019d237b-3563-74c6-8085-6d5fc5afb2b3",
-          "email": "roald@grain.one",
-          "username": "roald",
-          "display_name": "mapmeister",
-          "avatar_url": "http://localhost:9090/api/user/019d237b-3563-74c6-8085-6d5fc5afb2b3/avatar/64",
-          "last_active_at": "2026-04-12T13:09:26.420769Z",
-          "joined_at": "2026-03-27T11:53:38.77816Z"
-        -->
 
           <div class="team-member-avatar">
             <img
@@ -62,6 +58,7 @@ import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import {Edit, Trash2} from "lucide-vue-next";
 import UranusIconAction from "@/component/ui/UranusIconAction.vue";
+import UranusButton from "@/component/ui/UranusButton.vue";
 
 const { t, locale } = useI18n()
 const route = useRoute()

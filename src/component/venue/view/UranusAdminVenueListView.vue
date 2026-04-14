@@ -4,7 +4,10 @@
 
 <template>
   <div class="uranus-main-layout">
-    <UranusDashboardHero :title="t('venues')" :subtitle="t('venues_description')" />
+    <UranusDashboardHero
+        :title="t('venues')"
+        :subtitle="t('venues_list_hero_description')"
+    />
 
     <UranusNotification
         v-if="!organizationUuid"
@@ -28,10 +31,10 @@
           </UranusButton>
         </div>
 
-        <!-- Error Message, Todo: Implement errors -->
-        <div v-if="error" class="organization-venue-view__error">
-          <p class="form-feedback-error">{{ error }}</p>
-        </div>
+        <UranusFeedback :show="!!error" type="error">
+          <h3>{{  t('error') }}</h3>
+          <p>{{ t('error_missing_permissions') }}</p>
+        </UranusFeedback>
 
         <div v-if="venueList" class="organization-venue-view__content">
           <UranusVenueCard
@@ -77,10 +80,11 @@ import { useAppStore } from '@/store/appStore.ts'
 import { mapVenueList, type VenueList } from '@/domain/organization/venueList.ts'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
 
-import UranusVenueCard from '@/component/venue/UranusVenueCard.vue'
+import UranusVenueCard from '@/component/venue/card/UranusVenueCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 
 const { t } = useI18n()
@@ -152,15 +156,6 @@ onMounted(() => {
 .space-item {
   font-weight: 300;
   padding-left: 2rem;
-}
-
-// Error feedback
-.organization-venue-view__error {
-  width: 100%;
-  max-width: 600px;
-}
-
-.form-feedback-error {
 }
 
 // Content section

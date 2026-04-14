@@ -1,6 +1,7 @@
 <!--
-  UranusDashboardView.vue
+  src/component/dashboard/view/UranusDashboardView.vue
 -->
+
 <template>
   <div class="uranus-main-layout">
     <UranusDashboardHero
@@ -9,6 +10,10 @@
     />
 
     <UranusDashboardEventNotifications />
+
+    <UranusButton :onclick="onClanupPlutoImages">
+      Cleanup Pluto Images
+    </UranusButton>
 
     <!-- TODO: Tests
     <section class="chart-card">
@@ -45,6 +50,8 @@ import UranusLineChart from '@/component/chart/UranusLineChart.vue'
 import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
 import UranusPrioritySelect from '@/component/ui/UranusPrioritySelect.vue'
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
+import UranusButton from "@/component/ui/UranusButton.vue";
+import {apiFetch} from "@/api.ts";
 
 const { t } = useI18n()
 
@@ -77,5 +84,10 @@ const options = [
   { label: 'Week', value: 'week', icon: Calendar },
   { label: 'Month', value: 'month', icon: BarChart, disabled: true }
 ]
+
+function onClanupPlutoImages() {
+  const apiPath = '/api/admin/image/cleanup'
+  const apiResponse = apiFetch<any>(apiPath)
+}
 
 </script>

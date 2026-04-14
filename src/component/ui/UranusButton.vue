@@ -42,7 +42,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import {Eye} from "lucide-vue-next";
 
 const props = defineProps({
   to: { type: [String, Object], default: null },

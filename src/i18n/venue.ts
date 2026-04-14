@@ -11,6 +11,11 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Venues',
         da: 'Spillesteder',
     },
+    venues_list_hero_description: {
+        de: 'Alle Spielstätten, für die du Events erstellen kannst.',
+        en: 'All venues for which you can create events.',
+        da: 'Alle spillesteder, hvor du kan oprette begivenheder.',
+    },
     unspecified_venue_type: {
         de: 'Unbestimmte Spielstättentyp',
         en: 'Unspecified venue type',
