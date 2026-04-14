@@ -10,6 +10,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import type { LayerSpecification, LngLatLike } from 'maplibre-gl'
 
 type MapLibreMap = maplibregl.Map
+const DEBUG_PREFIX = '[UranusMapRenderer]'
 
 /**
  * TYPES
@@ -41,7 +42,7 @@ const props = defineProps<{
   layers: MapLayer[]
   center?: LngLatLike
   zoom?: number
-  style?: any
+  mapStyle?: string | Record<string, any>
   defaultTextFont?: string[]
 }>()
 
@@ -67,7 +68,7 @@ onMounted(() => {
 
   const instance = new maplibregl.Map({
     container: mapContainer.value,
-    style: typeof props.style === 'string' ? props.style : unref(props.style),
+    style: unref(props.mapStyle),
     center: props.center ?? [9.5, 54.3],
     zoom: props.zoom ?? 8
   })
@@ -75,7 +76,18 @@ onMounted(() => {
   instance.addControl(new maplibregl.NavigationControl())
   map.value = instance
 
-  instance.once('style.load', () => {
+  console.debug(DEBUG_PREFIX, 'map:init', {
+    center: props.center ?? [9.5, 54.3],
+    zoom: props.zoom ?? 8,
+    style: props.mapStyle,
+  })
+
+  instance.on('error', (event) => {
+    console.error(DEBUG_PREFIX, 'map:error', event?.error ?? event)
+  })
+
+  runWhenStyleReady(instance, () => {
+    console.debug(DEBUG_PREFIX, 'style:ready:init')
     syncLayers(instance, props.layers)
     emit('loaded', instance)
   })
@@ -85,16 +97,19 @@ onMounted(() => {
  * STYLE SWITCH (FULL RESET)
  */
 watch(
-    () => props.style,
+    () => props.mapStyle,
     (newStyle) => {
       const currentMap = map.value
       if (!currentMap || !newStyle) return
 
       layerIds.clear()
 
-      currentMap.setStyle(newStyle)
+      console.debug(DEBUG_PREFIX, 'style:switch', newStyle)
 
-      currentMap.once('style.load', () => {
+      currentMap.setStyle(unref(newStyle))
+
+      runWhenStyleReady(currentMap, () => {
+        console.debug(DEBUG_PREFIX, 'style:ready:switch')
         syncLayers(currentMap, props.layers)
       })
     }
@@ -109,6 +124,7 @@ watch(
       const m = map.value
       if (!m || !m.isStyleLoaded()) return
 
+      console.debug(DEBUG_PREFIX, 'layers:update-data', summarizeLayers(layers))
       updateLayerData(m, layers)
     },
     { deep: true }
@@ -118,8 +134,25 @@ watch(
  * CORE RENDER ENGINE
  */
 function syncLayers(map: MapLibreMap, layers: MapLayer[]) {
+  console.debug(DEBUG_PREFIX, 'layers:sync', summarizeLayers(layers))
   renderLayers(map, layers)
   updateLayerData(map, layers)
+}
+
+function runWhenStyleReady(map: MapLibreMap, callback: () => void) {
+  if (map.isStyleLoaded()) {
+    callback()
+    return
+  }
+
+  const onStyleData = () => {
+    if (!map.isStyleLoaded()) return
+
+    map.off('styledata', onStyleData)
+    callback()
+  }
+
+  map.on('styledata', onStyleData)
 }
 
 function renderLayers(map: MapLibreMap, layers: MapLayer[]) {
@@ -148,6 +181,10 @@ function addSourceIfNeeded(map: MapLibreMap, layer: MapLayer) {
   const sourceId = layer.sourceId
 
   if (map.getSource(sourceId)) return
+
+  console.debug(DEBUG_PREFIX, 'source:add', sourceId, {
+    featureCount: layer.data?.features?.length ?? 0,
+  })
 
   map.addSource(sourceId, {
     type: 'geojson',
@@ -192,6 +229,14 @@ function addLayer(map: MapLibreMap, layer: MapLayer) {
     baseLayer.maxzoom = layer.maxzoom
   }
 
+  console.debug(DEBUG_PREFIX, 'layer:add', {
+    id: layer.id,
+    type: layer.type,
+    sourceId: layer.sourceId,
+    hasData: Boolean(layer.data),
+    featureCount: layer.data?.features?.length ?? 0,
+  })
+
   map.addLayer(baseLayer)
   layerIds.add(layer.id)
 
@@ -210,6 +255,15 @@ function resolveLayerLayout(layer: MapLayer) {
   }
 
   return layout
+}
+
+function summarizeLayers(layers: MapLayer[]) {
+  return layers.map((layer) => ({
+    id: layer.id,
+    type: layer.type,
+    sourceId: layer.sourceId,
+    featureCount: layer.data?.features?.length ?? 0,
+  }))
 }
 
 /**

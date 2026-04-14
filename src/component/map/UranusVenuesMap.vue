@@ -3,13 +3,13 @@
       :layers="mapLayers"
       :center="[9.5, 54.3]"
       :zoom="8"
-      :style="mapStyle"
+      :map-style="mapStyle"
       :default-text-font="['noto_sans_regular']"
   />
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import type { FeatureCollection, Point } from 'geojson'
 import { apiFetch } from '@/api'
 import UranusMapRenderer, { type MapLayer } from '@/component/map/UranusMapRenderer.vue'
@@ -67,6 +67,10 @@ const loadVenues = async (bbox?: [number, number, number, number]) => {
         },
       })),
     }
+
+    console.debug('[UranusVenuesMap]', 'venues:loaded', {
+      featureCount: venues.value.features.length,
+    })
   } catch (e) {
     console.error('Failed to load venues:', e)
   }
@@ -116,6 +120,14 @@ const mapLayers = computed<MapLayer[]>(() => [
     },
   },
 ])
+
+watch(
+    () => venues.value.features.length,
+    (featureCount) => {
+      console.debug('[UranusVenuesMap]', 'venues:state', { featureCount })
+    },
+    { immediate: true }
+)
 
 /**
  * INITIAL LOAD
