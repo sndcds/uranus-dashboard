@@ -3,12 +3,13 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, onBeforeUnmount, watch, unref} from 'vue'
+import {ref, shallowRef, onMounted, onBeforeUnmount, watch, unref} from 'vue'
 import type { FeatureCollection } from 'geojson'
 import maplibregl from 'maplibre-gl'
-import type { Map as MapLibreMap, LngLatLike } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import type { LayerSpecification } from 'maplibre-gl'
+import type { LayerSpecification, LngLatLike } from 'maplibre-gl'
+
+type MapLibreMap = maplibregl.Map
 
 /**
  * TYPES
@@ -41,6 +42,7 @@ const props = defineProps<{
   center?: LngLatLike
   zoom?: number
   style?: any
+  defaultTextFont?: string[]
 }>()
 
 const emit = defineEmits<{
@@ -51,11 +53,11 @@ const emit = defineEmits<{
  * STATE
  */
 const mapContainer = ref<HTMLElement | null>(null)
-const map = ref<MapLibreMap | null>(null)
+const map = shallowRef<MapLibreMap | null>(null)
 
 const layerIds = new Set<string>()
 
-const DEFAULT_STYLE = "/versatiles-style.json"
+const DEFAULT_TEXT_FONT = ['noto_sans_regular']
 
 /**
  * INIT MAP
@@ -86,14 +88,15 @@ onMounted(() => {
 watch(
     () => props.style,
     (newStyle) => {
-      if (!map.value || !newStyle) return
+      const currentMap = map.value
+      if (!currentMap || !newStyle) return
 
       layerIds.clear()
 
-      map.value.setStyle(newStyle)
+      currentMap.setStyle(newStyle)
 
-      map.value.once('style.load', () => {
-        renderLayers(map.value!, props.layers)
+      currentMap.once('style.load', () => {
+        renderLayers(currentMap, props.layers)
       })
     }
 )
@@ -153,6 +156,8 @@ function addSourceIfNeeded(map: MapLibreMap, layer: MapLayer) {
 function addLayer(map: MapLibreMap, layer: MapLayer) {
   if (layerIds.has(layer.id)) return
 
+  const resolvedLayout = resolveLayerLayout(layer)
+
   const baseLayer: LayerSpecification = {
     id: layer.id,
     source: layer.sourceId,
@@ -163,8 +168,8 @@ function addLayer(map: MapLibreMap, layer: MapLayer) {
     baseLayer.paint = layer.paint
   }
 
-  if (layer.layout && Object.keys(layer.layout).length > 0) {
-    baseLayer.layout = layer.layout
+  if (resolvedLayout && Object.keys(resolvedLayout).length > 0) {
+    baseLayer.layout = resolvedLayout
   }
 
   if (Array.isArray(layer.filter)) {
@@ -185,6 +190,18 @@ function addLayer(map: MapLibreMap, layer: MapLayer) {
   if (layer.popup) {
     attachPopup(map, layer)
   }
+}
+
+function resolveLayerLayout(layer: MapLayer) {
+  const layout = layer.layout ? { ...layer.layout } : {}
+
+  if (layer.type === 'symbol' && !layout['text-font']) {
+    layout['text-font'] = props.defaultTextFont?.length
+        ? props.defaultTextFont
+        : DEFAULT_TEXT_FONT
+  }
+
+  return layout
 }
 
 /**

@@ -3,7 +3,8 @@
       :layers="mapLayers"
       :center="[9.5, 54.3]"
       :zoom="8"
-      :style="'/versatiles/versatiles-dark-style.json'"
+      :style="mapStyle"
+      :default-text-font="['noto_sans_regular']"
   />
 </template>
 
@@ -33,8 +34,6 @@ const emptyFC: FeatureCollection = {
   type: 'FeatureCollection',
   features: [],
 }
-
-let moveTimeout: ReturnType<typeof setTimeout> | null = null
 
 /**
  * FETCH DATA (BBOX)
