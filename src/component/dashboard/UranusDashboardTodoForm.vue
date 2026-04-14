@@ -42,6 +42,7 @@
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'
+import UranusTextfield from "@/component/ui/UranusTextfield.vue";
 
 const props = withDefaults(
   defineProps<{

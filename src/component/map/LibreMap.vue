@@ -89,6 +89,36 @@ const addClusteredLayer = (map: maplibregl.Map, layerName: string, layerData: an
     },
   })
 
+  map.addLayer({
+    id: `${layerName}-circle`,
+    type: 'circle',
+    source: layerName,
+    filter: ['!', ['has', 'point_count']],
+    paint: {
+      'circle-radius': 16,
+      'circle-color': '#ff0000',
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff'
+    }
+  });
+
+  map.addLayer({
+    id: `${layerName}-number`,
+    type: 'symbol',
+    source: layerName,
+    filter: ['!', ['has', 'point_count']],
+    layout: {
+      'text-field': ['get', 'count'], // 👈 your JSON property
+      'text-size': 14,
+      'text-anchor': 'center',
+      'text-allow-overlap': true
+    },
+    paint: {
+      'text-color': '#ffffff'
+    }
+  });
+
+
   // Text for cluster count (can show total_event_count)
   map.addLayer({
     id: `${layerName}-cluster-count`,
@@ -238,8 +268,8 @@ onMounted(() => {
     container: mapContainer.value,
     style:
         themeStore.theme === 'dark'
-            ? '/versatiles-dark-style.json'
-            : '/versatiles-style.json',
+            ? '/versatiles/versatiles-dark-style.json'
+            : '/versatiles/versatiles-style.json',
     center: defaultCenter,
     zoom: 12,
     minZoom: 2,

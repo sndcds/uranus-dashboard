@@ -45,7 +45,7 @@ watch(isOpen, val => {
   align-items: center;
   padding: 0.5rem 0;
   cursor: pointer;
-  font-weight: bold;
+  font-size: 1rem;
 }
 
 .accordion-icon {
@@ -61,7 +61,7 @@ watch(isOpen, val => {
   position: absolute;
   top: 50%;
   left: 50%;
-  background-color: #333;
+  background-color: var(--uranus-color-2);
   transition: all 0.3s ease;
 }
 
@@ -90,7 +90,8 @@ watch(isOpen, val => {
 
 .accordion-title {
   flex: 1;
-  font-weight: 300;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .accordion-body {

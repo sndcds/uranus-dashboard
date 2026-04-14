@@ -14,7 +14,7 @@
 <template>
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
-    <UranusFormRow>
+    <UranusFormRow style="margin-bottom: 1rem;">
       <FunnelX class="uranus-icon"
           @click="onResetFilter" />
     </UranusFormRow>
@@ -24,7 +24,7 @@
       <UranusEventCategorySelectorAccordion v-model="filterStore.filter.categories" :multiple="true" />
 
       <UranusAccordion v-model="searchOpen">
-        <template #title>Suche</template>
+        <template #title>{{ t('calendar_filter_use_gps') }}</template>
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="search-input"

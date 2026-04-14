@@ -4,13 +4,9 @@
 -->
 
 <template>
-    <UranusMap
-        :showStations="false"
-        :showVenues="true"
-        :showEvents="false"
-    />
+    <UranusVenuesMap />
 </template>
 
 <script setup lang="ts">
-import UranusMap from "@/component/map/UranusMap.vue";
+import UranusVenuesMap from '@/component/map/UranusVenuesMap.vue'
 </script>

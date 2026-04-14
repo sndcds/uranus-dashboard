@@ -4,7 +4,7 @@
   "metadata": {
     "license": "https://creativecommons.org/publicdomain/zero/1.0/"
   },
-  "glyphs": "https://versatiles.oklabflensburg.de/assets/glyphs/{fontstack}/{range}.pbf",
+  "glyphs": "https://tiles.versatiles.org/assets/glyphs/{fontstack}/{range}.pbf",
   "sprite": [
     {
       "id": "basics",
