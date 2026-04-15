@@ -8,7 +8,6 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 import { uranusI18nStandardTranslations } from '../../src/i18n/standard.ts'
-// import { uranusI18nMessages } from '../../src/i18n/messages.ts'
 import { uranusI18nRegisterAndLoginTranslations } from '../../src/i18n/register_and_login.ts'
 import { uranusI18nTodoTranslations } from '../../src/i18n/todo.ts'
 import { uranusI18nDashboardTranslations } from '../../src/i18n/dashboard.ts'

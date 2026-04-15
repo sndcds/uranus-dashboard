@@ -11,9 +11,9 @@
 
     <UranusDashboardEventNotifications />
 
-    <UranusButton :onclick="onClanupPlutoImages">
+    <!--UranusButton :onclick="onClanupPlutoImages">
       Cleanup Pluto Images
-    </UranusButton>
+    </UranusButton-->
 
     <!-- TODO: Tests
     <section class="chart-card">

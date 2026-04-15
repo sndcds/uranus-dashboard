@@ -12,13 +12,13 @@
 .uranus-dashboard-chip {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.8rem; /* default: top/bottom 0.25rem, left/right 0.5rem */
+  padding: 0.25rem 0.8rem;
   border-radius: 8px;
-  background: var(--uranus-event-type-chip-background);
-  color: var(--uranus-event-type-chip-color);
+  border: 1px solid var(--uranus-color-7);
+  color: var(--uranus-color);
   font-weight: 600;
   font-size: 0.86rem;
-  position: relative; /* for absolute close button */
+  position: relative;
 
   &.removable {
     padding-right: 2rem; /* extra space for close icon */
