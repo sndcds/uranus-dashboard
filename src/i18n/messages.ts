@@ -1,4 +1,8 @@
-import type {UranusLocaleKey} from "@/i18n/uranus-i18n-index.ts";
+/*
+    src/i18n/messages.ts
+ */
+
+import type { UranusLocaleKey } from '@/i18n/uranus-i18n-index.ts'
 
 export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>> = {
     de: {

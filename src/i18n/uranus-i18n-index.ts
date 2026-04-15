@@ -1,3 +1,7 @@
+/*
+    src/i18n/uranus-i18n-index.ts
+ */
+
 import { createI18n } from 'vue-i18n'
 import { watch } from 'vue'
 import de from './json/de.json'

@@ -1,3 +1,7 @@
+/*
+    src/i18n/event.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey, string>> = {

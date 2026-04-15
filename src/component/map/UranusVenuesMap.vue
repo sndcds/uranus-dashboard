@@ -1,3 +1,7 @@
+<!--
+  src/component/map/UranusVenuesMap.vue
+-->
+
 <template>
   <UranusMapRenderer
       :layers="mapLayers"

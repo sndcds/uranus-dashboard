@@ -1,3 +1,7 @@
+/*
+    src/i18n/todo.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nTodoTranslations: Record<string, Record<UranusLocaleKey, string>> = {

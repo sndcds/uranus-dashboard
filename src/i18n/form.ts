@@ -1,16 +1,16 @@
+/*
+    src/i18n/form.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nFormTranslations: Record<string, Record<UranusLocaleKey, string>> = {
-    organization_name: {
-        de: 'Organisationsname',
-        en: 'Organization name',
-        da: 'Organisationsnavn',
+    marker_set_location_hint: {
+        de: '⌘ / Strg + Klick: Marker setzen',
+        en: '⌘ / Ctrl + Click: Set marker',
+        da: '⌘ / Ctrl + Klik: Sæt markør',
     },
-    organization_edit_description: {
-        de: 'Überprüfe und aktualisiere die Daten deiner Organisation.',
-        en: 'Review and update your organization details.',
-        da: 'Gennemse og opdater oplysningerne om din arrangør.',
-    },
+
 }
 
 export default uranusI18nFormTranslations

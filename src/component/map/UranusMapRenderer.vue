@@ -32,8 +32,15 @@ export type MapLayer = {
   popup?: (feature: GeoJSON.Feature) => {
     title?: string
     html?: string
+  },
+  events?: {
+    click?: (e: maplibregl.MapMouseEvent) => void
+    mousedown?: (e: maplibregl.MapMouseEvent) => void
+    mouseenter?: () => void
+    mouseleave?: () => void
   }
 }
+
 
 /**
  * PROPS
@@ -235,6 +242,21 @@ function addLayer(map: MapLibreMap, layer: MapLayer) {
 
   if (layer.popup) {
     attachPopup(map, layer)
+  }
+
+  if (layer.events) {
+    if (layer.events.click) {
+      map.on('click', layer.id, layer.events.click)
+    }
+    if (layer.events.mousedown) {
+      map.on('mousedown', layer.id, layer.events.mousedown)
+    }
+    if (layer.events.mouseenter) {
+      map.on('mouseenter', layer.id, layer.events.mouseenter)
+    }
+    if (layer.events.mouseleave) {
+      map.on('mouseleave', layer.id, layer.events.mouseleave)
+    }
   }
 }
 

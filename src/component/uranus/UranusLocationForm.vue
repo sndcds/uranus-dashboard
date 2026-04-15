@@ -2,7 +2,7 @@
   <UranusForm>
 
     <UranusFormRow>
-      <p>Anleitung hier ...</p>
+      <p>{{ t('marker_set_location_hint') }}</p>
     </UranusFormRow>
 
     <UranusFormRow>

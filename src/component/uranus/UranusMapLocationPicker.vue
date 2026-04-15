@@ -1,12 +1,17 @@
 <!--
-  UranusMapLocationPicker.vue
-
-  2026-02-08, Roald
+  src/component/uranus/UranusMapLocationPicker.vue
 -->
 
 <template>
   <div class="map-wrapper" v-bind="attrs">
-    <div ref="mapContainer" class="maplibre-map"></div>
+    <UranusMapRenderer
+        :layers="layers"
+        :center="computedCenter"
+        :zoom="props.zoom ?? 12"
+        :mapStyle="mapStyle"
+        @loaded="onMapLoaded"
+    />
+
     <footer class="map-footer">
       <slot name="footer" />
     </footer>
@@ -14,12 +19,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch, useAttrs } from 'vue'
-import maplibregl from 'maplibre-gl'
-import 'maplibre-gl/dist/maplibre-gl.css'
-import type { LngLatLike, MapMouseEvent } from 'maplibre-gl'
+import {
+  ref,
+  computed,
+  watch,
+  useAttrs
+} from 'vue'
+import type { FeatureCollection } from 'geojson'
+import type { Map as MapLibreMap, MapMouseEvent } from 'maplibre-gl'
+import UranusMapRenderer, { type MapLayer } from '@/component/map/UranusMapRenderer.vue'
 import markerIcon from '@/assets/map/marker.png'
+import { useThemeStore } from '@/store/themeStore.ts'
 
+
+const themeStore = useThemeStore()
 const attrs = useAttrs()
 
 /* ------------------------------------------------------------------
@@ -29,8 +42,6 @@ const props = defineProps<{
   modelValue?: { lat: number; lng: number } | null
   zoom?: number
   selectable?: boolean
-  minZoom?: number
-  maxZoom?: number
 }>()
 
 const emit = defineEmits<{
@@ -40,214 +51,213 @@ const emit = defineEmits<{
 /* ------------------------------------------------------------------
  * State
  * ------------------------------------------------------------------ */
-const mapContainer = ref<HTMLElement | null>(null)
-const map = ref<maplibregl.Map | null>(null)
-
-const isSelectable = computed(() => props.selectable !== false)
+const map = ref<MapLibreMap | null>(null)
 const isDragging = ref(false)
 
-/* ------------------------------------------------------------------
- * Constants
- * ------------------------------------------------------------------ */
-const MARKER_SOURCE = 'marker'
-const MARKER_LAYER = 'marker-layer'
+const isSelectable = computed(() => props.selectable !== false)
 
 /* ------------------------------------------------------------------
- * Helpers
+ * Map Style
  * ------------------------------------------------------------------ */
+const mapStyle = computed(() =>
+    themeStore.theme === 'dark'
+        ? '/versatiles/versatiles-dark-style.json'
+        : '/versatiles/versatiles-style.json'
+)
+
+/* ------------------------------------------------------------------
+ * Marker Data (GeoJSON)
+ * ------------------------------------------------------------------ */
+const markerData = ref<FeatureCollection>(
+    props.modelValue
+        ? {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [
+                  props.modelValue.lng,
+                  props.modelValue.lat
+                ]
+              },
+              properties: {}
+            }
+          ]
+        }
+        : {
+          type: 'FeatureCollection',
+          features: []
+        }
+)
+
 const setMarker = (lng: number, lat: number) => {
-  const m = map.value
-  if (!m) return
-
-  const source = m.getSource(MARKER_SOURCE) as maplibregl.GeoJSONSource | undefined
-  if (!source) {
-    console.warn('Marker source not ready yet, skipping setMarker')
-    return
-  }
-
-  source.setData({
+  markerData.value = {
     type: 'FeatureCollection',
     features: [
       {
         type: 'Feature',
         geometry: { type: 'Point', coordinates: [lng, lat] },
-        properties: {},
-      },
-    ],
-  })
+        properties: {}
+      }
+    ]
+  }
 }
 
 const clearMarker = () => {
-  const m = map.value
-  if (!m) return
-  const source = m.getSource(MARKER_SOURCE) as maplibregl.GeoJSONSource
-  source.setData({ type: 'FeatureCollection', features: [] })
+  markerData.value = {
+    type: 'FeatureCollection',
+    features: []
+  }
 }
 
 /* ------------------------------------------------------------------
- * Drag / Click handlers with modifier key support
+ * Modifier key helper
  * ------------------------------------------------------------------ */
-const isModifierPressed = (e: MouseEvent) => e.ctrlKey || e.metaKey
+const isModifierPressed = (e: MouseEvent) =>
+    e.ctrlKey || e.metaKey
 
-// Marker drag start
-const onMarkerMouseDown = (e: maplibregl.MapMouseEvent) => {
+/* ------------------------------------------------------------------
+ * Layer Definition
+ * ------------------------------------------------------------------ */
+const layers = computed<MapLayer[]>(() => [
+  {
+    id: 'marker-layer',
+    sourceId: 'marker',
+    type: 'symbol',
+    data: markerData.value,
+    layout: {
+      'icon-image': 'marker',
+      'icon-size': 0.8,
+      'icon-anchor': 'bottom',
+      'icon-allow-overlap': true
+    },
+    events: {
+      mousedown: onMarkerMouseDown,
+      mouseenter: () => {
+        if (isSelectable.value && map.value) {
+          map.value.getCanvas().style.cursor = 'grab'
+        }
+      },
+      mouseleave: () => {
+        if (!isDragging.value && map.value) {
+          map.value.getCanvas().style.cursor = ''
+        }
+      }
+    }
+  }
+])
+
+/* ------------------------------------------------------------------
+ * Map Loaded
+ * ------------------------------------------------------------------ */
+const onMapLoaded = (m: MapLibreMap) => {
+  map.value = m
+
+  // Load marker image
+  const img = new Image()
+  img.src = markerIcon
+  img.onload = () => {
+    if (!m.hasImage('marker')) {
+      m.addImage('marker', img)
+    }
+  }
+
+  // Map-level events
+  m.on('mousemove', onMapMouseMove)
+  m.on('mouseup', onMapMouseUp)
+  m.on('click', onMapClick)
+}
+
+/* ------------------------------------------------------------------
+ * Drag Logic
+ * ------------------------------------------------------------------ */
+const onMarkerMouseDown = (e: MapMouseEvent) => {
   if (!isSelectable.value || !map.value) return
 
   const original = e.originalEvent as MouseEvent
-  if (!isModifierPressed(original)) return // only allow drag if key is pressed
+  if (!isModifierPressed(original)) return
 
   e.preventDefault()
   isDragging.value = true
   map.value.getCanvas().style.cursor = 'grabbing'
 }
 
-// Dragging
-const onMapMouseMove = (e: maplibregl.MapMouseEvent) => {
+const onMapMouseMove = (e: MapMouseEvent) => {
   if (!isDragging.value || !isSelectable.value) return
   setMarker(e.lngLat.lng, e.lngLat.lat)
 }
 
-// Drop / finish drag
-const onMapMouseUp = (e: maplibregl.MapMouseEvent) => {
+const onMapMouseUp = (e: MapMouseEvent) => {
   if (!isDragging.value || !isSelectable.value) return
+
   isDragging.value = false
   map.value!.getCanvas().style.cursor = ''
-  emit('update:modelValue', { lat: e.lngLat.lat, lng: e.lngLat.lng })
+
+  emit('update:modelValue', {
+    lat: e.lngLat.lat,
+    lng: e.lngLat.lng
+  })
 }
 
-// Click-to-place marker
-const onMapClick = (e: maplibregl.MapMouseEvent) => {
+/* ------------------------------------------------------------------
+ * Click to place marker
+ * ------------------------------------------------------------------ */
+const onMapClick = (e: MapMouseEvent) => {
   if (!isSelectable.value || isDragging.value) return
 
   const original = e.originalEvent as MouseEvent
-  if (!isModifierPressed(original)) return // only place marker if key is pressed
+  if (!isModifierPressed(original)) return
 
   setMarker(e.lngLat.lng, e.lngLat.lat)
-  emit('update:modelValue', { lat: e.lngLat.lat, lng: e.lngLat.lng })
+
+  emit('update:modelValue', {
+    lat: e.lngLat.lat,
+    lng: e.lngLat.lng
+  })
 }
 
 /* ------------------------------------------------------------------
- * Mount
+ * Center handling
  * ------------------------------------------------------------------ */
-// Mount
-onMounted(() => {
-  if (!mapContainer.value) return
-  const m = new maplibregl.Map({
-    container: mapContainer.value,
-    style: "/versatiles-style.json",
-    center: props.modelValue
-        ? [props.modelValue.lng, props.modelValue.lat]
-        : [13.405, 52.52],
-    zoom: 12,
-    minZoom: 2,
-    maxZoom: 19
-  });
-
-  m.addControl(new maplibregl.NavigationControl());
-
-/*
-  const m = new maplibregl.Map({
-    container: mapContainer.value,
-    center: props.modelValue
-        ? [props.modelValue.lng, props.modelValue.lat]
-        : [13.405, 52.52],
-    zoom: props.zoom ?? 12,
-    minZoom: props.minZoom ?? 2,
-    maxZoom: props.maxZoom ?? 19,
-    style: {
-      version: 8,
-      glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
-      sources: {
-        osm: {
-          type: 'raster',
-          tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-          tileSize: 256,
-        },
-      },
-      layers: [{id: 'osm', type: 'raster', source: 'osm'}],
-    },
-  })
- */
-
-  map.value = m
-
-  m.on('load', () => {
-    const img = new Image()
-    img.src = markerIcon
-    img.onload = () => {
-      if (!m.hasImage('marker')) m.addImage('marker', img)
-
-      m.addSource(MARKER_SOURCE, {
-        type: 'geojson',
-        data: { type: 'FeatureCollection', features: [] },
-      })
-
-      m.addLayer({
-        id: MARKER_LAYER,
-        type: 'symbol',
-        source: MARKER_SOURCE,
-        layout: {
-          'icon-image': 'marker',
-          'icon-size': 0.8,
-          'icon-anchor': 'bottom',
-          'icon-allow-overlap': true,
-        },
-      })
-
-      if (props.modelValue) {
-        setMarker(props.modelValue.lng, props.modelValue.lat)
-      }
-
-      // Marker drag start
-      m.on('mousedown', MARKER_LAYER, onMarkerMouseDown)
-      m.on('mouseenter', MARKER_LAYER, () => {
-        if (isSelectable.value) m.getCanvas().style.cursor = 'grab'
-      })
-      m.on('mouseleave', MARKER_LAYER, () => {
-        if (!isDragging.value) m.getCanvas().style.cursor = ''
-      })
-    }
-  })
-
-  // Map drag
-  m.on('mousemove', onMapMouseMove)
-  m.on('mouseup', onMapMouseUp)
-
-  // Click-to-place marker: **attach your function**
-  m.on('click', onMapClick)
+const computedCenter = computed(() => {
+  return props.modelValue
+      ? [props.modelValue.lng, props.modelValue.lat]
+      : [13.405, 52.52]
 })
 
 /* ------------------------------------------------------------------
- * Watch external model updates
+ * External model updates
  * ------------------------------------------------------------------ */
 watch(
     () => props.modelValue,
     (val) => {
       if (!map.value) return
+
       if (!val) {
         clearMarker()
         return
       }
+
       setMarker(val.lng, val.lat)
-      map.value.easeTo({ center: [val.lng, val.lat] })
+
+      map.value.easeTo({
+        center: [val.lng, val.lat]
+      })
     }
 )
-
-onBeforeUnmount(() => {
-  map.value?.remove()
-})
 </script>
 
 <style scoped>
 .map-wrapper {
   display: flex;
   flex-direction: column;
-}
-
-.maplibre-map {
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  border: 2px solid var(--uranus-bg-color-d2);
+}
+
+.map-footer {
+  flex-shrink: 0;
 }
 </style>

@@ -1,3 +1,7 @@
+/*
+    src/i18n/dashboard.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nDashboardTranslations: Record<string, Record<UranusLocaleKey, string>> = {
