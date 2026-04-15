@@ -9,19 +9,18 @@
 
     <!-- Preview -->
     <div class="image-wrapper" @click="openDialog">
-
       <img
-          v-if="imageId && imageUrl"
+          v-if="imageUuid && imageUrl"
           :key="reloadCounter"
           :src="imageUrl"
-          :alt="imageMeta?.alt_text ?? ''"
+          :alt="image?.altText ?? ''"
           :class="fitMode"
       />
 
       <div v-else class="placeholder">+</div>
 
       <!-- Hover buttons -->
-      <div v-if="imageId" class="hover-actions">
+      <div v-if="imageUuid" class="hover-actions">
         <button @click.stop="openDialog">Edit</button>
         <button @click.stop="removeImage">Remove</button>
       </div>
@@ -34,9 +33,9 @@
 
     <!-- Modal -->
     <UranusImageEditDialog
-        v-if="dialogOpen && contextId && identifier"
+        v-if="dialogOpen && contextUuid && identifier"
         :context="context"
-        :contextId="contextId"
+        :contextUuid="contextUuid"
         :identifier="identifier"
         :fitMode="fitMode"
         @close="dialogOpen = false"
@@ -52,14 +51,14 @@ import { useI18n } from 'vue-i18n'
 import UranusImageEditDialog from './UranusImageEditDialog.vue'
 import { apiFetch } from '@/api'
 import { buildPlutoSlotImageUrl } from '@/util/UranusUtils'
-import type { PlutoImageMeta } from '@/model/plutoImageModel'
+import { type PlutoImage, loadPlutoImage } from '@/domain/image/plutoImage.model.ts'
 
 const { t } = useI18n()
 
 // Props
 const props = defineProps<{
   context: string
-  contextId: number | null
+  contextUuid: string | null
   identifier: string | null
   label?: string | null
   width?: number | null
@@ -70,10 +69,12 @@ const props = defineProps<{
 // State
 const dialogOpen = ref(false)
 const reloadCounter = ref(0)
-const imageMeta = ref<PlutoImageMeta | null>(null)
-const imageId = ref<number | null>(null)
+const image = ref<PlutoImage | null>(null)
 
-// Computed
+const imageUuid = computed(() =>
+    image.value ? image.value.uuid : null
+)
+
 const fitMode = computed(() =>
     props.fitMode === 'contain' ? 'contain' : 'cover'
 )
@@ -85,11 +86,11 @@ const cardStyle = computed(() => {
 })
 
 const imageUrl = computed(() => {
-  if (!imageId.value) return ''
+  if (!imageUuid.value) return ''
 
   const width = props.width ?? 220
   const baseUrl = buildPlutoSlotImageUrl(
-      imageId.value,
+      imageUuid.value,
       width,
       null,
       props.fitMode ?? 'contain'
@@ -101,26 +102,9 @@ const imageUrl = computed(() => {
 })
 
 
-async function loadMeta() {
-  try {
-    const res = await apiFetch<any>(
-        `/api/image/meta/${props.context}/${props.contextId}/${props.identifier}`
-    )
-
-    if (!res.data) {
-      imageId.value = null
-      imageMeta.value = null
-      return
-    }
-
-    const meta = res.data.data
-    imageMeta.value = meta
-    imageId.value = meta.id ?? null
-
-  } catch {
-    imageId.value = null
-    imageMeta.value = null
-  }
+async function loadImage() {
+  const apiPath = `/api/image/meta/${props.context}/${props.contextUuid}/${props.identifier}`
+  image.value = await loadPlutoImage(apiPath)
 }
 
 
@@ -139,30 +123,27 @@ async function onSave(
 
   form.append('payload', JSON.stringify(payload))
 
-  const apiPath = `/api/admin/image/${props.context}/${props.contextId}/${props.identifier}`
+  const apiPath = `/api/admin/image/${props.context}/${props.contextUuid}/${props.identifier}`
   await apiFetch(apiPath,{ method: 'POST', body: form })
 
   dialogOpen.value = false
 
-  await loadMeta()
+  await loadImage()
   incReloadCounter()
 }
 
 
 async function removeImage() {
-  if (!imageId.value) return
+  if (!imageUuid.value) return
 
   // Ask the user for confirmation
   const ok = confirm(t('delete_image_alert'))
   if (!ok) return  // user canceled
 
   try {
-    const apiPath = `/api/admin/image/${props.context}/${props.contextId}/${props.identifier}`
+    const apiPath = `/api/admin/image/${props.context}/${props.contextUuid}/${props.identifier}`
     await apiFetch(apiPath, { method: 'DELETE'})
-
-    // Clear the reactive values
-    imageId.value = null
-    imageMeta.value = null
+    image.value = null
   } catch (err) {
     console.error('Failed to delete image', err)
     alert('Failed to delete image')
@@ -175,10 +156,9 @@ function incReloadCounter() {
 }
 
 
-defineExpose({ incReloadCounter })
+// defineExpose({ incReloadCounter })
 
-
-onMounted(loadMeta)
+onMounted(loadImage)
 </script>
 
 <style lang="scss">

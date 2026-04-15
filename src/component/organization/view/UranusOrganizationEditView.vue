@@ -2,12 +2,7 @@
   src/view/admin/organization/UranusOrganizationEditView.vue
 
   Uranus Organization Editor
-
   2026-02-08, Roald
-
-  TODO:
-  - Loading Indicator
-  - Error Message
 -->
 
 <template>
@@ -15,12 +10,9 @@
     <div v-else-if="orgStore.error">{{ orgStore.error }}</div>
 
     <template v-else-if="orgStore.isLoaded">
-      <header class="editor-header">
-        <h1 class="uranus-admin-page-title">Organization Editor</h1>
-        <p>Organization: {{ orgStore.draft?.name }} / #{{ orgId }}</p>
-      </header>
+      <h1>{{ t('organization_editor') }}</h1>
+      <p>{{ orgStore.draft?.name }}</p>
 
-      <!-- tabs -->
       <nav class="tabs">
         <button
             v-for="tab in tabs"
@@ -41,26 +33,20 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-// import { useI18n } from "vue-i18n";
-import { apiFetch } from "@/api.ts";
-
+import { apiFetch } from '@/api.ts'
 import OrganizationBaseTab from '@/component/organization/editor/UranusOrganizationBaseTab.vue'
 import OrganizationMapTab from '@/component/organization/editor/UranusOrganizationMapTab.vue'
 import OrganizationLogoTab from '@/component/organization/editor/UranusOrganizationLogoTab.vue'
-import { useUranusOrganizationStore } from '@/store/uranusOrganizationStore.ts'
-import type { UranusOrganizationDTO } from '@/api/dto/UranusOrganizationDTO.ts'
+import { useUranusOrganizationStore } from '@/store/organizationStore.ts'
 
-// const { t, locale } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const orgStore = useUranusOrganizationStore()
+const orgUuid = computed(() => { return route.params.orgUuid as string})
 
-const orgId = computed(() => {
-  const id = Number(route.params.id)
-  return Number.isFinite(id) ? id : null
-})
-
-type TabKey = 'base' | 'map' | 'images'
+type TabKey = 'base' | 'map' | 'logo'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
@@ -79,7 +65,7 @@ const currentTabComponent = computed(() => {
 })
 
 onMounted(async () => {
-  if (!orgId.value) {
+  if (!orgUuid.value) {
     orgStore.resetToEmpty()
     // orgStore.error = 'Invalid organizationId'
     return
@@ -87,9 +73,9 @@ onMounted(async () => {
 
   orgStore.loading = true
   try {
-    const apiPath = `/api/admin/organization/${orgId.value}`
-    const response = await apiFetch<{ data: UranusOrganizationDTO }>(apiPath)
-    orgStore.loadFromApi(response.data.data)
+    const apiPath = `/api/admin/organization/${orgUuid.value}`
+    const apiResponse = await apiFetch<any>(apiPath)
+    orgStore.loadFromApi(apiResponse.data)
   } catch (e) {
     orgStore.error = 'Failed to load organization'
   } finally {
@@ -103,13 +89,10 @@ onUnmounted(() => {
   } catch (err) {
     console.error("Unmount error in UranusOrganizationEditView:", err)
   }
-
 })
 </script>
 
-
 <style scoped>
-
 .organization-editor {
   width: 100%;
 }

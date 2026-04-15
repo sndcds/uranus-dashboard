@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useLegalFormLookupStore } from '@/store/UranusLegalFormLookup.ts'
+import { useLegalFormLookupStore } from '@/store/legalFormLookupStore.ts'
 
 type UiLang = 'de' | 'en' | 'da'
 

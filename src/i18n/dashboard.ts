@@ -1,3 +1,7 @@
+/*
+    src/i18n/dashboard.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nDashboardTranslations: Record<string, Record<UranusLocaleKey, string>> = {
@@ -16,17 +20,6 @@ export const uranusI18nDashboardTranslations: Record<string, Record<UranusLocale
         en: "Keep track of all your important tasks and reminders.",
         da: "Få overblik over alle dine vigtige opgaver og påmindelser.",
     },
-    dashboard_organizations_hero: {
-        de: 'Organisationen',
-        en: 'Organizations',
-        da: 'Organisationer',
-    },
-    dashboard_organizations_hero_description: {
-        de: 'Verwalte deine Organisationen und Organisationen bei denen du im Team bist.',
-        en: 'Manage your organizations and the teams you are part of.',
-        da: 'Administrer dine organisationer og de organisationer, hvor du er en del af teamet.',
-    },
-
     todo_title: {
         de: 'Aufgaben',
         en: 'Todo list',

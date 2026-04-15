@@ -32,7 +32,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: number[]): void
+  (e: 'update:modelValue', value: number[] | null): void
 }>()
 
 // Category definitions
@@ -66,6 +66,8 @@ function toggleCategory(id: number) {
   } else {
     selected.value = selected.value.includes(id) ? [] : [id]
   }
+
+  selected.value.sort((a, b) => a - b)
 
   emit('update:modelValue', selected.value.length ? [...selected.value] : null)
 }

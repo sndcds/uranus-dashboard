@@ -5,6 +5,7 @@
 @use 'app_menu';
 @use 'card';
 @use 'form';
+@use 'chip';
 @use 'combo_tag';
 @use 'dashboard';
 @use 'value_info';
@@ -13,13 +14,14 @@
 @use 'notification';
 @use 'map_popup';
 @use 'editor';
+@use 'help';
 
 
 :root {
   color-scheme: light;
 
-  --uranus-font-ui: 'Avenir', 'Google Sans', 'Helvetica Neue', 'Inter', 'Arial', sans-serif;
-  --uranus-font-text: 'Avenir', 'Google Sans', 'Helvetica Neue', 'Inter', 'Arial', sans-serif;
+  --uranus-font-ui: 'Mulish', "MomoTrustSans", font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --uranus-font-text: 'Mulish', "MomoTrustSans", font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
 
   --uranus-hue: 266;
   --uranus-active-hue: 286;
@@ -27,7 +29,7 @@
 
   --uranus-base: oklch(60% 0.02 var(--uranus-hue));
 
-  --uranus-color: oklch(12% 0.1 var(--uranus-hue));
+  --uranus-color: oklch(12% 0.05 var(--uranus-hue));
   --uranus-bg: oklch(100% 0.0 var(--uranus-hue));
   --uranus-color-0: var(--uranus-color);
   --uranus-color-1: color-mix(in oklch, var(--uranus-color) 90%, var(--uranus-bg));
@@ -50,6 +52,23 @@
   // Used to visualize elements in dark or light mode, e.g. images on dark or light backgrounds
   --uranus-bg-dark: oklch(20% 0.03 var(--uranus-hue));
   --uranus-bg-light: oklch(96% 0.008 var(--uranus-hue));
+
+  --uranus-notify-info-bg-color: var(--uranus-bg);
+  --uranus-notify-info-color: #aac9ff;
+  --uranus-notify-info-title-color: #000000;
+  --uranus-notify-warning-color: #fde689;
+  --uranus-notify-warning-title-color: #000000;
+  --uranus-notify-error-color: #d83535;
+  --uranus-notify-error-title-color: #ffffff;
+
+  --uranus-low-priority_color: #12d68c;
+  --uranus-medium-priority_color: #f6ca34;
+  --uranus-high-priority_color: #fd6b6b;
+
+  --uranus-chip-bg: #ededf8;
+  --uranus-chip-color: #504b85;
+  --uranus-chip-bg-hover: #504b85;
+  --uranus-chip-color-hover: #ededf8;
 
 
   // // //
@@ -81,7 +100,7 @@
   // Inputs & borders
   --uranus-input-color: oklch(10% 0.02 var(--uranus-hue));
   --uranus-input-bg: oklch(100% 0.0 var(--uranus-hue));
-  --uranus-input-border-color: oklch(72% 0.01 var(--uranus-hue));
+  --uranus-input-border-color: oklch(85% 0.01 var(--uranus-hue));
   --uranus-input-border-width: 1px;
   --uranus-input-placeholder-color: oklch(70% 0.0 var(--uranus-hue));
 
@@ -109,14 +128,16 @@
   --color-text: #0f172a;
   --color-text-secondary: #475569;
   --color-link: #2563eb;
-  --uranus-muted-text: #64748b;
-  --text-primary: var(--color-text-primary);
+  --uranus-muted-text: var(--uranus-color-5);
   --text-secondary: var(--color-text-secondary);
 
   // Brand system colors
   --uranus-brand-color: #235df1;
+  --uranus-notice-color-rgb: 73, 131, 246;
+  --uranus-notice-color: #4983f6;
   --uranus-success-color: #31b580;
   --uranus-error-color: #ed6056;
+  --uranus-error-color-rgb: 237, 96, 86;
   --uranus-required-color: #ed6056;
   --uranus-ia-color: #005ce6;
   --uranus-ia-color-light1: #246fea;
@@ -124,7 +145,6 @@
   --uranus-ia-color-dark1: #0150c6;
   --uranus-ia-color-dark2: #003a98;
 
-  --uranus-event-type-chip-background: #f2f2fb;
   --uranus-event-type-chip-color: #4f46e5;
   --uranus-language-chip-background: rgb(230, 248, 232);
   --uranus-language-chip-color: #0d853a;
@@ -170,6 +190,7 @@
   --uranus-disabled-color: #c7cedd;
   --uranus-low-contrast-color: #c6c6c6;
   --uranus-medium-contrast-color: #666666;
+  --uranus-compact-card-width: 640px;
   --uranus-dashboard-content-width: 1024px;
   --uranus-notification-max-width: 640px;
   --uranus-menu-active-color: #0f172a;
@@ -181,14 +202,14 @@
   --uranus-tiny-border-radius: 3px;
   --uranus-input-height: 36px;
 
-  --uranus-notify-info-color: #d2e2fa;
-  --uranus-notify-info-bg-color: #ffffff;
-  --uranus-notify-warning-color: #fde689;
-  --uranus-notify-warning-bg-color: #faf8d8;
-  --uranus-notify-error-title-bg: #d83535;
-  --uranus-notify-error-title-color: #ffffff;
-  --uranus-notify-error-bg: #fee2e2;
-  --uranus-notify-error-color: #ac1b1b;
+  --uranus-feedback-warning-rgb: 237, 186, 74;
+  --uranus-feedback-success-rgb: 40, 167, 69;
+
+  --uranus-feedback-error-color: var(--uranus-error-color);
+  --uranus-feedback-warning-color: #edba4a;
+  --uranus-feedback-success-color: #28a745;
+
+
 
 
   // App menu
@@ -216,6 +237,15 @@
 
   --uranus-bg-dark: oklch(20% 0.02 var(--uranus-hue));
   --uranus-bg-light: oklch(98% 0.008 var(--uranus-hue));
+
+  --uranus-notify-info-color: #9fc4fb;
+  --uranus-notify-info-bg-color: var(--uranus-bg);
+  --uranus-notify-warning-color: #fde689;
+  --uranus-notify-warning-bg-color: #faf8d8;
+  --uranus-notify-error-title-bg: #d83535;
+  --uranus-notify-error-title-color: #ffffff;
+  --uranus-notify-error-bg: #fee2e2;
+  --uranus-notify-error-color: #ac1b1b;
 
   // // //
 
@@ -292,13 +322,13 @@
 }
 
 body {
+  font-family: var(--uranus-font-ui) !important;
   width: 100%;
   height: 100%;
   margin: 0;
   min-height: 100dvh;
   background-color: var(--uranus-bg);
   color: var(--uranus-color);
-  font-family: 'Avenir', 'Google Sans', 'Helvetica Neue', 'Inter', 'Arial', sans-serif;
 }
 
 a {
@@ -313,6 +343,7 @@ a {
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
+  font-weight: 500;
 }
 
 p, span {
@@ -324,10 +355,11 @@ button {
 
 select {
   width: 100%;
+  font-family: var(--uranus-font-ui) !important;
+  font-size: 1rem;
   padding: 0.5rem 2rem 0.5rem 0.5rem;
   border-radius: var(--uranus-input-border-radius);
   border: 1px solid var(--uranus-input-border-color) !important;
-  font-size: 1rem;
   appearance: none; /* Remove native arrow */
   background-color: var(--uranus-input-bg);
 
@@ -354,13 +386,13 @@ header {
 }
 
 .uranus-input {
-  font-weight: 400;
+  font-family: var(--uranus-font-ui) !important;
+  font-size: 1rem;
   height: var(--uranus-input-height);
   width: 100%;
   border: var(--uranus-input-border-width) solid var(--uranus-input-border-color) !important;
   border-radius: var(--uranus-input-border-radius);
   padding: 0.5em;
-  font-size: 1rem;
 
   &:focus {
     outline: 2px solid var(--uranus-focus-color);
@@ -372,6 +404,24 @@ header {
 .uranus-md-editor {
   border: var(--uranus-input-border-width) solid var(--uranus-input-border-color) !important;
   border-radius: var(--uranus-input-border-radius);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  font-size: 18px;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 0;
+
+  ul li,
+  ol li {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  ul li p,
+  ol li p {
+    line-height: 1;
+    margin: 0.4rem;
+  }
 }
 
 .uranus-tiny-text {
@@ -388,10 +438,6 @@ header {
   height: 3.2rem;
 }
 
-.uranus-md-editor {
-
-}
-
 .uranus-main-content {
   width: 100%;
   min-height: 100vh;
@@ -405,6 +451,19 @@ header {
   justify-content: flex-start;
   gap: var(--uranus-grid-gap);
   width: 100%;
+}
+
+.uranus-icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  color: var(--uranus-color);
+  cursor: pointer;
+  padding: 0.2rem;
+  transition: color 0.2s ease-in-out;
+  &:hover {
+    color: var(--uranus-link-color-hover);
+  }
 }
 
 .uranus-main-layout {
@@ -456,8 +515,32 @@ header {
   padding: 16px;
   padding-bottom: 48px;
   overflow: hidden;
-}
 
+  &.draft {
+    border-width: 4px;
+    border-color: var(--uranus-event-release-background-draft);
+  }
+
+  &.review {
+    border-width: 4px;
+    border-color: var(--uranus-event-release-background-review);
+  }
+
+  &.cancelled {
+    border-width: 4px;
+    border-color: var(--uranus-event-release-background-cancelled);
+  }
+
+  &.deferred {
+    border-width: 4px;
+    border-color: var(--uranus-event-release-background-deferred);
+  }
+
+  &.rescheduled {
+    border-width: 4px;
+    border-color: var(--uranus-event-release-background-rescheduled);
+  }
+}
 
 /* Tablet and up: Sidebar layout */
 @media (min-width: 768px) {

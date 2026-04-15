@@ -5,16 +5,16 @@ import { uranusI18n } from './i18n/uranus-i18n-index.ts'
 import router from './router/index.ts'
 
 import { SUPPORTED_UI_LANGUAGES } from '@/store/uranusConstants.ts'
-import { useThemeStore } from '@/store/uranusThemeStore.ts'
-import { useLanguageLookupStore } from '@/store/UranusLanguageLookup.ts'
-import { useLinkTypeLookupStore } from '@/store/UranusLinkTypeLookup.ts'
-import { useEventTypeLookupStore } from '@/store/uranusEventTypeGenreLookup.ts'
-import { useCurrencyLookupStore } from '@/store/uranusCurrencyLookup.ts'
-import { useVenueTypeLookupStore } from '@/store/UranusVenueTypesLookup.ts'
-import { useSpaceTypeLookupStore } from '@/store/UranusSpaceTypesLookup.ts'
-import { useLegalFormLookupStore } from '@/store/UranusLegalFormLookup.ts'
-import { useLicenseLookup } from '@/store/UranusLicenseLookup.ts'
-import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
+import { useThemeStore } from '@/store/themeStore.ts'
+import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
+import { useLinkTypeLookupStore } from '@/store/linkTypeLookupStore.ts'
+import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
+import { useCurrencyLookupStore } from '@/store/currencyLookupStore.ts'
+import { useVenueTypeLookupStore } from '@/store/venueTypesLookupStore.ts'
+import { useSpaceTypeLookupStore } from '@/store/spaceTypesLookupStore.ts'
+import { useLegalFormLookupStore } from '@/store/legalFormLookupStore.ts'
+import { useLicenseLookup } from '@/store/licenseLookupStore.ts'
+import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 
 
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
@@ -39,7 +39,7 @@ const linkTypeLookupStore = useLinkTypeLookupStore()
 await linkTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES])
 
 const eventTypeLookupStore = useEventTypeLookupStore()
-await eventTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES])
+await eventTypeLookupStore.initialize([...SUPPORTED_UI_LANGUAGES])
 
 const currencyStore = useCurrencyLookupStore()
 await currencyStore.load([...SUPPORTED_UI_LANGUAGES])

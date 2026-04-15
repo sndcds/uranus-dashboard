@@ -1,5 +1,5 @@
 .uranus-html-page {
-  font-family: 'Open Sans', sans-serif;
+  font-family: font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Mulish', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
   font-size: 1.1rem;       // base font size
   color: var(--uranus-color);
   line-height: 1.5;
@@ -7,10 +7,11 @@
 
   * {
     font-size: 1.1rem;
+    font-weight: 300;
   }
 
   h1, h2, h3, h4, h5 {
-    font-weight: 500;
+    font-weight: 400;
     margin-top: 3rem;
     margin-bottom: 0.5rem;
 
@@ -21,7 +22,7 @@
 
   h1 { font-size: 2.2rem; }
   h2 { font-size: 1.8rem; }
-  h3 { font-size: 1.4rem; }
+  h3 { font-size: 1.4rem; font-weight: 500; }
   h4 { font-size: 1.2rem; }
   h5 { font-size: 1rem; }
 
@@ -63,7 +64,7 @@
   blockquote {
     border-left: 4px solid var(--uranus-color);
     padding-left: 1rem;
-    color: var(--uranus-color-5);
+    color: var(--uranus-muted-text);
     font-style: italic;
     margin: 1rem 0;
     font-size: inherit;

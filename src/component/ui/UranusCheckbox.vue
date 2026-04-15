@@ -1,11 +1,9 @@
 <!--
   src/component/ui/UranusCheckbox.vue
-
-  2026-03-21, Roald
 -->
 
 <template>
-  <div class="uranus-checkbox-outlined" @click="toggle">
+  <label class="uranus-checkbox-outlined">
     <input
         type="checkbox"
         :id="id"
@@ -14,25 +12,26 @@
         @change="onChange"
     />
 
-    <span class="checkmark">
-      <svg
-          v-if="isChecked"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="16"
-          height="16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="3"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-      >
-        <polyline points="20 6 9 17 4 12" />
-      </svg>
-    </span>
-
-    <span class="label-text">{{ label }}</span>
-  </div>
+    <template style="display: flex; gap: 0.5rem; align-items: center;">
+      <span class="checkmark">
+        <svg
+            v-if="isChecked"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </span>
+      <span class="label-text">{{ label }}</span>
+    </template>
+  </label>
 </template>
 
 <script setup lang="ts">
@@ -73,31 +72,22 @@ function updateArray(checked: boolean) {
   emit('update:modelValue', newValue)
 }
 
-const toggle = (e: MouseEvent) => {
-  if ((e.target as HTMLElement).tagName === 'INPUT') return
-
-  if (Array.isArray(props.modelValue)) {
-    updateArray(!isChecked.value)
-  } else {
-    emit('update:modelValue', !props.modelValue)
-  }
-}
-
 const onChange = (event: Event) => {
   const checked = (event.target as HTMLInputElement).checked
-
   if (Array.isArray(props.modelValue)) {
     updateArray(checked)
   } else {
     emit('update:modelValue', checked)
   }
 }
+
 </script>
 
 <style lang="scss">
 .uranus-checkbox-outlined {
   display: inline-flex;
-  align-items: center;
+  flex-direction: row;
+  align-items: start;
   gap: 0.5rem;
   cursor: pointer;
   user-select: none;
@@ -130,6 +120,7 @@ const onChange = (event: Event) => {
     border: 1px solid var(--uranus-input-border-color);
     border-radius: 4px;
     transition: all 0.2s ease;
+    flex-shrink: 0;
   }
 
   input:checked + .checkmark,
@@ -145,8 +136,9 @@ const onChange = (event: Event) => {
   }
 
   .label-text {
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 400;
+    white-space: nowrap;
   }
 }
 </style>

@@ -1,17 +1,12 @@
 <!--
   src/view/public/UranusMapView.vue
 
-  2026-02-28, Roald
 -->
 
 <template>
-    <UranusMap
-        :showStations="true"
-        :showVenues="true"
-        :showEvents="true"
-    />
+    <UranusVenuesMap />
 </template>
 
 <script setup lang="ts">
-import UranusMap from "@/component/map/UranusMap.vue";
+import UranusVenuesMap from '@/component/map/UranusVenuesMap.vue'
 </script>

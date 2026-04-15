@@ -49,12 +49,13 @@ const props = defineProps<{
 // Load data
 const loadVenues = async () => {
   try {
-    const { data } = await apiFetch<any>('/api/venues/geojson')
+    const apiPath = '/api/venues/geojson'
+    const apiResponse = await apiFetch<any>(apiPath)
 
-    if (data?.data?.venues) {
+    if (apiResponse?.data?.venues) {
       venues.value = {
         type: 'FeatureCollection',
-        features: data.data.venues.map((v: any) => ({
+        features: apiResponse.data.venues.map((v: any) => ({
           type: 'Feature' as const,
           geometry: {
             type: 'Point' as const,
@@ -75,11 +76,12 @@ const loadStations = async () => {
   const radius = props.stationRadius ?? 500000
 
   try {
-    const { data } = await apiFetch<any>(`/api/transport/stations?lat=${lat}&lon=${lon}&radius=${radius}`)
-    if (Array.isArray(data?.data)) {
+    const apiPath = `/api/transport/stations?lat=${lat}&lon=${lon}&radius=${radius}`
+    const apiResponse = await apiFetch<any>(apiPath)
+    if (Array.isArray(apiResponse?.data)) {
       stations.value = {
         type: 'FeatureCollection',
-        features: data.data.map((s: any) => ({
+        features: apiResponse.data.map((s: any) => ({
           type: 'Feature' as const,
           geometry: { type: 'Point' as const, coordinates: [Number(s.lon), Number(s.lat)] },
           properties: s,
@@ -93,9 +95,10 @@ const loadStations = async () => {
 
 const loadEvents = async () => {
   try {
-    const { data } = await apiFetch<any>('/api/events/geojson')
-    if (data?.data?.venues) {
-      const sanitizedFeatures = Object.values(data.data.venues).map((v: any) => {
+    const apiPath = '/api/events/geojson'
+    const apiResponse = await apiFetch<any>(apiPath)
+    if (apiResponse?.data?.venues) {
+      const sanitizedFeatures = Object.values(apiResponse.data.venues).map((v: any) => {
         const eventCount = Number(v.event_count ?? v.events?.length ?? 0)
         return {
           type: 'Feature' as const,

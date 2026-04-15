@@ -86,6 +86,37 @@
       </div>
     </section>
 
+    <!-- Notifications -->
+    <section>
+      <h2>Notifications</h2>
+      <UranusNotification type="info">
+        <template #title>Info</template>
+        Info Text ...
+        <template #actions>
+          <UranusButton @click="" color="primary">Accept</UranusButton>
+          <UranusButton @click="" color="secondary">Cancel</UranusButton>
+        </template>
+      </UranusNotification>
+
+      <UranusNotification type="warning">
+        <template #title>Warning</template>
+        Warning Text ...
+      </UranusNotification>
+
+      <UranusNotification type="error">
+        <template #title>Error</template>
+        Error Text ...
+      </UranusNotification>
+
+    </section>
+
+    <section>
+      <UranusFeedback :show="true" type="notice"><h1>Notice</h1>A notice text info box</UranusFeedback>
+      <UranusFeedback :show="true" type="success"><h1>Success</h1>A success text info box</UranusFeedback>
+      <UranusFeedback :show="true" type="warning"><h1>Warning</h1>A warning text info box</UranusFeedback>
+      <UranusFeedback :show="true" type="error"><h1>Error</h1>A error text info box</UranusFeedback>
+    </section>
+
   </div>
 </template>
 
@@ -93,6 +124,8 @@
 import UranusDevColorSwatch from '@/component/dev/UranusDevColorSwatch.vue'
 import UranusDevHueSamples from '@/view/dev/UranusDevHueSamples.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusNotification from "@/component/ui/UranusNotification.vue";
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 
 </script>

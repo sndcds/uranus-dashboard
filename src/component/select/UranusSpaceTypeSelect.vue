@@ -6,11 +6,11 @@
 
 <template>
   <select
-      :value="modelValue"
+      :value="modelValue ?? '__null__'"
       class="uranus-admin-select"
       @change="onChange"
   >
-    <option :value="null">
+    <option value="__null__">
       {{ t('unspecified_space_type') }}
     </option>
 
@@ -27,13 +27,15 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useSpaceTypeLookupStore } from '@/store/UranusSpaceTypesLookup.ts'
+import { useSpaceTypeLookupStore } from '@/store/spaceTypesLookupStore.ts'
 
 type UiLang = 'de' | 'en' | 'da'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   modelValue: string | null
-}>()
+}>(), {
+  modelValue: null
+})
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string | null): void
@@ -47,18 +49,14 @@ onMounted(() => {
 })
 
 const localizedTypes = computed(() => {
-  const lang = locale.value as UiLang
-  const map = store.data[lang] ?? {}
-
-  return Object.entries(map).map(([key, entry]) => ({
-    key,
-    label: entry.label,
-    description: entry.description
-  }))
+  return store.getLocalizedTypes(locale.value as UiLang)
 })
 
 function onChange(event: Event) {
   const value = (event.target as HTMLSelectElement).value
-  emit('update:modelValue', value || null)
+  emit(
+      'update:modelValue',
+      value === '__null__' ? null : value
+  )
 }
 </script>

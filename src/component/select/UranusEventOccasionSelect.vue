@@ -65,8 +65,8 @@ function onSelect() {
 async function fetchOptions() {
   isLoading.value = true;
   try {
-    const { data } = await apiFetch(`/api/choosable-event-ocassions?lang=${locale.value}`);
-    options.value = (Array.isArray(data) ? data : []).map((item: any) => ({
+    const { response } = await apiFetch(`/api/choosable-event-ocassions?lang=${locale.value}`);
+    options.value = (Array.isArray(response) ? response : []).map((item: any) => ({
       key: item.id ?? 0,
       label: item.name ?? "",
     }));

@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useCountryLookupStore } from '@/store/uranusCountryLookup.ts'
+import { useCountryLookupStore } from '@/store/countryLookupStore.ts'
 
 // --------------------
 // Props / v-model

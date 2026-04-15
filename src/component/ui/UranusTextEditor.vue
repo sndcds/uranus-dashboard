@@ -1,5 +1,4 @@
 <template>
-
   <div v-if="editor" class="container tiptap">
     <!-- Toolbar -->
     <div class="control-group button-group">
@@ -61,64 +60,67 @@
   </div>
 </template>
 
-<script setup>
-import {
-  Bold, Italic, Strikethrough, Code, SquareCode, Trash2, XCircle, Type, Heading1, Heading2, List, ListOrdered, Quote
-} from 'lucide-vue-next'
-</script>
-
-<script>
+<script setup lang="ts">
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import { TextStyle } from '@tiptap/extension-text-style'
 import { Color } from '@tiptap/extension-color'
-import { ListItem } from '@tiptap/extension-list'
 import TurndownService from 'turndown'
 import MarkdownIt from 'markdown-it'
 
+import {
+  Bold, Italic, Strikethrough, Code, SquareCode, Trash2, XCircle, Type,
+  Heading1, Heading2, List, ListOrdered, Quote
+} from 'lucide-vue-next'
 
-const iconSize = 16;
-
+const iconSize = 16
 const md = new MarkdownIt()
 const turndown = new TurndownService({
-  headingStyle: 'atx',       // # H1 style
+  headingStyle: 'atx',
   hr: '---',
-  codeBlockStyle: 'fenced',  // ``` code blocks
+  codeBlockStyle: 'fenced',
   fence: '```',
-  bulletListMarker: '-',     // unordered lists
-  emDelimiter: '_',          // _italic_
-  strongDelimiter: '**',     // **bold**
+  bulletListMarker: '-',
+  emDelimiter: '_',
+  strongDelimiter: '**'
 })
 
-export default {
-  components: { EditorContent },
-  props: { modelValue: String },
-  emits: ['update:modelValue'],
+// Props and emit
+const props = defineProps<{ modelValue?: string }>()
+const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
 
-  data() {
-    return {
-      editor: null,
-      lastEmittedMarkdown: this.modelValue || ''
+const editor = ref<Editor | null>(null)
+
+// Initialize editor
+onMounted(() => {
+  editor.value = new Editor({
+    extensions: [StarterKit, TextStyle, Color],
+    content: md.render((props.modelValue ?? '') || ''),
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML()
+      const markdown = turndown.turndown(html)
+      emit('update:modelValue', markdown)
     }
-  },
+  })
+})
 
-  mounted() {
-    this.editor = new Editor({
-      extensions: [StarterKit, TextStyle, Color],
-      content: this.modelValue ? md.render(this.modelValue) : '',
-      onUpdate: ({ editor }) => {
-        // internal HTML changes, do NOT emit modelValue yet
-        const html = editor.getHTML()
-        const markdown = turndown.turndown(html)
-        this.$emit('update:modelValue', markdown)
+// Watch for external changes to update editor
+watch(
+    () => props.modelValue,
+    (newVal) => {
+      if (!editor.value) return
+      const currentMarkdown = turndown.turndown(editor.value.getHTML())
+      if (newVal !== currentMarkdown) {
+        const html = newVal ? md.render(newVal) : ''
+        editor.value.commands.setContent(html, false) // false = do not add to undo history
       }
-    })
-  },
+    }
+)
 
-  beforeUnmount() {
-    this.editor?.destroy()
-  }
-}
+onBeforeUnmount(() => {
+  editor.value?.destroy()
+})
 </script>
 
 <style lang="scss">
@@ -130,12 +132,7 @@ export default {
   background: var(--uranus-input-bg);
   outline: none;
 
-  &:focus {
-    outline: 2px solid var(--uranus-focus-color);
-    outline-offset: -1px;
-  }
-
-  &:focus-within {
+  &:focus, &:focus-within {
     outline: 2px solid var(--uranus-focus-color);
     outline-offset: -1px;
   }

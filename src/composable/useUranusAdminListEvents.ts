@@ -5,13 +5,12 @@
  */
 
 import { ref } from "vue";
-import type { UranusAdminListEvent } from '@/domain/event/UranusAdminListEvent.ts'
-import type { UranusApiResponse } from '@/model/uranusApiResponse.ts'
+import type { AdminEventListItemModel } from '@/domain/event/adminEventListItem.model.ts'
 import { camelCaseKeys } from "./useAPI.ts";
 import { apiFetch } from "@/api.ts";
 
 export function useUranusAdminListEvents() {
-    const adminListEvents = ref<UranusAdminListEvent[]>([]);
+    const adminListEvents = ref<AdminEventListItemModel[]>([]);
     const metadata = ref<Record<string, any>>({});
     const loading = ref(false);
     const error = ref<string | null>(null);
@@ -19,27 +18,22 @@ export function useUranusAdminListEvents() {
     /**
      * Fetch the admin list of events for a given organization
      */
-    async function fetchAdminListEvents(organizationId: number, startDate?: string) {
+    async function fetchAdminListEvents(orgUuid: string | null, startDate?: string) {
         loading.value = true;
         error.value = null;
 
         try {
+            if (!orgUuid) {
+                throw new Error("orgUuid required");
+            }
+
             const params = new URLSearchParams();
             if (startDate) params.set("start", startDate);
 
-            const path = `/api/admin/organization/${organizationId}/events?${params.toString()}`;
-            // Use your apiFetch wrapper
-            const res = await apiFetch<UranusApiResponse<any[]>>(path);
-
-            if (res.data.status !== "ok") {
-                throw new Error(res.data.error || "Unknown API error");
-            }
-
-            // Map snake_case → camelCase
-            adminListEvents.value = camelCaseKeys<UranusAdminListEvent[]>(res.data.data ?? []);
-            metadata.value = res.data.metadata ?? {};
-
-            console.log(JSON.stringify(adminListEvents.value, null, 2));
+            const apiPath = `/api/admin/organization/${orgUuid}/events?${params.toString()}`;
+            const apiResonse = await apiFetch<any[]>(apiPath);
+            adminListEvents.value = camelCaseKeys<AdminEventListItemModel[]>(apiResonse.data ?? []);
+            metadata.value = apiResonse.metadata ?? {};
         } catch (e: any) {
             error.value = e.message ?? "Unknown error";
             adminListEvents.value = [];

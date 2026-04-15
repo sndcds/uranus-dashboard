@@ -1,22 +1,37 @@
+import { useI18n } from 'vue-i18n'
+
+// TODO: Check
 export function uranusCapitalizeFirst(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 /**
  * Replace placeholders in a string with values.
- * Example: "Hello {name}" with { name: "Alice" } => "Hello Alice"
+ * Example: "Hello ~~name~~" with { name: "Alice" } => "Hello Alice"
  */
 export function uranusStringInterpolate(
     template: string,
     values: Record<string, string | number | undefined | null>
 ): string {
-    return template.replace(/\{(\w+)\}/g, (_, key) => {
+    return template.replace(/~~(\w+)~~/g, (_, key) => {
         const val = values[key];
         // Convert undefined/null to empty string, otherwise use value
         return val != null ? String(val) : '';
     });
 }
 
+// TODO: Check
+export function usePluralizedText(
+    singularKey: string,
+    pluralKey: string,
+    count: number
+): string {
+    const { t } = useI18n()
+    const template = count === 1 ? t(singularKey) : t(pluralKey)
+    return uranusStringInterpolate(template, { count })
+}
+
+// TODO: Check
 export function uranusFormatSimpleDate(input: string, locale = 'en') {
     const date = new Date(input);
     const weekday = date.toLocaleDateString(locale, { weekday: 'short' });
@@ -35,6 +50,7 @@ export const uranusFormatDateTime = (dateStr: string, timeStr?: string | null, l
     }).format(dateTime)
 }
 
+// TODO: Check
 export function uranusFormatFullDate(
     input: string | number | Date,
     locale: string = 'en'
@@ -97,6 +113,7 @@ export function uranusReplaceInTemplate<T extends Record<string, unknown>>(
     return result
 }
 
+// TODO: Check
 export function uranusAgeText(
     t: (key: string) => string,
     minAge: number | null | undefined,
@@ -122,6 +139,7 @@ export function uranusAgeText(
     return '';
 }
 
+// TODO: Check
 export function uranusPriceText(
     t: (key: string) => string,
     minPrice: number | undefined,

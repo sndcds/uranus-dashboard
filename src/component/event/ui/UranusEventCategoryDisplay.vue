@@ -42,13 +42,14 @@ const circles = computed(() => {
 <style scoped lang="scss">
 .event-category-circles {
   display: flex;
+  align-items: center;
   gap: 4px;
 
   .circle {
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    display: inline-block;
+    display: block;
   }
 }
 </style>

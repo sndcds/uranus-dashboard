@@ -40,9 +40,9 @@
           </p>
           <p v-if="venue.contact_email">Email: <a :href="`mailto:${venue.contact_email}`">{{ venue.contact_email }}</a></p>
           <p v-if="venue.contact_phone">Phone: {{ venue.contact_phone }}</p>
-          <p v-if="venue.website_link">
-            <a :href="venue.website_link" target="_blank" rel="noopener noreferrer">
-              {{ venue.website_link }}&nbsp;↗
+          <p v-if="venue.web_link">
+            <a :href="venue.web_link" target="_blank" rel="noopener noreferrer">
+              {{ venue.web_link }}&nbsp;↗
             </a>
           </p>
         </div>
@@ -58,9 +58,9 @@
               <span v-if="space.building_level !== undefined">, Level {{ space.building_level }}</span>
               <span v-if="space.space_type_name">, {{ space.space_type_name }}</span>
               <p v-if="space.description">{{ space.description }}</p>
-              <p v-if="space.website_link">
-                <a :href="space.website_link" target="_blank" rel="noopener noreferrer">
-                  {{ space.website_link }}&nbsp;↗
+              <p v-if="space.web_link">
+                <a :href="space.web_link" target="_blank" rel="noopener noreferrer">
+                  {{ space.web_link }}&nbsp;↗
                 </a>
               </p>
             </li>
@@ -75,8 +75,8 @@
         <!-- Organization -->
         <div v-if="venue.organization" class="uranus-public-venue-info-section">
           <p class="uranus-public-venue-info-label">{{ t('venue_organization') }}</p>
-          <p v-if="venue.organization.website_link && venue.organization.name">
-            <a :href="venue.organization.website_link" target="_blank" rel="noopener noreferrer">
+          <p v-if="venue.organization.web_link && venue.organization.name">
+            <a :href="venue.organization.web_link" target="_blank" rel="noopener noreferrer">
               {{ venue.organization.name }}&nbsp;↗
             </a>
           </p>
@@ -113,7 +113,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { marked } from 'marked'
 import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'
-import type {UranusVenueSelectItemInfo} from '@/domain/venue/UranusVenue.ts'
+import type {UranusVenueSelectItemInfo} from '@/domain/venue/venue.model.ts'
 
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -152,8 +152,8 @@ const resolveRouteParam = (param: string | string[] | undefined) =>
     Array.isArray(param) ? param[0] : param
 
 const loadVenue = async () => {
-  const venueId = Number(resolveRouteParam(route.params.id))
-  if (!venueId) {
+  const venueUuid = Number(resolveRouteParam(route.params.uuid))
+  if (!venueUuid) {
     loadError.value = t('error_missing_params')
     isLoading.value = false
     return
@@ -164,9 +164,9 @@ const loadVenue = async () => {
 
   try {
     const lang = locale.value || 'en'
-    const apiPath = `/api/venue/${venueId}?lang=${lang}`
+    const apiPath = `/api/venue/${venueUuid}?lang=${lang}`
     const response = await apiFetch<any>(apiPath)
-    venue.value = response.data.data
+    venue.value = response.response.data
   } catch (error: unknown) {
     loadError.value = error instanceof Error ? error.message : t('error_fetch_data_failed')
   } finally {

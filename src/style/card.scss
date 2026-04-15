@@ -1,4 +1,6 @@
 .uranus-card {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: var(--uranus-card-gap);
@@ -7,6 +9,24 @@
   border-radius: var(--uranus-card-border-radius);
   border: var(--uranus-card-border);
   padding: 1rem;
+}
+
+.uranus-card.active::before {
+  content: "";
+  position: absolute;
+  top: -180px;
+  left: -180px;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(
+    circle,
+    rgba(34,197,94,0.35) 0%,
+    rgba(34,197,94,0.15) 40%,
+    rgba(34,197,94,0.05) 60%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .uranus-card-hero {
@@ -18,10 +38,10 @@
 .uranus-card-hero p {
 }
 
-
 .uranus-card-button-container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: flex-start;
   gap: 0.5rem;
 }

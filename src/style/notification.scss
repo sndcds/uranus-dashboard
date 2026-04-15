@@ -6,7 +6,7 @@
   margin-bottom: 1rem;
   align-items: flex-start;
   gap: 1rem;
-  border: 0px solid transparent;
+  border: 1px solid transparent;
   border-radius: 6px;
   color: var(--uranus-card-color);
   background: var(--uranus-card-bg);
@@ -27,7 +27,6 @@
 
     .notification-title {
       font-size: 1.1rem;
-      font-weight: 600;
       width: 100%;
       padding: var(--uranus-default-text-padding);
       margin: 0 0 0.25rem;
@@ -51,6 +50,7 @@
     width: 100%;
     justify-content: flex-end;
     padding: 16px;
+    gap: 0.8rem;
 
     .notification-button {
       display: inline-block;
@@ -70,31 +70,28 @@
 
   &.notification-type-info {
     border-color: var(--uranus-notify-info-color);
-    background: var(--uranus-notify-info-bg-color);
     .notification-title {
       background: var(--uranus-notify-info-color);
+      color: var(--uranus-notify-info-title-color);
     }
   }
 
   &.notification-type-warning {
     border-color: var(--uranus-notify-warning-color);
-    background: var(--uranus-notify-warning-color);
     .notification-title {
       background: var(--uranus-notify-warning-color);
+      color: var(--uranus-notify-warning-title-color);
     }
   }
 
   &.notification-type-error {
     border-color: var(--uranus-notify-error-color);
-    color: var(--uranus-notify-error-color);
-    background: var(--uranus-notify-error-bg);
     .notification-title {
+      background: var(--uranus-notify-error-color);
       color: var(--uranus-notify-error-title-color);
-      background: var(--uranus-notify-error-title-bg);
     }
   }
 }
-
 
 .uranus-notification-button {
   display: inline-flex;

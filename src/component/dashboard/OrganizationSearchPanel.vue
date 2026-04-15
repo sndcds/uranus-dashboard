@@ -228,8 +228,8 @@ const searchOrganizations = async () => {
 
   try {
     const endpoint = `/api/organizations?search=${encodeURIComponent(query)}`
-    const { data } = await apiFetch<unknown>(endpoint)
-    organizations.value = normalizeOrganizations(data) ?? []
+    const res = await apiFetch<unknown>(endpoint)
+    organizations.value = normalizeOrganizations(res.data) ?? []
   } catch (err: unknown) {
     searchError.value = resolveErrorMessage(err, searchErrorFallback.value)
     organizations.value = []

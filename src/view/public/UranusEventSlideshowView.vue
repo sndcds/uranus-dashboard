@@ -40,7 +40,7 @@ async function fetchEvents(filters: Record<string, any> = {}) {
   try {
     const data = await apiFetch<any>(url)
     // data.events expected as in your JSON sample
-    events.value = (data.data?.events || []).map((ev: ApiEvent) => ({
+    events.value = (data.response?.events || []).map((ev: ApiEvent) => ({
       eventId: ev.id,
       eventDateId: ev.event_date_id,
     }))

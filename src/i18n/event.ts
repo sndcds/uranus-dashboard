@@ -1,3 +1,7 @@
+/*
+    src/i18n/event.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey, string>> = {
@@ -11,10 +15,30 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Events',
         da: 'Begivenheder',
     },
+    events_: {
+        de: 'Events',
+        en: 'Events',
+        da: 'Begivenheder',
+    },
+    events_hero_subtitle : {
+        de: 'Alle anstehenden Aktivitäten auf einen Blick.',
+        en: 'Track upcoming and ongoing happenings at a glance.',
+        da: 'Få et overblik over kommende og igangværende aktiviteter.'
+    },
     event_title: {
         de: 'Titel',
         en: 'Title',
         da: 'Overskrift',
+    },
+    event_count_singular: {
+        de: '~~count~~ Veranstaltung',
+        en: '~~count~~ event',
+        da: '~~count~~ begivenhed',
+    },
+    event_count_plural: {
+        de: '~~count~~ Veranstaltungen',
+        en: '~~count~~ events',
+        da: '~~count~~ begivenheder'
     },
     event_category: {
         de: 'Kategorie',
@@ -51,6 +75,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: "Select language",
         da: "Vælg et sprog",
     },
+    event_location: {
+        de: "Ort",
+        en: "Location",
+        da: "Sted",
+    },
     event_links: {
         de: 'Externe Links',
         en: 'External links',
@@ -76,6 +105,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Add link',
         da: 'Tilføj link',
     },
+    event_online_url: {
+        de: 'Link zur Online-Veranstaltung',
+        en: 'Online Event Link',
+        da: 'Link til online begivenhed',
+    },
     all_events: {
         de: 'Alle Events',
         en: 'All events',
@@ -87,15 +121,9 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Opret en ny begivenheder',
     },
     create_event_definition: {
-        de: 'Ein Event ist ein Ereignis, das an einer Spielstätte stattfindet,\n' +
-            'z. B. ein Konzert, Theaterstück oder Workshop.\n' +
-            'Trage den genauen Titel des Events ein. Danach kannst du alle Details bearbeiten.',
-        en: 'An event is an occurrence taking place at a venue,\n' +
-            'e.g., a concert, theater performance, or workshop.\n' +
-            'Enter the exact title of the event. Afterwards, you can edit all details.',
-        da: 'En begivenhed er en hændelse, der finder sted på et sted,\n' +
-            'f.eks. en koncert, teaterforestilling eller workshop.\n' +
-            'Indtast den præcise titel på begivenheden. Derefter kan du redigere alle detaljer.',
+        de: 'Gib den Titel ein, danach kannst du Details bearbeiten.',
+        en: 'Enter the title, then edit details.',
+        da: 'Indtast titel, derefter kan du redigere detaljer.',
     },
     edit_event: {
         de: 'Event bearbeiten',
@@ -108,9 +136,9 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Rediger begivenhedsbillede',
     },
     event_release_settings: {
-        de: 'Veröffentlichung einstellen',
-        en: 'Edit release setting',
-        da: 'Rediger udgivelse',
+        de: 'Veröffentlichung',
+        en: 'Release setting',
+        da: 'Udgivelse',
     },
     add_event_image: {
         de: 'Eventbild hinzufügen',
@@ -157,6 +185,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Choose an event type',
         da: 'Vælg en begivenhedstype',
     },
+    event_no_dates_defined: {
+        de: 'Für dieses Event wurden noch keine Termine festgelegt.',
+        en: 'No dates have been defined for this event yet.',
+        da: 'Der er endnu ingen datoer defineret for denne begivenhed.',
+    },
     event_add_date: {
         de: 'Datum hinzufügen',
         en: 'Add date',
@@ -186,11 +219,6 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Noch kein Veröffentlichungsdatum festgelegt.',
         en: 'No release date has been set yet.',
         da: 'Ingen udgivelsesdato angivet endnu.',
-    },
-    edit_event_release_status: {
-        de: 'Veröffentlichungstatus',
-        en: 'Release status',
-        da: 'Udgivelsesstatus',
     },
     event_without_venue: {
         de: 'Ohne Spielstätte',
@@ -227,11 +255,6 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Unknown license',
         da: 'Ukendt licens',
     },
-    event_building_level_label: {
-        de: 'Etage',
-        en: 'Level',
-        da: 'Etage',
-    },
     event_seating_capacity_label: {
         de: 'Sitzplatzkapazität',
         en: 'Seating capacity',
@@ -241,6 +264,41 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Unbekannter Eventtyp',
         en: 'Unknown type',
         da: 'Ukendt type',
+    },
+    event_start_date: {
+        de: 'Startdatum',
+        en: 'Start date',
+        da: 'Startdato',
+    },
+    event_start_time: {
+        de: 'Startzeit',
+        en: 'Start time',
+        da: 'Starttid',
+    },
+    event_end_date: {
+        de: 'Enddatum',
+        en: 'End date',
+        da: 'Slutdato',
+    },
+    event_end_time: {
+        de: 'Endzeit',
+        en: 'End time',
+        da: 'Sluttid',
+    },
+    event_entry_time: {
+        de: 'Einlasszeit',
+        en: 'Entry time',
+        da: 'Indgangstid',
+    },
+    event_duration: {
+        de: 'Dauer',
+        en: 'Duration',
+        da: 'Varighed',
+    },
+    event_all_day: {
+        de: 'Ganztägig',
+        en: 'All day',
+        da: 'Hele dagen',
     },
     event_starts_short: {
         de: 'Beginn',
@@ -321,6 +379,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: "Veranstaltungstyp auswählen",
         en: "Select event type",
         da: "Vælg en begivenhedstype"
+    },
+    select_event_genre: {
+        de: "Genre auswählen",
+        en: "Select genre",
+        da: "Vælg genre"
     },
     event_age: {
         de: 'Alter',
@@ -458,19 +521,19 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Højeste pris',
     },
     event_price_from_sentence: {
-        de: 'Ab {min} {currency}',
-        en: 'From {min} {currency}',
-        da: 'Fra {min} {currency}',
+        de: 'Ab ~~min~~ ~~currency~~',
+        en: 'From ~~min~~ ~~currency~~',
+        da: 'Fra ~~min~~ ~~currency~~',
     },
     event_price_until_sentence: {
-        de: 'Bis {max} {currency}',
-        en: 'Up to {max} {currency}',
-        da: 'Op til {max} {currency}',
+        de: 'Bis ~~max~~ ~~currency~~',
+        en: 'Up to ~~max~~ ~~currency~~',
+        da: 'Op til ~~max~~ ~~currency~~',
     },
     event_price_between_sentence: {
-        de: '{min} bis {max} {currency}',
-        en: '{min} to {max} {currency}',
-        da: '{min} til {max} {currency}',
+        de: '~~min~~ bis ~~max~~ ~~currency~~',
+        en: '~~min~~ to ~~max~~ ~~currency~~',
+        da: '~~min~~ til ~~max~~ ~~currency~~',
     },
     event_price_type: {
         de: 'Preisart',
@@ -527,6 +590,16 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Registration required',
         da: 'Tilmelding påkrævet',
     },
+    event_reduced_price_available: {
+        de: 'Reduzierter Preis verfügbar',
+        en: 'Reduced-price tickets available',
+        da: 'Billetter med reduceret pris tilgængelige'
+    },
+    event_ticket_link: {
+        de: 'Link zu Tickets',
+        en: 'Link to tickets',
+        da: 'Link til billetter'
+    },
     event_occasion_type: {
         de: 'Anlass',
         en: 'Occasion',
@@ -572,11 +645,6 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Reschreduled',
         da: 'Flyttet',
     },
-    event_release_status_label: {
-        de: 'Veröffentlichungsstatus',
-        en: 'Release status',
-        da: 'Udgivelsesstatus',
-    },
     notification_cant_see_events_title: {
         de: 'Warum kann ich keine Events sehen?',
         en: 'Why can’t I see any events?',
@@ -611,6 +679,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Datum entfernen',
         en: 'Remove date',
         da: 'Fjern dato',
+    },
+    event_release_notice: {
+        de: 'Bitte veröffentliche ausschließlich Inhalte, für die du über alle erforderlichen Nutzungsrechte verfügst und die keine Urheberrechte Dritter verletzen. Mit dem Klick auf „Speichern“ bestätigst du dies.',
+        en: 'Please publish only content for which you hold all necessary usage rights and which does not infringe third-party copyrights. By clicking “Save”, you confirm this.',
+        da: 'Publicér kun indhold, som du har alle nødvendige brugsrettigheder til, og som ikke krænker tredjeparts ophavsret. Ved at klikke på “Gem” bekræfter du dette.',
     }
 }
 

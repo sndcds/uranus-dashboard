@@ -12,24 +12,24 @@
     <!-- Container for autoscroll -->
     <div class="venue-space-list" ref="containerRef">
       <div
-          v-for="venue in groupedVenues"
-          :key="venue.venueId"
+          v-for="venue in venueSpaceInfos"
+          :key="venue.venueUuid"
           class="venue-group"
       >
         <div
             class="venue-item"
-            :class="{ selected: isSelected(venue.venueId, null) }"
-            @click="select(venue.venueId, null)"
+            :class="{ selected: isSelected(venue.venueUuid, null) }"
+            @click="select(venue.venueUuid, null)"
         >
           {{ venue.venueName }} ({{ venue.city }})
         </div>
 
         <div
             v-for="space in venue.spaces"
-            :key="space.spaceId ?? 0"
+            :key="space.spaceUuid ?? 0"
             class="space-item"
-            :class="{ selected: isSelected(venue.venueId, space.spaceId) }"
-            @click="select(venue.venueId, space.spaceId)"
+            :class="{ selected: isSelected(venue.venueUuid, space.spaceUuid) }"
+            @click="select(venue.venueUuid, space.spaceUuid)"
         >
           {{ space.spaceName }}
         </div>
@@ -43,71 +43,33 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, nextTick, watch } from 'vue'
+import { ref, nextTick, watch } from 'vue'
 import UranusModal from '@/component/uranus/UranusModal.vue'
-import { type UranusEventVenueInfo } from '@/store/uranusEventVenueInfoStore.ts'
-
-interface VenueSpaceOption {
-  venueId: number
-  venueName: string
-  city: string
-  spaces: {
-    spaceId: number | null
-    spaceName: string | null
-    city: string
-  }[]
-}
+import { type BasicVenueSpacesInfo } from '@/domain/venue/basicVenueInfo.model.ts'
 
 const props = defineProps<{
   show: boolean
-  venueInfos: UranusEventVenueInfo[]
-  modelValue: { venueId: number | null; spaceId: number | null }
+  venueSpaceInfos: BasicVenueSpacesInfo[]
+  modelValue: { venueUuid: string | null; spaceUuid: string | null }
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: { venueId: number | null; spaceId: number | null }): void
+  (e: 'update:modelValue', value: { venueUuid: string | null; spaceUuid: string | null }): void
   (e: 'close'): void
 }>()
 
 const containerRef = ref<HTMLDivElement | null>(null)
 
-// Group venues + spaces
-const groupedVenues = computed<VenueSpaceOption[]>(() => {
-  const map = new Map<number, VenueSpaceOption>()
-
-  for (const v of props.venueInfos) {
-    if (!map.has(v.venueId)) {
-      map.set(v.venueId, {
-        venueId: v.venueId,
-        venueName: v.venueName,
-        city: v.city,
-        spaces: [],
-      })
-    }
-
-    if (v.spaceId != null) {
-      map.get(v.venueId)!.spaces.push({
-        spaceId: v.spaceId,
-        spaceName: v.spaceName,
-        city: v.city,
-      })
-    }
-  }
-
-  return Array.from(map.values()).sort((a, b) =>
-      a.venueName.localeCompare(b.venueName)
-  )
-})
 
 // Select a venue/space
-function select(venueId: number, spaceId: number | null) {
-  emit('update:modelValue', { venueId, spaceId })
+function select(venueUuid: string, spaceUuid: string | null) {
+  emit('update:modelValue', { venueUuid, spaceUuid })
   emit('close')
 }
 
 // Check if a venue/space is selected
-function isSelected(venueId: number, spaceId: number | null) {
-  return props.modelValue?.venueId === venueId && props.modelValue?.spaceId === spaceId
+function isSelected(venueUuid: string, spaceUuid: string | null) {
+  return props.modelValue?.venueUuid === venueUuid && props.modelValue?.spaceUuid === spaceUuid
 }
 
 // Auto-scroll selected item when modal opens

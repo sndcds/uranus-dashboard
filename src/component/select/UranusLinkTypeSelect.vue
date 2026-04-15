@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue"
 import { useI18n } from "vue-i18n"
-import { useLinkTypeLookupStore } from "@/store/UranusLinkTypeLookup.ts"
+import { useLinkTypeLookupStore } from "@/store/linkTypeLookupStore.ts"
 import UranusLabel from "@/component/ui/UranusLabel.vue"
 
 // Props + v-model

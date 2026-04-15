@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
-import { useEventReleaseStatusStore } from '@/store/uranusEventReleaseStatusStore.ts'
+import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 import { useI18n } from "vue-i18n";
 
 const { t, locale } = useI18n({ useScope: 'global' })

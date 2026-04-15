@@ -130,7 +130,7 @@ Test helpers, mocks, and specs live inside the `tests/` directory—see `tests/R
 ### Dashboard Workspace (authenticated)
 
 - **Dashboard home (`/`):** A welcome hero reminding users of key tasks.
-- **Organisers (`/organizations`):** List fetched from `/api/admin/organization/dashboard`, with cards linking to create/update flows.
+- **Organisers (`/organizations`):** List fetched from `/api/admin/organization/list`, with cards linking to create/update flows.
 - **Create & edit organiser (`/organization/create`, `/organization/:id/edit`):**
   - Forms capture legal form, country/state via live dropdowns (`/api/choosable-legal-forms`, `/api/choosable-countries`, `/api/choosable-states`).
   - Use the integrated Markdown editor for rich descriptions and the Leaflet map to refine coordinates.

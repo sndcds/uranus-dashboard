@@ -1,3 +1,19 @@
+<!--
+  src/view/public/UranusEventsView.vue
+
+  UranusEventsView acts as the main container for the public events page.
+  It composes the event filter panel and the event calendar, handling their
+  layout and interaction.
+
+  The component is responsible for:
+  - Managing and applying filter changes via the global filter store
+  - Rendering the filter panel as a sidebar on desktop and as a modal on mobile
+  - Coordinating UI state such as modal visibility and responsive layout behavior
+
+  It serves as the integration layer between filtering controls and the
+  event listing, without containing business logic for data fetching itself.
+-->
+
 <template>
 
   <div class="calendar-view">
@@ -42,7 +58,7 @@ import { useI18n } from 'vue-i18n'
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
 import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'
-import { type UranusEventsFilter, useEventsFilterStore } from '@/store/uranusEventsFilterStore.ts'
+import { type UranusEventsFilter, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 
 const filterStore = useEventsFilterStore()
 
@@ -63,9 +79,7 @@ const isSidebarVisible = ref(window.innerWidth >= 1024)
 window.addEventListener('resize', () => {
   isSidebarVisible.value = window.innerWidth >= 1024
 })
-
 const onCancelFilter = () => showFilterModal.value = false
-
 </script>
 
 <style scoped lang="scss">

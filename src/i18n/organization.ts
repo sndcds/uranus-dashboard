@@ -1,3 +1,7 @@
+/*
+    src/i18n/organization.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLocaleKey, string>> = {
@@ -11,10 +15,30 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         en: 'Organizations',
         da: 'Organisationer',
     },
+    organization_editor: {
+        de: 'Organisation bearbeiten',
+        en: 'Edit organization',
+        da: 'Rediger organisation',
+    },
+    organization_activate: {
+        de: 'Aktivieren',
+        en: 'Activate',
+        da: 'Aktiver',
+    },
+    organization_active: {
+        de: 'Aktiv',
+        en: 'Activate',
+        da: 'Aktiv',
+    },
     organization_name: {
         de: 'Organisationsname',
         en: 'Organization name',
         da: 'Organisationsnavn',
+    },
+    organizations_manage_description: {
+        de: 'Verwalte deine Organisationen und Organisationen bei denen du im Team bist.',
+        en: 'Manage your organizations and the teams you are part of.',
+        da: 'Administrer dine organisationer og de organisationer, hvor du er en del af teamet.',
     },
     organization_edit_description: {
         de: 'Überprüfe und aktualisiere die Daten deiner Organisation.',
@@ -22,7 +46,7 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         da: 'Gennemse og opdater oplysningerne om din arrangør.',
     },
     organization_no_membership_message: {
-        de: 'Du hast noch keine Organisation für die du agieren kannst. Erstelle eine Organisation oder bitte eine andere Organisation dich ins Team einzuladen',
+        de: 'Du hast noch keine Organisation für die du agieren kannst. Erstelle eine Organisation oder bitte eine andere Organisation dich ins Team einzuladen.',
         en: 'You don’t have an organization to act for yet. Create an organization or ask another organization to invite you to the team.',
         da: 'Du har endnu ingen organisation, som du kan handle for. Opret en organisation eller bed en anden organisation om at invitere dig til teamet.',
     },
@@ -70,7 +94,27 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         de: 'Organisationsbild hinzufügen',
         en: 'Add organization image',
         da: 'Tilføj organisationsbillede',
-    }
+    },
+    create_organization: {
+        de: 'Organisation erstellen',
+        en: 'Create a new organization',
+        da: 'Opret en ny organisation',
+    },
+    create_organization_definition: {
+        de: 'Gib die exakte Organisationsbezeichnung ein, danach kannst du Details bearbeiten.',
+        en: 'Enter the exact organization name. You can edit the details afterwards.',
+        da: 'Indtast det præcise organisationsnavn. Du kan redigere detaljerne bagefter.',
+    },
+    organization_manage_team_description: {
+        de: 'Verwalte Mitglieder, Rollen und Einladungen deiner Organisation.',
+        en: 'Manage members, roles, and invitations for your organization team.',
+        da: 'Administrer medlemmer, roller og invitationer for din organisation.',
+    },
+    invite_organization_team_member: {
+        de: 'Sende eine Einladung an ein neues Teammitglied für die Organisation.',
+        en: 'Send an invitation to a new team member for the organization.',
+        da: 'Send en invitation til et nyt teammedlem til organisationen.',
+    },
 }
 
 export default uranusI18nOrganizationTranslations

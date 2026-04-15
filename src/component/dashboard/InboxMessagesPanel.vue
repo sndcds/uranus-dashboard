@@ -338,11 +338,9 @@ const refreshMessages = async (): Promise<void> => {
   messagesLoading.value = true
 
   try {
-    const { data } = await apiFetch<unknown>('/api/admin/user/messages')
-    console.log('Raw API data:', data)
+    const res = await apiFetch<unknown>('/api/admin/user/messages')
 
-    const normalizedMessages = normalizeMessages(data)
-    console.log('Normalized messages:', normalizedMessages)
+    const normalizedMessages = normalizeMessages(res.data)
 
     messages.value = normalizedMessages
     ensureMessageSelection()

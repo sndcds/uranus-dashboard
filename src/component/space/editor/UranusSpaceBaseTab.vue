@@ -5,81 +5,64 @@
 -->
 
 <template>
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+  <UranusForm>
 
-    <label class="full-width">
-      Name
-      <input
-          class="big"
-          type="text"
-          v-model="space.name"
-          required
-      />
-    </label>
+    <UranusFormRow>
+      <UranusTextfield id="space-name" size="big" :label="t('name')" v-model="space.name" required/>
+    </UranusFormRow>
 
-    <label class="full-width">
-      Description
-      <textarea v-model="space.description" />
-    </label>
+    <UranusFormRow>
+      <UranusLabel id="space-description" :label="t('description')">
+        <UranusTextEditor v-model="space.description"/>
+      </UranusLabel>
+    </UranusFormRow>
 
-    <label>
-      {{ t('space_type') }}
-      <UranusSpaceTypeSelect
-          v-model="space.spaceType"
-      />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusLabel id="space-type" :label="t('space_type')">
+        <UranusSpaceTypeSelect v-model="space.spaceType" />
+      </UranusLabel>
+      <UranusTextfield id="space-web-link" type="url" :label="t('website')" v-model="space.webLink" placeholder="https://"/>
+    </UranusFormRow>
 
-    <label>
-      Website
-      <input
-          type="url"
-          v-model="space.websiteLink"
-          placeholder="https://"
-      />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusNumberInput id="space-building-level" step="1" :label="t('building_level')" v-model="space.buildingLevel!" />
+      <UranusNumberInput id="space-area" min="0" step="0.001" :label="t('area_sqm')" v-model="space.areaSqm!" />
+    </UranusFormRow>
 
-    <label>
-      Building Level
-      <input
-          type="number"
-          v-model.number="space.buildingLevel"
-      />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusNumberInput id="space-total-capacity" min="0" step="1" :label="t('total_capacity')" v-model="space.totalCapacity!" />
+      <UranusNumberInput id="space-seating-capacity" min="0" step="1" :label="t('seating_capacity')" v-model="space.seatingCapacity!" />
+    </UranusFormRow>
 
-    <label>
-      Area (sqm)
-      <input
-          type="number"
-          step="0.01"
-          v-model.number="space.areaSqm"
-      />
-    </label>
+    <UranusFormRow>
+      <UranusLabel id="space-accessibility-summary" :label="t('accessibility_summery')">
+        <UranusTextEditor v-model="space.accessibilitySummary"/>
+      </UranusLabel>
+    </UranusFormRow>
 
-    <label class="full-width">
-      Accessibility Summary
-      <textarea v-model="space.accessibilitySummary" />
-    </label>
+    <UranusFormActions>
+      <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">{{ t('discard') }}</UranusButton>
+      <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">{{ t('save') }}</UranusButton>
+    </UranusFormActions>
 
-    <!-- Actions -->
-    <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
-        {{ t('discard') }}
-      </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
-        {{ t('save') }}
-      </button>
-    </div>
-
-  </section>
+  </UranusForm>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import { useUranusSpaceStore } from '@/store/uranusSpaceStore.ts'
-import type { UranusSpace } from '@/domain/space/UranusSpace'
+import { useUranusSpaceStore } from '@/store/spaceStore.ts'
+import type { UranusSpace } from '@/domain/space/space.model.ts'
 import UranusSpaceTypeSelect from '@/component/select/UranusSpaceTypeSelect.vue'
+import UranusForm from "@/component/ui/UranusForm.vue";
+import UranusTextfield from "@/component/ui/UranusTextfield.vue";
+import UranusFormRow from "@/component/ui/UranusFormRow.vue";
+import UranusTextEditor from "@/component/ui/UranusTextEditor.vue";
+import UranusLabel from "@/component/ui/UranusLabel.vue";
+import UranusNumberInput from "@/component/ui/UranusNumberInput.vue";
+import UranusButton from "@/component/ui/UranusButton.vue";
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -89,7 +72,7 @@ const space = computed(() => store.draft!)
 const baseFields = [
   'name',
   'description',
-  'websiteLink',
+  'webLink',
   'spaceType',
   'buildingLevel',
   'areaSqm',
@@ -123,13 +106,13 @@ function buildPayload(
 
   if (draft.name !== original.name) set('name', draft.name)
   if (draft.description !== original.description) set('description', draft.description)
-  if (draft.websiteLink !== original.websiteLink) set('website_link', draft.websiteLink)
+  if (draft.webLink !== original.webLink) set('web_link', draft.webLink)
   if (draft.spaceType !== original.spaceType) set('space_type', draft.spaceType)
   if (draft.buildingLevel !== original.buildingLevel) set('building_level', draft.buildingLevel)
   if (draft.areaSqm !== original.areaSqm) set('area_sqm', draft.areaSqm)
-  if (draft.accessibilitySummary !== original.accessibilitySummary) {
-    set('accessibility_summary', draft.accessibilitySummary)
-  }
+  if (draft.accessibilitySummary !== original.accessibilitySummary) set('accessibility_summary', draft.accessibilitySummary)
+  if (draft.totalCapacity !== original.totalCapacity) set('total_capacity', draft.totalCapacity)
+  if (draft.seatingCapacity !== original.seatingCapacity) set('seating_capacity', draft.seatingCapacity)
 
   return payload
 }
@@ -137,11 +120,13 @@ function buildPayload(
 function copyFields(source: UranusSpace, target: UranusSpace) {
   target.name = source.name ?? ''
   target.description = source.description ?? null
-  target.websiteLink = source.websiteLink ?? null
+  target.webLink = source.webLink ?? null
   target.spaceType = source.spaceType ?? null
   target.buildingLevel = source.buildingLevel ?? null
   target.areaSqm = source.areaSqm ?? null
   target.accessibilitySummary = source.accessibilitySummary ?? null
+  target.totalCapacity = source.totalCapacity ?? null
+  target.seatingCapacity = source.seatingCapacity ?? null
 }
 
 async function commitTab() {
@@ -159,7 +144,7 @@ async function commitTab() {
       return
     }
 
-    const apiPath = `/api/admin/space/${draft.id}/fields`
+    const apiPath = `/api/admin/space/${draft.uuid}/fields`
     await apiFetch(apiPath, {
       method: 'PUT',
       body: JSON.stringify(payload),

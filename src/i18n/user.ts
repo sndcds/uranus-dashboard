@@ -1,3 +1,7 @@
+/*
+    src/i18n/user.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, string>> = {
@@ -5,6 +9,11 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         de: 'Unbekannter Nutzer',
         en: 'Unknown user',
         da: 'Ukendt bruger',
+    },
+    user_already_exists: {
+        de: 'Ups! Ein Benutzer mit dieser E-Mail-Adresse ist bereits registriert.',
+        en: 'Oops! A user with this email address is already registered.',
+        da: 'Ups! En bruger med denne e-mailadresse er allerede registreret.',
     },
     user_profile_username: {
         de: 'Benutzername',
@@ -31,20 +40,15 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'Manage how you appear to teammates and organisers.',
         da: 'Styr hvordan andre ser dine oplysninger.',
     },
-    user_profile_photo_label: {
-        de: 'Profilbild',
-        en: 'Profile picture',
-        da: 'Profilbillede',
-    },
     user_profile_photo_hint: {
-        de: 'JPG oder PNG, maximal 5 MB.',
-        en: 'JPG or PNG, max 5 MB.',
-        da: 'JPG eller PNG, maks. 5 MB.',
+        de: 'JPG, PNG oder WebP, maximal 5 MB.',
+        en: 'JPG, PNG or WebP, max 5 MB.',
+        da: 'JPG, PNG eller WebP, maks. 5 MB.',
     },
     user_profile_upload: {
-        de: 'Neues Bild hochladen',
-        en: 'Upload new photo',
-        da: 'Upload nyt billede',
+        de: 'Bild hochladen',
+        en: 'Upload photo',
+        da: 'Upload billede',
     },
     user_profile_remove_photo: {
         de: 'Bild entfernen',
@@ -77,9 +81,9 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         da: 'Gem profil',
     },
     user_profile_save_success: {
-        de: 'Profil wurde aktualisiert.',
-        en: 'Profile updated successfully.',
-        da: 'Profilen er opdateret.',
+        de: 'Profil wurde gespeichert.',
+        en: 'Profile saved successfully.',
+        da: 'Profilen er blevet gemt.',
     },
     user_profile_save_error: {
         de: 'Profil konnte nicht gespeichert werden.',
@@ -101,16 +105,6 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'Please provide a display name and email address.',
         da: 'Angiv venligst visningsnavn og e-mailadresse.',
     },
-    user_profile_preferences_heading: {
-        de: 'Arbeitsbereich einstellen',
-        en: 'Workspace preferences',
-        da: 'Arbejdsmiljø-indstillinger',
-    },
-    user_profile_preferences_description: {
-        de: 'Sprache und Darstellungsmodus gelten überall im Dashboard.',
-        en: 'Language and theme apply across your dashboard experience.',
-        da: 'Sprog og tema gælder i hele dashboardet.',
-    },
     user_permissions_title: {
         de: 'Berechtigungen.',
         en: 'Permissions',
@@ -125,16 +119,6 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         de: 'Berechtigungen werden geladen…',
         en: 'Loading permissions…',
         da: 'Indlæser rettigheder…',
-    },
-    user_permissions_entities: {
-        de: '[count] Einträge',
-        en: '[count] entries',
-        da: '[count] poster',
-    },
-    user_permissions_relation: {
-        de: 'Relation-ID [id]',
-        en: 'Relation #{id}',
-        da: 'Relations-ID {id}',
     },
     user_permissions_add_event: {
         de: 'Event anlegen',
@@ -396,6 +380,11 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'Account activation failed. Please try again or contact support.',
         da: 'Kontoaktivering mislykkedes. Prøv igen eller kontakt support.',
     },
+    invite_team_member: {
+        de: 'Teammitglied einladen',
+        en: 'Invite team member',
+        da: 'Inviter team medlem',
+    }
 }
 
 export default uranusI18nUserTranslations

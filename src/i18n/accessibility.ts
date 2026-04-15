@@ -5,6 +5,11 @@
 */
 
 export const uranusI18nAccessibilityTranslations: Record<string, Record<'en' | 'de' | 'da', string>> = {
+    accessibility_summery: {
+        de: 'Barrierefreiheit (Zusammenfassung)',
+        en: 'Accessibility summary',
+        da: 'Tilgængelighed (oversigt)',
+    },
     accessible_parking: {
         en: 'Accessible Parking',
         de: 'Barrierefreier Parkplatz',

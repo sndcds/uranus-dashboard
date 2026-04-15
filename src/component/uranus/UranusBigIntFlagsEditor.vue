@@ -3,24 +3,24 @@
 -->
 
 <template>
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
-    <div
+  <section>
+    <UranusCard
         v-for="topic in topics"
         :key="topic.topic"
-        class="accessibility-group"
+        class="accessibility-card"
     >
-      <h3>{{ t(topic.topic_name) }}</h3>
+      <h2>{{ t(topic.topic_name) }}</h2>
 
       <div class="accessibility-options">
         <UranusCheckbox
             v-for="flag in topic.flags"
             :key="flag.id"
             :id="`flag-${flag.id}`"
-            v-model="flagModels[flag.id]"
+            v-model="useFlagModel(flag.id).value"
             :label="t(flag.name)"
         />
       </div>
-    </div>
+    </UranusCard>
 
   </section>
 </template>
@@ -30,6 +30,7 @@ import { reactive, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBigIntFlags, setBigintByFlags, type BigIntFlags } from '@/composable/useBigIntFlags'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
+import UranusCard from '@/component/ui/UranusCard.vue'
 
 interface FlagTopic {
   topic: number
@@ -51,6 +52,15 @@ const { t } = useI18n({ useScope: 'global' })
 
 const flags = useBigIntFlags(props.modelValue ?? 0n)
 
+function useFlagModel(flagId: number) {
+  return computed({
+    get: () => flags.flagComputed(flagId).value,
+    set: (val: boolean) => {
+      flags.flagComputed(flagId).value = val
+    },
+  })
+}
+
 watch(
     () => props.modelValue,
     (newVal) => {
@@ -58,7 +68,6 @@ watch(
     }
 )
 
-// Reactive checkbox model
 const flagModels = reactive<BigIntFlags>({})
 
 // Bind flags dynamically
@@ -78,30 +87,27 @@ const currentValue = computed(() =>
     setBigintByFlags(flagModels)
 )
 
-// Emit value when changed
 watch(currentValue, (val) => {
   emit('update:modelValue', val)
 })
 
-// Reset
 function reset() {
   flags.value.value = props.modelValue ?? 0n
 }
 
-// Save just re-syncs base value
 function save() {
   emit('update:modelValue', currentValue.value)
 }
 </script>
 
 
-
 <style scoped lang="scss">
-.accessibility-group {
-  margin-bottom: 1.5rem;
+.accessibility-card {
+  display: flex;
+  margin-bottom: 1rem;
 
   h3 {
-    font-weight: 600;
+    font-weight: 500;
     margin-bottom: 0.5rem;
   }
 
@@ -110,58 +116,6 @@ function save() {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
-
-    label {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      user-select: none;
-      font-size: 1rem;
-      position: relative;
-
-      input[type="checkbox"] {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        width: 24px;
-        height: 24px;
-        border: 2px solid #888;
-        border-radius: 4px;
-        background-color: #fff;
-        position: relative;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      input[type="checkbox"]:checked {
-        background-color: #2a3aed;
-        border-color: #2a3aed;
-      }
-
-      input[type="checkbox"]:checked::after {
-        content: '';
-        position: absolute;
-        left: 6px;
-        top: 2px;
-        width: 6px;
-        height: 12px;
-        border: solid #fff;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-      }
-
-      input[type="checkbox"]:hover {
-        border-color: #2a3aed;
-      }
-    }
   }
-}
-
-.tab-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
 }
 </style>

@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useCurrencyLookupStore } from '@/store/uranusCurrencyLookup.ts'
+import { useCurrencyLookupStore } from '@/store/currencyLookupStore.ts'
 
 const props = defineProps<{
   modelValue: string | null

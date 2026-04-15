@@ -8,7 +8,7 @@
   <div style="display: flex; flex-direction: column; justify-content: center;">
 
     <template v-if="model.type === 'single'">
-      <h2>{{ model.date }}</h2>
+      <h2 class="uranus-public-main-date">{{ model.date }}</h2>
       <p v-if="model.time">
         {{ model.time }}
       </p>
@@ -51,13 +51,11 @@ interface Props {
   endDate?: string | null   // YYYY-MM-DD
   endTime?: string | null   // HH:mm
   entryTime?: string | null   // HH:mm
-  allDay?: boolean
-  mode?: 'short' | 'long' // formatting mode
+  allDay: boolean
 }
 
 const props = defineProps<Props>()
 const { locale, t } = useI18n()
-const mode = props.mode || 'short'
 
 // Computed render model
 const model = computed(() => {

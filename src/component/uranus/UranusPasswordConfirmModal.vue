@@ -1,14 +1,12 @@
 <template>
-  <UranusModal
-      :show="show"
-      :title="title"
-      max-width="520px"
-      @close="$emit('cancel')"
-  >
-    <form :id="formId" @submit.prevent="handleSubmit" class="uranus-form">
+  <UranusModal :show="show" :title="title" max-width="520px" @close="$emit('cancel')">
+    <UranusForm :id="formId" @submit.prevent="handleSubmit">
       <span class="form-label">{{ question }}</span>
 
-      <!-- Option Selection -->
+      <UranusFeedback :show="!!props.error" type="error">
+        {{ props.error }}
+      </UranusFeedback>
+
       <UranusFormRow v-if="options?.length" class="options">
         <UranusRadioButton
             v-for="opt in options"
@@ -22,7 +20,6 @@
         </UranusRadioButton>
       </UranusFormRow>
 
-      <!-- Password Input -->
       <UranusFormRow>
         <UranusPasswordInput
             v-model="password"
@@ -32,19 +29,17 @@
         />
       </UranusFormRow>
 
-      <UranusErrorMessage v-if="error" :message="error" />
-    </form>
-
-    <template #actions>
-      <div class="modal-actions">
+      <UranusFormActions>
         <UranusButton type="button" @click="$emit('cancel')">
           {{ t('cancel') }}
         </UranusButton>
         <UranusButton type="submit" :form="formId" :disabled="isSubmitting">
           {{ isSubmitting ? loadingText : confirmText }}
         </UranusButton>
-      </div>
-    </template>
+      </UranusFormActions>
+
+    </UranusForm>
+
   </UranusModal>
 </template>
 
@@ -56,10 +51,14 @@ import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusRadioButton from '@/component/ui/UranusRadioButton.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusPasswordInput from '@/component/ui/UranusPasswordInput.vue'
-import UranusErrorMessage from '@/component/ui/UranusErrorMessage.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
 
-const { t, locale } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
+
+const localError = ref('')
 
 interface Option {
   label: string
@@ -71,15 +70,14 @@ interface Props {
   title: string
   confirmText: string
   loadingText: string
-  error?: string
   isSubmitting?: boolean
   // Flexible mode: either single confirmation or multiple options
+  error: string
   question?: string
   options?: Option[] | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  locationError: '',
   isSubmitting: false,
   question: '',
   options: null,
@@ -90,6 +88,7 @@ const emit = defineEmits<{
   cancel: []
 }>()
 
+const question = computed(() => props.question ?? '')
 const password = ref('')
 const formId = `password-confirm-${Math.random().toString(36).slice(2, 9)}`
 const selectedOption = ref(props.options?.[0]?.value ?? '')
@@ -102,18 +101,26 @@ watch(() => props.show, (newValue) => {
   }
 })
 
-
-
-const handleSubmit = () => {
-  emit('confirm', {
+const handleSubmit = async () => {
+  const payload: { password: string; selectedOption?: string | number } = {
     password: password.value,
-    selectedOption: props.options?.length ? selectedOption.value : undefined
-  })
+  }
+
+  if (props.options?.length) {
+    payload.selectedOption = selectedOption.value
+  }
+
+  try {
+    // Await the parent handler
+    await emit('confirm', payload)
+    localError.value = ''
+  } catch (err: any) {
+    // Show error inside UranusFeedback
+    localError.value = err.message || t('unexpected_error')
+  }
 }
 
-const question = computed(() => props.question ?? '')
 </script>
-
 <style scoped lang="scss">
 .uranus-form {
   display: flex;
@@ -121,14 +128,13 @@ const question = computed(() => props.question ?? '')
   gap: 1rem;
 }
 
-.modal-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-}
-
 .options {
   display: flex;
   flex-direction: column;
+}
+
+.actions {
+  display: flex;
+  gap: 0.6rem;
 }
 </style>

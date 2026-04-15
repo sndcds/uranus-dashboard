@@ -5,32 +5,31 @@
 -->
 
 <template>
-  {{ venue.id }}
-  <section class="uranus-admin-edit-section venue-images-tab">
+  <section class="uranus-admin-edit-section">
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="main_logo"
         bgClass="padded"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="dark_theme_logo"
         bgClass="dark padded"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="light_theme_logo"
         bgClass="light padded"
         :width="220"
     />
     <UranusImageSlot
         context="venue"
-        :contextId="venue.id"
+        :contextUuid="venue.uuid"
         identifier="avatar"
         bgClass="padded"
         :width="220"
@@ -40,15 +39,9 @@
 
 <script setup lang="ts">
 import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
-import { useUranusVenueStore } from "@/store/UranusVenueStore.ts";
+import { useUranusVenueStore } from "@/store/venueStore.ts";
 import { computed } from "vue";
 
 const store = useUranusVenueStore()
 const venue = computed(() => store.draft!)
-
-
 </script>
-
-
-<style lang="scss" scoped>
-</style>

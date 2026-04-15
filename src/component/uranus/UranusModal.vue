@@ -11,10 +11,10 @@
           :style="{ maxWidth }"
           @click.stop
         >
-          <header class="uranus-modal__header" :class="{ 'uranus-modal__header--plain': !hasHeaderContent }">
+          <div class="uranus-modal__header" :class="{ 'uranus-modal__header--plain': !hasHeaderContent }">
             <slot name="header">
               <template v-if="hasHeaderContent">
-                <h3 v-if="title" class="uranus-modal__title">{{ title }}</h3>
+                <h1 v-if="title" class="uranus-modal__title">{{ title }}</h1>
               </template>
             </slot>
             <button
@@ -23,9 +23,9 @@
               aria-label="Close dialog"
               @click="$emit('close')"
             >
-              ×
+              <X />
             </button>
-          </header>
+          </div>
 
           <section class="uranus-modal__body">
             <slot />
@@ -42,6 +42,7 @@
 
 <script setup lang="ts">
 import { computed, useSlots, onMounted, onBeforeUnmount } from 'vue'
+import { X } from 'lucide-vue-next'
 
 const props = withDefaults(
   defineProps<{
@@ -72,7 +73,6 @@ const handleKeydown = (e: KeyboardEvent) => {
     emit('close')
   }
 }
-const slots = useSlots()
 
 const hasHeaderContent = computed(
   () => !!props.title
@@ -100,20 +100,21 @@ onBeforeUnmount(() => {
 }
 
 .uranus-modal__content {
-  width: 100%;
-  background: var(--surface-primary, #fff);
-  border-radius: 1rem;
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
   display: flex;
   flex-direction: column;
+  gap: 0;
+  width: 100%;
+  background: var(--uranus-bg);
+  border-radius: var(--uranus-card-border-radius);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
 }
 
 .uranus-modal__header {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  // gap: 0.5rem;
   padding: clamp(1.25rem, 3vw, 1.75rem);
-  border-bottom: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--uranus-color-7);
   position: relative;
 }
 
@@ -127,40 +128,47 @@ onBeforeUnmount(() => {
   font-weight: 600;
 }
 
-.uranus-modal__close {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  border: none;
-  background: transparent;
-  font-size: 1.5rem;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--uranus-muted-text);
-
-  &:hover {
-  }
-}
-
 .uranus-modal__body {
   padding: clamp(1.25rem, 3vw, 1.75rem);
 }
 
-.uranus-modal__actions {
-  padding: clamp(1rem, 2.5vw, 1.5rem);
-  border-top: 1px solid var(--border-soft);
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-}
-
 .uranus-modal-fade-enter-active,
 .uranus-modal-fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 .uranus-modal-fade-enter-from,
 .uranus-modal-fade-leave-to {
   opacity: 0;
+}
+
+.uranus-modal__close {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 1.8rem;
+  height: 1.8rem;
+  top: 0.75rem;
+  right: 0.75rem;
+  border: none;
+  padding: 6px;
+  border-radius: 999px;
+
+  background: transparent;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--uranus-color-3);
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--uranus-color);
+    background: var(--uranus-color-8);
+  }
+}
+
+.uranus-modal__close:hover svg {
+  transform: scale(1.2);
 }
 </style>

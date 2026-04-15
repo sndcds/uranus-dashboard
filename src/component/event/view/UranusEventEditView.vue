@@ -1,9 +1,5 @@
 <!--
   src/view/admin/UranusEditEventView.vue
-
-  Uranus Event Editor
-
-  2026-02-05, Roald
 -->
 
 <template>
@@ -14,14 +10,12 @@
           <template #icon><StepBack /></template>{{ t('finish_edit') }}
         </UranusButton>
         <UranusButton size="small" variant="tertiary" @click="showReleaseModal = true">
-          <template #icon><Rocket /></template>{{ t('edit_event_release_status') }}
+          <template #icon><Rocket /></template>{{ t('event_release_settings') }}
         </UranusButton>
       </div>
 
       <UranusDashboardHero :title="t('edit_event')"/>
-
       <div v-if="adminEventStore.loading">Loading…</div>
-      <div v-else-if="adminEventStore.error">{{ adminEventStore.error }}</div>
       <template v-else-if="adminEventStore.isLoaded && adminEventStore.draft">
         <nav class="tabs">
           <button
@@ -48,8 +42,7 @@
       :show="showReleaseModal"
       :releaseStatus="draftEvent.releaseStatus"
       :releaseDate="draftEvent.releaseDate"
-      @update:releaseStatus="val => updateReleaseField('releaseStatus', val)"
-      @update:releaseDate="val => updateReleaseField('releaseDate', val)"
+      @save="updateReleaseFields"
       @close="showReleaseModal = false"
   />
 
@@ -62,30 +55,27 @@ import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { getPreviousRoute } from '@/router'
-
-import { useUranusAdminEventStore } from '@/store/uranusAdminEventStore.ts'
-import { type UranusAdminEventDTO } from '@/api/dto/UranusAdminEventDTO.ts'
-
-import AdminEventBaseTab from '@/component/event/editor/AdminEventBaseTab.vue'
-import AdminEventDatesTab from '@/component/event/editor/AdminEventDatesTab.vue'
-import AdminEventTagsTab from '@/component/event/editor/AdminEventTagsTab.vue'
+import { useAdminEventStore } from '@/store/adminEventStore.ts'
+import { type AdminEventDTO } from '@/api/dto/adminEvent.dto.ts'
+import UranusEventBaseTab from '@/component/event/editor/UranusEventBaseTab.vue'
+import UranusEventDatesTab from '@/component/event/editor/UranusEventDatesTab.vue'
+import UranusEventTagsTab from '@/component/event/editor/UranusEventTagsTab.vue'
 import UranusEventLinksTab from '@/component/event/editor/UranusEventLinksTabs.vue'
-import AdminEventParticipationTab from '@/component/event/editor/AdminEventParticipationTab.vue'
-import AdminEventVenueTab from '@/component/event/editor/AdminEventVenueTab.vue'
-import AdminEventPriceTab from '@/component/event/editor/AdminEventPriceTab.vue'
+import UranusEventParticipationTab from '@/component/event/editor/UranusEventParticipationTab.vue'
+import UranusEventVenueTab from '@/component/event/editor/UranusEventVenueTab.vue'
+import UranusEventTicketTab from '@/component/event/editor/UranusEventTicketTab.vue'
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
-import AdminEventVisitorInfo from '@/component/event/editor/AdminEventVisitorInfo.vue'
+import UranusEventVisitorInfo from '@/component/event/editor/UranusEventVisitorInfo.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-
+import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import { StepBack, Rocket } from 'lucide-vue-next'
-import UranusDashboardHero from "@/component/dashboard/UranusDashboardHero.vue";
 
 const showReleaseModal = ref(false)
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const router = useRouter()
-const adminEventStore = useUranusAdminEventStore()
+const adminEventStore = useAdminEventStore()
 
 
 function goBack() {
@@ -104,12 +94,9 @@ const draftEvent = computed(() => adminEventStore.draft ?? {
   releaseDate: null,
 })
 
-const eventId = computed(() => {
-  const id = Number(route.params.id)
-  return Number.isFinite(id) ? id : null
-})
+const eventUuid = computed(() => { return route.params.uuid })
 
-type TabKey = 'settings' | 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participation' | 'price' | 'visitor'
+type TabKey = 'settings' | 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participation' | 'ticket' | 'visitor'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
@@ -119,45 +106,43 @@ const tabs = [
   { key: 'tags', label: 'Tags' },
   { key: 'links', label: 'Links' },
   { key: 'participation', label: 'Teilnahme' },
-  { key: 'price', label: 'Preis' },
+  { key: 'ticket', label: 'Ticket' },
   { key: 'visitor', label: 'Infos' }
 ] as const
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
-    case 'dates': return AdminEventDatesTab
-    case 'venue': return AdminEventVenueTab
-    case 'tags': return AdminEventTagsTab
+    case 'dates': return UranusEventDatesTab
+    case 'venue': return UranusEventVenueTab
+    case 'tags': return UranusEventTagsTab
     case 'links': return UranusEventLinksTab
-    case 'participation': return AdminEventParticipationTab
-    case 'price': return AdminEventPriceTab
-    case 'visitor': return AdminEventVisitorInfo
+    case 'participation': return UranusEventParticipationTab
+    case 'ticket': return UranusEventTicketTab
+    case 'visitor': return UranusEventVisitorInfo
     case 'base':
     default:
-      return AdminEventBaseTab
+      return UranusEventBaseTab
   }
 })
 
 onMounted(async () => {
-  if (!eventId.value) {
+  if (!eventUuid.value) {
     adminEventStore.error = 'Invalid eventId'
     return
   }
 
   adminEventStore.loading = true
   try {
-    const apiPath = `/api/admin/event/${eventId.value}?lang=${locale.value}`
-    const response = await apiFetch<{ data: UranusAdminEventDTO }>(apiPath)
-    adminEventStore.loadFromApi(response.data.data)
+    const apiPath = `/api/admin/event/${eventUuid.value}?lang=${locale.value}`
+    const apiResponse = await apiFetch<AdminEventDTO>(apiPath)
+    adminEventStore.loadFromApi(apiResponse.data)
   } catch (e) {
+    console.log(e)
     adminEventStore.error = 'Failed to load event'
     console.log(e)
   } finally {
     adminEventStore.loading = false
   }
-
-  console.log("/// original: ", adminEventStore?.original?.visitorInfoFlags)
-  console.log("/// draft: ", adminEventStore?.draft?.visitorInfoFlags)
 })
 
 onUnmounted(() => {
@@ -168,33 +153,40 @@ onUnmounted(() => {
   }
 })
 
-async function updateReleaseField(field: 'releaseStatus' | 'releaseDate', value: any) {
+async function updateReleaseFields(payload: {
+  releaseStatus: string | null
+  releaseDate: string | null
+}) {
   if (!draftEvent.value || !adminEventStore.original) return
 
-  // Update local draft
-  draftEvent.value[field] = value
+  // update local draft
+  draftEvent.value.releaseStatus = payload.releaseStatus
+  draftEvent.value.releaseDate = payload.releaseDate
 
-  // Build payload: only include changed fields
-  const payload: Record<string, any> = {}
-  if (draftEvent.value.releaseStatus !== adminEventStore.original.releaseStatus) {
-    payload.release_status = draftEvent.value.releaseStatus
-  }
-  if (draftEvent.value.releaseDate !== adminEventStore.original.releaseDate) {
-    payload.release_date = draftEvent.value.releaseDate
+  const body: Record<string, any> = {}
+
+  if (payload.releaseStatus !== adminEventStore.original.releaseStatus) {
+    body.release_status = payload.releaseStatus
   }
 
-  // Nothing changed
-  if (Object.keys(payload).length === 0) return
+  if (payload.releaseDate !== adminEventStore.original.releaseDate) {
+    body.release_date = payload.releaseDate
+  }
+
+  if (Object.keys(body).length === 0) return
 
   try {
-    await apiFetch(`/api/admin/event/${draftEvent.value.id}/fields`, {
+    await apiFetch(`/api/admin/event/${eventUuid.value}/fields`, {
       method: 'PUT',
-      body: JSON.stringify(payload),
+      body: JSON.stringify(body),
     })
 
-    // Commit changes locally
-    if (payload.release_status !== undefined) adminEventStore.original.releaseStatus = draftEvent.value.releaseStatus
-    if (payload.release_date !== undefined) adminEventStore.original.releaseDate = draftEvent.value.releaseDate
+    if (body.release_status !== undefined) {
+      adminEventStore.original.releaseStatus = payload.releaseStatus
+    }
+    if (body.release_date !== undefined) {
+      adminEventStore.original.releaseDate = payload.releaseDate
+    }
   } catch (err) {
     console.error("Failed to update release fields", err)
     adminEventStore.error = 'Failed to save release fields'

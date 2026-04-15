@@ -2,13 +2,17 @@
   <form
       class="uranus-form"
       @submit.prevent="handleSubmit"
-      novalidate
+      :novalidate="!validate"
   >
     <slot />
   </form>
 </template>
 
 <script setup lang="ts">
+
+const props = defineProps({
+  validate: { type: Boolean, default: true }
+})
 
 const emit = defineEmits<{
   (e: 'submit', event: SubmitEvent): void
@@ -24,7 +28,7 @@ const handleSubmit = (event: SubmitEvent) => {
 .uranus-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1rem;
   width: 100%;
 }
 </style>

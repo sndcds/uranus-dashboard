@@ -15,12 +15,9 @@
   <div v-else-if="venueStore.error">{{ venueStore.error }}</div>
 
   <template v-else-if="venueStore.isLoaded">
-    <header class="editor-header">
-      <h1 class="uranus-admin-page-title">Venue Editor</h1>
-      <p>Venue: {{ venueStore.draft?.name }} / #{{ venueId }}</p>
-    </header>
+    <h1 class="uranus-admin-page-title">Venue Editor</h1>
+    <p>{{ venueStore.draft?.name }}</p>
 
-    <!-- tabs -->
     <nav class="tabs">
       <button
           v-for="tab in tabs"
@@ -38,28 +35,19 @@
   </template>
 </template>
 
-
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-// import { useI18n } from "vue-i18n";
-import { apiFetch } from "@/api.ts";
-
+import { apiFetch } from '@/api.ts'
 import VenueBaseTab from '@/component/venue/editor/UranusVenueBaseTab.vue'
 import VenueMapTab from '@/component/venue/editor/UranusVenueMapTab.vue'
 import UranusVenueLogoTab from '@/component/venue/editor/UranusVenueLogoTab.vue'
 import UranusVenueImageTab from '@/component/venue/editor/UranusVenueImageTab.vue'
-import { useUranusVenueStore } from '@/store/UranusVenueStore.ts'
-import type { UranusVenueDTO } from '@/api/dto/UranusVenueDTO.ts'
+import { useUranusVenueStore } from '@/store/venueStore.ts'
 
-// const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const venueStore = useUranusVenueStore()
-
-const venueId = computed(() => {
-  const id = Number(route.params.venueId)
-  return Number.isFinite(id) ? id : null
-})
+const venueUuid = computed(() => { return route.params.venueUuid as string })
 
 type TabKey = 'base' | 'map' | 'logos' | 'images'
 const activeTab = ref<TabKey>('base')
@@ -82,24 +70,23 @@ const currentTabComponent = computed(() => {
 })
 
 onMounted(async () => {
-  if (!venueId.value) {
+  if (!venueUuid.value) {
     venueStore.resetToEmpty?.() // optional chaining in case method doesn't exist
-    venueStore.error = 'Invalid venueId'
+    venueStore.error = 'Invalid venueUuid'
     return
   }
 
   venueStore.loading = true
   try {
-    const apiPath = `/api/admin/venue/${venueId.value}`
-    const response = await apiFetch<{ data: UranusVenueDTO }>(apiPath)
-    const venueData = response.data?.data ?? response.data
+    const apiPath = `/api/admin/venue/${venueUuid.value}`
+    const apiResponse = await apiFetch<any>(apiPath)
+    const venueData = apiResponse.data
     if (venueData) {
-      venueStore.loadFromApi?.(venueData) // optional chaining
+      venueStore.loadFromApi?.(venueData)
     } else {
       venueStore.error = 'No data returned from API'
     }
   } catch (e) {
-    console.error(e)
     venueStore.error = 'Failed to load venue'
   } finally {
     venueStore.loading = false

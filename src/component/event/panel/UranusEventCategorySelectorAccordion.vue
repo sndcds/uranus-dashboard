@@ -1,3 +1,7 @@
+<!--
+  src/component/event/panel/UranusEventCategorySelectorAccordion.vue
+-->
+
 <template>
   <UranusAccordion v-model="open">
     <template #title>{{ t('event_filter_categories') }}</template>
@@ -95,7 +99,7 @@ function toggleCategory(id: number) {
   border: 0 solid rgba(0,0,0,0.08);
   background: var(--uranus-bg);
   color: var(--uranus-color);
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
   overflow: hidden;
   transition:

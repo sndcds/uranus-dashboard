@@ -5,102 +5,59 @@
 -->
 
 <template>
-  <section class="uranus-admin-edit-section uranus-admin-responsive-grid">
+  <UranusForm>
 
-    legalForm: {{ org.legalForm }}
-    <label class="full-width">
-      Name
-      <input class="big"
-          type="text"
-          v-model="org.name"
-          required
-      />
-    </label>
+    <UranusFormRow>
+      <UranusTextfield id="org-name" size="big" :label="t('name')" v-model="org.name" required/>
+    </UranusFormRow>
 
-    <label class="full-width">
-      Description
-      <textarea v-model="org.description" />
-    </label>
+    <UranusFormRow>
+      <UranusLabel id="org-description" :label="t('description')">
+        <UranusTextEditor v-model="org.description"/>
+      </UranusLabel>
+    </UranusFormRow>
 
-    <label>
-      Legal form
-      <UranusLegalFormSelect v-model="org.legalForm" />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusLabel id="org-legal-form" :label="t('legal_form')">
+        <UranusLegalFormSelect v-model="org.legalForm" />
+      </UranusLabel>
+      <UranusTextfield id="org-web-link" type="url" :label="t('website')" v-model="org.webLink" placeholder="https://"/>
+    </UranusFormRow>
 
-    <label>
-      Website
-      <input
-          type="url"
-          v-model="org.websiteLink"
-          placeholder="https://"
-      />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusTextfield id="org-email" type="email" :label="t('email')" v-model="org.contactEmail" />
+      <UranusTextfield id="org-phone":label="t('phone')" v-model="org.contactPhone" />
+    </UranusFormRow>
 
-    <label>
-      Contact Email
-      <input
-          type="email"
-          v-model="org.contactEmail"
-      />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusTextfield id="org-street" :label="t('street')" v-model="org.street" />
+      <UranusTextfield id="org-house-number" :label="t('house_number')" v-model="org.houseNumber" />
+    </UranusFormRow>
 
-    <label>
-      Contact Phone
-      <input
-          type="tel"
-          v-model="org.contactPhone"
-      />
-    </label>
+    <UranusFormRow>
+      <UranusTextfield id="org-address-addition" :label="t('address_addition')" v-model="org.addressAddition" />
+    </UranusFormRow>
 
-    <label class="start-new-row">
-      Street
-      <input type="text" v-model="org.street" />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusTextfield id="org-postal-code" :label="t('postal_code')" v-model="org.postalCode" />
+      <UranusTextfield id="org-city" :label="t('city')" v-model="org.city" />
+    </UranusFormRow>
 
-    <label>
-      House Number
-      <input type="text" v-model="org.houseNumber" />
-    </label>
+    <UranusFormRow :cols="2">
+      <UranusLabel id="org-country" :label="t('country')">
+        <UranusCountrySelect  v-model="org.country" />
+      </UranusLabel>
+      <UranusLabel id="org-state" :label="t('state')">
+        <UranusStateSelect v-model="org.state" :country-code="org.country" />
+      </UranusLabel>
+    </UranusFormRow>
 
-    <label class="full-width">
-      Address Addition
-      <input type="text" v-model="org.addressAddition" />
-    </label>
+    <UranusFormActions>
+      <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">{{ t('discard') }}</UranusButton>
+      <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">{{ t('save') }}</UranusButton>
+    </UranusFormActions>
 
-    <label class="start-new-row">
-      Postal Code
-      <input type="text" v-model="org.postalCode" />
-    </label>
-
-    <label>
-      City
-      <input type="text" v-model="org.city" />
-    </label>
-
-    <label>
-      Country
-      <UranusCountrySelect  v-model="org.country" />
-    </label>
-
-    <label>
-      State
-      <UranusStateSelect
-          v-model="org.state"
-          :country-code="org.country"
-      />
-    </label>
-
-    <!-- Actions -->
-    <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
-        {{ t('discard') }}
-      </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
-        {{ t('save') }}
-      </button>
-    </div>
-
-  </section>
+  </UranusForm>
 </template>
 
 
@@ -108,11 +65,18 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import { useUranusOrganizationStore } from '@/store/uranusOrganizationStore.ts'
-import type { UranusOrganization } from '@/domain/organization/UranusOrganization'
+import { useUranusOrganizationStore } from '@/store/organizationStore.ts'
+import type { OrganizationModel } from '@/domain/organization/organization.model.ts'
 import UranusCountrySelect from '@/component/select/UranusCountrySelect.vue'
 import UranusStateSelect from '@/component/select/UranusStateSelect.vue'
 import UranusLegalFormSelect from '@/component/select/UranusLegalFormSelect.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -120,7 +84,7 @@ const store = useUranusOrganizationStore()
 const org = computed(() => store.draft!)
 
 const baseFields = [
-  'name', 'description', 'legalForm', 'contactEmail', 'contactPhone', 'websiteLink',
+  'name', 'description', 'legalForm', 'contactEmail', 'contactPhone', 'webLink',
     'street', 'houseNumber', 'addressAddition', 'postalCode', 'city', 'state', 'country',
 ] as const
 
@@ -141,8 +105,8 @@ const isDirty = computed(() => {
 
 
 function buildPayload(
-    draft: UranusOrganization,
-    original: UranusOrganization
+    draft: OrganizationModel,
+    original: OrganizationModel
 ) {
   const payload: Record<string, any> = {}
 
@@ -155,7 +119,7 @@ function buildPayload(
   if (draft.legalForm !== original.legalForm) set('legal_form', draft.legalForm)
   if (draft.contactEmail !== original.contactEmail) set('contact_email', draft.contactEmail)
   if (draft.contactPhone !== original.contactPhone) set('contact_phone', draft.contactPhone)
-  if (draft.websiteLink !== original.websiteLink) set('website_link', draft.websiteLink)
+  if (draft.webLink !== original.webLink) set('web_link', draft.webLink)
 
   if (draft.street !== original.street) set('street', draft.street)
   if (draft.houseNumber !== original.houseNumber) set('house_number', draft.houseNumber)
@@ -168,13 +132,13 @@ function buildPayload(
   return payload
 }
 
-function copyFields(source: UranusOrganization, target: UranusOrganization) {
+function copyFields(source: OrganizationModel, target: OrganizationModel) {
   target.name = source.name ?? null
   target.description = source.description ?? null
   target.legalForm = source.legalForm ?? null
   target.contactEmail = source.contactEmail ?? null
   target.contactPhone = source.contactPhone ?? null
-  target.websiteLink = source.websiteLink ?? null
+  target.webLink = source.webLink ?? null
   target.street = source.street ?? null
   target.houseNumber = source.houseNumber ?? null
   target.addressAddition = source.addressAddition ?? null
@@ -188,7 +152,6 @@ async function commitTab() {
   const draft = store.draft
   const original = store.original
   if (!draft || !original) return
-  console.log("draft:", draft.addressAddition, "original:", original.addressAddition)
 
   store.saving = true
   store.error = null
@@ -200,7 +163,7 @@ async function commitTab() {
       return
     }
 
-    const apiPath = `/api/admin/organization/${draft.id}/fields`
+    const apiPath = `/api/admin/organization/${draft.uuid}/fields`
     await apiFetch(apiPath, {
       method: 'PUT',
       body: JSON.stringify(payload),
@@ -222,44 +185,3 @@ function resetTab() {
   copyFields(original, draft)
 }
 </script>
-
-
-<style scoped lang="scss">
-.organization-contact-tab {
-  width: 100%;
-  max-width: 1024px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
-  label {
-    display: flex;
-    flex-direction: column;
-    font-weight: 500;
-    color: #999;
-    gap: 0.25rem;
-
-    input,
-    textarea {
-      padding: 0.5rem;
-      border: 2px solid #fff;
-      border-radius: 5px;
-      font-size: 1rem;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-  }
-
-  .tab-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-}
-</style>

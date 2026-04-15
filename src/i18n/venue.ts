@@ -1,3 +1,7 @@
+/*
+    src/i18n/venue.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey, string>> = {
@@ -10,6 +14,11 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Spielstätten',
         en: 'Venues',
         da: 'Spillesteder',
+    },
+    venues_list_hero_description: {
+        de: 'Alle Spielstätten, für die du Events erstellen kannst.',
+        en: 'All venues for which you can create events.',
+        da: 'Alle spillesteder, hvor du kan oprette begivenheder.',
     },
     unspecified_venue_type: {
         de: 'Unbestimmte Spielstättentyp',
@@ -75,6 +84,21 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Lade Bilder und Logos deiner Spielstätte hoch.',
         en: 'Upload images and logos for your venue.',
         da: 'Upload billeder og logoer for dit spillested.',
+    },
+    create_venue: {
+        de: 'Spielstätte erstellen',
+        en: 'Create venue',
+        da: 'Opret spillested',
+    },
+    delete_venue: {
+        de: 'Spielstätte löschen',
+        en: 'Delete venue',
+        da: 'Slet spillested',
+    },
+    confirm_delete_venue: {
+        de: 'Du bist dabei die Spielstätte "~~name~~" zu löschen. Gib dein Passwort ein, um fortzufahren.',
+        en: 'You are about to delete the venu "{name}". Enter your password to continue.',
+        da: 'Du er ved at slette spillestedet "{name}". Indtast din adgangskode for at fortsætte.',
     },
 }
 

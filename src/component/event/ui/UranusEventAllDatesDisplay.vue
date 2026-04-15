@@ -12,8 +12,8 @@
 
     <router-link
         v-for="date in dates"
-        :key="date.id!"
-        :to="`/event/${date.eventId}/date/${date.id}`"
+        :key="date.uuid!"
+        :to="`/event/${date.eventUuid}/date/${date.uuid}`"
     >
       {{ formatDate(date.startDate ?? '', locale) }}<br>
     </router-link>
@@ -22,12 +22,12 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import type { UranusEventDate } from '@/domain/event/UranusEventDate.ts'
+import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { formatDate } from '@/util/uranus-format-date-time.ts'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
 defineProps<{
-  dates: UranusEventDate[]
+  dates: PublicEventDate[]
 }>()
 </script>

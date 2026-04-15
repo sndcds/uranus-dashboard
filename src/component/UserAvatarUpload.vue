@@ -24,23 +24,34 @@
     <div class="profile-photo-actions">
       <label class="profile-upload" :class="{ 'profile-upload--disabled': isInputDisabled }">
         <input
-            class="profile-upload__input"
+            ref="fileInputRef"
             type="file"
             accept="image/*"
             :disabled="isInputDisabled"
             @change="onFileChange"
+            style="display: none"
         />
-        <span>{{ uploadLabel }}</span>
       </label>
-      <button
+
+      <!-- Your UranusButton -->
+      <UranusButton
+          variant="tertiary"
+          size="small"
+          :disabled="isInputDisabled"
+          @click="triggerFileSelect"
+      >
+        {{ uploadLabel }}
+      </UranusButton>
+
+      <UranusButton
           v-if="displayAvatar"
-          class="profile-remove"
-          type="button"
+          variant="tertiary"
+          size="small"
           :disabled="isInputDisabled"
           @click="removePhoto"
       >
           {{ removeLabel }}
-      </button>
+      </UranusButton>
     </div>
 
     <p class="profile-photo-hint">{{ hint }}</p>
@@ -49,15 +60,16 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { useUserStore } from '@/store/uranusUserStore.ts'
-import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { apiFetch } from '@/api.ts'
-import {apiBaseUrl} from "@/util/UranusUtils.ts";
+import { apiBaseUrl } from '@/util/UranusUtils.ts'
+import { useUserStore } from '@/store/userStore.ts'
+import { useTokenStore } from '@/store/uranusTokenStore.ts'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 
 const props = withDefaults(
   defineProps<{
-    label: string
+    label?: string
     hint: string
     uploadLabel: string
     removeLabel: string
@@ -91,6 +103,13 @@ const isLoadingAvatar = ref(false)
 const initialsText = computed(() => (props.initials || '?').trim() || '?')
 const displayAvatar = computed(() => avatarPreviewUrl.value || currentAvatarUrl.value || null)
 const isInputDisabled = computed(() => props.disabled || isUploading.value || isLoadingAvatar.value)
+
+
+const fileInputRef = ref<HTMLInputElement | null>(null)
+
+const triggerFileSelect = () => {
+  fileInputRef.value?.click()
+}
 
 const updateAvatarFromServer = (url: string | null) => {
   if (loadedAvatarObjectUrl.value) {

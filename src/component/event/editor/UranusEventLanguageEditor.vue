@@ -1,0 +1,71 @@
+<!--
+  src/component/event/editor/UranusEventLanguageEditor.vue
+-->
+
+<template>
+  <UranusCard class="languages-tab">
+    <h2>{{ t('event_languages') }}</h2>
+
+    <div class="event-language-list">
+      <span v-for="(lang, index) in store.draft!.languages ?? []" :key="lang" class="uranus-chip">
+        {{ langLookup[lang] ?? lang }}
+        <button @click="removeLanguage(index)">×</button>
+      </span>
+    </div>
+
+    <UranusFormRow>
+      <select v-model="selectedLang">
+        <option :value="null" disabled>{{ t('event_select_language') }}</option>
+        <option
+            v-for="(name, id) in langLookup"
+            :key="id"
+            :value="id"
+            :disabled="store.draft!.languages?.includes(id)"
+        >
+          {{ name }}
+        </option>
+      </select>
+
+      <UranusFormActions>
+        <UranusButton size="small" variant="tertiary" :disabled="!selectedLang" @click="addLanguage">
+          {{ t('add') }}
+        </UranusButton>
+      </UranusFormActions>
+    </UranusFormRow>
+  </UranusCard>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
+import UranusCard from '@/component/ui/UranusCard.vue'
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import {useAdminEventStore} from '@/store/adminEventStore.ts'
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
+
+const { t, locale } = useI18n({ useScope: 'global' })
+const store = useAdminEventStore()
+
+const langStore = useLanguageLookupStore()
+const selectedLang = ref<string | null>(null)
+
+const langLookup = computed(() => langStore.data[locale.value] ?? {})
+
+function addLanguage() {
+  if (!selectedLang.value || !store.draft) return
+  store.draft.languages!.push(selectedLang.value)
+  selectedLang.value = null
+}
+
+function removeLanguage(index: number) {
+  if (!store.draft) return
+  store.draft.languages!.splice(index, 1)
+}
+</script>
+
+<style scoped lang="scss">
+.languages-tab { display: flex; flex-direction: column; gap: 1rem; }
+.event-language-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+</style>

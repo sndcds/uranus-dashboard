@@ -67,10 +67,10 @@ function onSelect() {
 async function fetchOptions() {
   isLoading.value = true;
   try {
-    const { data } = await apiFetch(
+    const { response } = await apiFetch(
         `/api/choosable-price-types?lang=${locale.value}`
     );
-    options.value = (Array.isArray(data) ? data : []).map((item: any) => ({
+    options.value = (Array.isArray(response) ? response : []).map((item: any) => ({
       key: item.id ?? 0,
       label: item.name
     }));

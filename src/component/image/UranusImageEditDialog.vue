@@ -3,94 +3,91 @@
 -->
 
 <template>
-  <!-- Modal overlay -->
-  <div class="uranus-modal-backdrop uranus-form">
+  <div class="uranus-modal-backdrop">
     <UranusCard class="uranus-modal-card">
+      <UranusForm class="uranus-form-wide" style="max-height: 800px;">
+        <h2>{{ title }}</h2>
 
-      <h2>{{ title }}</h2>
+        <UranusFormRow>
 
-      <!-- Image preview -->
-      <div class="uranus-image-preview" @click="onImageClick($event)">
-        <img
-            v-if="localImageMeta.url"
-            :src="localImageMeta.url"
-            class="uranus-preview-img"
-        />
-        <div v-else class="uranus-no-img">{{ t('click_to_upload') }}</div>
-        <input
-            ref="fileInput"
-            type="file"
-            accept="image/*"
-            class="uranus-hidden-file"
-            @change="onFileSelected"
-        />
-        <div v-if="localImageMeta.focusX !== null && localImageMeta.focusY !== null"
-             class="focus-point"
-             :style="{ left: `${localImageMeta.focusX * 100}%`, top: `${localImageMeta.focusY * 100}%`}">
-        </div>
-      </div>
+          <!-- TODO: dark mode, light mode -->
+          <div class="uranus-image-preview" @click="onImageClick($event)">
+            <img
+                v-if="localImageMeta.url"
+                :src="cacheBustedUrl"
+                class="uranus-preview-img"
+            />
+            <div v-else class="uranus-no-img">{{ t('click_to_upload') }}</div>
+            <input
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                class="uranus-hidden-file"
+                @change="onFileSelected"
+            />
+            <div v-if="localImageMeta.focusX !== null && localImageMeta.focusY !== null"
+                 class="focus-point"
+                 :style="{ left: `${localImageMeta.focusX * 100}%`, top: `${localImageMeta.focusY * 100}%`}">
+            </div>
+          </div>
+        </UranusFormRow>
 
-      <!-- Metadata fields -->
-      <UranusFormRow>
-        <UranusTextInput
-            id="alt-text"
-            v-model="localImageMeta.alt_text as string"
-            :label="t('image_alt_text')"
-        />
-      </UranusFormRow>
+        <UranusFormRow>
+          <UranusTextfield
+              id="alt-text"
+              v-model="localImageMeta.altText as string"
+              :label="t('image_alt_text')"
+          />
+        </UranusFormRow>
 
-      <UranusFormRow>
-        <UranusTextInput
-            id="creator-name"
-            v-model="localImageMeta.creator as string"
-            :label="t('image_creator_name')"
-        />
-      </UranusFormRow>
+        <UranusFormRow>
+          <UranusTextfield
+              id="creator-name"
+              v-model="localImageMeta.creator as string"
+              :label="t('image_creator_name')"
+          />
+        </UranusFormRow>
 
-      <UranusFormRow>
-        <UranusTextInput
-            id="copyright"
-            v-model="localImageMeta.copyright as string"
-            :label="t('image_copyright')"
-        />
+        <UranusFormRow :cols="2">
+          <UranusTextfield
+              id="copyright"
+              v-model="localImageMeta.copyright as string"
+              :label="t('image_copyright')"
+          />
 
-        <UranusLicenseSelect
-            v-model="localImageMeta.licenseType"
-        />
+          <UranusLabel id="event-description" :label="t('license')">
+            <UranusLicenseSelect v-model="localImageMeta.licenseType" />
+          </UranusLabel>
+        </UranusFormRow>
 
-        <UranusTextInput
-            id="focus-x"
-            v-model.number="localImageMeta.focusX as number"
-            :label="t('image_focus_x')"
-        />
+        <!--UranusFormRow :cols="2">
+          <UranusTextfield
+              id="focus-x"
+              v-model.number="localImageMeta.focusX as number"
+              :label="t('image_focus_x')"
+          />
 
-        <UranusTextInput
-            id="focus-y"
-            v-model.number="localImageMeta.focusY as number"
-            :label="t('image_focus_y')"
-        />
-      </UranusFormRow>
+          <UranusTextfield
+              id="focus-y"
+              v-model.number="localImageMeta.focusY as number"
+              :label="t('image_focus_y')"
+          />
+        </UranusFormRow-->
 
-      <UranusFormRow>
-        <UranusTextarea
-            id="description"
-            v-model="descriptionValue"
-            :label="t('image_description')"
-        />
-      </UranusFormRow>
+        <UranusFormRow>
+          <UranusTextarea
+              id="description"
+              v-model="descriptionValue"
+              :label="t('image_description')"
+          />
+        </UranusFormRow>
 
-      <!-- Actions -->
-      <UranusInlineActionBar style="margin-top:12px;">
-        <UranusInlineCancelButton
-            :label="t('cancel')"
-            :onClick="onCancel"
-        />
-
-        <UranusInlineSaveButton
-            :label="t('save')"
-            :onClick="onSave"
-        />
-      </UranusInlineActionBar>
+        <!-- Actions -->
+        <UranusFormActions>
+          <UranusButton :onClick="onCancel">{{ t('cancel') }}</UranusButton>
+          <UranusButton :onClick="onSave">{{ t('save') }}</UranusButton>
+        </UranusFormActions>
+      </UranusForm>
     </UranusCard>
   </div>
 </template>
@@ -99,23 +96,25 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, ApiError } from '@/api.ts'
-import { PlutoImageMeta } from '@/model/plutoImageModel.ts'
+import { createPlutoImage } from '@/domain/image/plutoImage.model.ts'
+import type { PlutoImageDTO } from '@/api/dto/plutoImage.dto.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
-import UranusTextInput from '@/component/ui/UranusTextInput.vue'
-import UranusFormRow from "@/component/ui/UranusFormRow.vue";
-import { buildPlutoEditImageUrl } from "@/util/UranusUtils.ts";
-import UranusInlineSaveButton from "@/component/ui/UranusInlineSaveButton.vue";
-import UranusInlineCancelButton from "@/component/ui/UranusInlineCancelButton.vue";
-import UranusInlineActionBar from "@/component/ui/UranusInlineActionBar.vue";
-import UranusTextarea from "@/component/ui/UranusTextarea.vue";
-import UranusLicenseSelect from "@/component/select/UranusLicenseSelect.vue";
+import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import { buildPlutoEditImageUrl } from '@/util/UranusUtils.ts'
+import UranusTextarea from '@/component/ui/UranusTextarea.vue'
+import UranusLicenseSelect from '@/component/select/UranusLicenseSelect.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const props = defineProps<{
   addModeTitle?: string | null
   editModeTitle?: string | null
-  context: string                 // eg. 'event', 'venue'
-  contextId: number               // pluto image id
-  identifier: string              // "main", "gallery1"
+  context: string
+  contextUuid: string
+  identifier: string
   fitMode?: 'cover' | 'contain'
 }>()
 
@@ -133,28 +132,42 @@ const descriptionValue = computed({
 })
 
 const apiPath = computed(() => {
-  return `/api/image/meta/${props.context}/${props.contextId}/${props.identifier}`
+  return `/api/image/meta/${props.context}/${props.contextUuid}/${props.identifier}`
+})
+
+
+const cacheBustedUrl = computed(() => {
+  if (!localImageMeta.url) return ''
+
+  // If a new file was selected, use that URL directly
+  if (localImageFile.value) {
+    return localImageMeta.url
+  }
+
+  // Otherwise, use API URL with cache-busting
+  const separator = localImageMeta.url.includes('?') ? '&' : '?'
+  return `${localImageMeta.url}${separator}t=${Date.now()}`
 })
 
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'save', imageMeta: any, file: File | null, ctx: {
     context: string
-    contextId: number
+    contextUuid: string
     identifier: string
   }): void
 }>()
 
 const { t } = useI18n()
 const fileInput = ref<HTMLInputElement | null>(null)
-const localImageMeta = reactive(new PlutoImageMeta())
+const localImageMeta = reactive(createPlutoImage())
 const localImageFile = ref<File | null>(null)
 
 
 function clearLocalImageMeta() {
-  localImageMeta.id = null
+  localImageMeta.uuid = null
   localImageMeta.url = null
-  localImageMeta.alt_text = null
+  localImageMeta.altText = null
   localImageMeta.description = null
   localImageMeta.copyright = null
   localImageMeta.creator = null
@@ -209,8 +222,8 @@ function onCancel() {
 
 function onSave() {
   const payload = {
-    id: localImageMeta.id,
-    alt_text: localImageMeta.alt_text,
+    uuid: localImageMeta.uuid,
+    alt_text: localImageMeta.altText,
     description: localImageMeta.description,
     copyright: localImageMeta.copyright,
     creator: localImageMeta.creator,
@@ -221,23 +234,23 @@ function onSave() {
 
   emit('save', payload, localImageFile.value, {
     context: props.context,
-    contextId: props.contextId,
+    contextUuid: props.contextUuid,
     identifier: props.identifier,
   })
 }
 
 onMounted(async () => {
     try {
-      const response = await apiFetch<any>(apiPath.value)
-      if (!response.data) return
+      const apiResponse = await apiFetch<PlutoImageDTO>(apiPath.value)
+      if (!apiResponse.data) return
 
-      const meta = response.data.data
+      const meta = apiResponse.data
 
-      localImageMeta.id = meta.id ?? null
-      localImageMeta.url = localImageMeta.id !== null
-          ? buildPlutoEditImageUrl(localImageMeta.id, 800)
+      localImageMeta.uuid = meta.uuid ?? null
+      localImageMeta.url = localImageMeta.uuid !== null
+          ? buildPlutoEditImageUrl(localImageMeta.uuid, 800)
           : null
-      localImageMeta.alt_text = meta.alt_text ?? null
+      localImageMeta.altText = meta.alt ?? null
       localImageMeta.description = meta.description ?? null
       localImageMeta.copyright = meta.copyright ?? null
       localImageMeta.creator = meta.creator ?? null
@@ -275,13 +288,15 @@ onMounted(async () => {
   padding: var(--uranus-dialog-padding);
 }
 
+.uranus-form {
+}
+
 .uranus-image-preview {
   display: flex;
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 2 / 1;
   justify-content: center;
-  margin-bottom: 1rem;
   align-items: center;
   cursor: pointer;
   overflow: hidden;

@@ -1,0 +1,25 @@
+.uranus-chip {
+  color: var(--uranus-chip-color);
+  background-color: var(--uranus-chip-bg);
+  padding: 0.2rem 0.2rem 0.2rem 1rem;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.uranus-chip button {
+  border: none;
+  background: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 50px;
+  width: 1.4rem;
+  aspect-ratio: 1/1;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  &:hover {
+    color: var(--uranus-chip-color-hover);
+    background-color: var(--uranus-chip-bg-hover);
+  }
+}

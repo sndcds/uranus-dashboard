@@ -1,3 +1,16 @@
+<!--
+
+  Usage:
+    <UranusButton
+        variant="secondary" size="small"
+        :to="`/event/${event.uuid}/date/${event.dateUuid}`"
+        target="_blank"
+    >
+      <template #icon><Eye /></template>{{ t('preview') }}
+    </UranusButton>
+
+-->
+
 <template>
   <!-- Use router-link if `to` is provided -->
   <component

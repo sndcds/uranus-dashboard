@@ -1,46 +1,31 @@
-<!--
-  src/component/event/editor/UranusVenueMapTab.vue
-
-  2026-02-08, Roald
--->
-
 <template>
-  <section class="uranus-admin-edit-section venue-map-tab">
-
-    <div class="map-label">
-      {{ t('geo_location') }}
-    </div>
-
-    <UranusMapLocationPicker
-        class="location-map"
-        v-model="location"
-        :zoom="12"
-        :selectable="true"
+  <UranusForm>
+    <UranusLocationForm
+        v-model:modelValueLat="latModel"
+        v-model:modelValueLon="lonModel"
     />
 
-    <div class="location-summary">
-      {{ locationSummary }}
-    </div>
-
-    <div class="tab-actions">
-      <button @click="resetTab" :disabled="store.saving || !isDirty">
+    <UranusFormActions>
+      <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
         {{ t('discard') }}
-      </button>
-      <button @click="commitTab" :disabled="store.saving || !isDirty">
+      </UranusButton>
+      <UranusButton @click="commitTab" :disabled="store.saving || !isDirty">
         {{ t('save') }}
-      </button>
-    </div>
+      </UranusButton>
+    </UranusFormActions>
 
-  </section>
+  </UranusForm>
 </template>
-
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
-import { useUranusVenueStore } from '@/store/UranusVenueStore.ts'
-import UranusMapLocationPicker from '@/component/UranusMapLocationPicker.vue'
+import { useUranusVenueStore } from '@/store/venueStore.ts'
+import UranusLocationForm from '@/component/uranus/UranusLocationForm.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 type MapLocation = { lat: number; lng: number } | null
 
@@ -54,12 +39,9 @@ watch(
     () => store.draft,
     (draft) => {
       if (!draft) return
-
-      if (draft.lat != null && draft.lon != null) {
-        location.value = { lat: draft.lat, lng: draft.lon }
-      } else {
-        location.value = null
-      }
+      location.value = draft.lat != null && draft.lon != null
+          ? { lat: draft.lat, lng: draft.lon }
+          : null
     },
     { immediate: true }
 )
@@ -67,22 +49,26 @@ watch(
 // Sync map → store
 watch(location, (loc) => {
   if (!store.draft) return
-
   store.draft.lat = loc?.lat ?? null
   store.draft.lon = loc?.lng ?? null
 })
 
+// Dirty tracking
 const isDirty = computed(() => {
   const draft = store.draft
   const original = store.original
   if (!draft || !original) return false
-
   return draft.lat !== original.lat || draft.lon !== original.lon
 })
 
-const locationSummary = computed(() => {
-  if (!location.value) return t('venue_map_no_selection')
-  return `${location.value.lat.toFixed(5)}, ${location.value.lng.toFixed(5)}`
+const latModel = computed<number | null>({
+  get: () => store.draft?.lat ?? null,
+  set: (val: number | null) => { if (store.draft) store.draft.lat = val }
+})
+
+const lonModel = computed<number | null>({
+  get: () => store.draft?.lon ?? null,
+  set: (val: number | null) => { if (store.draft) store.draft.lon = val }
 })
 
 async function commitTab() {
@@ -95,13 +81,11 @@ async function commitTab() {
 
   try {
     const payload: Record<string, any> = {}
-
     if (draft.lat !== original.lat) payload.lat = draft.lat
     if (draft.lon !== original.lon) payload.lon = draft.lon
-
     if (Object.keys(payload).length === 0) return
 
-    await apiFetch(`/api/admin/venue/${draft.id}/fields`, {
+    await apiFetch(`/api/admin/venue/${draft.uuid}/fields`, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })
@@ -125,42 +109,14 @@ function resetTab() {
   draft.lat = original.lat
   draft.lon = original.lon
 
-  if (original.lat != null && original.lon != null) {
-    location.value = { lat: original.lat, lng: original.lon }
-  } else {
-    location.value = null
-  }
+  location.value = original.lat != null && original.lon != null
+      ? { lat: original.lat, lng: original.lon }
+      : null
 }
 </script>
 
-
 <style scoped lang="scss">
-.venue-map-tab {
-  width: 100%;
-  max-width: 1024px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .location-map {
   height: 600px;
-}
-
-.map-label {
-  font-weight: 500;
-  color: #999;
-}
-
-.location-summary {
-  font-size: 0.9rem;
-  color: #aaa;
-}
-
-.tab-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
 }
 </style>

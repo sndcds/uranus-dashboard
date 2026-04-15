@@ -65,12 +65,12 @@ let timer: number | null = null
 async function loadEvent(eventId: number, eventDateId: number): Promise<SlideData | null> {
   try {
     const endpoint = `/api/event/${eventId}/date/${eventDateId}?lang=${locale.value}`
-    const { data } = await apiFetch<any>(endpoint)
+    const res = await apiFetch<any>(endpoint)
 
-    const event = data.data
+    const event = res.data
     if (!event) return null
 
-    console.log(JSON.stringify(data, null, 2))
+    console.log(JSON.stringify(res, null, 2))
 
     return {
       imageUrl: event.image?.url ?? '',

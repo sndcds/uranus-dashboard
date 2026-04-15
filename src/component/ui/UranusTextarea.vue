@@ -52,8 +52,8 @@ const emit = defineEmits(['update:modelValue'])
 
 const sizeClass = computed(() => {
   switch (props.size) {
-    case 'tiny': return 'uranus-textarea-tiny'
-    case 'big': return 'uranus-textarea-big'
+    case 'small': return 'uranus-textarea-small'
+    case 'large': return 'uranus-textarea-large'
     default: return ''
   }
 })

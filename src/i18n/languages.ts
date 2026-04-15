@@ -1,4 +1,7 @@
-// src/i18n/languages.ts
+/*
+    src/i18n/languages.ts
+ */
+
 export type LanguagesLocale = 'en' | 'da' | 'de' | 'es' | 'fr'
 export type LanguageCode =
     | 'be' | 'bg' | 'bs' | 'cs' | 'cy' | 'da' | 'de' | 'el' | 'en' | 'es'

@@ -1,3 +1,7 @@
+/*
+    src/i18n/calendar-view.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLocaleKey, string>> = {

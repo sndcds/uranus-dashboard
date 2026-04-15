@@ -7,6 +7,9 @@ import { ref, watch, onMounted, onBeforeUnmount, toRaw } from 'vue'
 import type { FeatureCollection } from 'geojson'
 import maplibregl, { Popup, type LngLatLike } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import { useThemeStore } from '@/store/themeStore.ts'
+
+const themeStore = useThemeStore()
 
 // Props
 const props = defineProps<{
@@ -85,6 +88,36 @@ const addClusteredLayer = (map: maplibregl.Map, layerName: string, layerData: an
       'circle-stroke-color': cs.circleStrokeColor || '#000000',
     },
   })
+
+  map.addLayer({
+    id: `${layerName}-circle`,
+    type: 'circle',
+    source: layerName,
+    filter: ['!', ['has', 'point_count']],
+    paint: {
+      'circle-radius': 16,
+      'circle-color': '#ff0000',
+      'circle-stroke-width': 2,
+      'circle-stroke-color': '#ffffff'
+    }
+  });
+
+  map.addLayer({
+    id: `${layerName}-number`,
+    type: 'symbol',
+    source: layerName,
+    filter: ['!', ['has', 'point_count']],
+    layout: {
+      'text-field': ['get', 'count'], // 👈 your JSON property
+      'text-size': 14,
+      'text-anchor': 'center',
+      'text-allow-overlap': true
+    },
+    paint: {
+      'text-color': '#ffffff'
+    }
+  });
+
 
   // Text for cluster count (can show total_event_count)
   map.addLayer({
@@ -230,6 +263,20 @@ onMounted(() => {
   document.addEventListener('keydown', handleKeyDown)
 
   if (!mapContainer.value) return
+
+  const map = new maplibregl.Map({
+    container: mapContainer.value,
+    style:
+        themeStore.theme === 'dark'
+            ? '/versatiles/versatiles-dark-style.json'
+            : '/versatiles/versatiles-style.json',
+    center: defaultCenter,
+    zoom: 12,
+    minZoom: 2,
+    maxZoom: 19
+  });
+
+/*
   const map = new maplibregl.Map({
     container: mapContainer.value,
     style: {
@@ -243,6 +290,8 @@ onMounted(() => {
     center: defaultCenter,
     zoom: defaultZoom
   })
+
+ */
 
   map.addControl(new maplibregl.NavigationControl())
   mapInstance.value = map
@@ -261,8 +310,8 @@ onMounted(() => {
       map.addSource(layerName, {
         type: 'geojson',
         data: layerData.data,
-        cluster: layerData.cluster ?? false,
-        clusterRadius: 50,
+        cluster: false, // layerData.cluster ?? false,
+        clusterRadius: 1,
         clusterProperties: layerData.clusterProperties
       })
 

@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useVenueTypeLookupStore } from '@/store/UranusVenueTypesLookup.ts'
+import { useVenueTypeLookupStore } from '@/store/venueTypesLookupStore.ts'
 
 type UiLang = 'de' | 'en' | 'da'
 

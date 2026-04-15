@@ -1,6 +1,25 @@
+/*
+    src/i18n/standard.ts
+ */
+
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleKey, string>> = {
+    dashboard: {
+        de: 'Dashboard',
+        en: 'Dashboard',
+        da: 'Dashboard',
+    },
+    error: {
+        de: 'Ein Fehler ist aufgetreten',
+        en: 'An error has occurred',
+        da: 'Der er opstået en fejl',
+    },
+    error_missing_permissions: {
+        de: 'Du hast nicht die erforderlichen Berechtigungen für diese Aktion.',
+        en: 'You do not have the required permissions for this action.',
+        da: 'Du har ikke de nødvendige rettigheder til denne handling.',
+    },
     error_incomplete_data: {
         de: 'Unvollständige Daten',
         en: 'Incomplete data',
@@ -11,55 +30,135 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Error loading data',
         da: 'Fejl ved indlæsning af data',
     },
-    password_required: {
-        de: 'Ein Passwort ist erforderlich',
-        en: 'A password is required',
-        da: 'Adgangskode er påkrævet',
+    error_notification: {
+        de: 'Ein Fehler ist aufgetreten',
+        en: 'An error has occurred',
+        da: 'Der opstod en fejl',
+    },
+    unknown_error: {
+        de: 'Ein unbekannter Fehler ist aufgetreten',
+        en: 'An unknown error has occurred',
+        da: 'Der opstod en ukendt fejl',
     },
     notification: {
         de: 'Hinweis',
         en: 'Notification',
         da: 'Bemærk',
     },
-    error_notification: {
-        de: 'Ein Fehler ist aufgetreten',
-        en: 'An error has occurred',
-        da: 'Der opstod en fejl',
+    password_required: {
+        de: 'Ein Passwort ist erforderlich',
+        en: 'A password is required',
+        da: 'Adgangskode er påkrævet',
     },
     yes: {
         de: 'Ja',
         en: 'Yes',
-        da: 'Ja',
+        da: 'Ja'
     },
     no: {
         de: 'Nein',
         en: 'No',
-        da: 'Nej',
+        da: 'Nej'
+    },
+    light: {
+        de: 'Hell',
+        en: 'Light',
+        da: 'Lys'
+    },
+    dark: {
+        de: 'Dunkel',
+        en: 'Dark',
+        da: 'Mørk'
+    },
+    priority: {
+        de: 'Priorität',
+        en: 'Priority',
+        da: 'Prioritet'
+    },
+    importance: {
+        de: 'Relevanz',
+        en: 'Relevance',
+        da: 'Relevans'
+    },
+    low: {
+        de: 'Niedrig',
+        en: 'Low',
+        da: 'Lav'
+    },
+    mid: {
+        de: 'Mittel',
+        en: 'Medium',
+        da: 'Mellem'
+    },
+    high: {
+        de: 'Hoch',
+        en: 'High',
+        da: 'Høj'
     },
     not_specified: {
         de: 'Nicht angegeben',
         en: 'Not specified',
-        da: 'Ikke angivet',
+        da: 'Ikke angivet'
     },
     title: {
-      de: 'Titel',
-      en: 'Title',
-      da: 'Overskrift',
+        de: 'Titel',
+        en: 'Title',
+        da: 'Overskrift'
     },
     subtitle: {
         de: 'Untertitel',
         en: 'Subtitle',
-        da: 'Underoverskrift',
+        da: 'Underoverskrift'
     },
     ok: {
         de: 'OK',
         en: 'OK',
-        da: 'OK',
+        da: 'OK'
     },
     edit: {
         de: 'Bearbeiten',
         en: 'Edit',
-        da: 'Rediger',
+        da: 'Rediger'
+    },
+    cancel: {
+        de: 'Abbrechen',
+        en: 'Cancel',
+        da: 'Annuller'
+    },
+    discard: {
+        de: 'Verwerfen',
+        en: 'Discard',
+        da: 'Forkast'
+    },
+    save: {
+        de: 'Speichern',
+        en: 'Save',
+        da: 'Gem'
+    },
+    saving: {
+        de: 'Speichere',
+        en: 'Saving',
+        da: 'Gemmer'
+    },
+    delete: {
+        de: 'Löschen',
+        en: 'Delete',
+        da: 'Slet'
+    },
+    remove: {
+        de: 'Entfernen',
+        en: 'Remove',
+        da: 'Fjern'
+    },
+    loading: {
+        de: 'Laden…',
+        en: 'Loading…',
+        da: 'Indlæser…'
+    },
+    completed: {
+        de: 'Erledigt',
+        en: 'Completed',
+        da: 'Fuldført'
     },
     finish_edit: {
         de: 'Bearbeitung beenden',
@@ -70,41 +169,6 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Bilder & Logos',
         en: 'Images & logos',
         da: 'Billeder og logoer',
-    },
-    cancel: {
-        de: 'Abbrechen',
-        en: 'Cancel',
-        da: 'Annuller',
-    },
-    discard: {
-        de: 'Verwerfen',
-        en: 'Discard',
-        da: 'Forkast',
-    },
-    save: {
-        de: 'Speichern',
-        en: 'Save',
-        da: 'Gem',
-    },
-    saving: {
-        de: 'Speichere',
-        en: 'Saving',
-        da: 'Gemmer',
-    },
-    delete: {
-        de: 'Löschen',
-        en: 'Delete',
-        da: 'Slet',
-    },
-    remove: {
-        de: 'Entfernen',
-        en: 'Remove',
-        da: 'Fjern',
-    },
-    loading: {
-        de: 'Laden…',
-        en: 'Loading…',
-        da: 'Indlæser…',
     },
     click_to_upload: {
         de: 'Klicken zum Hochladen',
@@ -196,6 +260,16 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Dates',
         da: 'Datoer',
     },
+    due_date: {
+        de: 'Fälligkeitsdatum',
+        en: 'Due date',
+        da: 'Forfaldsdato',
+    },
+    due_date_in_past_error: {
+        de: 'Das Fälligkeitsdatum darf nicht in der Vergangenheit liegen.',
+        en: 'The due date cannot be in the past.',
+        da: 'Forfaldsdatoen må ikke være i fortiden.',
+    },
     latitude: {
         de: 'Breitengrad',
         en: 'Latitude',
@@ -221,6 +295,21 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'email',
         da: 'e-mail',
     },
+    repeat_email: {
+        de: 'E-Mail wiederholen',
+        en: 'Repeat email',
+        da: 'Gentag e-mail',
+    },
+    emails_do_not_match: {
+        de: 'Die E-Mail-Adressen stimmen nicht überein',
+        en: 'Email addresses do not match',
+        da: 'E-mailadresserne matcher ikke',
+    },
+    input_invalid_email: {
+        de: 'Bitte gib eine gültige E-Mail-Adresse an.',
+        en: 'Please enter a valid email address.',
+        da: 'Angiv venligst en gyldig e-mailadresse.',
+    },
     password: {
         de: 'Passwort',
         en: 'Password',
@@ -235,6 +324,26 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Lizenz',
         en: 'License',
         da: 'Licens',
+    },
+    team: {
+        de: 'Team',
+        en: 'Team',
+        da: 'Team',
+    },
+    team_members: {
+        de: 'Teammitglieder',
+        en: 'Team members',
+        da: 'Medlemmer i teamet',
+    },
+    manage_team: {
+        de: 'Team',
+        en: 'Manage team',
+        da: 'Administrer team',
+    },
+    permissions: {
+        de: 'Berechtigungen',
+        en: 'Permissions',
+        da: 'Rettigheder',
     },
     show_map: {
         de: 'Karte anzeigen',
@@ -301,6 +410,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'required',
         da: 'påkrævet',
     },
+    input_required_notice: {
+        de: 'Pflichtfelder bitte ausfüllen',
+        en: 'Please fill out the required fields',
+        da: 'Udfyld venligst obligatoriske felter',
+    },
     download_ics: {
         de: 'Datum speichern',
         en: 'Save date',
@@ -311,6 +425,106 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Could not download the calendar file.',
         da: 'Kunne ikke downloade kalenderfilen.',
     },
+    settings: {
+        de: 'Einstellungen',
+        en: 'Settings',
+        da: 'Indstillinger',
+    },
+    opened_at: {
+        de: 'Eröffnet am',
+        en: 'Opened at',
+        da: 'Åbningsdato',
+    },
+    closed_at: {
+        de: 'Geschlossen am',
+        en: 'Closed at',
+        da: 'Lukkedato',
+    },
+    area_sqm: {
+        de: 'Fläche (m²)',
+        en: 'Area (m²)',
+        da: 'Areal (m²)',
+    },
+    building_level: {
+        de: 'Etage',
+        en: 'Level',
+        da: 'Etage',
+    },
+    total_capacity: {
+        de: 'Gesamtkapazität',
+        en: 'Total capacity',
+        da: 'Samlet kapacitet',
+    },
+    seating_capacity: {
+        de: 'Sitzplätze',
+        en: 'Seating capacity',
+        da: 'Siddepladser',
+    },
+    preview: {
+        de: 'Vorschau',
+        en: 'Preview',
+        da: 'Vis',
+    },
+    messages: {
+        de: 'Nachrichten',
+        en: 'Messages',
+        da: 'Beskeder',
+    },
+    no_messages: {
+        de: 'Keine Nachrichten vorhanden.',
+        en: 'No messages available.',
+        da: 'Ingen beskeder.',
+    },
+    today: {
+        de: 'Heute',
+        en: 'Today',
+        da: 'I dag',
+    },
+    tomorrow: {
+        de: 'Morgen',
+        en: 'Tomorrow',
+        da: 'I morgen',
+    },
+    days_left: {
+        de: 'Tage verbleibend',
+        en: 'days left',
+        da: 'dage tilbage',
+    },
+    days_overdue: {
+        de: 'Tage überfällig',
+        en: 'days overdue',
+        da: 'dage forsinket',
+    },
+    n_days_ago: {
+        de: '~~n~~ Tage her',
+        en: '~~n~~ days ago',
+        da: '~~n~~ dage siden',
+    },
+    in_n_days: {
+        de: 'in ~~n~~ Tagen',
+        en: 'in ~~n~~ days',
+        da: 'om ~~n~~ dage',
+    },
+    one_of_n: {
+        de: '~~n~~ von ~~m~~',
+        en: '~~n~~ of ~~m~~',
+        da: '~~n~~ af ~~m~~',
+    },
+    form_validation_failed: {
+        de: 'Mindestens ein Feld ist unvollständig oder enthält ungültige Daten. Bitte korrigiere dies.',
+        en: 'At least one field is incomplete or contains invalid data. Please correct it.',
+        da: 'Mindst ét felt er ufuldstændigt eller indeholder ugyldige data. Ret det venligst.',
+    },
+    enter_password_to_confirm: {
+        de: 'Passwort zur Bestätigung eingeben',
+        en: 'Enter password to confirm',
+        da: 'Indtast adgangskode for at bekræfte',
+    },
+    send_invitation: {
+        de: "Einladung versenden",
+        en: "Send invitation",
+        da: "Send invitation",
+    }
 }
 
 export default uranusI18nStandardTranslations
