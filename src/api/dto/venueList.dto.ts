@@ -3,15 +3,17 @@
 */
 
 export interface VenueListSpaceDTO {
-    uuid: string
-    name: string
-    upcoming_event_count: number
+    space_uuid: string
+    space_name: string
+    event_count: number
+    can_edit_space: boolean
+    can_delete_space: boolean
 }
 
 export interface VenueListItemDTO {
-    uuid: string
-    name: string
-    upcoming_event_count: number
+    venue_uuid: string
+    venue_name: string
+    event_count: number
     spaces?: VenueListSpaceDTO[]
     can_add_event: boolean
     can_add_space: boolean

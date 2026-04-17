@@ -8,13 +8,13 @@
     <div>
       <div class="header">
         <div>
-          <h2>{{ venueListItem.name }}</h2>
+          <h2>{{ venueListItem.venueName }}</h2>
           <p>{{ eventCountText }}</p>
           <div class="uranus-card-button-container">
           <UranusButton
               v-if="venueListItem.canEditVenue"
               variant="secondary" size="small"
-              :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/edit`"
+              :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.venueUuid}/edit`"
           >
             {{ t('edit') }}
           </UranusButton>
@@ -43,7 +43,7 @@
               v-if="venueListItem.canAddSpace"
               :icon="Plus"
               :title="t('add')"
-              :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/space/create`"
+              :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.venueUuid}/space/create`"
           />
         </h3>
       </div>
@@ -51,27 +51,27 @@
       <template v-if="venueListItem.spaces?.length">
         <div
             v-for="(space, index) in venueListItem.spaces"
-            :key="space.uuid"
+            :key="space.spaceUuid"
             class="space-row"
         >
           <div class="space-info">
-            <span>{{ space.name }}</span>
+            <span>{{ space.spaceName }}</span>
           </div>
 
           <div class="space-actions">
             <span>
-              <template v-if="space.upcomingEventCount">
-                {{ space.upcomingEventCount }}
+              <template v-if="space.eventCount">
+                {{ space.eventCount }}
               </template>
               <template v-else></template>
             </span>
             <UranusIconAction
-                v-if="venueListItem.canEditSpace"
+                v-if="space.canEditSpace"
                 :icon="Edit" :title="t('edit')"
-                :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.uuid}/space/${space.uuid}/edit`"
+                :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.venueUuid}/space/${space.spaceUuid}/edit`"
             />
             <UranusIconAction
-                v-if="venueListItem.canDeleteSpace"
+                v-if="space.canDeleteSpace"
                 :icon="Trash2" :title="t('delete')"
                 :onClick="() => requestDeleteSpace(space)"
             />
@@ -131,7 +131,7 @@ const props = defineProps<{
 
 const eventCountText = computed(() => {
   // Pass locale.value to your interpolation function if needed
-  const count = props.venueListItem.upcomingEventCount
+  const count = props.venueListItem.eventCount
   const key = count === 1 ? 'event_count_singular' : 'event_count_plural'
   const template = t(key) // t automatically picks the correct language
   return uranusStringInterpolate(template, { count })
@@ -164,8 +164,8 @@ function getConfirmDeleteSpace(name: string): string {
 
 const onDeleteEvent = (venue: VenueListItem) => {
   if (!venue.canDeleteVenue) return
-  pendingVenueUuid.value = venue.uuid
-  pendingVenueName.value = venue.name
+  pendingVenueUuid.value = venue.venueUuid
+  pendingVenueName.value = venue.venueName
   deleteVenueError.value = ''
   showDeleteVenueModal.value = true
 }
@@ -210,8 +210,8 @@ const confirmDeleteVenue = async ({ password }: { password: string }) => {
 
 const requestDeleteSpace = (space: VenueListSpace) => {
   if (!props.venueListItem.canDeleteSpace) return
-  pendingSpaceUuid.value = space.uuid
-  pendingSpaceName.value = space.name
+  pendingSpaceUuid.value = space.spaceUuid
+  pendingSpaceName.value = space.spaceName
   deleteSpaceError.value = ''
   showDeleteSpaceModal.value = true
 }
@@ -235,7 +235,7 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
       body: JSON.stringify({ password }),
     })
 
-    const index = props.venueListItem.spaces.findIndex(spaceInfo => spaceInfo.uuid === pendingSpaceUuid.value)
+    const index = props.venueListItem.spaces.findIndex(spaceInfo => spaceInfo.spaceUuid === pendingSpaceUuid.value)
     if (index !== -1) {
       props.venueListItem.spaces.splice(index, 1)
     }

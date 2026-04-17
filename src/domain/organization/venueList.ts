@@ -6,15 +6,17 @@
 import type { VenueListDto, VenueListItemDTO, VenueListSpaceDTO } from '@/api/dto/venueList.dto.ts'
 
 export interface VenueListSpace {
-    uuid: string
-    name: string
-    upcomingEventCount: number
+    spaceUuid: string
+    spaceName: string
+    eventCount: number
+    canEditSpace: boolean
+    canDeleteSpace: boolean
 }
 
 export interface VenueListItem {
-    uuid: string
-    name: string
-    upcomingEventCount: number
+    venueUuid: string
+    venueName: string
+    eventCount: number
     spaces: VenueListSpace[]
     canAddEvent: boolean
     canAddSpace: boolean
@@ -32,9 +34,9 @@ export interface VenueListItem {
 }
 
 export interface VenueList {
-    uuid: string
-    name: string
-    totalUpcomingEvents: number
+    orgUuid: string
+    orgName: string
+    totalEventCount: number
     canAddEvent: boolean
     canAddSpace: boolean
     canAddVenue: boolean
@@ -46,25 +48,29 @@ export interface VenueList {
 
 export function mapVenueListSpace(dto: VenueListSpaceDTO): VenueListSpace {
     return {
-        uuid: dto.uuid,
-        name: dto.name,
-        upcomingEventCount: dto.upcoming_event_count,
+        spaceUuid: dto.space_uuid,
+        spaceName: dto.space_name,
+        eventCount: dto.event_count,
+        canEditSpace: dto.can_edit_space,
+        canDeleteSpace: dto.can_delete_space,
     }
 }
 
 export function mapVenueListItem(dto: VenueListItemDTO): VenueListItem {
     return {
-        uuid: dto.uuid,
-        name: dto.name,
-        upcomingEventCount: dto.upcoming_event_count,
+        venueUuid: dto.venue_uuid,
+        venueName: dto.venue_name,
+        eventCount: dto.event_count,
         spaces: (dto.spaces ?? [])
             .map(space => ({
-                uuid: space.uuid,
-                name: space.name,
-                upcomingEventCount: space.upcoming_event_count,
+                spaceUuid: space.space_uuid,
+                spaceName: space.space_name,
+                eventCount: space.event_count,
+                canEditSpace: space.can_edit_space,
+                canDeleteSpace: space.can_delete_space,
             }))
             .sort((a, b) =>
-                a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+                a.spaceName.localeCompare(b.spaceName, undefined, { sensitivity: 'base' })
             ),
 
         canAddEvent: dto.can_add_event,
@@ -89,9 +95,9 @@ export function mapVenueListItem(dto: VenueListItemDTO): VenueListItem {
 
 export function mapVenueList(dto: VenueListDto): VenueList {
     return {
-        uuid: dto.org_uuid,
-        name: dto.org_name,
-        totalUpcomingEvents: dto.total_upcoming_events,
+        orgUuid: dto.org_uuid,
+        orgName: dto.org_name,
+        totalEventCount: dto.total_upcoming_events,
         canAddEvent: dto.can_add_event,
         canAddSpace: dto.can_add_space,
         canAddVenue: dto.can_add_venue,
@@ -103,17 +109,19 @@ export function mapVenueList(dto: VenueListDto): VenueList {
 
 export function toVenueListSpaceDTO(model: VenueListSpace): VenueListSpaceDTO {
     return {
-        uuid: model.uuid,
-        name: model.name,
-        upcoming_event_count: model.upcomingEventCount,
+        space_uuid: model.spaceUuid,
+        space_name: model.spaceName,
+        event_count: model.eventCount,
+        can_edit_space: model.canEditSpace,
+        can_delete_space: model.canDeleteSpace,
     }
 }
 
 export function toVenueItemDTO(model: VenueListItem): VenueListItemDTO {
     return {
-        uuid: model.uuid,
-        name: model.name,
-        upcoming_event_count: model.upcomingEventCount,
+        venue_uuid: model.venueUuid,
+        venue_name: model.venueName,
+        event_count: model.eventCount,
         spaces: model.spaces.map(toVenueListSpaceDTO),
 
         can_add_event: model.canAddEvent,
@@ -138,9 +146,9 @@ export function toVenueItemDTO(model: VenueListItem): VenueListItemDTO {
 
 export function toVenueListDTO(model: VenueList): VenueListDto {
     return {
-        org_uuid: model.uuid,
-        org_name: model.name,
-        total_upcoming_events: model.totalUpcomingEvents,
+        org_uuid: model.orgUuid,
+        org_name: model.orgName,
+        total_upcoming_events: model.totalEventCount,
         can_add_event: model.canAddEvent,
         can_add_space: model.canAddSpace,
         can_add_venue: model.canAddVenue,
@@ -155,9 +163,9 @@ export function toVenueListDTO(model: VenueList): VenueListDto {
  */
 export function createEmptyOrganizationVenueList(): VenueList {
     return {
-        uuid: '',
-        name: '',
-        totalUpcomingEvents: 0,
+        orgUuid: '',
+        orgName: '',
+        totalEventCount: 0,
         canAddEvent: false,
         canAddSpace: false,
         canAddVenue: false,
@@ -172,9 +180,9 @@ export function createEmptyOrganizationVenueList(): VenueList {
  */
 export function createEmptyVenue(): VenueListItem {
     return {
-        uuid: '',
-        name: '',
-        upcomingEventCount: 0,
+        venueUuid: '',
+        venueName: '',
+        eventCount: 0,
         spaces: [],
         canAddEvent: false,
         canAddSpace: false,
