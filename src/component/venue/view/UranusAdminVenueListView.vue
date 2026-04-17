@@ -32,14 +32,14 @@
         </div>
 
         <UranusFeedback :show="!!error" type="error">
-          <h3>{{  t('error') }}</h3>
+          <h3>{{  t('error_notification') }}</h3>
           <p>{{ t('error_missing_permissions') }}</p>
         </UranusFeedback>
 
         <div v-if="venueList" class="organization-venue-view__content">
           <UranusVenueCard
               v-for="item in venueList?.venues ?? []"
-              :key="item.uuid"
+              :key="item.venueUuid"
               :venueListItem="item"
               :organizationUuid="organizationUuid"
               @deleted="handleVenueDeleted"
@@ -111,8 +111,10 @@ const loadVenues = async (uuid: string | null) => {
   }
 
   try {
-    const res = await apiFetch<any>(`/api/admin/organization/${uuid}/venues`)
-    venueList.value = mapVenueList(res.data)
+    const apiPath = `/api/admin/organization/${uuid}/venues`
+    const apiResponse = await apiFetch<any>(apiPath)
+    console.log(JSON.stringify(apiResponse.data, null, 2))
+    venueList.value = mapVenueList(apiResponse.data)
     error.value = null
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {

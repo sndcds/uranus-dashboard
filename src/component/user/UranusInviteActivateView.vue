@@ -3,44 +3,50 @@
 -->
 
 <template>
-  <div class="invite-activate-page">
+  <div class="invite-accept-page">
     <UranusCard>
-      <header class="activate-header">
-        <p class="activate-eyebrow">{{ t('invite_activate_title') }}</p>
-        <h1>{{ t('invite_activate_subtitle') }}</h1>
-        <p v-if="!isProcessing && !isSuccess && !errorMessage">
-          {{ t('invite_activate_description') }}
-        </p>
+      <header class="accept-header">
+        <h1>{{ t('invite_accept_welcome_title') }}</h1>
       </header>
 
-      <div class="activation-content">
-        <div v-if="isProcessing" class="activation-state activation-state--loading">
+      <div class="accept-content">
+        <!-- Loading -->
+        <div v-if="isProcessing" class="accept-state accept-state--loading">
           <div class="spinner" aria-hidden="true"></div>
           <p>{{ t('invite_activate_processing') }}</p>
         </div>
 
-        <div v-else-if="isSuccess" class="activation-state activation-state--success">
+        <!-- Success -->
+        <div v-else-if="isSuccess" class="accept-state accept-state--success">
           <div class="success-icon">✓</div>
-          <p class="success-message">{{ t('invite_activate_success_title') }}</p>
 
-          <dl class="invite-details" v-if="inviteInfo">
-            <div class="invite-detail-row">
-              <dt>{{ t('invite_activate_organization_label') }}</dt>
-              <dd>{{ inviteInfo.org_name }}</dd>
-            </div>
-          </dl>
-
-          <button class="uranus-button" type="button" @click="goToTeam">
-            {{ t('invite_activate_go_to_team') }}
-          </button>
-          <p class="redirect-message">
-            {{ t('invite_activate_redirect_note', { seconds: redirectSeconds }) }}
+          <p class="success-message">
+            {{ t('invite_accept_joined_organization_message') }}
+            <strong>{{ inviteInfo.org_name }}</strong>
           </p>
+
+          <p class="info-message">
+            {{ t('invite_accept_permissions_info_message') }}
+          </p>
+
+          <p class="info-message">
+            {{ t('invite_accept_no_action_required_message') }}
+          </p>
+
+          <p class="help-message">
+            {{ t('invite_accept_membership_help_message') }}
+          </p>
+
+          <button class="uranus-button" type="button" @click="goToOrganizations">
+            {{ t('invite_accept_go_to_organizations_cta') }}
+          </button>
         </div>
 
-        <div v-else class="activation-state activation-state--error">
+        <!-- Error -->
+        <div v-else class="accept-state accept-state--error">
           <div class="error-icon">!</div>
           <p class="error-message">{{ errorMessage }}</p>
+
           <router-link to="/admin/dashboard" class="uranus-button">
             {{ t('invite_activate_back_to_login') }}
           </router-link>
@@ -78,7 +84,7 @@ let redirectTimer: ReturnType<typeof setInterval> | null = null
 
 const isSuccess = computed(() => !isProcessing.value && !!inviteInfo.value && !errorMessage.value)
 
-const goToTeam = () => {
+const goToOrganizations = () => {
   return
   const orgUuid = inviteInfo.value?.org_uuid
   if (!orgUuid) {
@@ -95,7 +101,7 @@ const startRedirectCountdown = () => {
   redirectTimer = setInterval(() => {
     if (redirectSeconds.value <= 1) {
       redirectTimer && clearInterval(redirectTimer)
-      goToTeam()
+      goToOrganizations()
       return
     }
 

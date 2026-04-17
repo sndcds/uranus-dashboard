@@ -384,7 +384,37 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         de: 'Teammitglied einladen',
         en: 'Invite team member',
         da: 'Inviter team medlem',
-    }
+    },
+    invite_accept_welcome_title: {
+        de: '',
+        en: 'Welcome aboard',
+        da: '',
+    },
+    invite_accept_joined_organization_message: {
+        de: '',
+        da: 'You’ve successfully joined the team at',
+        en: '',
+    },
+    invite_accept_no_action_required_message: {
+        de: '',
+        en: 'No further action is required — your account is fully set up and ready to use.',
+        da: '',
+    },
+    invite_accept_permissions_info_message: {
+        de: '',
+        en: 'You can now take actions and edit content based on your permissions. You can view all your memberships and access rights on your profile page.',
+        da: '',
+    },
+    invite_accept_membership_help_message: {
+        de: '',
+        en: 'If you’d like to learn more about how team membership works, including roles and permissions, you can read more here:',
+        da: '',
+    },
+    invite_accept_go_to_organizations_cta: {
+        de: '',
+        en: 'To organizations page',
+        da: '',
+    },
 }
 
 export default uranusI18nUserTranslations
