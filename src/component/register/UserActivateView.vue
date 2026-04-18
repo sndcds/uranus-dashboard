@@ -5,6 +5,7 @@
         <h1>{{ t('activate_account') }}</h1>
       </header>
 
+      <!-- Success -->
       <div class="activation-content">
         <div v-if="activationSuccess" class="activation-state activation-state--success">
           <div class="success-icon">✓</div>
@@ -16,13 +17,11 @@
           </p>
         </div>
 
+        <!-- Error -->
         <div v-else-if="activationError" class="activation-state activation-state--error">
           <div class="error-icon">✕</div>
           <p class="error-message">{{ activationError }}</p>
-
-          <router-link v-if="!activationError" to="/app/login" class="uranus-button">
-            {{ t('go_to_login') }}
-          </router-link>
+          <UranusButton @click="onRetryActivateAccount">{{ t('retry') }}</UranusButton>
         </div>
       </div>
     </UranusCard>
@@ -36,6 +35,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
+import UranusButton from "@/component/ui/UranusButton.vue";
 
 const { t } = useI18n()
 const route = useRoute()
@@ -55,6 +55,7 @@ const activateAccount = async () => {
 
     isActivating.value = true
     activationError.value = null
+    activationSuccess.value = false
 
     try {
         const { status } = await apiFetch('/api/activate', {
@@ -79,14 +80,11 @@ const activateAccount = async () => {
     }
 }
 
+const onRetryActivateAccount = async () => {
+  activateAccount()
+}
+
 onMounted(() => {
-  console.log('ACTIVATE PAGE MOUNTED')
-  if (true) {
-    // simulate a state instead of calling API
-    activationSuccess.value = true
-    activationError.value = t('activation_failed')
-    return
-  }
   activateAccount()
 })
 </script>

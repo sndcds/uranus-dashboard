@@ -550,6 +550,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Email is required',
         da: 'E-mail er påkrævet',
     },
+    retry: {
+        de: 'Nochmal versuchen',
+        en: 'Try again',
+        da: 'Prøv igen',
+    }
 }
 
 export default uranusI18nStandardTranslations

@@ -266,11 +266,6 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         da: 'Hvis en konto findes, er der sendt en e-mail med nulstillingslink.',
     },
     forgot_password_error: {
-        de: 'Zurücksetzen fehlgeschlagen (Status {status}).',
-        en: 'Password reset failed (status {status}).',
-        da: 'Nulstilling mislykkedes (status {status}).',
-    },
-    forgot_password_error_generic: {
         de: 'Zurücksetzen fehlgeschlagen.',
         en: 'Password reset failed.',
         da: 'Nulstilling mislykkedes.',

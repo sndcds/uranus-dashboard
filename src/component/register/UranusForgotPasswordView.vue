@@ -15,16 +15,13 @@
             :error="displayError('email') ?? ''"
             @input="handleInput" />
 
-        <transition name="fade">
-          <p v-if="error" :id="errorMessageId" class="feedback feedback--error" role="alert" aria-live="assertive">
-            {{ error }}
-          </p>
-        </transition>
-        <transition name="fade">
-          <p v-if="success" :id="successMessageId" class="feedback feedback--success" role="status" aria-live="polite">
-            {{ success }}
-          </p>
-        </transition>
+        <UranusFeedback :show="!!error" type="error">
+          {{ error }}
+        </UranusFeedback>
+
+        <UranusFeedback :show="!!success" type="success">
+          {{ success }}
+        </UranusFeedback>
 
         <UranusFormActions>
           <UranusButton :disabled="isSubmitting" type="submit">
@@ -52,6 +49,7 @@ import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
 import UranusCardFooter from '@/component/layout/UranusCardFooter.vue'
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const { t, locale } = useI18n()
 
@@ -88,54 +86,48 @@ const handleInput = () => {
 }
 
 const requestReset = async () => {
-    if (isSubmitting.value) {
-        return
+  if (isSubmitting.value) {
+    return
+  }
+
+  // Clear previous errors
+  error.value = null
+  success.value = null
+  fieldErrors.email = null
+
+  // Validate email
+  if (!email.value.trim()) {
+    fieldErrors.email = t('email_required')
+    return
+  }
+
+  if (!emailRegex.test(email.value.trim())) {
+    fieldErrors.email = t('email_invalid', 'Please enter a valid email address')
+    return
+  }
+
+  isSubmitting.value = true
+
+  try {
+    const apiPath = `/api/forgot-password?lang=${locale.value}`
+    const apiResponse = await apiFetch(apiPath, {
+      method: 'POST',
+      body: JSON.stringify({
+        email: email.value.trim(),
+      }),
+    })
+
+    if (apiResponse.status >= 200 && apiResponse.status < 300) {
+      success.value = t('forgot_password_success')
+      fieldErrors.email = null
+    } else {
+      error.value = t('forgot_password_error')
     }
-
-    // Clear previous errors
-    error.value = null
-    success.value = null
-    fieldErrors.email = null
-
-    // Validate email
-    if (!email.value.trim()) {
-        fieldErrors.email = t('email_required')
-        return
-    }
-
-    if (!emailRegex.test(email.value.trim())) {
-        fieldErrors.email = t('email_invalid', 'Please enter a valid email address')
-        return
-    }
-
-    isSubmitting.value = true
-
-    try {
-        const { status } = await apiFetch(`/api/forgot-password?lang=${locale.value}`, {
-            method: 'POST',
-            body: JSON.stringify({
-                email: email.value.trim(),
-            }),
-        })
-
-        if (status >= 200 && status < 300) {
-            success.value = t('forgot_password_success')
-            fieldErrors.email = null
-        } else {
-            error.value = t('forgot_password_error', { status })
-        }
-    } catch (err: unknown) {
-        if (typeof err === 'object' && err && 'data' in err) {
-            const e = err as { data?: { error?: string } }
-            error.value = e.data?.error || t('forgot_password_error_generic')
-        } else if (err instanceof Error) {
-            error.value = err.message || t('forgot_password_error_generic')
-        } else {
-            error.value = t('forgot_password_error_generic')
-        }
-    } finally {
-        isSubmitting.value = false
-    }
+  } catch (err: unknown) {
+    error.value = t('forgot_password_error')
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 
@@ -145,35 +137,6 @@ const requestReset = async () => {
     display: flex;
     justify-content: flex-end;
     margin-top: 0.5rem;
-}
-
-.feedback {
-    margin: 0.5rem 0;
-    padding: 0.75rem 1rem;
-    border-radius: 0.375rem;
-    font-size: 0.9rem;
-
-    &--error {
-        background-color: #fee;
-        color: #c00;
-        border: 1px solid #fcc;
-    }
-
-    &--success {
-        background-color: #efe;
-        color: #060;
-        border: 1px solid #cfc;
-    }
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.25s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
 }
 
 </style>

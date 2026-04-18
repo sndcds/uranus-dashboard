@@ -64,7 +64,7 @@
         :show="showDeleteModal"
         :title="t('confirm_delete_organization')"
         :question="t('confirm_delete_organization_description', { name: organisation.name })"
-        :confirm-text="t('delete_organization')"
+        :confirm-text="t('delete')"
         :loading-text="t('deleting')"
         :error="deleteError"
         :is-submitting="isDeleting"
