@@ -5,6 +5,11 @@
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleKey, string>> = {
+    app_ui_theme: {
+        de: 'Design',
+        en: 'Theme',
+        da: 'Tema',
+    },
     dashboard: {
         de: 'Dashboard',
         en: 'Dashboard',
@@ -230,6 +235,16 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Country',
         da: 'Land',
     },
+    select_country: {
+        de: 'Land wählen ...',
+        en: 'Select country ...',
+        da: 'Vælg land ...',
+    },
+    select_state: {
+        de: 'Bundesland/Region wählen ...',
+        en: 'Select state/region ...',
+        da: 'Vælg region ...',
+    },
     state: {
         de: 'Bundesland',
         en: 'State',
@@ -400,6 +415,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Legal form',
         da: 'Juridisk form',
     },
+    unspecified_legal_form: {
+        de: 'Keine Rechtsform angegeben',
+        en: 'No legal form provided',
+        da: 'Ingen juridisk form angivet',
+    },
     nonprofit: {
         de: 'Gemeinnützig',
         en: 'Non-profit',
@@ -524,7 +544,12 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: "Einladung versenden",
         en: "Send invitation",
         da: "Send invitation",
-    }
+    },
+    email_required: {
+        de: 'E-Mail ist erforderlich',
+        en: 'Email is required',
+        da: 'E-mail er påkrævet',
+    },
 }
 
 export default uranusI18nStandardTranslations

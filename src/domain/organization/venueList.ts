@@ -20,7 +20,6 @@ export interface VenueListItem {
     spaces: VenueListSpace[]
     canAddEvent: boolean
     canAddSpace: boolean
-    canAddVenue: boolean
     canDeleteEvent: boolean
     canDeleteSpace: boolean
     canDeleteVenue: boolean
@@ -75,7 +74,6 @@ export function mapVenueListItem(dto: VenueListItemDTO): VenueListItem {
 
         canAddEvent: dto.can_add_event,
         canAddSpace: dto.can_add_space,
-        canAddVenue: dto.can_add_venue,
 
         canDeleteEvent: dto.can_delete_event,
         canDeleteSpace: dto.can_delete_space,
@@ -126,7 +124,6 @@ export function toVenueItemDTO(model: VenueListItem): VenueListItemDTO {
 
         can_add_event: model.canAddEvent,
         can_add_space: model.canAddSpace,
-        can_add_venue: model.canAddVenue,
 
         can_delete_event: model.canDeleteEvent,
         can_delete_space: model.canDeleteSpace,
@@ -186,7 +183,6 @@ export function createEmptyVenue(): VenueListItem {
         spaces: [],
         canAddEvent: false,
         canAddSpace: false,
-        canAddVenue: false,
         canDeleteEvent: false,
         canDeleteSpace: false,
         canDeleteVenue: false,

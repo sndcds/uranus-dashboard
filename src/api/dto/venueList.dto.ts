@@ -17,7 +17,6 @@ export interface VenueListItemDTO {
     spaces?: VenueListSpaceDTO[]
     can_add_event: boolean
     can_add_space: boolean
-    can_add_venue: boolean
     can_delete_event: boolean
     can_delete_space: boolean
     can_delete_venue: boolean

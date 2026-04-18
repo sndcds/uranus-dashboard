@@ -1,49 +1,44 @@
 <template>
-    <div class="auth-page">
-        <div class="uranus-card">
-            <header class="auth-header">
-                <h1>{{ t('forgot_password_title') }}</h1>
-                <p>{{ t('forgot_password_subtitle') }}</p>
-            </header>
+  <UranusBasicCardPage>
+    <UranusCard class="uranus-card-narrow">
+      <h1>{{ t('reset_password') }}</h1>
+      <p>{{ t('reset_password_how_to') }}</p>
 
-            <form class="uranus-form" @submit.prevent="requestReset" :aria-busy="isSubmitting" novalidate>
-                <UranusTextfield
-                    id="forgot-email"
-                    v-model="email"
-                    type="email"
-                    :label="t('email')"
-                    :placeholder="t('email_placeholder')"
-                    autocomplete="email"
-                    required
-                    :error="displayError('email') ?? ''"
-                    @input="handleInput" />
+      <UranusForm @submit.prevent="requestReset" :aria-busy="isSubmitting" novalidate>
+        <UranusTextfield
+            id="forgot-email"
+            v-model="email"
+            type="email"
+            :label="t('email')"
+            autocomplete="email"
+            required
+            :error="displayError('email') ?? ''"
+            @input="handleInput" />
 
-                <transition name="fade">
-                    <p v-if="error" :id="errorMessageId" class="feedback feedback--error" role="alert"
-                        aria-live="assertive">
-                        {{ error }}
-                    </p>
-                </transition>
-                <transition name="fade">
-                    <p v-if="success" :id="successMessageId" class="feedback feedback--success" role="status"
-                        aria-live="polite">
-                        {{ success }}
-                    </p>
-                </transition>
+        <transition name="fade">
+          <p v-if="error" :id="errorMessageId" class="feedback feedback--error" role="alert" aria-live="assertive">
+            {{ error }}
+          </p>
+        </transition>
+        <transition name="fade">
+          <p v-if="success" :id="successMessageId" class="feedback feedback--success" role="status" aria-live="polite">
+            {{ success }}
+          </p>
+        </transition>
 
-                <div class="form-actions">
-                    <button class="uranus-button" :disabled="isSubmitting" type="submit">
-                        <span v-if="!isSubmitting">{{ t('forgot_password_submit') }}</span>
-                        <span v-else>{{ t('forgot_password_sending') }}</span>
-                    </button>
-                </div>
-            </form>
+        <UranusFormActions>
+          <UranusButton :disabled="isSubmitting" type="submit">
+            <span v-if="!isSubmitting">{{ t('forgot_password_submit') }}</span>
+            <span v-else>{{ t('forgot_password_sending') }}</span>
+          </UranusButton>
+        </UranusFormActions>
+      </UranusForm>
 
-            <footer class="auth-footer">
-                <router-link to="/app/login">{{ t('back_to_login') }}</router-link>
-            </footer>
-        </div>
-    </div>
+      <UranusCardFooter>
+        <router-link to="/app/login">{{ t('back_to_login') }}</router-link>
+      </UranusCardFooter>
+    </UranusCard>
+  </UranusBasicCardPage>
 </template>
 
 <script setup lang="ts">
@@ -51,6 +46,12 @@ import { ref, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusCard from '@/component/ui/UranusCard.vue'
+import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
+import UranusCardFooter from '@/component/layout/UranusCardFooter.vue'
 
 const { t, locale } = useI18n()
 
@@ -98,7 +99,7 @@ const requestReset = async () => {
 
     // Validate email
     if (!email.value.trim()) {
-        fieldErrors.email = t('email_required', 'Email is required')
+        fieldErrors.email = t('email_required')
         return
     }
 
@@ -139,38 +140,6 @@ const requestReset = async () => {
 </script>
 
 <style scoped lang="scss">
-.auth-page {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.uranus-card {
-    width: 100%;
-    max-width: 500px;
-}
-
-.auth-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-
-    h1 {
-        font-size: clamp(1.75rem, 4vw, 2.25rem);
-        font-weight: 700;
-        margin: 0;
-        color: var(--uranus-color);
-    }
-
-    p {
-        margin: 0;
-        font-size: 0.95rem;
-        color: var(--uranus-muted-text);
-    }
-}
 
 .form-actions {
     display: flex;
@@ -194,25 +163,6 @@ const requestReset = async () => {
         background-color: #efe;
         color: #060;
         border: 1px solid #cfc;
-    }
-}
-
-.auth-footer {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
-    color: var(--uranus-muted-text);
-    margin-top: 1.5rem;
-
-    a {
-        font-weight: 600;
-        color: var(--accent-primary);
-        transition: color 0.2s ease;
-
-        &:hover {
-            color: var(--accent-secondary);
-        }
     }
 }
 

@@ -7,7 +7,7 @@
 <template>
   <UranusLabel
       :id="countrySelectId"
-      :label="countryLabel"
+      :label="t('country')"
       :required="true"
       :error="countryError">
     <select
@@ -17,7 +17,7 @@
         class="uranus-admin-select"
         :aria-required="true"
         :aria-invalid="countryError ? 'true' : 'false'">
-      <option value="" disabled>{{ countryPlaceholder }}</option>
+      <option value="" disabled>{{ t('select_country') }}</option>
       <option v-for="country in countries" :key="country.code" :value="country.code">
         {{ country.name }}
       </option>
@@ -25,10 +25,10 @@
   </UranusLabel>
 
   <!-- State -->
-  <UranusLabel :id="stateSelectId" :label="stateLabel" :required="true" :error="stateError">
+  <UranusLabel :id="stateSelectId" :label="t('state')" :required="true" :error="stateError">
     <select v-model="stateModel" :id="stateSelectId" :disabled="statesLoading || !countryModel" class="uranus-admin-select"
       :aria-required="true" :aria-invalid="stateError ? 'true' : 'false'">
-      <option value="" disabled>{{ statePlaceholder }}</option>
+      <option value="" disabled>{{ t('select_state') }}</option>
       <option v-for="state in states" :key="state.code" :value="state.code">
         {{ state.name }}
       </option>
@@ -62,16 +62,6 @@ let pendingCountryReload = false
 const baseFieldId = useId()
 const countrySelectId = `${baseFieldId}-country`
 const stateSelectId = `${baseFieldId}-state`
-
-// Labels and placeholders
-const countryLabel = computed(() => t('country'))
-const stateLabel = computed(() => t('state'))
-const countryPlaceholder = computed(() =>
-  te('organization_country_placeholder') ? t('organization_country_placeholder') : 'Select country'
-)
-const statePlaceholder = computed(() =>
-  te('organization_state_placeholder') ? t('organization_state_placeholder') : 'Select state'
-)
 
 // Optional error messages
 const countryError = ref('')

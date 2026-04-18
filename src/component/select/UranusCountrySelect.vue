@@ -12,7 +12,7 @@
       class="uranus-admin-select"
       :aria-required="true"
       :aria-invalid="props.errorMessage ? 'true' : 'false'">
-    <option value="" disabled>{{ placeholder }}</option>
+    <option value="" disabled>{{ t('select_country') }}</option>
     <option v-for="country in countries" :key="country.code" :value="country.code">
       {{ country.name }}
     </option>
@@ -30,7 +30,6 @@ import { useCountryLookupStore } from '@/store/countryLookupStore.ts'
 const props = defineProps<{
   modelValue?: string | null
   label?: string
-  placeholder?: string
   errorMessage?: string
 }>()
 
@@ -61,7 +60,6 @@ const baseId = useId()
 const countrySelectId = `${baseId}-country`
 
 const { t, locale } = useI18n({ useScope: 'global' })
-const placeholder = computed(() => props.placeholder ?? t('organization_country_placeholder') ?? 'Select country')
 
 // --------------------
 // Countries via store

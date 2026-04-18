@@ -11,6 +11,20 @@
   padding: 1rem;
 }
 
+.uranus-card-narrow {
+  width: 560px;
+  max-width: calc(100vw - 32px);
+}
+
+.uranus-card-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--uranus-color-4);
+  margin-top: 1.5rem;
+}
+
 .uranus-card.active::before {
   content: "";
   position: absolute;
