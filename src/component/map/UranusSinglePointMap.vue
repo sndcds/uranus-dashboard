@@ -5,6 +5,7 @@
 <template>
   <LibreMap
       class="map-container"
+      :id="props.id"
       :layers="mapLayers"
       :center="[lon, lat]"
       :zoom="zoom"
@@ -17,6 +18,7 @@ import LibreMap from '@/component/map/LibreMap.vue'
 import venueIcon from '@/assets/map/marker.png'
 
 const props = defineProps<{
+  id?: string
   lat: number
   lon: number
   name?: string

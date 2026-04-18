@@ -60,10 +60,7 @@ const loadVenues = async (bbox?: [number, number, number, number]) => {
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: [
-            v.properties.venue_lon,
-            v.properties.venue_lat,
-          ],
+          coordinates: v.geometry.coordinates,
         },
         properties: {
           ...v.properties,
@@ -101,9 +98,10 @@ const mapLayers = computed<MapLayer[]>(() => [
     type: 'symbol',
     layout: {
       'text-field': ['to-string', ['get', 'count']],
-      'text-size': 12,
+      'text-size': 16,
       'text-anchor': 'center',
-      'text-allow-overlap': true,
+      'text-allow-overlap': false,
+      'text-font': ['noto_sans_bold'],
     },
     paint: {
       'text-color': '#ffffff',
@@ -114,7 +112,7 @@ const mapLayers = computed<MapLayer[]>(() => [
     sourceId: 'venues',
     type: 'symbol',
     layout: {
-      'text-field': ['get', 'venue_name'],
+      'text-field': ['get', 'name'],
       'text-size': 11,
       'text-offset': [0, 1.5],
       'text-anchor': 'top',

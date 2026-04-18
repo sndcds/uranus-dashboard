@@ -78,7 +78,7 @@
   --uranus-link-color: oklch(50% 0.2 var(--uranus-link-hue));
   --uranus-link-color-hover: oklch(60% 0.2 var(--uranus-link-hue));
 
-  --uranus-select-color: oklch(30% 0.2 300);
+  --uranus-select-color: oklch(0.486 0.256 269.926);
   --uranus-focus-color: oklch(0.52 0.23 var(--uranus-hue));
 
   --uranus-backdrop-color: oklch(96% 0.008 var(--uranus-hue) / 0.8);
@@ -230,7 +230,7 @@
   --uranus-link-color: oklch(55% 0.18 var(--uranus-link-hue));
   --uranus-link-color-hover: oklch(50% 0.2 var(--uranus-link-hue));
 
-  --uranus-select-color: oklch(60% 0.3 280);
+  --uranus-select-color: oklch(0.545 0.228 289.78);
 
   --uranus-backdrop-color: oklch(20% 0.03 var(--uranus-hue) / 0.9);
 
@@ -361,7 +361,7 @@ header {
   font-family: 'Inter', sans-serif;
   line-height: 1.5;
   font-size: 18px;
-  color: #333;
+  color: var(--uranus-color);
   margin-top: 0;
   margin-bottom: 0;
 

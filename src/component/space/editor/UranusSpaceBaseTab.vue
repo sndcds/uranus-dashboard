@@ -13,7 +13,7 @@
 
     <UranusFormRow>
       <UranusLabel id="space-description" :label="t('description')">
-        <UranusTextEditor v-model="space.description"/>
+        <UranusTextEditor v-model="space.description!"/>
       </UranusLabel>
     </UranusFormRow>
 
@@ -36,7 +36,7 @@
 
     <UranusFormRow>
       <UranusLabel id="space-accessibility-summary" :label="t('accessibility_summery')">
-        <UranusTextEditor v-model="space.accessibilitySummary"/>
+        <UranusTextEditor v-model="space.accessibilitySummary!"/>
       </UranusLabel>
     </UranusFormRow>
 
@@ -53,7 +53,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useUranusSpaceStore } from '@/store/spaceStore.ts'
-import type { UranusSpace } from '@/domain/space/space.model.ts'
+import type { SpaceModel } from '@/domain/space/space.model.ts'
 import UranusSpaceTypeSelect from '@/component/select/UranusSpaceTypeSelect.vue'
 import UranusForm from "@/component/ui/UranusForm.vue";
 import UranusTextfield from "@/component/ui/UranusTextfield.vue";
@@ -95,8 +95,8 @@ const isDirty = computed(() => {
 })
 
 function buildPayload(
-    draft: UranusSpace,
-    original: UranusSpace
+    draft: SpaceModel,
+    original: SpaceModel
 ) {
   const payload: Record<string, any> = {}
 
@@ -117,7 +117,7 @@ function buildPayload(
   return payload
 }
 
-function copyFields(source: UranusSpace, target: UranusSpace) {
+function copyFields(source: SpaceModel, target: SpaceModel) {
   target.name = source.name ?? ''
   target.description = source.description ?? null
   target.webLink = source.webLink ?? null

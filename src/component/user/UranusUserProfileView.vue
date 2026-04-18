@@ -38,9 +38,8 @@
                 v-model="profile.email"
                 type="email"
                 :label="t('user_profile_email')"
-                required
                 autocomplete="email"
-                :disabled="isSubmitting"
+                disabled
             />
           </UranusFormRow>
 

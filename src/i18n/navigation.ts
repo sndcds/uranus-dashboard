@@ -70,6 +70,11 @@ export const uranusI18nNavigationTranslations: Record<string, Record<UranusLocal
         en: 'Events',
         da: 'Begivenheder'
     },
+    scroll_to_map: {
+        de: 'Karte anzeigen',
+        en: 'View map',
+        da: 'Vis kort',
+    }
 }
 
 export default uranusI18nNavigationTranslations
