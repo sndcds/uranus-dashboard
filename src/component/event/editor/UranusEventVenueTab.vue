@@ -15,44 +15,45 @@
       </UranusButton>
     </UranusCard>
 
-    <UranusVenueSelectModal
-        :show="showModal"
-        :venueSpaceInfos="venueSpacesInfos"
-        v-model="selectedPlace"
-        @close="closeVenueModal"
-    />
+    <UranusForm>
+      <UranusTextfield
+          id="meeting-point"
+          :label="t('event_meeting_point')"
+          v-model="draft.meetingPoint"
+      />
 
-    <UranusTextfield
-        id="meeting-point"
-        :label="t('event_meeting_point')"
-        v-model="draft.meetingPoint"
-    />
+      <UranusTextfield
+          id="online-event-url"
+          :label="t('event_online_url')"
+          placeholder="https://..."
+          v-model="draft.onlineLink"
+      />
 
-    <UranusTextfield
-        id="online-event-url"
-        :label="t('event_online_url')"
-        placeholder="https://..."
-        v-model="draft.onlineLink"
-    />
+      <UranusFormActions>
+        <UranusButton :disabled="store.saving || !isDirty" @click="resetTab">
+          <template #icon><Undo /></template>
+          {{ t('discard')}}
+        </UranusButton>
 
-    <div class="tab-actions">
-      <UranusButton :disabled="store.saving || !isDirty" @click="resetTab">
-        <template #icon><Undo /></template>
-        {{ t('discard')}}
-      </UranusButton>
-
-      <UranusButton
-          :disabled="store.saving || !isDirty"
-          :loading="store.saving"
-          loading-text="Saving..."
-          @click="commitTab"
-      >
-        <template #icon><Save /></template>
-        {{ t('save')}}
-      </UranusButton>
-    </div>
-
+        <UranusButton
+            :disabled="store.saving || !isDirty"
+            :loading="store.saving"
+            loading-text="Saving..."
+            @click="commitTab"
+        >
+          <template #icon><Save /></template>
+          {{ t('save')}}
+        </UranusButton>
+      </UranusFormActions>
+    </UranusForm>
   </section>
+
+  <UranusVenueSelectModal
+      :show="showModal"
+      :venueSpaceInfos="venueSpacesInfos"
+      v-model="selectedPlace"
+      @close="closeVenueModal"
+  />
 </template>
 
 <script setup lang="ts">
@@ -67,6 +68,8 @@ import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
 import { Save, Undo, MapPin } from 'lucide-vue-next'
+import UranusForm from "@/component/ui/UranusForm.vue";
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -168,34 +171,6 @@ function resetTab() {
   gap: 1rem;
   max-width: var(--uranus-dashboard-content-width);
 
-  .venue-name {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    font-weight: 500;
-  }
-
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-
-    label {
-      font-weight: bold;
-    }
-
-    input {
-      padding: 0.4rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-  }
-
-  .dirty-indicator {
-    color: #b00;
-    font-weight: bold;
-  }
-
   .tab-actions {
     display: flex;
     justify-content: flex-end;
@@ -206,12 +181,12 @@ function resetTab() {
 
 .event-venue {
   display: flex;
-  flex-direction: row;  /* horizontal layout */
-  align-items: center;  /* vertically center items */
-  gap: 1rem;            /* optional spacing */
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
 }
 
 .event-venue > :first-child {
-  flex: 1;              /* take remaining space */
+  flex: 1;
 }
 </style>

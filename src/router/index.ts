@@ -24,7 +24,7 @@ import UranusOrganizationInviteTeamMemberView from '@/component/organization/vie
 import UranusOrganizationMemberPermissionView from '@/component/organization/view/UranusOrganizationMemberPermissionView.vue'
 import UranusEventsView from '@/view/public/UranusEventsView.vue'
 import UranusEventCalendarView from '@/view/public/UranusEventCalendarView.vue'
-import UranusEventSlideshowView from '@/view/public/UranusEventSlideshowView.vue'
+import UranusEventSlideshowView from '@/component/slideshow/UranusEventSlideshowView.vue'
 import UranusDevThemeView from '@/view/dev/UranusDevThemeView.vue'
 
 import GenericLayout from '@/component/layout/GenericLayout.vue'

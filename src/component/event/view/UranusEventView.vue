@@ -134,6 +134,12 @@
           <!-- Venue, Space, Location -->
           <UranusEventVenueDisplay :eventDate="eventDate" />
 
+          <UranusIconAction
+              :to="{ hash: '#event-map' }"
+              :label="t('scroll_to_map')"
+              :icon="Map"
+          />
+
           <div v-if="event.meetingPoint">
             <p class="uranus-public-event-info-label">{{ t('event_meeting_point') }}</p>
             <p>{{ event.meetingPoint }}</p>
@@ -174,12 +180,6 @@
           <UranusEventAllDatesDisplay
               v-if="event?.furtherDates?.length"
               :dates="event.furtherDates"
-          />
-
-          <UranusIconAction
-              :to="{ hash: '#event-map' }"
-              :label="t('scroll_to_map')"
-              :icon="Map"
           />
 
           <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-tight-section">

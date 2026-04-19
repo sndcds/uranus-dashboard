@@ -554,6 +554,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Nochmal versuchen',
         en: 'Try again',
         da: 'Prøv igen',
+    },
+    price: {
+        de: 'Preis',
+        en: 'Price',
+        da: 'Pris',
     }
 }
 

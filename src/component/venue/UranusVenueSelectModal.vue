@@ -5,7 +5,7 @@
 <template>
   <UranusModal
       :show="show"
-      title="Select Venue / Space"
+      :title="t('select_venue')"
       @close="$emit('close')"
       :maxWidth="'600px'"
   >
@@ -44,8 +44,11 @@
 
 <script setup lang="ts">
 import { ref, nextTick, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import { type BasicVenueSpacesInfo } from '@/domain/venue/basicVenueInfo.model.ts'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   show: boolean
@@ -85,39 +88,37 @@ watch(() => props.show, async (val) => {
 .venue-space-list {
   height: 400px;
   overflow-y: auto;
-  border: 1px solid #ccc;
+  border: 1px solid var(--uranus-card-border-color);
 }
 
 .venue-group {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0;
 
   .venue-item {
     font-weight: 600;
     padding: 0.4rem 0.6rem;
     cursor: pointer;
-    background: #ffffff;
-    border-radius: 4px;
+    background: var(--uranus-bg);
 
     &:hover {
-      background: #e6edff;
+      background: var(--uranus-focus-color);
     }
   }
 
   .space-item {
     padding: 0.4rem 2rem;
     cursor: pointer;
-    border-radius: 4px;
-    background: #ffffff;
+    background: var(--uranus-bg);
 
     &:hover {
-      background: #e6edff;
+      background: var(--uranus-focus-color);
     }
   }
 
   .selected {
-    background: #2d36e4 !important;
+    background: var(--uranus-select-color) !important;
     color: white;
   }
 }

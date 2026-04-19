@@ -31,23 +31,22 @@
 
   --uranus-color: oklch(12% 0.05 var(--uranus-hue));
   --uranus-bg: oklch(100% 0.0 var(--uranus-hue));
+  --uranus-mix-bg: oklch(100% 0.0 var(--uranus-hue));
   --uranus-color-0: var(--uranus-color);
-  --uranus-color-1: color-mix(in oklch, var(--uranus-color) 90%, var(--uranus-bg));
-  --uranus-color-2: color-mix(in oklch, var(--uranus-color) 75%, var(--uranus-bg));
-  --uranus-color-3: color-mix(in oklch, var(--uranus-color) 60%, var(--uranus-bg));
-  --uranus-color-4: color-mix(in oklch, var(--uranus-color) 45%, var(--uranus-bg));
-  --uranus-color-5: color-mix(in oklch, var(--uranus-color) 30%, var(--uranus-bg));
-  --uranus-color-6: color-mix(in oklch, var(--uranus-color) 20%, var(--uranus-bg));
-  --uranus-color-7: color-mix(in oklch, var(--uranus-color) 10%, var(--uranus-bg));
-  --uranus-color-8: color-mix(in oklch, var(--uranus-color) 5%,  var(--uranus-bg));
+  --uranus-color-1: color-mix(in oklch, var(--uranus-color) 90%, var(--uranus-mix-bg));
+  --uranus-color-2: color-mix(in oklch, var(--uranus-color) 75%, var(--uranus-mix-bg));
+  --uranus-color-3: color-mix(in oklch, var(--uranus-color) 60%, var(--uranus-mix-bg));
+  --uranus-color-4: color-mix(in oklch, var(--uranus-color) 45%, var(--uranus-mix-bg));
+  --uranus-color-5: color-mix(in oklch, var(--uranus-color) 30%, var(--uranus-mix-bg));
+  --uranus-color-6: color-mix(in oklch, var(--uranus-color) 20%, var(--uranus-mix-bg));
+  --uranus-color-7: color-mix(in oklch, var(--uranus-color) 10%, var(--uranus-mix-bg));
+  --uranus-color-8: color-mix(in oklch, var(--uranus-color) 5%,  var(--uranus-mix-bg));
   --uranus-color-9: var(--uranus-bg);
 
   --uranus-secondary-color:var(--uranus-color);
   --uranus-secondary-bg:var(--uranus-color-8);
   --uranus-secondary-color-hover:var(--uranus-color);
   --uranus-secondary-bg-hover:var(--uranus-color-7);
-
-  --uranus-accent-color: #1331f4;
 
   // Used to visualize elements in dark or light mode, e.g. images on dark or light backgrounds
   --uranus-bg-dark: oklch(20% 0.03 var(--uranus-hue));
@@ -207,6 +206,7 @@
 
   --uranus-color: oklch(92% 0.02 var(--uranus-hue));
   --uranus-bg: oklch(20% 0.03 var(--uranus-hue));
+  --uranus-mix-bg: oklch(20% 0.05 var(--uranus-hue));
 
   --uranus-secondary-color:var(--uranus-color);
   --uranus-secondary-bg:var(--uranus-color-7);
@@ -235,8 +235,8 @@
   --uranus-backdrop-color: oklch(20% 0.03 var(--uranus-hue) / 0.9);
 
   --uranus-dashboard-bg: var(--uranus-bg);
-  --uranus-card-bg: var(--uranus-color-8);
-  --uranus-card-border: 0 solid (--uranus-color-8);
+  --uranus-card-bg:oklch(22% 0.041 var(--uranus-hue));
+  --uranus-card-border: 0 solid var(--uranus-color-6);
 
   --uranus-nav-color: oklch(82% 0.02 var(--uranus-hue));
   --uranus-nav-bg: oklch(20% 0.03 var(--uranus-hue));
