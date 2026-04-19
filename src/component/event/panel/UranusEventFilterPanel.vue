@@ -24,7 +24,7 @@
       <UranusEventCategorySelectorAccordion v-model="filterStore.filter.categories" :multiple="true" />
 
       <UranusAccordion v-model="searchOpen">
-        <template #title>{{ t('calendar_filter_use_gps') }}</template>
+        <template #title>{{ t('calendar_filter_search_label') }}</template>
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="search-input"
