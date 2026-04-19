@@ -115,6 +115,16 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         en: 'Send an invitation to a new team member for the organization.',
         da: 'Send en invitation til et nyt teammedlem til organisationen.',
     },
+    confirm_delete_organization: {
+        de: 'Möchtest du diese Organisation wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+        en: 'Are you sure you want to delete this organization? This action cannot be undone.',
+        da: 'Er du sikker på, at du vil slette denne organisation? Denne handling kan ikke fortrydes.',
+    },
+    confirm_delete_organization_description: {
+        de: 'Du bist dabei, "{name}" zu löschen. Gib dein Passwort ein, um fortzufahren.',
+        en: 'You are about to delete "{name}". Enter your password to continue.',
+        da: 'Du er ved at slette "{name}". Indtast din adgangskode for at fortsætte.',
+    }
 }
 
 export default uranusI18nOrganizationTranslations

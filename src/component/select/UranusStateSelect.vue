@@ -13,7 +13,7 @@
       :aria-required="required"
       :aria-invalid="errorMessage ? 'true' : 'false'"
   >
-    <option value="" disabled>{{ placeholder }}</option>
+    <option value="" disabled>{{ t('select_state') }}</option>
     <option v-for="state in states" :key="state.code" :value="state.code">
       {{ state.name }}
     </option>
@@ -22,9 +22,9 @@
 
 
 <script setup lang="ts">
-import { ref, computed, watch, useId } from 'vue'
+import { ref, watch, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch, type ApiResponse } from '@/api.ts'
+import { apiFetch } from '@/api.ts'
 import { type CountryStateDTO } from '@/api/dto/country.dto.ts'
 
 // Props / v-model
@@ -33,7 +33,6 @@ const props = defineProps<{
   modelValue?: string | null
   countryCode?: string | null
   label?: string
-  placeholder?: string
   errorMessage?: string
   required?: boolean
 }>()
@@ -62,16 +61,7 @@ watch(stateModel, val => {
 const baseId = useId()
 const stateSelectId = `${baseId}-state`
 
-const { t, te } = useI18n({ useScope: 'global' })
-
-const placeholder = computed(() =>
-    props.placeholder ??
-    (te('organization_state_placeholder')
-        ? t('organization_state_placeholder')
-        : 'Select state')
-)
-
-// State loading
+const { t } = useI18n({ useScope: 'global' })
 
 const states = ref<{ code: string; name: string }[]>([])
 const loading = ref(false)

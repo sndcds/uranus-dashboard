@@ -17,7 +17,7 @@ import UranusMessageSendView from '@/view/UranusMessageSendView.vue'
 import UranusVenueView from '@/view/public/UranusVenueView.vue'
 import UranusEventView from '@/component/event/view/UranusEventView.vue'
 import UranusHtmlView from '@/view/public/UranusHTMLView.vue'
-import UserActivateView from '@/view/UserActivateView.vue'
+import UserActivateView from '@/component/register/UserActivateView.vue'
 import UranusInviteActivateView from '@/component/user/UranusInviteActivateView.vue'
 import UranusOrganizationTeamView from '@/component/organization/view/UranusOrganizationTeamView.vue'
 import UranusOrganizationInviteTeamMemberView from '@/component/organization/view/UranusOrganizationInviteTeamMemberView.vue'
@@ -270,6 +270,16 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
+    scrollBehavior(to) {
+        if (to.hash) {
+            return {
+                el: to.hash,
+                behavior: 'smooth',
+            }
+        }
+
+        return { top: 0 }
+    },
 })
 
 let previousRoute: RouteLocationNormalized | null = null

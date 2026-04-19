@@ -1,6 +1,9 @@
+<!--
+  src/component/UserAvatarUpload.vue
+-->
+
 <template>
-  <aside class="profile-photo-panel">
-    <span class="profile-photo-panel__label">{{ label }}</span>
+  <div class="profile-photo-panel">
 
     <div
         class="profile-photo-wrapper"
@@ -17,23 +20,19 @@
       <img v-if="displayAvatar" :src="displayAvatar" alt="" />
       <div v-else class="profile-photo-placeholder" aria-hidden="true">
         <span class="profile-photo-initial">{{ initialsText }}</span>
-        <span class="profile-photo-placeholder__hint">{{ label }}</span>
       </div>
     </div>
 
-    <div class="profile-photo-actions">
-      <label class="profile-upload" :class="{ 'profile-upload--disabled': isInputDisabled }">
-        <input
-            ref="fileInputRef"
-            type="file"
-            accept="image/*"
-            :disabled="isInputDisabled"
-            @change="onFileChange"
-            style="display: none"
-        />
-      </label>
+    <input
+        ref="fileInputRef"
+        type="file"
+        accept="image/*"
+        :disabled="isInputDisabled"
+        @change="onFileChange"
+        style="display: none"
+    />
 
-      <!-- Your UranusButton -->
+    <div class="action-buttons">
       <UranusButton
           variant="tertiary"
           size="small"
@@ -55,7 +54,7 @@
     </div>
 
     <p class="profile-photo-hint">{{ hint }}</p>
-  </aside>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -69,7 +68,6 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 
 const props = withDefaults(
   defineProps<{
-    label?: string
     hint: string
     uploadLabel: string
     removeLabel: string
@@ -241,7 +239,7 @@ const isImageFile = (file: File) => {
     return file.type.startsWith('image/')
   }
 
-  return /\.(avif|bmp|gif|jpe?g|png|webp|svg)$/i.test(file.name)
+  return /\.(jpe?g|png|webp)$/i.test(file.name)
 }
 
 const processSelectedFile = (file: File) => {
@@ -378,20 +376,8 @@ onBeforeUnmount(() => {
 .profile-photo-panel {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  background: var(--input-bg);
-  border: 1px dashed var(--border-soft);
-  border-radius: 20px;
-  padding: clamp(1.25rem, 3vw, 1.75rem);
+  gap: 1rem;
   margin-bottom: 1.5rem;
-}
-
-.profile-photo-panel__label {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--uranus-muted-text);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
 .profile-photo-wrapper {
@@ -399,8 +385,8 @@ onBeforeUnmount(() => {
   width: min(220px, 100%);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  border: 1px dashed var(--border-soft);
-  background: var(--card-bg);
+  border: 1px dashed var(--uranus-card-border-color);
+  background: var(--uranus-bg);
   overflow: hidden;
   display: grid;
   place-items: center;
@@ -441,8 +427,8 @@ onBeforeUnmount(() => {
 }
 
 .profile-photo-initial {
-  font-size: clamp(2.5rem, 8vw, 3.25rem);
-  font-weight: 700;
+  font-size: clamp(6rem, 8vw, 6rem);
+  font-weight: 200;
   color: var(--uranus-muted-text);
 }
 
@@ -452,10 +438,9 @@ onBeforeUnmount(() => {
   text-align: center;
 }
 
-.profile-photo-actions {
+.action-buttons {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.6rem;
   justify-content: center;
   align-items: center;
 }

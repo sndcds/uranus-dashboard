@@ -121,6 +121,13 @@
               :allDay="eventAllDay"
               style="padding-top: 1rem;"
           />
+          <UranusIconAction
+              v-if="eventDate?.eventUuid"
+              :label="t('download_ics')"
+              :icon="CalendarArrowDown"
+              @click="onDownloadIcs"
+          />
+
 
           <UranusEventOrganizationDisplay :event="event" />
 
@@ -142,11 +149,11 @@
             </template>
           </div>
 
-          <UranusExternalLink
-              :link="event.ticketLink"
+          <UranusIconAction
+              v-if="event.ticketLink"
               :label="t('event_ticket_link')"
               :icon="Ticket"
-              :iconSize="30"
+              :to="event.ticketLink"
           />
 
           <div v-if="event.maxAttendees || ageLabel">
@@ -169,49 +176,26 @@
               :dates="event.furtherDates"
           />
 
+          <UranusIconAction
+              :to="{ hash: '#event-map' }"
+              :label="t('scroll_to_map')"
+              :icon="Map"
+          />
+
           <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-tight-section">
-            <svg width="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                 style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2; margin-bottom: 8px;">
-              <g transform="matrix(1.23077,0,0,1.23077,-2.30769,-2.76923)">
-                <path d="M11.25,5.25C11.25,6.078 10.578,6.75 9.75,6.75C8.922,6.75 8.25,6.078 8.25,5.25C8.25,4.422 8.922,3.75 9.75,3.75C10.578,3.75 11.25,4.422 11.25,5.25ZM12.75,5.25C12.75,6.648 11.794,7.822 10.5,8.155L10.5,9.75L15.375,9.75L15.375,11.25L10.5,11.25L10.5,14.25L17.865,14.25L18.615,18L19.5,18L19.5,19.5L17.385,19.5L16.635,15.75L15.75,15.75C15.75,19.064 13.064,21.75 9.75,21.75C6.436,21.75 3.75,19.064 3.75,15.75C3.75,12.69 6.04,10.166 9,9.796L9,8.155C7.706,7.822 6.75,6.648 6.75,5.25C6.75,3.593 8.093,2.25 9.75,2.25C11.407,2.25 12.75,3.593 12.75,5.25ZM9,15.75L14.25,15.75C14.25,18.235 12.235,20.25 9.75,20.25C7.265,20.25 5.25,18.235 5.25,15.75C5.25,13.52 6.872,11.669 9,11.312L9,15.75Z"/>
-              </g>
-            </svg>
-            <!--p class="uranus-public-event-info-label">{{ t('space_accessibility') }}</p-->
+            <UranusIconAction :icon="Accessibility" :label="t('accessibility')"/>
             <p v-for="label in selectedAccessibilityLabels" :key="label">
               {{ label }}
             </p>
           </div>
 
-          <button
-              v-if="hasLonLat"
-              type="button"
-              class="uranus-public-event-detail-link"
-              @click="onShowOnMap">
-            <svg width="20px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-              <path d="M29.664,1.531L29.411,1.579L20.823,4.907L11.177,1.531L2.11,4.587C1.769,4.687 1.532,5 1.531,5.355L1.531,29.664C1.531,30.111 1.889,30.469 2.336,30.469L2.589,30.421L11.177,27.093L20.823,30.469L29.89,27.413C30.231,27.313 30.468,27 30.469,26.645L30.469,2.336C30.469,2.335 30.469,2.334 30.469,2.333C30.469,1.893 30.107,1.531 29.667,1.531C29.666,1.531 29.665,1.531 29.664,1.531M12.783,5.501L19.217,7.753L19.217,26.499L12.783,24.247L12.783,5.501M4.748,7.093L9.571,5.469L9.571,24.28L4.748,26.145L4.748,7.094M27.252,24.907L22.429,26.531L22.429,7.738L27.252,5.874L27.252,24.907Z" style="fill-rule:nonzero;"/>
-            </svg>
-            {{ t('show_map') }}
-          </button>
-
-          <button
-              v-if="eventDate?.eventUuid && eventDate?.eventUuid"
-              type="button"
-              class="uranus-public-event-detail-link"
-              @click="onDownloadIcs">
-            <svg width="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <g transform="matrix(0.294848,0,0,0.303202,-229.662,-293.77)">
-                <path d="M778.917,1038.26L778.917,978.682C778.917,973.278 783.429,968.891 788.985,968.891L850.247,968.891C855.804,968.891 860.315,973.278 860.315,978.682L860.315,1038.26C860.315,1043.66 855.804,1048.05 850.247,1048.05L788.985,1048.05C783.429,1048.05 778.917,1043.66 778.917,1038.26ZM784.638,991.976L784.638,1038.26C784.638,1040.59 786.586,1042.48 788.985,1042.48L850.247,1042.48C852.647,1042.48 854.594,1040.59 854.594,1038.26L854.594,991.976L784.638,991.976ZM837.635,1020.8C840.618,1020.8 843.04,1023.16 843.04,1026.06C843.04,1028.96 840.618,1031.32 837.635,1031.32C834.651,1031.32 832.229,1028.96 832.229,1026.06C832.229,1023.16 834.651,1020.8 837.635,1020.8ZM819.616,1020.8C822.6,1020.8 825.022,1023.16 825.022,1026.06C825.022,1028.96 822.6,1031.32 819.616,1031.32C816.633,1031.32 814.211,1028.96 814.211,1026.06C814.211,1023.16 816.633,1020.8 819.616,1020.8ZM801.598,1020.8C804.581,1020.8 807.003,1023.16 807.003,1026.06C807.003,1028.96 804.581,1031.32 801.598,1031.32C798.615,1031.32 796.192,1028.96 796.192,1026.06C796.192,1023.16 798.615,1020.8 801.598,1020.8ZM819.616,1003.14C822.6,1003.14 825.022,1005.5 825.022,1008.4C825.022,1011.3 822.6,1013.66 819.616,1013.66C816.633,1013.66 814.211,1011.3 814.211,1008.4C814.211,1005.5 816.633,1003.14 819.616,1003.14ZM837.635,1003.14C840.618,1003.14 843.04,1005.5 843.04,1008.4C843.04,1011.3 840.618,1013.66 837.635,1013.66C834.651,1013.66 832.229,1011.3 832.229,1008.4C832.229,1005.5 834.651,1003.14 837.635,1003.14ZM854.594,986.413L854.594,978.682C854.594,976.349 852.647,974.455 850.247,974.455L788.985,974.455C786.586,974.455 784.638,976.349 784.638,978.682L784.638,986.413L854.594,986.413Z"/>
-              </g>
-            </svg>
-            {{ t('download_ics') }}
-          </button>
         </div>
-
-
       </aside>
+
       <div style="width: 100%; height: 400px; border-radius: 7px;overflow: clip">
         <UranusSinglePointMap
             v-if="eventDate && eventDate.venueLat && eventDate.venueLon"
+            id="event-map"
             :lat="parseFloat(eventDate.venueLat)"
             :lon="parseFloat(eventDate.venueLon)"
             :name="'Name der Venue'"
@@ -241,9 +225,9 @@ import UranusEventOrganizationDisplay from '@/component/event/ui/UranusEventOrga
 import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
-
 import UranusExternalLink from '@/component/ui/UranusExternalLink.vue'
-import { Ticket } from 'lucide-vue-next'
+import UranusIconAction from '@/component/ui/UranusIconAction.vue'
+import { Ticket, Map, Accessibility, CalendarArrowDown } from 'lucide-vue-next'
 
 const route = useRoute()
 
@@ -460,17 +444,6 @@ const loadEvent = async () => {
   } finally {
     isLoading.value = false
   }
-}
-
-
-const onShowOnMap = () => {
-  // TODO: Implement!
-  window.alert("onShowOnMap")
-}
-
-const onShowAccessibility = () => {
-  // TODO: Implement!
-  window.alert("onShowAccessibility")
 }
 
 const onDownloadIcs = async () => {

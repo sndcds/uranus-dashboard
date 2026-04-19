@@ -235,20 +235,20 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'No',
         da: 'Nej',
     },
-    forgot_password: {
-        de: 'Passwort vergessen?',
-        en: 'Forgot password?',
-        da: 'Glemt adgangskode?',
-    },
-    forgot_password_title: {
+    reset_password: {
         de: 'Passwort zurücksetzen',
         en: 'Reset password',
         da: 'Nulstil adgangskode',
     },
-    forgot_password_subtitle: {
+    reset_password_how_to: {
         de: 'Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen.',
         en: 'Enter your email address and we will send you a reset link.',
         da: 'Indtast din e-mailadresse, så sender vi et link til nulstilling.',
+    },
+    forgot_password: {
+        de: 'Passwort vergessen?',
+        en: 'Forgot password?',
+        da: 'Glemt adgangskode?',
     },
     forgot_password_submit: {
         de: 'Link senden',
@@ -266,11 +266,6 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         da: 'Hvis en konto findes, er der sendt en e-mail med nulstillingslink.',
     },
     forgot_password_error: {
-        de: 'Zurücksetzen fehlgeschlagen (Status {status}).',
-        en: 'Password reset failed (status {status}).',
-        da: 'Nulstilling mislykkedes (status {status}).',
-    },
-    forgot_password_error_generic: {
         de: 'Zurücksetzen fehlgeschlagen.',
         en: 'Password reset failed.',
         da: 'Nulstilling mislykkedes.',

@@ -51,7 +51,6 @@ const contentClass = computed(() => {
   ].filter(Boolean).join(' ')
 })
 
-// Sidebar state
 const isSidebarOpen = ref(false)
 const toggleSidebar = () => { isSidebarOpen.value = !isSidebarOpen.value }
 const closeSidebar = () => { isSidebarOpen.value = false }
@@ -65,7 +64,6 @@ const closeSidebar = () => { isSidebarOpen.value = false }
   background: var(--uranus-bg);
 }
 
-/* Body: sidebar + main content */
 .app-layout__body {
   display: flex;
   flex: 1;
@@ -73,19 +71,18 @@ const closeSidebar = () => { isSidebarOpen.value = false }
   min-height: 0; // allow flex children to shrink properly
 }
 
-/* Overlay for mobile */
 .overlay {
   display: none;
+  transition: background 2.4s ease-in-out;
   @media (max-width: 768px) {
     display: block;
     position: fixed;
+    background: var(--uranus-backdrop-color);
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
     z-index: 100;
   }
 }
 
-/* Main content area */
 .app-layout__main {
   flex: 1;
   display: flex;
@@ -94,7 +91,6 @@ const closeSidebar = () => { isSidebarOpen.value = false }
   background: var(--uranus-bg);
 }
 
-/* Inner content wrapper */
 .app-layout__content {
   flex: 1;
   padding: 2rem;
@@ -106,7 +102,6 @@ const closeSidebar = () => { isSidebarOpen.value = false }
   }
 }
 
-/* Optional zero padding mode */
 .zero-padding {
   padding: 0;
 }

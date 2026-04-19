@@ -38,9 +38,8 @@
                 v-model="profile.email"
                 type="email"
                 :label="t('user_profile_email')"
-                required
                 autocomplete="email"
-                :disabled="isSubmitting"
+                disabled
             />
           </UranusFormRow>
 
@@ -80,7 +79,7 @@
               </select>
             </UranusLabel>
 
-            <UranusLabel id="profile_theme" :label="t('settings_theme')">
+            <UranusLabel id="profile_theme" :label="t('app_ui_theme')">
               <select id="profile_theme" v-model="selectedTheme" class="uranus-admin-select"
                 :disabled="isSubmitting">
                 <option v-for="option in themeOptions" :key="option.value"

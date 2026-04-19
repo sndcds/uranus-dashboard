@@ -78,7 +78,7 @@
   --uranus-link-color: oklch(50% 0.2 var(--uranus-link-hue));
   --uranus-link-color-hover: oklch(60% 0.2 var(--uranus-link-hue));
 
-  --uranus-select-color: oklch(30% 0.2 300);
+  --uranus-select-color: oklch(0.486 0.256 269.926);
   --uranus-focus-color: oklch(0.52 0.23 var(--uranus-hue));
 
   --uranus-backdrop-color: oklch(96% 0.008 var(--uranus-hue) / 0.8);
@@ -122,15 +122,6 @@
   --uranus-calendar-hover-color: var(--uranus-color);
 
 
-  // Base typography & text colors
-  --font-brand: 'Space Grotesk', 'Inter', sans-serif;
-  --color-bg: #f5f7fb;
-  --color-text: #0f172a;
-  --color-text-secondary: #475569;
-  --color-link: #2563eb;
-  --uranus-muted-text: var(--uranus-color-5);
-  --text-secondary: var(--color-text-secondary);
-
   // Brand system colors
   --uranus-brand-color: #235df1;
   --uranus-notice-color-rgb: 73, 131, 246;
@@ -165,19 +156,6 @@
   --uranus-event-release-color-rescheduled: #ffffff;
   --uranus-event-release-background-rescheduled: #164db1;
 
-
-  // Accent tokens shared across layouts
-  --accent-secondary: #22d3ee;
-  --accent-muted: rgba(79, 70, 229, 0.1);
-  --accent-muted-hover: rgba(79, 70, 229, 0.2);
-
-  // Surface and card tokens
-  --card-bg: #ffffff;
-  --card-shadow: 0 24px 50px rgba(15, 23, 42, 0.08);
-  --surface-bg: #eef2ff;
-  --surface-primary: #ffffff;
-
-  --surface-hover: rgba(15, 23, 42, 0.06);
   --uranus-card-bg: var(--uranus-bg);
   --uranus-card-color: var(--uranus-color);
   --uranus-card-border-color: var(--uranus-color-6);
@@ -252,7 +230,7 @@
   --uranus-link-color: oklch(55% 0.18 var(--uranus-link-hue));
   --uranus-link-color-hover: oklch(50% 0.2 var(--uranus-link-hue));
 
-  --uranus-select-color: oklch(60% 0.3 280);
+  --uranus-select-color: oklch(0.545 0.228 289.78);
 
   --uranus-backdrop-color: oklch(20% 0.03 var(--uranus-hue) / 0.9);
 
@@ -278,30 +256,6 @@
   --uranus-input-bg: oklch(26% 0.05 var(--uranus-hue));
   --uranus-input-border-color: oklch(26% 0.05 var(--uranus-hue));
   --uranus-input-placeholder-color: oklch(60% 0.06 var(--uranus-hue));
-
-
-
-  --color-bg: #050b16;
-  --color-text: #ff0000; // #f1f5f9;
-  --color-text-primary: #00ff00;
-  --color-text-secondary: #0000ff;
-  --color-link: #93c5fd;
-  --uranus-muted-text: #94a3b8;
-
-  --card-bg: #111c2f;
-  --card-shadow: 0 24px 50px rgba(2, 6, 23, 0.8);
-  --surface-bg: #030712;
-  --surface-primary: #111c2f;
-  --surface-hover: rgba(148, 163, 184, 0.35);
-
-  --accent-muted: rgba(99, 102, 241, 0.25);
-  --accent-muted-hover: rgba(99, 102, 241, 0.35);
-
-  --input-bg: #0f172a;
-  --input-border: rgba(148, 163, 184, 0.45);
-
-  --border-soft: rgba(148, 163, 184, 0.35);
-  --border-color: #1f2a44;
 
   --uranus-disabled-color: #4f5a74;
   --uranus-low-contrast-color: #4b5563;
@@ -407,7 +361,7 @@ header {
   font-family: 'Inter', sans-serif;
   line-height: 1.5;
   font-size: 18px;
-  color: #333;
+  color: var(--uranus-color);
   margin-top: 0;
   margin-bottom: 0;
 

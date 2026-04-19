@@ -1,6 +1,6 @@
 <template>
-  <div class="auth-page">
-    <UranusCard style="width: 400px;">
+  <UranusBasicCardPage>
+    <UranusCard class="uranus-card-narrow">
       <h1>{{ t('login_title') }}</h1>
       <p>{{ t('login_subtitle') }}</p>
 
@@ -35,7 +35,7 @@
 
       </UranusForm>
 
-      <footer class="footer">
+      <UranusCardFooter>
         <div class="footer-row">
           <router-link to="/page/terms">{{ t('terms_read') }}</router-link>
         </div>
@@ -43,12 +43,13 @@
           <span>{{ t('need_account') }}</span>
           <router-link to="/app/signup">{{ t('signup') }}</router-link>
         </div>
-      </footer>
+      </UranusCardFooter>
 
     </UranusCard>
 
-  </div>
+  </UranusBasicCardPage>
 </template>
+
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -64,6 +65,8 @@ import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
+import UranusCardFooter from '@/component/layout/UranusCardFooter.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -179,28 +182,12 @@ const login = async () => {
 }
 </script>
 <style scoped lang="scss">
-.auth-page {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
 
 .forgot-password-link {
   margin-top: -0.5rem;
   margin-bottom: 1rem;
   text-align: right;
   font-size: 0.9rem;
-}
-
-.footer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.5rem;
-  color: var(--uranus-color-4);
-  margin-top: 1.5rem;
 }
 
 .footer-row {

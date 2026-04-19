@@ -140,7 +140,7 @@ const priceFields = [
     'maxPrice',
     'currency',
     'ticketFlags',
-    'link'
+    'ticketLink'
 ] as const
 
 const isDirty = computed(() => {
@@ -218,6 +218,7 @@ function resetTab() {
   draft.maxPrice = original.maxPrice ?? null
   draft.currency = original.currency ?? null
   draft.ticketFlags = original.ticketFlags ?? null
+  draft.ticketLink = original.ticketLink ?? null
 }
 </script>
 

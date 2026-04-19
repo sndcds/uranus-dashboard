@@ -200,6 +200,7 @@ const signup = async () => {
 
   // Validate password
   if (!trimmedPassword) {
+    // TODO: Validate < 12 chars
     fieldErrors.password = requiredFieldMessage.value
     return
   }
@@ -222,9 +223,7 @@ const signup = async () => {
 
     resetForm()
     signupSuccess.value = true
-    // Don't redirect automatically - let user read the message and click to login
   } catch (err: unknown) {
-    // Narrow the error safely
     if (err && typeof err === 'object' && 'status' in err) {
       const apiErr = err as { status: number; data?: { error?: string } }
       if (apiErr.status === 409) {
