@@ -22,7 +22,7 @@
 
       <div class="slide-text date-venue" :style="randomTextStyle(2)">
         <div class="slide-text-inner">
-          {{ startDate }} / {{ venueName }}
+          {{ localizedStartDate }} / {{ venueName }}
         </div>
       </div>
     </div>
@@ -31,6 +31,9 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from 'vue-i18n'
+
+const { locale } = useI18n({ useScope: 'global' })
 
 const props = defineProps<{
   title: string
@@ -71,6 +74,20 @@ function randomTextStyle(seed: number) {
     padding: '0.5rem 1rem',
     display: 'inline-block',
   }
+}
+
+const localizedStartDate = computed(() => formatDate(props.startDate, locale.value))
+
+
+function formatDate(dateStr: string, locale: string) {
+  const date = new Date(dateStr)
+
+  return new Intl.DateTimeFormat(locale, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date)
 }
 
 function hexToRgba(hex: string, alpha: number) {

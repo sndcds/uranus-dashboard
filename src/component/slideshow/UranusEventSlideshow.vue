@@ -16,16 +16,12 @@
 
 <script setup lang="ts">
 import {ref, onMounted, onBeforeUnmount, computed} from 'vue'
-import { useI18n } from 'vue-i18n'
 import UranusEventSlide from '@/component/slideshow/UranusEventSlide.vue'
 
 
 const props = defineProps<{
   events: any[]
 }>()
-
-
-const { locale } = useI18n({ useScope: 'global' })
 
 const slides = props.events ?? []
 const slideCount = computed(() => (slides.length ?? 0))
