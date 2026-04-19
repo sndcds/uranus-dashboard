@@ -173,6 +173,7 @@ const routes = [
             {
                 path: '/page/:pageName(.*)',
                 component: UranusHtmlView,
+                meta: { layoutMode: 'zero-padding', customClass: 'uranus-custom-content' },
                 props: (route: RouteLocationNormalized) => ({
                     pageName: route.params.pageName as string
                 })

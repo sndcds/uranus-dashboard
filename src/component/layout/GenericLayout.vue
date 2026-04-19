@@ -17,7 +17,7 @@
 
       <!-- Main content -->
       <main class="app-layout__main">
-        <div :class="contentClass">
+        <div :class="[contentClasses, route.meta.customClass]">
           <router-view />
         </div>
       </main>
@@ -43,7 +43,7 @@ const isAdminPage = computed(() => route.path.startsWith('/admin'))
 const showSidebar = computed(() => true) // toggle globally or per route if needed
 
 // Classes
-const contentClass = computed(() => {
+const contentClasses = computed(() => {
   const mode = route.meta.layoutMode as string | undefined
   return [
     'app-layout__content',

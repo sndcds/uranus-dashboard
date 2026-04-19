@@ -78,3 +78,24 @@
     font-size: inherit;
   }
 }
+
+.uranus-custom-content {
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  background: #500fda;
+  color: white;
+
+  h1 {
+    font-weight: 100;
+    font-size: 10rem;
+    line-height: 8rem;
+  }
+
+  p {
+    font-size: 1.3rem;
+    font-weight: 200;
+    letter-spacing: 0.1rem;
+  }
+}
+
