@@ -3,7 +3,7 @@
     <!-- Image fades in/out -->
     <div style="background: white;">{{ imageWithParams }}</div>
     <transition name="fade">
-      <img v-if="imageUrl" :src="imageWithParams" :alt="title" class="slide-image" :key="imageUrl"/>
+      <img v-if="imagePath" :src="imageWithParams" :alt="title" class="slide-image" :key="imagePath"/>
     </transition>
 
     <!-- Text container -->
@@ -22,7 +22,7 @@
 
       <div class="slide-text date-venue" :style="randomTextStyle(2)">
         <div class="slide-text-inner">
-          {{ date }} / {{ venue }}
+          {{ startDate }} / {{ venueName }}
         </div>
       </div>
     </div>
@@ -33,12 +33,12 @@
 import { computed } from "vue";
 
 const props = defineProps<{
-  imageUrl: string
   title: string
   subtitle: string
-  venue: string
-  date: string
-  width: number
+  imagePath: string
+  venueName: string
+  startDate: string
+  width?: number
   ratio: string
 }>()
 
@@ -48,8 +48,8 @@ const ratio = props.ratio || "16:9"
 
 // Append query parameters safely
 const imageWithParams = computed(() => {
-  if (!props.imageUrl) return ""
-  const url = new URL(props.imageUrl, window.location.origin)
+  if (!props.imagePath) return ""
+  const url = new URL(props.imagePath, window.location.origin)
   url.searchParams.set("width", width.toString())
   url.searchParams.set("ratio", ratio)
   return url.toString()
@@ -114,7 +114,7 @@ function hexToRgba(hex: string, alpha: number) {
 }
 
 .slide-text {
-  font-size: 3vw;
+  font-size: 2vw;
   transform: translateX(-160%);
   animation: slideInLeft 1s forwards 0.3s;
   display: block;
@@ -125,7 +125,7 @@ function hexToRgba(hex: string, alpha: number) {
 }
 
 .title {
-  font-size: 5vw;
+  font-size: 4vw;
   animation: slideInLeft 1s forwards 0.3s;
 }
 

@@ -100,6 +100,11 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'You are about to delete the venu "{name}". Enter your password to continue.',
         da: 'Du er ved at slette spillestedet "{name}". Indtast din adgangskode for at fortsætte.',
     },
+    select_venue: {
+        de: 'Spielstätte wählen',
+        en: 'Select venue',
+        da: 'Vælg spillestedet',
+    }
 }
 
 export default uranusI18nVenueTranslations

@@ -65,5 +65,8 @@ const sizeClass = computed(() => {
 const inputName = computed(() => props.name || undefined)
 </script>
 
-<style scoped>
+<style>
+.uranus-input {
+  background: var(--uranus-input-bg);
+}
 </style>
