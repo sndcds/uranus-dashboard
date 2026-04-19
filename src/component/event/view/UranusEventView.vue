@@ -122,7 +122,7 @@
               style="padding-top: 1rem;"
           />
           <UranusIconAction
-              v-if="eventDate?.eventUuid && eventDate?.eventUuid"
+              v-if="eventDate?.eventUuid"
               :label="t('download_ics')"
               :icon="CalendarArrowDown"
               @click="onDownloadIcs"
@@ -149,11 +149,11 @@
             </template>
           </div>
 
-          <UranusExternalLink
-              :link="event.ticketLink"
+          <UranusIconAction
+              v-if="event.ticketLink"
               :label="t('event_ticket_link')"
               :icon="Ticket"
-              :iconSize="30"
+              :to="event.ticketLink"
           />
 
           <div v-if="event.maxAttendees || ageLabel">
@@ -183,16 +183,11 @@
           />
 
           <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-tight-section">
-            <UranusIconAction :icon="Accessibility" />
+            <UranusIconAction :icon="Accessibility" :label="t('accessibility')"/>
             <p v-for="label in selectedAccessibilityLabels" :key="label">
               {{ label }}
             </p>
           </div>
-
-          <UranusIconAction :icon="Accessibility" />
-          <p v-for="label in selectedAccessibilityLabels" :key="label">
-            {{ label }}
-          </p>
 
         </div>
       </aside>

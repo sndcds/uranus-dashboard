@@ -1,17 +1,13 @@
-<!--
-  src/component/ui/UranusIconAction.vue
--->
-
 <template>
   <component
-      :is="to ? 'router-link' : 'span'"
-      v-bind="to ? { to } : {}"
+      :is="componentType"
+      v-bind="componentProps"
       class="uranus-action-icon-wrapper"
       :class="{ clickable: isClickable }"
       :title="title"
       :aria-label="title"
-      :role="to ? undefined : 'button'"
-      :tabindex="to ? undefined : 0"
+      :role="componentType === 'span' ? 'button' : undefined"
+      :tabindex="componentType === 'span' ? 0 : undefined"
       @click="handleClick"
       @keydown="handleKeydown"
   >
@@ -36,7 +32,7 @@ import type { RouteLocationRaw } from 'vue-router'
 
 const props = defineProps<{
   title?: string
-  to?: RouteLocationRaw
+  to?: RouteLocationRaw | string
   onClick?: () => void
   icon?: any
   iconSize?: number | string
@@ -47,22 +43,51 @@ const emit = defineEmits<{
   (e: 'click'): void
 }>()
 
+// --- helpers ---
+const isExternal = computed(() => {
+  return typeof props.to === 'string' && /^https?:\/\//.test(props.to)
+})
+
+const componentType = computed(() => {
+  if (!props.to) return 'span'
+  return isExternal.value ? 'a' : 'router-link'
+})
+
+const componentProps = computed(() => {
+  if (!props.to) return {}
+
+  if (isExternal.value) {
+    return {
+      href: props.to,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+    }
+  }
+
+  return {
+    to: props.to,
+  }
+})
+
+// --- UI logic ---
 const resolvedIconSize = computed(() => props.iconSize ?? 22)
 const isClickable = computed(() => !!props.onClick || !!props.to)
 
+// --- events ---
 const handleClick = (event: Event) => {
   if (props.onClick) {
     props.onClick()
     emit('click')
 
-    if (props.to) {
+    // prevent router navigation if click is manually handled
+    if (props.to && !isExternal.value) {
       event.preventDefault()
     }
   }
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
-  if (props.to) return
+  if (componentType.value !== 'span') return
 
   if (event.key === 'Enter' || event.key === ' ') {
     event.preventDefault()
