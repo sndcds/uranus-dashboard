@@ -157,7 +157,7 @@ function selectVenue(venue: VenueSelectInfo) {
   padding: 0;
   margin: 0;
   list-style: none;
-  border-radius: 6px;
+  border-radius: 0;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
@@ -169,6 +169,6 @@ function selectVenue(venue: VenueSelectInfo) {
 
 .popover li.selected {
   color: #fff;
-  background-color: #333;
+  background-color: var(--uranus-select-bg);
 }
 </style>

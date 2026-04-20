@@ -103,7 +103,7 @@ watch(() => props.show, async (val) => {
     background: var(--uranus-bg);
 
     &:hover {
-      background: var(--uranus-focus-color);
+      background: var(--uranus-select-hover);
     }
   }
 
@@ -113,13 +113,13 @@ watch(() => props.show, async (val) => {
     background: var(--uranus-bg);
 
     &:hover {
-      background: var(--uranus-focus-color);
+      background: var(--uranus-select-hover);
     }
   }
 
   .selected {
-    background: var(--uranus-select-color) !important;
-    color: white;
+    background: var(--uranus-select-bg) !important;
+    color: var(--uranus-select-color);
   }
 }
 </style>

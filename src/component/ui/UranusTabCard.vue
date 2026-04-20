@@ -151,8 +151,8 @@ function onKeyDown(event: KeyboardEvent, index: number) {
 }
 
 .tab[aria-selected="true"] .tab-title::before {
-  background-color: var(--uranus-select-color);
-  border-color: var(--uranus-select-color);
+  background-color: var(--uranus-select-bg);
+  border-color: var(--uranus-select-bg);
 }
 
 .tab:focus {
