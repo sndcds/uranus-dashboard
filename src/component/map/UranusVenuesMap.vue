@@ -88,7 +88,12 @@ const mapLayers = computed<MapLayer[]>(() => [
     data: venues.value ?? emptyFC,
     type: 'circle',
     paint: {
-      'circle-radius': 16,
+      'circle-radius': [
+        "interpolate", ["linear"], ["zoom"],
+        4, 3,
+        13, 5,
+        16, 18,
+      ],
       'circle-color': '#ff3b30',
     },
   },
@@ -98,7 +103,12 @@ const mapLayers = computed<MapLayer[]>(() => [
     type: 'symbol',
     layout: {
       'text-field': ['to-string', ['get', 'count']],
-      'text-size': 16,
+      'text-size': [
+        'interpolate', ['linear'], ['zoom'],
+        4, 0,
+        13, 0,
+        16, 16
+      ],
       'text-anchor': 'center',
       'text-allow-overlap': false,
       'text-font': ['noto_sans_bold'],

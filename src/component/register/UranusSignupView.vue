@@ -3,8 +3,8 @@
 -->
 
 <template>
-  <div class="auth-page">
-    <UranusCard v-if="!signupSuccess" class="card">
+  <UranusBasicCardPage>
+    <UranusCard v-if="!signupSuccess" class="uranus-card-narrow">
       <h1>{{ t('signup') }}</h1>
       <p>{{ signupSubtitle }}</p>
 
@@ -55,7 +55,7 @@
         </UranusFormActions>
       </UranusForm>
 
-      <footer class="footer">
+      <UranusCardFooter>
         <div class="footer-row">
           <router-link to="/page/terms">{{ t('terms_read') }}</router-link>
         </div>
@@ -63,7 +63,7 @@
           <span>{{ t('have_account') }}</span>
           <router-link to="/app/login">{{ t('login') }}</router-link>
         </div>
-      </footer>
+      </UranusCardFooter>
 
     </UranusCard>
 
@@ -74,7 +74,7 @@
         {{ t('go_to_login') }}
       </UranusButton>
     </UranusCard>
-  </div>
+  </UranusBasicCardPage>
 </template>
 
 <script setup lang="ts">
@@ -87,8 +87,10 @@ import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
-import UranusButton from "@/component/ui/UranusButton.vue";
-import UranusFormActions from "@/component/ui/UranusFormActions.vue";
+import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusCardFooter from '@/component/layout/UranusCardFooter.vue'
+import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
 
 type SignupResponse = { message?: string;[key: string]: unknown }
 
@@ -241,27 +243,6 @@ const signup = async () => {
 </script>
 
 <style scoped lang="scss">
-.auth-page {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.card {
-  width: 400px;
-}
-
-.footer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.5rem;
-  color: var(--uranus-color-4);
-  margin-top: 1.5rem;
-}
-
 .footer-row {
   display: flex;
   justify-content: center;

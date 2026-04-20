@@ -165,7 +165,7 @@ button {
 }
 
 button.is-active {
-  background: var(--uranus-select-color);
-  color: #fff;
+  background: var(--uranus-select-bg);
+  color: var(--uranus-select-color);
 }
 </style>

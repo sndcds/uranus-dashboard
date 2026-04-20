@@ -125,8 +125,8 @@ const onChange = (event: Event) => {
 
   input:checked + .checkmark,
   &:has(input:checked) .checkmark {
-    background: var(--uranus-select-color);
-    border-color: var(--uranus-select-color);
+    background: var(--uranus-select-bg);
+    border-color: var(--uranus-select-bg);
 
     svg {
       width: 18px;
