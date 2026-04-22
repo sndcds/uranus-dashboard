@@ -1,7 +1,5 @@
 <!--
   src/component/event/ui/UranusEventVenueDisplay.vue
-
-  2026-02-05, Roald
 -->
 
 <template>

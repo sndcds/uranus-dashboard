@@ -50,6 +50,18 @@ export const uranusFormatDateTime = (dateStr: string, timeStr?: string | null, l
     }).format(dateTime)
 }
 
+export const uranusFormatDayMonth = (dateString: string, locale: string) => {
+    const date = new Date(dateString)
+    const parts = new Intl.DateTimeFormat(locale, {
+        day: '2-digit',
+        month: '2-digit',
+    }).formatToParts(date)
+    const day = parts.find(p => p.type === 'day')?.value
+    const month = parts.find(p => p.type === 'month')?.value
+    return `${day}.${month}.`
+
+}
+
 // TODO: Check
 export function uranusFormatFullDate(
     input: string | number | Date,

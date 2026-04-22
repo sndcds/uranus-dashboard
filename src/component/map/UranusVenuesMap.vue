@@ -9,6 +9,7 @@
       :zoom="8"
       :map-style="mapStyle"
       :default-text-font="['noto_sans_regular']"
+      @feature-click="onFeatureClick"
   />
 </template>
 
@@ -141,9 +142,12 @@ watch(
     { immediate: true }
 )
 
-/**
- * INITIAL LOAD
- */
+
+const onFeatureClick = (feature: any) => {
+  console.log('Clicked feature:', feature)
+  console.log('Venue name:', feature.properties?.name)
+}
+
 onMounted(() => {
   loadVenues()
 })

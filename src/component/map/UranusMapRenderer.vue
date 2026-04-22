@@ -55,7 +55,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'loaded', map: MapLibreMap): void
+  (e: 'feature-click', feature: any): void
 }>()
+
 
 /**
  * STATE
@@ -96,6 +98,23 @@ onMounted(() => {
   instance.once('load', () => {
     console.debug(DEBUG_PREFIX, 'style:ready:init')
     syncLayers(instance, props.layers)
+
+    instance.on('click', 'venues-circle', (e) => { // TODO: dynamicinstead of fixed naming "venue-circles"
+      const feature = e.features?.[0]
+      if (feature) {
+        emit('feature-click', feature)
+      }
+    })
+
+    instance.on('mouseenter', 'venues-circle', () => {
+      instance.getCanvas().style.cursor = 'pointer'
+    })
+
+    instance.on('mouseleave', 'venues-circle', () => {
+      instance.getCanvas().style.cursor = ''
+
+    })
+
     emit('loaded', instance)
   })
 })

@@ -3,7 +3,10 @@
       :is="componentType"
       v-bind="componentProps"
       class="uranus-action-icon-wrapper"
-      :class="{ clickable: isClickable }"
+      :class="{
+        clickable: isClickable,
+        selected: props.selected
+      }"
       :title="title"
       :aria-label="title"
       :role="componentType === 'span' ? 'button' : undefined"
@@ -37,6 +40,7 @@ const props = defineProps<{
   icon?: any
   iconSize?: number | string
   label?: string
+  selected?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -102,19 +106,26 @@ const handleKeydown = (event: KeyboardEvent) => {
   align-items: center;
   justify-content: flex-start;
   gap: 6px;
-
   width: auto;
   height: 36px;
-
   border-color: transparent;
   transition: background 0.2s ease, color 0.2s ease;
   color: var(--uranus-card-color);
-
+  padding: 0.5rem;
   &.clickable {
     cursor: pointer;
-
     &:hover {
       color: var(--uranus-link-color-hover);
+    }
+  }
+  &.selected {
+    color: var(--uranus-select-color);
+    background: var(--uranus-select-bg);
+    border-radius: 6px;
+    &:hover {
+      color: var(--uranus-select-color);
+      background: var(--uranus-select-bg);
+
     }
   }
 
@@ -122,6 +133,7 @@ const handleKeydown = (event: KeyboardEvent) => {
     stroke: currentColor;
     pointer-events: none;
     flex-shrink: 0;
+    stroke-width: 1.3;
   }
 
   .action-label {

@@ -1,7 +1,5 @@
 <!--
   src/component/event/ui/UranusEventReleaseStatusSelect.vue
-
-  2026-02-24, Roald
 -->
 
 <template>

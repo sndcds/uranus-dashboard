@@ -10,19 +10,36 @@
 <template>
   <div class="calendar-page">
     <div class="calendar-body">
-      <div class="calendar-settings">
-        <UranusHorizontalScroller>
-        <div class="calendar-type-chips">
-          <span
-              v-for="entry in eventListStore.typeSummary"
-              :key="entry.typeId"
-              class="type-chip"
-              :class="{ active: filterStore.eventTypeIds.includes(entry.typeId) }"
-              @click="toggleType(entry.typeId)"
-          >
-            {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
-          </span>
+      <div class="calendar-event-types-container">
+        <div class="calendar-display-modes">
+          <UranusIconAction
+              :icon="LayoutGrid"
+              :selected="displayMode === 'grid'"
+              @click="setDisplayMode('grid')"
+          />
+          <UranusIconAction
+              :icon="Rows3"
+              :selected="displayMode === 'list'"
+              @click="setDisplayMode('list')"
+          />
+          <UranusIconAction
+              :icon="Map"
+              :selected="displayMode === 'map'"
+              @click="setDisplayMode('map')"
+          />
         </div>
+        <UranusHorizontalScroller>
+          <div class="calendar-event-type-chips-container">
+            <span
+                v-for="entry in eventListStore.typeSummary"
+                :key="entry.typeId"
+                class="calendar-event-type-chip"
+                :class="{ active: filterStore.eventTypeIds.includes(entry.typeId) }"
+                @click="toggleType(entry.typeId)"
+            >
+              {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
+            </span>
+          </div>
         </UranusHorizontalScroller>
       </div>
 
@@ -31,53 +48,30 @@
         No events to display
       </div>
 
-      <div v-else class="calendar-layout">
-        <router-link
+      <div v-else-if="displayMode=='grid'" class="calendar-card-layout">
+        <UranusEventCalendarCard
             v-for="event in eventListStore.events"
-            :key="`${event.uuid}-${event.uuid}`"
-            :to="{ name: 'event-details', params: { uuid: event.uuid, eventDateUuid: event.dateUuid } }"
-            class="calendar-card custom-link"
-        >
-
-          <div class="calendar-image">
-            <img :src="eventListStore.getEventImageUrl(event)" alt="Event image" />
-          </div>
-
-          <div class="calendar-text">
-            <h2>{{ event.title }}</h2>
-            <div style="display: flex; flex-direction: column; gap: 0.2rem;">
-              <span>{{ uranusFormatDateTime(event.startDate, event.startTime, locale) }}</span>
-              <span>{{ event.venue.name }} · {{ event.venue.city }}</span>
-              <UranusEventReleaseChip
-                  v-if="eventReleaseStatusStore.isReleased(event.releaseStatus ?? '')"
-                  :releaseStatus="event.releaseStatus"
-                  tiny
-              />
-            </div>
-            <!-- Render only event type (no genres) -->
-            <div
-                v-if="event.eventTypes && event.eventTypes.length"
-                class="uranus-public-event-detail-tags"
-                style="margin-top: 0.5rem;"
-            >
-              <div
-                  v-for="typeId in getUniqueEventTypes(event.eventTypes)"
-                  :key="typeId"
-                  class="uranus-public-event-detail-tag"
-              >
-                {{ getTypeName(typeId) }}
-              </div>
-            </div>
-          </div>
-
-          <!-- Hover overlay -->
-          <!--div class="calendar-overlay"></div-->
-        </router-link>
+            :key="event.uuid"
+            :event="event"
+            :locale="locale"
+            :event-list-store="eventListStore"
+            :type-lookup-store="typeLookupStore"
+        />
 
         <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->
         <div></div><div></div><div></div>
-
       </div>
+      <div v-else-if="displayMode=='list'" class="calendar-list-layout">
+        <UranusEventCalendarListRow
+            v-for="event in eventListStore.events"
+            :key="event.uuid"
+            :event="event"
+            :locale="locale"
+            :event-list-store="eventListStore"
+            :type-lookup-store="typeLookupStore"
+        />
+      </div>
+
 
       <!-- Infinite scroll trigger -->
       <div
@@ -102,19 +96,25 @@ import { useI18n } from 'vue-i18n'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
-import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
 import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
-import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
-import type { EventListItemEventType } from "@/domain/event/eventListItem.model.ts";
+import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
+import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
+import UranusEventCalendarListRow from "@/component/event/ui/UranusEventCalendarListRow.vue";
+import { Rows3, LayoutGrid, Map } from 'lucide-vue-next'
+import UranusIconAction from "@/component/ui/UranusIconAction.vue";
 
-const { locale } = useI18n({ useScope: 'global' })
-
+const { t, locale } = useI18n({ useScope: 'global' })
 
 const eventReleaseStatusStore = useEventReleaseStatusStore()
 const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
 const eventListStore = useEventListStore()
+
+const displayMode = ref<'list' | 'grid' | 'map'>('grid')
+function setDisplayMode(mode: 'list' | 'grid' | 'map') {
+  displayMode.value = mode
+}
 
 const searchQuery = ref('')
 
@@ -209,7 +209,7 @@ onBeforeUnmount(() => {
   width: 100%;
 }
 
-.calendar-layout {
+.calendar-card-layout {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 12px;
@@ -217,74 +217,37 @@ onBeforeUnmount(() => {
   padding: 1rem;
 }
 
-.calendar-card {
-  position: relative;
-  cursor: pointer;
-  overflow: hidden;
-  background: var(--uranus-bg-d1);
-
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--uranus-color-7);
-  border-radius: 2px;
-
-  width: 100%;
-  transition: transform 0.25s ease;
-}
-
-.calendar-card:hover {
-  transform: translateY(-3px);
-}
-
-.calendar-image {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-}
-
-.calendar-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.calendar-text {
-  padding: 0.8rem;
+.calendar-list-layout {
   display: flex;
   flex-direction: column;
-  font-weight: 300;
-  letter-spacing: 0.05em;
-  color: var(--uranus-color-3);
-  gap: 4px;
-
-  h2 {
-    font-size: 1.6rem;
-    color: var(--uranus-color);
-    margin-bottom: 0.6rem;
-    letter-spacing: 0;
-  }
+  gap: 0px;
+  width: 100%;
+  padding: 1rem;
 }
 
-.calendar-settings {
-  position: sticky;
+
+.calendar-event-types-container {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  position: sticky;
+  align-items: start;
+  gap: 8px;
   top: 80px;
   z-index: 10;
   // padding: 12px 16px;
   // min-height: 100px;
+  padding-top: 10px;
   background: var(--uranus-dashboard-bg);
 }
 
-.calendar-type-chips {
+.calendar-event-type-chips-container {
   display: flex;
   align-items: center;
-  gap: 2px;
+  background: white;
+  gap: 4px;
 }
 
-.type-chip {
+.calendar-event-type-chip {
   color: var(--uranus-color-2);
   background-color: transparent;
   border: 1px solid var(--uranus-color-6);
@@ -299,35 +262,17 @@ onBeforeUnmount(() => {
   }
 }
 
-.type-chip.active {
-  background-color: #3b82f6; /* blue */
-  color: #fff;
+.calendar-event-type-chip.active {
+  background-color: var(--uranus-select-bg);
+  color: var(--uranus-select-color);
 }
 
-.calendar-overlay {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  background: linear-gradient(
-          180deg,
-          rgba(0, 0, 0, 0) 40%,
-          rgba(0, 0, 0, 0.65)
-  );
-  mix-blend-mode: difference;
-}
-
-.calendar-card:hover .calendar-overlay {
-  opacity: 1;
-}
-
-/* global or scoped */
-.custom-link {
-  color: var(--uranus-calendar-color);
-}
-
-.custom-link:hover {
-  color: var(--uranus-calendar-hover-color);
+.calendar-display-modes {
+  display: inline-flex;
+  gap: 0;
+  align-items: center;
+  padding: 0;
+  margin-left: 32px;
 }
 
 /* Infinite scroll helpers */
@@ -341,16 +286,5 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 640px) {
-}
-</style>
-
-<style lang="scss">
-.filter-textfield {
-  margin: 10px;
-  font-size: 1.4rem;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: calc(100% - 20px);
 }
 </style>

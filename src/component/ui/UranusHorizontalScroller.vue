@@ -92,7 +92,7 @@ const onTouchMove = (e: TouchEvent) => {
   align-items: center;
   grid-template-columns: 36px 1fr 36px;
   width: 100%;
-  height: 80px;
+  height: 50px;
   padding: 10px;
   gap: 6px;
 }
@@ -105,7 +105,7 @@ const onTouchMove = (e: TouchEvent) => {
   overflow-y: hidden;
   scroll-behavior: smooth;
   white-space: nowrap;
-  padding: 2px;
+  padding: 0;
 }
 
 .arrow {

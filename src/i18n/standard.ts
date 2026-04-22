@@ -559,6 +559,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Preis',
         en: 'Price',
         da: 'Pris',
+    },
+    copy_link: {
+        de: "Link kopieren",
+        en: "Copy link",
+        da: "Kopiér link",
     }
 }
 

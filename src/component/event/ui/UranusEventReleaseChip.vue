@@ -2,8 +2,6 @@
   src/component/event/ui/UranusEventReleaseChip.vue
 
   UI chip displaying the release status of an event or event date.
-
-  2026-02-05, Roald
 -->
 
 <template>
