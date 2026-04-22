@@ -1,3 +1,7 @@
+<!--
+  src/component/event/ui/UranusEventCategorySelector.vue
+-->
+
 <template>
   <div class="category-selector">
     <button

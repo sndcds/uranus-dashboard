@@ -111,6 +111,7 @@
       <aside class="uranus-public-event-sidebar">
         <div class="uranus-public-event-info-section">
 
+          <div style="display: flex; flex-direction: column; gap: 0px;">
           <!-- Date & Time -->
           <UranusEventDateTimeDisplay
               :startDate="eventStartDate"
@@ -119,7 +120,7 @@
               :endTime="eventEndTime"
               :entryTime="eventEntryTime"
               :allDay="eventAllDay"
-              style="padding-top: 1rem;"
+              style="padding-top: 1rem; padding-bottom: 1rem"
           />
           <UranusIconAction
               v-if="eventDate?.eventUuid"
@@ -127,7 +128,13 @@
               :icon="CalendarArrowDown"
               @click="onDownloadIcs"
           />
-
+          <UranusIconAction
+              v-if="eventDate?.eventUuid"
+              :label="t('copy_link')"
+              :icon="CopySlash"
+              @click="onCopyLink"
+          />
+          </div>
 
           <UranusEventOrganizationDisplay :event="event" />
 
@@ -225,9 +232,8 @@ import UranusEventOrganizationDisplay from '@/component/event/ui/UranusEventOrga
 import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
-import UranusExternalLink from '@/component/ui/UranusExternalLink.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
-import { Ticket, Map, Accessibility, CalendarArrowDown } from 'lucide-vue-next'
+import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash } from 'lucide-vue-next'
 
 const route = useRoute()
 
@@ -494,5 +500,21 @@ const createIcsFileName = (title: string, eventDateUuid: string) => {
   return `${base}-${eventDateUuid}.ics`
 }
 
+const copied = ref(false)
+
+const onCopyLink = async () => {
+  const url = window.location.href
+  try {
+    await navigator.clipboard.writeText(url)
+    copied.value = true
+
+    // optional: reset after 2s
+    setTimeout(() => {
+      copied.value = false
+    }, 2000)
+  } catch (err) {
+    console.error('Copy failed', err)
+  }
+}
 onMounted(() => void loadEvent())
 </script>

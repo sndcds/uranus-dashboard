@@ -66,19 +66,6 @@ const orgUuid = computed(() => appStore.orgUuid)
 const canAddEvent = computed(() => !!metadata.value.can_add_event);
 const events = adminListEvents;
 
-
-interface EventsApiResponse {
-  can_add_event: boolean
-  events: unknown[]
-}
-
-interface DeleteEventPayload {
-  id: number
-  dateId: number | null
-  deleteSeries: boolean
-}
-
-
 const onEventDeleted = async ({eventUuid, dateUuid, deleteSeries}: {
   eventUuid: string
   dateUuid: string | null

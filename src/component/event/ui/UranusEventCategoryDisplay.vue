@@ -1,3 +1,7 @@
+<!--
+  src/component/event/ui/UranusEventCategoryDisplay.vue
+-->
+
 <script setup lang="ts">
 import { computed, defineProps } from 'vue'
 
