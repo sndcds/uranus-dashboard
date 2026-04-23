@@ -38,6 +38,8 @@
             autocomplete="new-password"
         />
 
+        <p>{{ t('password_rules') }}</p>
+
         <UranusFeedback v-if="!!signupSuccess" type="success">
           <p><strong>{{ t('signup_success_title') || 'Account created successfully!' }}</strong></p>
           <p>{{ t('signup_success_message') || 'Please check your email to confirm your account. You will need to verify your email address before you can log in.' }}</p>
