@@ -126,12 +126,14 @@
                 :label="t('download_ics')"
                 :icon="CalendarArrowDown"
                 @click="onDownloadIcs"
+                style="padding-left: 0;"
             />
             <UranusIconAction
                 v-if="eventDate?.eventUuid"
                 :label="t('copy_link')"
                 :icon="CopySlash"
                 @click="onCopyLink"
+                style="padding-left: 0;"
             />
           </div>
 
@@ -144,6 +146,7 @@
               :to="{ hash: '#event-map' }"
               :label="t('scroll_to_map')"
               :icon="Map"
+              style="padding-left: 0;"
           />
 
           <div v-if="event.meetingPoint">
@@ -166,12 +169,13 @@
               :label="t('event_ticket_link')"
               :icon="Ticket"
               :to="event.ticketLink"
+              style="padding-left: 0;"
           />
 
-          <div v-if="event.maxAttendees || ageLabel">
+          <div v-if="(event.maxAttendees ?? 0) > 0 || ageLabel || !!event.participationInfo">
             <p class="uranus-public-event-info-label">{{ t('event_participation_info') }}</p>
-            <template v-if="event.maxAttendees">
-              {{ t('event_max_attendees', { count: event.maxAttendees }) }}<br>
+            <template v-if="(event.maxAttendees ?? 0) > 0">
+              <p>{{ t('event_max_attendees', { count: event.maxAttendees }) }}</p>
             </template>
             <template v-if="ageLabel">
               {{ ageLabel }}<br>
@@ -188,7 +192,7 @@
           />
 
           <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-tight-section">
-            <UranusIconAction :icon="Accessibility" :label="t('accessibility')"/>
+            <UranusIconAction :icon="Accessibility" :label="t('accessibility')" style="padding-left: 0;" />
             <p v-for="label in selectedAccessibilityLabels" :key="label">
               {{ label }}
             </p>

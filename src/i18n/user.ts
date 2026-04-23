@@ -41,9 +41,9 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         da: 'Styr hvordan andre ser dine oplysninger.',
     },
     user_profile_photo_hint: {
-        de: 'JPG, PNG oder WebP, maximal 5 MB.',
-        en: 'JPG, PNG or WebP, max 5 MB.',
-        da: 'JPG, PNG eller WebP, maks. 5 MB.',
+        de: 'JPG, PNG, WebP oder AVIF, maximal 5 MB.',
+        en: 'JPG, PNG, WebP or AVIF, max 5 MB.',
+        da: 'JPG, PNG, WebP eller AVIF, maks. 5 MB.',
     },
     user_profile_upload: {
         de: 'Bild hochladen',
