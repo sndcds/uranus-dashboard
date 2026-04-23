@@ -4,10 +4,10 @@
 
 <template>
   <div class="row">
-    <div
+    <!--div
         class="row-image"
         :style="imageUrl ? { backgroundImage: `url(${imageUrl})` } : {}"
-    ></div>
+    ></div-->
     <div class="row-date">{{ formattedDate }}</div>
     <div class="row-content">
       <div class="row-time">
@@ -55,7 +55,7 @@ const formattedDate = computed(() =>
 )
 
 const imageUrl = computed(() =>
-    props.eventListStore.getEventImageUrl(props.event, { width: 160, ratio: '16:9' })
+    props.eventListStore.getEventImageUrl(props.event, { width: 120, ratio: '1:1' })
 )
 
 const hasEventTypes = computed(() =>
@@ -79,10 +79,17 @@ const getTypeName = (typeId: number) =>
 .row {
   display: flex;
   border: 1px solid var(--uranus-card-border-color);
+  border-left: none;
+  border-right: none;
   align-items: start;
   padding: 10px;
   margin: 0;
   overflow: hidden;
+  transition: all 0.3s;
+  cursor: pointer;
+  &:hover {
+    color: var(--uranus-link-color) !important;
+  }
 }
 
 .row:not(:last-child) {
@@ -106,7 +113,7 @@ const getTypeName = (typeId: number) =>
 }
 
 .row-date {
-  height: 100%;
+  top: 0;
   font-weight: 200;
   font-size: 1.6rem;
   padding: 0.5rem 1rem;
