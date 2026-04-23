@@ -43,7 +43,7 @@ export const useEventListStore = defineStore('events', () => {
 
     function getEventImageUrl(event: EventListItem): string {
         if (!event.imageUrl) {
-            return import.meta.env.BASE_URL + "assets/event_dummy.png"
+            return '/assets/event_placeholder.webp'
         }
 
         const url = new URL(event.imageUrl, window.location.origin)

@@ -11,7 +11,7 @@
       class="calendar-card custom-link"
   >
     <div class="calendar-image">
-      <img :src="imageUrl" alt="Event image" />
+      <img v-if="imageUrl" :src="imageUrl" :alt="t('event_image_alt_text')" />
     </div>
 
     <div class="calendar-text">
@@ -47,10 +47,13 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
 import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
-import type { EventListItemEventType } from "@/domain/event/eventListItem.model.ts"
+import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   event: any
