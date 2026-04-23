@@ -243,7 +243,6 @@ onBeforeUnmount(() => {
 .calendar-event-type-chips-container {
   display: flex;
   align-items: center;
-  background: white;
   gap: 4px;
 }
 
