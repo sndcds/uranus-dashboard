@@ -335,6 +335,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Password',
         da: 'Adgangskode',
     },
+    password_rules: {
+        de: 'Passwort Regeln: Verwende mindestens 12 Zeichen und vermeide einfache Folgen (z. B. 123, abc) sowie E-Mail-Adressen.',
+        en: 'Password rules: Use at least 12 characters and avoid common sequences (e.g. 123, abc) or email addresses.',
+        da: 'Regler til adgangskoden: Brug mindst 12 tegn og undgå almindelige sekvenser (f.eks. 123, abc) samt e-mailadresser.',
+    },
     website: {
         de: 'Homepage',
         en: 'Website',

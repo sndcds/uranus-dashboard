@@ -21,6 +21,8 @@
             :error="fieldErrors.confirmPassword"
         />
 
+        <p>{{ t('password_rules') }}</p>
+
         <UranusFeedback :show="!!displayError" type="error">
           {{ displayError }}
         </UranusFeedback>
