@@ -9,82 +9,81 @@
 
 <template>
   <div class="calendar-page">
-    <div class="calendar-body">
-      <div class="calendar-event-types-container">
-        <div class="calendar-display-modes">
-          <UranusIconAction
-              :icon="LayoutGrid"
-              :selected="displayMode === 'grid'"
-              @click="setDisplayMode('grid')"
-          />
-          <UranusIconAction
-              :icon="Rows3"
-              :selected="displayMode === 'list'"
-              @click="setDisplayMode('list')"
-          />
-          <UranusIconAction
-              :icon="Map"
-              :selected="displayMode === 'map'"
-              @click="setDisplayMode('map')"
-          />
+    <div class="calendar-head">
+      <div class="calendar-display-modes">
+        <UranusIconAction
+            :icon="LayoutGrid"
+            :selected="displayMode === 'grid'"
+            @click="setDisplayMode('grid')"
+        />
+        <UranusIconAction
+            :icon="Rows3"
+            :selected="displayMode === 'list'"
+            @click="setDisplayMode('list')"
+        />
+        <UranusIconAction
+            :icon="Map"
+            :selected="displayMode === 'map'"
+            @click="setDisplayMode('map')"
+        />
+      </div>
+      <UranusHorizontalScroller>
+        <div class="calendar-event-type-chips-container">
+          <span
+              v-for="entry in eventListStore.typeSummary"
+              :key="entry.typeId"
+              class="calendar-event-type-chip"
+              :class="{ active: filterStore.eventTypeIds.includes(entry.typeId) }"
+              @click="toggleType(entry.typeId)"
+          >
+            {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
+          </span>
         </div>
-        <UranusHorizontalScroller>
-          <div class="calendar-event-type-chips-container">
-            <span
-                v-for="entry in eventListStore.typeSummary"
-                :key="entry.typeId"
-                class="calendar-event-type-chip"
-                :class="{ active: filterStore.eventTypeIds.includes(entry.typeId) }"
-                @click="toggleType(entry.typeId)"
-            >
-              {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
-            </span>
-          </div>
-        </UranusHorizontalScroller>
-      </div>
-
-      <!-- TODO: Message for viewer -->
-      <div v-if="!eventListStore.hasEvents() && !eventListStore.loading">
-        No events to display
-      </div>
-
-      <div v-else-if="displayMode=='grid'" class="calendar-card-layout">
-        <UranusEventCalendarCard
-            v-for="event in eventListStore.events"
-            :key="event.uuid"
-            :event="event"
-            :locale="locale"
-            :event-list-store="eventListStore"
-            :type-lookup-store="typeLookupStore"
-        />
-
-        <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->
-        <div></div><div></div><div></div>
-      </div>
-      <div v-else-if="displayMode=='list'" class="calendar-list-layout">
-        <UranusEventCalendarListRow
-            v-for="event in eventListStore.events"
-            :key="event.uuid"
-            :event="event"
-            :locale="locale"
-            :event-list-store="eventListStore"
-            :type-lookup-store="typeLookupStore"
-        />
-      </div>
-
-
-      <!-- Infinite scroll trigger -->
-      <div
-          ref="loadMoreTrigger"
-          class="load-more-trigger"
-          v-show="true"
-      ></div>
-
-      <div v-if="eventListStore.loading" class="loading-indicator">
-        Loading more events…
-      </div>
-
+      </UranusHorizontalScroller>
     </div>
+
+    <!-- TODO: Message for viewer -->
+    <div v-if="!eventListStore.hasEvents() && !eventListStore.loading">
+      No events to display
+    </div>
+
+    <div v-else-if="displayMode=='grid'" class="calendar-card-layout">
+      <UranusEventCalendarCard
+          v-for="event in eventListStore.events"
+          :key="event.uuid"
+          :event="event"
+          :locale="locale"
+          :event-list-store="eventListStore"
+          :type-lookup-store="typeLookupStore"
+      />
+
+      <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->
+      <div></div><div></div><div></div>
+    </div>
+    <div v-else-if="displayMode=='list'" class="calendar-list-layout">
+      <UranusEventCalendarListRow
+          v-for="event in eventListStore.events"
+          :key="event.uuid"
+          :event="event"
+          :locale="locale"
+          :event-list-store="eventListStore"
+          :type-lookup-store="typeLookupStore"
+      />
+    </div>
+    <UranusVenuesMap v-else-if="displayMode=='map'" class="calendar-map-layout" />
+
+
+    <!-- Infinite scroll trigger -->
+    <div
+        ref="loadMoreTrigger"
+        class="load-more-trigger"
+        v-show="true"
+    ></div>
+
+    <!--div v-if="eventListStore.loading" class="loading-indicator">
+      Loading more events…
+    </div-->
+
   </div>
 
 
@@ -102,7 +101,8 @@ import type { EventListItemEventType } from '@/domain/event/eventListItem.model.
 import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
 import UranusEventCalendarListRow from "@/component/event/ui/UranusEventCalendarListRow.vue";
 import { Rows3, LayoutGrid, Map } from 'lucide-vue-next'
-import UranusIconAction from "@/component/ui/UranusIconAction.vue";
+import UranusIconAction from '@/component/ui/UranusIconAction.vue'
+import UranusVenuesMap from '@/component/map/UranusVenuesMap.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -206,7 +206,11 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .calendar-page {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
 .calendar-card-layout {
@@ -226,7 +230,12 @@ onBeforeUnmount(() => {
 }
 
 
-.calendar-event-types-container {
+.calendar-map-layout {
+  flex: 1;
+  min-height: 0;
+}
+
+.calendar-head {
   display: flex;
   flex-direction: column;
   position: sticky;
@@ -234,10 +243,9 @@ onBeforeUnmount(() => {
   gap: 8px;
   top: 80px;
   z-index: 10;
-  // padding: 12px 16px;
-  // min-height: 100px;
   padding-top: 10px;
   background: var(--uranus-dashboard-bg);
+  flex-shrink: 0;
 }
 
 .calendar-event-type-chips-container {
@@ -276,7 +284,7 @@ onBeforeUnmount(() => {
 
 /* Infinite scroll helpers */
 .load-more-trigger {
-  height: 20px;
+  height: 0px;
 }
 
 .loading-indicator {

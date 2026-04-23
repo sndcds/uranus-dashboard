@@ -104,9 +104,13 @@ const getTypeName = (typeId: number) =>
   border: 1px solid var(--uranus-color-7);
   border-radius: 2px;
   width: 100%;
-  transition: transform 0.25s ease;
   display: flex;
   flex-direction: column;
+  color: var(--uranus-color);
+  transition: all 0.3s;
+  &:hover {
+    color: var(--uranus-link-color) !important;
+  }
 }
 
 .card-footer {
@@ -138,13 +142,13 @@ const getTypeName = (typeId: number) =>
   flex: 1; /* 👈 THIS is the missing piece */
   font-weight: 300;
   letter-spacing: 0.05em;
-  color: var(--uranus-color-3);
+  // color: var(--uranus-color-3);
   gap: 4px;
 }
 
 .calendar-text h2 {
   font-size: 1.6rem;
-  color: var(--uranus-color);
+  // color: var(--uranus-color);
   margin-bottom: 0.6rem;
   letter-spacing: 0;
 }

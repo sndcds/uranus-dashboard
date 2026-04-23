@@ -87,6 +87,7 @@ const onCancelFilter = () => showFilterModal.value = false
   display: flex;
   align-items: flex-start;
   width: 100%;
+  height: 100%;
 }
 
 .sidebar {
@@ -99,10 +100,14 @@ const onCancelFilter = () => showFilterModal.value = false
 }
 
 .calendar-body {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
   flex: 1;
   min-width: 0;
   margin-left: -300px;
+  transition: margin-left 0.2s;
 }
 
 .calendar-layout {
