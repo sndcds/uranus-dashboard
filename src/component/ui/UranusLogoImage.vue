@@ -4,18 +4,23 @@
 
 <template>
   <div class="logo-container" v-show="src" :style="containerStyle">
-    <img v-show="src"
-        :key="src!"
-        :src="src!"
-        :alt="alt"
-        @load="onImageLoad"
-        class="logo-image"
-    />
+    <component
+        :is="linkUrl ? 'a' : 'div'"
+        v-bind="linkUrl ? { href: linkUrl, target: linkTarget, rel } : {}"
+    >
+      <img v-show="src"
+          :key="src!"
+          :src="src!"
+          :alt="alt"
+          @load="onImageLoad"
+          class="logo-image"
+      />
+    </component>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, toRef } from 'vue'
+import {type PropType, reactive, toRef} from 'vue'
 import { useLogoUrl } from '@/composable/useLogoUrl'
 
 
@@ -34,6 +39,9 @@ const props = defineProps({
   maxPixels: { type: Number, default: MAX_PIXELS },
   type: { type: String, default: 'png' },
   quality: { type: Number, default: 80 },
+  linkUrl: { type: String as PropType<string | null>, default: null },
+  linkTarget: { type: String, default: '_self' }, // '_self' or '_blank'
+  rel: { type: String, default: 'noopener noreferrer' } // for security
 })
 
 const { logoUrl: src } = useLogoUrl({

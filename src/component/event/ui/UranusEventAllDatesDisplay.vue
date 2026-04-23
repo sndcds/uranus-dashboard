@@ -9,9 +9,10 @@
     </p>
 
     <router-link
-        v-for="date in dates"
+        v-for="date in sortedDates"
         :key="date.uuid!"
         :to="`/event/${date.eventUuid}/date/${date.uuid}`"
+        :class="{ 'is-current': date.uuid === currentDate?.uuid }"
     >
       {{ formatDate(date.startDate ?? '', locale) }}<br>
     </router-link>
@@ -19,13 +20,39 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { formatDate } from '@/util/uranus-format-date-time.ts'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
-defineProps<{
+const props = defineProps<{
   dates: PublicEventDate[]
+  currentDate?: PublicEventDate | null
 }>()
+
+const sortedDates = computed(() => {
+  const allDates = [...props.dates]
+
+  // add currentDate if present and not already included
+  if (props.currentDate) {
+    const exists = allDates.some(d => d.uuid === props.currentDate!.uuid)
+    if (!exists) {
+      allDates.push(props.currentDate)
+    }
+  }
+
+  return allDates.sort((a, b) => {
+    return new Date(a.startDate ?? '').getTime()
+        - new Date(b.startDate ?? '').getTime()
+  })
+
+})
 </script>
+
+<style lang="scss" scoped>
+.is-current {
+  color: var(--uranus-color);
+}
+</style>
