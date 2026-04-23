@@ -41,16 +41,21 @@ export const useEventListStore = defineStore('events', () => {
         return events.value.length > 0
     }
 
-    function getEventImageUrl(event: EventListItem): string {
+    function getEventImageUrl(
+        event: EventListItem,
+        options?: { width?: number; ratio?: string }
+    ): string {
         if (!event.imageUrl) {
             return '/assets/event_placeholder.webp'
         }
 
         const url = new URL(event.imageUrl, window.location.origin)
-        url.searchParams.set("width", "480")
-        url.searchParams.set("ratio", "16:9")
-
+        const width = options?.width ?? 480
+        const ratio = options?.ratio ?? '16:9'
+        url.searchParams.set('width', width.toString())
+        url.searchParams.set('ratio', ratio)
         return url.toString()
+
     }
 
     function buildFilterParams(paginationMode = false, typesMode = false): URLSearchParams {

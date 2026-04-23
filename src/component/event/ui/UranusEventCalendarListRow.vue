@@ -4,9 +4,14 @@
 
 <template>
   <div class="row">
+    <div
+        class="row-image"
+        :style="imageUrl ? { backgroundImage: `url(${imageUrl})` } : {}"
+    ></div>
     <div class="row-date">{{ formattedDate }}</div>
     <div class="row-content">
-      <div class="row-time">{{ event.startTime }}</div>
+      <div class="row-time">
+        {{ event.startTime }} / {{ event.venue.name }} / {{ event.venue.city }}</div>
       <div class="row-title">{{ event.title }}</div>
       <div class="row-types">
         <div
@@ -29,8 +34,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
-import {uranusFormatDateTime, uranusFormatDayMonth} from '@/util/UranusStringUtils.ts'
+import { uranusFormatDateTime, uranusFormatDayMonth } from '@/util/UranusStringUtils.ts'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   event: any
@@ -44,6 +52,10 @@ const formattedDate = computed(() =>
         props.event.startDate,
         props.locale
     )
+)
+
+const imageUrl = computed(() =>
+    props.eventListStore.getEventImageUrl(props.event, { width: 160, ratio: '16:9' })
 )
 
 const hasEventTypes = computed(() =>
@@ -67,7 +79,10 @@ const getTypeName = (typeId: number) =>
 .row {
   display: flex;
   border: 1px solid var(--uranus-card-border-color);
-  align-items: end;
+  align-items: start;
+  padding: 10px;
+  margin: 0;
+  overflow: hidden;
 }
 
 .row:not(:last-child) {
@@ -81,12 +96,20 @@ const getTypeName = (typeId: number) =>
   padding: 0.5rem 1rem;
 }
 
+.row-image {
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .row-date {
   height: 100%;
   font-weight: 200;
-  font-size: 2.2rem;
+  font-size: 1.6rem;
   padding: 0.5rem 1rem;
-  border-right: 1px solid var(--uranus-card-border-color);
 }
 
 .row-title {
