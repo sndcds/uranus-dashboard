@@ -14,8 +14,9 @@
           :theme="themeStore.theme"
           :maxWidth="240"
           :maxHeight="80"
+          :linkUrl="event.orgWebLink ?? null"
+          linkTarget="_blank"
       />
-
       <div v-else>
         <p class="uranus-public-event-info-label">
           {{ t('event_organizer') }}

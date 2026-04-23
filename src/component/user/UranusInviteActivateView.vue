@@ -22,7 +22,7 @@
 
           <p class="success-message">
             {{ t('invite_accept_joined_organization_message') }}
-            <strong>{{ inviteInfo.org_name }}</strong>
+            <strong>{{ inviteInfo?.org_name }}</strong>
           </p>
 
           <p class="info-message">

@@ -44,8 +44,6 @@ const emptyFC: FeatureCollection = {
  * FETCH DATA (BBOX)
  */
 const loadVenues = async (bbox?: [number, number, number, number]) => {
-
-  console.log('loadVenues ...', import.meta.env.BASE_URL)
   try {
     const params = bbox
         ? `?minLon=${bbox[0]}&minLat=${bbox[1]}&maxLon=${bbox[2]}&maxLat=${bbox[3]}`

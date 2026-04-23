@@ -20,6 +20,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'An error has occurred',
         da: 'Der er opstået en fejl',
     },
+    unknown_error_occured: {
+        de: 'Ein unbekannter Fehler ist aufgetreten.',
+        en: 'An unknown error occurred.',
+        da: 'Der opstod en ukendt fejl.',
+    },
     error_missing_permissions: {
         de: 'Du hast nicht die erforderlichen Berechtigungen für diese Aktion.',
         en: 'You do not have the required permissions for this action.',

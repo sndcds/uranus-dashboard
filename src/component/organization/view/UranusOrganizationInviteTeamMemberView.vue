@@ -77,22 +77,20 @@ async function onSubmit() {
       body: JSON.stringify(payload),
     })
 
-    if (apiResponse.status == 200) {
+    if (apiResponse.status >= 200 && apiResponse.status <= 300) {
       router.push({ name: 'admin-team-organization' })
       return
     }
 
     if (apiResponse.message) {
-      // TODO: Handle messages "user not found", "user is already invited
       error.value = apiResponse.message!
       return
     }
 
     error.value = t('invite_failed')
   } catch (err) {
-    alert('Organisation konnte nicht erstellt werden')
+    error.value = t('unknown_error_occured')
   }
-
 }
 
 </script>

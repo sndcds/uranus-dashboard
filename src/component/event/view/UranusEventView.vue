@@ -104,7 +104,6 @@
         </div>
 
         <!--UranusEmbedYoutubeVideo url="https://www.youtube.com/watch?v=63zGtiv89bA" /-->
-
       </section>
 
       <!-- Sidebar -->
@@ -112,28 +111,28 @@
         <div class="uranus-public-event-info-section">
 
           <div style="display: flex; flex-direction: column; gap: 0px;">
-          <!-- Date & Time -->
-          <UranusEventDateTimeDisplay
-              :startDate="eventStartDate"
-              :startTime="eventStartTime"
-              :endDate="eventEndDate"
-              :endTime="eventEndTime"
-              :entryTime="eventEntryTime"
-              :allDay="eventAllDay"
-              style="padding-top: 1rem; padding-bottom: 1rem"
-          />
-          <UranusIconAction
-              v-if="eventDate?.eventUuid"
-              :label="t('download_ics')"
-              :icon="CalendarArrowDown"
-              @click="onDownloadIcs"
-          />
-          <UranusIconAction
-              v-if="eventDate?.eventUuid"
-              :label="t('copy_link')"
-              :icon="CopySlash"
-              @click="onCopyLink"
-          />
+            <!-- Date & Time -->
+            <UranusEventDateTimeDisplay
+                :startDate="eventStartDate"
+                :startTime="eventStartTime"
+                :endDate="eventEndDate"
+                :endTime="eventEndTime"
+                :entryTime="eventEntryTime"
+                :allDay="eventAllDay"
+                style="padding-top: 1rem; padding-bottom: 1rem"
+            />
+            <UranusIconAction
+                v-if="eventDate?.eventUuid"
+                :label="t('download_ics')"
+                :icon="CalendarArrowDown"
+                @click="onDownloadIcs"
+            />
+            <UranusIconAction
+                v-if="eventDate?.eventUuid"
+                :label="t('copy_link')"
+                :icon="CopySlash"
+                @click="onCopyLink"
+            />
           </div>
 
           <UranusEventOrganizationDisplay :event="event" />
@@ -182,11 +181,10 @@
             </template>
           </div>
 
-          <br>
-
           <UranusEventAllDatesDisplay
               v-if="event?.furtherDates?.length"
               :dates="event.furtherDates"
+              :currentDate="eventDate"
           />
 
           <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-tight-section">

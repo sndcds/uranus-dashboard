@@ -193,7 +193,7 @@ export const uranusI18nVisitorInfoTranslations: Record<string, Record<'en' | 'de
     shade_available: {
         en: 'Shade Available',
         de: 'Schatten verfügbar',
-        da: 'Skal tilgængelig',
+        da: 'Skygge tilgængelig',
     },
     shuttle_service: {
         en: 'Shuttle Service',
