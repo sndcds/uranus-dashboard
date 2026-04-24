@@ -12,7 +12,8 @@
       <textarea
           :id="id"
           :value="modelValue"
-          :class="['uranus-textarea', sizeClass]"
+          :class="['uranus-textarea']"
+          :style="textareaStyle"
           :aria-required="required ? 'true' : 'false'"
           :aria-invalid="error ? 'true' : 'false'"
           :placeholder="placeholder"
@@ -38,24 +39,30 @@ const props = defineProps<{
   label: string
   modelValue?: string | undefined
   required?: boolean
-  size?: string
   flex?: number | string
   error?: string
   placeholder?: string
   disabled?: boolean
   readonly?: boolean
   name?: string
+  height?: string | number
+  resize?: 'none' | 'both' | 'horizontal' | 'vertical'
 }>()
-
 
 const emit = defineEmits(['update:modelValue'])
 
-const sizeClass = computed(() => {
-  switch (props.size) {
-    case 'small': return 'uranus-textarea-small'
-    case 'large': return 'uranus-textarea-large'
-    default: return ''
+const textareaStyle = computed(() => {
+  const style: Record<string, string> = {}
+  if (props.height) {
+    style.height =
+        typeof props.height === 'number'
+            ? `${props.height}px`
+            : props.height
   }
+  if (props.resize) {
+    style.resize = props.resize
+  }
+  return style
 })
 
 const inputName = computed(() => props.name || undefined)

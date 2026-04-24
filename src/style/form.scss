@@ -61,7 +61,6 @@
 }
 
 .uranus-textarea {
-  min-height: 8rem;
   resize: vertical;
   border: var(--uranus-input-border-width) solid var(--uranus-input-border-color) !important;
 }
@@ -79,7 +78,7 @@
 }
 
 .uranus-form-row > .uranus-textfield-wrapper {
-  flex: 1;
+  // flex: 1;
   margin: 0;
 }
 
@@ -142,7 +141,6 @@
   gap: 8px;
 }
 
-.uranus-inline-edit-section,
 .uranus-form {
   input, input[type="text"], input[type="email"], select, textarea {
     border: var(--uranus-input-border-width) solid var(--uranus-input-bg);

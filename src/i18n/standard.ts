@@ -574,6 +574,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: "Link kopieren",
         en: "Copy link",
         da: "Kopiér link",
+    },
+    select_unspecified: {
+        de: 'Keine Auswahl getroffen',
+        en: 'No selection made',
+        da: 'Ingen valgt',
     }
 }
 

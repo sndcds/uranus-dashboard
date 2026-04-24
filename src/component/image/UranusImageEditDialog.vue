@@ -55,34 +55,18 @@
               :label="t('image_copyright')"
           />
 
-          <UranusLabel id="event-description" :label="t('license')">
+          <UranusLabel id="event-license" :label="t('license')">
             <UranusLicenseSelect v-model="localImageMeta.licenseType" />
           </UranusLabel>
         </UranusFormRow>
 
-        <!--UranusFormRow :cols="2">
-          <UranusTextfield
-              id="focus-x"
-              v-model.number="localImageMeta.focusX as number"
-              :label="t('image_focus_x')"
-          />
+        <UranusTextarea
+            id="event-description"
+            v-model="descriptionValue"
+            :label="t('image_description')"
+            height="100px" resize="none"
+        />
 
-          <UranusTextfield
-              id="focus-y"
-              v-model.number="localImageMeta.focusY as number"
-              :label="t('image_focus_y')"
-          />
-        </UranusFormRow-->
-
-        <UranusFormRow>
-          <UranusTextarea
-              id="description"
-              v-model="descriptionValue"
-              :label="t('image_description')"
-          />
-        </UranusFormRow>
-
-        <!-- Actions -->
         <UranusFormActions>
           <UranusButton :onClick="onCancel">{{ t('cancel') }}</UranusButton>
           <UranusButton :onClick="onSave">{{ t('save') }}</UranusButton>
@@ -250,7 +234,7 @@ onMounted(async () => {
       localImageMeta.url = localImageMeta.uuid !== null
           ? buildPlutoEditImageUrl(localImageMeta.uuid, 800)
           : null
-      localImageMeta.altText = meta.alt ?? null
+      localImageMeta.altText = meta.alt_text ?? null
       localImageMeta.description = meta.description ?? null
       localImageMeta.copyright = meta.copyright ?? null
       localImageMeta.creator = meta.creator ?? null
@@ -267,7 +251,7 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
+<style>
 .uranus-modal-backdrop {
   position: fixed;
   top: 0;
@@ -286,9 +270,6 @@ onMounted(async () => {
   max-width: 600px;
   border-radius: 16px;
   padding: var(--uranus-dialog-padding);
-}
-
-.uranus-form {
 }
 
 .uranus-image-preview {
@@ -327,19 +308,6 @@ onMounted(async () => {
 
 .uranus-hidden-file {
   display: none;
-}
-
-.uranus-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.uranus-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
 }
 
 .focus-point {

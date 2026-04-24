@@ -5,7 +5,7 @@
 export interface PlutoImageDTO {
     uuid: string | null
     url?: string | null
-    alt?: string | null
+    alt_text?: string | null
     description?: string | null
     copyright?: string | null
     creator?: string | null

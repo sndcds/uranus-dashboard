@@ -282,7 +282,6 @@ export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>>
         tag_selector_add: 'Hinzufügen',
         tag_selector_empty: 'Noch keine Kombinationen hinzugefügt.',
         select_placeholder: 'Bitte auswählen',
-        select_unspecified: 'Keine Auswahl getroffen',
     },
     en: {
         organization_unknown: 'Unknown organization',
@@ -563,7 +562,6 @@ export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>>
         tag_selector_add: 'Add',
         tag_selector_empty: 'No combinations added yet.',
         select_placeholder: 'Please select',
-        select_unspecified: 'No selection made',
     },
     da: {
         organization_unknown: 'Ukendt arrangør',
@@ -821,7 +819,6 @@ export const uranusI18nMessages: Record<UranusLocaleKey, Record<string, string>>
         settings_preferences_notice: 'Sprog og tema findes nu under din profil.',
         settings_open_profile: 'Åbn profilindstillinger',
         select_placeholder: 'Vælg venligst',
-        select_unspecified: 'Ingen valgt',
         tag_select_placeholder: 'Tilføj valg',
         tag_no_more_options: 'Ingen tilgængelige muligheder',
         tag_no_tags: 'Ingen tags tilføjet endnu.',

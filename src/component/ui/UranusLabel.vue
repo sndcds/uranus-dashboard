@@ -1,9 +1,5 @@
 <template>
-  <label
-      :for="id"
-      class="uranus-label"
-      :style="{ flex: props.flex ?? 1 }"
-  >
+  <label :for="id" class="uranus-label">
     <span class="uranus-label-row">
       {{ label }}<Asterisk v-if="required" class="uranus-field-required" aria-hidden="true"/>
     </span>
