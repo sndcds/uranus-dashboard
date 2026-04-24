@@ -26,7 +26,9 @@
             :selected="displayMode === 'map'"
             @click="setDisplayMode('map')"
         />
+        {{ eventListStore.totalEventCount }} Events gefunden
       </div>
+
       <UranusHorizontalScroller>
         <div class="calendar-event-type-chips-container">
           <span

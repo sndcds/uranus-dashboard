@@ -7,12 +7,17 @@ import { ref } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { type EventListItem, type EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
 import { mapEventDTO } from '@/domain/event/eventListItem.mapper.ts'
-import { type EventListItemsApiData, type EventListTypeSummaryDTO } from '@/api/dto/event.dto.ts'
+import {
+    type EventListItemsApiData,
+    type EventListTypeSummaryDTO,
+    type EventListTypeCountDTO }
+    from '@/api/dto/event.dto.ts'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 
 
 export const useEventListStore = defineStore('events', () => {
     const events = ref<EventListItem[]>([])
+    const totalEventCount  = ref<number>(0)
     const typeSummary = ref<EventListTypeSummary[]>([])
     const lastEventStartAt = ref<string | null>(null)
     const lastEventDateUuid = ref<string | null>(null)
@@ -25,6 +30,7 @@ export const useEventListStore = defineStore('events', () => {
 
     function reset() {
         events.value = []
+        totalEventCount.value = 0
         typeSummary.value = []
         lastEventStartAt.value = null
         lastEventDateUuid.value = null
@@ -120,23 +126,26 @@ export const useEventListStore = defineStore('events', () => {
 
     async function loadTypeSummary() {
         try {
-            const params = buildFilterParams(false, true) // no pagination, include types
+            const params = buildFilterParams(false, true)
             const apiPath = `/api/events/type-summary?${params.toString()}`
-            const apiResponse = await apiFetch<{ summary: EventListTypeSummaryDTO[] }>(apiPath)
-            typeSummary.value = mapEventTypeSummaryArray(apiResponse?.data?.summary ?? [])
+            const apiResponse = await apiFetch<EventListTypeSummaryDTO>(apiPath)
+            typeSummary.value = mapEventTypeSummaryArray(
+                apiResponse?.data?.summary ?? []
+            )
+            totalEventCount.value = apiResponse?.data?.total_event_count ?? 0
         } catch (err) {
             console.error('Failed to load type summary:', err)
         }
     }
 
-    function mapEventTypeSummary(dto: EventListTypeSummaryDTO): EventListTypeSummary {
+    function mapEventTypeSummary(dto: EventListTypeCountDTO) {
         return {
             typeId: dto.type_id,
             count: dto.count
         }
     }
 
-    function mapEventTypeSummaryArray(dtos: EventListTypeSummaryDTO[]): EventListTypeSummary[] {
+    function mapEventTypeSummaryArray(dtos: EventListTypeCountDTO[]) {
         return dtos.map(mapEventTypeSummary)
     }
 
@@ -185,6 +194,7 @@ export const useEventListStore = defineStore('events', () => {
     return {
         getLoadEventsCount,
         events,
+        totalEventCount,
         typeSummary,
         lastEventStartAt,
         lastEventDateUuid,
