@@ -4,9 +4,14 @@
 
 import { type EventTypeModel } from '@/domain/event/eventType.model.ts'
 
-export interface EventListTypeSummaryDTO {
+export interface EventListTypeCountDTO {
     type_id: number
     count: number
+}
+
+export interface EventListTypeSummaryDTO {
+    summary: EventListTypeCountDTO[]
+    total_event_count: number
 }
 
 export interface EventTypeDTO {
