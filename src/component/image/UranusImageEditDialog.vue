@@ -10,12 +10,11 @@
 
         <UranusFormRow>
 
-          <!-- TODO: dark mode, light mode -->
-          <div class="uranus-image-preview" @click="onImageClick($event)">
+          <div class="uranus-image-preview checker-bg" @click="onImageClick($event)">
             <img
                 v-if="localImageMeta.url"
                 :src="cacheBustedUrl"
-                class="uranus-preview-img"
+                class="uranus-preview-img checker-bg"
             />
             <div v-else class="uranus-no-img">{{ t('click_to_upload') }}</div>
             <input
@@ -296,13 +295,12 @@ onMounted(async () => {
 }
 
 .uranus-no-img {
-  width: 100%;
-  height: 250px;
-  background-color: #f0f0f0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #888;
+  color: var(--uranus-color);
+  background: var(--uranus-bg);
+  padding: 0.6rem;
   border-radius: 6px;
 }
 
@@ -320,4 +318,14 @@ onMounted(async () => {
   pointer-events: none;
 }
 
+.checker-bg {
+  background-color: #fff;
+  background-image:
+      linear-gradient(45deg, #ddd 25%, transparent 25%),
+      linear-gradient(-45deg, #ddd 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #ddd 75%),
+      linear-gradient(-45deg, transparent 75%, #ddd 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+}
 </style>
