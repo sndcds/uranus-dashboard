@@ -5,7 +5,7 @@
 -->
 
 <template>
-  <section class="uranus-admin-edit-section organization-images-tab">
+  <section class="uranus-vertical-flex">
     <UranusImageSlot
         context="organization"
         :contextUuid="org.uuid"

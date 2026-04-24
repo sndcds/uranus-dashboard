@@ -1,6 +1,5 @@
 @use 'fonts';
 @use 'button';
-@use 'admin';
 @use 'app_menu';
 @use 'card';
 @use 'form';
@@ -448,7 +447,7 @@ header {
 .uranus-vertical-flex {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1rem;
 }
 
 .uranus-image-slot-light-bg {
@@ -458,7 +457,6 @@ header {
 .uranus-image-slot-dark-bg {
   background: var(--uranus-bg-dark, black) !important;
 }
-
 
 .uranus-dashboard-card {
   display: flex;
