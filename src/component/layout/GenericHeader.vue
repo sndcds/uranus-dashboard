@@ -6,10 +6,9 @@
       <div class="generic-header__brand">
         <UranusLogo />
 
-        <!-- Visitor Navigation -->
-        <nav v-if="!isAdminPage" class="generic-header__nav">
+        <nav class="generic-header__nav">
           <router-link
-              v-if="tokenStore.isAuthenticated"
+              v-if="isAdminPage"
               to="/admin/dashboard"
               class="generic-header__nav-link"
               active-class="generic-header__nav-link--active">
@@ -44,14 +43,7 @@
               active-class="generic-header__nav-link--active">
             {{ t('nav_login') }}
           </router-link>
-        </nav>
-        <nav v-else class="generic-header__nav">
-          <router-link
-              to="/"
-              class="generic-header__nav-link"
-              :class="{ 'generic-header__nav-link--active': route.path === '/' }" exact>
-            {{ t('events') }}
-          </router-link>
+
         </nav>
       </div>
 
@@ -206,7 +198,7 @@ const currentTheme = ref<'light' | 'dark'>('light')
 const currentLocale = computed(() => locale.value)
 
 // Check if we're on an admin page
-const isAdminPage = computed(() => route.path.startsWith('/admin'))
+const isAdminPage = computed(() => tokenStore.isAuthenticated)
 
 // User data
 const userName = computed(() => userStore.displayName || 'User')
