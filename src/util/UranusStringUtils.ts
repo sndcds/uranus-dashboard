@@ -21,12 +21,11 @@ export function uranusStringInterpolate(
 }
 
 export function uranusPluralizedText(
+    t: (key: string) => string,
     singularKey: string,
     pluralKey: string,
     count: number,
-    locale = 'en'
 ): string {
-    const { t } = useI18n()
     const template = count === 1 ? t(singularKey) : t(pluralKey)
     return uranusStringInterpolate(template, { count })
 }

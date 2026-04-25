@@ -122,51 +122,49 @@ function setDisplayMode(mode: 'list' | 'grid' | 'map') {
   displayMode.value = mode
 }
 
+let requestId = 0
 const searchQuery = ref('')
 
 const getTypeName = (typeId: number) =>
     typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
 
 const eventCountInfo = computed(() =>
-    uranusPluralizedText(
-        'event_count_singular',
-        'event_count_plural',
-        eventListStore.totalEventCount,
-        locale.value)
+    uranusPluralizedText(t, 'event_count_singular', 'event_count_plural', eventListStore.totalEventCount)
 )
 
-
-let isResetting = false
+const isResetting = ref(false)
 let filterTimeout: number | null = null
+
+async function reloadEvents() {
+  await eventListStore.loadEvents(true)
+  await eventListStore.loadTypeSummary()
+}
+
+async function loadMore() {
+  const currentRequest = ++requestId
+  isResetting.value = true
+  await eventListStore.loadEvents()
+  if (currentRequest !== requestId) return
+  isResetting.value = false
+}
 
 watch(
     () => filterStore.filter,
     () => {
       if (filterTimeout) clearTimeout(filterTimeout)
-      filterTimeout = window.setTimeout(async () => {
-        isResetting = true
-        await Promise.all([
-          eventListStore.loadEvents(true),
-          eventListStore.loadTypeSummary()
-        ])
-        isResetting = false
+      filterTimeout = window.setTimeout(() => {
+        reloadEvents()
       }, 200)
     },
     { deep: true }
 )
 
-onMounted(async () => {
-  isResetting = true
-  await Promise.all([
-    eventListStore.loadEvents(true),
-    eventListStore.loadTypeSummary()
-  ])
-  isResetting = false
+watch(searchQuery, () => {
+  if (searchTimeout) clearTimeout(searchTimeout)
+  searchTimeout = window.setTimeout(() => {
+    reloadEvents()
+  }, 300)
 })
-
-onBeforeUnmount(() => {
-})
-
 
 // Return unique type IDs from the event_types array
 
@@ -183,40 +181,32 @@ let observer: IntersectionObserver | null = null
 
 let searchTimeout: number | null = null
 
-watch(searchQuery, () => {
-  if (searchTimeout) clearTimeout(searchTimeout)
-
-  searchTimeout = window.setTimeout(() => {
-    eventListStore.loadEvents(true)
-    eventListStore.loadTypeSummary()
-  }, 300)
-})
+function toggleType(typeId: number) {
+  filterStore.toggleEventType(typeId)
+  reloadEvents()
+}
 
 onMounted(async () => {
+  await reloadEvents()
+  const el = loadMoreTrigger.value
+  if (!el) return
+
   observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
-        if (entry?.isIntersecting && !isResetting) {
-          eventListStore.loadEvents()
-          eventListStore.loadTypeSummary()
+        if (entry?.isIntersecting &&
+            !isResetting.value &&
+            !eventListStore.loading &&
+            eventListStore.hasMore
+        ) {
+          loadMore()
         }
       },
-      {
-        rootMargin: "200px",
-      }
+      { rootMargin: "200px" }
   )
 
-  if (loadMoreTrigger.value) {
-    observer.observe(loadMoreTrigger.value)
-  } else {
-    console.warn("loadMoreTrigger ref is null")
-  }
+  observer.observe(el)
 })
-
-function toggleType(typeId: number) {
-  filterStore.toggleEventType(typeId)
-}
-
 
 onBeforeUnmount(() => {
   observer?.disconnect()
