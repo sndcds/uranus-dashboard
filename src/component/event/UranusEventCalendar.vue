@@ -143,19 +143,25 @@ watch(
     () => filterStore.filter,
     () => {
       if (filterTimeout) clearTimeout(filterTimeout)
-
-      filterTimeout = window.setTimeout(() => {
+      filterTimeout = window.setTimeout(async () => {
         isResetting = true
-        eventListStore.loadEvents(true)
-        eventListStore.loadTypeSummary()
+        await Promise.all([
+          eventListStore.loadEvents(true),
+          eventListStore.loadTypeSummary()
+        ])
         isResetting = false
       }, 200)
     },
-    { deep: true, immediate: true }
+    { deep: true }
 )
 
-
-onMounted(() => {
+onMounted(async () => {
+  isResetting = true
+  await Promise.all([
+    eventListStore.loadEvents(true),
+    eventListStore.loadTypeSummary()
+  ])
+  isResetting = false
 })
 
 onBeforeUnmount(() => {
@@ -187,8 +193,6 @@ watch(searchQuery, () => {
 })
 
 onMounted(async () => {
-  // await eventListStore.loadEvents()
-
   observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
