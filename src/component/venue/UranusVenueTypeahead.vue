@@ -6,7 +6,6 @@
         class="uranus-input"
         v-model="query"
         @keydown="onKeydown"
-        placeholder="Name der Spielstätte ..."
         autocomplete="off"
     />
 

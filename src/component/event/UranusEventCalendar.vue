@@ -26,7 +26,10 @@
             :selected="displayMode === 'map'"
             @click="setDisplayMode('map')"
         />
-        {{ eventListStore.totalEventCount }} Events gefunden
+
+        <div style="display: none;">{{ locale }}</div>
+        <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
+
       </div>
 
       <UranusHorizontalScroller>
@@ -92,12 +95,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import {ref, onMounted, onBeforeUnmount, watch, computed} from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
+import { uranusPluralizedText } from '@/util/UranusStringUtils.ts'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
 import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
@@ -122,6 +126,15 @@ const searchQuery = ref('')
 
 const getTypeName = (typeId: number) =>
     typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
+
+const eventCountInfo = computed(() =>
+    uranusPluralizedText(
+        'event_count_singular',
+        'event_count_plural',
+        eventListStore.totalEventCount,
+        locale.value)
+)
+
 
 let isResetting = false
 let filterTimeout: number | null = null
@@ -274,6 +287,10 @@ onBeforeUnmount(() => {
 .calendar-event-type-chip.active {
   background-color: var(--uranus-select-bg);
   color: var(--uranus-select-color);
+}
+
+.calendar-event-count-info {
+  padding: 0 1rem;
 }
 
 .calendar-display-modes {

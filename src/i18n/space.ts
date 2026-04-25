@@ -15,6 +15,16 @@ export const uranusI18nSpaceTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Unspecified space type',
         da: 'uspecificeret lokale',
     },
+    create_space: {
+        de: 'Raum erstellen',
+        en: 'Create Space',
+        da: 'Opret lokale',
+    },
+    create_space_description: {
+        de: 'Ein Raum oder Bereich innerhalb eines Veranstaltungsorts, z. B. ein Saal, ein Raum oder ein abgegrenzter Bereich.',
+        en: 'A room or area within a venue, such as a hall, room, or designated section.',
+        da: 'Et lokale eller område inden for et sted, f.eks. en sal, et rum eller et afgrænset område.',
+    },
     delete_space: {
         de: 'Raum löschen',
         en: 'Delete space',

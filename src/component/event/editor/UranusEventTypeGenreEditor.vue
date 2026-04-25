@@ -30,7 +30,7 @@
 
       <UranusFormActions>
         <UranusButton size="small" variant="tertiary" :disabled="!selectedTypeId" @click="addPair">
-          {{ t('add') }}
+          {{ t('add_element') }}
         </UranusButton>
       </UranusFormActions>
     </UranusFormRow>

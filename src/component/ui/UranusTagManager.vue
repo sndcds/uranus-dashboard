@@ -131,7 +131,7 @@ const labels = computed(() => ({
   edit: props.editLabel || t('event_tags_edit'),
   empty: props.emptyLabel || t('tag_no_tags'),
   placeholder: props.addPlaceholder || t('tag_select_placeholder'),
-  add: props.addButtonLabel || t('tag_selector_add'),
+  add: props.addButtonLabel || t('add_element'),
   save: props.saveLabel || t('save'),
   cancel: props.cancelLabel || t('cancel'),
   saving: props.savingLabel || t('saving')
