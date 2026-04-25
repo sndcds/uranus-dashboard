@@ -59,7 +59,7 @@
         </UranusFormRow>
 
         <UranusFormRow :cols="1">
-          <UranusLabel id="venue" label="Spielstätte">
+          <UranusLabel id="venue" :label="t('venue')">
             <UranusVenueTypeahead v-model:selectedVenue="filterStore.filter.venue"/>
           </UranusLabel>
         </UranusFormRow>

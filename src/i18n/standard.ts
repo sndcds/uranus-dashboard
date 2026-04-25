@@ -579,6 +579,21 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Keine Auswahl getroffen',
         en: 'No selection made',
         da: 'Ingen valgt',
+    },
+    choose_language: {
+        de: 'Wähle eine Sprache',
+        en: 'Choose a language',
+        da: 'Vælg et sprog',
+    },
+    add_element: {
+        de: 'Hinzufügen',
+        en: 'Add',
+        da: 'Tilføj',
+    },
+    select_placeholder: {
+        de: 'Bitte auswählen',
+        en: 'Please select an option',
+        da: 'Vælg en mulighed',
     }
 }
 

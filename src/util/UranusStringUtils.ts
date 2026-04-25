@@ -20,11 +20,11 @@ export function uranusStringInterpolate(
     });
 }
 
-// TODO: Check
-export function usePluralizedText(
+export function uranusPluralizedText(
     singularKey: string,
     pluralKey: string,
-    count: number
+    count: number,
+    locale = 'en'
 ): string {
     const { t } = useI18n()
     const template = count === 1 ? t(singularKey) : t(pluralKey)

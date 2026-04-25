@@ -31,14 +31,24 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Overskrift',
     },
     event_count_singular: {
-        de: '~~count~~ Veranstaltung',
-        en: '~~count~~ event',
-        da: '~~count~~ begivenhed',
+        de: '1 Veranstaltung',
+        en: '1 event',
+        da: '1 begivenhed',
     },
     event_count_plural: {
         de: '~~count~~ Veranstaltungen',
         en: '~~count~~ events',
         da: '~~count~~ begivenheder'
+    },
+    event_count_found_singular: {
+        de: '1 Veranstaltung gefunden',
+        en: '1 events found',
+        da: '1 begivenheder fundet',
+    },
+    event_count_found_plural: {
+        de: '~~count~~ Veranstaltung gefunden',
+        en: '~~count~~ events found',
+        da: '~~count~~ begivenheder funden',
     },
     event_category: {
         de: 'Kategorie',
@@ -221,9 +231,9 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Ingen udgivelsesdato angivet endnu.',
     },
     event_without_venue: {
-        de: 'Ohne Spielstätte',
+        de: 'Ohne Veranstaltungsort',
         en: 'Without venue',
-        da: 'Uden spillested',
+        da: 'Uden sted',
     },
     event_image_alt_text: {
         de: 'Veranstaltungsbild',
@@ -666,14 +676,14 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Er du sikker på, at du vil slette denne dato?',
     },
     event_select_venue: {
-        de: 'Spielstätte wählen',
+        de: 'Veranstaltungsort wählen',
         en: 'Select venue',
-        da: 'Vælg spillested',
+        da: 'Vælg sted',
     },
     event_remove_venue: {
-        de: 'Spielstätte entfernen',
+        de: 'Veranstaltungsort entfernen',
         en: 'Remove venue',
-        da: 'Fjern spillested',
+        da: 'Fjern sted',
     },
     event_remove_date: {
         de: 'Datum entfernen',
@@ -684,7 +694,7 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Bitte veröffentliche ausschließlich Inhalte, für die du über alle erforderlichen Nutzungsrechte verfügst und die keine Urheberrechte Dritter verletzen. Mit dem Klick auf „Speichern“ bestätigst du dies.',
         en: 'Please publish only content for which you hold all necessary usage rights and which does not infringe third-party copyrights. By clicking “Save”, you confirm this.',
         da: 'Publicér kun indhold, som du har alle nødvendige brugsrettigheder til, og som ikke krænker tredjeparts ophavsret. Ved at klikke på “Gem” bekræfter du dette.',
-    }
+    },
 }
 
 export default uranusI18nEventTranslations

@@ -42,7 +42,7 @@
           <UranusIconAction
               v-if="venueListItem.canAddSpace"
               :icon="Plus"
-              :title="t('add')"
+              :title="t('add_element')"
               :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.venueUuid}/space/create`"
           />
         </h3>
@@ -130,11 +130,9 @@ const props = defineProps<{
 }>()
 
 const eventCountText = computed(() => {
-  // Pass locale.value to your interpolation function if needed
   const count = props.venueListItem.eventCount
-  const key = count === 1 ? 'event_count_singular' : 'event_count_plural'
-  const template = t(key) // t automatically picks the correct language
-  return uranusStringInterpolate(template, { count })
+  if (count === 1) return t('event_count_singular')
+  return uranusStringInterpolate(t('event_count_plural'), { count })
 })
 
 const emit = defineEmits<{

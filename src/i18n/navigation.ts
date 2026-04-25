@@ -61,9 +61,9 @@ export const uranusI18nNavigationTranslations: Record<string, Record<UranusLocal
         da: 'Organisationer'
     },
     nav_venues: {
-        de: 'Spielstätten',
+        de: 'Veranstaltungsort',
         en: 'Venues',
-        da: 'Spillesteder'
+        da: 'Steder'
     },
     nav_events: {
         de: 'Events',

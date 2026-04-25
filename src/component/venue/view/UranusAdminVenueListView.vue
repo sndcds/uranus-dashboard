@@ -49,7 +49,7 @@
     </template>
 
     <div class="venue-space-list" ref="containerRef" style="margin-top: 2rem;">
-      <h2>Diese Spielstätten kannst du für Events auswählen</h2>
+      <h2>{{ t('selectable_venues_by_user') }}</h2>
       <div
           class="uranus-card venue-group"
           v-for="venue in choosableVenuesStore.getVenueSpacesInfos()"
