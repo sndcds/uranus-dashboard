@@ -123,6 +123,7 @@ function setDisplayMode(mode: 'list' | 'grid' | 'map') {
 }
 
 let requestId = 0
+const initialized = ref(false)
 const searchQuery = ref('')
 
 const getTypeName = (typeId: number) =>
@@ -151,6 +152,7 @@ async function loadMore() {
 watch(
     () => filterStore.filter,
     () => {
+      if (!initialized.value) return
       if (filterTimeout) clearTimeout(filterTimeout)
       filterTimeout = window.setTimeout(() => {
         reloadEvents()
@@ -183,11 +185,11 @@ let searchTimeout: number | null = null
 
 function toggleType(typeId: number) {
   filterStore.toggleEventType(typeId)
-  reloadEvents()
 }
 
 onMounted(async () => {
   await reloadEvents()
+  initialized.value = true
   const el = loadMoreTrigger.value
   if (!el) return
 
