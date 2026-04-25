@@ -151,7 +151,7 @@ watch(
         isResetting = false
       }, 200)
     },
-    { deep: true }
+    { deep: true, immediate: true }
 )
 
 
