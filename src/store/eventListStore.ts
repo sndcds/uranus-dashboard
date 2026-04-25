@@ -27,6 +27,7 @@ export const useEventListStore = defineStore('events', () => {
     const error = ref<string | null>(null)
     const hasMore = ref(true) // for infinite scroll
     const loadEventsCounter = ref(0) // for infinite scroll
+    let requestId = 0
 
     function reset() {
         events.value = []
@@ -150,20 +151,21 @@ export const useEventListStore = defineStore('events', () => {
     }
 
     async function loadEvents(resetPage: boolean = false) {
+        const currentRequest = ++requestId
         if (loading.value) return
         if (!resetPage && !hasMore.value) return
-
         if (resetPage) reset()
-
         loading.value = true
 
         try {
-            const params = buildFilterParams(true, true) // paginationMode + typesMode
+            const params = buildFilterParams(true, true)
             const apiPath = `/api/events?${params.toString()}`
             const apiResponse = await apiFetch<EventListItemsApiData>(apiPath)
 
-            const apiData = apiResponse?.data ?? null
-            const apiEvents = apiData!.events ?? []
+            if (currentRequest !== requestId) return
+
+            const apiData = apiResponse?.data
+            const apiEvents = apiData?.events ?? []
             if (apiEvents.length === 0) {
                 hasMore.value = false
             } else {
@@ -176,7 +178,7 @@ export const useEventListStore = defineStore('events', () => {
 
             error.value = null
             loadEventsCounter.value++
-        } catch (err: unknown) {
+        } catch (err) {
             error.value = 'Failed to load events'
             console.error(err)
         } finally {
