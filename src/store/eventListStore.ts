@@ -163,22 +163,15 @@ export const useEventListStore = defineStore('events', () => {
             const apiResponse = await apiFetch<EventListItemsApiData>(apiPath)
 
             const apiData = apiResponse?.data ?? null
-            if (apiData) {
-                const apiEvents = apiData.events ?? []
-                if (apiEvents.length) {
-                    const mappedEvents = apiEvents.map(mapEventDTO)
-                    events.value.push(...mappedEvents)
-                    lastEventStartAt.value = apiData.last_event_start_at ?? null
-                    lastEventDateUuid.value = apiData.last_event_date_uuid ?? null
-
-                    if (!apiEvents.length) {
-                        hasMore.value = false
-                    } else {
-                        hasMore.value = !!apiData.last_event_date_uuid
-                    }
-                }
-            } else {
+            const apiEvents = apiData!.events ?? []
+            if (apiEvents.length === 0) {
                 hasMore.value = false
+            } else {
+                const mappedEvents = apiEvents.map(mapEventDTO)
+                events.value.push(...mappedEvents)
+                lastEventStartAt.value = apiData?.last_event_start_at ?? null
+                lastEventDateUuid.value = apiData?.last_event_date_uuid ?? null
+                hasMore.value = !!apiData?.last_event_date_uuid
             }
 
             error.value = null
