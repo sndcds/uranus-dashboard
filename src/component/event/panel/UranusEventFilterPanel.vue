@@ -14,12 +14,6 @@
 <template>
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
-    <UranusFormRow style="margin-bottom: 1rem;">
-      <FunnelX class="uranus-icon"
-          @click="onResetFilter" />
-    </UranusFormRow>
-
-
     <div class="uranus-filter-accordions">
       <UranusEventCategorySelectorAccordion v-model="filterStore.filter.categories" :multiple="true" />
 
@@ -228,11 +222,6 @@ const priceOpen = ref(false)
 const onSaveFilter = () => {
   filterStore.setFilter({ ...filterStore.filter })
 }
-
-const onResetFilter = () => {
-  filterStore.resetFilter()
-}
-
 </script>
 
 <style lang="scss">
