@@ -594,6 +594,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Bitte auswählen',
         en: 'Please select an option',
         da: 'Vælg en mulighed',
+    },
+    reset_all: {
+        de: 'Alles zurücksetzen',
+        en: 'Reset all',
+        da: 'Nulstil alt',
     }
 }
 

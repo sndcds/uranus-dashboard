@@ -10,29 +10,31 @@
 <template>
   <div class="calendar-page">
     <div class="calendar-head">
-      <div class="calendar-display-modes">
-        <UranusIconAction
-            :icon="LayoutGrid"
-            :selected="displayMode === 'grid'"
-            @click="setDisplayMode('grid')"
-        />
-        <UranusIconAction
-            :icon="Rows3"
-            :selected="displayMode === 'list'"
-            @click="setDisplayMode('list')"
-        />
-        <UranusIconAction
-            :icon="Map"
-            :selected="displayMode === 'map'"
-            @click="setDisplayMode('map')"
-        />
+      <div class="calendar-options">
+        <div>
+          <UranusIconAction
+              :icon="LayoutGrid"
+              :selected="displayMode === 'grid'"
+              @click="setDisplayMode('grid')"
+          />
+          <UranusIconAction
+              :icon="Rows3"
+              :selected="displayMode === 'list'"
+              @click="setDisplayMode('list')"
+          />
+          <UranusIconAction
+              :icon="Map"
+              :selected="displayMode === 'map'"
+              @click="setDisplayMode('map')"
+          />
+        </div>
 
-        <UranusButton
-            variant="tertiary" size="medium"
-        >
-          <template #icon><FunnelX /></template>
-          gfrtzterpo
-        </UranusButton>
+        <UranusIconAction
+            :label="t('reset_all')"
+            :icon="FunnelX"
+            style="padding-left: 0;"
+            @click="onResetFilter()"
+        />
 
         <div style="display: none;">{{ locale }}</div>
         <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
@@ -143,6 +145,10 @@ const eventCountInfo = computed(() =>
 
 const isResetting = ref(false)
 let filterTimeout: number | null = null
+
+const onResetFilter = () => {
+  filterStore.resetFilter()
+}
 
 async function reloadEvents() {
   await eventListStore.loadEvents(true)
@@ -297,9 +303,9 @@ onBeforeUnmount(() => {
   padding: 0 1rem;
 }
 
-.calendar-display-modes {
+.calendar-options {
   display: inline-flex;
-  gap: 0;
+  gap: 0.5rem;
   align-items: center;
   padding: 0;
   margin-left: 32px;
