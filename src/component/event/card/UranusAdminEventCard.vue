@@ -2,8 +2,6 @@
   src/component/event/card/UranusAdminEventCard.vue
 
   Dashboard card displaying basic event information.
-
-  2026-02-05, Roald
 -->
 
 <template>

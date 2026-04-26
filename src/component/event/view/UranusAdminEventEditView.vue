@@ -1,5 +1,5 @@
 <!--
-  src/view/admin/UranusEditEventView.vue
+  src/component/event/view/UranusAdminEventEditView.vue
 -->
 
 <template>
@@ -57,15 +57,15 @@ import { apiFetch } from '@/api.ts'
 import { getPreviousRoute } from '@/router'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { type AdminEventDTO } from '@/api/dto/adminEvent.dto.ts'
-import UranusEventBaseTab from '@/component/event/editor/UranusEventBaseTab.vue'
-import UranusEventDatesTab from '@/component/event/editor/UranusEventDatesTab.vue'
-import UranusEventTagsTab from '@/component/event/editor/UranusEventTagsTab.vue'
-import UranusEventLinksTab from '@/component/event/editor/UranusEventLinksTabs.vue'
-import UranusEventParticipationTab from '@/component/event/editor/UranusEventParticipationTab.vue'
-import UranusEventVenueTab from '@/component/event/editor/UranusEventVenueTab.vue'
-import UranusEventTicketTab from '@/component/event/editor/UranusEventTicketTab.vue'
+import UranusAdminEventBaseTab from '@/component/event/editor/UranusAdminEventBaseTab.vue'
+import UranusAdminEventDatesTab from '@/component/event/editor/UranusAdminEventDatesTab.vue'
+import UranusAdminEventTagsTab from '@/component/event/editor/UranusAdminEventTagsTab.vue'
+import UranusAdminEventLinksTabs from '@/component/event/editor/UranusAdminEventLinksTabs.vue'
+import UranusAdminEventParticipationTab from '@/component/event/editor/UranusAdminEventParticipationTab.vue'
+import UranusAdminEventVenueTab from '@/component/event/editor/UranusAdminEventVenueTab.vue'
+import UranusAdminEventTicketTab from '@/component/event/editor/UranusAdminEventTicketTab.vue'
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
-import UranusEventVisitorInfo from '@/component/event/editor/UranusEventVisitorInfo.vue'
+import UranusAdminEventVisitorInfo from '@/component/event/editor/UranusAdminEventVisitorInfo.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import { StepBack, Rocket } from 'lucide-vue-next'
@@ -112,16 +112,16 @@ const tabs = [
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
-    case 'dates': return UranusEventDatesTab
-    case 'venue': return UranusEventVenueTab
-    case 'tags': return UranusEventTagsTab
-    case 'links': return UranusEventLinksTab
-    case 'participation': return UranusEventParticipationTab
-    case 'ticket': return UranusEventTicketTab
-    case 'visitor': return UranusEventVisitorInfo
+    case 'dates': return UranusAdminEventDatesTab
+    case 'venue': return UranusAdminEventVenueTab
+    case 'tags': return UranusAdminEventTagsTab
+    case 'links': return UranusAdminEventLinksTabs
+    case 'participation': return UranusAdminEventParticipationTab
+    case 'ticket': return UranusAdminEventTicketTab
+    case 'visitor': return UranusAdminEventVisitorInfo
     case 'base':
     default:
-      return UranusEventBaseTab
+      return UranusAdminEventBaseTab
   }
 })
 

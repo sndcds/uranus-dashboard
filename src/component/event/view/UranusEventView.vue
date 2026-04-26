@@ -409,7 +409,6 @@ const hasLonLat = computed(() => {
   return false
 })
 
-
 const loadEvent = async () => {
   isLoading.value = true
   loadError.value = null

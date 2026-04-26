@@ -1,7 +1,5 @@
 <!--
-  src/view/admin/event/UranusEventCreateView.vue
-
-  2026-02-10, Roald
+  src/component/event/view/UranusAdminEventCreateView.vue
 -->
 
 <template>

@@ -1,5 +1,5 @@
 <!--
-  src/component/event/editor/UranusEventTagsEditor.vue
+  src/component/event/editor/UranusAdminEventTagsEditor.vue
 -->
 
 <template>

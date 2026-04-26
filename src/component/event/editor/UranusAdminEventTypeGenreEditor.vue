@@ -1,5 +1,5 @@
 <!--
-  src/component/event/editor/UranusEventTypeGenreEditor.vue
+  src/component/event/editor/UranusAdminEventTypeGenreEditor.vue
 -->
 
 <template>

@@ -1,3 +1,7 @@
+<!--
+  src/component/event/editor/UranusAdminEventLinksTabs.vue
+-->
+
 <template>
   <section class="links-tab" v-if="store.draft">
 

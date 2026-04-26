@@ -1,5 +1,5 @@
 <!--
-  src/component/event/editor/UranusEventVisitorInfo.vue
+  src/component/event/editor/UranusAdminEventVisitorInfo.vue
 -->
 
 <template>

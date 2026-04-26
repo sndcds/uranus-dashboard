@@ -10,6 +10,11 @@ export const uranusI18nSpaceTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Space type',
         da: 'Lokaletype',
     },
+    space_name: {
+        de: 'Name des Raums',
+        en: 'Space name',
+        da: 'Lokalenavn',
+    },
     unspecified_space_type: {
         de: 'Unbestimmter Raumtyp',
         en: 'Unspecified space type',
