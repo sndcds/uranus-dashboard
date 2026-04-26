@@ -1,5 +1,26 @@
-// Main area for rendering of event data
+// Details in event list mode
+.uranus-public-event-list-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 1rem;
+  line-height: 1.4rem;
 
+  h1 {
+    line-height: 1.2;
+  }
+
+  h2 {
+    line-height: 1.2;
+    font-weight: 400 !important;
+  }
+
+  p {
+  }
+}
+
+
+// Main area for rendering of event data
 .uranus-public-event-frame {
   display: flex;
   flex-direction: column;

@@ -40,7 +40,7 @@
         </div>
 
         <div
-            class="uranus-public-event-description"
+            class="uranus-public-event-list-details"
             v-html="formatMarkdown(eventDetails.summary!)"></div>
 
       </div>
@@ -220,6 +220,7 @@ const loadEvent = async () => {
   grid-column: 1 / span 2;
   grid-row: 2;
   max-height: 0;
+  max-width: 1024px;
   overflow: hidden;
   padding-left: 80px;
   transition: max-height 0.3s ease;
@@ -235,7 +236,17 @@ const loadEvent = async () => {
   aspect-ratio: 16/9;
   overflow: hidden;
   border-radius: var(--uranus-card-border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 
 @media (max-width: 800px) {
   .row {

@@ -260,7 +260,7 @@ const isPreview = computed(() => route.params.mode === 'preview')
 
 // Watch for changes in route params
 watch(
-    () => [route.params.id, route.params.eventDateId],
+    () => [route.params.uuid, route.params.eventDateUuid],
     () => {
       loadEvent() // reload the event whenever id/date changes
     }
@@ -429,6 +429,7 @@ const loadEvent = async () => {
       return
     }
 
+    console.log(apiPath)
     const apiResponse = await apiFetch<PublicEventDTO>(apiPath)
     if (apiResponse.data) {
       const mappedEvent: PublicEvent | null = mapPublicEventFromDTO(apiResponse.data, eventDateUuid)
@@ -438,6 +439,7 @@ const loadEvent = async () => {
       }
       event.value = mappedEvent
       eventDate.value = mappedEvent.date
+      console.log(mappedEvent)
     }
   } catch (error: unknown) {
     if (error instanceof ApiError) {
