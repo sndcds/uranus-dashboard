@@ -48,7 +48,7 @@
     </UranusForm>
   </section>
 
-  <UranusVenueSelectModal
+  <UranusAdminVenueSelectModal
       :show="showModal"
       :venueSpaceInfos="venueSpacesInfos"
       v-model="selectedPlace"
@@ -61,15 +61,15 @@ import { onMounted, computed, ref } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { useI18n } from 'vue-i18n'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
-import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
+import UranusAdminVenueSelectModal from '@/component/venue/UranusAdminVenueSelectModal.vue'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import { Save, Undo, MapPin } from 'lucide-vue-next'
-import UranusForm from "@/component/ui/UranusForm.vue";
-import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 

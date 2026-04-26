@@ -39,10 +39,10 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
-import VenueBaseTab from '@/component/venue/editor/UranusVenueBaseTab.vue'
-import VenueMapTab from '@/component/venue/editor/UranusVenueMapTab.vue'
-import UranusVenueLogoTab from '@/component/venue/editor/UranusVenueLogoTab.vue'
-import UranusVenueImageTab from '@/component/venue/editor/UranusVenueImageTab.vue'
+import UranusAdminVenueBaseTab from '@/component/venue/editor/UranusAdminVenueBaseTab.vue'
+import UranusAdminVenueMapTab from '@/component/venue/editor/UranusAdminVenueMapTab.vue'
+import UranusAdminVenueLogoTab from '@/component/venue/editor/UranusAdminVenueLogoTab.vue'
+import UranusAdminVenueImageTab from '@/component/venue/editor/UranusAdminVenueImageTab.vue'
 import { useUranusVenueStore } from '@/store/venueStore.ts'
 
 const route = useRoute()
@@ -61,11 +61,11 @@ const tabs = [
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
-    case 'base': return VenueBaseTab
-    case 'map': return VenueMapTab
-    case 'logos': return UranusVenueLogoTab
-    case 'images': return UranusVenueImageTab
-    default: return VenueBaseTab
+    case 'base': return UranusAdminVenueBaseTab
+    case 'map': return UranusAdminVenueMapTab
+    case 'logos': return UranusAdminVenueLogoTab
+    case 'images': return UranusAdminVenueImageTab
+    default: return UranusAdminVenueBaseTab
   }
 })
 

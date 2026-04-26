@@ -79,13 +79,13 @@ import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { EventLink } from '@/domain/event/eventLink.model.ts'
 import { apiFetch } from '@/api.ts'
 import UranusLinkTypeSelect from '@/component/select/UranusLinkTypeSelect.vue'
-import {Save, Undo} from 'lucide-vue-next'
+import { Save, Undo } from 'lucide-vue-next'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
-import UranusGridLayout from "@/component/ui/UranusGridLayout.vue";
-import UranusFormCol from "@/component/ui/UranusFormCol.vue";
-import UranusInput from "@/component/ui/UranusInput.vue";
-import UranusFormActions from "@/component/ui/UranusFormActions.vue";
+import UranusGridLayout from '@/component/ui/UranusGridLayout.vue'
+import UranusFormCol from '@/component/ui/UranusFormCol.vue'
+import UranusInput from '@/component/ui/UranusInput.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()

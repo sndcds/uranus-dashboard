@@ -1,5 +1,5 @@
 <!--
-  src/component/event/editor/UranusVenueImageTab.vue
+  src/component/event/editor/UranusAdminVenueImageTab.vue
 
   2026-02-08, Roald
 -->

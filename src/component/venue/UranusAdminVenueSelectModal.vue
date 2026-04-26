@@ -1,5 +1,5 @@
 <!--
-  src/component/venue/UranusVenueSelectModal.vue
+  src/component/venue/UranusAdminVenueSelectModal.vue
 -->
 
 <template>

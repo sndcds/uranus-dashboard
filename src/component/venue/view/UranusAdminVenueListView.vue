@@ -37,7 +37,7 @@
         </UranusFeedback>
 
         <div v-if="venueList" class="organization-venue-view__content">
-          <UranusVenueCard
+          <UranusAdminVenueCard
               v-for="item in venueList?.venues ?? []"
               :key="item.venueUuid"
               :venueListItem="item"
@@ -80,7 +80,7 @@ import { useAppStore } from '@/store/appStore.ts'
 import { mapVenueList, type VenueList } from '@/domain/organization/venueList.ts'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
 
-import UranusVenueCard from '@/component/venue/card/UranusVenueCard.vue'
+import UranusAdminVenueCard from '@/component/venue/card/UranusAdminVenueCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
