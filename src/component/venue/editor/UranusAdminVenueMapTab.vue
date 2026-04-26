@@ -1,3 +1,7 @@
+<!--
+  src/component/venue/editor/UranusVenueMapTab.vue
+-->
+
 <template>
   <UranusForm>
     <UranusLocationForm

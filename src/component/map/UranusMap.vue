@@ -71,8 +71,8 @@ const loadVenues = async () => {
 }
 
 const loadStations = async () => {
-  const lat = props.stationCenterLat ?? 54.7745
-  const lon = props.stationCenterLon ?? 9.4411
+  const lat = props.stationCenterLat ?? 54.78827905661646
+  const lon = props.stationCenterLon ?? 9.436861560669017
   const radius = props.stationRadius ?? 500000
 
   try {

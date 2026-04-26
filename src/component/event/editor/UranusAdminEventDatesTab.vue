@@ -91,7 +91,7 @@
     </div>
 
     <!-- Venue selection modal -->
-    <UranusVenueSelectModal
+    <UranusAdminVenueSelectModal
         :show="showModal"
         :venueSpaceInfos="venueSpacesInfos"
         v-model="selectedPlace"
@@ -105,7 +105,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
-import UranusVenueSelectModal from '@/component/venue/UranusVenueSelectModal.vue'
+import UranusAdminVenueSelectModal from '@/component/venue/UranusAdminVenueSelectModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'

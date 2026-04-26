@@ -1,5 +1,5 @@
 <!--
-  src/component/event/editor/UranusVenuenBaseTab.vue
+  src/component/event/editor/UranusAdminVenuenBaseTab.vue
 
   2026-02-08, Roald
 -->

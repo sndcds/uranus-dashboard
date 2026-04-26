@@ -27,6 +27,13 @@
             @click="setDisplayMode('map')"
         />
 
+        <UranusButton
+            variant="tertiary" size="medium"
+        >
+          <template #icon><FunnelX /></template>
+          gfrtzterpo
+        </UranusButton>
+
         <div style="display: none;">{{ locale }}</div>
         <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
 
@@ -105,10 +112,11 @@ import { uranusPluralizedText } from '@/util/UranusStringUtils.ts'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
 import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
-import UranusEventCalendarListRow from "@/component/event/ui/UranusEventCalendarListRow.vue";
-import { Rows3, LayoutGrid, Map } from 'lucide-vue-next'
+import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendarListRow.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusVenuesMap from '@/component/map/UranusVenuesMap.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import { Rows3, LayoutGrid, Map, Eye, FunnelX } from 'lucide-vue-next'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 

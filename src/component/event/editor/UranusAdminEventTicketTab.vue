@@ -111,16 +111,16 @@ import { apiFetch } from '@/api.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import UranusCurrencySelect from '@/component/ui/UranusCurrencySelect.vue'
 import { equalStringArrays } from '@/type/utils.ts'
-import type {AdminEvent} from '@/domain/event/adminEvent.model.ts'
+import type { AdminEvent } from '@/domain/event/adminEvent.model.ts'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
-import {Save, Undo} from 'lucide-vue-next'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import UranusInput from "@/component/ui/UranusInput.vue";
+import UranusInput from '@/component/ui/UranusInput.vue'
+import { Save, Undo } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()

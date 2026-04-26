@@ -1,10 +1,9 @@
 <!--
-  src/component/venue/UranusVenueCard.vue
+  src/component/venue/UranusAdminVenueCard.vue
 -->
 
 <template>
   <UranusCard custom-style="width:100%;">
-
     <div>
       <div class="header">
         <div>
@@ -22,7 +21,7 @@
           <UranusButton
               v-if="venueListItem.canDeleteVenue"
               variant="secondary" size="small"
-              @click="onDeleteEvent(venueListItem)"
+              @click="onDeleteVenue(venueListItem)"
           >
             {{ t('delete') }}
           </UranusButton>
@@ -160,7 +159,7 @@ function getConfirmDeleteSpace(name: string): string {
   return uranusStringInterpolate(template, {name});
 }
 
-const onDeleteEvent = (venue: VenueListItem) => {
+const onDeleteVenue = (venue: VenueListItem) => {
   if (!venue.canDeleteVenue) return
   pendingVenueUuid.value = venue.venueUuid
   pendingVenueName.value = venue.venueName
@@ -207,7 +206,7 @@ const confirmDeleteVenue = async ({ password }: { password: string }) => {
 }
 
 const requestDeleteSpace = (space: VenueListSpace) => {
-  if (!props.venueListItem.canDeleteSpace) return
+  if (!space.canDeleteSpace) return
   pendingSpaceUuid.value = space.spaceUuid
   pendingSpaceName.value = space.spaceName
   deleteSpaceError.value = ''
