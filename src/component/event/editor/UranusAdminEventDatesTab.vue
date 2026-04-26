@@ -1,4 +1,7 @@
-<!-- src/component/event/editor/UranusEventDatesTab.vue -->
+<!--
+  src/component/event/editor/UranusAdminEventDatesTab.vue
+-->
+
 <template>
   <section class="dates-tab">
 

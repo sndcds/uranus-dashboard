@@ -1,24 +1,24 @@
 <!--
-  src/component/event/editor/UranusEventTagsTab.vue
+  src/component/event/editor/UranusAdminEventTagsTab.vue
 -->
 
 <template>
   <div class="tab-content">
 
     <!-- Editors directly bound to store.draft -->
-    <UranusEventTypeGenreEditor
+    <UranusAdminEventTypeGenreEditor
         v-if="store.draft"
         :draft="store.draft"
         @update="store.draft.eventTypes = $event"
     />
 
-    <UranusEventLanguageEditor
+    <UranusAdminEventLanguageEditor
         v-if="store.draft"
         :draft="store.draft"
         @update="store.draft.languages = $event"
     />
 
-    <UranusEventTagsEditor
+    <UranusAdminEventTagsEditor
         v-if="store.draft"
         @update="store.draft.tags = $event"
     />
@@ -49,9 +49,9 @@ import { useI18n } from 'vue-i18n'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { apiFetch } from '@/api.ts'
 
-import UranusEventTypeGenreEditor from '@/component/event/editor/UranusEventTypeGenreEditor.vue'
-import UranusEventLanguageEditor from '@/component/event/editor/UranusEventLanguageEditor.vue'
-import UranusEventTagsEditor from '@/component/event/editor/UranusEventTagsEditor.vue'
+import UranusAdminEventTypeGenreEditor from '@/component/event/editor/UranusAdminEventTypeGenreEditor.vue'
+import UranusAdminEventLanguageEditor from '@/component/event/editor/UranusAdminEventLanguageEditor.vue'
+import UranusAdminEventTagsEditor from '@/component/event/editor/UranusAdminEventTagsEditor.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Save, Undo } from 'lucide-vue-next'
 

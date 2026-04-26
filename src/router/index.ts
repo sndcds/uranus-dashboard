@@ -33,9 +33,9 @@ import UranusOrganizationEditView from '@/component/organization/view/UranusOrga
 import UranusOrganizationCreateView from '@/component/organization/view/UranusOrganizationCreateView.vue'
 import UranusVenueCreateView from '@/component/venue/view/UranusVenueCreateView.vue'
 import UranusVenueEditView from '@/component/venue/view/UranusVenueEditView.vue'
-import UranusEventListView from '@/component/event/view/UranusEventListView.vue'
-import UranusEventCreateView from '@/component/event/view/UranusEventCreateView.vue'
-import UranusEventEditView from '@/component/event/view/UranusEventEditView.vue'
+import UranusAdminEventCardsView from '@/component/event/view/UranusAdminEventCardsView.vue'
+import UranusAdminEventCreateView from '@/component/event/view/UranusAdminEventCreateView.vue'
+import UranusAdminEventEditView from '@/component/event/view/UranusAdminEventEditView.vue'
 import UranusDevGetEventsView from '@/component/dev/UranusDevGetEventsView.vue'
 import UranusMapView from '@/view/public/UranusMapView.vue'
 import ContentOnlyLayout from '@/component/layout/ContentOnlyLayout.vue'
@@ -115,7 +115,7 @@ const routes = [
             {
                 path: 'organization/:orgUuid/events',
                 name: 'admin-organization-events',
-                component: UranusEventListView,
+                component: UranusAdminEventCardsView,
             },
             {
                 path: 'user/profile',
@@ -145,7 +145,7 @@ const routes = [
             {
                 path: 'organization/:orgUuid/event/create',
                 name: 'admin-create-event',
-                component: UranusEventCreateView,
+                component: UranusAdminEventCreateView,
             },
         ],
     },
@@ -157,7 +157,7 @@ const routes = [
             {
                 path: '',
                 name: 'admin-event-edit',
-                component: UranusEventEditView,
+                component: UranusAdminEventEditView,
             },
         ],
     },
