@@ -32,8 +32,8 @@ async function fetchEvents(filters: Record<string, any> = {}) {
 
 onMounted(() => {
   fetchEvents({
-    city: 'Glücksburg',
-    start: '2026-02-01',
+    search: 'jazz',
+    start: '2024-02-01',
     end: '2027-12-31'
   })
 })
