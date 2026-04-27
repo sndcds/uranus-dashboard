@@ -36,9 +36,9 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
-import OrganizationBaseTab from '@/component/organization/editor/UranusOrganizationBaseTab.vue'
-import OrganizationMapTab from '@/component/organization/editor/UranusOrganizationMapTab.vue'
-import OrganizationLogoTab from '@/component/organization/editor/UranusOrganizationLogoTab.vue'
+import UranusAdminOrganizationBaseTab from '@/component/organization/editor/UranusAdminOrganizationBaseTab.vue'
+import UranusAdminOrganizationMapTab from '@/component/organization/editor/UranusAdminOrganizationMapTab.vue'
+import UranusAdminOrganizationLogoTab from '@/component/organization/editor/UranusAdminOrganizationLogoTab.vue'
 import { useUranusOrganizationStore } from '@/store/organizationStore.ts'
 
 const { t } = useI18n({ useScope: 'global' })
@@ -57,10 +57,10 @@ const tabs = [
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
-    case 'base': return OrganizationBaseTab
-    case 'map': return OrganizationMapTab
-    case 'logo': return OrganizationLogoTab
-    default: return OrganizationBaseTab
+    case 'base': return UranusAdminOrganizationBaseTab
+    case 'map': return UranusAdminOrganizationMapTab
+    case 'logo': return UranusAdminOrganizationLogoTab
+    default: return UranusAdminOrganizationBaseTab
   }
 })
 

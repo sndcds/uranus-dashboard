@@ -3,9 +3,8 @@
 -->
 
 <template>
-  <section>
-    <h2>{{ t('messages') }}</h2>
-
+  <div class="uranus-main-layout">
+    <h1>{{ t('messages') }}</h1>
     <div v-if="error" class="feedback feedback--error" role="alert">
       {{ error }}
     </div>
@@ -18,7 +17,7 @@
         {{ t('no_messages') }}
       </div>
       <div v-else class="uranus-dashboard-card-grid uranus-max-layout">
-        <article
+        <div
             v-for="notification in notifications"
             :key="notification.event_uuid"
             class="uranus-card notification-card"
@@ -26,8 +25,8 @@
           <UranusEventReleaseChip :releaseStatus="notification.release_status" />
           <ul class="event-card__details">
             <li class="event-card__title">
-              <h3>{{ notification.event_title }}</h3>
-              <span>{{ t('event_organizer') }}: {{ notification.organization_name }}</span>
+              <h3 class="event-title">{{ notification.event_title }}</h3>
+              <span>{{ t('event_organizer') }}: {{ notification.org_name }}</span>
             </li>
             <li>
               <span class="event-card__value">
@@ -37,7 +36,7 @@
             </li>
             <li>
               <span class="event-card__value">
-                {{ t('event_release_date') }}: {{ formatReleaseCountdown(notification.days_until_event) }}
+                {{ t('event_release_date') }}: {{ formatReleaseCountdown(notification.days_until_release) }}
               </span>
             </li>
           </ul>
@@ -50,10 +49,10 @@
               {{ t('edit') }}
             </UranusButton>
           </p>
-        </article>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -67,8 +66,8 @@ import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
 interface Notification {
   event_uuid: string
   event_title: string
-  organization_id: number
-  organization_name: string
+  org_uuid: string
+  org_name: string
   release_date: string
   release_status: string | null
   release_status_name?: string | null
@@ -113,7 +112,7 @@ const formatReleaseStatus = (notification: Notification) => {
 }
 
 const formatReleaseCountdown = (days: number | null) => {
-  if (days === null || Number.isNaN(days)) {
+  if (!days || Number.isNaN(days)) {
     return `${t('not_specified')}`
   }
   if (days === 0) {
@@ -179,6 +178,10 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+.event-title {
+  margin-bottom: 0.5rem !important;
 }
 
 .event-actions {

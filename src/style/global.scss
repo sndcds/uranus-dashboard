@@ -49,6 +49,8 @@
   // Used to visualize elements in dark or light mode, e.g. images on dark or light backgrounds
   --uranus-bg-dark: oklch(20% 0.03 var(--uranus-hue));
   --uranus-bg-light: oklch(96% 0.008 var(--uranus-hue));
+  --uranus-color-dark: oklch(96% 0.008 var(--uranus-hue));
+  --uranus-color-light: oklch(20% 0.03 var(--uranus-hue));
 
   --uranus-notify-info-bg-color: var(--uranus-bg);
   --uranus-notify-info-color: #aac9ff;

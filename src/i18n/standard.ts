@@ -599,7 +599,27 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Alles zurücksetzen',
         en: 'Reset all',
         da: 'Nulstil alt',
-    }
+    },
+    main_logo: {
+        de: 'Hauptlogo',
+        en: 'Main Logo',
+        da: 'Hovedlogo',
+    },
+    light_theme_logo: {
+        de: 'Dunkles Logo',
+        en: 'Dark  logo',
+        da: 'Mørkt logo',
+    },
+    dark_theme_logo: {
+        de: 'Helles Logo',
+        en: 'Light logo',
+        da: 'Lyst logo',
+    },
+    avatar: {
+        de: 'Avatar',
+        en: 'Avatar',
+        da: 'Avatar',
+    },
 }
 
 export default uranusI18nStandardTranslations

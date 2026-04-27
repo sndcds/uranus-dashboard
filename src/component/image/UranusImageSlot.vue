@@ -27,7 +27,7 @@
 
     </div>
 
-    <div class="image-index">
+    <div class="label">
       {{ label ?? identifier }}
     </div>
 
@@ -180,6 +180,24 @@ onMounted(loadImage)
   border-radius: var(--uranus-input-border-radius);
   overflow: hidden;
   cursor: pointer;
+
+  .label {
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    color: var(--uranus-color);
+  }
+}
+
+.image-card.dark {
+  .label {
+    color: var(--uranus-color-dark);
+  }
+}
+
+.image-card.light {
+  .label {
+    color: var(--uranus-color-light);
+  }
 }
 
 .image-wrapper {
@@ -229,9 +247,4 @@ onMounted(loadImage)
   cursor: pointer;
 }
 
-.image-index {
-  margin-top: 0.3rem;
-  font-size: 0.85rem;
-  color: #555;
-}
 </style>
