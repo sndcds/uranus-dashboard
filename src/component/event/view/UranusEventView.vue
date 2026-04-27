@@ -177,9 +177,7 @@
             <template v-if="(event.maxAttendees ?? 0) > 0">
               <p>{{ t('event_max_attendees', { count: event.maxAttendees }) }}</p>
             </template>
-            <template v-if="ageLabel">
-              {{ ageLabel }}<br>
-            </template>
+            {{ ageLabel }}<br>
             <template v-if="event.participationInfo">
               {{ event.participationInfo }}<br>
             </template>
@@ -225,7 +223,7 @@ import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 import { type PublicEvent, mapPublicEventFromDTO } from '@/domain/event/publicEvent.model.ts'
 import { type PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
-import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
+import { uranusAgeRangeInfo, uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
@@ -343,13 +341,7 @@ const eventEntryTime = computed(() => eventDate.value?.entryTime ?? event.value?
 const eventAllDay = computed(() => eventDate.value?.allDay ?? event.value?.date.allDay ?? false)
 
 const ageLabel = computed(() => {
-  const min = event.value?.minAge
-  const max = event.value?.maxAge
-  if (!min && !max) return null
-  if (min && max) { return t('event_age_between', { min, max }) }
-  if (min) { return t('event_age_from', { min }) }
-  if (max) { return t('event_age_until', { max }) }
-  return null
+  uranusAgeRangeInfo(t, event.value?.minAge, event.value?.maxAge)
 })
 
 const priceLabel = computed(() => {

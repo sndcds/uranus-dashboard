@@ -1,4 +1,6 @@
-import { useI18n } from 'vue-i18n'
+/*
+    src/util/UranusStringUtils.ts
+ */
 
 // TODO: Check
 export function uranusCapitalizeFirst(str: string) {
@@ -28,6 +30,42 @@ export function uranusPluralizedText(
 ): string {
     const template = count === 1 ? t(singularKey) : t(pluralKey)
     return uranusStringInterpolate(template, { count })
+}
+
+type TranslateFn = (key: string) => string
+
+export function uranusAgeRangeInfo(
+    t: TranslateFn,
+    min?: number | null,
+    max?: number | null
+): string | null {
+    const hasMin = min != null
+    const hasMax = max != null
+
+    if (!hasMin && !hasMax) return null
+
+    if (hasMin && hasMax) {
+        return uranusStringInterpolate(
+            t('event_age_between'),
+            { min, max }
+        )
+    }
+
+    if (hasMin) {
+        return uranusStringInterpolate(
+            t('event_age_from'),
+            { min }
+        )
+    }
+
+    if (hasMax) {
+        return uranusStringInterpolate(
+            t('event_age_until'),
+            { max }
+        )
+    }
+
+    return null
 }
 
 // TODO: Check
