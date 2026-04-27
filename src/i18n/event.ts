@@ -468,7 +468,7 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
     event_age_from: {
         de: "Ab ~~min~~ Jahren",
         en: "From ~~min~~ years",
-        da: "Fra ~~min~~ til ~~max~~ år",
+        da: "Fra ~~min~~ år",
     },
     event_age_until: {
         de: "Bis ~~max~~ Jahre",

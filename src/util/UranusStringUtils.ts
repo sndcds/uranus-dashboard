@@ -41,27 +41,26 @@ export function uranusAgeRangeInfo(
 ): string | null {
     const hasMin = min != null
     const hasMax = max != null
-
     if (!hasMin && !hasMax) return null
 
     if (hasMin && hasMax) {
         return uranusStringInterpolate(
             t('event_age_between'),
-            { min, max }
+            { min: min, max: max }
         )
     }
 
     if (hasMin) {
         return uranusStringInterpolate(
             t('event_age_from'),
-            { min }
+            { min: min }
         )
     }
 
     if (hasMax) {
         return uranusStringInterpolate(
             t('event_age_until'),
-            { max }
+            { max: max }
         )
     }
 

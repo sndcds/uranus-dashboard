@@ -341,7 +341,11 @@ const eventEntryTime = computed(() => eventDate.value?.entryTime ?? event.value?
 const eventAllDay = computed(() => eventDate.value?.allDay ?? event.value?.date.allDay ?? false)
 
 const ageLabel = computed(() => {
-  uranusAgeRangeInfo(t, event.value?.minAge, event.value?.maxAge)
+  return uranusAgeRangeInfo(
+      t,
+      event.value?.minAge,
+      event.value?.maxAge
+  )
 })
 
 const priceLabel = computed(() => {
