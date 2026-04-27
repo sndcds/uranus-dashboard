@@ -142,7 +142,7 @@ const formatEventCountdown = (days: number) => {
   }
 
   return uranusStringInterpolate(t('in_n_days'), {
-    n: days + 10
+    n: days
   });
 }
 
