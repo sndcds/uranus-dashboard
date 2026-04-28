@@ -15,6 +15,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Dashboard',
         da: 'Dashboard',
     },
+    help: {
+        de: 'Hilfe',
+        en: 'Help',
+        da: 'Hjælp',
+    },
     error: {
         de: 'Ein Fehler ist aufgetreten',
         en: 'An error has occurred',

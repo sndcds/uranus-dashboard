@@ -1,6 +1,7 @@
 {
   "app_ui_theme": "Tema",
   "dashboard": "Dashboard",
+  "help": "Hjælp",
   "error": "Der er opstået en fejl",
   "unknown_error_occured": "Der opstod en ukendt fejl.",
   "error_missing_permissions": "Du har ikke de nødvendige rettigheder til denne handling.",

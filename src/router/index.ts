@@ -290,6 +290,30 @@ const routes = [
         ],
     },
     {
+        path: '/page/help',
+        component: GenericLayout,
+        meta: {
+            layoutMode: 'zero-padding',
+            customClass: 'uranus-about',
+        },
+        children: [
+            {
+                path: '',
+                name: 'help',
+                component: UranusHtmlView,
+                props: { pageName: 'help' }
+            },
+            {
+                path: ':slug',
+                name: 'help-page',
+                component: UranusHtmlView,
+                props: (route: { params: { slug: any } }) => ({
+                    pageName: `help/${route.params.slug}`
+                })
+            }
+        ]
+    },
+    {
         path: '/:pathMatch(.*)*',
         redirect: '/page/404'
     },

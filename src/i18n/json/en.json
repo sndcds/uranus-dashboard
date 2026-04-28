@@ -1,6 +1,7 @@
 {
   "app_ui_theme": "Theme",
   "dashboard": "Dashboard",
+  "help": "Help",
   "error": "An error has occurred",
   "unknown_error_occured": "An unknown error occurred.",
   "error_missing_permissions": "You do not have the required permissions for this action.",

@@ -1,3 +1,7 @@
+<!--
+  src/component/layout/GenericLayout.vue
+-->
+
 <template>
   <div class="app-layout">
     <!-- Header -->
