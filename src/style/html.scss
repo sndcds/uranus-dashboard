@@ -4,6 +4,7 @@
   color: var(--uranus-color);
   line-height: 1.5;
   max-width: 1024px;
+  padding: 2rem;
 
   * {
     font-size: 1.1rem;
@@ -79,23 +80,16 @@
   }
 }
 
-.uranus-custom-content {
-  width: 100%;
-  height: 100%;
-  padding: 2rem;
+.uranus-about,
+.uranus-404 {
   background: #500fda;
   color: white;
 
   h1 {
-    font-weight: 100;
+    font-weight: 200;
     font-size: 10rem;
     line-height: 8rem;
   }
-
-  p {
-    font-size: 1.3rem;
-    font-weight: 200;
-    letter-spacing: 0.1rem;
-  }
 }
+
 

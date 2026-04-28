@@ -40,11 +40,6 @@
 
         <p>{{ t('password_rules') }}</p>
 
-        <UranusFeedback v-if="!!signupSuccess" type="success">
-          <p><strong>{{ t('signup_success_title') || 'Account created successfully!' }}</strong></p>
-          <p>{{ t('signup_success_message') || 'Please check your email to confirm your account. You will need to verify your email address before you can log in.' }}</p>
-        </UranusFeedback>
-
         <UranusFeedback :show="!!error" type="error">
           {{ error }}
         </UranusFeedback>
@@ -72,9 +67,6 @@
     <UranusCard v-else class="card">
       <h1>{{ t('signup_success_title')}}</h1>
       <p>{{ t('signup_success_message')}}</p>
-      <UranusButton to="/app/login">
-        {{ t('go_to_login') }}
-      </UranusButton>
     </UranusCard>
   </UranusBasicCardPage>
 </template>
@@ -220,23 +212,17 @@ const signup = async () => {
       }),
     })
 
-    if (apiResponse.status !== 201) {
-      error.value = te('signup_failed') ? t('signup_failed') : 'Signup failed'
-      return
-    }
-
     resetForm()
     signupSuccess.value = true
-  } catch (err: unknown) {
-    if (err && typeof err === 'object' && 'status' in err) {
-      const apiErr = err as { status: number; data?: { error?: string } }
-      if (apiErr.status === 409) {
-        error.value = t('user_already_exists')
-        return
-      }
-      error.value = apiErr.data?.error || (te('signup_failed') ? t('signup_failed') : 'Signup failed')
+  } catch (err: any) {
+    if (err.error?.includes('(#1)')) {
+      error.value = t('email_and_password_required')
+    } else if (err.error?.includes('(#2)')) {
+      error.value = t('password__doesnt_meet_security_requirements')
+    } else if (err.error?.includes('(#3)')) {
+      error.value = t('invalid_email_format')
     } else {
-      error.value = te('signup_failed') ? t('signup_failed') : 'Signup failed'
+      error.value = t('signup_failed')
     }
   } finally {
     isSubmitting.value = false
