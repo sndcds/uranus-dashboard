@@ -2,11 +2,17 @@
   <header class="generic-header">
 
     <div class="generic-header__content">
-      <!-- Logo / Brand -->
       <div class="generic-header__brand">
         <UranusLogo />
 
         <nav class="generic-header__nav">
+          <router-link
+              to="/page/about"
+              class="generic-header__nav-link"
+              active-class="generic-header__nav-link--active">
+            Uranus
+          </router-link>
+
           <router-link
               v-if="isAdminPage"
               to="/admin/dashboard"
@@ -30,10 +36,10 @@
           </router-link>
 
           <router-link
-              to="/page/about"
+              to="/page/help"
               class="generic-header__nav-link"
               active-class="generic-header__nav-link--active">
-            {{ t('nav_about') }}
+            {{ t('help') }}
           </router-link>
 
           <router-link

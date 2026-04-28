@@ -1,6 +1,7 @@
 {
   "app_ui_theme": "Design",
   "dashboard": "Dashboard",
+  "help": "Hilfe",
   "error": "Ein Fehler ist aufgetreten",
   "unknown_error_occured": "Ein unbekannter Fehler ist aufgetreten.",
   "error_missing_permissions": "Du hast nicht die erforderlichen Berechtigungen für diese Aktion.",

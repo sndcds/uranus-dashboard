@@ -165,7 +165,7 @@ const login = async () => {
       if (responseData.locale) selectedLocale.value = responseData.locale
       if (responseData.theme) themeStore.setTheme(responseData.theme)
       console.log(JSON.stringify(responseData, null, 2))
-      router.replace(typeof route.query.redirect === 'string' ? route.query.redirect : '/')
+      router.replace(typeof route.query.redirect === 'string' ? route.query.redirect : '/page/about')
     } else {
       error.value = t('invalid_credentials')
     }
