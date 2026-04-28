@@ -8,6 +8,7 @@
   TODO:
   - Loading Indicator
   - Error Message
+  - i18n
 -->
 
 <template>
@@ -15,7 +16,7 @@
   <div v-else-if="spaceStore.error">{{ spaceStore.error }}</div>
 
   <template v-else-if="spaceStore.isLoaded">
-    <h1 class="uranus-admin-page-title">Space Editor</h1>
+    <h1 class="uranus-admin-page-title">{{ t('edit_space') }}</h1>
     <p>{{ spaceStore.draft?.name }}</p>
 
     <nav class="tabs">
@@ -37,12 +38,15 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import SpaceBaseTab from '@/component/space/editor/UranusSpaceBaseTab.vue'
 import SpaceAccessibilityTab from '@/component/space/editor/UranusSpaceAccessibilityTab.vue'
 import { useUranusSpaceStore } from '@/store/spaceStore.ts'
 import type { SpaceDTO } from '@/api/dto/space.dto.ts'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const route = useRoute()
 const spaceStore = useUranusSpaceStore()

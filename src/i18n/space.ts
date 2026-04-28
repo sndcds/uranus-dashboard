@@ -30,6 +30,11 @@ export const uranusI18nSpaceTranslations: Record<string, Record<UranusLocaleKey,
         en: 'A room or area within a venue, such as a hall, room, or designated section.',
         da: 'Et lokale eller område inden for et sted, f.eks. en sal, et rum eller et afgrænset område.',
     },
+    edit_space: {
+        de: 'Raum bearbeiten',
+        en: 'Edit space',
+        da: 'Rediger lokale',
+    },
     delete_space: {
         de: 'Raum löschen',
         en: 'Delete space',

@@ -5,10 +5,16 @@
 <template>
   <section class="links-tab" v-if="store.draft">
 
-    <h2>{{ t('event_links') }}</h2>
+    <h2>{{ t('event_source_link') }}</h2>
+      <UranusInput
+          id="event-link-title"
+          v-model="store.draft.sourceUrl"
+          :label="t('event_link_url')"
+          placeholder="https://"
+      />
 
-    <UranusCard
-        v-for="(url, index) in store.draft.eventLinks ?? []">
+    <h2>{{ t('event_links') }}</h2>
+    <UranusCard v-for="(url, index) in store.draft.eventLinks ?? []">
       <span>#{{ (index + 1) }}</span>
       <UranusGridLayout>
         <UranusFormCol :span="3">
@@ -61,7 +67,7 @@
           :disabled="store.saving || !isDirty"
           :loading="store.saving"
           loading-text="Saving..."
-          @click="commitUrlsTab"
+          @click="onCommit"
       >
         <template #icon><Save /></template>
         {{ t('save')}}
@@ -100,18 +106,19 @@ onMounted(() => {
 })
 
 const isDirty = computed(() => {
-  const draft = store.draft?.eventLinks ?? []
-  const original = store.original?.eventLinks ?? []
+  const draftLinks = store.draft?.eventLinks ?? []
+  const originalLinks = store.original?.eventLinks ?? []
 
-  if (draft.length !== original.length) return true
+  if (draftLinks.length !== originalLinks.length) return true
+  if (store.draft?.sourceUrl !== store.original?.sourceUrl) return true
 
   const isEqual = (a: EventLink, b: EventLink) =>
       a.label === b.label &&
       a.type === b.type &&
       a.url === b.url
 
-  const allMatch = draft.every(d => original.some(o => isEqual(d, o)))
-  const allOriginalMatch = original.every(o => draft.some(d => isEqual(d, o)))
+  const allMatch = draftLinks.every(d => originalLinks.some(o => isEqual(d, o)))
+  const allOriginalMatch = originalLinks.every(o => draftLinks.some(d => isEqual(d, o)))
 
   return !(allMatch && allOriginalMatch)
 })
@@ -127,21 +134,25 @@ function removeUrl(index: number) {
   store.draft.eventLinks.splice(index, 1)
 }
 
-async function commitUrlsTab() {
+async function onCommit() {
   if (!store.draft) return
   store.saving = true
   store.error = null
 
   try {
-    const payload = store.draft.eventLinks!.map(u => ({
-      label: u.label?.trim() || null,
-      type: u.type,
-      url: u.url,
-    }))
+    const payload = {
+      event_links: store.draft.eventLinks!.map(u => ({
+        label: u.label?.trim() || null,
+        type: u.type,
+        url: u.url,
+      })),
+      source_link: store.draft.sourceUrl?.trim() || null
+    }
 
-    await apiFetch(`/api/admin/event/${store.draft.uuid}/links`, {
+    const apiPath = `/api/admin/event/${store.draft.uuid}/links`
+    await apiFetch(apiPath, {
       method: 'PUT',
-      body: JSON.stringify({ event_links: payload }),
+      body: JSON.stringify(payload),
     })
 
     store.original!.eventLinks = store.draft.eventLinks!.map(
