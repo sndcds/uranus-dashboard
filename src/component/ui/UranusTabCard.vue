@@ -110,15 +110,15 @@ function onKeyDown(event: KeyboardEvent, index: number) {
 <style scoped lang="scss">
 .tabs {
   display: flex;
-  flex-wrap: nowrap; /* keep tabs on a single line */
+  flex-wrap: nowrap;
   border-bottom: 2px solid var(--uranus-card-border-color);
-  gap: 0.5rem; /* space between tabs */
-  overflow-x: auto; /* optional: scroll if too many tabs */
+  gap: 0.5rem;
+  overflow-x: auto;
 }
 
 .tab {
   margin: 6px;
-  flex: 0 1 auto; /* width depends on content */
+  flex: 0 1 auto;
   flex-direction: row;
   padding: 4px 12px 4px 36px;
   text-align: center;
@@ -136,7 +136,6 @@ function onKeyDown(event: KeyboardEvent, index: number) {
   white-space: nowrap;
 }
 
-/* Circle indicator */
 .tab-title::before {
   content: '';
   position: absolute;

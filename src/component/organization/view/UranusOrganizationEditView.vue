@@ -100,7 +100,7 @@ onUnmounted(() => {
 .tabs {
   display: flex;
   gap: 0.5rem;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--uranus-color);
 }
 
 .tabs button {
@@ -113,7 +113,7 @@ onUnmounted(() => {
 }
 
 .tabs button.active {
-  border-bottom: 4px solid #000;
+  border-bottom: 4px solid var(--uranus-color);
   font-weight: bold;
 }
 

@@ -95,6 +95,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'External links',
         da: 'Eksterne links',
     },
+    event_source_link: {
+        de: 'Link zur offiziellen Veranstaltungsseite',
+        en: 'Link to the official event page',
+        da: 'Link til den officielle side med begivenheden',
+    },
     event_link_title: {
         de: 'Linktitel',
         en: 'Link title',

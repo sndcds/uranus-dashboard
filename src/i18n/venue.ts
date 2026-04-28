@@ -50,6 +50,11 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Delete venue',
         da: 'Slet sted',
     },
+    edit_venue: {
+        de: 'Veranstaltungsort bearbeiten',
+        en: 'Edit Venue',
+        da: 'Rediger spillested',
+    },
     venue_name: {
         de: 'Name des Veranstaltungsorts',
         en: 'Venue Name',

@@ -1,13 +1,10 @@
 <!--
   src/view/admin/venue/UranusVenueEditView.vue
 
-  Uranus Venue Editor
-
-  2026-02-10, Roald
-
   TODO:
-  - Loading Indicator
+  - Load Indicator
   - Error Message
+  - i18n
 -->
 
 <template>
@@ -15,7 +12,7 @@
   <div v-else-if="venueStore.error">{{ venueStore.error }}</div>
 
   <template v-else-if="venueStore.isLoaded">
-    <h1 class="uranus-admin-page-title">Venue Editor</h1>
+    <h1 class="uranus-admin-page-title">{{ t('edit_venue') }}</h1>
     <p>{{ venueStore.draft?.name }}</p>
 
     <nav class="tabs">
@@ -37,6 +34,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import UranusAdminVenueBaseTab from '@/component/venue/editor/UranusAdminVenueBaseTab.vue'
@@ -44,6 +42,8 @@ import UranusAdminVenueMapTab from '@/component/venue/editor/UranusAdminVenueMap
 import UranusAdminVenueLogoTab from '@/component/venue/editor/UranusAdminVenueLogoTab.vue'
 import UranusAdminVenueImageTab from '@/component/venue/editor/UranusAdminVenueImageTab.vue'
 import { useUranusVenueStore } from '@/store/venueStore.ts'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const route = useRoute()
 const venueStore = useUranusVenueStore()

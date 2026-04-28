@@ -215,6 +215,7 @@ async function updateReleaseFields(payload: {
   margin-top: 1rem;
   flex-wrap: wrap;
   gap: 0.5rem;
+  border-bottom: 1px solid var(--uranus-color);
 }
 
 .tabs button {
@@ -227,7 +228,7 @@ async function updateReleaseFields(payload: {
 }
 
 .tabs button.active {
-  border-bottom: 3px solid #000;
+  border-bottom: 3px solid var(--uranus-color);
   font-weight: bold;
 }
 
