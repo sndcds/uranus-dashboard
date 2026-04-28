@@ -1,3 +1,7 @@
+<!--
+  src/component/organization/editor/UranusAdminOrganizationMapTab.vue
+-->
+
 <template>
   <UranusForm>
     <UranusLocationForm

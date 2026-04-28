@@ -155,32 +155,26 @@ const handleSubmit = async () => {
     isSubmitting.value = true
 
     try {
-        const { status } = await apiFetch('/api/reset-password', {
+        const apiPath = '/api/reset-password'
+        const apiResponse = await apiFetch(apiPath, {
             method: 'POST',
             body: JSON.stringify({ token, new_password: trimmedPassword }),
         })
 
-        if (status >= 200 && status < 300) {
-            success.value = t('reset_password_success')
-            password.value = ''
-            confirmPassword.value = ''
-            fieldErrors.password = null
-            fieldErrors.confirmPassword = null
-            setTimeout(() => {
-                router.push('/app/login')
-            }, 2000)
-        } else {
-            error.value = t('reset_password_failed', { status })
-        }
-    } catch (err: unknown) {
-        if (typeof err === 'object' && err && 'data' in err) {
-            const e = err as { data?: { error?: string } }
-            error.value = e.data?.error || t('reset_password_error_generic')
-        } else if (err instanceof Error) {
-            error.value = err.message || t('reset_password_error_generic')
-        } else {
-            error.value = t('reset_password_error_generic')
-        }
+        success.value = t('reset_password_success')
+        password.value = ''
+        confirmPassword.value = ''
+        fieldErrors.password = null
+        fieldErrors.confirmPassword = null
+        setTimeout(() => {
+            router.push('/app/login')
+        }, 2000)
+    } catch (err: any) {
+      if (err.error?.includes('(#1)')) {
+        error.value = t('password__doesnt_meet_security_requirements')
+      } else {
+        error.value = t('signup_failed')
+      }
     } finally {
         isSubmitting.value = false
     }

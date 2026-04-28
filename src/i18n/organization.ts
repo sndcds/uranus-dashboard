@@ -65,26 +65,6 @@ export const uranusI18nOrganizationTranslations: Record<string, Record<UranusLoc
         en: 'Upload images and logos for your organization.',
         da: 'Upload billeder og logoer for din organisation.',
     },
-    organization_main_logo: {
-        de: 'Logo',
-        en: 'Main Logo',
-        da: 'Hovedlogo',
-    },
-    organization_light_theme_logo: {
-        de: 'Dunkles Logo',
-        en: 'Dark Mode Logo',
-        da: 'Mørkt logo',
-    },
-    organization_dark_theme_logo: {
-        de: 'Helles Logo',
-        en: 'Light Logo',
-        da: 'Lyst logo',
-    },
-    organization_avatar: {
-        de: 'Avatar',
-        en: 'Avatar',
-        da: 'Avatar',
-    },
     edit_organization_image: {
         de: 'Organisationsbild bearbeiten',
         en: 'Edit organization image',

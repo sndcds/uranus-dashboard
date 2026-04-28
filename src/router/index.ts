@@ -167,13 +167,72 @@ const routes = [
         component: UranusEventSlideshowView,
     },
     {
+        path: '/app',
+        component: GenericLayout,
+        meta: { guestOnly: true },
+        children: [
+            {
+                path: 'login',
+                name: 'app-login',
+                component: UranusLoginView,
+            },
+            {
+                path: 'signup',
+                name: 'app-signup',
+                component: UranusSignupView,
+            },
+            {
+                path: 'forgot-password',
+                name: 'app-forgot-password',
+                component: UranusForgotPasswordView,
+            },
+            {
+                path: 'reset-password',
+                name: 'app-reset-password',
+                component: UranusResetPasswordView,
+            },
+            {
+                path: 'activate/account',
+                name: 'app-activate-account',
+                component: UserActivateView,
+            }
+        ],
+    },
+    {
         path: '/',
         component: GenericLayout,
         children: [
             {
+                path: 'page/404',
+                name: '404',
+                component: UranusHtmlView,
+                meta: {
+                    customClass: 'uranus-404',
+                    layoutMode: 'zero-padding',
+                },
+                props: {
+                    pageName: '404'
+                }
+            },
+            {
+                path: 'page/about',
+                name: 'about',
+                component: UranusHtmlView,
+                meta: {
+                    customClass: 'uranus-about',
+                    layoutMode: 'zero-padding',
+                },
+                props: {
+                    pageName: 'about'
+                }
+            },
+            {
                 path: '/page/:pageName(.*)',
                 component: UranusHtmlView,
-                meta: { layoutMode: 'zero-padding', customClass: 'uranus-custom-content' },
+                meta: {
+                    layoutMode: 'zero-padding',
+                    customClass: 'uranus-custom-content'
+                },
                 props: (route: RouteLocationNormalized) => ({
                     pageName: route.params.pageName as string
                 })
@@ -228,38 +287,6 @@ const routes = [
                 name: 'dev-get-events',
                 component: UranusDevGetEventsView
             },
-        ],
-    },
-    {
-        path: '/app',
-        component: GenericLayout,
-        meta: { guestOnly: true },
-        children: [
-            {
-                path: 'login',
-                name: 'app-login',
-                component: UranusLoginView,
-            },
-            {
-                path: 'signup',
-                name: 'app-signup',
-                component: UranusSignupView,
-            },
-            {
-                path: 'forgot-password',
-                name: 'app-forgot-password',
-                component: UranusForgotPasswordView,
-            },
-            {
-                path: 'reset-password',
-                name: 'app-reset-password',
-                component: UranusResetPasswordView,
-            },
-            {
-                path: 'activate/account',
-                name: 'app-activate-account',
-                component: UserActivateView,
-            }
         ],
     },
     {

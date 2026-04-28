@@ -599,6 +599,46 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Alles zurücksetzen',
         en: 'Reset all',
         da: 'Nulstil alt',
+    },
+    main_logo: {
+        de: 'Hauptlogo',
+        en: 'Main Logo',
+        da: 'Hovedlogo',
+    },
+    light_theme_logo: {
+        de: 'Dunkles Logo',
+        en: 'Dark  logo',
+        da: 'Mørkt logo',
+    },
+    dark_theme_logo: {
+        de: 'Helles Logo',
+        en: 'Light logo',
+        da: 'Lyst logo',
+    },
+    avatar: {
+        de: 'Avatar',
+        en: 'Avatar',
+        da: 'Avatar',
+    },
+    email_and_password_required: {
+        de: 'Bitte E-Mail und Passwort eingeben.',
+        en: 'Please enter your email and password.',
+        da: 'Indtast venligst e-mail og adgangskode.',
+    },
+    password__doesnt_meet_security_requirements: {
+        de: 'Das Passwort erfüllt nicht die Sicherheitsanforderungen.',
+        en: 'The password does not meet the security requirements.',
+        da: 'Adgangskoden opfylder ikke sikkerhedskravene.',
+    },
+    invalid_email_format: {
+        de: 'Bitte gib eine gültige E-Mail-Adresse ein.',
+        en: 'Please enter a valid email address.',
+        da: 'Indtast en gyldig e-mailadresse.',
+    },
+    signup_failed: {
+        de: 'Registrierung fehlgeschlagen',
+        en: 'Signup failed',
+        da: 'Registrering mislykkedes',
     }
 }
 

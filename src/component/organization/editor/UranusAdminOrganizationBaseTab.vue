@@ -1,5 +1,5 @@
 <!--
-  src/component/event/editor/UranusOrganizationBaseTab.vue
+  src/component/event/editor/UranusAdminOrganizationBaseTab.vue
 
   2026-02-08, Roald
 -->
@@ -13,7 +13,7 @@
 
     <UranusFormRow>
       <UranusLabel id="org-description" :label="t('description')">
-        <UranusTextEditor v-model="org.description"/>
+        <UranusTextEditor v-model="org.description!"/>
       </UranusLabel>
     </UranusFormRow>
 

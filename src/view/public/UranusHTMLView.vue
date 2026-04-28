@@ -23,7 +23,7 @@ watchEffect(async () => {
   const key = `/src/page/${pageName.value}/${locale.value}.html`
 
   if (pages[key]) {
-    htmlContent.value = await pages[key]() // ✅ Works in dev & production
+    htmlContent.value = await pages[key]()
   } else {
     htmlContent.value = `<p>Content not available for "${pageName.value}" in "${locale.value}"</p>`
     console.error('HTML page not found:', key)

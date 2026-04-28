@@ -54,7 +54,7 @@ export const uranusI18nImageTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Willst du dieses Bild wirklich löschen?',
         en: 'Do you really want to delete this image?',
         da: 'Vil du virkelig slette dette billede?',
-    }
+    },
 }
 
 export default uranusI18nImageTranslations

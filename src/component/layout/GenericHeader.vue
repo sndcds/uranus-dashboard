@@ -210,15 +210,7 @@ const userAvatarUrl = computed({
 
 const userInitials = computed(() => {
   const name = userName.value
-  const names = name.split(' ').filter(n => n.length > 0)
-  if (names.length >= 2) {
-    const first = names[0]?.[0]
-    const last = names[names.length - 1]?.[0]
-    if (first && last) {
-      return (first + last).toUpperCase()
-    }
-  }
-  return name.substring(0, 2).toUpperCase()
+  return name.substring(0, 1).toUpperCase()
 })
 
 const toggleUserMenu = () => {
