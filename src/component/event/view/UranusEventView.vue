@@ -103,6 +103,13 @@
           </div>
         </div>
 
+        <div style="display: flex; gap: 10px;">
+          <UranusSquareSVG path="/icons/facebook.svg" size="22px" color="#1877F2" />
+          <UranusSquareSVG path="/icons/instagram.svg" size="22px" color="#333" />
+          <UranusSquareSVG path="/icons/mastodon.svg" size="22px" color="#6364FF" />
+        </div>
+
+
         <!--UranusEmbedYoutubeVideo url="https://www.youtube.com/watch?v=63zGtiv89bA" /-->
       </section>
 
@@ -234,6 +241,7 @@ import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash } from 'lucide-vue-next'
+import UranusSquareSVG from '@/component/ui/UranusSquareSVG.vue'
 
 const route = useRoute()
 
