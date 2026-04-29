@@ -18,6 +18,11 @@
               @click="setDisplayMode('grid')"
           />
           <UranusIconAction
+              :icon="Grip"
+              :selected="displayMode === 'compact'"
+              @click="setDisplayMode('compact')"
+          />
+          <UranusIconAction
               :icon="Rows3"
               :selected="displayMode === 'list'"
               @click="setDisplayMode('list')"
@@ -29,15 +34,12 @@
           />
         </div>
 
-        <UranusIconAction
-            :label="t('reset_all')"
-            :icon="FunnelX"
-            style="padding-left: 0;"
-            @click="onResetFilter()"
-        />
+        <UranusButton size="small" variant="tertiary" @click="onResetFilter()">
+          {{ t('reset_filter') }}
+        </UranusButton>
 
         <div style="display: none;">{{ locale }}</div>
-        <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
+        <!--div class="calendar-event-count-info">{{ eventCountInfo }}</div-->
 
       </div>
 
@@ -70,10 +72,23 @@
           :event-list-store="eventListStore"
           :type-lookup-store="typeLookupStore"
       />
-
       <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->
       <div></div><div></div><div></div>
     </div>
+
+    <div v-else-if="displayMode=='compact'" class="calendar-compact-layout">
+      <UranusEventCompactCalendarCard
+          v-for="event in eventListStore.events"
+          :key="event.uuid"
+          :event="event"
+          :locale="locale"
+          :event-list-store="eventListStore"
+          :type-lookup-store="typeLookupStore"
+      />
+      <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->
+      <div></div><div></div><div></div>
+    </div>
+
     <div v-else-if="displayMode=='list'" class="calendar-list-layout">
       <UranusEventCalendarListRow
           v-for="event in eventListStore.events"
@@ -118,7 +133,8 @@ import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendar
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusVenuesMap from '@/component/map/UranusVenuesMap.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { Rows3, LayoutGrid, Map, Eye, FunnelX } from 'lucide-vue-next'
+import { Rows3, LayoutGrid, Map, Grip, Eye, FunnelX } from 'lucide-vue-next'
+import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -127,8 +143,8 @@ const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
 const eventListStore = useEventListStore()
 
-const displayMode = ref<'list' | 'grid' | 'map'>('grid')
-function setDisplayMode(mode: 'list' | 'grid' | 'map') {
+const displayMode = ref<'list' | 'grid' | 'compact' | 'map'>('grid')
+function setDisplayMode(mode: 'list' | 'grid' | 'compact' | 'map') {
   displayMode.value = mode
 }
 
@@ -246,10 +262,23 @@ onBeforeUnmount(() => {
   padding: 1rem;
 }
 
+.calendar-compact-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 4px;
+  width: 100%;
+  padding: 1rem;
+}
+
+.calendar-compact-layout > * {
+  aspect-ratio: 1 / 1;
+  max-width: 260px;
+}
+
 .calendar-list-layout {
   display: flex;
   flex-direction: column;
-  gap: 0px;
+  gap: 0;
   width: 100%;
   padding: 1rem;
 }

@@ -127,7 +127,7 @@ onBeforeUnmount(() => {
 .ProseMirror {
   border: 0 solid #ccc;
   border-radius: 5px;
-  padding: 1rem;
+  padding: 0.1rem 0.7rem;
   min-height: 150px;
   background: var(--uranus-input-bg);
   outline: none;

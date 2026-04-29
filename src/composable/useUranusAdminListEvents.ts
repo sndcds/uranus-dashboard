@@ -6,7 +6,7 @@
 
 import { ref } from "vue";
 import type { AdminEventListItemModel } from '@/domain/event/adminEventListItem.model.ts'
-import { camelCaseKeys } from "./useAPI.ts";
+import { camelCaseKeys } from "./useUranusAPI.ts";
 import { apiFetch } from "@/api.ts";
 
 export function useUranusAdminListEvents() {
