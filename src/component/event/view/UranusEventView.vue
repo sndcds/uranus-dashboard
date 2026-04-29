@@ -154,13 +154,13 @@
             <p>{{ event.meetingPoint }}</p>
           </div>
 
-          <div v-if="priceLabel || priceTypeLabel">
+          <div v-if="priceText || priceTypeLabel">
             <p class="uranus-public-event-info-label">{{ t('event_price') }}</p>
             <template v-if="priceTypeLabel">
               {{ priceTypeLabel }}<br>
             </template>
-            <template v-if="priceLabel">
-              {{ priceLabel }}
+            <template v-if="priceText">
+              {{ priceText }}
             </template>
           </div>
 
@@ -175,7 +175,7 @@
           <div v-if="(event.maxAttendees ?? 0) > 0 || ageLabel || !!event.participationInfo">
             <p class="uranus-public-event-info-label">{{ t('event_participation_info') }}</p>
             <template v-if="(event.maxAttendees ?? 0) > 0">
-              <p>{{ t('event_max_attendees', { count: event.maxAttendees }) }}</p>
+              <p>{{ maxAttendeesLabel }}</p>
             </template>
             {{ ageLabel }}<br>
             <template v-if="event.participationInfo">
@@ -223,7 +223,7 @@ import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 import { type PublicEvent, mapPublicEventFromDTO } from '@/domain/event/publicEvent.model.ts'
 import { type PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
-import { uranusAgeRangeInfo, uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
+import {uranusAgeRangeInfo, uranusPriceText, uranusStringInterpolate} from '@/util/UranusStringUtils.ts'
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
@@ -254,7 +254,6 @@ const loadingLabel = computed(() => t('loading'))
 const loadError = ref<string | null>(null)
 const isDownloadingIcs = ref(false)
 const isPreview = computed(() => route.params.mode === 'preview')
-
 
 // Watch for changes in route params
 watch(
@@ -341,48 +340,22 @@ const eventEntryTime = computed(() => eventDate.value?.entryTime ?? event.value?
 const eventAllDay = computed(() => eventDate.value?.allDay ?? event.value?.date.allDay ?? false)
 
 const ageLabel = computed(() => {
-  return uranusAgeRangeInfo(
-      t,
-      event.value?.minAge,
-      event.value?.maxAge
-  )
+  return uranusAgeRangeInfo(t, event.value?.minAge, event.value?.maxAge)
 })
 
-const priceLabel = computed(() => {
-  const min = event.value?.minPrice
-  const max = event.value?.maxPrice
-  const currency = event.value?.currency ?? ''
+const maxAttendeesLabel = computed(() => {
+    return uranusStringInterpolate(t('event_max_count_attendees'), { count: event.value?.maxAttendees })
+})
 
-  // Helper to format numbers according to locale with 2 decimals
-  const formatNumber = (value: number) => {
-    return new Intl.NumberFormat(navigator.language, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(value)
-  }
 
-  if (min && max) {
-    return uranusStringInterpolate(t('event_price_between_sentence'), {
-      min: formatNumber(min), max: formatNumber(max), currency: currency
-    });
-  }
-  if (min) {
-    return uranusStringInterpolate(t('event_price_from_sentence'), {
-      min: formatNumber(min), currency: currency
-    });
-  }
-  if (max) {
-    return uranusStringInterpolate(t('event_price_until_sentence'), {
-      max: formatNumber(max), currency: currency
-    });
-  }
-  return null
+const priceText = computed(() => {
+  return uranusPriceText(t, event.value?.minPrice, event.value?.maxPrice, event.value?.currency ?? '')
 })
 
 const priceTypeLabel = computed(() => {
-  const map: Record<string, string> = {
+  const map: Record<string, string | null> = {
     not_specified: 'event_price_not_specified',
-    regular_price: 'event_price_regular',
+    regular_price: null,
     free: 'event_price_free',
     donation: 'event_price_donation',
     tiered_prices: 'event_price_tiered',

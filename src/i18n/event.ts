@@ -120,7 +120,7 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Add link',
         da: 'Tilføj link',
     },
-    event_online_url: {
+    event_online_link: {
         de: 'Link zur Online-Veranstaltung',
         en: 'Online Event Link',
         da: 'Link til online begivenhed',
@@ -486,6 +486,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: "Fra ~~min~~ til ~~max~~ år",
     },
     event_max_attendees: {
+        de: "Maximal Teilnehmende",
+        en: "Max attendees",
+        da: "Maks deltagere",
+    },
+    event_max_count_attendees: {
         de: "Maximal ~~count~~ Teilnehmende",
         en: "Max ~~count~~ attendees",
         da: "Maks ~~count~~ deltagere",
@@ -700,6 +705,36 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Please publish only content for which you hold all necessary usage rights and which does not infringe third-party copyrights. By clicking “Save”, you confirm this.',
         da: 'Publicér kun indhold, som du har alle nødvendige brugsrettigheder til, og som ikke krænker tredjeparts ophavsret. Ved at klikke på “Gem” bekræfter du dette.',
     },
+    event_main_image: {
+        de: 'Hauptbild',
+        en: 'Main image',
+        da: 'Hovedbillede'
+    },
+    event_online_event: {
+        de: 'Online Veranstaltung',
+        en: 'Online event',
+        da: 'Online begivenhed'
+    },
+    event_online_registration_link: {
+        de: "Anmeldelink",
+        en: "Registration link",
+        da: "Tilmeldingslink"
+    },
+    event_online_registration_last_date: {
+        de: "Anmeldeschluss",
+        en: "Registration deadline",
+        da: "Tilmeldingsfrist"
+    },
+    event_online_contact_mail: {
+        de: "Kontakt E-Mail",
+        en: "Contact email",
+        da: "Kontakt e-mail"
+    },
+    event_online_contact_phone: {
+        de: "Kontakt Telefon",
+        en: "Contact phone",
+        da: "Kontakt telefon"
+    }
 }
 
 export default uranusI18nEventTranslations

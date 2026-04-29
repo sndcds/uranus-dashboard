@@ -200,6 +200,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Image',
         da: 'Billede',
     },
+    links: {
+        de: 'Links',
+        en: 'Links',
+        da: 'Links',
+    },
     name: {
         de: 'Name',
         en: 'Name',
@@ -604,6 +609,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Alles zurücksetzen',
         en: 'Reset all',
         da: 'Nulstil alt',
+    },
+    reset_filter: {
+        de: 'Filter zurücksetzen',
+        en: 'Reset filter',
+        da: 'Nulstil filter',
     },
     main_logo: {
         de: 'Hauptlogo',

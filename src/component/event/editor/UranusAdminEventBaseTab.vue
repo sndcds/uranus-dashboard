@@ -5,6 +5,16 @@
 <template>
   <section class="base-tab">
     <UranusForm>
+
+      <UranusFormRow>
+        <UranusLabel id="event-language" :label="t('content_language')">
+          <UranusLanguageSelect
+              v-model="draftContentLanguage"
+              :label="t('content_language')"
+          />
+        </UranusLabel>
+      </UranusFormRow>
+
       <UranusLabel id="event-description" :label="t('event_category')">
         <UranusEventCategorySelector
             v-model="store.draft!.categories"
@@ -17,16 +27,8 @@
           :contextUuid="event.uuid"
           identifier="main"
           :width="420"
+          :label="t('event_main_image')"
       />
-
-      <UranusFormRow>
-        <UranusLabel id="event-language" :label="t('content_language')">
-          <UranusLanguageSelect
-              v-model="draftContentLanguage"
-              :label="t('content_language')"
-          />
-        </UranusLabel>
-      </UranusFormRow>
 
       <UranusFormRow>
         <UranusTextfield id="event-title" size="big" :label="t('title')" v-model="event.title" />
@@ -36,20 +38,19 @@
         <UranusTextfield id="event-subtitle" size="medium" :label="t('subtitle')" v-model="event.subtitle" />
       </UranusFormRow>
 
-
       <UranusFormRow>
-        <UranusLabel id="event-description" :label="t('description')">
+        <UranusLabel id="event-description" :label="t('summary')">
           <UranusTextEditor
-              v-model="descriptionProxy"
+              v-model="summaryProxy"
               ref="descriptionEditor"
           />
         </UranusLabel>
       </UranusFormRow>
 
       <UranusFormRow>
-        <UranusLabel id="event-description" :label="t('summary')">
+        <UranusLabel id="event-description" :label="t('description')">
           <UranusTextEditor
-              v-model="summaryProxy"
+              v-model="descriptionProxy"
               ref="descriptionEditor"
           />
         </UranusLabel>

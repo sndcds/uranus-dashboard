@@ -29,15 +29,12 @@
           />
         </div>
 
-        <UranusIconAction
-            :label="t('reset_all')"
-            :icon="FunnelX"
-            style="padding-left: 0;"
-            @click="onResetFilter()"
-        />
+        <UranusButton size="small" variant="tertiary" @click="onResetFilter()">
+          {{ t('reset_filter') }}
+        </UranusButton>
 
         <div style="display: none;">{{ locale }}</div>
-        <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
+        <!--div class="calendar-event-count-info">{{ eventCountInfo }}</div-->
 
       </div>
 

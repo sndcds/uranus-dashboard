@@ -3,6 +3,7 @@
  */
 
 // TODO: Check
+
 export function uranusCapitalizeFirst(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1)
 }
@@ -187,45 +188,34 @@ export function uranusAgeText(
     return '';
 }
 
-// TODO: Check
+
 export function uranusPriceText(
     t: (key: string) => string,
-    minPrice: number | undefined,
-    maxPrice: number | undefined,
-    locale: string | null,
+    min: number | null | undefined,
+    max: number | null | undefined,
     currency?: string | null
-): string {
-    const resolvedLocale = locale ?? 'en';
-    const hasCurrency = !!currency;
-
-    const options: Intl.NumberFormatOptions = {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-        style: hasCurrency ? 'currency' : 'decimal',
-    };
-
-    if (hasCurrency && currency) {
-        options.currency = currency;
+): string | null {
+    const formatNumber = (value: number) => {
+        return new Intl.NumberFormat(navigator.language, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(value)
     }
 
-    const formatter = new Intl.NumberFormat(resolvedLocale, options);
-
-    if (minPrice !== undefined && maxPrice === undefined) {
-        const template = t('price_from_sentence'); // e.g. "From {price}"
-        return template.replace('{price}', formatter.format(minPrice));
+    if (min && max) {
+        return uranusStringInterpolate(t('event_price_between_sentence'), {
+            min: formatNumber(min), max: formatNumber(max), currency: currency
+        });
     }
-
-    if (minPrice === undefined && maxPrice !== undefined) {
-        const template = t('price_to_sentence'); // e.g. "Up to {price}"
-        return template.replace('{price}', formatter.format(maxPrice));
+    if (min) {
+        return uranusStringInterpolate(t('event_price_from_sentence'), {
+            min: formatNumber(min), currency: currency
+        });
     }
-
-    if (minPrice !== undefined && maxPrice !== undefined) {
-        const template = t('price_range_sentence'); // e.g. "{from} – {to}"
-        return template
-            .replace('{from}', formatter.format(minPrice))
-            .replace('{to}', formatter.format(maxPrice));
+    if (max) {
+        return uranusStringInterpolate(t('event_price_until_sentence'), {
+            max: formatNumber(max), currency: currency
+        });
     }
-
-    return '';
+    return null
 }

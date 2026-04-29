@@ -4,30 +4,71 @@
 
 <template>
   <section class="venue-tab">
-
-    <UranusCard class="event-venue">
-      <UranusInfoHeading :icon="MapPin" :strokeWidth="1.5">
-        {{ choosableVenuesStore.getVenueLabel(draft.venueUuid, draft.spaceUuid) }}
-      </UranusInfoHeading>
-
-      <UranusButton variant="tertiary" size="small" :onclick="openVenueModal">
-        {{ t('event_select_venue') }}
-      </UranusButton>
-    </UranusCard>
-
     <UranusForm>
-      <UranusTextfield
-          id="meeting-point"
-          :label="t('event_meeting_point')"
-          v-model="draft.meetingPoint"
-      />
 
-      <UranusTextfield
-          id="online-event-url"
-          :label="t('event_online_url')"
-          placeholder="https://..."
-          v-model="draft.onlineLink"
-      />
+      <h2>{{t('venue') }}</h2>
+      <UranusCard class="event-venue">
+        <UranusInfoHeading :icon="MapPin" :strokeWidth="1.5">
+          {{ choosableVenuesStore.getVenueLabel(draft.venueUuid, draft.spaceUuid) }}
+        </UranusInfoHeading>
+
+        <UranusButton variant="tertiary" size="small" :onclick="openVenueModal">
+          {{ t('event_select_venue') }}
+        </UranusButton>
+      </UranusCard>
+
+      <UranusCard>
+        <h2>{{t('event_meeting_point') }}</h2>
+        <UranusTextfield
+            id="meeting-point"
+            :label="t('event_meeting_point')"
+            v-model="draft.meetingPoint"
+        />
+      </UranusCard>
+
+      <UranusCard>
+        <h2>{{t('event_online_event') }}</h2>
+
+        <UranusTextfield
+            id="online-url"
+            :label="t('event_online_link')"
+            placeholder="https://..."
+            v-model="draft.onlineLink"
+        />
+
+        <UranusGridLayout>
+          <UranusFormCol :span="6">
+            <UranusTextfield
+                id="online-registration-link"
+                :label="t('event_online_registration_link')"
+            />
+          </UranusFormCol>
+
+          <UranusFormCol :span="6">
+            <UranusDateInput
+                id="online-registration-last_date"
+                :label="t('event_online_registration_last_date')"
+            />
+          </UranusFormCol>
+
+          <UranusFormCol :span="6">
+            <UranusTextfield
+                id="online-contact-email"
+                :label="t('event_online_contact_mail')"
+            />
+          </UranusFormCol>
+
+          <UranusFormCol :span="6">
+            <UranusTextfield
+                id="online-contact-phone"
+                :label="t('event_online_contact_phone')"
+            />
+          </UranusFormCol>
+        </UranusGridLayout>
+
+
+
+      </UranusCard>
 
       <UranusFormActions>
         <UranusButton :disabled="store.saving || !isDirty" @click="resetTab">
@@ -45,6 +86,7 @@
           {{ t('save')}}
         </UranusButton>
       </UranusFormActions>
+
     </UranusForm>
   </section>
 
@@ -70,6 +112,10 @@ import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import { Save, Undo, MapPin } from 'lucide-vue-next'
+import UranusFormRow from "@/component/ui/UranusFormRow.vue";
+import UranusGridLayout from "@/component/ui/UranusGridLayout.vue";
+import UranusFormCol from "@/component/ui/UranusFormCol.vue";
+import UranusDateInput from "@/component/ui/UranusDateInput.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 
