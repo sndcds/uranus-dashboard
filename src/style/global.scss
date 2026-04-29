@@ -21,6 +21,8 @@
   --uranus-font-ui: 'Mulish', "MomoTrustSans", font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
   --uranus-font-text: 'Mulish', "MomoTrustSans", font-familysystem-ui, -apple-system, 'system-ui', 'Segoe UI', 'Avenir', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
 
+  --uranus-square-svg-color: var(--uranus-color-primary, #222);
+
   --uranus-hue: 266;
   --uranus-active-hue: 286;
   --uranus-link-hue: 286;
@@ -200,6 +202,8 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
+
+  --uranus-square-svg-color: var(--uranus-color);
 
   --uranus-hue: 266;
   --uranus-active-hue: 280;

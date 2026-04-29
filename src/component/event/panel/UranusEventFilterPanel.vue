@@ -14,6 +14,22 @@
 <template>
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
+    <!-- Start & End Date -->
+    <UranusFormRow :cols="2">
+      <UranusDateInput
+          id="start-date"
+          v-model="filterStore.filter.startDate"
+          :label="t('calendar_filter_start_date')"
+          style="width: 100%;"
+      />
+      <UranusDateInput
+          id="end-date"
+          v-model="filterStore.filter.endDate"
+          :label="t('calendar_filter_end_date')"
+          style="width: 100%;"
+      />
+    </UranusFormRow>
+
     <div class="uranus-filter-accordions">
       <UranusEventCategorySelectorAccordion v-model="filterStore.filter.categories" :multiple="true" />
 
@@ -33,22 +49,6 @@
               id="city-input"
               v-model="filterStore.filter.city!"
               :label="t('calendar_filter_city_label')"
-          />
-        </UranusFormRow>
-
-        <!-- Start & End Date -->
-        <UranusFormRow :cols="2">
-          <UranusDateInput
-              id="start-date"
-              v-model="filterStore.filter.startDate"
-              :label="t('calendar_filter_start_date')"
-              style="width: 100%;"
-          />
-          <UranusDateInput
-              id="end-date"
-              v-model="filterStore.filter.endDate"
-              :label="t('calendar_filter_end_date')"
-              style="width: 100%;"
           />
         </UranusFormRow>
 

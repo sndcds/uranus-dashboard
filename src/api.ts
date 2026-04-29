@@ -1,6 +1,6 @@
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import router from '@/router/index.ts'
-import type { ThemeMode } from '@/util/theme.ts'
+import type { ThemeMode } from '@/composable/useTheme.ts'
 
 let refreshPromise: Promise<boolean> | null = null
 

@@ -351,7 +351,7 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         da: 'Regler til adgangskoden: Brug mindst 12 tegn og undgå almindelige sekvenser (f.eks. 123, abc) samt e-mailadresser.',
     },
     website: {
-        de: 'Homepage',
+        de: 'Webseite',
         en: 'Website',
         da: 'Hjemmeside',
     },

@@ -77,6 +77,8 @@ const baseFields = [
   'buildingLevel',
   'areaSqm',
   'accessibilitySummary',
+  'totalCapacity',
+  'seatingCapacity',
 ] as const
 
 const normalize = (val: any) =>
