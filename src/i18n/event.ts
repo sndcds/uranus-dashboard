@@ -40,16 +40,6 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: '~~count~~ events',
         da: '~~count~~ begivenheder'
     },
-    event_count_found_singular: {
-        de: '1 Veranstaltung gefunden',
-        en: '1 events found',
-        da: '1 begivenheder fundet',
-    },
-    event_count_found_plural: {
-        de: '~~count~~ Veranstaltung gefunden',
-        en: '~~count~~ events found',
-        da: '~~count~~ begivenheder funden',
-    },
     event_category: {
         de: 'Kategorie',
         en: 'Category',
