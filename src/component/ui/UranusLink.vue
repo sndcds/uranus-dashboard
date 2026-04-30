@@ -21,7 +21,8 @@
       {{ url }}
     </span>
 
-    &nbsp;↗
+    <!--template>&nbsp;↗</template-->
+
   </a>
 </template>
 
@@ -36,11 +37,15 @@ const props = defineProps<{
   size?: string;
 }>();
 
+
+
 const size = props.size ?? "22px";
 
-/**
- * Central icon registry (ONLY allowed icons)
- */
+const FALLBACK_ICON = {
+  path: "/icons/link-45deg.svg",
+  color: "#333",
+};
+
 const ICONS: Record<
     string,
     { path: string; color: string }
@@ -61,12 +66,9 @@ const ICONS: Record<
   uranus: { path: "/icons/uranus.svg", color: "#6D26FC" },
 };
 
-/**
- * Resolve icon safely
- */
 const icon = computed(() => {
-  if (!props.type) return null;
-  return ICONS[props.type] ?? null;
+  if (!props.type) return FALLBACK_ICON;
+  return ICONS[props.type] ?? FALLBACK_ICON;
 });
 </script>
 
@@ -76,6 +78,7 @@ const icon = computed(() => {
   align-items: center;
   gap: 1rem;
   text-decoration: none;
+  color: var(--uranus-color);
 }
 
 .uranus-link-label {
