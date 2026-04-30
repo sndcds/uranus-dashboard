@@ -105,7 +105,7 @@
                 :url="link.url!"
                 :type="link.type"
                 :label="link.label"
-                size="24px"
+                size="20px"
             />
           </div>
         </div>
