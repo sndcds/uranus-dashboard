@@ -94,24 +94,22 @@
         </div>
 
         <!-- URLs -->
-        <div v-if="event.eventLinks && event.eventLinks.length > 0" class="uranus-public-event-section">
+        <div
+            v-if="event.eventLinks && event.eventLinks.length > 0"
+            class="uranus-public-event-section"
+        >
           <div class="uranus-public-event-detail-links">
-            <a v-for="(link, index) in event.eventLinks" :key="index" :href="link.url!" target="_blank"
-               rel="noopener noreferrer" class="uranus-public-event-detail-link">
-              {{ link.label || link.url }}&nbsp;↗
-            </a>
+            <UranusLink
+                v-for="(link, index) in event.eventLinks"
+                :key="index"
+                :url="link.url!"
+                :type="link.type"
+                :label="link.label"
+                size="28px"
+            />
           </div>
         </div>
-
-        <div style="display: flex; gap: 10px;">
-          <UranusSquareSVG path="/icons/facebook.svg" size="22px" color="#1877F2" />
-          <UranusSquareSVG path="/icons/instagram.svg" size="22px" color="#333" />
-          <UranusSquareSVG path="/icons/mastodon.svg" size="22px" color="#6364FF" />
-        </div>
-
-
-        <!--UranusEmbedYoutubeVideo url="https://www.youtube.com/watch?v=63zGtiv89bA" /-->
-      </section>
+     </section>
 
       <!-- Sidebar -->
       <aside class="uranus-public-event-sidebar">
@@ -242,6 +240,7 @@ import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash } from 'lucide-vue-next'
 import UranusSquareSVG from '@/component/ui/UranusSquareSVG.vue'
+import UranusLink from '@/component/ui/UranusLink.vue'
 
 const route = useRoute()
 
