@@ -39,7 +39,7 @@
         </UranusButton>
 
         <div style="display: none;">{{ locale }}</div>
-        <!--div class="calendar-event-count-info">{{ eventCountInfo }}</div-->
+        <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
 
       </div>
 
