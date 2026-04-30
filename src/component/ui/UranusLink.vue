@@ -21,7 +21,8 @@
       {{ url }}
     </span>
 
-    &nbsp;↗
+    <!--template>&nbsp;↗</template-->
+
   </a>
 </template>
 
@@ -76,6 +77,7 @@ const icon = computed(() => {
   align-items: center;
   gap: 1rem;
   text-decoration: none;
+  color: var(--uranus-color);
 }
 
 .uranus-link-label {

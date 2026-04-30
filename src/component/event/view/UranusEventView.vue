@@ -105,7 +105,7 @@
                 :url="link.url!"
                 :type="link.type"
                 :label="link.label"
-                size="28px"
+                size="24px"
             />
           </div>
         </div>
@@ -239,7 +239,6 @@ import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash } from 'lucide-vue-next'
-import UranusSquareSVG from '@/component/ui/UranusSquareSVG.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
 
 const route = useRoute()
