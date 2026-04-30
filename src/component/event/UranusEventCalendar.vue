@@ -85,8 +85,6 @@
           :event-list-store="eventListStore"
           :type-lookup-store="typeLookupStore"
       />
-      <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->
-      <div></div><div></div><div></div>
     </div>
 
     <div v-else-if="displayMode=='list'" class="calendar-list-layout">
@@ -133,7 +131,7 @@ import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendar
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusVenuesMap from '@/component/map/UranusVenuesMap.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { Rows3, LayoutGrid, Map, Grip, Eye, FunnelX } from 'lucide-vue-next'
+import { Rows3, LayoutGrid, Map, Grip } from 'lucide-vue-next'
 import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -342,7 +340,9 @@ onBeforeUnmount(() => {
 
 /* Infinite scroll helpers */
 .load-more-trigger {
-  height: 0px;
+  width: 100px;
+  height: 30px;
+  background: red;
 }
 
 .loading-indicator {
