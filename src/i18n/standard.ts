@@ -654,7 +654,17 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Registrierung fehlgeschlagen',
         en: 'Signup failed',
         da: 'Registrering mislykkedes',
-    }
+    },
+    result_count_singular: {
+        de: '1 Ergebnis',
+        en: '1 result',
+        da: '1 resultat',
+    },
+    result_count_plural: {
+        de: '~~count~~ Ergebnisse',
+        en: '~~count~~ results',
+        da: '~~count~~ resultater'
+    },
 }
 
 export default uranusI18nStandardTranslations

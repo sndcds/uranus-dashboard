@@ -39,7 +39,7 @@
         </UranusButton>
 
         <div style="display: none;">{{ locale }}</div>
-        <!--div class="calendar-event-count-info">{{ eventCountInfo }}</div-->
+        <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
 
       </div>
 
@@ -154,7 +154,7 @@ const getTypeName = (typeId: number) =>
     typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
 
 const eventCountInfo = computed(() =>
-    uranusPluralizedText(t, 'event_count_singular', 'event_count_plural', eventListStore.totalEventCount)
+    uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.totalEventCount)
 )
 
 const isResetting = ref(false)

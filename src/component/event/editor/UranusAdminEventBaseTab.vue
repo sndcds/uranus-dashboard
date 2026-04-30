@@ -38,23 +38,26 @@
         <UranusTextfield id="event-subtitle" size="medium" :label="t('subtitle')" v-model="event.subtitle" />
       </UranusFormRow>
 
-      <UranusFormRow>
-        <UranusLabel id="event-description" :label="t('summary')">
-          <UranusTextEditor
-              v-model="summaryProxy"
-              ref="descriptionEditor"
-          />
-        </UranusLabel>
-      </UranusFormRow>
-
-      <UranusFormRow>
-        <UranusLabel id="event-description" :label="t('description')">
+      <UranusCard>
+        <h2>{{ t('description') }}</h2>
+        <UranusLabel id="event-description">
           <UranusTextEditor
               v-model="descriptionProxy"
               ref="descriptionEditor"
           />
         </UranusLabel>
-      </UranusFormRow>
+      </UranusCard>
+
+      <UranusCard>
+        <h2>{{ t('summary') }}</h2>
+        <span>Die Kurzbeschreibung wird nur in kompakten Ansichten angezeigt.</span>
+        <UranusLabel id="event-description">
+          <UranusTextEditor
+              v-model="summaryProxy"
+              ref="descriptionEditor"
+          />
+        </UranusLabel>
+      </UranusCard>
 
       <div class="tab-actions">
         <UranusButton :disabled="store.saving || !isDirty" @click="resetBaseTab">
@@ -95,6 +98,7 @@ import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Save, Undo } from 'lucide-vue-next'
 import UranusEventCategorySelector from '@/component/event/ui/UranusEventCategorySelector.vue'
+import UranusCard from "@/component/ui/UranusCard.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
