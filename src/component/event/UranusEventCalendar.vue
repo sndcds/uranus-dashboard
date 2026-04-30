@@ -340,9 +340,8 @@ onBeforeUnmount(() => {
 
 /* Infinite scroll helpers */
 .load-more-trigger {
-  width: 100px;
-  height: 30px;
-  background: red;
+  width: 0;
+  height: 0;
 }
 
 .loading-indicator {
