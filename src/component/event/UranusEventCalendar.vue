@@ -178,18 +178,11 @@ async function reloadEvents() {
     isVisible.value = false
     await new Promise(resolve => setTimeout(resolve, 200))
   }
-
   await eventListStore.loadEvents(true)
   await eventListStore.loadTypeSummary()
-
   isVisible.value = true
-
   await nextTick()
-
-  if (observer && loadMoreTrigger.value) {
-    observer.disconnect()
-    observer.observe(loadMoreTrigger.value)
-  }
+  await ensureScrollable()
 }
 
 async function ensureScrollable() {
@@ -226,6 +219,11 @@ watch(searchQuery, () => {
   searchTimeout = window.setTimeout(() => {
     reloadEvents()
   }, 300)
+})
+
+watch(displayMode, async () => {
+  await nextTick()
+  await ensureScrollable()
 })
 
 // Return unique type IDs from the event_types array
