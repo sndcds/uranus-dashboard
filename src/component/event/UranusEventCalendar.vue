@@ -59,7 +59,7 @@
     </div>
 
     <transition name="fade" mode="out-in">
-      <div v-if="isVisible" :key="displayMode">
+      <div v-show="isVisible" :key="displayMode">
 
         <div v-if="!eventListStore.hasEvents() && !eventListStore.loading">
           No events to display
@@ -100,16 +100,15 @@
           />
         </div>
 
-
-        <!-- Infinite scroll trigger -->
-        <div
-            ref="loadMoreTrigger"
-            class="load-more-trigger"
-            v-show="true"
-        ></div>
-
       </div>
     </transition>
+
+    <!-- Infinite scroll trigger -->
+    <div
+        ref="loadMoreTrigger"
+        class="load-more-trigger"
+        v-show="true"
+    ></div>
 
     <UranusVenuesMap
         v-if="displayMode=='map'"
@@ -126,7 +125,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, onBeforeUnmount, watch, computed} from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
@@ -175,14 +174,22 @@ const onResetFilter = () => {
 }
 
 async function reloadEvents() {
-  // Only fade out AFTER initial load
   if (initialized.value) {
     isVisible.value = false
     await new Promise(resolve => setTimeout(resolve, 200))
   }
+
   await eventListStore.loadEvents(true)
   await eventListStore.loadTypeSummary()
+
   isVisible.value = true
+
+  await nextTick()
+
+  if (observer && loadMoreTrigger.value) {
+    observer.disconnect()
+    observer.observe(loadMoreTrigger.value)
+  }
 }
 
 async function ensureScrollable() {
