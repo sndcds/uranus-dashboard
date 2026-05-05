@@ -1,4 +1,4 @@
-export interface UranusOrganizationTeamMemberDTO {
+export interface UranusOrgTeamMemberDTO {
     user_uuid: string
     display_name: string | null
     email: string

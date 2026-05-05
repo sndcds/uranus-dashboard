@@ -20,6 +20,31 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Help',
         da: 'Hjælp',
     },
+    accept: {
+        de: 'Annehmen',
+        en: 'Accept',
+        da: 'Accepter',
+    },
+    reject: {
+        de: 'Ablehnen',
+        en: 'Reject',
+        da: 'Afvis',
+    },
+    pending: {
+        de: 'Ausstehend',
+        en: 'Pending',
+        da: 'Afventer',
+    },
+    accepted: {
+        de: 'Genehmigt',
+        en: 'Approved',
+        da: 'Godkendt',
+    },
+    rejected: {
+        de: 'Abgelehnt',
+        en: 'Declined',
+        da: 'Afvist',
+    },
     error: {
         de: 'Ein Fehler ist aufgetreten',
         en: 'An error has occurred',
@@ -177,7 +202,7 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
     },
     finish_edit: {
         de: 'Bearbeitung beenden',
-        en: 'Finish Editing',
+        en: 'Finish editing',
         da: 'Afslut redigering',
     },
     images_and_logos: {
@@ -665,6 +690,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: '~~count~~ results',
         da: '~~count~~ resultater'
     },
+    request_to: {
+        de: 'Anfrage an',
+        en: 'Request to',
+        da: 'Anmodning til',
+    }
 }
 
 export default uranusI18nStandardTranslations

@@ -142,7 +142,7 @@
             />
           </div>
 
-          <UranusEventOrganizationDisplay :event="event" />
+          <UranusEventOrgDisplay :event="event" />
 
           <!-- Venue, Space, Location -->
           <UranusEventVenueDisplay :eventDate="eventDate" />
@@ -233,7 +233,7 @@ import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
 import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'
-import UranusEventOrganizationDisplay from '@/component/event/ui/UranusEventOrganizationDisplay.vue'
+import UranusEventOrgDisplay from '@/component/event/ui/UranusEventOrgDisplay.vue'
 import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'

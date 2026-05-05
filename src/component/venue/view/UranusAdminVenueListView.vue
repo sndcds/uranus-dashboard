@@ -4,16 +4,17 @@
 
 <template>
   <div class="uranus-main-layout">
+    <UranusOrgTitle />
     <UranusDashboardHero
         :title="t('venues')"
         :subtitle="t('venues_list_hero_description')"
     />
 
     <UranusNotification
-        v-if="!organizationUuid"
+        v-if="!appStore.orgUuid"
         type="info"
         :action-label="t('notification_cant_see_venues_action')"
-        action-to="/admin/organizations"
+        action-to="/admin/orgs"
     >
       <template #title>
         {{ t('notification_cant_see_venues_title') }}
@@ -26,7 +27,7 @@
     <template v-else>
       <div v-if="!isLoading" class="uranus-main-layout">
         <div v-if="venueList && venueList.canAddVenue">
-          <UranusButton :to="`/admin/organization/${organizationUuid}/venue/create`">
+          <UranusButton :to="`/admin/org/${appStore.orgUuid}/venue/create`">
             {{ t('venue_add') }}
           </UranusButton>
         </div>
@@ -36,19 +37,19 @@
           <p>{{ t('error_missing_permissions') }}</p>
         </UranusFeedback>
 
-        <div v-if="venueList" class="organization-venue-view__content">
+        <div v-if="venueList" class="uranus-vertical-flex">
           <UranusAdminVenueCard
               v-for="item in venueList?.venues ?? []"
               :key="item.venueUuid"
               :venueListItem="item"
-              :organizationUuid="organizationUuid"
+              :orgUuid="appStore.orgUuid"
               @deleted="handleVenueDeleted"
           />
         </div>
       </div>
     </template>
 
-    <div class="venue-space-list" ref="containerRef" style="margin-top: 2rem;">
+    <div class="uranus-vertical-flex" ref="containerRef" style="margin-top: 2rem;">
       <h2>{{ t('selectable_venues_by_user') }}</h2>
       <div
           class="uranus-card venue-group"
@@ -73,11 +74,11 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed, watch, onMounted} from 'vue'
+import {ref, onMounted} from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
-import { mapVenueList, type VenueList } from '@/domain/organization/venueList.ts'
+import { mapVenueList, type VenueListModel } from '@/domain/venue/venueList.model.ts'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
 
 import UranusAdminVenueCard from '@/component/venue/card/UranusAdminVenueCard.vue'
@@ -85,20 +86,15 @@ import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
+import UranusOrgTitle from "@/component/layout/UranusOrgTitle.vue";
 
 
 const { t } = useI18n()
 const appStore = useAppStore()
 const choosableVenuesStore = useChoosableVenuesStore()
 
-// Make organizationId reactive from the store
-const organizationUuid = computed({
-  get: () => appStore.orgUuid,
-  set: (val: string | null) => appStore.setOrganizationUuid(val),
-})
-
 const isLoading = ref(true)
-const venueList = ref<VenueList | null>(null)
+const venueList = ref<VenueListModel | null>(null)
 const error = ref<string | null>(null)
 
 const loadVenues = async (uuid: string | null) => {
@@ -111,9 +107,8 @@ const loadVenues = async (uuid: string | null) => {
   }
 
   try {
-    const apiPath = `/api/admin/organization/${uuid}/venues`
+    const apiPath = `/api/admin/org/${uuid}/venues`
     const apiResponse = await apiFetch<any>(apiPath)
-    console.log(JSON.stringify(apiResponse.data, null, 2))
     venueList.value = mapVenueList(apiResponse.data)
     error.value = null
   } catch (err: unknown) {
@@ -129,27 +124,16 @@ const loadVenues = async (uuid: string | null) => {
 }
 
 const handleVenueDeleted = async () => {
-  await loadVenues(organizationUuid.value)
+  await loadVenues(appStore.orgUuid)
 }
 
-watch(
-    organizationUuid,
-    (uuid) => loadVenues(uuid),
-    { immediate: true }
-)
-
 onMounted(() => {
-  choosableVenuesStore.fetchAll()
+  loadVenues(appStore.orgUuid)
+  choosableVenuesStore.fetchAll(appStore.orgUuid)
 })
 </script>
 
 <style scoped lang="scss">
-
-.venue-space-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
 
 .venue-group {
   font-weight: 500;

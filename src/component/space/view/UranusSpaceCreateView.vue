@@ -92,7 +92,7 @@ async function onCreate() {
       return
     }
 
-    router.push(`/admin/organization/${orgUuid}/venue/${venueUuid}/space/${spaceUuid}/edit`)
+    router.push(`/admin/org/${orgUuid}/venue/${venueUuid}/space/${spaceUuid}/edit`)
   } catch (error) {
     i18nErrorKey.value = 'error_2'  // TODO: !!!!
   }

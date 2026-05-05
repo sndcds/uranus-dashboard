@@ -1,3 +1,7 @@
+<!--
+  src/component/venue/UranusVenueTypeahead.vue
+-->
+
 <template>
   <div class="typeahead" ref="inputWrapper">
     <input
@@ -30,6 +34,7 @@
 import { ref, watch, computed } from 'vue'
 import { apiBaseUrl } from '@/util/UranusUtils.ts'
 import type { VenueSelectInfo } from '@/domain/venue/venueSelectInfo.model.ts'
+import type { CSSProperties } from 'vue'
 
 const props = defineProps<{
   selectedVenue: VenueSelectInfo | null
@@ -46,7 +51,7 @@ const isOpen = ref(false)
 const ignoreQueryWatch = ref(false)
 const inputRef = ref<HTMLInputElement | null>(null)
 
-const popoverStyle = computed(() => {
+const popoverStyle = computed<CSSProperties>(() => {
   if (!inputRef.value) {
     return {
       position: 'absolute',

@@ -6,6 +6,7 @@
 
 <template>
   <div class="uranus-main-layout">
+    <UranusOrgTitle />
     <UranusDashboardHero
         :title="t('todo_title')"
         :subtitle="t('todo_description')"
@@ -58,6 +59,7 @@ import UranusEditTodoModal from '@/component/todo/UranusEditTodoModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { type TodoDTO } from '@/model/uranusTodoModel.ts'
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
+import UranusOrgTitle from "@/component/layout/UranusOrgTitle.vue";
 
 const { t } = useI18n()
 

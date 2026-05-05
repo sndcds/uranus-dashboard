@@ -13,7 +13,7 @@
         <input
             :id="id"
             :type="type"
-            :value="modelValue"
+            :value="internalValue"
             :class="['uranus-input', sizeClass]"
             :placeholder="placeholder"
             :autocomplete="autocomplete"
@@ -26,6 +26,7 @@
             :aria-describedby="error ? id + '-error' : undefined"
             v-bind="$attrs"
             @input="onInput"
+            @keydown.enter="onEnter"
             @blur="$emit('blur', $event)"
             @focus="$emit('focus', $event)"
         />
@@ -37,8 +38,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import UranusLabel from './UranusLabel.vue'
+import { computed, ref, watch } from 'vue'
+import UranusLabel from '@/component/ui/UranusLabel.vue'
 
 defineOptions({ inheritAttrs: false })
 
@@ -52,6 +53,7 @@ const props = defineProps({
   flex: { type: [Number, String], default: 1 },
   error: { type: String, default: undefined },
   placeholder: { type: String, default: '' },
+  updateOn: { type: String, default: 'input' }, // 'input' | 'enter'
   autocomplete: { type: String, default: 'off' },
   disabled: { type: Boolean, default: false },
   readonly: { type: Boolean, default: false },
@@ -59,7 +61,31 @@ const props = defineProps({
   nullableNumber: { type: Boolean, default: false },
 })
 
+const emitValue = (rawValue: string) => {
+  let value: string | number | null = rawValue
+  if (props.type === 'number') {
+    if (props.nullableNumber && value === '') {
+      value = null
+    } else {
+      const parsed = Number(value)
+      value = isNaN(parsed) ? '' : parsed
+    }
+  }
+
+  emit('update:modelValue', value)
+}
+
+
 const emit = defineEmits(['update:modelValue', 'blur', 'focus'])
+
+const internalValue = ref(props.modelValue)
+
+watch(
+    () => props.modelValue,
+    (val) => {
+      internalValue.value = val
+    }
+)
 
 // Computed for size
 const sizeClass = computed(() => {
@@ -74,22 +100,18 @@ const sizeClass = computed(() => {
 // Computed for name attribute
 const inputName = computed(() => props.name || undefined)
 
-// Input handler
 const onInput = (event: Event) => {
   const target = event.target as HTMLInputElement
-  let value: string | number | null = target.value
-
-  if (props.type === 'number') {
-    if (props.nullableNumber && value === '') {
-      // Emit null if empty and flag is true
-      value = null
-    } else {
-      const parsed = Number(value)
-      value = isNaN(parsed) ? '' : parsed
-    }
+  internalValue.value = target.value
+  if (props.updateOn === 'input') {
+    emitValue(target.value)
   }
+}
 
-  emit('update:modelValue', value)
+const onEnter = () => {
+  if (props.updateOn === 'enter') {
+    emitValue(internalValue.value as string)
+  }
 }
 </script>
 

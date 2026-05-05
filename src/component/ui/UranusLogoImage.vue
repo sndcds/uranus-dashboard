@@ -1,47 +1,52 @@
-<!--
-  src/component/ui/UranusLogoImage.vue
--->
+<!-- src/component/ui/UranusLogoImage.vue -->
 
 <template>
-  <div class="logo-container" v-show="src" :style="containerStyle">
+  <div
+      v-if="src"
+      class="logo-container"
+      :style="containerStyle"
+  >
     <component
         :is="linkUrl ? 'a' : 'div'"
         v-bind="linkUrl ? { href: linkUrl, target: linkTarget, rel } : {}"
+        class="logo-inner"
     >
-      <img v-show="src"
-          :key="src!"
-          :src="src!"
+      <img
+          :src="src"
           :alt="alt"
-          @load="onImageLoad"
           class="logo-image"
+          :class="{ loaded: isLoaded }"
+          @load="onLoad"
+          loading="lazy"
       />
     </component>
   </div>
 </template>
 
 <script setup lang="ts">
-import {type PropType, reactive, toRef} from 'vue'
+import { computed, ref, toRef, type PropType, watchEffect } from 'vue'
 import { useLogoUrl } from '@/composable/useLogoUrl'
-
 
 const MAX_PIXELS = 240 * 40
 
-// Props (RAW inputs, not precomputed src anymore)
 const props = defineProps({
   logoURL: { type: String, default: null },
   lightThemeLogoURL: { type: String, default: null },
   darkThemeLogoURL: { type: String, default: null },
   theme: { type: String, required: true },
   alt: { type: String, default: 'Logo' },
+
   plutoWidth: { type: Number, default: 240 },
   maxWidth: { type: Number, default: 240 },
   maxHeight: { type: Number, default: 100 },
-  maxPixels: { type: Number, default: MAX_PIXELS },
+  pixelCount: { type: Number, default: MAX_PIXELS },
+
   type: { type: String, default: 'png' },
   quality: { type: Number, default: 80 },
+
   linkUrl: { type: String as PropType<string | null>, default: null },
-  linkTarget: { type: String, default: '_self' }, // '_self' or '_blank'
-  rel: { type: String, default: 'noopener noreferrer' } // for security
+  linkTarget: { type: String, default: '_self' },
+  rel: { type: String, default: 'noopener noreferrer' }
 })
 
 const { logoUrl: src } = useLogoUrl({
@@ -56,50 +61,100 @@ const { logoUrl: src } = useLogoUrl({
   quality: props.quality,
 })
 
-const containerStyle = reactive({
-  width: 'auto',
-  height: 'auto',
+/**
+ * Reserve space upfront → NO layout shift
+ */
+const containerStyle = computed(() => {
+  if (!size.value) return {}
+  return {
+    width: `${size.value.width}px`,
+    height: `${size.value.height}px`
+  }
 })
 
-function onImageLoad(event: Event) {
-  const img = event.target as HTMLImageElement
+/**
+ * Smooth fade-in
+ */
+const isLoaded = ref(false)
 
-  const naturalWidth = img.naturalWidth
-  const naturalHeight = img.naturalHeight
 
-  const pixelCount = naturalWidth * naturalHeight
+function scaleToPixelBudget(
+    naturalW: number,
+    naturalH: number,
+    maxW: number,
+    maxH: number,
+    pixelCount: number
+) {
+  const aspect = naturalW / naturalH
 
-  // Scale factors
-  const pixelScale =
-      pixelCount > props.maxPixels
-          ? Math.sqrt(props.maxPixels / pixelCount)
-          : 1
+  // 1. ideal size based on pixel budget
+  let w = Math.sqrt(pixelCount * aspect)
+  let h = Math.sqrt(pixelCount / aspect)
 
-  const widthScale =
-      naturalWidth > props.maxWidth
-          ? props.maxWidth / naturalWidth
-          : 1
+  // 2. clamp to max bounds while preserving aspect ratio
+  const scale = Math.min(
+      maxW / w,
+      maxH / h,
+      1
+  )
 
-  const heightScale =
-      naturalHeight > props.maxHeight
-          ? props.maxHeight / naturalHeight
-          : 1
+  w *= scale
+  h *= scale
 
-  const scale = Math.min(pixelScale, widthScale, heightScale)
+  return {
+    width: Math.round(w),
+    height: Math.round(h)
+  }
+}
 
-  const finalWidth = Math.round(naturalWidth * scale)
-  const finalHeight = Math.round(naturalHeight * scale)
+function getImageSize(url: string): Promise<{ w: number; h: number }> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      resolve({
+        w: img.naturalWidth,
+        h: img.naturalHeight
+      })
+    }
+    img.onerror = reject
+    img.src = url
+  })
+}
 
-  containerStyle.width = `${finalWidth}px`
-  containerStyle.height = `${finalHeight}px`
+/**
+ * Reactive computed size
+ */
+
+const size = ref<{ width: number; height: number } | null>(null)
+
+watchEffect(async () => {
+  if (!src.value) return
+  const { w, h } = await getImageSize(src.value)
+  size.value = scaleToPixelBudget(
+      w,
+      h,
+      props.maxWidth,
+      props.maxHeight,
+      props.pixelCount
+  )
+})
+
+function onLoad() {
+  isLoaded.value = true
 }
 </script>
 
 <style scoped>
 .logo-container {
   display: flex;
-  justify-content: flex-start;
   align-items: flex-start;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+/* ensures anchor doesn't affect layout */
+.logo-inner {
+  display: contents;
 }
 
 .logo-image {
@@ -107,6 +162,12 @@ function onImageLoad(event: Event) {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  right: 0;
+
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.logo-image.loaded {
+  opacity: 1;
 }
 </style>

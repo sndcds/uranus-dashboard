@@ -21,7 +21,7 @@
           <div class="success-icon">✓</div>
 
           <p class="success-message">
-            {{ t('invite_accept_joined_organization_message') }}
+            {{ t('invite_accept_joined_org_message') }}
             <strong>{{ inviteInfo?.org_name }}</strong>
           </p>
 
@@ -37,8 +37,8 @@
             {{ t('invite_accept_membership_help_message') }}
           </p>
 
-          <button class="uranus-button" type="button" @click="goToOrganizations">
-            {{ t('invite_accept_go_to_organizations_cta') }}
+          <button class="uranus-button" type="button" @click="goToOrgs">
+            {{ t('invite_accept_go_to_orgs_cta') }}
           </button>
         </div>
 
@@ -84,7 +84,7 @@ let redirectTimer: ReturnType<typeof setInterval> | null = null
 
 const isSuccess = computed(() => !isProcessing.value && !!inviteInfo.value && !errorMessage.value)
 
-const goToOrganizations = () => {
+const goToOrgs = () => {
   return
   const orgUuid = inviteInfo.value?.org_uuid
   if (!orgUuid) {
@@ -92,7 +92,7 @@ const goToOrganizations = () => {
     return
   }
 
-  router.push(`/admin/organizations`)
+  router.push(`/admin/orgs`)
 }
 
 const startRedirectCountdown = () => {
@@ -101,7 +101,7 @@ const startRedirectCountdown = () => {
   redirectTimer = setInterval(() => {
     if (redirectSeconds.value <= 1) {
       redirectTimer && clearInterval(redirectTimer)
-      goToOrganizations()
+      goToOrgs()
       return
     }
 
@@ -121,7 +121,7 @@ const acceptInvite = async () => {
   errorMessage.value = null
 
   try {
-    const apiPath = '/api/admin/organization/team/invite/accept'
+    const apiPath = '/api/admin/org/team/invite/accept'
     const apiResponse = await apiFetch<InviteAcceptResponse>(apiPath, {
       method: 'POST',
       body: JSON.stringify({ token }),

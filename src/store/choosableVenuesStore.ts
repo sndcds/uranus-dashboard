@@ -6,23 +6,57 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { type BasicVenueInfo, type BasicVenueSpacesInfo } from '@/domain/venue/basicVenueInfo.model.ts'
-import type { BasicVenueInfoDTO } from "@/api/dto/basicVenueInfo.dto.ts";
 
 
-interface ChoosableVenueInfosDTO {
-    total_count: number
-    venue_infos: BasicVenueInfoDTO[]
+interface SpaceDTO {
+    uuid: string
+    name: string
 }
 
-function mapBasicVenueInfo(dto: BasicVenueInfoDTO): BasicVenueInfo {
-    return {
-        venueUuid: dto.venue_uuid,
-        venueName: dto.venue_name,
-        spaceUuid: dto.space_uuid,
-        spaceName: dto.space_name,
-        city: dto.city,
-        country: dto.country,
+interface VenueDTO {
+    uuid: string
+    name: string
+    org_uuid: string
+    city: string | null
+    country: string | null
+    spaces: SpaceDTO[]
+}
+
+interface ChoosableVenuesResponseDTO {
+    venues: VenueDTO[]
+}
+
+function mapVenuesToBasicInfos(dto: ChoosableVenuesResponseDTO | null): BasicVenueInfo[] {
+    const result: BasicVenueInfo[] = []
+
+    if (!dto)  return result
+    for (const venue of dto.venues ?? []) {
+        if (venue.spaces && venue.spaces.length > 0) {
+            // Venue has spaces
+            for (const space of venue.spaces) {
+                result.push({
+                    venueUuid: venue.uuid,
+                    venueName: venue.name,
+                    spaceUuid: space.uuid,
+                    spaceName: space.name,
+                    city: venue.city,
+                    country: venue.country,
+                })
+            }
+        } else {
+            // Venue without spaces
+            result.push({
+                venueUuid: venue.uuid,
+                venueName: venue.name,
+                spaceUuid: null,
+                spaceName: null,
+                city: venue.city,
+                country: venue.country,
+            })
+        }
     }
+
+    return result
 }
 
 
@@ -41,19 +75,20 @@ export const useChoosableVenuesStore = defineStore(
             loading.value = false
         }
 
-        async function fetchAll() {
-            if (basicVenueInfos.value.length > 0) return
+        async function fetchAll(orgUuid: string | null) {
+            if (basicVenueInfos.value.length > 0 || !orgUuid) return
 
             loading.value = true
             error.value = null
 
             try {
-                const apiPath = '/api/admin/user/choosable-event-venues'
-                const apiResponse = await apiFetch<ChoosableVenueInfosDTO>(
+                const apiPath = `/api/admin/org/${orgUuid}/choosable-venues`
+                const apiResponse = await apiFetch<ChoosableVenuesResponseDTO>(
                     apiPath
                 )
 
-                basicVenueInfos.value = (apiResponse?.data?.venue_infos ?? []).map(mapBasicVenueInfo)
+                const data = apiResponse?.data as ChoosableVenuesResponseDTO
+                basicVenueInfos.value = mapVenuesToBasicInfos(data)
             } catch (e) {
                 console.error(e)
                 error.value = 'Failed to load venues'
@@ -62,27 +97,31 @@ export const useChoosableVenuesStore = defineStore(
             }
         }
 
-        async function refresh() {
+        async function refresh(orgUuid: string | null) {
             clear()
-            await fetchAll()
+            await fetchAll(orgUuid)
         }
 
         function getVenueLabel(venueUuid: string | null, spaceUuid: string | null): string {
             if (!venueUuid) return ''
 
-            const exact = basicVenueInfos.value.find(v =>
-                v.venueUuid == venueUuid &&
-                (spaceUuid == null ? v.spaceUuid == null : v.spaceUuid == spaceUuid)
+            const venueEntries = basicVenueInfos.value.filter(
+                v => v.venueUuid === venueUuid
             )
 
-            if (exact) {
-                return exact.spaceName
-                    ? `${exact.venueName} | ${exact.spaceName}`
-                    : exact.venueName
+            if (venueEntries.length === 0) return ''
+
+            const spaceEntry = venueEntries.find(
+                v => spaceUuid != null && v.spaceUuid === spaceUuid
+            )
+
+            if (spaceEntry) {
+                return spaceEntry.spaceName
+                    ? `${spaceEntry.venueName} | ${spaceEntry.spaceName}`
+                    : spaceEntry.venueName
             }
 
-            const venueOnly = basicVenueInfos.value.find(v => v.venueUuid === venueUuid)
-            return venueOnly ? venueOnly.venueName : ''
+            return venueEntries[0]?.venueName ?? ''
         }
 
         function getVenueSpacesInfos(): BasicVenueSpacesInfo[] {
@@ -98,12 +137,16 @@ export const useChoosableVenuesStore = defineStore(
                     })
                 }
 
-                if (v.spaceUuid != null) {
-                    map.get(v.venueUuid)!.spaces.push({
-                        spaceUuid: v.spaceUuid,
-                        spaceName: v.spaceName,
-                        city: v.city,
-                    })
+                const venue = map.get(v.venueUuid)
+
+                if (venue && v.spaceUuid != null) {
+                    if (!venue.spaces.some(s => s.spaceUuid === v.spaceUuid)) {
+                        venue.spaces.push({
+                            spaceUuid: v.spaceUuid,
+                            spaceName: v.spaceName,
+                            city: v.city,
+                        })
+                    }
                 }
             }
 

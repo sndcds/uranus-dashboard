@@ -54,7 +54,6 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { getPreviousRoute } from '@/router'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { type AdminEventDTO } from '@/api/dto/adminEvent.dto.ts'
 import UranusAdminEventBaseTab from '@/component/event/editor/UranusAdminEventBaseTab.vue'
@@ -79,12 +78,7 @@ const adminEventStore = useAdminEventStore()
 
 
 function goBack() {
-  const prev = getPreviousRoute()
-  if (prev?.fullPath) {
-    router.push(prev.fullPath)
-  } else {
-    router.push({ name: 'admin-dashboard' }) // fallback
-  }
+  router.push({ name: 'admin-org-events' })
 }
 
 // Add this after your store import
