@@ -74,12 +74,7 @@ const onEventDeleted = async ({eventUuid, dateUuid, deleteSeries}: {
   deleteSeries: boolean
 }) => {
   try {
-    // Optionally, you could show a loading state here
-    // e.g., isLoading.value = true
-
-    // Refetch events from API
     await fetchAdminListEvents(orgUuid.value)
-    // Optionally, show a success toast or message
     console.log(`Event ${eventUuid} deleted successfully`)
   } catch (err) {
     console.error("Failed to refetch events after delete:", err)
@@ -93,7 +88,7 @@ const onEventDeleted = async ({eventUuid, dateUuid, deleteSeries}: {
 
 onMounted(async () => {
   if (orgUuid) {
-    await fetchAdminListEvents(orgUuid.value ?? '');
+    await fetchAdminListEvents(orgUuid.value ?? '', '2020-01-01');
   }
 });
 </script>
