@@ -5,12 +5,12 @@
  */
 
 import { ref } from "vue";
-import type { AdminEventListItemModel } from '@/domain/event/adminEventListItem.model.ts'
+import type { AdminEventListItem } from '@/domain/event/adminEventListItem.ts'
 import { camelCaseKeys } from "./useUranusAPI.ts";
 import { apiFetch } from "@/api.ts";
 
 export function useUranusAdminListEvents() {
-    const adminListEvents = ref<AdminEventListItemModel[]>([]);
+    const adminListEvents = ref<AdminEventListItem[]>([]);
     const metadata = ref<Record<string, any>>({});
     const loading = ref(false);
     const error = ref<string | null>(null);
@@ -30,9 +30,9 @@ export function useUranusAdminListEvents() {
             const params = new URLSearchParams();
             if (startDate) params.set("start", startDate);
 
-            const apiPath = `/api/admin/organization/${orgUuid}/events?${params.toString()}`;
+            const apiPath = `/api/admin/org/${orgUuid}/events?${params.toString()}`;
             const apiResonse = await apiFetch<any[]>(apiPath);
-            adminListEvents.value = camelCaseKeys<AdminEventListItemModel[]>(apiResonse.data ?? []);
+            adminListEvents.value = camelCaseKeys<AdminEventListItem[]>(apiResonse.data ?? []);
             metadata.value = apiResonse.metadata ?? {};
         } catch (e: any) {
             error.value = e.message ?? "Unknown error";

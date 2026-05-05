@@ -117,6 +117,28 @@
       <UranusFeedback :show="true" type="error"><h1>Error</h1>A error text info box</UranusFeedback>
     </section>
 
+    <section>
+      <section class="chart-card">
+        <h2>Monatsumsatz &ndash; Standard</h2>
+        <p class="subtitle">Standard-Theme (CSS Custom Properties)</p>
+        <UranusLineChart :data="chartData" />
+      </section>
+
+      <UranusSegmentedSelect
+          v-model="selected"
+          :options="options"
+          variant="chip"
+      />
+
+      <UranusSegmentedSelect
+          v-model="selected"
+          :options="options"
+      />
+
+      <UranusPrioritySelect></UranusPrioritySelect>
+
+    </section>
+
   </div>
 </template>
 
@@ -126,7 +148,41 @@ import UranusDevHueSamples from '@/view/dev/UranusDevHueSamples.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusNotification from "@/component/ui/UranusNotification.vue";
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
+import UranusPrioritySelect from "@/component/ui/UranusPrioritySelect.vue";
+import UranusSegmentedSelect from "@/component/ui/UranusSegmentedSelect.vue";
+import UranusLineChart from "@/component/chart/UranusLineChart.vue";
+import {ref} from "vue";
+import {BarChart, Calendar, Clock} from "lucide-vue-next";
 
+const chartData = {
+  x_axis: 'Monat',
+  y_axis: 'Amount',
+  show_x_label: true,
+  show_y_label: true,
+  show_grid:    true,
+  values: [
+    { pos: 1,  label: 'Jan', value: 102 },
+    { pos: 2,  label: 'Feb', value: 209 },
+    { pos: 3,  label: 'Mar', value: 98  },
+    { pos: 4,  label: 'Apr', value: 175 },
+    { pos: 5,  label: 'Mai', value: 234 },
+    { pos: 6,  label: 'Jun', value: 187 },
+    { pos: 7,  label: 'Jul', value: 310 },
+    { pos: 8,  label: 'Aug', value: 265 },
+    { pos: 9,  label: 'Sep', value: 198 },
+    { pos: 10, label: 'Okt', value: 241 },
+    { pos: 11, label: 'Nov', value: 179 },
+    { pos: 12, label: 'Dez', value: 322 },
+  ],
+}
+
+const options = [
+  { label: 'Day', value: 'day', icon: Clock },
+  { label: 'Week', value: 'week', icon: Calendar },
+  { label: 'Month', value: 'month', icon: BarChart, disabled: true }
+]
+
+const selected = ref('day')
 
 </script>
 

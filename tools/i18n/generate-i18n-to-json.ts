@@ -15,7 +15,8 @@ import { uranusI18nNavigationTranslations } from '../../src/i18n/navigation.ts'
 import { uranusI18nFormTranslations } from '../../src/i18n/form.ts'
 import { uranusI18nImageTranslations } from '../../src/i18n/image.ts'
 import { uranusI18nUserTranslations } from '../../src/i18n/user.ts'
-import { uranusI18nOrganizationTranslations } from '../../src/i18n/organization.ts'
+import { uranusI18nOrgTranslations } from '../../src/i18n/org.ts'
+import { uranusI18nPartnerTranslations } from '../../src/i18n/partner.ts'
 import { uranusI18nVenueTranslations } from '../../src/i18n/venue.ts'
 import { uranusI18nSpaceTranslations } from '../../src/i18n/space.ts'
 import { uranusI18nEventTranslations } from '../../src/i18n/event.ts'
@@ -39,7 +40,8 @@ locales.forEach((locale) => {
         ...Object.fromEntries(Object.entries(uranusI18nFormTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nImageTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nUserTranslations).map(([k, v]) => [k, v[locale]])),
-        ...Object.fromEntries(Object.entries(uranusI18nOrganizationTranslations).map(([k, v]) => [k, v[locale]])),
+        ...Object.fromEntries(Object.entries(uranusI18nOrgTranslations).map(([k, v]) => [k, v[locale]])),
+        ...Object.fromEntries(Object.entries(uranusI18nPartnerTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nVenueTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nSpaceTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nEventTranslations).map(([k, v]) => [k, v[locale]])),

@@ -13,7 +13,7 @@
           <UranusButton
               v-if="venueListItem.canEditVenue"
               variant="secondary" size="small"
-              :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.venueUuid}/edit`"
+              :to="`/admin/org/${orgUuid}/venue/${venueListItem.venueUuid}/edit`"
           >
             {{ t('edit') }}
           </UranusButton>
@@ -42,7 +42,7 @@
               v-if="venueListItem.canAddSpace"
               :icon="Plus"
               :title="t('add_element')"
-              :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.venueUuid}/space/create`"
+              :to="`/admin/org/${orgUuid}/venue/${venueListItem.venueUuid}/space/create`"
           />
         </h3>
       </div>
@@ -67,7 +67,7 @@
             <UranusIconAction
                 v-if="space.canEditSpace"
                 :icon="Edit" :title="t('edit')"
-                :to="`/admin/organization/${organizationUuid}/venue/${venueListItem.venueUuid}/space/${space.spaceUuid}/edit`"
+                :to="`/admin/org/${orgUuid}/venue/${venueListItem.venueUuid}/space/${space.spaceUuid}/edit`"
             />
             <UranusIconAction
                 v-if="space.canDeleteSpace"
@@ -110,7 +110,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from "vue-i18n"
 import { apiFetch } from '@/api.ts'
-import {type VenueListItem, type VenueListSpace} from '@/domain/organization/venueList.ts'
+import {type VenueListItem, type VenueListSpace} from '@/domain/venue/venueList.model.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
@@ -125,7 +125,7 @@ const { t } = useI18n()
 
 const props = defineProps<{
   venueListItem: VenueListItem
-  organizationUuid: string
+  orgUuid: string
 }>()
 
 const eventCountText = computed(() => {

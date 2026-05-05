@@ -9,7 +9,7 @@
       <h2>{{t('venue') }}</h2>
       <UranusCard class="event-venue">
         <UranusInfoHeading :icon="MapPin" :strokeWidth="1.5">
-          {{ choosableVenuesStore.getVenueLabel(draft.venueUuid, draft.spaceUuid) }}
+          {{ venueLabel }}
         </UranusInfoHeading>
 
         <UranusButton variant="tertiary" size="small" :onclick="openVenueModal">
@@ -99,12 +99,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, ref } from 'vue'
+import { onMounted, computed, ref, watch } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { useI18n } from 'vue-i18n'
+import { useAppStore } from '@/store/appStore.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
-import UranusAdminVenueSelectModal from '@/component/venue/UranusAdminVenueSelectModal.vue'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
+import { useVenueSpaceLabelStore } from '@/store/venueSpaceLabelsStore.ts'
+import UranusAdminVenueSelectModal from '@/component/venue/UranusAdminVenueSelectModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
@@ -112,22 +114,40 @@ import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import { Save, Undo, MapPin } from 'lucide-vue-next'
-import UranusFormRow from "@/component/ui/UranusFormRow.vue";
-import UranusGridLayout from "@/component/ui/UranusGridLayout.vue";
-import UranusFormCol from "@/component/ui/UranusFormCol.vue";
-import UranusDateInput from "@/component/ui/UranusDateInput.vue";
+import UranusGridLayout from '@/component/ui/UranusGridLayout.vue'
+import UranusFormCol from '@/component/ui/UranusFormCol.vue'
+import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
 const store = useAdminEventStore()
 const draft = computed(() => store.draft!)
 const choosableVenuesStore = useChoosableVenuesStore()
+const appStore = useAppStore()
+const venueLabelStore = useVenueSpaceLabelStore()
 
 const showModal = ref(false)
 const activeDraft = ref<typeof draft.value | null>(null)
 
 const venueSpacesInfos = computed(() =>
     choosableVenuesStore.getVenueSpacesInfos()
+)
+
+const venueLabel = ref('')
+
+watch(
+    () => [draft.value?.venueUuid, draft.value?.spaceUuid],
+    async ([venueUuid, spaceUuid]) => {
+      if (!venueUuid) {
+        venueLabel.value = ''
+        return
+      }
+
+      venueLabel.value =
+          await venueLabelStore.getVenueSpaceLabel(venueUuid, spaceUuid ?? null)
+    },
+
+    { immediate: true }
 )
 
 interface SelectedPlace {
@@ -156,7 +176,7 @@ function closeVenueModal() {
 }
 
 onMounted(async () => {
-  await choosableVenuesStore.refresh()
+  await choosableVenuesStore.refresh(appStore.orgUuid)
 })
 
 const isDirty = computed(() => {

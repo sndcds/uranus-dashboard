@@ -24,14 +24,9 @@
 import { ref, computed } from 'vue'
 import { apiBaseUrl } from '@/util/UranusUtils.ts'
 import UranusVenueTypeahead from '@/component/venue/UranusVenueTypeahead.vue'
+import type {VenueSelectInfo} from "@/domain/venue/venueSelectInfo.model.ts";
 
 const API_BASE = apiBaseUrl()
-
-// Bind the selected venue from the typeahead
-interface Venue {
-  id: number
-  name: string
-}
 
 const apiExamples = [
   {
@@ -131,7 +126,7 @@ const mappedExamples = computed(() =>
     }))
 )
 
-const chosenVenue = ref<Venue | null>(null)
+const chosenVenue = ref<VenueSelectInfo | null>(null)
 
 </script>
 

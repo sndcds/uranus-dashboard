@@ -39,6 +39,7 @@
           <UranusTextfield
               id="search-input"
               v-model="filterStore.filter.search!"
+              updateOn="enter"
               :label="t('calendar_filter_search_label')"
               :placeholder="t('calendar_filter_search_placeholder')"
           />
@@ -48,6 +49,7 @@
           <UranusTextfield
               id="city-input"
               v-model="filterStore.filter.city!"
+              updateOn="enter"
               :label="t('calendar_filter_city_label')"
           />
         </UranusFormRow>
@@ -151,7 +153,6 @@ import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import { useGpsLocation } from '@/composable/useGpsLocation'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusEventCategorySelectorAccordion from '@/component/event/panel/UranusEventCategorySelectorAccordion.vue'
-import { FunnelX } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 

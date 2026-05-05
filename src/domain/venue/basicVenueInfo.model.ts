@@ -7,17 +7,17 @@ export interface BasicVenueInfo {
     venueName: string
     spaceUuid: string | null
     spaceName: string | null
-    city: string
-    country: string
+    city: string | null
+    country: string| null
 }
 
 export interface BasicVenueSpacesInfo {
     venueUuid: string
     venueName: string
-    city: string
+    city: string| null
     spaces: {
         spaceUuid: string | null
         spaceName: string | null
-        city: string
+        city: string| null
     }[]
 }

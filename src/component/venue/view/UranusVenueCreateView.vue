@@ -75,7 +75,7 @@ async function onCreate() {
     if (venueUuid == '') {
       throw new Error('no venue_uuid returned from API')
     }
-    router.push(`/admin/organization/${orgUuid}/venue/${venueUuid}/edit`)
+    router.push(`/admin/org/${orgUuid}/venue/${venueUuid}/edit`)
   } catch (error) {
     // TODO: Render UranusFeedback
     alert('Spielstätte konnte nicht erstellt werden')

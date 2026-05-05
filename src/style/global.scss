@@ -344,6 +344,11 @@ header {
   width: 100%;
 }
 
+.uranus-rows {
+  display: flex;
+  flex-direction: column;
+}
+
 .uranus-input {
   font-family: var(--uranus-font-ui) !important;
   font-size: 1rem;

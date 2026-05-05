@@ -55,13 +55,18 @@ export const uranusI18nNavigationTranslations: Record<string, Record<UranusLocal
         en: 'Todo',
         da: 'Opgaver'
     },
-    nav_organizations: {
+    nav_orgs: {
         de: 'Organisationen',
         en: 'Organizations',
         da: 'Organisationer'
     },
+    nav_partners: {
+        de: 'Partner',
+        en: 'Partners',
+        da: 'Partnere'
+    },
     nav_venues: {
-        de: 'Veranstaltungsort',
+        de: 'Veranstaltungsorte',
         en: 'Venues',
         da: 'Steder'
     },

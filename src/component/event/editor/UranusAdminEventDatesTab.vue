@@ -28,7 +28,7 @@
           :strokeWidth="1.5"
           class="date-venue-name"
       >
-        {{ choosableVenuesStore.getVenueLabel(date.venueUuid, date.spaceUuid) }}
+        {{ venueLabels[makeKey(date.venueUuid, date.spaceUuid)] || '' }}
       </UranusInfoHeading>
 
       <div class="date-pair">
@@ -101,10 +101,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useAppStore } from '@/store/appStore.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
+import { useVenueSpaceLabelStore } from '@/store/venueSpaceLabelsStore.ts'
 import UranusAdminVenueSelectModal from '@/component/venue/UranusAdminVenueSelectModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
@@ -115,18 +117,21 @@ import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
 import { Save, Undo, Plus, MapPin, Info } from 'lucide-vue-next'
 import { apiFetch } from '@/api.ts'
-import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+const appStore = useAppStore()
 const choosableVenuesStore = useChoosableVenuesStore()
+const venueLabelStore = useVenueSpaceLabelStore()
+
 
 // ---- Venue modal state ----
 const showModal = ref(false)
 const activeDate = ref<any | null>(null)
 const selectedPlace = ref<{ venueUuid: string | null, spaceUuid: string | null }>({ venueUuid: null, spaceUuid: null })
+const venueLabels = ref<Record<string, string>>({})
 
-// ---- Computed ----
 const isDirty = computed(() => {
   const draft = store.draft?.eventDates
   const original = store.original?.eventDates
@@ -134,9 +139,31 @@ const isDirty = computed(() => {
   return JSON.stringify(draft) !== JSON.stringify(original)
 })
 
-// Refresh venues on mount
+
+function makeKey(venueUuid: string | null, spaceUuid: string | null) {
+  return `${venueUuid ?? 'null'}:${spaceUuid ?? 'null'}`
+}
+
+watchEffect(async () => {
+  const dates = store.draft?.eventDates ?? []
+
+  for (const date of dates) {
+    if (!date.venueUuid) continue
+
+    const key = makeKey(date.venueUuid, date.spaceUuid)
+
+    if (venueLabels.value[key]) continue
+
+    venueLabels.value[key] =
+        await venueLabelStore.getVenueSpaceLabel(
+            date.venueUuid,
+            date.spaceUuid
+        )
+  }
+})
+
 onMounted(async () => {
-  await choosableVenuesStore.refresh()
+  await choosableVenuesStore.refresh(appStore.orgUuid)
 })
 
 // Compute venue spaces for modal

@@ -5,18 +5,18 @@
         :subtitle="t('dummy')"
     />
     <div class="dashboard-inbox">
-      <OrganizationSearchPanel
+      <UranusOrgSearchPanel
         ref="searchPanelRef"
-        :selected-organization-id="selectedOrganizationId"
-        @select="selectOrganization"
+        :selected-org-id="selectedOrgId"
+        @select="selectOrg"
         @state-change="handleSearchStateChange"
       />
 
       <section class="uranus-card">
-        <OrganizationMessageComposer
+        <UranusOrgMessageComposer
           ref="composerRef"
-          :selected-organization="selectedOrganization"
-          :selected-organization-location="selectedOrganizationLocation"
+          :selected-org="selectedOrg"
+          :selected-org-location="selectedOrgLocation"
           @sent="handleMessageSent"
         />
       </section>
@@ -28,11 +28,11 @@
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import OrganizationMessageComposer from '@/component/dashboard/OrganizationMessageComposer.vue'
-import OrganizationSearchPanel from '@/component/dashboard/OrganizationSearchPanel.vue'
+import UranusOrgMessageComposer from '@/component/dashboard/UranusOrgMessageComposer.vue'
+import UranusOrgSearchPanel from '@/component/dashboard/UranusOrgSearchPanel.vue'
 import UranusDashboardHero from "@/component/dashboard/UranusDashboardHero.vue";
 
-interface Organization {
+interface Org {
   id: string | number;
   name: string;
   email?: string;
@@ -43,22 +43,22 @@ interface Organization {
 const { t } = useI18n()
 
 const storedSearchTerm = ref('')
-const storedOrganizations = ref<Organization[]>([])
+const storedOrgs = ref<Org[]>([])
 const storedHasSearched = ref(false)
 
-const formatLocation = (organization: Organization | null | undefined): string | null => {
-  if (!organization) {
+const formatLocation = (org: Org | null | undefined): string | null => {
+  if (!org) {
     return null
   }
 
   const parts: string[] = []
 
-  if (organization.city) {
-    parts.push(organization.city)
+  if (org.city) {
+    parts.push(org.city)
   }
 
-  if (organization.countryCode) {
-    parts.push(organization.countryCode)
+  if (org.countryCode) {
+    parts.push(org.countryCode)
   }
 
   if (parts.length === 0) {
@@ -68,26 +68,26 @@ const formatLocation = (organization: Organization | null | undefined): string |
   return parts.join(', ')
 }
 
-const selectedOrganization = ref<Organization | null>(null)
-const selectedOrganizationLocation = computed(() => formatLocation(selectedOrganization.value))
-const composerRef = ref<InstanceType<typeof OrganizationMessageComposer> | null>(null)
-const searchPanelRef = ref<InstanceType<typeof OrganizationSearchPanel> | null>(null)
+const selectedOrg = ref<Org | null>(null)
+const selectedOrgLocation = computed(() => formatLocation(selectedOrg.value))
+const composerRef = ref<InstanceType<typeof UranusOrgMessageComposer> | null>(null)
+const searchPanelRef = ref<InstanceType<typeof UranusOrgSearchPanel> | null>(null)
 
 const clearComposer = () => {
-  selectedOrganization.value = null
+  selectedOrg.value = null
   composerRef.value?.reset()
 }
 
 interface InboxPersistedState {
   searchTerm: string;
-  organizations: Organization[];
-  selectedOrganizationId: Organization['id'] | null;
+  orgs: Org[];
+  selectedOrgId: Org['id'] | null;
   hasSearched: boolean;
 }
 
 const STORAGE_KEY = 'uranus-dashboard-inbox'
 
-const selectedOrganizationId = computed(() => (selectedOrganization.value ? selectedOrganization.value.id : null))
+const selectedOrgId = computed(() => (selectedOrg.value ? selectedOrg.value.id : null))
 
 const readPersistedState = (): InboxPersistedState | null => {
   if (typeof window === 'undefined') {
@@ -104,12 +104,12 @@ const readPersistedState = (): InboxPersistedState | null => {
       return null
     }
 
-    const organizations = Array.isArray(parsed.organizations) ? parsed.organizations.filter(Boolean) as Organization[] : []
+    const orgs = Array.isArray(parsed.orgs) ? parsed.orgs.filter(Boolean) as Org[] : []
 
     return {
       searchTerm: typeof parsed.searchTerm === 'string' ? parsed.searchTerm : '',
-      organizations,
-      selectedOrganizationId: parsed.selectedOrganizationId ?? null,
+      orgs,
+      selectedOrgId: parsed.selectedOrgId ?? null,
       hasSearched: Boolean(parsed.hasSearched),
     }
   } catch {
@@ -124,8 +124,8 @@ const persistState = () => {
 
   const state: InboxPersistedState = {
     searchTerm: storedSearchTerm.value,
-    organizations: storedOrganizations.value.map((organization) => ({ ...organization })),
-    selectedOrganizationId: selectedOrganization.value ? selectedOrganization.value.id : null,
+    orgs: storedOrgs.value.map((org) => ({ ...org })),
+    selectedOrgId: selectedOrg.value ? selectedOrg.value.id : null,
     hasSearched: storedHasSearched.value,
   }
 
@@ -143,20 +143,20 @@ const restoreState = () => {
   }
 
   storedSearchTerm.value = saved.searchTerm ?? ''
-  storedOrganizations.value = (saved.organizations ?? []).map((organization) => ({ ...organization }))
-  storedHasSearched.value = Boolean(saved.hasSearched) || storedOrganizations.value.length > 0 || storedSearchTerm.value.trim().length > 0
+  storedOrgs.value = (saved.orgs ?? []).map((org) => ({ ...org }))
+  storedHasSearched.value = Boolean(saved.hasSearched) || storedOrgs.value.length > 0 || storedSearchTerm.value.trim().length > 0
 
   nextTick(() => {
     if (searchPanelRef.value) {
       searchPanelRef.value.setSearchTerm(storedSearchTerm.value)
-      searchPanelRef.value.restoreOrganizations(storedOrganizations.value)
+      searchPanelRef.value.restoreOrgs(storedOrgs.value)
       searchPanelRef.value.setHasSearched(storedHasSearched.value)
     }
 
-    if (saved.selectedOrganizationId != null) {
-      const match = storedOrganizations.value.find((item) => item.id === saved.selectedOrganizationId)
+    if (saved.selectedOrgId != null) {
+      const match = storedOrgs.value.find((item) => item.id === saved.selectedOrgId)
       if (match) {
-        selectedOrganization.value = { ...match }
+        selectedOrg.value = { ...match }
       }
     }
 
@@ -168,24 +168,24 @@ onMounted(() => {
   restoreState()
 })
 
-const selectOrganization = (organization: Organization) => {
+const selectOrg = (org: Org) => {
   clearComposer()
-  selectedOrganization.value = { ...organization }
+  selectedOrg.value = { ...org }
 }
 
 const handleMessageSent = () => {
   persistState()
 }
 
-const handleSearchStateChange = (payload: { searchTerm: string; organizations: Organization[]; hasSearched: boolean }) => {
+const handleSearchStateChange = (payload: { searchTerm: string; orgs: Org[]; hasSearched: boolean }) => {
   storedSearchTerm.value = payload.searchTerm
-  storedOrganizations.value = payload.organizations.map((organization) => ({ ...organization }))
+  storedOrgs.value = payload.orgs.map((org) => ({ ...org }))
   storedHasSearched.value =
-    payload.hasSearched || storedOrganizations.value.length > 0 || storedSearchTerm.value.trim().length > 0
+    payload.hasSearched || storedOrgs.value.length > 0 || storedSearchTerm.value.trim().length > 0
 
   if (
-    selectedOrganization.value &&
-    !storedOrganizations.value.some((item) => item.id === selectedOrganization.value?.id)
+    selectedOrg.value &&
+    !storedOrgs.value.some((item) => item.id === selectedOrg.value?.id)
   ) {
     clearComposer()
   }

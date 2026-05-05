@@ -19,18 +19,20 @@ import UranusEventView from '@/component/event/view/UranusEventView.vue'
 import UranusHtmlView from '@/view/public/UranusHTMLView.vue'
 import UserActivateView from '@/component/register/UserActivateView.vue'
 import UranusInviteActivateView from '@/component/user/UranusInviteActivateView.vue'
-import UranusOrganizationTeamView from '@/component/organization/view/UranusOrganizationTeamView.vue'
-import UranusOrganizationInviteTeamMemberView from '@/component/organization/view/UranusOrganizationInviteTeamMemberView.vue'
-import UranusOrganizationMemberPermissionView from '@/component/organization/view/UranusOrganizationMemberPermissionView.vue'
+import UranusOrgTeamView from '@/component/org/view/UranusOrgTeamView.vue'
+import UranusOrgInviteTeamMemberView from '@/component/org/view/UranusOrgInviteTeamMemberView.vue'
+import UranusOrgMemberPermissionView from '@/component/org/view/UranusOrgMemberPermissionView.vue'
 import UranusEventsView from '@/view/public/UranusEventsView.vue'
 import UranusEventCalendarView from '@/view/public/UranusEventCalendarView.vue'
 import UranusEventSlideshowView from '@/component/slideshow/UranusEventSlideshowView.vue'
 import UranusDevThemeView from '@/view/dev/UranusDevThemeView.vue'
 
 import GenericLayout from '@/component/layout/GenericLayout.vue'
-import UranusOrganizationListView from '@/component/organization/view/UranusOrganizationListView.vue'
-import UranusOrganizationEditView from '@/component/organization/view/UranusOrganizationEditView.vue'
-import UranusOrganizationCreateView from '@/component/organization/view/UranusOrganizationCreateView.vue'
+import UranusOrgListView from '@/component/org/view/UranusOrgListView.vue'
+import UranusOrgEditView from '@/component/org/view/UranusOrgEditView.vue'
+import UranusOrgCreateView from '@/component/org/view/UranusOrgCreateView.vue'
+import UranusPartnerListView from '@/component/partner/view/UranusPartnerListView.vue'
+import UranusPartnerRequestView from '@/component/partner/view/UranusPartnerRequestView.vue'
 import UranusVenueCreateView from '@/component/venue/view/UranusVenueCreateView.vue'
 import UranusVenueEditView from '@/component/venue/view/UranusVenueEditView.vue'
 import UranusAdminEventCardsView from '@/component/event/view/UranusAdminEventCardsView.vue'
@@ -63,58 +65,68 @@ const routes = [
                 component: UranusAdminTodoListView,
             },
             {
-                path: 'organizations',
-                name: 'admin-organizations',
-                component: UranusOrganizationListView,
+                path: 'orgs',
+                name: 'admin-orgs',
+                component: UranusOrgListView,
             },
             {
-                path: 'organization/create',
-                name: 'admin-create-organization',
-                component: UranusOrganizationCreateView,
+                path: 'org/create',
+                name: 'admin-create-org',
+                component: UranusOrgCreateView,
             },
             {
-                path: 'organization/:orgUuid/edit',
-                name: 'admin-edit-organization',
-                component: UranusOrganizationEditView,
+                path: 'org/:orgUuid/edit',
+                name: 'admin-edit-org',
+                component: UranusOrgEditView,
             },
             {
-                path: 'organization/:orgUuid/team',
-                name: 'admin-team-organization',
-                component: UranusOrganizationTeamView,
+                path: 'org/:orgUuid/team',
+                name: 'admin-team-org',
+                component: UranusOrgTeamView,
             },
             {
-                path: 'organization/:orgUuid/invite-team-member',
-                name: 'admin-organization-invite-team-member',
-                component: UranusOrganizationInviteTeamMemberView,
+                path: 'org/:orgUuid/invite-team-member',
+                name: 'admin-org-invite-team-member',
+                component: UranusOrgInviteTeamMemberView,
             },
             {
-                path: 'organization/:orgUuid/venue/create',
+                path: 'org/:orgUuid/venue/create',
                 name: 'admin-create-venue',
                 component: UranusVenueCreateView,
             },
             {
-                path: 'organization/:orgUuid/venue/:venueUuid/edit',
+                path: 'org/:orgUuid/venue/:venueUuid/edit',
                 name: 'admin-edit-venue',
                 component: UranusVenueEditView,
             },
             {
-                path: 'organization/:orgUuid/venue/:venueUuid/space/create',
+                path: 'org/:orgUuid/venue/:venueUuid/space/create',
                 name: 'admin-create-space',
                 component: UranusSpaceCreateView,
             },
             {
-                path: 'organization/:orgUuid/venue/:venueUuid/space/:spaceUuid/edit',
+                path: 'org/:orgUuid/venue/:venueUuid/space/:spaceUuid/edit',
                 name: 'admin-edit-space',
                 component: UranusSpaceEditView,
             },
             {
-                path: 'organization/:orgUuid/venues',
+                path: 'org/venues',
                 name: 'admin-venues',
                 component: UranusAdminVenueListView,
             },
             {
-                path: 'organization/:orgUuid/events',
-                name: 'admin-organization-events',
+                path: 'org/partners',
+                name: 'admin-partners',
+                component: UranusPartnerListView,
+            },
+            {
+                path: 'org/partner-request',
+                name: 'admin-partner-request',
+                component: UranusPartnerRequestView,
+            },
+            {
+                path: 'org/events',
+                name: 'admin-org-events',
                 component: UranusAdminEventCardsView,
             },
             {
@@ -138,12 +150,12 @@ const routes = [
                 component: UranusInviteActivateView,
             },
             {
-                path: 'organization/:uuid/member/:memberUuid/permissions',
+                path: 'org/:uuid/member/:memberUuid/permissions',
                 name: 'admin-edit-member-permission',
-                component: UranusOrganizationMemberPermissionView,
+                component: UranusOrgMemberPermissionView,
             },
             {
-                path: 'organization/:orgUuid/event/create',
+                path: 'org/:orgUuid/event/create',
                 name: 'admin-create-event',
                 component: UranusAdminEventCreateView,
             },

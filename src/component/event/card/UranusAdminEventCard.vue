@@ -15,7 +15,7 @@
         <UranusEventReleaseChip :releaseStatus="event.releaseStatus ?? ''" :tiny="true"/>
         <UranusEventCategoryDisplay v-if="event.categories" :categories="event.categories" />
         <span v-if="event.seriesTotal && event.seriesTotal > 1">
-          {{ event.seriesIndex }} {{ t('one_of') }} {{ event.seriesTotal }}
+          {{ event.seriesIndex }} {{ eventSeriesLabel(event) }} {{ event.seriesTotal }}
         </span>
         <span v-else>1</span>
       </div>
@@ -126,11 +126,12 @@ import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirm
 import UranusCard from "@/component/ui/UranusCard.vue";
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
-import type { AdminEventListItemModel } from '@/domain/event/adminEventListItem.model.ts'
+import type { AdminEventListItem } from '@/domain/event/adminEventListItem.ts'
 import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Eye, Pencil, Trash, Calendar, MapPin, Building } from 'lucide-vue-next'
 import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
+import {uranusStringInterpolate} from "@/util/UranusStringUtils.ts";
 
 const placeholderImage = '/assets/event-dummy.png'
 
@@ -143,7 +144,7 @@ const emit = defineEmits<{
   deleted: [payload: { eventUuid: string; dateUuid: string | null; deleteSeries: boolean }]
 }>()
 
-const props = defineProps<{ event: AdminEventListItemModel }>()
+const props = defineProps<{ event: AdminEventListItem }>()
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const typeLookupStore = useEventTypeLookupStore()
@@ -152,6 +153,12 @@ const eventTypeGenreString = (type: EventTypePairModel) => {
   const name = typeLookupStore.getTypeGenreName(type.typeId, type.genreId ?? null, locale.value)
   return name || 'Unknown'
 }
+
+const eventSeriesLabel = (event: AdminEventListItem) =>
+    uranusStringInterpolate(t('one_of_n'), {
+      seriesIndex: event.seriesIndex,
+      seriesTotal: event.seriesTotal
+    })
 
 // Computed for presence checks
 const hasVenue = computed(() => !!props.event.venueUuid)
@@ -194,7 +201,7 @@ const seriesOptions = computed(() => {
 })
 
 // Request deletion
-const requestDelete = (event: AdminEventListItemModel) => {
+const requestDelete = (event: AdminEventListItem) => {
   if (!event.canDeleteEvent) return
   pendingDeleteUuid.value = event.uuid
   pendingDeleteTitle.value = event.title

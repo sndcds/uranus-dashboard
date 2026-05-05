@@ -4,6 +4,7 @@
 
 <template>
   <div class="uranus-max-layout">
+    <UranusOrgTitle />
     <UranusDashboardHero
         :title="t('events')"
         :subtitle="t('events_hero_subtitle')" />
@@ -18,7 +19,7 @@
         v-if="!orgUuid"
         type="info"
         :action-label="t('notification_cant_see_events_action')"
-        action-to="/admin/organizations"
+        action-to="/admin/orgs"
     >
       <template #title>{{ t('notification_cant_see_events_title') }}</template>
       <template #default>
@@ -28,7 +29,7 @@
 
     <template v-else>
       <div v-if="!isLoading && canAddEvent">
-        <UranusButton :to="`/admin/organization/${orgUuid}/event/create`">
+        <UranusButton :to="`/admin/org/${orgUuid}/event/create`">
           {{ t('add_new_event') }}
         </UranusButton>
       </div>
@@ -54,6 +55,7 @@ import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import { useUranusAdminListEvents } from '@/composable/useUranusAdminListEvents.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusOrgTitle from "@/component/layout/UranusOrgTitle.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const appStore = useAppStore()

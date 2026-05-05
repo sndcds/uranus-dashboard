@@ -98,7 +98,7 @@ export const useTokenStore = defineStore('token', () => {
 
     // Clear app store
     const appStore = useAppStore()
-    appStore.clearOrganization()
+    appStore.clearOrg()
   }
 
   function clearTokens(options?: { broadcast?: boolean }) {

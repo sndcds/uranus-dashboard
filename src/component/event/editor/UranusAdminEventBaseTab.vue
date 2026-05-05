@@ -157,16 +157,11 @@ const isDirty = computed(() => {
   if (!draft || !original) return false
 
   const changedKeys: string[] = []
-  const x: string[] = []
   baseFields.forEach(key => {
     if (!deepEqual(draft[key] ?? null, original[key] ?? null)) {
       changedKeys.push(key)
-      x.push(JSON.stringify(original[key]))
-      x.push(JSON.stringify(draft[key]))
     }
   })
-
-  console.log(JSON.stringify(x, null, 2))
 
   return changedKeys.length > 0
 })

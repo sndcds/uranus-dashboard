@@ -111,7 +111,7 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         da: 'Rettigheder',
     },
     user_permissions_subtitle: {
-        de: 'Benutzerrechte von [name] für [organization] verwalten.',
+        de: 'Benutzerrechte von name] für [organization] verwalten.',
         en: 'These roles and capabilities are assigned to your account.',
         da: 'Disse roller og tilladelser er knyttet til din konto.',
     },
@@ -165,17 +165,17 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'Delete venue',
         da: 'Slet sted',
     },
-    user_permissions_edit_organization: {
+    user_permissions_edit_org: {
         de: 'Organisation bearbeiten',
         en: 'Edit organization',
         da: 'Rediger organisation',
     },
-    user_permissions_delete_organization: {
+    user_permissions_delete_org: {
         de: 'Organisation löschen',
         en: 'Delete organization',
         da: 'Slet organisation',
     },
-    user_permissions_type_organization: {
+    user_permissions_type_org: {
         de: 'Organisationen',
         en: 'Organizations',
         da: 'Organisationer',
@@ -385,7 +385,7 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'Welcome aboard',
         da: '',
     },
-    invite_accept_joined_organization_message: {
+    invite_accept_joined_org_message: {
         de: '',
         da: 'You’ve successfully joined the team at',
         en: '',
@@ -405,7 +405,7 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'If you’d like to learn more about how team membership works, including roles and permissions, you can read more here:',
         da: '',
     },
-    invite_accept_go_to_organizations_cta: {
+    invite_accept_go_to_orgs_cta: {
         de: '',
         en: 'To organizations page',
         da: '',

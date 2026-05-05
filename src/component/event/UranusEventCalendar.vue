@@ -58,54 +58,63 @@
       </UranusHorizontalScroller>
     </div>
 
-    <!-- TODO: Message for viewer -->
-    <div v-if="!eventListStore.hasEvents() && !eventListStore.loading">
-      No events to display
-    </div>
+    <transition name="fade" mode="out-in">
+      <div v-if="isVisible" :key="displayMode">
 
-    <div v-else-if="displayMode=='grid'" class="calendar-card-layout">
-      <UranusEventCalendarCard
-          v-for="event in eventListStore.events"
-          :key="event.uuid"
-          :event="event"
-          :locale="locale"
-          :event-list-store="eventListStore"
-          :type-lookup-store="typeLookupStore"
-      />
-      <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->
-      <div></div><div></div><div></div>
-    </div>
+        <div v-if="!eventListStore.hasEvents() && !eventListStore.loading">
+          No events to display
+        </div>
 
-    <div v-else-if="displayMode=='compact'" class="calendar-compact-layout">
-      <UranusEventCompactCalendarCard
-          v-for="event in eventListStore.events"
-          :key="event.uuid"
-          :event="event"
-          :locale="locale"
-          :event-list-store="eventListStore"
-          :type-lookup-store="typeLookupStore"
-      />
-    </div>
+        <div v-else-if="displayMode=='grid'" class="calendar-card-layout">
+          <UranusEventCalendarCard
+              v-for="event in eventListStore.events"
+              :key="event.uuid"
+              :event="event"
+              :locale="locale"
+              :event-list-store="eventListStore"
+              :type-lookup-store="typeLookupStore"
+          />
+          <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->
+          <div></div><div></div><div></div>
+        </div>
 
-    <div v-else-if="displayMode=='list'" class="calendar-list-layout">
-      <UranusEventCalendarListRow
-          v-for="event in eventListStore.events"
-          :key="event.uuid"
-          :event="event"
-          :locale="locale"
-          :event-list-store="eventListStore"
-          :type-lookup-store="typeLookupStore"
-      />
-    </div>
-    <UranusVenuesMap v-else-if="displayMode=='map'" class="calendar-map-layout" />
+        <div v-else-if="displayMode=='compact'" class="calendar-compact-layout">
+          <UranusEventCompactCalendarCard
+              v-for="event in eventListStore.events"
+              :key="event.uuid"
+              :event="event"
+              :locale="locale"
+              :event-list-store="eventListStore"
+              :type-lookup-store="typeLookupStore"
+          />
+        </div>
+
+        <div v-else-if="displayMode=='list'" class="calendar-list-layout">
+          <UranusEventCalendarListRow
+              v-for="event in eventListStore.events"
+              :key="event.uuid"
+              :event="event"
+              :locale="locale"
+              :event-list-store="eventListStore"
+              :type-lookup-store="typeLookupStore"
+          />
+        </div>
 
 
-    <!-- Infinite scroll trigger -->
-    <div
-        ref="loadMoreTrigger"
-        class="load-more-trigger"
-        v-show="true"
-    ></div>
+        <!-- Infinite scroll trigger -->
+        <div
+            ref="loadMoreTrigger"
+            class="load-more-trigger"
+            v-show="true"
+        ></div>
+
+      </div>
+    </transition>
+
+    <UranusVenuesMap
+        v-if="displayMode=='map'"
+        class="calendar-map-layout"
+    />
 
     <!--div v-if="eventListStore.loading" class="loading-indicator">
       Loading more events…
@@ -140,6 +149,7 @@ const eventReleaseStatusStore = useEventReleaseStatusStore()
 const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
 const eventListStore = useEventListStore()
+const isVisible = ref(true)
 
 const displayMode = ref<'list' | 'grid' | 'compact' | 'map'>('grid')
 function setDisplayMode(mode: 'list' | 'grid' | 'compact' | 'map') {
@@ -165,8 +175,23 @@ const onResetFilter = () => {
 }
 
 async function reloadEvents() {
+  // Only fade out AFTER initial load
+  if (initialized.value) {
+    isVisible.value = false
+    await new Promise(resolve => setTimeout(resolve, 200))
+  }
   await eventListStore.loadEvents(true)
   await eventListStore.loadTypeSummary()
+  isVisible.value = true
+}
+
+async function ensureScrollable() {
+  while (
+      eventListStore.hasMore &&
+      document.documentElement.scrollHeight <= window.innerHeight
+      ) {
+    await loadMore()
+  }
 }
 
 async function loadMore() {
@@ -197,7 +222,6 @@ watch(searchQuery, () => {
 })
 
 // Return unique type IDs from the event_types array
-
 const getUniqueEventTypes = (types: EventListItemEventType[]): number[] => {
   const unique = new Set<number>()
   types.forEach(t => unique.add(t.typeId))
@@ -217,6 +241,7 @@ function toggleType(typeId: number) {
 
 onMounted(async () => {
   await reloadEvents()
+  await ensureScrollable()
   initialized.value = true
   const el = loadMoreTrigger.value
   if (!el) return
@@ -232,7 +257,7 @@ onMounted(async () => {
           loadMore()
         }
       },
-      { rootMargin: "200px" }
+      { rootMargin: "300px" }
   )
 
   observer.observe(el)
@@ -347,6 +372,16 @@ onBeforeUnmount(() => {
 .loading-indicator {
   text-align: center;
   padding: 24px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 @media (max-width: 640px) {

@@ -28,23 +28,39 @@
         </router-link>
 
         <router-link
-            to="/admin/organizations"
+            to="/admin/orgs"
             class="generic-sidebar__nav-item"
             active-class="generic-sidebar__nav-item--active"
             @click="handleLinkClick"
         >
           <Building class="generic-sidebar__nav-icon"/>
-          <span class="generic-sidebar__nav-text">{{ t('nav_organizations') }}</span>
+          <span class="generic-sidebar__nav-text">{{ t('nav_orgs') }}</span>
         </router-link>
 
-        <router-link :to="venuesRoute" class="generic-sidebar__nav-item"
-          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
+        <router-link
+            to="/admin/org/partners"
+            class="generic-sidebar__nav-item"
+            active-class="generic-sidebar__nav-item--active"
+            @click="handleLinkClick"
+        >
+          <Handshake class="generic-sidebar__nav-icon"/>
+          <span class="generic-sidebar__nav-text">{{ t('nav_partners') }}</span>
+        </router-link>
+
+        <router-link
+            to="/admin/org/venues"
+            class="generic-sidebar__nav-item"
+            active-class="generic-sidebar__nav-item--active" @click="handleLinkClick"
+        >
           <MapPin class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_venues') }}</span>
         </router-link>
 
-        <router-link :to="eventsRoute" class="generic-sidebar__nav-item"
-          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
+        <router-link
+            to="/admin/org/events"
+            class="generic-sidebar__nav-item"
+            active-class="generic-sidebar__nav-item--active"
+            @click="handleLinkClick">
           <Calendar class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_events') }}</span>
         </router-link>
@@ -111,8 +127,10 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/appStore.ts'
+import { useThemeStore } from '@/store/themeStore.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import { LayoutDashboard, ListChecks, Building, MapPin, Calendar } from 'lucide-vue-next'
+import { LayoutDashboard, ListChecks, Building, Handshake, MapPin, Calendar } from 'lucide-vue-next'
+import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 
 interface Props {
   isOpen: boolean
@@ -128,20 +146,17 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const route = useRoute()
 const appStore = useAppStore()
+const themeStore = useThemeStore()
 const tokenStore = useTokenStore()
 
 const handleLinkClick = () => {
   emit('close')
 }
 
-// Dynamic routes based on organizationId
 const venuesRoute = computed(() => {
-  return `/admin/organization/${appStore.orgUuid}/venues`
+  return `/admin/org/${appStore.orgUuid}/venues`
 })
 
-const eventsRoute = computed(() => {
-  return `/admin/organization/${appStore.orgUuid}/events`
-})
 </script>
 
 <style scoped lang="scss">

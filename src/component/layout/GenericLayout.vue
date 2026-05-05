@@ -8,7 +8,6 @@
     <GenericHeader @toggle-sidebar="toggleSidebar" />
 
     <div class="app-layout__body">
-      <!-- Sidebar -->
       <GenericSidebar
           v-if="showSidebar"
           :is-open="isSidebarOpen"
@@ -19,7 +18,6 @@
       <!-- Overlay for mobile -->
       <div v-if="isSidebarOpen" class="overlay" @click="closeSidebar"></div>
 
-      <!-- Main content -->
       <main class="app-layout__main">
         <div :class="[contentClasses, route.meta.customClass]">
           <router-view />
@@ -39,8 +37,12 @@ import { useRoute } from 'vue-router'
 import GenericHeader from '@/component/layout/GenericHeader.vue'
 import GenericSidebar from '@/component/layout/GenericSidebar.vue'
 import GenericFooter from '@/component/layout/GenericFooter.vue'
+import { useAppStore } from '@/store/appStore.ts'
+import { useThemeStore } from '@/store/themeStore.ts'
 
 const route = useRoute()
+const appStore = useAppStore()
+const themeStore = useThemeStore()
 
 // Determine if we show admin sidebar
 const isAdminPage = computed(() => route.path.startsWith('/admin'))
