@@ -94,7 +94,7 @@ async function fetchVenues(q: string) {
   }
 
   try {
-    const apiPath = apiBaseUrl() + `/api/choosable-venues?name=${encodeURIComponent(q)}*`
+    const apiPath = apiBaseUrl() + `/api/choosable-venues?name=*${encodeURIComponent(q)}*`
     const res = await fetch(apiPath)
     const json = await res.json()
     results.value = json.data ?? []
