@@ -59,7 +59,7 @@
     </div>
 
     <transition name="fade" mode="out-in">
-        <div v-if="displayMode==='grid'" class="calendar-card-layout">
+        <div v-if="displayMode === 'grid'" class="calendar-card-layout">
           <UranusEventCalendarCard
               v-for="event in eventListStore.events"
               :key="event.uuid"
@@ -72,7 +72,7 @@
           <div></div><div></div><div></div>
         </div>
 
-        <div v-else-if="displayMode==='compact'" class="calendar-compact-layout">
+        <div v-else-if="displayMode === 'compact'" class="calendar-compact-layout">
           <UranusEventCompactCalendarCard
               v-for="event in eventListStore.events"
               :key="event.uuid"
@@ -83,7 +83,7 @@
           />
         </div>
 
-        <div v-else-if="displayMode==='list'" class="calendar-list-layout">
+        <div v-else-if="displayMode === 'list'" class="calendar-list-layout">
           <UranusEventCalendarListRow
               v-for="event in eventListStore.events"
               :key="event.uuid"
@@ -97,15 +97,15 @@
       <!--/div-->
     </transition>
 
-    <!-- Infinite scroll trigger -->
     <div
+        v-if="displayMode !== 'map'"
         ref="loadMoreTrigger"
         class="load-more-trigger"
-        v-show="true"
+        aria-hidden="true"
     ></div>
 
     <UranusVenuesMap
-        v-if="displayMode=='map'"
+        v-if="displayMode === 'map'"
         class="calendar-map-layout"
     />
 
@@ -124,10 +124,8 @@ import { useI18n } from 'vue-i18n'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
-import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 import { uranusPluralizedText } from '@/util/UranusStringUtils.ts'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
-import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
 import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendarListRow.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
@@ -138,30 +136,28 @@ import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCo
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
+type DisplayMode = 'list' | 'grid' | 'compact' | 'map'
+
+const LOAD_MORE_ROOT_MARGIN = 300
 const isSwitchingMode = ref(false)
-const eventReleaseStatusStore = useEventReleaseStatusStore()
 const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
 const eventListStore = useEventListStore()
-const isVisible = ref(true)
 
-const displayMode = ref<'list' | 'grid' | 'compact' | 'map'>('compact')
-function setDisplayMode(mode: 'list' | 'grid' | 'compact' | 'map') {
+const displayMode = ref<DisplayMode>('compact')
+function setDisplayMode(mode: DisplayMode) {
   displayMode.value = mode
 }
 
-let requestId = 0
 const initialized = ref(false)
-const searchQuery = ref('')
-
-const getTypeName = (typeId: number) =>
-    typeLookupStore.data[locale.value]?.types?.[typeId]?.name ?? 'Unknown'
+let reloadRequestId = 0
 
 const eventCountInfo = computed(() =>
     uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.totalEventCount)
 )
 
-const isResetting = ref(false)
+const isReloading = ref(false)
+const isLoadingMore = ref(false)
 let filterTimeout: number | null = null
 
 const onResetFilter = () => {
@@ -169,34 +165,79 @@ const onResetFilter = () => {
 }
 
 async function reloadEvents() {
-  if (initialized.value) {
-    isVisible.value = false
-    await nextTick() // Let Vue apply v-show BEFORE loading
+  const currentReloadRequest = ++reloadRequestId
+
+  isReloading.value = true
+  observer?.disconnect()
+
+  try {
+    await waitForActiveEventLoad()
+    if (currentReloadRequest !== reloadRequestId) return
+
+    await eventListStore.loadEvents(true)
+    await eventListStore.loadTypeSummary()
+    await waitForRenderedEvents()
+
+    if (currentReloadRequest !== reloadRequestId) return
+
+    isReloading.value = false
+    observeLoadMoreTrigger()
+    await loadMoreWhileTriggerIsNearViewport()
+  } finally {
+    if (currentReloadRequest === reloadRequestId) {
+      isReloading.value = false
+      observeLoadMoreTrigger()
+    }
   }
-  await eventListStore.loadEvents(true)
-  await eventListStore.loadTypeSummary()
-  isVisible.value = true
-  await nextTick() // DOM is now correct
-  await ensureScrollable()
 }
 
-async function ensureScrollable() {
-  if (isSwitchingMode.value) return
-  while (
-      eventListStore.hasMore &&
-      document.documentElement.scrollHeight <= window.innerHeight
-      ) {
-    if (isSwitchingMode.value) break
-    await loadMore()
+async function waitForRenderedEvents() {
+  await nextTick()
+  await new Promise<void>(resolve => window.requestAnimationFrame(() => resolve()))
+}
+
+async function waitForActiveEventLoad() {
+  while (eventListStore.loading) {
+    await waitForRenderedEvents()
   }
 }
 
-async function loadMore() {
-  const currentRequest = ++requestId
-  isResetting.value = true
-  await eventListStore.loadEvents()
-  if (currentRequest !== requestId) return
-  isResetting.value = false
+function isLoadMoreTriggerNearViewport() {
+  const el = loadMoreTrigger.value
+  if (!el || displayMode.value === 'map') return false
+
+  const rect = el.getBoundingClientRect()
+  return (
+      rect.top <= window.innerHeight + LOAD_MORE_ROOT_MARGIN &&
+      rect.bottom >= -LOAD_MORE_ROOT_MARGIN
+  )
+}
+
+async function loadMoreWhileTriggerIsNearViewport() {
+  if (isLoadingMore.value || isReloading.value || isSwitchingMode.value || displayMode.value === 'map') return
+
+  isLoadingMore.value = true
+
+  try {
+    while (
+        eventListStore.hasMore &&
+        !eventListStore.loading &&
+        !isReloading.value &&
+        !isSwitchingMode.value &&
+        isLoadMoreTriggerNearViewport()
+        ) {
+      const eventCountBeforeLoad = eventListStore.events.length
+
+      await eventListStore.loadEvents()
+      await waitForRenderedEvents()
+
+      if (eventListStore.error || eventListStore.events.length === eventCountBeforeLoad) {
+        break
+      }
+    }
+  } finally {
+    isLoadingMore.value = false
+  }
 }
 
 watch(
@@ -211,64 +252,49 @@ watch(
     { deep: true }
 )
 
-watch(searchQuery, () => {
-  if (searchTimeout) clearTimeout(searchTimeout)
-  searchTimeout = window.setTimeout(() => {
-    reloadEvents()
-  }, 300)
-})
-
 watch(displayMode, async () => {
   if (!initialized.value) return
   isSwitchingMode.value = true
   observer?.disconnect() // stop infinite scroll during transition
   await reloadEvents()
-  await nextTick()
-  await nextTick()
-  const el = loadMoreTrigger.value
-  if (el && observer) observer.observe(el)
+  await waitForRenderedEvents()
   isSwitchingMode.value = false
+  observeLoadMoreTrigger()
+  await loadMoreWhileTriggerIsNearViewport()
 })
-
-// Return unique type IDs from the event_types array
-const getUniqueEventTypes = (types: EventListItemEventType[]): number[] => {
-  const unique = new Set<number>()
-  types.forEach(t => unique.add(t.typeId))
-  return Array.from(unique)
-}
-
 
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
-
-let searchTimeout: number | null = null
 
 function toggleType(typeId: number) {
   filterStore.toggleEventType(typeId)
 }
 
+function observeLoadMoreTrigger() {
+  observer?.disconnect()
+
+  const el = loadMoreTrigger.value
+  if (!el || displayMode.value === 'map' || !observer) return
+
+  observer.observe(el)
+}
+
 onMounted(async () => {
   await reloadEvents()
-  await ensureScrollable()
   initialized.value = true
-  const el = loadMoreTrigger.value
-  if (!el) return
 
   observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
-        if (entry?.isIntersecting &&
-            !isResetting.value &&
-            !eventListStore.loading &&
-            eventListStore.hasMore
-        ) {
-          loadMore()
+        if (entry?.isIntersecting) {
+          void loadMoreWhileTriggerIsNearViewport()
         }
       },
-      { rootMargin: "300px" }
+      { rootMargin: `${LOAD_MORE_ROOT_MARGIN}px` }
   )
 
-  observer.observe(el)
+  observeLoadMoreTrigger()
+  await loadMoreWhileTriggerIsNearViewport()
 })
 
 onBeforeUnmount(() => {
