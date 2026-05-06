@@ -59,8 +59,6 @@
     </div>
 
     <transition name="fade" mode="out-in">
-      <!--div v-show="isVisible" :key="displayMode + '-' + renderKey"-->
-
         <div v-if="displayMode==='grid'" class="calendar-card-layout">
           <UranusEventCalendarCard
               v-for="event in eventListStore.events"
@@ -140,7 +138,7 @@ import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCo
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
-const renderKey = ref(0)
+const isSwitchingMode = ref(false)
 const eventReleaseStatusStore = useEventReleaseStatusStore()
 const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
@@ -183,10 +181,12 @@ async function reloadEvents() {
 }
 
 async function ensureScrollable() {
+  if (isSwitchingMode.value) return
   while (
       eventListStore.hasMore &&
       document.documentElement.scrollHeight <= window.innerHeight
       ) {
+    if (isSwitchingMode.value) break
     await loadMore()
   }
 }
@@ -220,8 +220,13 @@ watch(searchQuery, () => {
 
 watch(displayMode, async () => {
   if (!initialized.value) return
+  isSwitchingMode.value = true
+  observer?.disconnect() // stop infinite scroll during transition
   await reloadEvents()
-  renderKey.value++
+  await nextTick()
+  const el = loadMoreTrigger.value
+  if (el && observer) observer.observe(el)
+  isSwitchingMode.value = false
 })
 
 // Return unique type IDs from the event_types array
