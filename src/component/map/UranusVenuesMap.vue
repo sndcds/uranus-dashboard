@@ -451,11 +451,13 @@ onBeforeUnmount(() => {
 }
 
 :global(.venue-map-popup__title) {
-  font-size: 0.95rem;
+  padding: 0.4rem;
+  font-size: 1rem;
 }
 
 :global(.venue-map-popup__city),
 :global(.venue-map-popup__events) {
+  padding: 0 0.4rem;
   color: var(--uranus-color-3);
 }
 
