@@ -224,6 +224,7 @@ watch(displayMode, async () => {
   observer?.disconnect() // stop infinite scroll during transition
   await reloadEvents()
   await nextTick()
+  await nextTick()
   const el = loadMoreTrigger.value
   if (el && observer) observer.observe(el)
   isSwitchingMode.value = false
@@ -239,7 +240,6 @@ const getUniqueEventTypes = (types: EventListItemEventType[]): number[] => {
 
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
-
 
 let searchTimeout: number | null = null
 
@@ -371,10 +371,10 @@ onBeforeUnmount(() => {
   margin-left: 32px;
 }
 
-/* Infinite scroll helpers */
 .load-more-trigger {
-  width: 0;
-  height: 0;
+  width: 100%;
+  height: 1px;
+  margin-bottom: 1px;
 }
 
 .loading-indicator {
