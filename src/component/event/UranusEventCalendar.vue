@@ -59,13 +59,9 @@
     </div>
 
     <transition name="fade" mode="out-in">
-      <div v-show="isVisible" :key="displayMode">
+      <!--div v-show="isVisible" :key="displayMode + '-' + renderKey"-->
 
-        <div v-if="!eventListStore.hasEvents() && !eventListStore.loading">
-          No events to display
-        </div>
-
-        <div v-else-if="displayMode=='grid'" class="calendar-card-layout">
+        <div v-if="displayMode==='grid'" class="calendar-card-layout">
           <UranusEventCalendarCard
               v-for="event in eventListStore.events"
               :key="event.uuid"
@@ -78,7 +74,7 @@
           <div></div><div></div><div></div>
         </div>
 
-        <div v-else-if="displayMode=='compact'" class="calendar-compact-layout">
+        <div v-else-if="displayMode==='compact'" class="calendar-compact-layout">
           <UranusEventCompactCalendarCard
               v-for="event in eventListStore.events"
               :key="event.uuid"
@@ -89,7 +85,7 @@
           />
         </div>
 
-        <div v-else-if="displayMode=='list'" class="calendar-list-layout">
+        <div v-else-if="displayMode==='list'" class="calendar-list-layout">
           <UranusEventCalendarListRow
               v-for="event in eventListStore.events"
               :key="event.uuid"
@@ -100,7 +96,7 @@
           />
         </div>
 
-      </div>
+      <!--/div-->
     </transition>
 
     <!-- Infinite scroll trigger -->
@@ -144,13 +140,14 @@ import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCo
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
+const renderKey = ref(0)
 const eventReleaseStatusStore = useEventReleaseStatusStore()
 const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
 const eventListStore = useEventListStore()
 const isVisible = ref(true)
 
-const displayMode = ref<'list' | 'grid' | 'compact' | 'map'>('grid')
+const displayMode = ref<'list' | 'grid' | 'compact' | 'map'>('compact')
 function setDisplayMode(mode: 'list' | 'grid' | 'compact' | 'map') {
   displayMode.value = mode
 }
@@ -176,12 +173,12 @@ const onResetFilter = () => {
 async function reloadEvents() {
   if (initialized.value) {
     isVisible.value = false
-    await new Promise(resolve => setTimeout(resolve, 200))
+    await nextTick() // Let Vue apply v-show BEFORE loading
   }
   await eventListStore.loadEvents(true)
   await eventListStore.loadTypeSummary()
   isVisible.value = true
-  await nextTick()
+  await nextTick() // DOM is now correct
   await ensureScrollable()
 }
 
@@ -222,8 +219,9 @@ watch(searchQuery, () => {
 })
 
 watch(displayMode, async () => {
-  await nextTick()
-  await ensureScrollable()
+  if (!initialized.value) return
+  await reloadEvents()
+  renderKey.value++
 })
 
 // Return unique type IDs from the event_types array
