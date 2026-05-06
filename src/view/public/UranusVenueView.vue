@@ -1,158 +1,389 @@
 <!--
   src/view/public/UranusVenueView.vue
 
-  2026-02-27, ChatGPT
+  UranusVenueView renders public venue details using the same public detail
+  layout system as UranusEventView.
 -->
 
 <template>
-
-  <div v-if="showLoading" class="uranus-public-venue-state-info--loading">
+  <div v-if="showLoading" class="uranus-public-event-state-info--loading">
     <span>{{ loadingLabel }}</span>
   </div>
-  <div v-else-if="loadError" class="uranus-public-venue-state-info--alert">
+
+  <div v-else-if="loadError !== null" class="uranus-public-event-state-info">
+    <h1 style="font-size:8rem;">404</h1>
     <span>{{ loadError }}</span>
   </div>
-  <div v-else-if="venue" class="uranus-public-venue-frame">
 
-    <div class="uranus-public-venue-detail-layout">
-
-      <!-- Main Content -->
-      <section class="uranus-public-venue-main-layout">
-
-        <!-- Title -->
-        <div class="uranus-public-venue-section">
+  <div v-else-if="venue" class="uranus-public-event-frame">
+    <div class="uranus-public-event-detail-layout">
+      <section class="uranus-public-event-main-layout">
+        <div class="uranus-public-event-section">
           <h1>{{ venue.name }}</h1>
-          <h2 v-if="venue.type_name">{{ venue.type_name }}</h2>
+          <h2 v-if="venueTypeLabel">{{ venueTypeLabel }}</h2>
         </div>
 
-        <!-- Description -->
-        <div v-if="venue.description" class="uranus-public-venue-section">
-          <div class="uranus-public-venue-description" v-html="formatMarkdown(venue.description)"></div>
+        <div v-if="venueTypeLabel" class="uranus-public-event-section">
+          <div class="uranus-public-event-detail-tags">
+            <span class="uranus-public-event-detail-tag">
+              {{ venueTypeLabel }}
+            </span>
+          </div>
         </div>
 
-        <!-- Address & Contact -->
-        <div class="uranus-public-venue-section">
-          <p v-if="venue.street || venue.house_number">
-            {{ venue.street }} {{ venue.house_number }}
-          </p>
-          <p v-if="venue.postal_code || venue.city || venue.country">
-            {{ venue.postal_code }} {{ venue.city }} {{ venue.country }}
-          </p>
-          <p v-if="venue.contact_email">Email: <a :href="`mailto:${venue.contact_email}`">{{ venue.contact_email }}</a></p>
-          <p v-if="venue.contact_phone">Phone: {{ venue.contact_phone }}</p>
-          <p v-if="venue.web_link">
-            <a :href="venue.web_link" target="_blank" rel="noopener noreferrer">
-              {{ venue.web_link }}&nbsp;↗
-            </a>
-          </p>
+        <div v-if="venue.description" class="uranus-public-event-section">
+          <div class="uranus-public-event-description" v-html="formatMarkdown(venue.description)"></div>
         </div>
 
-        <!-- Spaces -->
-        <div v-if="venue.spaces && venue.spaces.length" class="uranus-public-venue-section">
-          <h3>{{ t('spaces') }}</h3>
-          <ul class="uranus-public-venue-spaces">
-            <li v-for="space in venue.spaces" :key="space.id">
-              <strong>{{ space.name }}</strong>
-              <span v-if="space.total_capacity">({{ space.total_capacity }} total)</span>
-              <span v-if="space.seating_capacity">, {{ space.seating_capacity }} seats</span>
-              <span v-if="space.building_level !== undefined">, Level {{ space.building_level }}</span>
-              <span v-if="space.space_type_name">, {{ space.space_type_name }}</span>
-              <p v-if="space.description">{{ space.description }}</p>
-              <p v-if="space.web_link">
-                <a :href="space.web_link" target="_blank" rel="noopener noreferrer">
-                  {{ space.web_link }}&nbsp;↗
-                </a>
-              </p>
-            </li>
-          </ul>
+        <div v-if="venue.spaces.length" class="uranus-public-event-section">
+          <h2>{{ t('venue_spaces') }}</h2>
+          <div class="uranus-public-venue-space-list">
+            <article
+                v-for="space in venue.spaces"
+                :key="space.uuid"
+                class="uranus-public-venue-space"
+            >
+              <h3>{{ space.name }}</h3>
+              <p v-if="spaceTypeLabel(space)">{{ spaceTypeLabel(space) }}</p>
+              <dl v-if="spaceFacts(space).length" class="uranus-public-venue-space-facts">
+                <template v-for="fact in spaceFacts(space)" :key="fact.label">
+                  <dt>{{ fact.label }}</dt>
+                  <dd>{{ fact.value }}</dd>
+                </template>
+              </dl>
+              <div
+                  v-if="space.description"
+                  class="uranus-public-event-description"
+                  v-html="formatMarkdown(space.description)"
+              ></div>
+              <a
+                  v-if="space.webLink"
+                  :href="space.webLink"
+                  target="_blank"
+                  rel="noopener noreferrer"
+              >
+                {{ space.webLink }}&nbsp;↗
+              </a>
+            </article>
+          </div>
         </div>
-
       </section>
 
-      <!-- Sidebar -->
-      <aside class="uranus-public-venue-sidebar">
+      <aside class="uranus-public-event-sidebar">
+        <div class="uranus-public-event-info-section">
+          <div v-if="hasAddress">
+            <p class="uranus-public-event-info-label">{{ t('events_calendar_detail_address_label') }}</p>
+            <p v-if="venue.street || venue.houseNumber">
+              {{ venue.street }} {{ venue.houseNumber }}
+            </p>
+            <p v-if="venue.postalCode || venue.city">
+              {{ venue.postalCode }} {{ venue.city }}
+            </p>
+            <p v-if="venue.state || venue.country">
+              {{ [venue.state, venue.country].filter(Boolean).join(', ') }}
+            </p>
+          </div>
 
-        <!-- Organization -->
-        <div v-if="venue.organization" class="uranus-public-venue-info-section">
-          <p class="uranus-public-venue-info-label">{{ t('venue_organization') }}</p>
-          <p v-if="venue.organization.web_link && venue.organization.name">
-            <a :href="venue.organization.web_link" target="_blank" rel="noopener noreferrer">
-              {{ venue.organization.name }}&nbsp;↗
-            </a>
-          </p>
-          <p v-else>{{ venue.organization.name }}</p>
-          <p v-if="venue.organization.city || venue.organization.country">
-            {{ venue.organization.city }}, {{ venue.organization.country }}
-          </p>
+          <div v-if="venue.organization">
+            <p class="uranus-public-event-info-label">{{ t('event_organizer') }}</p>
+            <p v-if="venue.organization.webLink && venue.organization.name">
+              <a :href="venue.organization.webLink" target="_blank" rel="noopener noreferrer">
+                {{ venue.organization.name }}&nbsp;↗
+              </a>
+            </p>
+            <p v-else>{{ venue.organization.name }}</p>
+            <p v-if="venue.organization.city || venue.organization.country">
+              {{ [venue.organization.city, venue.organization.country].filter(Boolean).join(', ') }}
+            </p>
+          </div>
+
+          <div v-if="venue.openedAt || venue.closedAt">
+            <p class="uranus-public-event-info-label">{{ t('venue_details') }}</p>
+            <p v-if="venue.openedAt">{{ t('opened_at') }}: {{ venue.openedAt }}</p>
+            <p v-if="venue.closedAt">{{ t('closed_at') }}: {{ venue.closedAt }}</p>
+          </div>
+
+          <UranusIconAction
+              v-if="venue.webLink"
+              :label="t('website')"
+              :icon="Globe"
+              :to="venue.webLink"
+              style="padding-left: 0;"
+          />
+
+          <UranusIconAction
+              v-if="venue.contactEmail"
+              :label="venue.contactEmail"
+              :icon="Mail"
+              :to="`mailto:${venue.contactEmail}`"
+              style="padding-left: 0;"
+          />
+
+          <UranusIconAction
+              v-if="venue.contactPhone"
+              :label="venue.contactPhone"
+              :icon="Phone"
+              :to="`tel:${venue.contactPhone}`"
+              style="padding-left: 0;"
+          />
+
+          <UranusIconAction
+              v-if="hasLonLat"
+              :to="{ hash: '#venue-map' }"
+              :label="t('scroll_to_map')"
+              :icon="Map"
+              style="padding-left: 0;"
+          />
         </div>
-
-        <!-- Map button -->
-        <button
-            v-if="hasLonLat"
-            type="button"
-            class="uranus-public-venue-detail-link"
-            @click="onShowOnMap">
-          {{ t('show_map') }}
-        </button>
-
       </aside>
-    </div>
-  </div>
 
-  <div class="calendar-content" v-if="venue">
-    <UranusEventCalendar
-        :initial-filter="initialEventFilter"
-    />
+      <div
+          v-if="hasLonLat"
+          class="uranus-public-venue-map-frame"
+      >
+        <UranusSinglePointMap
+            id="venue-map"
+            :lat="venue.lat!"
+            :lon="venue.lon!"
+            :name="venue.name"
+        />
+      </div>
+    </div>
+
+    <div class="uranus-public-venue-calendar">
+      <UranusEventCalendar />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, reactive, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api.ts'
 import { marked } from 'marked'
+import { Globe, Mail, Map, Phone } from 'lucide-vue-next'
+import { ApiError, apiFetch } from '@/api.ts'
 import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'
-import type {UranusVenueSelectItemInfo} from '@/domain/venue/venue.model.ts'
+import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
+import UranusIconAction from '@/component/ui/UranusIconAction.vue'
+import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import { useVenueTypeLookupStore } from '@/store/venueTypesLookupStore.ts'
+import { useSpaceTypeLookupStore } from '@/store/spaceTypesLookupStore.ts'
+
+type VenueDetailOrganization = {
+  uuid: string | null
+  name: string
+  webLink: string | null
+  city: string | null
+  country: string | null
+}
+
+type VenueDetailSpace = {
+  uuid: string
+  name: string
+  type: string | null
+  typeName: string | null
+  description: string | null
+  webLink: string | null
+  buildingLevel: number | null
+  areaSqm: number | null
+  totalCapacity: number | null
+  seatingCapacity: number | null
+}
+
+type VenueDetail = {
+  uuid: string
+  name: string
+  type: string | null
+  typeName: string | null
+  openedAt: string | null
+  closedAt: string | null
+  street: string | null
+  houseNumber: string | null
+  postalCode: string | null
+  city: string | null
+  state: string | null
+  country: string | null
+  contactEmail: string | null
+  contactPhone: string | null
+  webLink: string | null
+  description: string | null
+  lon: number | null
+  lat: number | null
+  organization: VenueDetailOrganization | null
+  spaces: VenueDetailSpace[]
+}
 
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
+const filterStore = useEventsFilterStore()
+const venueTypeLookupStore = useVenueTypeLookupStore()
+const spaceTypeLookupStore = useSpaceTypeLookupStore()
 
-// State
-const venue = ref<any | null>(null)
+const venue = ref<VenueDetail | null>(null)
 const isLoading = ref(true)
 const showLoading = ref(false)
 const loadingLabel = computed(() => t('loading'))
 const loadError = ref<string | null>(null)
 
-const hasLonLat = computed(() => venue.value?.lon && venue.value?.lat)
+const hasLonLat = computed(() =>
+    Number.isFinite(venue.value?.lon) && Number.isFinite(venue.value?.lat)
+)
 
+const hasAddress = computed(() =>
+    Boolean(
+        venue.value?.street ||
+        venue.value?.houseNumber ||
+        venue.value?.postalCode ||
+        venue.value?.city ||
+        venue.value?.state ||
+        venue.value?.country
+    )
+)
 
-const initialEventFilter = reactive({
-  search: null,
-  city: null,
-  startDate: null,
-  endDate: null,
-  venue: { id: -1, name: '' } as UranusVenueSelectItemInfo
+const venueTypeLabel = computed(() => {
+  if (!venue.value) return ''
+  return venue.value.typeName
+      ?? (venue.value.type ? venueTypeLookupStore.getLabel(venue.value.type, locale.value) : '')
+      ?? ''
 })
 
-watch(venue, (newVenue) => {
-  if (newVenue) {
-    initialEventFilter.venue = { id: newVenue.id, name: newVenue.name }
+watch(
+    () => [route.params.uuid, locale.value],
+    () => {
+      void loadVenue()
+    }
+)
+
+watch(isLoading, (loading) => {
+  if (loading) {
+    const timeout = window.setTimeout(() => {
+      showLoading.value = true
+    }, 500)
+
+    const stopWatch = watch(isLoading, (stillLoading) => {
+      if (!stillLoading) {
+        window.clearTimeout(timeout)
+        showLoading.value = false
+        stopWatch()
+      }
+    })
+  } else {
+    showLoading.value = false
   }
 })
 
-// Helpers
-const formatMarkdown = (markdown: string) => {
-  try { return marked(markdown) }
-  catch { return markdown }
+watch(venue, (loadedVenue) => {
+  if (!loadedVenue) return
+
+  filterStore.setFilter({
+    venue: {
+      uuid: loadedVenue.uuid,
+      name: loadedVenue.name,
+    },
+  })
+})
+
+function formatMarkdown(markdown: string) {
+  try {
+    return marked(markdown)
+  } catch {
+    return markdown
+  }
 }
 
-const resolveRouteParam = (param: string | string[] | undefined) =>
-    Array.isArray(param) ? param[0] : param
+function resolveRouteParam(param: string | string[] | undefined) {
+  return Array.isArray(param) ? param[0] : param
+}
 
-const loadVenue = async () => {
-  const venueUuid = Number(resolveRouteParam(route.params.uuid))
+function mapVenueDetail(raw: any): VenueDetail | null {
+  if (!raw) return null
+
+  const uuid = String(raw.uuid ?? raw.id ?? '')
+  if (!uuid) return null
+
+  return {
+    uuid,
+    name: String(raw.name ?? ''),
+    type: raw.type ?? null,
+    typeName: raw.type_name ?? null,
+    openedAt: raw.opened_at ?? null,
+    closedAt: raw.closed_at ?? null,
+    street: raw.street ?? null,
+    houseNumber: raw.house_number ?? null,
+    postalCode: raw.postal_code ?? null,
+    city: raw.city ?? null,
+    state: raw.state ?? null,
+    country: raw.country ?? null,
+    contactEmail: raw.contact_email ?? null,
+    contactPhone: raw.contact_phone ?? null,
+    webLink: raw.web_link ?? null,
+    description: raw.description ?? null,
+    lon: normalizeNumber(raw.lon),
+    lat: normalizeNumber(raw.lat),
+    organization: mapOrganization(raw.organization),
+    spaces: Array.isArray(raw.spaces) ? raw.spaces.map(mapSpace).filter(Boolean) : [],
+  }
+}
+
+function mapOrganization(raw: any): VenueDetailOrganization | null {
+  if (!raw) return null
+
+  return {
+    uuid: raw.uuid ?? null,
+    name: String(raw.name ?? ''),
+    webLink: raw.web_link ?? null,
+    city: raw.city ?? null,
+    country: raw.country ?? null,
+  }
+}
+
+function mapSpace(raw: any): VenueDetailSpace | null {
+  const uuid = String(raw?.uuid ?? raw?.id ?? '')
+  if (!uuid) return null
+
+  return {
+    uuid,
+    name: String(raw.name ?? ''),
+    type: raw.type ?? raw.space_type ?? null,
+    typeName: raw.type_name ?? raw.space_type_name ?? null,
+    description: raw.description ?? null,
+    webLink: raw.web_link ?? null,
+    buildingLevel: normalizeNumber(raw.building_level),
+    areaSqm: normalizeNumber(raw.area_sqm),
+    totalCapacity: normalizeNumber(raw.total_capacity),
+    seatingCapacity: normalizeNumber(raw.seating_capacity),
+  }
+}
+
+function normalizeNumber(value: unknown) {
+  if (value === null || value === undefined || value === '') return null
+
+  const numberValue = Number(value)
+  return Number.isFinite(numberValue) ? numberValue : null
+}
+
+function spaceTypeLabel(space: VenueDetailSpace) {
+  return space.typeName
+      ?? (space.type ? spaceTypeLookupStore.getLabel(space.type, locale.value) : '')
+      ?? ''
+}
+
+function spaceFacts(space: VenueDetailSpace) {
+  const facts: Array<{ label: string; value: string | number | null }> = [
+    { label: t('building_level'), value: space.buildingLevel },
+    { label: t('area_sqm'), value: space.areaSqm != null ? `${space.areaSqm} m²` : null },
+    { label: t('total_capacity'), value: space.totalCapacity },
+    { label: t('seating_capacity'), value: space.seatingCapacity },
+  ]
+
+  return facts.filter((fact): fact is { label: string; value: string | number } =>
+      fact.value !== null && fact.value !== undefined && fact.value !== ''
+  )
+}
+
+async function loadVenue() {
+  const venueUuid = resolveRouteParam(route.params.uuid)
   if (!venueUuid) {
     loadError.value = t('error_missing_params')
     isLoading.value = false
@@ -165,40 +396,72 @@ const loadVenue = async () => {
   try {
     const lang = locale.value || 'en'
     const apiPath = `/api/venue/${venueUuid}?lang=${lang}`
-    const response = await apiFetch<any>(apiPath)
-    venue.value = response.response.data
+    const apiResponse = await apiFetch<any>(apiPath)
+    const mappedVenue = mapVenueDetail(apiResponse.data)
+
+    if (!mappedVenue) {
+      loadError.value = t('error_incomplete_data')
+      return
+    }
+
+    venue.value = mappedVenue
   } catch (error: unknown) {
+    if (error instanceof ApiError) {
+      loadError.value = error.status === 404 ? t('error_fetch_data_failed') : error.message
+      return
+    }
+
     loadError.value = error instanceof Error ? error.message : t('error_fetch_data_failed')
   } finally {
     isLoading.value = false
   }
 }
 
-const onShowOnMap = () => {
-  if (!venue.value?.lon || !venue.value?.lat) return
-  // Implement map popup or routing
-  window.alert(`Show on map: ${venue.value.lat}, ${venue.value.lon}`)
-}
-
 onMounted(() => void loadVenue())
-
 </script>
 
 <style scoped>
-.uranus-public-venue-frame {
-  display: flex;
-  gap: 2rem;
+.uranus-public-venue-space-list {
+  display: grid;
+  gap: 16px;
 }
-.uranus-public-venue-main-layout {
-  flex: 3;
+
+.uranus-public-venue-space {
+  display: grid;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--uranus-color-6);
 }
-.uranus-public-venue-sidebar {
-  flex: 1;
+
+.uranus-public-venue-space h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 400;
 }
-.uranus-public-venue-section {
-  margin-bottom: 1.5rem;
+
+.uranus-public-venue-space-facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 4px 12px;
+  margin: 0;
 }
-.uranus-public-venue-spaces li {
-  margin-bottom: 1rem;
+
+.uranus-public-venue-space-facts dt {
+  color: var(--uranus-color-4);
+}
+
+.uranus-public-venue-space-facts dd {
+  margin: 0;
+}
+
+.uranus-public-venue-map-frame {
+  width: 100%;
+  height: 400px;
+  border-radius: 7px;
+  overflow: clip;
+}
+
+.uranus-public-venue-calendar {
+  margin-top: 32px;
 }
 </style>
