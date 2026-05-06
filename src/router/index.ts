@@ -266,7 +266,7 @@ const routes = [
                 component: UranusEventView,
             },
             {
-                path: 'venue/:id',
+                path: 'venue/:uuid',
                 name: 'venue-details',
                 component: UranusVenueView,
             },
