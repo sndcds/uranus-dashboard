@@ -9,7 +9,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import type { Feature, FeatureCollection, Point } from 'geojson'
 import maplibregl, {
   type GeoJSONSource,
   type MapLayerMouseEvent,
@@ -20,11 +19,6 @@ import { apiFetch } from '@/api.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 import venueMarkerIcon from '@/assets/map/marker.png'
 
-type LatLng = {
-  lat: number
-  lng: number
-}
-
 type BBox4326 = [number, number, number, number]
 
 type VenueProperties = {
@@ -34,8 +28,19 @@ type VenueProperties = {
   upcomingEvents: number
 }
 
-type VenueFeature = Feature<Point, VenueProperties>
-type VenueFeatureCollection = FeatureCollection<Point, VenueProperties>
+type VenueFeature = {
+  type: 'Feature'
+  geometry: {
+    type: 'Point'
+    coordinates: [number, number]
+  }
+  properties: VenueProperties
+}
+
+type VenueFeatureCollection = {
+  type: 'FeatureCollection'
+  features: VenueFeature[]
+}
 
 const VENUES_SOURCE_ID = 'venues'
 const CLUSTERS_LAYER_ID = 'venues-clusters'
@@ -43,13 +48,8 @@ const CLUSTER_COUNT_LAYER_ID = 'venues-cluster-count'
 const MARKERS_LAYER_ID = 'venues-markers'
 const MARKER_LABEL_LAYER_ID = 'venues-marker-label'
 const MARKER_IMAGE_ID = 'venue-marker'
-
-const mapCenter: LatLng = {
-  lat: 54.3,
-  lng: 9.5,
-}
-
-const mapRadius = 100_000
+const DEFAULT_CENTER: [number, number] = [9.5, 54.3]
+const DEFAULT_ZOOM = 8
 
 const themeStore = useThemeStore()
 const router = useRouter()
@@ -57,6 +57,8 @@ const router = useRouter()
 const mapContainer = ref<HTMLElement | null>(null)
 const map = shallowRef<maplibregl.Map | null>(null)
 let popup: maplibregl.Popup | null = null
+let loadRequestId = 0
+let lastLoadedBBoxKey: string | null = null
 
 const venues = ref<VenueFeatureCollection>({
   type: 'FeatureCollection',
@@ -69,40 +71,41 @@ const mapStyle = computed(() =>
         : '/versatiles/versatiles-style.json'
 )
 
-function calculateBBox4326(center: LatLng, radiusMeters: number): BBox4326 {
-  const earthRadiusMeters = 6_378_137
-  const latDelta = (radiusMeters / earthRadiusMeters) * (180 / Math.PI)
-  const lngDelta = (radiusMeters / (earthRadiusMeters * Math.cos(center.lat * Math.PI / 180))) * (180 / Math.PI)
-
+function getMapBBox4326(instance: maplibregl.Map): BBox4326 {
+  const bounds = instance.getBounds()
   return [
-    clampLongitude(center.lng - lngDelta),
-    clampLatitude(center.lat - latDelta),
-    clampLongitude(center.lng + lngDelta),
-    clampLatitude(center.lat + latDelta),
+    bounds.getWest(),
+    bounds.getSouth(),
+    bounds.getEast(),
+    bounds.getNorth(),
   ]
 }
 
-function clampLatitude(value: number) {
-  return Math.max(-90, Math.min(90, value))
-}
+async function loadVenuesForCurrentBounds() {
+  const currentMap = map.value
+  if (!currentMap) return
 
-function clampLongitude(value: number) {
-  if (value < -180) return value + 360
-  if (value > 180) return value - 360
-  return value
-}
+  const bbox = getMapBBox4326(currentMap)
+  const bboxKey = createBBoxKey(bbox)
+  if (bboxKey === lastLoadedBBoxKey) return
 
-async function loadVenues() {
-  const bbox = calculateBBox4326(mapCenter, mapRadius)
+  const currentRequestId = ++loadRequestId
   const params = new URLSearchParams({ bbox: bbox.join(',') })
 
   try {
     const response = await apiFetch<any>(`/api/venues/geojson?${params.toString()}`)
+    if (currentRequestId !== loadRequestId) return
+
+    lastLoadedBBoxKey = bboxKey
     venues.value = normalizeVenueFeatureCollection(response?.data)
     updateVenueSource()
   } catch (error) {
     console.error('[UranusVenuesMap] Failed to load venues:', error)
   }
+}
+
+function createBBoxKey(bbox: BBox4326) {
+  return bbox.map(value => value.toFixed(5)).join(',')
 }
 
 function normalizeVenueFeatureCollection(data: any): VenueFeatureCollection {
@@ -172,15 +175,18 @@ function createMap() {
   const instance = new maplibregl.Map({
     container: mapContainer.value,
     style: mapStyle.value,
-    center: [mapCenter.lng, mapCenter.lat],
-    zoom: 8,
+    center: DEFAULT_CENTER,
+    zoom: DEFAULT_ZOOM,
   })
 
   instance.addControl(new maplibregl.NavigationControl())
   instance.once('load', () => {
     addVenueSourceAndLayers(instance)
     updateVenueSource()
+    void loadVenuesForCurrentBounds()
   })
+  instance.on('moveend', () => void loadVenuesForCurrentBounds())
+  instance.on('resize', () => void loadVenuesForCurrentBounds())
 
   map.value = instance
 }
@@ -191,7 +197,7 @@ function addVenueSourceAndLayers(instance: maplibregl.Map) {
   if (!instance.getSource(VENUES_SOURCE_ID)) {
     instance.addSource(VENUES_SOURCE_ID, {
       type: 'geojson',
-      data: venues.value,
+      data: venues.value as any,
       cluster: true,
       clusterRadius: 48,
       clusterMaxZoom: 14,
@@ -317,7 +323,7 @@ async function addMarkerImage(instance: maplibregl.Map) {
 
 function updateVenueSource() {
   const source = map.value?.getSource(VENUES_SOURCE_ID) as GeoJSONSource | undefined
-  source?.setData(venues.value)
+  source?.setData(venues.value as any)
 }
 
 function onClusterClick(event: MapLayerMouseEvent) {
@@ -358,7 +364,7 @@ function onMarkerClick(event: MapLayerMouseEvent) {
 function getPointCoordinates(feature: MapGeoJSONFeature): [number, number] | null {
   if (feature.geometry.type !== 'Point') return null
 
-  const coordinates = (feature.geometry as Point).coordinates
+  const coordinates = (feature.geometry as { coordinates?: unknown }).coordinates
   if (!Array.isArray(coordinates) || coordinates.length < 2) return null
 
   const lng = Number(coordinates[0])
@@ -419,9 +425,8 @@ watch(mapStyle, (style) => {
   })
 })
 
-onMounted(async () => {
+onMounted(() => {
   createMap()
-  await loadVenues()
 })
 
 onBeforeUnmount(() => {
