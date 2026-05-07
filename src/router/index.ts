@@ -14,7 +14,7 @@ import UranusForgotPasswordView from '@/component/register/UranusForgotPasswordV
 import UranusResetPasswordView from '@/component/register/UranusResetPasswordView.vue'
 import UranusMessageInboxView from '@/view/UranusMessageInboxView.vue'
 import UranusMessageSendView from '@/view/UranusMessageSendView.vue'
-import UranusVenueView from '@/view/public/UranusVenueView.vue'
+import UranusVenueView from '@/component/venue/view/UranusVenueView.vue'
 import UranusEventView from '@/component/event/view/UranusEventView.vue'
 import UranusHtmlView from '@/view/public/UranusHTMLView.vue'
 import UserActivateView from '@/component/register/UserActivateView.vue'

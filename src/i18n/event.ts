@@ -170,10 +170,20 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Deleted events are permanently lost',
         da: 'Slettede events går tabt og kan ikke gendannes',
     },
-    delete_single_or_serie: {
+    delete_event_single_or_serie: {
         de: 'Möchtest du nur dieses Event oder die gesamte Serie löschen?',
         en: 'Do you want to delete just this event or the whole series?',
         da: 'Vil du slette kun denne begivenhed eller hele serien?',
+    },
+    delete_event_occurrence: {
+        de: 'Diesen Termin löschen',
+        en: 'Delete this occurrence',
+        da: 'Slet denne forekomst',
+    },
+    delete_event_series: {
+        de: 'Gesamte Serie mit ~~count~~ Terminen löschen',
+        en: 'Delete entire series with ~~count~~ occurrences',
+        da: 'Slet hele serien med ~~count~~ forekomster',
     },
     confirm_delete_event: {
         de: 'Möchtest du dieses Event wirklich löschen?',
@@ -724,7 +734,7 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: "Kontakt Telefon",
         en: "Contact phone",
         da: "Kontakt telefon"
-    }
+    },
 }
 
 export default uranusI18nEventTranslations

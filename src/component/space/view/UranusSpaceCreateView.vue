@@ -1,7 +1,5 @@
 <!--
   src/component/space/view/UranusSpaceCreateView.vue
-
-  2026-02-24, Roald
 -->
 
 <template>
