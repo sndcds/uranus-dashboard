@@ -284,7 +284,7 @@ function addEventVenueSourceAndLayers(instance: maplibregl.Map) {
         'text-field': ['to-string', ['get', 'eventCount']],
         'text-font': ['noto_sans_bold'],
         'text-size': 11,
-        'text-offset': [0, -1.55],
+        'text-offset': [-0.04, -2.04],
         'text-anchor': 'center',
         'text-allow-overlap': true,
       },
