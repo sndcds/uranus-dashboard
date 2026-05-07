@@ -38,33 +38,39 @@
         <div v-if="venue.spaces.length" class="uranus-public-event-section">
           <h2>{{ t('venue_spaces') }}</h2>
           <div class="uranus-public-venue-space-list">
-            <article
-                v-for="space in venue.spaces"
+            <UranusAccordion
+                v-for="(space, index) in venue.spaces"
                 :key="space.uuid"
-                class="uranus-public-venue-space"
+                :model-value="index === 0"
+                class="uranus-public-venue-space-accordion"
             >
-              <h3>{{ space.name }}</h3>
-              <p v-if="spaceTypeLabel(space)">{{ spaceTypeLabel(space) }}</p>
-              <dl v-if="spaceFacts(space).length" class="uranus-public-venue-space-facts">
-                <template v-for="fact in spaceFacts(space)" :key="fact.label">
-                  <dt>{{ fact.label }}</dt>
-                  <dd>{{ fact.value }}</dd>
-                </template>
-              </dl>
-              <div
-                  v-if="space.description"
-                  class="uranus-public-event-description"
-                  v-html="formatMarkdown(space.description)"
-              ></div>
-              <a
-                  v-if="space.webLink"
-                  :href="space.webLink"
-                  target="_blank"
-                  rel="noopener noreferrer"
-              >
-                {{ space.webLink }}&nbsp;↗
-              </a>
-            </article>
+              <template #title>
+                <span class="uranus-public-venue-space-title">{{ space.name }}</span>
+              </template>
+
+              <article class="uranus-public-venue-space">
+                <p v-if="spaceTypeLabel(space)">{{ spaceTypeLabel(space) }}</p>
+                <dl v-if="spaceFacts(space).length" class="uranus-public-venue-space-facts">
+                  <template v-for="fact in spaceFacts(space)" :key="fact.label">
+                    <dt>{{ fact.label }}</dt>
+                    <dd>{{ fact.value }}</dd>
+                  </template>
+                </dl>
+                <div
+                    v-if="space.description"
+                    class="uranus-public-event-description"
+                    v-html="formatMarkdown(space.description)"
+                ></div>
+                <a
+                    v-if="space.webLink"
+                    :href="space.webLink"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                  {{ space.webLink }}&nbsp;↗
+                </a>
+              </article>
+            </UranusAccordion>
           </div>
         </div>
       </section>
@@ -165,6 +171,7 @@ import { Globe, Mail, Map, Phone } from 'lucide-vue-next'
 import { ApiError, apiFetch } from '@/api.ts'
 import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
+import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useVenueTypeLookupStore } from '@/store/venueTypesLookupStore.ts'
@@ -423,20 +430,22 @@ onMounted(() => void loadVenue())
 <style scoped>
 .uranus-public-venue-space-list {
   display: grid;
-  gap: 16px;
+  gap: 8px;
+}
+
+.uranus-public-venue-space-accordion {
+  border-top: 1px solid var(--uranus-color-6);
+}
+
+.uranus-public-venue-space-title {
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .uranus-public-venue-space {
   display: grid;
   gap: 8px;
-  padding-top: 16px;
-  border-top: 1px solid var(--uranus-color-6);
-}
-
-.uranus-public-venue-space h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 400;
+  padding: 4px 0 16px;
 }
 
 .uranus-public-venue-space-facts {
