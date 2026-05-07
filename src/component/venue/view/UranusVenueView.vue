@@ -157,7 +157,7 @@
     </div>
 
     <div class="uranus-public-venue-calendar">
-      <UranusEventCalendar />
+      <UranusEventCalendar filter-scope="venue" />
     </div>
   </div>
 </template>
@@ -283,12 +283,13 @@ watch(isLoading, (loading) => {
 watch(venue, (loadedVenue) => {
   if (!loadedVenue) return
 
+  filterStore.copyFilter('default', 'venue')
   filterStore.setFilter({
     venue: {
       uuid: loadedVenue.uuid,
       name: loadedVenue.name,
     },
-  })
+  }, 'venue')
 })
 
 function formatMarkdown(markdown: string) {

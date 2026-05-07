@@ -49,7 +49,7 @@
               v-for="entry in eventListStore.typeSummary"
               :key="entry.typeId"
               class="calendar-event-type-chip"
-              :class="{ active: filterStore.eventTypeIds.includes(entry.typeId) }"
+              :class="{ active: activeEventTypeIds.includes(entry.typeId) }"
               @click="toggleType(entry.typeId)"
           >
             {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
@@ -106,6 +106,7 @@
 
     <UranusEventsMap
         v-if="displayMode === 'map'"
+        :filter-scope="filterScope"
         class="calendar-map-layout"
     />
 
@@ -121,7 +122,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import { type UranusEventsFilterScope, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { uranusPluralizedText } from '@/util/UranusStringUtils.ts'
@@ -138,11 +139,20 @@ const { t, locale } = useI18n({ useScope: 'global' })
 
 type DisplayMode = 'list' | 'grid' | 'compact' | 'map'
 
+const props = withDefaults(defineProps<{
+  filterScope?: UranusEventsFilterScope
+}>(), {
+  filterScope: 'default'
+})
+
 const LOAD_MORE_ROOT_MARGIN = 300
 const isSwitchingMode = ref(false)
 const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
 const eventListStore = useEventListStore()
+const filterScope = computed(() => props.filterScope)
+const activeFilter = computed(() => filterStore.getFilter(filterScope.value))
+const activeEventTypeIds = computed(() => activeFilter.value.eventTypeIds)
 
 const displayMode = ref<DisplayMode>('compact')
 function setDisplayMode(mode: DisplayMode) {
@@ -161,7 +171,7 @@ const isLoadingMore = ref(false)
 let filterTimeout: number | null = null
 
 const onResetFilter = () => {
-  filterStore.resetFilter()
+  filterStore.resetFilter(filterScope.value)
 }
 
 async function reloadEvents() {
@@ -174,8 +184,8 @@ async function reloadEvents() {
     await waitForActiveEventLoad()
     if (currentReloadRequest !== reloadRequestId) return
 
-    await eventListStore.loadEvents(true)
-    await eventListStore.loadTypeSummary()
+    await eventListStore.loadEvents(true, activeFilter.value)
+    await eventListStore.loadTypeSummary(activeFilter.value)
     await waitForRenderedEvents()
 
     if (currentReloadRequest !== reloadRequestId) return
@@ -228,7 +238,7 @@ async function loadMoreWhileTriggerIsNearViewport() {
         ) {
       const eventCountBeforeLoad = eventListStore.events.length
 
-      await eventListStore.loadEvents()
+      await eventListStore.loadEvents(false, activeFilter.value)
       await waitForRenderedEvents()
 
       if (eventListStore.error || eventListStore.events.length === eventCountBeforeLoad) {
@@ -241,7 +251,7 @@ async function loadMoreWhileTriggerIsNearViewport() {
 }
 
 watch(
-    () => filterStore.filter,
+    () => activeFilter.value,
     () => {
       if (!initialized.value) return
       if (filterTimeout) clearTimeout(filterTimeout)
@@ -267,7 +277,7 @@ const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 
 function toggleType(typeId: number) {
-  filterStore.toggleEventType(typeId)
+  filterStore.toggleEventType(typeId, filterScope.value)
 }
 
 function observeLoadMoreTrigger() {

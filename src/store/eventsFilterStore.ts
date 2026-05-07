@@ -25,6 +25,8 @@ export interface UranusEventsFilter {
     eventTypeIds: number[]
 }
 
+export type UranusEventsFilterScope = 'default' | 'venue'
+
 const defaultFilter: UranusEventsFilter = {
     categories: null,
     search: '',
@@ -65,54 +67,90 @@ function createDefaultFilter(): UranusEventsFilter {
     }
 }
 
+function cloneFilter(filter: Partial<UranusEventsFilter> = {}): UranusEventsFilter {
+    return {
+        ...createDefaultFilter(),
+        ...filter,
+        categories: filter.categories ? [...filter.categories] : null,
+        venue: filter.venue ? { ...filter.venue } : null,
+        eventTypeIds: filter.eventTypeIds ? [...filter.eventTypeIds] : []
+    }
+}
+
 export const useEventsFilterStore = defineStore("calendarFilter", () => {
-    const filter = ref<UranusEventsFilter>(createDefaultFilter())
-    const eventTypeIds = computed(() => filter.value.eventTypeIds)
+    const filters = ref<Record<UranusEventsFilterScope, UranusEventsFilter>>({
+        default: createDefaultFilter(),
+        venue: createDefaultFilter()
+    })
+    const filter = computed({
+        get: () => filters.value.default,
+        set: (value: UranusEventsFilter) => {
+            filters.value.default = cloneFilter(value)
+        }
+    })
+    const eventTypeIds = computed(() => filters.value.default.eventTypeIds)
 
     // Load saved filter from localStorage
     const saved = localStorage.getItem("calendar-filter")
     if (saved) {
         try {
             const parsed = JSON.parse(saved)
-            filter.value = { ...defaultFilter, ...parsed }
+            filters.value.default = cloneFilter({ ...defaultFilter, ...parsed })
         } catch {
-            filter.value = { ...defaultFilter }
+            filters.value.default = cloneFilter(defaultFilter)
         }
     }
 
-    // Persist automatically whenever filter changes
+    // Persist only the default scope. Route-local scopes are derived at runtime.
     watch(
-        filter,
+        () => filters.value.default,
         (value) => {
             localStorage.setItem("calendar-filter", JSON.stringify(value))
         },
         { deep: true }
     )
 
-    function setFilter(newFilter: Partial<UranusEventsFilter>) {
-        Object.assign(filter.value, newFilter)
+    function getFilter(scope: UranusEventsFilterScope = 'default') {
+        return filters.value[scope]
     }
 
-    function resetFilter() {
-        filter.value = createDefaultFilter()
+    function setFilter(
+        newFilter: Partial<UranusEventsFilter>,
+        scope: UranusEventsFilterScope = 'default'
+    ) {
+        Object.assign(filters.value[scope], newFilter)
+    }
+
+    function resetFilter(scope: UranusEventsFilterScope = 'default') {
+        filters.value[scope] = createDefaultFilter()
+    }
+
+    function copyFilter(
+        fromScope: UranusEventsFilterScope,
+        toScope: UranusEventsFilterScope
+    ) {
+        filters.value[toScope] = cloneFilter(filters.value[fromScope])
     }
 
     // Toggle event type
-    function toggleEventType(typeId: number) {
-        const list = filter.value.eventTypeIds
+    function toggleEventType(typeId: number, scope: UranusEventsFilterScope = 'default') {
+        const list = filters.value[scope].eventTypeIds
 
         if (list.includes(typeId)) {
-            filter.value.eventTypeIds = list.filter(id => id !== typeId)
+            filters.value[scope].eventTypeIds = list.filter(id => id !== typeId)
         } else {
-            filter.value.eventTypeIds.push(typeId)
+            filters.value[scope].eventTypeIds.push(typeId)
         }
     }
 
     return {
+        filters,
         filter,
         eventTypeIds,
+        getFilter,
         setFilter,
         resetFilter,
+        copyFilter,
         toggleEventType
     }
 })

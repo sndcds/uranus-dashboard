@@ -12,7 +12,7 @@ import {
     type EventListTypeSummaryDTO,
     type EventListTypeCountDTO }
     from '@/api/dto/event.dto.ts'
-import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import { type UranusEventsFilter, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 
 
 export const useEventListStore = defineStore('events', () => {
@@ -65,9 +65,12 @@ export const useEventListStore = defineStore('events', () => {
 
     }
 
-    function buildFilterParams(paginationMode = false, typesMode = false): URLSearchParams {
+    function buildFilterParams(
+        paginationMode = false,
+        typesMode = false,
+        filter: UranusEventsFilter = filterStore.getFilter()
+    ): URLSearchParams {
         const params = new URLSearchParams()
-        const filter = filterStore.filter
 
         // Pagination
         if (paginationMode) {
@@ -90,7 +93,7 @@ export const useEventListStore = defineStore('events', () => {
         if (filter.endDate) params.set("end", filter.endDate)
 
         // Venue filter
-        if (filter.venue?.uuid != null) params.set("venues", filter.venue.uuid)
+        if (filter.venue?.uuid) params.set("venues", filter.venue.uuid)
 
         // Location filter
         if (filter.useCurrentLocation && filter.latitude && filter.longitude && filter.radiusKm) {
@@ -125,9 +128,9 @@ export const useEventListStore = defineStore('events', () => {
         return params
     }
 
-    async function loadTypeSummary() {
+    async function loadTypeSummary(filter: UranusEventsFilter = filterStore.getFilter()) {
         try {
-            const params = buildFilterParams(false, true)
+            const params = buildFilterParams(false, true, filter)
             const apiPath = `/api/events/type-summary?${params.toString()}`
             const apiResponse = await apiFetch<EventListTypeSummaryDTO>(apiPath)
             typeSummary.value = mapEventTypeSummaryArray(
@@ -150,7 +153,10 @@ export const useEventListStore = defineStore('events', () => {
         return dtos.map(mapEventTypeSummary)
     }
 
-    async function loadEvents(resetPage: boolean = false) {
+    async function loadEvents(
+        resetPage: boolean = false,
+        filter: UranusEventsFilter = filterStore.getFilter()
+    ) {
         const currentRequest = ++requestId
         if (loading.value) return
         if (!resetPage && !hasMore.value) return
@@ -158,7 +164,7 @@ export const useEventListStore = defineStore('events', () => {
         loading.value = true
 
         try {
-            const params = buildFilterParams(true, true)
+            const params = buildFilterParams(true, true, filter)
             const apiPath = `/api/events?${params.toString()}`
             const apiResponse = await apiFetch<EventListItemsApiData>(apiPath)
 
