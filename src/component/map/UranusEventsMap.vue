@@ -18,7 +18,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { apiFetch } from '@/api.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
-import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import { type UranusEventsFilterScope, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import venueMarkerIcon from '@/assets/map/marker-event.png'
 
 type EventVenueProperties = {
@@ -53,10 +53,17 @@ const MARKER_IMAGE_ID = 'event-venue-marker'
 const DEFAULT_CENTER: [number, number] = [9.5, 54.3]
 const DEFAULT_ZOOM = 8
 
+const props = withDefaults(defineProps<{
+  filterScope?: UranusEventsFilterScope
+}>(), {
+  filterScope: 'default'
+})
+
 const themeStore = useThemeStore()
 const router = useRouter()
 const eventListStore = useEventListStore()
 const filterStore = useEventsFilterStore()
+const activeFilter = computed(() => filterStore.getFilter(props.filterScope))
 
 const mapContainer = ref<HTMLElement | null>(null)
 const map = shallowRef<maplibregl.Map | null>(null)
@@ -77,7 +84,7 @@ const mapStyle = computed(() =>
 
 async function loadEventVenues() {
   const currentRequestId = ++loadRequestId
-  const params = eventListStore.buildFilterParams(false, true)
+  const params = eventListStore.buildFilterParams(false, true, activeFilter.value)
   const queryString = params.toString()
   const apiPath = queryString
       ? `/api/events/geojson?${queryString}`
@@ -277,7 +284,7 @@ function addEventVenueSourceAndLayers(instance: maplibregl.Map) {
         'text-field': ['to-string', ['get', 'eventCount']],
         'text-font': ['noto_sans_bold'],
         'text-size': 11,
-        'text-offset': [0, -1.55],
+        'text-offset': [-0.04, -2.04],
         'text-anchor': 'center',
         'text-allow-overlap': true,
       },
@@ -444,7 +451,7 @@ watch(mapStyle, (style) => {
 })
 
 watch(
-    () => filterStore.filter,
+    () => activeFilter.value,
     () => {
       if (filterTimeout) window.clearTimeout(filterTimeout)
       filterTimeout = window.setTimeout(() => {
