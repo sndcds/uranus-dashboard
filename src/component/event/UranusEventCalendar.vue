@@ -104,7 +104,7 @@
         aria-hidden="true"
     ></div>
 
-    <UranusVenuesMap
+    <UranusEventsMap
         v-if="displayMode === 'map'"
         class="calendar-map-layout"
     />
@@ -129,7 +129,7 @@ import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vu
 import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
 import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendarListRow.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
-import UranusVenuesMap from '@/component/map/UranusVenuesMap.vue'
+import UranusEventsMap from '@/component/map/UranusEventsMap.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Rows3, LayoutGrid, Map, Grip } from 'lucide-vue-next'
 import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'

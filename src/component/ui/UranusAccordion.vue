@@ -4,7 +4,7 @@
 
 <template>
   <div class="accordion">
-    <div class="accordion-header" @click="isOpen = !isOpen">
+    <div class="accordion-header" @click="toggleOpen">
       <span class="accordion-icon">
         <span class="vertical" :class="{ hidden: isOpen }"></span>
         <span class="horizontal" :class="{ shifted: isOpen }"></span>
@@ -23,15 +23,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{ modelValue?: boolean }>()
+const emit = defineEmits<{
+  (event: 'update:modelValue', value: boolean): void
+}>()
+
 const isOpen = ref(props.modelValue ?? false)
 
-// Sync with v-model if needed
-watch(isOpen, val => {
-  if (props.modelValue !== undefined) props.modelValue = val
+watch(
+    () => props.modelValue,
+    (value) => {
+      if (value !== undefined) isOpen.value = value
+    }
+)
+
+watch(isOpen, (value) => {
+  emit('update:modelValue', value)
 })
+
+function toggleOpen() {
+  isOpen.value = !isOpen.value
+}
 </script>
 
 <style scoped lang="scss">
