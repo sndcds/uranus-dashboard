@@ -4,7 +4,7 @@
 
 <template>
   <div class="uranus-main-layout">
-    <UranusDashboardHero :title="t('create_organization')" :subtitle="t('create_organization_definition')" />
+    <UranusDashboardHero :title="t('create_org')" :subtitle="t('create_org_definition')" />
 
     <UranusHelpPopup baseUrl="/help/create-organization" />
 

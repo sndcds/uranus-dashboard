@@ -9,14 +9,14 @@
 
       <UranusFormRow v-if="options?.length" class="options">
         <UranusRadioButton
-            v-for="opt in options"
-            :key="opt.value"
+            v-for="option in options"
             v-model="selectedOption"
-            :value="opt.value"
+            :key="option.value"
+            :value="option.value"
             name="choice"
-            style="margin-left: 12px"
+            style="margin-left: 1rem"
         >
-          {{ opt.label }}
+          {{ option.label }}
         </UranusRadioButton>
       </UranusFormRow>
 
@@ -71,9 +71,9 @@ interface Props {
   confirmText: string
   loadingText: string
   isSubmitting?: boolean
-  // Flexible mode: either single confirmation or multiple options
   error: string
   question?: string
+  // Flexible mode: either single confirmation or multiple options
   options?: Option[] | null
 }
 

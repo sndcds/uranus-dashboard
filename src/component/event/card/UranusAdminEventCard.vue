@@ -185,7 +185,7 @@ const pendingEventDateUuid = ref<string | null>(null)
 
 const deleteQuestion = computed(() => {
   if ((props.event.seriesTotal ?? 1) > 1) {
-    return t('delete_single_or_serie')
+    return t('delete_event_single_or_serie')
   }
   return t('confirm_delete_event')
 })
@@ -193,8 +193,17 @@ const deleteQuestion = computed(() => {
 const seriesOptions = computed(() => {
   if ((props.event.seriesTotal ?? 1) > 1) {
     return [
-      { label: t('delete_time_series_option_single'), value: 'single' },
-      { label: t('delete_time_series_option_series', { count: props.event.seriesTotal }) , value: 'series' },
+      {
+        label: t('delete_event_occurrence'),
+        value: 'single'
+      },
+      {
+        label: uranusStringInterpolate(
+            t('delete_event_series'),
+            { count: props.event.seriesTotal }
+        ),
+        value: 'series'
+      }
     ]
   }
   return null

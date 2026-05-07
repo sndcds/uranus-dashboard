@@ -1,5 +1,5 @@
 <!--
-  src/view/public/UranusVenueView.vue
+  src/component/venue/view/UranusVenueView.vue
 
   UranusVenueView renders public venue details using the same public detail
   layout system as UranusEventView.

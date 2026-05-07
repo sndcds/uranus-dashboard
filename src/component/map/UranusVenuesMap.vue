@@ -94,12 +94,7 @@ function clampLongitude(value: number) {
 
 async function loadVenues() {
   const bbox = calculateBBox4326(mapCenter, mapRadius)
-  const params = new URLSearchParams({
-    minLon: bbox[0].toString(),
-    minLat: bbox[1].toString(),
-    maxLon: bbox[2].toString(),
-    maxLat: bbox[3].toString(),
-  })
+  const params = new URLSearchParams({ bbox: bbox.join(',') })
 
   try {
     const response = await apiFetch<any>(`/api/venues/geojson?${params.toString()}`)

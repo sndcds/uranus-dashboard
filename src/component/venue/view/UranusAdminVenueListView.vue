@@ -49,27 +49,6 @@
       </div>
     </template>
 
-    <div class="uranus-vertical-flex" ref="containerRef" style="margin-top: 2rem;">
-      <h2>{{ t('selectable_venues_by_user') }}</h2>
-      <div
-          class="uranus-card venue-group"
-          v-for="venue in choosableVenuesStore.getVenueSpacesInfos()"
-          :key="venue.venueUuid"
-      >
-        <div class="venue-item">
-          {{ venue.venueName }} ({{ venue.city }})
-        </div>
-
-        <div
-            v-for="space in venue.spaces"
-            :key="space.spaceUuid ?? 0"
-            class="space-item"
-        >
-          {{ space.spaceName }}
-        </div>
-      </div>
-    </div>
-
   </div>
 </template>
 

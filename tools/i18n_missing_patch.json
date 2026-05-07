@@ -104,7 +104,7 @@
     "src/view/UranusMessageInboxView.vue",
     "src/view/UranusMessageSendView.vue",
     "src/view/public/UranusEventsView.vue",
-    "src/view/public/UranusVenueView.vue",
+    "src/component/venue/view/UranusVenueView.vue",
     "src/view/dev/UranusDevI18nTestsView.vue"
   ],
   "missing_translations": {
