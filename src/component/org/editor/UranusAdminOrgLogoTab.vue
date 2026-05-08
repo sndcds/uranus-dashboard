@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
 import { useOrgStore } from '@/store/orgStore.ts'
@@ -46,6 +46,14 @@ import { useOrgStore } from '@/store/orgStore.ts'
 const { t } = useI18n()
 const store = useOrgStore()
 const org = computed(() => store.draft!)
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
+const isDirty = computed(() => false)
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 </script>
 

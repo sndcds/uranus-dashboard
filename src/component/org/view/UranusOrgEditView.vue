@@ -14,34 +14,69 @@
         <button
             v-for="tab in tabs"
             :key="tab.key"
-            :class="{ active: tab.key === activeTab }"
+            :class="{ active: tab.key === activeTab, dirty: isTabDirty(tab.key) }"
             @click="activeTab = tab.key"
         >
-          {{ tab.label }}
+          <span>{{ tab.label }}</span>
+          <span
+              v-if="isTabDirty(tab.key)"
+              class="tab-dirty-indicator"
+              title="Ungespeicherte Änderungen"
+              aria-label="Ungespeicherte Änderungen"
+          ></span>
         </button>
       </nav>
 
       <section class="tab-content">
-        <component :is="currentTabComponent" />
+        <component
+            :is="currentTabComponent"
+            @dirty-change="setActiveTabDirty"
+        />
       </section>
     </template>
+
+    <UranusModal
+        :show="showUnsavedChangesModal"
+        title="Ungespeicherte Änderungen"
+        max-width="520px"
+        @close="closeUnsavedChangesModal"
+    >
+      <p class="unsaved-changes-text">
+        Es gibt ungespeicherte Änderungen. Möchtest du die Bearbeitung verwerfen oder zur Bearbeitung zurückkehren?
+      </p>
+
+      <template #actions>
+        <UranusButton variant="tertiary" @click="closeUnsavedChangesModal">
+          Zurück zur Bearbeitung
+        </UranusButton>
+        <UranusButton variant="danger" @click="discardChangesAndLeave">
+          Bearbeitung verwerfen
+        </UranusButton>
+      </template>
+    </UranusModal>
 </template>
 
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteLeave, useRoute, useRouter, type RouteLocationNormalized } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import UranusAdminOrgBaseTab from '@/component/org/editor/UranusAdminOrgBaseTab.vue'
 import UranusAdminOrgMapTab from '@/component/org/editor/UranusAdminOrgMapTab.vue'
 import UranusAdminOrgLogoTab from '@/component/org/editor/UranusAdminOrgLogoTab.vue'
 import { useOrgStore } from '@/store/orgStore.ts'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusModal from '@/component/uranus/UranusModal.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
+const router = useRouter()
 const orgStore = useOrgStore()
 const orgUuid = computed(() => { return route.params.orgUuid as string})
+const showUnsavedChangesModal = ref(false)
+const pendingRoute = ref<RouteLocationNormalized | null>(null)
+const allowRouteLeave = ref(false)
 
 type TabKey = 'base' | 'map' | 'logo'
 const activeTab = ref<TabKey>('base')
@@ -51,6 +86,52 @@ const tabs = [
   { key: 'map', label: 'Map' },
   { key: 'logo', label: 'Logo' },
 ] as const
+const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
+const hasDirtyTabs = computed(() =>
+    Object.values(tabDirtyState.value).some(Boolean)
+)
+
+function createCleanDirtyState(): Record<TabKey, boolean> {
+  return {
+    base: false,
+    map: false,
+    logo: false,
+  }
+}
+
+function isTabDirty(tabKey: TabKey) {
+  return tabDirtyState.value[tabKey]
+}
+
+function setActiveTabDirty(isDirty: boolean) {
+  tabDirtyState.value[activeTab.value] = isDirty
+}
+
+function closeUnsavedChangesModal() {
+  showUnsavedChangesModal.value = false
+  pendingRoute.value = null
+}
+
+async function discardChangesAndLeave() {
+  const routeToContinue = pendingRoute.value
+  showUnsavedChangesModal.value = false
+  pendingRoute.value = null
+  allowRouteLeave.value = true
+
+  if (routeToContinue) {
+    await router.push(routeToContinue)
+  }
+}
+
+onBeforeRouteLeave((to) => {
+  if (allowRouteLeave.value || !hasDirtyTabs.value) {
+    return true
+  }
+
+  pendingRoute.value = to
+  showUnsavedChangesModal.value = true
+  return false
+})
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
@@ -73,6 +154,7 @@ onMounted(async () => {
     const apiPath = `/api/admin/org/${orgUuid.value}`
     const apiResponse = await apiFetch<any>(apiPath)
     orgStore.loadFromApi(apiResponse.data)
+    tabDirtyState.value = createCleanDirtyState()
   } catch (e) {
     orgStore.error = 'Failed to load organization'
   } finally {
@@ -101,6 +183,9 @@ onUnmounted(() => {
 }
 
 .tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   padding: 0.5rem 1rem;
   border: none;
   background: none;
@@ -114,9 +199,26 @@ onUnmounted(() => {
   font-weight: bold;
 }
 
+.tabs button.dirty {
+  color: var(--uranus-link-color);
+}
+
+.tab-dirty-indicator {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--uranus-link-color);
+}
+
 .tab-content {
   width: 100%;
   max-width: 1024px;
   padding: 1rem 0;
+}
+
+.unsaved-changes-text {
+  margin: 0;
+  line-height: 1.5;
 }
 </style>
