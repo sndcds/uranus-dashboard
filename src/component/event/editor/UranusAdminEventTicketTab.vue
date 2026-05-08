@@ -105,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
@@ -124,6 +124,9 @@ import { Save, Undo } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 const draftEvent = computed(() => store.draft!)
 
 const draftTicketFlags = computed({
@@ -152,6 +155,10 @@ const isDirty = computed(() => {
     return JSON.stringify(draftVal[key]) !== JSON.stringify(original[key])
   })
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 function parseFloatOrNull(e: Event): number | null {
   const target = e.target as HTMLInputElement

@@ -101,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watchEffect } from 'vue'
+import { ref, computed, onMounted, watch, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/appStore.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
@@ -121,6 +121,9 @@ import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 const appStore = useAppStore()
 const choosableVenuesStore = useChoosableVenuesStore()
 const venueLabelStore = useVenueSpaceLabelStore()
@@ -138,6 +141,10 @@ const isDirty = computed(() => {
   if (!draft || !original) return false
   return JSON.stringify(draft) !== JSON.stringify(original)
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 
 function makeKey(venueUuid: string | null, spaceUuid: string | null) {

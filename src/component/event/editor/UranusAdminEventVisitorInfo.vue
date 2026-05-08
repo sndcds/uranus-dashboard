@@ -31,7 +31,7 @@
 
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { useI18n } from 'vue-i18n'
 import UranusBigIntFlagsEditor from '@/component/uranus/UranusBigIntFlagsEditor.vue'
@@ -44,6 +44,9 @@ import { Save, Undo } from 'lucide-vue-next'
 const { t } = useI18n({ useScope: 'global' })
 
 const store = useAdminEventStore()
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 const draft = computed(() => store.draft!)
 
 const isDirty = computed(() => {
@@ -52,6 +55,10 @@ const isDirty = computed(() => {
   const o = store.original
   return (d.visitorInfoFlags ?? null) !== (o.visitorInfoFlags ?? null)
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 function onReset() {
   if (!store.draft || !store.original) return

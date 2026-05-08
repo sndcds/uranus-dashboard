@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
@@ -102,6 +102,9 @@ import UranusCard from "@/component/ui/UranusCard.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 const event = computed(() => store.draft!)
 
 
@@ -165,6 +168,10 @@ const isDirty = computed(() => {
 
   return changedKeys.length > 0
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 // Build payload for API
 function buildPayload(draft: AdminEvent, original: AdminEvent) {
