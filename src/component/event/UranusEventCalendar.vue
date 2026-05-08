@@ -28,6 +28,11 @@
               @click="setDisplayMode('list')"
           />
           <UranusIconAction
+              :icon="CalendarDays"
+              :selected="displayMode === 'calendar'"
+              @click="setDisplayMode('calendar')"
+          />
+          <UranusIconAction
               :icon="Map"
               :selected="displayMode === 'map'"
               @click="setDisplayMode('map')"
@@ -94,11 +99,15 @@
           />
         </div>
 
+        <div v-else-if="displayMode === 'calendar'" class="calendar-classic-layout">
+          <UranusEventsCalendar :event-list="eventListStore.events" />
+        </div>
+
       <!--/div-->
     </transition>
 
     <div
-        v-if="displayMode !== 'map'"
+        v-if="displayMode !== 'map' && displayMode !== 'calendar'"
         ref="loadMoreTrigger"
         class="load-more-trigger"
         aria-hidden="true"
@@ -132,12 +141,13 @@ import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendar
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusEventsMap from '@/component/map/UranusEventsMap.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { Rows3, LayoutGrid, Map, Grip } from 'lucide-vue-next'
+import { Rows3, LayoutGrid, Map, Grip, CalendarDays } from 'lucide-vue-next'
 import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
+import UranusEventsCalendar from '@/component/event/UranusEventsCalendar.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
-type DisplayMode = 'list' | 'grid' | 'compact' | 'map'
+type DisplayMode = 'list' | 'grid' | 'compact' | 'calendar' | 'map'
 
 const props = withDefaults(defineProps<{
   filterScope?: UranusEventsFilterScope
@@ -214,7 +224,7 @@ async function waitForActiveEventLoad() {
 
 function isLoadMoreTriggerNearViewport() {
   const el = loadMoreTrigger.value
-  if (!el || displayMode.value === 'map') return false
+  if (!el || displayMode.value === 'map' || displayMode.value === 'calendar') return false
 
   const rect = el.getBoundingClientRect()
   return (
@@ -224,7 +234,7 @@ function isLoadMoreTriggerNearViewport() {
 }
 
 async function loadMoreWhileTriggerIsNearViewport() {
-  if (isLoadingMore.value || isReloading.value || isSwitchingMode.value || displayMode.value === 'map') return
+  if (isLoadingMore.value || isReloading.value || isSwitchingMode.value || displayMode.value === 'map' || displayMode.value === 'calendar') return
 
   isLoadingMore.value = true
 
@@ -284,7 +294,7 @@ function observeLoadMoreTrigger() {
   observer?.disconnect()
 
   const el = loadMoreTrigger.value
-  if (!el || displayMode.value === 'map' || !observer) return
+  if (!el || displayMode.value === 'map' || displayMode.value === 'calendar' || !observer) return
 
   observer.observe(el)
 }

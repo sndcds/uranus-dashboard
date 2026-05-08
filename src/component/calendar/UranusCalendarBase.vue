@@ -448,6 +448,7 @@ const DEFAULT_LABELS: CalendarLabels = {
   month: 'Month',
   allDay: 'All day',
   more: (count: number) => `+${count} more`,
+  entries: (count: number) => count === 1 ? '1 entry' : `${count} entries`,
 }
 
 const DAY_MINUTES = 24 * 60
@@ -560,8 +561,7 @@ const singleDayLabel = computed(() => {
 })
 
 const dayViewCountLabel = computed(() => {
-  const count = selectedDateEntries.value.length
-  return count === 1 ? '1 entry' : `${count} entries`
+  return resolvedLabels.value.entries(selectedDateEntries.value.length)
 })
 
 const miniMonthLabel = computed(() => {
