@@ -14,7 +14,10 @@
       <div class="card-status">
         <UranusEventReleaseChip :releaseStatus="event.releaseStatus ?? ''" :tiny="true"/>
         <UranusEventCategoryDisplay v-if="event.categories" :categories="event.categories" />
-        <span v-if="event.seriesTotal && event.seriesTotal > 1">
+        <span v-if="grouped">
+          {{ event.seriesTotal ?? 1 }} {{ (event.seriesTotal ?? 1) === 1 ? 'Termin' : 'Termine' }}
+        </span>
+        <span v-else-if="event.seriesTotal && event.seriesTotal > 1">
           {{ event.seriesIndex }} {{ eventSeriesLabel(event) }} {{ event.seriesTotal }}
         </span>
         <span v-else>1</span>
@@ -144,7 +147,12 @@ const emit = defineEmits<{
   deleted: [payload: { eventUuid: string; dateUuid: string | null; deleteSeries: boolean }]
 }>()
 
-const props = defineProps<{ event: AdminEventListItem }>()
+const props = withDefaults(defineProps<{
+  event: AdminEventListItem
+  grouped?: boolean
+}>(), {
+  grouped: false,
+})
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const typeLookupStore = useEventTypeLookupStore()
