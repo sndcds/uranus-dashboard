@@ -15,12 +15,12 @@
         <UranusEventReleaseChip :releaseStatus="event.releaseStatus ?? ''" :tiny="true"/>
         <UranusEventCategoryDisplay v-if="event.categories" :categories="event.categories" />
         <span v-if="grouped">
-          {{ event.seriesTotal ?? 1 }} {{ (event.seriesTotal ?? 1) === 1 ? 'Termin' : 'Termine' }}
+          {{ uranusPluralizedText(t, 'count_event_date', 'count_event_dates', event.seriesTotal ?? 1) }}
         </span>
         <span v-else-if="event.seriesTotal && event.seriesTotal > 1">
           {{ event.seriesIndex }} {{ eventSeriesLabel(event) }} {{ event.seriesTotal }}
         </span>
-        <span v-else>1</span>
+        <span v-else></span>
       </div>
       <h2 class="event-title">{{ event.title }}</h2>
     </div>
@@ -134,7 +134,7 @@ import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Eye, Pencil, Trash, Calendar, MapPin, Building } from 'lucide-vue-next'
 import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
-import {uranusStringInterpolate} from "@/util/UranusStringUtils.ts";
+import { uranusPluralizedText, uranusStringInterpolate } from "@/util/UranusStringUtils.ts";
 
 const placeholderImage = '/assets/event-dummy.png'
 

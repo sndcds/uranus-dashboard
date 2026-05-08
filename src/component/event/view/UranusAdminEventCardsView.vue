@@ -78,11 +78,10 @@ const canAddEvent = computed(() => !!metadata.value.can_add_event);
 const events = adminListEvents;
 type EventListDisplayMode = 'all' | 'grouped'
 const displayMode = ref<EventListDisplayMode>('all')
-const displayModeOptions = [
-  { label: 'show all', value: 'all' },
-  { label: 'show grouped', value: 'grouped' },
-]
-
+const displayModeOptions = computed(() => [
+  { label: t('show_all_events'), value: 'all' },
+  { label: t('show_grouped_events'), value: 'grouped' },
+])
 const displayedEvents = computed(() => {
   if (displayMode.value === 'all') return events.value
 
@@ -116,7 +115,8 @@ const onEventDeleted = async ({eventUuid}: {
 
 onMounted(async () => {
   if (orgUuid) {
-    await fetchAdminListEvents(orgUuid.value ?? '', '2020-01-01');
+    await fetchAdminListEvents(orgUuid.value ?? '');
+    // await fetchAdminListEvents(orgUuid.value ?? '', '2020-01-01');
   }
 });
 </script>
@@ -125,8 +125,8 @@ onMounted(async () => {
 .event-list-toolbar {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
+  align-items: flex-start;
+  gap: 2rem;
   margin-bottom: 1rem;
 }
 </style>
