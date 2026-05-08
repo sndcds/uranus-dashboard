@@ -25,6 +25,7 @@ export interface CalendarLabels {
   month: string
   allDay: string
   more: (count: number) => string
+  entries: (count: number) => string
 }
 
 export interface CalendarNormalizedEntry<TItem> {
