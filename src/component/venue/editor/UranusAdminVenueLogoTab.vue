@@ -40,8 +40,16 @@
 <script setup lang="ts">
 import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
 import { useUranusVenueStore } from "@/store/venueStore.ts";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 
 const store = useUranusVenueStore()
 const venue = computed(() => store.draft!)
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
+const isDirty = computed(() => false)
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 </script>

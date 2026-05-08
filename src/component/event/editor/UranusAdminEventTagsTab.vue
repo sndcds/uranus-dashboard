@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { apiFetch } from '@/api.ts'
@@ -57,6 +57,9 @@ import { Save, Undo } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 
 const isDirty = computed(() => {
   if (!store.draft || !store.original) return false
@@ -84,6 +87,10 @@ const isDirty = computed(() => {
 
   return typeDirty || langDirty || tagsDirty
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 async function commitAll() {
   if (!store.original || !store.draft) return

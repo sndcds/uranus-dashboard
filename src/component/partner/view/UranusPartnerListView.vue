@@ -99,8 +99,6 @@ const loadPartnerRequests = async () => {
 
     const data = apiResponse.data.partner_requests as PartnerRequestDTO[]
     partnerRequests.value = (data || []).map(dto => mapPartnerRequestItem(dto))
-    console.log(JSON.stringify(partnerRequests.value, null, 2))
-
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }

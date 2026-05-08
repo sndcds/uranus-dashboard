@@ -76,8 +76,6 @@ onMounted(async () => {
     const apiPath = '/api/admin/org/list'
     const apiResponse = await apiFetch<any>(apiPath)
     const data = apiResponse.data.organizations as OrgListItemDTO[]
-    console.log(JSON.stringify(data, null, 2))
-
     orgListItems.value = (data || []).map(dto => mapOrgListItem(dto))
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {

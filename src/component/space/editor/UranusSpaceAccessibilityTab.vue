@@ -21,7 +21,7 @@ import { useI18n } from 'vue-i18n'
 import { useUranusSpaceStore } from '@/store/spaceStore.ts'
 import { uranusI18nAccessibilityFlags }  from '@/i18n/accessibility.ts'
 import UranusBigIntFlagsEditor from '@/component/uranus/UranusBigIntFlagsEditor.vue'
-import {computed} from 'vue'
+import { computed, watch } from 'vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 
@@ -29,6 +29,9 @@ const { t } = useI18n({ useScope: 'global' })
 
 const store = useUranusSpaceStore()
 const draft = computed(() => store.draft!)
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 
 const isDirty = computed(() => {
   if (!store.draft || !store.original) return false
@@ -36,6 +39,10 @@ const isDirty = computed(() => {
   const o = store.original
   return (d.accessibilityFlags ?? null) !== (o.accessibilityFlags ?? null)
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 function resetTab() {
   if (!draft.value || !store.original) return

@@ -27,10 +27,11 @@ export function useUranusAdminListEvents() {
                 throw new Error("orgUuid required");
             }
 
-            const params = new URLSearchParams();
-            if (startDate) params.set("start", startDate);
+            const params = new URLSearchParams()
+            if (startDate) params.set("start", startDate)
 
-            const apiPath = `/api/admin/org/${orgUuid}/events?${params.toString()}`;
+            const queryString = params.toString()
+            const apiPath = `/api/admin/org/${orgUuid}/events${queryString ? `?${queryString}` : ''}`
             const apiResonse = await apiFetch<any[]>(apiPath);
             adminListEvents.value = camelCaseKeys<AdminEventListItem[]>(apiResonse.data ?? []);
             metadata.value = apiResonse.metadata ?? {};

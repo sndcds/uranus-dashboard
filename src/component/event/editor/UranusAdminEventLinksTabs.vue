@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { EventLink } from '@/domain/event/eventLink.model.ts'
@@ -95,6 +95,9 @@ import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 
 onMounted(() => {
   if (store.draft) {
@@ -122,6 +125,10 @@ const isDirty = computed(() => {
 
   return !(allMatch && allOriginalMatch)
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 function addUrl() {
   if (!store.draft) return

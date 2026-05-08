@@ -175,7 +175,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { isNavigationFailure, useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, type LoginResponse } from '@/api.ts'
 import { applyTheme } from '@/composable/useTheme.ts'
@@ -320,10 +320,19 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 }
 
-const handleLogout = () => {
+const handleLogout = async () => {
+  const navigationResult = await router.push({
+    name: 'app-login',
+    query: { logout: '1' }
+  })
+
+  if (isNavigationFailure(navigationResult)) {
+    return
+  }
+
   tokenStore.clearTokens()
   userStore.resetUserState()
-  router.push('/app/login')
+  await router.replace({ name: 'app-login' })
 }
 
 // Watch for authentication state changes

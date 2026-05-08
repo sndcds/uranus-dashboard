@@ -363,7 +363,7 @@ router.beforeEach((to, from) => {
         }
     }
 
-    if (guestOnly && isAuthenticated) {
+    if (guestOnly && isAuthenticated && to.query.logout !== '1') {
         if (to.name !== 'events') {
             return { name: 'events' }
         }

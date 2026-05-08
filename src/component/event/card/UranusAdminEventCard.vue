@@ -14,10 +14,13 @@
       <div class="card-status">
         <UranusEventReleaseChip :releaseStatus="event.releaseStatus ?? ''" :tiny="true"/>
         <UranusEventCategoryDisplay v-if="event.categories" :categories="event.categories" />
-        <span v-if="event.seriesTotal && event.seriesTotal > 1">
+        <span v-if="grouped">
+          {{ uranusPluralizedText(t, 'count_event_date', 'count_event_dates', event.seriesTotal ?? 1) }}
+        </span>
+        <span v-else-if="event.seriesTotal && event.seriesTotal > 1">
           {{ event.seriesIndex }} {{ eventSeriesLabel(event) }} {{ event.seriesTotal }}
         </span>
-        <span v-else>1</span>
+        <span v-else></span>
       </div>
       <h2 class="event-title">{{ event.title }}</h2>
     </div>
@@ -131,7 +134,7 @@ import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Eye, Pencil, Trash, Calendar, MapPin, Building } from 'lucide-vue-next'
 import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
-import {uranusStringInterpolate} from "@/util/UranusStringUtils.ts";
+import { uranusPluralizedText, uranusStringInterpolate } from "@/util/UranusStringUtils.ts";
 
 const placeholderImage = '/assets/event-dummy.png'
 
@@ -144,7 +147,12 @@ const emit = defineEmits<{
   deleted: [payload: { eventUuid: string; dateUuid: string | null; deleteSeries: boolean }]
 }>()
 
-const props = defineProps<{ event: AdminEventListItem }>()
+const props = withDefaults(defineProps<{
+  event: AdminEventListItem
+  grouped?: boolean
+}>(), {
+  grouped: false,
+})
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const typeLookupStore = useEventTypeLookupStore()

@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useUranusSpaceStore } from '@/store/spaceStore.ts'
@@ -68,6 +68,9 @@ const { t } = useI18n({ useScope: 'global' })
 
 const store = useUranusSpaceStore()
 const space = computed(() => store.draft!)
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 
 const baseFields = [
   'name',
@@ -95,6 +98,10 @@ const isDirty = computed(() => {
     return draftVal !== origVal
   })
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 function buildPayload(
     draft: SpaceModel,

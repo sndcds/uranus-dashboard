@@ -63,7 +63,7 @@
 
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useUranusVenueStore } from '@/store/venueStore.ts'
@@ -84,6 +84,9 @@ const { t } = useI18n({ useScope: 'global' })
 
 const store = useUranusVenueStore()
 const venue = computed(() => store.draft!)
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 
 const baseFields = [
   'name', 'description', 'type', 'contactEmail', 'contactPhone', 'webLink',
@@ -104,6 +107,10 @@ const isDirty = computed(() => {
     return draftVal !== origVal
   })
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 
 function buildPayload(

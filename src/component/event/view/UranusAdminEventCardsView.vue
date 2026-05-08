@@ -28,17 +28,24 @@
     </UranusNotification>
 
     <template v-else>
-      <div v-if="!isLoading && canAddEvent">
-        <UranusButton :to="`/admin/org/${orgUuid}/event/create`">
+      <div v-if="!isLoading" class="event-list-toolbar">
+        <UranusButton v-if="canAddEvent" :to="`/admin/org/${orgUuid}/event/create`">
           {{ t('add_new_event') }}
         </UranusButton>
+
+        <UranusSegmentedSelect
+            v-model="displayMode"
+            :options="displayModeOptions"
+            size="small"
+        />
       </div>
 
       <div v-if="orgUuid" class="uranus-dashboard-card-grid uranus-max-layout">
         <UranusAdminEventCard
-            v-for="event in events"
+            v-for="event in displayedEvents"
             :key="`${event.uuid}-${event.dateUuid ?? 'series'}`"
             :event="event"
+            :grouped="displayMode === 'grouped'"
             @deleted="onEventDeleted"
         />
       </div>
@@ -56,6 +63,8 @@ import UranusNotification from '@/component/ui/UranusNotification.vue'
 import { useUranusAdminListEvents } from '@/composable/useUranusAdminListEvents.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusOrgTitle from "@/component/layout/UranusOrgTitle.vue";
+import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
+import type { AdminEventListItem } from '@/domain/event/adminEventListItem.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 const appStore = useAppStore()
@@ -67,8 +76,26 @@ const orgUuid = computed(() => appStore.orgUuid)
 
 const canAddEvent = computed(() => !!metadata.value.can_add_event);
 const events = adminListEvents;
+type EventListDisplayMode = 'all' | 'grouped'
+const displayMode = ref<EventListDisplayMode>('all')
+const displayModeOptions = computed(() => [
+  { label: t('show_all_events'), value: 'all' },
+  { label: t('show_grouped_events'), value: 'grouped' },
+])
+const displayedEvents = computed(() => {
+  if (displayMode.value === 'all') return events.value
 
-const onEventDeleted = async ({eventUuid, dateUuid, deleteSeries}: {
+  const grouped = new Map<string, AdminEventListItem>()
+  events.value.forEach((event) => {
+    if (!grouped.has(event.uuid)) {
+      grouped.set(event.uuid, event)
+    }
+  })
+
+  return Array.from(grouped.values())
+})
+
+const onEventDeleted = async ({eventUuid}: {
   eventUuid: string
   dateUuid: string | null
   deleteSeries: boolean
@@ -88,7 +115,18 @@ const onEventDeleted = async ({eventUuid, dateUuid, deleteSeries}: {
 
 onMounted(async () => {
   if (orgUuid) {
-    await fetchAdminListEvents(orgUuid.value ?? '', '2020-01-01');
+    await fetchAdminListEvents(orgUuid.value ?? '');
+    // await fetchAdminListEvents(orgUuid.value ?? '', '2020-01-01');
   }
 });
 </script>
+
+<style scoped>
+.event-list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+</style>

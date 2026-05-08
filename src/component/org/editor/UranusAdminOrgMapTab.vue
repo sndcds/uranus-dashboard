@@ -34,6 +34,9 @@ type MapLocation = { lat: number; lng: number } | null
 
 const store = useOrgStore()
 const { t } = useI18n({ useScope: 'global' })
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 
 const location = ref<MapLocation>(null)
 
@@ -62,6 +65,10 @@ const isDirty = computed(() => {
   if (!draft || !original) return false
   return draft.lat !== original.lat || draft.lon !== original.lon
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 const latModel = computed<number | null>({
   get: () => store.draft?.lat ?? null,

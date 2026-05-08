@@ -121,6 +121,9 @@ import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 const { t } = useI18n({ useScope: 'global' })
 
 const store = useAdminEventStore()
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 const draft = computed(() => store.draft!)
 const choosableVenuesStore = useChoosableVenuesStore()
 const appStore = useAppStore()
@@ -190,6 +193,10 @@ const isDirty = computed(() => {
       (d.onlineLink ?? '') !== (o.onlineLink ?? '')
   )
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 async function commitTab() {
   if (!draft.value || !store.original) return

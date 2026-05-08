@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
@@ -76,6 +76,9 @@ import { Save, Undo } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+const emit = defineEmits<{
+  (event: 'dirty-change', value: boolean): void
+}>()
 const event = computed(() => store.draft!)
 
 // Participation Tab Types
@@ -97,6 +100,10 @@ const isDirty = computed(() => {
 
   return participationKeys.some(key => draft[key] !== original[key])
 })
+
+watch(isDirty, (value) => {
+  emit('dirty-change', value)
+}, { immediate: true })
 
 // Helpers
 function parseNumberInput(e: Event): number | null {

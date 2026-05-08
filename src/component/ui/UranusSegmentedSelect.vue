@@ -1,7 +1,5 @@
 <!--
   src/component/ui/UranusSegmentedSelect.vue
-  2026-03-27
-  Updated: Added `variant` prop for default or chip style
 -->
 
 <template>
@@ -206,11 +204,11 @@ const onKeydown = (e: KeyboardEvent) => {
   }
 
   &.is-active {
-    background: #007bff;
+    background: var(--uranus-select-bg);
     color: #fff;
 
     &:hover {
-      background: #0565cf;
+      background: var(--uranus-select-bg-hover);
     }
   }
 
@@ -226,20 +224,21 @@ const onKeydown = (e: KeyboardEvent) => {
 
   .segmented-select__button {
     border-radius: 9999px;
-    background: #f0f0f0;
     border: none;
     padding: 0.25rem 0.75rem;
+    color:var(--uranus-color);
+    background:var(--uranus-bg);
 
     &:hover:not(.is-disabled) {
-      background: #e0e0e0;
+      background:var(--uranus-bg);
     }
 
     &.is-active {
-      background: #007bff;
-      color: #fff;
+      background: var(--uranus-select-bg);
+      color: var(--uranus-select-color);
 
       &:hover {
-        background: #0565cf;
+        background: var(--uranus-select-bg-hover);
       }
     }
 

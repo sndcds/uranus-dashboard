@@ -6,7 +6,7 @@
   <div class="event-editor">
     <div class="event-editor-status-header">
       <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-        <UranusButton size="small" variant="tertiary" :onclick="goBack">
+        <UranusButton size="small" variant="tertiary" @click="goBack">
           <template #icon><StepBack /></template>{{ t('finish_edit') }}
         </UranusButton>
         <UranusButton size="small" variant="tertiary" @click="showReleaseModal = true">
@@ -21,10 +21,16 @@
           <button
               v-for="tab in tabs"
               :key="tab.key"
-              :class="{ active: tab.key === activeTab }"
+              :class="{ active: tab.key === activeTab, dirty: isTabDirty(tab.key) }"
               @click="activeTab = tab.key"
           >
-            {{ tab.label }}
+            <span>{{ tab.label }}</span>
+            <span
+                v-if="isTabDirty(tab.key)"
+                class="tab-dirty-indicator"
+                :aria-label="unsavedChangesLabel"
+                :title="unsavedChangesLabel"
+            ></span>
           </button>
         </nav>
 
@@ -33,7 +39,10 @@
 
     <template v-if="adminEventStore.isLoaded && adminEventStore.draft">
       <section class="tab-content">
-        <component :is="currentTabComponent" />
+        <component
+            :is="currentTabComponent"
+            @dirty-change="setActiveTabDirty"
+        />
       </section>
     </template>
   </div>
@@ -46,8 +55,27 @@
       @close="showReleaseModal = false"
   />
 
-</template>
+  <UranusModal
+      :show="showUnsavedChangesModal"
+      title="Ungespeicherte Änderungen"
+      max-width="520px"
+      @close="closeUnsavedChangesModal"
+  >
+    <p class="unsaved-changes-text">
+      Es gibt ungespeicherte Änderungen. Möchtest du die Bearbeitung verwerfen oder zur Bearbeitung zurückkehren?
+    </p>
 
+    <template #actions>
+      <UranusButton variant="tertiary" @click="closeUnsavedChangesModal">
+        Zurück zur Bearbeitung
+      </UranusButton>
+      <UranusButton variant="danger" @click="discardChangesAndGoBack">
+        Bearbeitung verwerfen
+      </UranusButton>
+    </template>
+  </UranusModal>
+
+</template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
@@ -67,18 +95,38 @@ import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModa
 import UranusAdminEventVisitorInfo from '@/component/event/editor/UranusAdminEventVisitorInfo.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
+import UranusModal from '@/component/uranus/UranusModal.vue'
 import { StepBack, Rocket } from 'lucide-vue-next'
 
 const showReleaseModal = ref(false)
+const showUnsavedChangesModal = ref(false)
 
-const { t, locale } = useI18n({ useScope: 'global' })
+const { t, te, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const router = useRouter()
 const adminEventStore = useAdminEventStore()
 
 
 function goBack() {
-  router.push({ name: 'admin-org-events' })
+  if (hasDirtyTabs.value) {
+    showUnsavedChangesModal.value = true
+    return
+  }
+
+  void navigateBack()
+}
+
+function closeUnsavedChangesModal() {
+  showUnsavedChangesModal.value = false
+}
+
+function discardChangesAndGoBack() {
+  showUnsavedChangesModal.value = false
+  void navigateBack()
+}
+
+async function navigateBack() {
+  await router.push({ name: 'admin-org-events' })
 }
 
 // Add this after your store import
@@ -89,8 +137,11 @@ const draftEvent = computed(() => adminEventStore.draft ?? {
 })
 
 const eventUuid = computed(() => { return route.params.uuid })
+const unsavedChangesLabel = computed(() =>
+    te('unsaved_changes') ? t('unsaved_changes') : 'Es gibt ungespeicherte Änderungen.'
+)
 
-type TabKey = 'settings' | 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participation' | 'ticket' | 'visitor'
+type TabKey = 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participation' | 'ticket' | 'visitor'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
@@ -103,6 +154,33 @@ const tabs = [
   { key: 'ticket', label: 'Ticket' },
   { key: 'visitor', label: 'Infos' }
 ] as const
+
+const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
+
+const hasDirtyTabs = computed(() =>
+    Object.values(tabDirtyState.value).some(Boolean)
+)
+
+function createCleanDirtyState(): Record<TabKey, boolean> {
+  return {
+    base: false,
+    venue: false,
+    dates: false,
+    tags: false,
+    links: false,
+    participation: false,
+    ticket: false,
+    visitor: false,
+  }
+}
+
+function isTabDirty(tabKey: TabKey) {
+  return tabDirtyState.value[tabKey]
+}
+
+function setActiveTabDirty(isDirty: boolean) {
+  tabDirtyState.value[activeTab.value] = isDirty
+}
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {
@@ -130,6 +208,7 @@ onMounted(async () => {
     const apiPath = `/api/admin/event/${eventUuid.value}?lang=${locale.value}`
     const apiResponse = await apiFetch<AdminEventDTO>(apiPath)
     adminEventStore.loadFromApi(apiResponse.data)
+    tabDirtyState.value = createCleanDirtyState()
   } catch (e) {
     console.log(e)
     adminEventStore.error = 'Failed to load event'
@@ -213,6 +292,9 @@ async function updateReleaseFields(payload: {
 }
 
 .tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   padding: 0.5rem 1rem;
   border: none;
   background: none;
@@ -226,7 +308,24 @@ async function updateReleaseFields(payload: {
   font-weight: bold;
 }
 
+.tabs button.dirty {
+  color: var(--uranus-link-color);
+}
+
+.tab-dirty-indicator {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--uranus-link-color);
+}
+
 .tab-content {
   padding: 1rem;
+}
+
+.unsaved-changes-text {
+  margin: 0;
+  line-height: 1.5;
 }
 </style>
