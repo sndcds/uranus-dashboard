@@ -112,6 +112,7 @@ const handleKeydown = (event: KeyboardEvent) => {
   transition: background 0.2s ease, color 0.2s ease;
   color: var(--uranus-card-color);
   padding: 0.5rem;
+  border-radius: 4px;
   &.clickable {
     cursor: pointer;
     &:hover {
@@ -121,7 +122,7 @@ const handleKeydown = (event: KeyboardEvent) => {
   &.selected {
     color: var(--uranus-select-color);
     background: var(--uranus-select-bg);
-    border-radius: 6px;
+
     &:hover {
       color: var(--uranus-select-color);
       background: var(--uranus-select-bg);
