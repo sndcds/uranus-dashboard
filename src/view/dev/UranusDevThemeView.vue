@@ -124,21 +124,23 @@
         <UranusLineChart :data="chartData" />
       </section>
 
-      <UranusSegmentedSelect
-          v-model="selected"
-          :options="options"
-          variant="chip"
-      />
+      <div style="display: flex; gap: 2rem;">
 
-      <UranusSegmentedSelect
-          v-model="selected"
-          :options="options"
-      />
+        <UranusSegmentedSelect
+            v-model="selected"
+            :options="options"
+            variant="chip"
+        />
 
-      <UranusPrioritySelect></UranusPrioritySelect>
+        <UranusSegmentedSelect
+            v-model="selected"
+            :options="options"
+        />
+
+        <UranusPrioritySelect></UranusPrioritySelect>
+      </div>
 
     </section>
-
   </div>
 </template>
 
@@ -179,7 +181,7 @@ const chartData = {
 const options = [
   { label: 'Day', value: 'day', icon: Clock },
   { label: 'Week', value: 'week', icon: Calendar },
-  { label: 'Month', value: 'month', icon: BarChart, disabled: true }
+  { label: 'Month', value: 'month', icon: BarChart }
 ]
 
 const selected = ref('day')

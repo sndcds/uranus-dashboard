@@ -1,10 +1,5 @@
 <!--
   src/view/public/UranusEventCalendar.vue
-
-  UranusEventCalendar renders the public events calendar with filtering,
-  infinite scrolling, and localized display. It fetches paginated event
-  data from the backend, supports client-side filters, and provides a
-  summary of event type currently visible.
 -->
 
 <template>
@@ -100,7 +95,7 @@
         </div>
 
         <div v-else-if="displayMode === 'calendar'" class="calendar-classic-layout">
-          <UranusEventsCalendar :event-list="eventListStore.events" />
+          <UranusEventsCalendarView :event-list="eventListStore.events" />
         </div>
 
       <!--/div-->
@@ -143,7 +138,7 @@ import UranusEventsMap from '@/component/map/UranusEventsMap.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Rows3, LayoutGrid, Map, Grip, CalendarDays } from 'lucide-vue-next'
 import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
-import UranusEventsCalendar from '@/component/event/UranusEventsCalendar.vue'
+import UranusEventsCalendarView from '@/component/event/view/UranusEventsCalendarView.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 

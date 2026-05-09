@@ -95,6 +95,9 @@ export const useEventListStore = defineStore('events', () => {
         // Venue filter
         if (filter.venue?.uuid) params.set("venues", filter.venue.uuid)
 
+        // Portal filter
+        if (filter.portalUuid) params.set("portal", filter.portalUuid)
+
         // Location filter
         if (filter.useCurrentLocation && filter.latitude && filter.longitude && filter.radiusKm) {
             params.set("lat", filter.latitude.toString())

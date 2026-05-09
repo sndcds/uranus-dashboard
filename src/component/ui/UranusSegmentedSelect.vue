@@ -95,9 +95,8 @@ const onKeydown = (e: KeyboardEvent) => {
 .segmented-select {
   display: inline-flex;
   align-self: flex-start;
-  border-radius: 10px;
+  border-radius: 4px;
   overflow: hidden;
-  background: #fff;
 
   &--full {
     display: flex;
@@ -125,25 +124,24 @@ const onKeydown = (e: KeyboardEvent) => {
 
   /* Default segmented style */
   &--default .segmented-select__button {
-    border-radius: 10px;
-    background: #fff;
-    border: 1px solid #ccc;
+    background: var(--uranus-bg);
+    border: 1px solid var(--uranus-input-border-color);
 
     &:not(:last-child) {
-      border-right: 1px solid #ccc;
+      border-right: 10px solid var(--uranus-input-border-color);
     }
   }
 
   /* Chip style */
   &--chip .segmented-select__button {
     border-radius: 9999px;
-    background: #f0f0f0;
+    background: var(--uranus-bg);
     border: none;
     padding: 0.25rem 0.75rem;
   }
 
   &--chip .segmented-select__button.is-active {
-    background: #007bff;
+    background: var(--uranus-select-bg-active);
     color: #fff;
   }
 }
@@ -157,54 +155,11 @@ const onKeydown = (e: KeyboardEvent) => {
   transition: all 0.2s ease;
 
   &:hover:not(.is-disabled) {
-    background: #e0e0e0;
+    background: var(--uranus-bg);
   }
 
   &.is-active {
-    background: #007bff;
-    color: #fff;
-
-    &:hover {
-      background: #0565cf;
-    }
-  }
-
-  &.is-disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-}
-
-.segmented-select--default .segmented-select__button {
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 0.5rem 1rem;
-
-  /* Middle buttons have no extra radius */
-  border-radius: 0;
-
-  &:not(:last-child) {
-    border-right: 1px solid #ccc;
-  }
-
-  /* First button */
-  &:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
-
-  /* Last button */
-  &:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }
-
-  &:hover:not(.is-disabled) {
-    background: #f5f5f5;
-  }
-
-  &.is-active {
-    background: var(--uranus-select-bg);
+    background: var(--uranus-select-bg-active);
     color: #fff;
 
     &:hover {
@@ -218,15 +173,64 @@ const onKeydown = (e: KeyboardEvent) => {
   }
 }
 
+.segmented-select--default
+.segmented-select__button {
+  background: var(--uranus-bg);
+  border: 1px solid var(--uranus-color-6);
+  padding: 0.5rem 1rem;
+
+  /* Middle buttons have no extra radius */
+  border-radius: 0;
+
+  &:not(:last-child) {
+    border-right: 0.1px solid var(--uranus-color-6);
+  }
+
+  /* First button */
+  &:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+  /* Last button */
+  &:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
+  &:hover:not(.is-disabled) {
+    background: var(--uranus-bg);
+  }
+
+  &.is-active {
+    background: var(--uranus-select-bg);
+    color: var(--uranus-select-color);
+
+    &:hover {
+      background: var(--uranus-select-bg-hover);
+    }
+  }
+
+  &.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.segmented-select__button:not(:first-child) {
+  margin-left: -1px;
+}
+
 .segmented-select--chip {
   display: inline-flex;
   gap: 0.5rem;
 
+
   .segmented-select__button {
     border-radius: 9999px;
-    border: none;
+    border: 1px solid var(--uranus-color-6);
     padding: 0.25rem 0.75rem;
-    color:var(--uranus-color);
+    color: var(--uranus-color);
     background:var(--uranus-bg);
 
     &:hover:not(.is-disabled) {

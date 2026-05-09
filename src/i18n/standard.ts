@@ -694,7 +694,18 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Anfrage an',
         en: 'Request to',
         da: 'Anmodning til',
-    }
+    },
+    show_single: {
+        de: 'Einzelne',
+        en: 'Single',
+        da: 'Enkelte',
+    },
+    show_grouped: {
+        de: 'Gruppiert',
+        en: 'Grouped',
+        da: 'Grupperet',
+    },
+
 }
 
 export default uranusI18nStandardTranslations

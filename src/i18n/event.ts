@@ -735,16 +735,6 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: "Contact phone",
         da: "Kontakt telefon"
     },
-    show_all_events: {
-        de: 'Einzelne',
-        en: 'Single',
-        da: 'Enkelte',
-    },
-    show_grouped_events: {
-        de: 'Gruppiert',
-        en: 'Grouped',
-        da: 'Grupperet',
-    },
     count_event_date: {
         de: '1 Termin',
         en: '1 event date',
