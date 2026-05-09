@@ -23,9 +23,10 @@ export interface UranusEventsFilter {
     maxPrice?: number | null
     priceCurrency?: string
     eventTypeIds: number[]
+    portalUuid?: string | null
 }
 
-export type UranusEventsFilterScope = 'default' | 'venue'
+export type UranusEventsFilterScope = 'default' | 'venue' | 'portal'
 
 const defaultFilter: UranusEventsFilter = {
     categories: null,
@@ -43,7 +44,8 @@ const defaultFilter: UranusEventsFilter = {
     priceType: 'not_specified',
     maxPrice: null,
     priceCurrency: 'EUR',
-    eventTypeIds: []
+    eventTypeIds: [],
+    portalUuid: null
 }
 
 function createDefaultFilter(): UranusEventsFilter {
@@ -63,7 +65,8 @@ function createDefaultFilter(): UranusEventsFilter {
         priceType: 'not_specified',
         maxPrice: null,
         priceCurrency: 'EUR',
-        eventTypeIds: []
+        eventTypeIds: [],
+        portalUuid: null
     }
 }
 
@@ -80,7 +83,8 @@ function cloneFilter(filter: Partial<UranusEventsFilter> = {}): UranusEventsFilt
 export const useEventsFilterStore = defineStore("calendarFilter", () => {
     const filters = ref<Record<UranusEventsFilterScope, UranusEventsFilter>>({
         default: createDefaultFilter(),
-        venue: createDefaultFilter()
+        venue: createDefaultFilter(),
+        portal: createDefaultFilter()
     })
     const filter = computed({
         get: () => filters.value.default,
