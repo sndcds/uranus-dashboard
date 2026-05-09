@@ -3,10 +3,10 @@
 -->
 
 <template>
-  <div class="calendar-page">
+  <div ref="calendarRoot" class="calendar-page">
     <div class="calendar-head">
       <div class="calendar-options">
-        <div>
+        <div class="calendar-display-options">
           <UranusIconAction
               :icon="LayoutGrid"
               :selected="displayMode === 'grid'"
@@ -41,6 +41,50 @@
         <div style="display: none;">{{ locale }}</div>
         <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
 
+        <div class="calendar-mobile-filter-menu">
+          <UranusButton
+              class="calendar-mobile-filter-button"
+              size="small"
+              variant="secondary"
+              :aria-expanded="isMobileFilterOpen"
+              aria-controls="calendar-mobile-filter-panel"
+              @click.stop="toggleMobileFilter"
+          >
+            <template #icon>
+              <SlidersHorizontal />
+            </template>
+            {{ t('calendar_filter_button_label') }}
+            <span v-if="activeFilterCount" class="calendar-mobile-filter-count">
+              {{ activeFilterCount }}
+            </span>
+          </UranusButton>
+
+          <transition name="calendar-filter-dropdown">
+            <div
+                v-if="isMobileFilterOpen"
+                id="calendar-mobile-filter-panel"
+                class="calendar-mobile-filter-dropdown"
+                role="dialog"
+                :aria-label="t('calendar_filter_settings_title')"
+                @click.stop
+                @keydown.esc="closeMobileFilter"
+            >
+              <div class="calendar-mobile-filter-header">
+                <strong>{{ t('calendar_filter_settings_title') }}</strong>
+                <button
+                    type="button"
+                    class="calendar-mobile-filter-close"
+                    :aria-label="t('cancel')"
+                    @click="closeMobileFilter"
+                >
+                  <X />
+                </button>
+              </div>
+
+              <UranusEventFilterPanel :filter-scope="filterScope" />
+            </div>
+          </transition>
+        </div>
       </div>
 
       <UranusHorizontalScroller>
@@ -136,9 +180,10 @@ import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendar
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusEventsMap from '@/component/map/UranusEventsMap.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { Rows3, LayoutGrid, Map, Grip, CalendarDays } from 'lucide-vue-next'
+import { Rows3, LayoutGrid, Map, Grip, CalendarDays, SlidersHorizontal, X } from 'lucide-vue-next'
 import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
 import UranusEventsCalendarView from '@/component/event/view/UranusEventsCalendarView.vue'
+import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -158,6 +203,26 @@ const eventListStore = useEventListStore()
 const filterScope = computed(() => props.filterScope)
 const activeFilter = computed(() => filterStore.getFilter(filterScope.value))
 const activeEventTypeIds = computed(() => activeFilter.value.eventTypeIds)
+const calendarRoot = ref<HTMLElement | null>(null)
+const isMobileFilterOpen = ref(false)
+const activeFilterCount = computed(() => {
+  const filter = activeFilter.value
+  let count = 0
+
+  if (filter.categories?.length) count++
+  if (filter.search) count++
+  if (filter.city) count++
+  if (filter.startDate) count++
+  if (filter.endDate) count++
+  if (filter.venue?.uuid) count++
+  if (filter.useCurrentLocation) count++
+  if (filter.minAge != null || filter.maxAge != null) count++
+  if (filter.priceType && filter.priceType !== 'not_specified') count++
+  if (filter.maxPrice != null) count++
+  if (filter.eventTypeIds?.length) count++
+
+  return count
+})
 
 const displayMode = ref<DisplayMode>('compact')
 function setDisplayMode(mode: DisplayMode) {
@@ -177,6 +242,25 @@ let filterTimeout: number | null = null
 
 const onResetFilter = () => {
   filterStore.resetFilter(filterScope.value)
+}
+
+function toggleMobileFilter() {
+  isMobileFilterOpen.value = !isMobileFilterOpen.value
+}
+
+function closeMobileFilter() {
+  isMobileFilterOpen.value = false
+}
+
+function onDocumentClick(event: MouseEvent) {
+  if (!isMobileFilterOpen.value) return
+
+  const target = event.target
+  if (!(target instanceof Node)) return
+
+  if (!calendarRoot.value?.contains(target)) {
+    closeMobileFilter()
+  }
 }
 
 async function reloadEvents() {
@@ -295,6 +379,8 @@ function observeLoadMoreTrigger() {
 }
 
 onMounted(async () => {
+  document.addEventListener('click', onDocumentClick)
+
   await reloadEvents()
   initialized.value = true
 
@@ -314,6 +400,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   observer?.disconnect()
+  document.removeEventListener('click', onDocumentClick)
 })
 </script>
 
@@ -412,6 +499,84 @@ onBeforeUnmount(() => {
   margin-left: 32px;
 }
 
+.calendar-display-options {
+  display: inline-flex;
+  gap: 0;
+  align-items: center;
+}
+
+.calendar-mobile-filter-menu {
+  display: none;
+  position: relative;
+}
+
+.calendar-mobile-filter-button {
+  position: relative;
+}
+
+.calendar-mobile-filter-count {
+  display: inline-flex;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0 0.35rem;
+  background: var(--uranus-select-bg);
+  color: var(--uranus-select-color);
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.calendar-mobile-filter-dropdown {
+  position: fixed;
+  left: 0.75rem;
+  right: 0.75rem;
+  top: 5rem;
+  z-index: 50;
+  max-height: calc(100dvh - 6rem);
+  overflow: auto;
+  border: 1px solid var(--uranus-color-7);
+  border-radius: 8px;
+  background: var(--uranus-bg);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.calendar-mobile-filter-header {
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--uranus-color-7);
+  background: var(--uranus-bg);
+}
+
+.calendar-mobile-filter-close {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--uranus-color-7);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--uranus-color);
+}
+
+.calendar-mobile-filter-close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+:deep(.calendar-mobile-filter-dropdown .uranus-filter-panel) {
+  width: 100%;
+  max-width: none;
+}
+
 .load-more-trigger {
   width: 100%;
   height: 1px;
@@ -433,6 +598,68 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
-@media (max-width: 640px) {
+.calendar-filter-dropdown-enter-active,
+.calendar-filter-dropdown-leave-active {
+  transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+.calendar-filter-dropdown-enter-from,
+.calendar-filter-dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+@media (max-width: 768px) {
+  .calendar-head {
+    top: 0;
+    align-items: stretch;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .calendar-options {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-left: 0;
+  }
+
+  .calendar-display-options {
+    order: 2;
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 0.25rem;
+  }
+
+  .calendar-mobile-filter-menu {
+    display: block;
+    order: 1;
+  }
+
+  .calendar-options > .uranus-button {
+    display: none;
+  }
+
+  .calendar-event-count-info {
+    order: 1;
+    margin-left: auto;
+    padding: 0;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .calendar-card-layout,
+  .calendar-compact-layout,
+  .calendar-list-layout {
+    padding: 0.75rem;
+  }
+
+  .calendar-card-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-compact-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 </style>

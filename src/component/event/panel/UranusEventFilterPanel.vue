@@ -18,27 +18,27 @@
     <UranusFormRow :cols="2">
       <UranusDateInput
           id="start-date"
-          v-model="filterStore.filter.startDate"
+          v-model="filter.startDate"
           :label="t('calendar_filter_start_date')"
           style="width: 100%;"
       />
       <UranusDateInput
           id="end-date"
-          v-model="filterStore.filter.endDate"
+          v-model="filter.endDate"
           :label="t('calendar_filter_end_date')"
           style="width: 100%;"
       />
     </UranusFormRow>
 
     <div class="uranus-filter-accordions">
-      <UranusEventCategorySelectorAccordion v-model="filterStore.filter.categories" :multiple="true" />
+      <UranusEventCategorySelectorAccordion v-model="filter.categories" :multiple="true" />
 
       <UranusAccordion v-model="searchOpen">
         <template #title>{{ t('calendar_filter_search_label') }}</template>
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="search-input"
-              v-model="filterStore.filter.search!"
+              v-model="filter.search!"
               updateOn="enter"
               :label="t('calendar_filter_search_label')"
               :placeholder="t('calendar_filter_search_placeholder')"
@@ -48,7 +48,7 @@
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="city-input"
-              v-model="filterStore.filter.city!"
+              v-model="filter.city!"
               updateOn="enter"
               :label="t('calendar_filter_city_label')"
           />
@@ -56,7 +56,7 @@
 
         <UranusFormRow :cols="1">
           <UranusLabel id="venue" :label="t('venue')">
-            <UranusVenueTypeahead v-model:selectedVenue="filterStore.filter.venue"/>
+            <UranusVenueTypeahead v-model:selectedVenue="filter.venue"/>
           </UranusLabel>
         </UranusFormRow>
 
@@ -67,7 +67,7 @@
         <UranusFormRow :cols="1">
           <UranusCheckbox
               id="use-gps"
-              v-model="filterStore.filter.useCurrentLocation!"
+              v-model="filter.useCurrentLocation!"
               label="Use GPS"
           />
         </UranusFormRow>
@@ -75,14 +75,14 @@
         <UranusFormRow :cols="1">
           <UranusTextfield
               id="radius-km"
-              v-model="filterStore.filter.radiusKm"
+              v-model="filter.radiusKm"
               type="number"
               min="0"
               max="200"
               step="0.1"
               label="Radius (km)"
               placeholder="Radius in km"
-              :disabled="!filterStore.filter.useCurrentLocation"
+              :disabled="!filter.useCurrentLocation"
           />
         </UranusFormRow>
         <div v-if="locationError" class="uranus-error-message">{{ locationError }}</div>
@@ -110,7 +110,7 @@
         <template #title>{{ t('price') }}</template>
         <UranusFormRow :cols="1">
           <UranusLabel id="price-type" label="Preisart">
-            <select v-model="filterStore.filter.priceType">
+            <select v-model="filter.priceType">
               <option value="not_specified">{{ t('event_price_not_specified') }}</option>
               <option value="free">{{ t('event_price_free') }}</option>
               <option value="donation">{{ t('event_price_donation') }}</option>
@@ -127,7 +127,7 @@
               v-model="maxPriceModel"
           />
           <UranusLabel id="price-currency" label="Währung">
-            <select v-model="filterStore.filter.priceCurrency" style="height: var(--uranus-input-height)">
+            <select v-model="filter.priceCurrency" style="height: var(--uranus-input-height)">
               <option value="EUR">Euro</option>
               <option value="DKK">DKK</option>
             </select>
@@ -140,14 +140,14 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, toRef, watch} from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 import UranusVenueTypeahead from '@/component/venue/UranusVenueTypeahead.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
-import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import { type UranusEventsFilter, type UranusEventsFilterScope, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import { useGpsLocation } from '@/composable/useGpsLocation'
@@ -156,62 +156,78 @@ import UranusEventCategorySelectorAccordion from '@/component/event/panel/Uranus
 
 const { t } = useI18n({ useScope: 'global' })
 
+const props = withDefaults(defineProps<{
+  filterScope?: UranusEventsFilterScope
+}>(), {
+  filterScope: 'default'
+})
+
+const emit = defineEmits<{
+  (event: 'filter-changed', value: UranusEventsFilter): void
+}>()
+
 const filterStore = useEventsFilterStore()
+const filter = computed(() => filterStore.getFilter(props.filterScope))
 
 // Add defaults if missing
-if (filterStore.filter.useCurrentLocation === undefined) filterStore.filter.useCurrentLocation = false
-if (filterStore.filter.radiusKm === undefined) filterStore.filter.radiusKm = 3.0
+if (filter.value.useCurrentLocation === undefined) filter.value.useCurrentLocation = false
+if (filter.value.radiusKm === undefined) filter.value.radiusKm = 3.0
 
 // GPS composable reads filter.useCurrentLocation directly
-const useCurrentLocationRef = toRef(filterStore.filter, 'useCurrentLocation')
+const useCurrentLocationRef = computed({
+  get: () => filter.value.useCurrentLocation,
+  set: (value: boolean) => {
+    filter.value.useCurrentLocation = value
+  }
+})
 const { latitude, longitude, locationError } = useGpsLocation(useCurrentLocationRef)
 
 
 const minAgeModel = computed({
-  get: () => filterStore.filter.minAge ?? '',
+  get: () => filter.value.minAge ?? '',
   set: (v: string | number | null) => {
     if (v === '' || v === null) {
-      filterStore.filter.minAge = null
+      filter.value.minAge = null
     } else {
       const n = Number(v)
-      filterStore.filter.minAge = Number.isNaN(n) ? null : n
+      filter.value.minAge = Number.isNaN(n) ? null : n
     }
   }
 })
 
 const maxAgeModel = computed({
-  get: () => filterStore.filter.maxAge ?? '',
+  get: () => filter.value.maxAge ?? '',
   set: (v: string | number | null) => {
     if (v === '' || v === null) {
-      filterStore.filter.maxAge = null
+      filter.value.maxAge = null
     } else {
       const n = Number(v)
-      filterStore.filter.maxAge = Number.isNaN(n) ? null : n
+      filter.value.maxAge = Number.isNaN(n) ? null : n
     }
   }
 })
 
 const maxPriceModel = computed({
-  get: () => filterStore.filter.maxPrice ?? '',
+  get: () => filter.value.maxPrice ?? '',
   set: (v: string | number | null) => {
     if (v === '' || v === null) {
-      filterStore.filter.maxPrice = null
+      filter.value.maxPrice = null
     } else {
       const n = Number(v)
-      filterStore.filter.maxPrice = Number.isNaN(n) ? null : n
+      filter.value.maxPrice = Number.isNaN(n) ? null : n
     }
   }
 })
 
 
 // Sync coordinates to filter store
-watch([() => filterStore.filter.useCurrentLocation, latitude, longitude], ([gpsActive, lat, lon]) => {
+watch([() => filter.value.useCurrentLocation, latitude, longitude], ([gpsActive, lat, lon]) => {
   if (gpsActive && lat != null && lon != null) {
-    filterStore.filter.latitude = lat
-    filterStore.filter.longitude = lon
+    filter.value.latitude = lat
+    filter.value.longitude = lon
   } else {
-    filterStore.filter.latitude = null
-    filterStore.filter.longitude = null
+    filter.value.latitude = null
+    filter.value.longitude = null
   }
 })
 
@@ -221,7 +237,9 @@ const audienceOpen = ref(false)
 const priceOpen = ref(false)
 
 const onSaveFilter = () => {
-  filterStore.setFilter({ ...filterStore.filter })
+  const nextFilter = { ...filter.value }
+  filterStore.setFilter(nextFilter, props.filterScope)
+  emit('filter-changed', nextFilter)
 }
 </script>
 
