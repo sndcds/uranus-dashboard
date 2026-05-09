@@ -79,8 +79,8 @@ const events = adminListEvents;
 type EventListDisplayMode = 'all' | 'grouped'
 const displayMode = ref<EventListDisplayMode>('all')
 const displayModeOptions = computed(() => [
-  { label: t('show_all_events'), value: 'all' },
-  { label: t('show_grouped_events'), value: 'grouped' },
+  { label: t('show_grouped'), value: 'grouped' },
+  { label: t('show_single'), value: 'all' },
 ])
 const displayedEvents = computed(() => {
   if (displayMode.value === 'all') return events.value

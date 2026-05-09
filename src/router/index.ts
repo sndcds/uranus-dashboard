@@ -42,6 +42,7 @@ import UranusDevGetEventsView from '@/component/dev/UranusDevGetEventsView.vue'
 import UranusMapView from '@/view/public/UranusMapView.vue'
 import ContentOnlyLayout from '@/component/layout/ContentOnlyLayout.vue'
 import UranusDevI18nTestsView from '@/view/dev/UranusDevI18nTestsView.vue'
+import UranusPortalView from '@/component/portal/view/UranusPortalView.vue'
 
 
 const routes = [
@@ -177,6 +178,11 @@ const routes = [
         path: '/slideshow',
         name: 'event-slideshow',
         component: UranusEventSlideshowView,
+    },
+    {
+        path: '/portal/:uuid',
+        name: 'event-slideshow',
+        component: UranusPortalView,
     },
     {
         path: '/app',
