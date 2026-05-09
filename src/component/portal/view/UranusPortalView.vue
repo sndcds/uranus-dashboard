@@ -3,11 +3,11 @@
 -->
 
 <template>
-  <div class="uranus-portal-events">
+  <div class="uranus-portal-events" :style="portalCssVars">
     <header class="uranus-portal-events__header">
       <div>
-        <h1>{{ t('events') }}</h1>
-        <p>{{ eventCountInfo }}</p>
+        <h1>{{ portal?.name ?? t('events') }}</h1>
+        <p>{{ portal?.description ?? eventCountInfo }}</p>
       </div>
 
       <UranusButton
@@ -35,11 +35,15 @@
       </div>
     </UranusHorizontalScroller>
 
-    <div v-if="eventListStore.error" class="uranus-portal-events__state">
+    <div v-if="portalError" class="uranus-portal-events__state">
+      {{ portalError }}
+    </div>
+
+    <div v-else-if="eventListStore.error" class="uranus-portal-events__state">
       {{ eventListStore.error }}
     </div>
 
-    <div v-else-if="showInitialLoading" class="uranus-portal-events__state">
+    <div v-else-if="showInitialLoading || portalLoading" class="uranus-portal-events__state">
       Loading events...
     </div>
 
@@ -110,6 +114,29 @@ import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vu
 import { uranusFormatDateTime, uranusPluralizedText } from '@/util/UranusStringUtils.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 
+type PortalStyleSection = Record<string, string | number | null | undefined>
+
+interface PortalStyle {
+  portal?: PortalStyleSection
+  grid?: PortalStyleSection
+  card?: PortalStyleSection
+}
+
+interface PortalDTO {
+  uuid: string
+  name: string
+  description?: string | null
+  org_uuid: string
+  spatial_filter_mode?: string | null
+  prefilter?: Record<string, unknown> | null
+  style?: PortalStyle | null
+}
+
+interface PortalApiResponse {
+  data?: PortalDTO | null
+  message?: string
+}
+
 const { t, locale } = useI18n({ useScope: 'global' })
 
 const LOAD_MORE_ROOT_MARGIN = 300
@@ -130,6 +157,21 @@ const eventCountInfo = computed(() =>
     uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.totalEventCount)
 )
 const showInitialLoading = computed(() => eventListStore.loading && !eventListStore.events.length)
+const portal = ref<PortalDTO | null>(null)
+const portalLoading = ref(false)
+const portalError = ref<string | null>(null)
+const portalCssVars = computed(() => {
+  const style = portal.value?.style
+  const vars: Record<string, string> = {}
+
+  setStyleVar(vars, '--portal-event-padding', style?.portal?.padding)
+  setStyleVar(vars, '--portal-event-bg', style?.portal?.background)
+  setStyleVar(vars, '--portal-event-grid-gap', style?.grid?.gap)
+  setStyleVar(vars, '--portal-event-card-radius', style?.card?.['border-radius'])
+  setStyleVar(vars, '--portal-event-card-border', style?.card?.border)
+
+  return vars
+})
 
 const initialized = ref(false)
 const isReloading = ref(false)
@@ -156,6 +198,42 @@ function getUniqueEventTypes(event: EventListItem) {
   const set = new Set<number>()
   event.eventTypes?.forEach((type: EventListItemEventType) => set.add(type.typeId))
   return Array.from(set)
+}
+
+function setStyleVar(vars: Record<string, string>, name: string, value: string | number | null | undefined) {
+  if (typeof value === 'string' && value.trim()) {
+    vars[name] = value.trim()
+  } else if (typeof value === 'number') {
+    vars[name] = value.toString()
+  }
+}
+
+async function fetchPortal() {
+  if (!portalUuid.value) {
+    portal.value = null
+    portalError.value = 'Missing portal UUID'
+    return
+  }
+
+  portalLoading.value = true
+  portalError.value = null
+
+  try {
+    const response = await fetch(`/api/portal/${encodeURIComponent(portalUuid.value)}`)
+    const apiResponse = await response.json() as PortalApiResponse
+
+    if (!response.ok) {
+      throw new Error(apiResponse.message ?? response.statusText)
+    }
+
+    portal.value = apiResponse.data ?? null
+  } catch (err) {
+    portal.value = null
+    portalError.value = 'Failed to load portal'
+    console.error(err)
+  } finally {
+    portalLoading.value = false
+  }
 }
 
 async function reloadEvents() {
@@ -253,6 +331,11 @@ watch(
     { deep: true }
 )
 
+watch(portalUuid, async () => {
+  if (!initialized.value) return
+  await fetchPortal()
+})
+
 onMounted(async () => {
   observer = new IntersectionObserver(
       (entries) => {
@@ -265,6 +348,7 @@ onMounted(async () => {
   )
 
   await typeLookupStore.initialize()
+  await fetchPortal()
   await reloadEvents()
   initialized.value = true
 
@@ -292,7 +376,7 @@ onBeforeUnmount(() => {
   gap: 1rem;
   width: 100%;
   min-height: 100vh;
-  padding: clamp(1rem, 3vw, 2rem);
+  padding: var(--portal-event-padding, clamp(1rem, 3vw, 2rem));
   background: var(--portal-event-bg);
   color: var(--portal-event-text);
 }
@@ -341,7 +425,7 @@ onBeforeUnmount(() => {
 .uranus-portal-events__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: clamp(0.75rem, 2vw, 1.25rem);
+  gap: var(--portal-event-grid-gap, clamp(0.75rem, 2vw, 1.25rem));
   width: 100%;
 }
 
@@ -351,7 +435,7 @@ onBeforeUnmount(() => {
   min-height: 100%;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid var(--portal-event-border);
+  border: var(--portal-event-card-border, 1px solid var(--portal-event-border));
   border-radius: var(--portal-event-card-radius, 6px);
   background: var(--portal-event-card-bg, var(--portal-event-bg));
   color: var(--portal-event-text);
