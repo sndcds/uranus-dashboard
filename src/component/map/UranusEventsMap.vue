@@ -147,7 +147,6 @@ function normalizeEventVenueFeature(raw: any): EventVenueFeature | null {
   const uuid = String(
       properties.uuid
       ?? properties.venue_uuid
-      ?? properties.id
       ?? ''
   )
 

@@ -115,17 +115,22 @@
       <aside class="uranus-public-event-sidebar">
         <div class="uranus-public-event-info-section">
 
-          <div style="display: flex; flex-direction: column; gap: 0px;">
+          <UranusEventDateTimeDisplay
+              :startDate="eventStartDate"
+              :startTime="eventStartTime"
+              :endDate="eventEndDate"
+              :endTime="eventEndTime"
+              :entryTime="eventEntryTime"
+              :allDay="eventAllDay"
+              class="uranus-public-event-info-card"
+              style="padding-top: 1rem; padding-bottom: 1rem"
+          />
+
+          <UranusEventOrgDisplay :event="event" class="uranus-public-event-info-card" />
+
+          <div style="display: flex; flex-direction: column;" class="uranus-public-event-info-card">
             <!-- Date & Time -->
-            <UranusEventDateTimeDisplay
-                :startDate="eventStartDate"
-                :startTime="eventStartTime"
-                :endDate="eventEndDate"
-                :endTime="eventEndTime"
-                :entryTime="eventEntryTime"
-                :allDay="eventAllDay"
-                style="padding-top: 1rem; padding-bottom: 1rem"
-            />
+
             <UranusIconAction
                 v-if="eventDate?.eventUuid"
                 :label="t('download_ics')"
@@ -140,26 +145,18 @@
                 @click="onCopyLink"
                 style="padding-left: 0;"
             />
+            <UranusIconAction
+                :to="{ hash: '#event-map' }"
+                :label="t('scroll_to_map')"
+                :icon="Map"
+                style="padding-left: 0;"
+            />
           </div>
-
-          <UranusEventOrgDisplay :event="event" />
 
           <!-- Venue, Space, Location -->
-          <UranusEventVenueDisplay :eventDate="eventDate" />
+          <UranusEventVenueDisplay :event="event" :eventDate="eventDate" />
 
-          <UranusIconAction
-              :to="{ hash: '#event-map' }"
-              :label="t('scroll_to_map')"
-              :icon="Map"
-              style="padding-left: 0;"
-          />
-
-          <div v-if="event.meetingPoint">
-            <p class="uranus-public-event-info-label">{{ t('event_meeting_point') }}</p>
-            <p>{{ event.meetingPoint }}</p>
-          </div>
-
-          <div v-if="priceText || priceTypeLabel">
+          <div v-if="priceText || priceTypeLabel" class="uranus-public-event-info-card">
             <p class="uranus-public-event-info-label">{{ t('event_price') }}</p>
             <template v-if="priceTypeLabel">
               {{ priceTypeLabel }}<br>
@@ -167,17 +164,21 @@
             <template v-if="priceText">
               {{ priceText }}
             </template>
+
+            <UranusIconAction
+                v-if="event.ticketLink"
+                :label="t('event_ticket_link')"
+                :icon="Ticket"
+                :to="event.ticketLink"
+                style="padding-left: 0;"
+            />
           </div>
 
-          <UranusIconAction
-              v-if="event.ticketLink"
-              :label="t('event_ticket_link')"
-              :icon="Ticket"
-              :to="event.ticketLink"
-              style="padding-left: 0;"
-          />
 
-          <div v-if="(event.maxAttendees ?? 0) > 0 || ageLabel || !!event.participationInfo">
+          <div
+              v-if="(event.maxAttendees ?? 0) > 0 || ageLabel || !!event.participationInfo"
+              class="uranus-public-event-info-card"
+          >
             <p class="uranus-public-event-info-label">{{ t('event_participation_info') }}</p>
             <template v-if="(event.maxAttendees ?? 0) > 0">
               <p>{{ maxAttendeesLabel }}</p>
@@ -192,9 +193,10 @@
               v-if="event?.furtherDates?.length"
               :dates="event.furtherDates"
               :currentDate="eventDate"
+              class="uranus-public-event-info-card"
           />
 
-          <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-tight-section">
+          <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-info-card uranus-public-event-tight-section">
             <UranusIconAction :icon="Accessibility" :label="t('accessibility')" style="padding-left: 0;" />
             <p v-for="label in selectedAccessibilityLabels" :key="label">
               {{ label }}

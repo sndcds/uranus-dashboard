@@ -4,38 +4,35 @@
 
 <template>
   <div v-if="event.orgName">
+    <UranusLogoImage
+        v-if="hasLogo"
+        :logoURL="logoUrl"
+        :lightThemeLogoURL="lightThemeLogoUrl"
+        :darkThemeLogoURL="darkThemeLogoUrl"
+        :theme="themeStore.theme"
+        :pixelCount="8000"
+        :maxWidth="200"
+        :maxHeight="140"
+        :linkUrl="event.orgWebLink ?? null"
+        linkTarget="_blank"
+    />
 
-    <div class="container">
-      <UranusLogoImage
-          v-if="hasLogo"
-          :logoURL="logoUrl"
-          :lightThemeLogoURL="lightThemeLogoUrl"
-          :darkThemeLogoURL="darkThemeLogoUrl"
-          :theme="themeStore.theme"
-          :pixelCount="8000"
-          :maxWidth="200"
-          :maxHeight="140"
-          :linkUrl="event.orgWebLink ?? null"
-          linkTarget="_blank"
-      />
+    <div v-else>
+      <p class="uranus-public-event-info-label">
+        {{ t('event_organizer') }}
+      </p>
+      <a
+          v-if="event.orgWebLink"
+          :href="event.orgWebLink"
+          target="_blank"
+          rel="noopener noreferrer"
+      >
+        {{ event.orgName }} ↗
+      </a>
 
-      <div v-else>
-        <p class="uranus-public-event-info-label">
-          {{ t('event_organizer') }}
-        </p>
-        <a
-            v-if="event.orgWebLink"
-            :href="event.orgWebLink"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-          {{ event.orgName }} ↗
-        </a>
-
-        <span v-else>
-          {{ event.orgName }}
-        </span>
-      </div>
+      <span v-else>
+        {{ event.orgName }}
+      </span>
     </div>
   </div>
 </template>
@@ -66,9 +63,3 @@ const hasLogo = computed(() =>
     !!(logoUrl.value || lightThemeLogoUrl.value || darkThemeLogoUrl.value)
 )
 </script>
-
-<style scoped>
-.container {
-  margin-top: 2rem;
-}
-</style>

@@ -3,7 +3,7 @@
 -->
 
 <template>
-  <div v-if="hasVenueInfo">
+  <div v-if="hasVenueInfo" class="uranus-public-event-info-card">
 
     <!--UranusLogoImage
         :logoURL="logoUrl ?? ''"
@@ -14,7 +14,7 @@
         :maxHeight="80"
     /-->
 
-    <div class="uranus-public-event-info-label label-space-above">{{ t('event_location') }}</div>
+    <p class="uranus-public-event-info-label">{{ t('event_location') }}</p>
 
     <p v-if="eventDate?.venueWebsite && eventDate?.venueName">
       <a :href="eventDate.venueWebsite" target="_blank" rel="noopener noreferrer">
@@ -28,12 +28,18 @@
       <p v-if="eventDate.venuePostalCode || eventDate.venueCity">
         {{ eventDate.venuePostalCode }} {{ eventDate.venueCity }}
       </p>
+      <template class="uranus-public-event-space" v-if="eventDate?.spaceUuid">
+        <span class="uranus-public-event-info-label ">{{ t('venue_space') }}:</span>
+        <p>{{ eventDate?.spaceName }}</p>
+      </template>
+
+      <template v-if="event?.meetingPoint">
+        <p class="uranus-public-event-info-label">{{ t('event_meeting_point') }}</p>
+        <p>{{ event.meetingPoint }}</p>
+      </template>
+
     </template>
 
-    <div class="uranus-public-event-top-space" v-if="eventDate?.spaceUuid">
-      <span class="uranus-public-event-info-label ">{{ t('venue_space') }}:</span>
-      <p>{{ eventDate?.spaceName }}</p>
-    </div>
 
   </div>
 </template>
@@ -42,14 +48,16 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
+import type { PublicEvent } from '@/domain/event/publicEvent.model.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
-import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 
 const { t } = useI18n({ useScope: 'global' })
-const themeStore = useThemeStore()
 
 // Accept the entire currentEventDate object
-const props = defineProps<{ eventDate: PublicEventDate | null }>()
+const props = defineProps<{
+  event: PublicEvent | null
+  eventDate: PublicEventDate | null
+}>()
 
 const hasVenueInfo = computed(() => {
   const e = props.eventDate

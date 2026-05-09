@@ -16,7 +16,7 @@
     </template>
 
     <template v-else>
-      <h2>{{ model.startDate }}</h2>
+      <h2 class="uranus-public-main-date">{{ model.startDate }}</h2>
       <p v-if="model.startTime">
         {{ t('event_starts_short') }}: {{model.startTime }}
       </p>
