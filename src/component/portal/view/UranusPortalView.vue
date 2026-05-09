@@ -106,6 +106,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { apiFetch } from '@/api.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
@@ -130,11 +131,6 @@ interface PortalDTO {
   spatial_filter_mode?: string | null
   prefilter?: Record<string, unknown> | null
   style?: PortalStyle | null
-}
-
-interface PortalApiResponse {
-  data?: PortalDTO | null
-  message?: string
 }
 
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -219,13 +215,7 @@ async function fetchPortal() {
   portalError.value = null
 
   try {
-    const response = await fetch(`/api/portal/${encodeURIComponent(portalUuid.value)}`)
-    const apiResponse = await response.json() as PortalApiResponse
-
-    if (!response.ok) {
-      throw new Error(apiResponse.message ?? response.statusText)
-    }
-
+    const apiResponse = await apiFetch<PortalDTO>(`/api/portal/${encodeURIComponent(portalUuid.value)}`)
     portal.value = apiResponse.data ?? null
   } catch (err) {
     portal.value = null
