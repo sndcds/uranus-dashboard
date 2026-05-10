@@ -18,6 +18,12 @@
 
     <template v-else>
       <div v-if="!isLoading" class="uranus-main-layout">
+        <div v-if="portalList?.canAddPortal">
+          <UranusButton :to="`/admin/org/${appStore.orgUuid}/portal/create`">
+            {{ t('portal_add') }}
+          </UranusButton>
+        </div>
+
         <UranusFeedback :show="!!error" type="error">
           <h3>{{ t('error_notification') }}</h3>
           <p>{{ error }}</p>
@@ -50,6 +56,7 @@ import { mapPortalList, type PortalListModel } from '@/domain/portal/portalList.
 import UranusAdminPortalCard from '@/component/portal/card/UranusAdminPortalCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import UranusOrgTitle from '@/component/layout/UranusOrgTitle.vue'
 
@@ -71,7 +78,9 @@ async function loadPortals(orgUuid: string | null) {
 
   try {
     const apiResponse = await apiFetch(`/api/admin/org/${orgUuid}/portals`)
-    portalList.value = mapPortalList(apiResponse.data as any)
+    const mappedPortalList = mapPortalList(apiResponse.data as any)
+    mappedPortalList.canAddPortal = apiResponse.metadata?.can_add_portal ?? mappedPortalList.canAddPortal
+    portalList.value = mappedPortalList
     error.value = null
   } catch (err) {
     console.error('Failed to load organization portals:', err)
