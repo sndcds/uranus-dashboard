@@ -64,6 +64,15 @@
           <Calendar class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_events') }}</span>
         </router-link>
+
+        <router-link
+            to="/admin/org/portals"
+            class="generic-sidebar__nav-item"
+            active-class="generic-sidebar__nav-item--active"
+            @click="handleLinkClick">
+          <PanelTop class="generic-sidebar__nav-icon"/>
+          <span class="generic-sidebar__nav-text">{{ t('nav_portals') }}</span>
+        </router-link>
       </template>
 
       <!-- Visitor Navigation -->
@@ -123,14 +132,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useAppStore } from '@/store/appStore.ts'
-import { useThemeStore } from '@/store/themeStore.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import { LayoutDashboard, ListChecks, Building, Handshake, MapPin, Calendar } from 'lucide-vue-next'
-import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
+import { LayoutDashboard, ListChecks, Building, Handshake, MapPin, Calendar, PanelTop } from 'lucide-vue-next'
 
 interface Props {
   isOpen: boolean
@@ -145,17 +150,11 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const route = useRoute()
-const appStore = useAppStore()
-const themeStore = useThemeStore()
 const tokenStore = useTokenStore()
 
 const handleLinkClick = () => {
   emit('close')
 }
-
-const venuesRoute = computed(() => {
-  return `/admin/org/${appStore.orgUuid}/venues`
-})
 
 </script>
 
