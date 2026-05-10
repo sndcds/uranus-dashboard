@@ -64,11 +64,37 @@ type StyleFieldPath =
     | 'eventGrid.gap'
     | 'eventGrid.minCardWidth'
     | 'eventCard.background'
+    | 'eventCard.padding'
+    | 'eventCard.gap'
     | 'eventCard.border'
     | 'eventCard.radius'
     | 'eventCard.shadow'
+    | 'eventCard.transition'
+    | 'eventCard.hover.background'
+    | 'eventCard.hover.border'
     | 'eventCard.hover.shadow'
     | 'eventCard.hover.scale'
+    | 'eventCardImage.background'
+    | 'eventCardImage.aspectRatio'
+    | 'eventCardImage.borderRadius'
+    | 'eventCardImage.objectFit'
+    | 'eventCardImage.filter'
+    | 'eventCardImage.transition'
+    | 'eventCardImage.hover.filter'
+    | 'eventCardImage.hover.scale'
+    | 'eventCardInfo.padding'
+    | 'eventCardInfo.background'
+    | 'eventCardInfo.border'
+    | 'eventCardInfo.borderRadius'
+    | 'eventCardInfo.color'
+    | 'eventCardInfo.titleFontFamily'
+    | 'eventCardInfo.titleFontSize'
+    | 'eventCardInfo.titleFontWeight'
+    | 'eventCardInfo.metaFontFamily'
+    | 'eventCardInfo.metaFontSize'
+    | 'eventCardInfo.metaFontWeight'
+    | 'eventCardInfo.metaLineHeight'
+    | 'eventCardInfo.metaGap'
 
 type StyleField = {
   path: StyleFieldPath
@@ -106,13 +132,45 @@ type PortalStyleForm = {
   }
   eventCard: {
     background: string
+    padding: string
+    gap: string
     border: string
     radius: string
     shadow: string
+    transition: string
     hover: {
+      background: string
+      border: string
       shadow: string
       scale: number | null
     }
+  }
+  eventCardImage: {
+    background: string
+    aspectRatio: string
+    borderRadius: string
+    objectFit: string
+    filter: string
+    transition: string
+    hover: {
+      filter: string
+      scale: number | null
+    }
+  }
+  eventCardInfo: {
+    padding: string
+    background: string
+    border: string
+    borderRadius: string
+    color: string
+    titleFontFamily: string
+    titleFontSize: string
+    titleFontWeight: string
+    metaFontFamily: string
+    metaFontSize: string
+    metaFontWeight: string
+    metaLineHeight: string
+    metaGap: string
   }
 }
 
@@ -146,14 +204,48 @@ type PortalStylePayload = {
   }
   'event-card': {
     background: string
+    padding: string
+    gap: string
     border: string
     radius: string
     shadow: string
+    transition: string
     hover: {
+      background: string
+      border: string
       shadow: string
       scale: number | null
     }
   }
+  'event-card-image': {
+    background: string
+    'aspect-ratio': string
+    'border-radius': string
+    'object-fit': string
+    filter: string
+    transition: string
+    hover: {
+      filter: string
+      scale: number | null
+    }
+  }
+  'event-card-info': {
+    padding: string
+    background: string
+    border: string
+    'border-radius': string
+    color: string
+    'title-font-family': string
+    'title-font-size': string
+    'title-font-weight': string
+    'meta-font-family': string
+    'meta-font-size': string
+    'meta-font-weight': string
+    'meta-line-height': string
+    'meta-gap': string
+  }
+  'event-card-tags': Record<string, never>
+  'event-card-type-chips': Record<string, never>
 }
 
 const { t } = useI18n({ useScope: 'global' })
@@ -229,11 +321,16 @@ const styleGroups: Array<{ key: string, label: string, rows: StyleField[][] }> =
     rows: [
       [
         { path: 'eventCard.background', label: 'Background' },
-        { path: 'eventCard.border', label: 'Border' },
+        { path: 'eventCard.padding', label: 'Padding' },
+        { path: 'eventCard.gap', label: 'Gap' },
       ],
       [
+        { path: 'eventCard.border', label: 'Border' },
         { path: 'eventCard.radius', label: 'Radius' },
         { path: 'eventCard.shadow', label: 'Shadow' },
+      ],
+      [
+        { path: 'eventCard.transition', label: 'Transition' },
       ],
     ],
   },
@@ -242,8 +339,63 @@ const styleGroups: Array<{ key: string, label: string, rows: StyleField[][] }> =
     label: 'Event card hover',
     rows: [
       [
+        { path: 'eventCard.hover.background', label: 'Background' },
+        { path: 'eventCard.hover.border', label: 'Border' },
+      ],
+      [
         { path: 'eventCard.hover.shadow', label: 'Shadow' },
         { path: 'eventCard.hover.scale', label: 'Scale', type: 'number' },
+      ],
+    ],
+  },
+  {
+    key: 'event-card-image',
+    label: 'Event card image',
+    rows: [
+      [
+        { path: 'eventCardImage.background', label: 'Background' },
+        { path: 'eventCardImage.aspectRatio', label: 'Aspect ratio' },
+      ],
+      [
+        { path: 'eventCardImage.borderRadius', label: 'Border radius' },
+        { path: 'eventCardImage.objectFit', label: 'Object fit' },
+      ],
+      [
+        { path: 'eventCardImage.filter', label: 'Filter' },
+        { path: 'eventCardImage.transition', label: 'Transition' },
+      ],
+      [
+        { path: 'eventCardImage.hover.filter', label: 'Hover filter' },
+        { path: 'eventCardImage.hover.scale', label: 'Hover scale', type: 'number' },
+      ],
+    ],
+  },
+  {
+    key: 'event-card-info',
+    label: 'Event card info',
+    rows: [
+      [
+        { path: 'eventCardInfo.padding', label: 'Padding' },
+        { path: 'eventCardInfo.background', label: 'Background' },
+      ],
+      [
+        { path: 'eventCardInfo.border', label: 'Border' },
+        { path: 'eventCardInfo.borderRadius', label: 'Border radius' },
+        { path: 'eventCardInfo.color', label: 'Color' },
+      ],
+      [
+        { path: 'eventCardInfo.titleFontFamily', label: 'Title font family' },
+        { path: 'eventCardInfo.titleFontSize', label: 'Title font size' },
+        { path: 'eventCardInfo.titleFontWeight', label: 'Title font weight' },
+      ],
+      [
+        { path: 'eventCardInfo.metaFontFamily', label: 'Meta font family' },
+        { path: 'eventCardInfo.metaFontSize', label: 'Meta font size' },
+        { path: 'eventCardInfo.metaFontWeight', label: 'Meta font weight' },
+      ],
+      [
+        { path: 'eventCardInfo.metaLineHeight', label: 'Meta line height' },
+        { path: 'eventCardInfo.metaGap', label: 'Meta gap' },
       ],
     ],
   },
@@ -279,13 +431,45 @@ const defaultStyleForm: PortalStyleForm = {
   },
   eventCard: {
     background: '#ffcc66',
+    padding: '1rem',
+    gap: '1rem',
     border: '1px solid green',
     radius: '2px',
     shadow: '0 1px 2px rgba(0,0,0,0.08)',
+    transition: '220ms ease',
     hover: {
+      background: '#ff6600',
+      border: '1px solid green',
       shadow: '0 3px 1px rgba(0,0,0,0.12)',
       scale: 1.03,
     },
+  },
+  eventCardImage: {
+    background: 'transparent',
+    aspectRatio: '2 / 1',
+    borderRadius: '0.5rem',
+    objectFit: 'cover',
+    filter: 'none',
+    transition: '220ms ease',
+    hover: {
+      filter: 'none',
+      scale: 1.03,
+    },
+  },
+  eventCardInfo: {
+    padding: '0.2rem',
+    background: '#ffcc99',
+    border: '1px solid green',
+    borderRadius: '2px',
+    color: '#ffcc00',
+    titleFontFamily: 'Helvetica-Neue, Arial',
+    titleFontSize: '2rem',
+    titleFontWeight: '700',
+    metaFontFamily: 'Helvetica-Neue, Arial',
+    metaFontSize: '2rem',
+    metaFontWeight: '500',
+    metaLineHeight: '1.05',
+    metaGap: '1.05',
   },
 }
 
@@ -315,7 +499,12 @@ function readString(source: Record<string, unknown> | null, key: string, fallbac
 
 function readNumber(source: Record<string, unknown> | null, key: string, fallback: number | null) {
   const value = source?.[key]
-  return typeof value === 'number' ? value : fallback
+  if (typeof value === 'number') return value
+  if (typeof value === 'string' && value.trim()) {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : fallback
+  }
+  return fallback
 }
 
 function createStyleForm(style: Record<string, unknown> | null): PortalStyleForm {
@@ -328,6 +517,9 @@ function createStyleForm(style: Record<string, unknown> | null): PortalStyleForm
   const eventGrid = readRecord(style, 'event-grid') ?? readRecord(style, 'grid')
   const eventCard = readRecord(style, 'event-card') ?? readRecord(style, 'card')
   const eventCardHover = readRecord(eventCard, 'hover')
+  const eventCardImage = readRecord(style, 'event-card-image')
+  const eventCardImageHover = readRecord(eventCardImage, 'hover')
+  const eventCardInfo = readRecord(style, 'event-card-info')
 
   return {
     portal: {
@@ -359,13 +551,45 @@ function createStyleForm(style: Record<string, unknown> | null): PortalStyleForm
     },
     eventCard: {
       background: readString(eventCard, 'background', defaults.eventCard.background),
+      padding: readString(eventCard, 'padding', defaults.eventCard.padding),
+      gap: readString(eventCard, 'gap', defaults.eventCard.gap),
       border: readString(eventCard, 'border', defaults.eventCard.border),
       radius: readString(eventCard, 'radius', readString(eventCard, 'border-radius', defaults.eventCard.radius)),
       shadow: readString(eventCard, 'shadow', defaults.eventCard.shadow),
+      transition: readString(eventCard, 'transition', defaults.eventCard.transition),
       hover: {
+        background: readString(eventCardHover, 'background', defaults.eventCard.hover.background),
+        border: readString(eventCardHover, 'border', defaults.eventCard.hover.border),
         shadow: readString(eventCardHover, 'shadow', defaults.eventCard.hover.shadow),
         scale: readNumber(eventCardHover, 'scale', defaults.eventCard.hover.scale),
       },
+    },
+    eventCardImage: {
+      background: readString(eventCardImage, 'background', defaults.eventCardImage.background),
+      aspectRatio: readString(eventCardImage, 'aspect-ratio', defaults.eventCardImage.aspectRatio),
+      borderRadius: readString(eventCardImage, 'border-radius', defaults.eventCardImage.borderRadius),
+      objectFit: readString(eventCardImage, 'object-fit', defaults.eventCardImage.objectFit),
+      filter: readString(eventCardImage, 'filter', defaults.eventCardImage.filter),
+      transition: readString(eventCardImage, 'transition', defaults.eventCardImage.transition),
+      hover: {
+        filter: readString(eventCardImageHover, 'filter', defaults.eventCardImage.hover.filter),
+        scale: readNumber(eventCardImageHover, 'scale', defaults.eventCardImage.hover.scale),
+      },
+    },
+    eventCardInfo: {
+      padding: readString(eventCardInfo, 'padding', defaults.eventCardInfo.padding),
+      background: readString(eventCardInfo, 'background', defaults.eventCardInfo.background),
+      border: readString(eventCardInfo, 'border', defaults.eventCardInfo.border),
+      borderRadius: readString(eventCardInfo, 'border-radius', defaults.eventCardInfo.borderRadius),
+      color: readString(eventCardInfo, 'color', defaults.eventCardInfo.color),
+      titleFontFamily: readString(eventCardInfo, 'title-font-family', defaults.eventCardInfo.titleFontFamily),
+      titleFontSize: readString(eventCardInfo, 'title-font-size', defaults.eventCardInfo.titleFontSize),
+      titleFontWeight: readString(eventCardInfo, 'title-font-weight', defaults.eventCardInfo.titleFontWeight),
+      metaFontFamily: readString(eventCardInfo, 'meta-font-family', defaults.eventCardInfo.metaFontFamily),
+      metaFontSize: readString(eventCardInfo, 'meta-font-size', defaults.eventCardInfo.metaFontSize),
+      metaFontWeight: readString(eventCardInfo, 'meta-font-weight', defaults.eventCardInfo.metaFontWeight),
+      metaLineHeight: readString(eventCardInfo, 'meta-line-height', defaults.eventCardInfo.metaLineHeight),
+      metaGap: readString(eventCardInfo, 'meta-gap', defaults.eventCardInfo.metaGap),
     },
   }
 }
@@ -401,14 +625,48 @@ function buildStylePayload(value: PortalStyleForm): PortalStylePayload {
     },
     'event-card': {
       background: value.eventCard.background,
+      padding: value.eventCard.padding,
+      gap: value.eventCard.gap,
       border: value.eventCard.border,
       radius: value.eventCard.radius,
       shadow: value.eventCard.shadow,
+      transition: value.eventCard.transition,
       hover: {
+        background: value.eventCard.hover.background,
+        border: value.eventCard.hover.border,
         shadow: value.eventCard.hover.shadow,
         scale: value.eventCard.hover.scale,
       },
     },
+    'event-card-image': {
+      background: value.eventCardImage.background,
+      'aspect-ratio': value.eventCardImage.aspectRatio,
+      'border-radius': value.eventCardImage.borderRadius,
+      'object-fit': value.eventCardImage.objectFit,
+      filter: value.eventCardImage.filter,
+      transition: value.eventCardImage.transition,
+      hover: {
+        filter: value.eventCardImage.hover.filter,
+        scale: value.eventCardImage.hover.scale,
+      },
+    },
+    'event-card-info': {
+      padding: value.eventCardInfo.padding,
+      background: value.eventCardInfo.background,
+      border: value.eventCardInfo.border,
+      'border-radius': value.eventCardInfo.borderRadius,
+      color: value.eventCardInfo.color,
+      'title-font-family': value.eventCardInfo.titleFontFamily,
+      'title-font-size': value.eventCardInfo.titleFontSize,
+      'title-font-weight': value.eventCardInfo.titleFontWeight,
+      'meta-font-family': value.eventCardInfo.metaFontFamily,
+      'meta-font-size': value.eventCardInfo.metaFontSize,
+      'meta-font-weight': value.eventCardInfo.metaFontWeight,
+      'meta-line-height': value.eventCardInfo.metaLineHeight,
+      'meta-gap': value.eventCardInfo.metaGap,
+    },
+    'event-card-tags': {},
+    'event-card-type-chips': {},
   }
 }
 

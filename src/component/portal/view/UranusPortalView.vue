@@ -128,6 +128,12 @@ interface PortalStyle {
   'event-card'?: PortalStyleSection & {
     hover?: PortalStyleSection
   }
+  'event-card-image'?: PortalStyleSection & {
+    hover?: PortalStyleSection
+  }
+  'event-card-info'?: PortalStyleSection
+  'event-card-tags'?: PortalStyleSection
+  'event-card-type-chips'?: PortalStyleSection
   // Legacy style keys kept for existing portal records.
   grid?: PortalStyleSection
   card?: PortalStyleSection
@@ -171,6 +177,9 @@ const portalCssVars = computed(() => {
   const eventGrid = style?.['event-grid'] ?? style?.grid
   const eventCard = style?.['event-card'] ?? style?.card
   const eventCardHover = getStyleSection(eventCard?.hover)
+  const eventCardImage = style?.['event-card-image']
+  const eventCardImageHover = getStyleSection(eventCardImage?.hover)
+  const eventCardInfo = style?.['event-card-info']
   const vars: Record<string, string> = {}
 
   setStyleVar(vars, '--portal-event-padding', style?.portal?.padding)
@@ -194,11 +203,39 @@ const portalCssVars = computed(() => {
   setStyleVar(vars, '--portal-event-grid-min-card-width', eventGrid?.['min-card-width'])
 
   setStyleVar(vars, '--portal-event-card-bg', eventCard?.background)
+  setStyleVar(vars, '--portal-event-card-padding', eventCard?.padding)
+  setStyleVar(vars, '--portal-event-card-gap', eventCard?.gap)
   setStyleVar(vars, '--portal-event-card-radius', eventCard?.radius ?? eventCard?.['border-radius'])
   setStyleVar(vars, '--portal-event-card-border', eventCard?.border)
   setStyleVar(vars, '--portal-event-card-shadow', eventCard?.shadow)
+  setStyleVar(vars, '--portal-event-card-transition', eventCard?.transition)
+  setStyleVar(vars, '--portal-event-card-hover-bg', eventCardHover?.background)
+  setStyleVar(vars, '--portal-event-card-hover-border', eventCardHover?.border)
   setStyleVar(vars, '--portal-event-card-hover-shadow', eventCardHover?.shadow)
   setStyleVar(vars, '--portal-event-card-hover-scale', eventCardHover?.scale)
+
+  setStyleVar(vars, '--portal-event-card-image-bg', eventCardImage?.background)
+  setStyleVar(vars, '--portal-event-card-image-aspect-ratio', eventCardImage?.['aspect-ratio'])
+  setStyleVar(vars, '--portal-event-card-image-radius', eventCardImage?.['border-radius'])
+  setStyleVar(vars, '--portal-event-card-image-object-fit', eventCardImage?.['object-fit'])
+  setStyleVar(vars, '--portal-event-card-image-filter', eventCardImage?.filter)
+  setStyleVar(vars, '--portal-event-card-image-transition', eventCardImage?.transition)
+  setStyleVar(vars, '--portal-event-card-image-hover-filter', eventCardImageHover?.filter)
+  setStyleVar(vars, '--portal-event-card-image-hover-scale', eventCardImageHover?.scale)
+
+  setStyleVar(vars, '--portal-event-card-info-padding', eventCardInfo?.padding)
+  setStyleVar(vars, '--portal-event-card-info-bg', eventCardInfo?.background)
+  setStyleVar(vars, '--portal-event-card-info-border', eventCardInfo?.border)
+  setStyleVar(vars, '--portal-event-card-info-radius', eventCardInfo?.['border-radius'])
+  setStyleVar(vars, '--portal-event-card-info-color', eventCardInfo?.color)
+  setStyleVar(vars, '--portal-event-card-title-font-family', eventCardInfo?.['title-font-family'])
+  setStyleVar(vars, '--portal-event-card-title-font-size', eventCardInfo?.['title-font-size'])
+  setStyleVar(vars, '--portal-event-card-title-font-weight', eventCardInfo?.['title-font-weight'])
+  setStyleVar(vars, '--portal-event-card-meta-font-family', eventCardInfo?.['meta-font-family'])
+  setStyleVar(vars, '--portal-event-card-meta-font-size', eventCardInfo?.['meta-font-size'])
+  setStyleVar(vars, '--portal-event-card-meta-font-weight', eventCardInfo?.['meta-font-weight'])
+  setStyleVar(vars, '--portal-event-card-meta-line-height', eventCardInfo?.['meta-line-height'])
+  setStyleVar(vars, '--portal-event-card-meta-gap', eventCardInfo?.['meta-gap'])
 
   return vars
 })
@@ -511,34 +548,46 @@ onBeforeUnmount(() => {
   overflow: hidden;
   border: var(--portal-event-card-border, 1px solid var(--portal-event-border));
   border-radius: var(--portal-event-card-radius, 6px);
+  gap: var(--portal-event-card-gap, 0);
+  padding: var(--portal-event-card-padding, 0);
   background: var(--portal-event-card-bg, var(--portal-event-bg));
   box-shadow: var(--portal-event-card-shadow, none);
   color: var(--portal-event-text);
-  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  transition:
+      transform var(--portal-event-card-transition, 0.18s ease),
+      border var(--portal-event-card-transition, 0.18s ease),
+      background var(--portal-event-card-transition, 0.18s ease),
+      box-shadow var(--portal-event-card-transition, 0.18s ease);
 }
 
 .uranus-portal-event-card:hover {
   transform: translateY(-2px) scale(var(--portal-event-card-hover-scale, 1));
-  border-color: var(--portal-event-accent);
+  border: var(--portal-event-card-hover-border, var(--portal-event-card-border, 1px solid var(--portal-event-accent)));
+  background: var(--portal-event-card-hover-bg, var(--portal-event-card-bg, var(--portal-event-bg)));
   box-shadow: var(--portal-event-card-hover-shadow, var(--portal-event-card-shadow, none));
   color: var(--portal-event-text);
 }
 
 .uranus-portal-event-card__image-frame {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: var(--portal-event-card-image-aspect-ratio, 4 / 3);
   overflow: hidden;
-  background: var(--portal-event-chip-bg);
+  border-radius: var(--portal-event-card-image-radius, 0);
+  background: var(--portal-event-card-image-bg, var(--portal-event-chip-bg));
 }
 
 .uranus-portal-event-card__image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.25s ease;
+  filter: var(--portal-event-card-image-filter, none);
+  object-fit: var(--portal-event-card-image-object-fit, cover);
+  transition:
+      filter var(--portal-event-card-image-transition, 0.25s ease),
+      transform var(--portal-event-card-image-transition, 0.25s ease);
 }
 
 .uranus-portal-event-card:hover .uranus-portal-event-card__image {
-  transform: scale(1.04);
+  filter: var(--portal-event-card-image-hover-filter, var(--portal-event-card-image-filter, none));
+  transform: scale(var(--portal-event-card-image-hover-scale, 1.04));
 }
 
 .uranus-portal-event-card__body {
@@ -546,27 +595,36 @@ onBeforeUnmount(() => {
   flex: 1;
   flex-direction: column;
   gap: 0.65rem;
-  padding: 0.9rem;
+  padding: var(--portal-event-card-info-padding, 0.9rem);
+  border: var(--portal-event-card-info-border, 0);
+  border-radius: var(--portal-event-card-info-radius, 0);
+  background: var(--portal-event-card-info-bg, transparent);
+  color: var(--portal-event-card-info-color, var(--portal-event-text));
 }
 
 .uranus-portal-event-card__meta {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  color: var(--portal-event-muted);
-  font-size: 0.9rem;
-  line-height: 1.35;
+  gap: var(--portal-event-card-meta-gap, 0.2rem);
+  color: var(--portal-event-card-info-color, var(--portal-event-muted));
+  font-family: var(--portal-event-card-meta-font-family, inherit);
+  font-size: var(--portal-event-card-meta-font-size, 0.9rem);
+  font-weight: var(--portal-event-card-meta-font-weight, 400);
+  line-height: var(--portal-event-card-meta-line-height, 1.35);
 }
 
 .uranus-portal-event-card h2 {
   margin: 0;
-  font-size: 1.2rem;
+  color: var(--portal-event-card-info-color, var(--portal-event-text));
+  font-family: var(--portal-event-card-title-font-family, inherit);
+  font-size: var(--portal-event-card-title-font-size, 1.2rem);
+  font-weight: var(--portal-event-card-title-font-weight, 700);
   line-height: 1.15;
 }
 
 .uranus-portal-event-card__subtitle {
   margin: 0;
-  color: var(--portal-event-muted);
+  color: var(--portal-event-card-info-color, var(--portal-event-muted));
   line-height: 1.4;
 }
 
