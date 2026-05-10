@@ -99,7 +99,7 @@ const permissionGroups = ref<PermissionGroup[]>([])
 const selectedBits = ref<string[]>([])
 const memberDisplayName = ref<string | null>(null)
 const orgName = ref<string | null>(null)
-const permissionMask = ref<number | null>(null)
+const permissionMask = ref<bigint | null>(null)
 const isUpdatingBit = ref<number | null>(null)
 const updateError = ref<string | null>(null)
 const canModifyPermissions = computed(() => memberUuid.value != null && orgUuid.value != null)
@@ -119,23 +119,29 @@ const sortedPermissionGroups = computed(() => {
   })
 })
 
-const toMaskValue = (value: unknown): number | null => {
-  if (typeof value === 'number' && Number.isFinite(value)) {
+const toMaskValue = (value: unknown): bigint | null => {
+  if (typeof value === 'bigint') {
     return value
   }
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return BigInt(value)
+  }
   if (typeof value === 'string') {
-    const parsed = Number(value.trim())
-    return Number.isFinite(parsed) ? parsed : null
+    try {
+      return BigInt(value.trim())
+    } catch {
+      return null
+    }
   }
   return null
 }
 
-const computeSelectedBitsFromMask = (mask: number) => {
+const computeSelectedBitsFromMask = (mask: bigint) => {
   const bits: string[] = []
 
   permissionGroups.value.forEach(group => {
     group.entries.forEach(entry => {
-      const bitValue = 1 << entry.bit
+      const bitValue = 1n << BigInt(entry.bit)
       if ((mask & bitValue) === bitValue) {
         bits.push(entry.bit.toString())
       }
@@ -229,8 +235,8 @@ const applyBitSelection = (bit: number, enabled: boolean) => {
 }
 
 const updateLocalMask = (bit: number, enabled: boolean) => {
-  const bitValue = 1 << bit
-  const current = permissionMask.value ?? 0
+  const bitValue = 1n << BigInt(bit)
+  const current = permissionMask.value ?? 0n
   permissionMask.value = enabled ? current | bitValue : current & ~bitValue
 }
 
@@ -276,7 +282,7 @@ const loadUserPermissions = async () => {
   try {
     const apiPath = `/api/admin/org/${orgUuid.value}/member/${memberUuid.value}/permissions`
     const apiResponse = await apiFetch<{
-      permissions?: number | string | null;
+      permissions?: string | null;
       user_display_name?: string;
       user_id?: number
     }>(apiPath)
@@ -312,7 +318,8 @@ onMounted(() => {
 
 const isBitEnabled = (bit: number) => {
   if (permissionMask.value == null) return false
-  return (permissionMask.value & (1 << bit)) !== 0
+  const bitValue = 1n << BigInt(bit)
+  return (permissionMask.value & bitValue) !== 0n
 }
 
 const onBitChange = (bit: number, value: boolean | string[]) => {

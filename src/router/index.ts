@@ -43,6 +43,8 @@ import UranusMapView from '@/view/public/UranusMapView.vue'
 import ContentOnlyLayout from '@/component/layout/ContentOnlyLayout.vue'
 import UranusDevI18nTestsView from '@/view/dev/UranusDevI18nTestsView.vue'
 import UranusPortalView from '@/component/portal/view/UranusPortalView.vue'
+import UranusAdminPortalListView from '@/component/portal/view/UranusAdminPortalListView.vue'
+import UranusPortalEditView from '@/component/portal/view/UranusPortalEditView.vue'
 
 
 const routes = [
@@ -116,6 +118,11 @@ const routes = [
                 component: UranusAdminVenueListView,
             },
             {
+                path: 'org/portals',
+                name: 'admin-portals',
+                component: UranusAdminPortalListView,
+            },
+            {
                 path: 'org/partners',
                 name: 'admin-partners',
                 component: UranusPartnerListView,
@@ -159,6 +166,11 @@ const routes = [
                 path: 'org/:orgUuid/event/create',
                 name: 'admin-create-event',
                 component: UranusAdminEventCreateView,
+            },
+            {
+                path: 'org/:orgUuid/portal/:portalUuid/edit',
+                name: 'admin-edit-portal',
+                component: UranusPortalEditView,
             },
         ],
     },

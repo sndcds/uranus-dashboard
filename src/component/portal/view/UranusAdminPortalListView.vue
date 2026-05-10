@@ -1,0 +1,91 @@
+<template>
+  <div class="uranus-main-layout">
+    <UranusOrgTitle />
+    <UranusDashboardHero
+        :title="t('portals')"
+        :subtitle="t('portals_list_hero_description')"
+    />
+
+    <UranusNotification
+        v-if="!appStore.orgUuid"
+        type="info"
+        :action-label="t('notification_cant_see_portals_action')"
+        action-to="/admin/orgs"
+    >
+      <template #title>{{ t('notification_cant_see_portals_title') }}</template>
+      <div v-html="t('notification_cant_see_portals_message')"></div>
+    </UranusNotification>
+
+    <template v-else>
+      <div v-if="!isLoading" class="uranus-main-layout">
+        <UranusFeedback :show="!!error" type="error">
+          <h3>{{ t('error_notification') }}</h3>
+          <p>{{ error }}</p>
+        </UranusFeedback>
+
+        <div v-if="portalList" class="uranus-vertical-flex">
+          <UranusAdminPortalCard
+              v-for="item in portalList.portals"
+              :key="item.portalUuid"
+              :portal-list-item="item"
+              :org-uuid="appStore.orgUuid"
+              @deleted="handlePortalDeleted"
+          />
+
+          <UranusFeedback :show="portalList.portals.length === 0" type="notice">
+            <p>{{ t('portals_empty') }}</p>
+          </UranusFeedback>
+        </div>
+      </div>
+    </template>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { apiFetch } from '@/api.ts'
+import { useAppStore } from '@/store/appStore.ts'
+import { mapPortalList, type PortalListModel } from '@/domain/portal/portalList.model.ts'
+import UranusAdminPortalCard from '@/component/portal/card/UranusAdminPortalCard.vue'
+import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
+import UranusNotification from '@/component/ui/UranusNotification.vue'
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusOrgTitle from '@/component/layout/UranusOrgTitle.vue'
+
+const { t } = useI18n({ useScope: 'global' })
+const appStore = useAppStore()
+
+const isLoading = ref(true)
+const portalList = ref<PortalListModel | null>(null)
+const error = ref<string | null>(null)
+
+async function loadPortals(orgUuid: string | null) {
+  isLoading.value = true
+
+  if (!orgUuid) {
+    portalList.value = null
+    isLoading.value = false
+    return
+  }
+
+  try {
+    const apiResponse = await apiFetch(`/api/admin/org/${orgUuid}/portals`)
+    portalList.value = mapPortalList(apiResponse.data as any)
+    error.value = null
+  } catch (err) {
+    console.error('Failed to load organization portals:', err)
+    error.value = t('failed_to_load_portals')
+  } finally {
+    isLoading.value = false
+  }
+}
+
+async function handlePortalDeleted() {
+  await loadPortals(appStore.orgUuid)
+}
+
+onMounted(() => {
+  void loadPortals(appStore.orgUuid)
+})
+</script>

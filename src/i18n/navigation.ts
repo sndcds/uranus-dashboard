@@ -75,6 +75,11 @@ export const uranusI18nNavigationTranslations: Record<string, Record<UranusLocal
         en: 'Events',
         da: 'Begivenheder'
     },
+    nav_portals: {
+        de: 'Portale',
+        en: 'Portals',
+        da: 'Portaler'
+    },
     scroll_to_map: {
         de: 'Karte anzeigen',
         en: 'View map',
