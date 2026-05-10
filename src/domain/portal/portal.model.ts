@@ -4,8 +4,9 @@ export interface PortalDTO {
     description?: string | null
     org_uuid: string
     spatial_filter_mode?: string | null
-    prefilter?: Record<string, unknown> | null
-    style?: Record<string, unknown> | null
+    prefilter?: Record<string, unknown> | string | null
+    geometry?: Record<string, unknown> | null
+    style?: Record<string, unknown> | string | null
 }
 
 export interface PortalModel {
@@ -15,7 +16,22 @@ export interface PortalModel {
     description: string | null
     spatialFilterMode: string | null
     prefilter: Record<string, unknown> | null
+    geometry: Record<string, unknown> | null
     style: Record<string, unknown> | null
+}
+
+function parseJsonObject(value: Record<string, unknown> | string | null | undefined): Record<string, unknown> | null {
+    if (!value) return null
+    if (typeof value === 'object') return value
+
+    try {
+        const parsed = JSON.parse(value)
+        return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+            ? parsed
+            : null
+    } catch {
+        return null
+    }
 }
 
 export function mapPortal(dto: PortalDTO): PortalModel {
@@ -25,8 +41,9 @@ export function mapPortal(dto: PortalDTO): PortalModel {
         name: dto.name ?? '',
         description: dto.description ?? null,
         spatialFilterMode: dto.spatial_filter_mode ?? null,
-        prefilter: dto.prefilter ?? null,
-        style: dto.style ?? null,
+        prefilter: parseJsonObject(dto.prefilter),
+        geometry: dto.geometry ?? null,
+        style: parseJsonObject(dto.style),
     }
 }
 
@@ -38,6 +55,7 @@ export function createEmptyPortal(): PortalModel {
         description: null,
         spatialFilterMode: null,
         prefilter: null,
+        geometry: null,
         style: null,
     }
 }
