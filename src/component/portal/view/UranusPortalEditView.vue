@@ -58,6 +58,9 @@ import { useI18n } from 'vue-i18n'
 import { onBeforeRouteLeave, useRoute, useRouter, type RouteLocationNormalized } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import UranusAdminPortalBaseTab from '@/component/portal/editor/UranusAdminPortalBaseTab.vue'
+import UranusAdminPortalPrefilterTab from '@/component/portal/editor/UranusAdminPortalPrefilterTab.vue'
+import UranusAdminPortalStyleTab from '@/component/portal/editor/UranusAdminPortalStyleTab.vue'
+import UranusAdminPortalGeometryTab from '@/component/portal/editor/UranusAdminPortalGeometryTab.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import { useUranusPortalStore } from '@/store/portalStore.ts'
@@ -69,19 +72,37 @@ const router = useRouter()
 const portalStore = useUranusPortalStore()
 const portalUuid = computed(() => route.params.portalUuid as string)
 
-type TabKey = 'base'
+type TabKey = 'base' | 'prefilter' | 'style' | 'geometry'
 const activeTab = ref<TabKey>('base')
-const tabs = [{ key: 'base', label: 'Base' }] as const
+const tabs = [
+  { key: 'base', label: 'Base' },
+  { key: 'prefilter', label: 'Filter' },
+  { key: 'style', label: 'Style' },
+  { key: 'geometry', label: 'Geometry' },
+] as const
 const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
 const showUnsavedChangesModal = ref(false)
 const pendingRoute = ref<RouteLocationNormalized | null>(null)
 const allowRouteLeave = ref(false)
 
 const hasDirtyTabs = computed(() => Object.values(tabDirtyState.value).some(Boolean))
-const currentTabComponent = computed(() => UranusAdminPortalBaseTab)
+const currentTabComponent = computed(() => {
+  switch (activeTab.value) {
+    case 'base': return UranusAdminPortalBaseTab
+    case 'prefilter': return UranusAdminPortalPrefilterTab
+    case 'style': return UranusAdminPortalStyleTab
+    case 'geometry': return UranusAdminPortalGeometryTab
+    default: return UranusAdminPortalBaseTab
+  }
+})
 
 function createCleanDirtyState(): Record<TabKey, boolean> {
-  return { base: false }
+  return {
+    base: false,
+    prefilter: false,
+    style: false,
+    geometry: false,
+  }
 }
 
 function isTabDirty(tabKey: TabKey) {
