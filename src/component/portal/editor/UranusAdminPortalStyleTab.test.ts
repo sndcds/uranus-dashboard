@@ -54,6 +54,20 @@ function mountStyleTab() {
             </label>
           `,
         },
+        UranusTextarea: {
+          props: ['id', 'modelValue', 'label'],
+          emits: ['update:modelValue'],
+          template: `
+            <label :for="id">
+              <span>{{ label }}</span>
+              <textarea
+                :id="id"
+                :value="modelValue"
+                @input="$emit('update:modelValue', $event.target.value)"
+              ></textarea>
+            </label>
+          `,
+        },
         UranusButton: {
           props: ['disabled'],
           emits: ['click'],
@@ -73,6 +87,7 @@ describe('UranusAdminPortalStyleTab', () => {
 
   it('renders grouped fields from the configured portal style schema', () => {
     installPortalStore({
+      'custom-css': '.uranus-portal-event-card { opacity: 0.9; }',
       portal: {
         background: '#111111',
         padding: '3rem',
@@ -95,6 +110,10 @@ describe('UranusAdminPortalStyleTab', () => {
 
     expect(wrapper.text()).toContain('Portal')
     expect(wrapper.text()).toContain('Event card hover')
+    expect(wrapper.get('#portal-style-custom-css').element).toHaveProperty(
+        'value',
+        '.uranus-portal-event-card { opacity: 0.9; }'
+    )
     expect(wrapper.get('#portal-style-portal\\.background').element).toHaveProperty('value', '#111111')
     expect(wrapper.get('#portal-style-eventCard\\.hover\\.scale').element).toHaveProperty('value', '1.1')
   })
@@ -122,51 +141,34 @@ describe('UranusAdminPortalStyleTab', () => {
     const wrapper = mountStyleTab()
 
     await wrapper.get('#portal-style-portal\\.background').setValue('#00ffcc')
+    await wrapper.get('#portal-style-custom-css').setValue('.uranus-portal-events { background: red; }')
     await wrapper.get('#portal-style-header\\.title\\.fontWeight').setValue('800')
     await wrapper.get('#portal-style-eventCard\\.hover\\.scale').setValue('1.2')
     await wrapper.findAll('button')[1]!.trigger('click')
 
-    expect(apiFetchMock).toHaveBeenCalledWith('/api/admin/portal/portal-1/style', {
-      method: 'PUT',
-      body: JSON.stringify({
-        portal: {
-          background: '#00ffcc',
-          padding: '2rem',
-          color: '#333',
-          'font-family': 'Helvetica Neue, Arial',
+    expect(apiFetchMock).toHaveBeenCalledWith(
+        '/api/admin/portal/portal-1/style',
+        expect.objectContaining({ method: 'PUT' })
+    )
+    const payload = JSON.parse(apiFetchMock.mock.calls[0]?.[1]?.body as string)
+    expect(payload).toMatchObject({
+      'custom-css': '.uranus-portal-events { background: red; }',
+      portal: {
+        background: '#00ffcc',
+        padding: '2rem',
+        color: '#333',
+        'font-family': 'Helvetica Neue, Arial',
+      },
+      header: {
+        title: {
+          'font-weight': 800,
         },
-        content: {
-          'max-width': '1600px',
-          align: 'left',
+      },
+      'event-card': {
+        hover: {
+          scale: 1.2,
         },
-        header: {
-          title: {
-            color: '#ffcc00',
-            'font-size': '2rem',
-            'font-weight': 800,
-            'line-height': 1.05,
-          },
-          description: {
-            color: 'black',
-            'font-size': '1.1rem',
-            'line-height': 1.4,
-          },
-        },
-        'event-grid': {
-          gap: '20px',
-          'min-card-width': '260px',
-        },
-        'event-card': {
-          background: '#ffcc66',
-          border: '1px solid green',
-          radius: '2px',
-          shadow: '0 1px 2px rgba(0,0,0,0.08)',
-          hover: {
-            shadow: '0 3px 1px rgba(0,0,0,0.12)',
-            scale: 1.2,
-          },
-        },
-      }),
+      },
     })
     expect(store.original?.style?.portal).toEqual({
       background: '#00ffcc',

@@ -3,6 +3,18 @@
 -->
 
 <template>
+  <component
+      :is="'style'"
+      v-if="portalCustomCss"
+      type="text/css"
+      v-text="portalCustomCss"
+  ></component>
+  <component
+      :is="'style'"
+      v-if="portalStyleOverrideCss"
+      type="text/css"
+      v-text="portalStyleOverrideCss"
+  ></component>
   <div class="uranus-portal-events" :style="portalCssVars">
     <header class="uranus-portal-events__header">
       <div>
@@ -118,6 +130,7 @@ import type { EventListItem, EventListItemEventType } from '@/domain/event/event
 type PortalStyleSection = Record<string, string | number | null | undefined>
 
 interface PortalStyle {
+  'custom-css'?: string
   portal?: PortalStyleSection
   content?: PortalStyleSection
   header?: {
@@ -172,6 +185,10 @@ const showInitialLoading = computed(() => eventListStore.loading && !eventListSt
 const portal = ref<PortalDTO | null>(null)
 const portalLoading = ref(false)
 const portalError = ref<string | null>(null)
+const portalCustomCss = computed(() => {
+  const css = normalizePortalStyle(portal.value?.style)?.['custom-css']
+  return typeof css === 'string' && css.trim() ? css : ''
+})
 const portalCssVars = computed(() => {
   const style = normalizePortalStyle(portal.value?.style)
   const eventGrid = style?.['event-grid'] ?? style?.grid
@@ -239,6 +256,125 @@ const portalCssVars = computed(() => {
 
   return vars
 })
+const portalStyleOverrideCss = computed(() => {
+  const style = normalizePortalStyle(portal.value?.style)
+  if (!style) return ''
+
+  const eventGrid = style['event-grid'] ?? style.grid
+  const eventCard = style['event-card'] ?? style.card
+  const eventCardHover = getStyleSection(eventCard?.hover)
+  const eventCardImage = style['event-card-image']
+  const eventCardImageHover = getStyleSection(eventCardImage?.hover)
+  const eventCardInfo = style['event-card-info']
+  const contentAlign = style.content?.align
+  const eventCardHoverScale = eventCardHover?.scale
+  const eventCardImageHoverScale = eventCardImageHover?.scale
+  const rules: string[] = []
+
+  appendCssRule(rules, '.uranus-portal-events', {
+    padding: style.portal?.padding,
+    background: style.portal?.background,
+    color: style.portal?.color,
+    'font-family': style.portal?.['font-family'],
+  })
+  appendCssRule(rules, '.uranus-portal-events__header', {
+    'max-width': style.content?.['max-width'],
+    'align-self': hasStyleValue(contentAlign) ? mapContentAlign(contentAlign) : undefined,
+    'text-align': contentAlign,
+  })
+  appendCssRule(
+      rules,
+      '.uranus-portal-events__type-scroller, .uranus-portal-events__grid, .uranus-portal-events__state, .uranus-portal-events__load-more-trigger',
+      {
+        'max-width': style.content?.['max-width'],
+        'align-self': hasStyleValue(contentAlign) ? mapContentAlign(contentAlign) : undefined,
+      }
+  )
+  appendCssRule(rules, '.uranus-portal-events__header h1', {
+    color: style.header?.title?.color,
+    'font-size': style.header?.title?.['font-size'],
+    'font-weight': style.header?.title?.['font-weight'],
+    'line-height': style.header?.title?.['line-height'],
+  })
+  appendCssRule(rules, '.uranus-portal-events__header p', {
+    color: style.header?.description?.color,
+    'font-size': style.header?.description?.['font-size'],
+    'line-height': style.header?.description?.['line-height'],
+  })
+  appendCssRule(rules, '.uranus-portal-events__grid', {
+    gap: eventGrid?.gap,
+    'grid-template-columns': eventGrid?.['min-card-width']
+        ? `repeat(auto-fill, minmax(${eventGrid['min-card-width']}, 1fr))`
+        : undefined,
+  })
+  appendCssRule(rules, '.uranus-portal-event-card', {
+    background: eventCard?.background,
+    padding: eventCard?.padding,
+    gap: eventCard?.gap,
+    border: eventCard?.border,
+    'border-radius': eventCard?.radius ?? eventCard?.['border-radius'],
+    'box-shadow': eventCard?.shadow,
+    transition: eventCard?.transition
+        ? [
+          `transform ${eventCard.transition}`,
+          `border ${eventCard.transition}`,
+          `background ${eventCard.transition}`,
+          `box-shadow ${eventCard.transition}`,
+        ].join(', ')
+        : undefined,
+  })
+  appendCssRule(rules, '.uranus-portal-event-card:hover', {
+    transform: hasStyleValue(eventCardHoverScale) ? `translateY(-2px) scale(${eventCardHoverScale})` : undefined,
+    border: eventCardHover?.border,
+    background: eventCardHover?.background,
+    'box-shadow': eventCardHover?.shadow,
+  })
+  appendCssRule(rules, '.uranus-portal-event-card__image-frame', {
+    background: eventCardImage?.background,
+    'aspect-ratio': eventCardImage?.['aspect-ratio'],
+    'border-radius': eventCardImage?.['border-radius'],
+  })
+  appendCssRule(rules, '.uranus-portal-event-card__image', {
+    filter: eventCardImage?.filter,
+    'object-fit': eventCardImage?.['object-fit'],
+    transition: eventCardImage?.transition
+        ? [
+          `filter ${eventCardImage.transition}`,
+          `transform ${eventCardImage.transition}`,
+        ].join(', ')
+        : undefined,
+  })
+  appendCssRule(rules, '.uranus-portal-event-card:hover .uranus-portal-event-card__image', {
+    filter: eventCardImageHover?.filter,
+    transform: hasStyleValue(eventCardImageHoverScale) ? `scale(${eventCardImageHoverScale})` : undefined,
+  })
+  appendCssRule(rules, '.uranus-portal-event-card__body', {
+    padding: eventCardInfo?.padding,
+    background: eventCardInfo?.background,
+    border: eventCardInfo?.border,
+    'border-radius': eventCardInfo?.['border-radius'],
+    color: eventCardInfo?.color,
+  })
+  appendCssRule(rules, '.uranus-portal-event-card__meta', {
+    color: eventCardInfo?.color,
+    'font-family': eventCardInfo?.['meta-font-family'],
+    'font-size': eventCardInfo?.['meta-font-size'],
+    'font-weight': eventCardInfo?.['meta-font-weight'],
+    'line-height': eventCardInfo?.['meta-line-height'],
+    gap: eventCardInfo?.['meta-gap'],
+  })
+  appendCssRule(rules, '.uranus-portal-event-card h2', {
+    color: eventCardInfo?.color,
+    'font-family': eventCardInfo?.['title-font-family'],
+    'font-size': eventCardInfo?.['title-font-size'],
+    'font-weight': eventCardInfo?.['title-font-weight'],
+  })
+  appendCssRule(rules, '.uranus-portal-event-card__subtitle', {
+    color: eventCardInfo?.color,
+  })
+
+  return rules.join('\n')
+})
 
 const initialized = ref(false)
 const isReloading = ref(false)
@@ -272,6 +408,27 @@ function setStyleVar(vars: Record<string, string>, name: string, value: string |
     vars[name] = value.trim()
   } else if (typeof value === 'number') {
     vars[name] = value.toString()
+  }
+}
+
+function hasStyleValue(value: string | number | null | undefined) {
+  return typeof value === 'number' || (typeof value === 'string' && value.trim().length > 0)
+}
+
+function appendCssRule(
+    rules: string[],
+    selector: string,
+    declarations: Record<string, string | number | null | undefined>
+) {
+  const body = Object.entries(declarations)
+      .flatMap(([property, value]) => {
+        if (typeof value === 'string' && value.trim()) return [`  ${property}: ${value.trim()} !important;`]
+        if (typeof value === 'number') return [`  ${property}: ${value} !important;`]
+        return []
+      })
+
+  if (body.length) {
+    rules.push(`${selector} {\n${body.join('\n')}\n}`)
   }
 }
 
@@ -450,7 +607,7 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .uranus-portal-events {
   --portal-event-bg: var(--uranus-bg);
   --portal-event-text: var(--uranus-color);

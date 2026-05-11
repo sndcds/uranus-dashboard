@@ -25,6 +25,18 @@
       </UranusFormRow>
     </section>
 
+    <section class="portal-style-group">
+      <h2>Custom CSS</h2>
+      <UranusTextarea
+          id="portal-style-custom-css"
+          v-model="form.customCss"
+          label="CSS"
+          height="260px"
+          resize="vertical"
+          spellcheck="false"
+      />
+    </section>
+
     <UranusFormActions>
       <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
         {{ t('discard') }}
@@ -45,6 +57,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
+import UranusTextarea from '@/component/ui/UranusTextarea.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 
 type StyleFieldPath =
@@ -103,6 +116,7 @@ type StyleField = {
 }
 
 type PortalStyleForm = {
+  customCss: string
   portal: {
     background: string
     padding: string
@@ -175,6 +189,7 @@ type PortalStyleForm = {
 }
 
 type PortalStylePayload = {
+  'custom-css': string
   portal: {
     background: string
     padding: string
@@ -402,6 +417,7 @@ const styleGroups: Array<{ key: string, label: string, rows: StyleField[][] }> =
 ]
 
 const defaultStyleForm: PortalStyleForm = {
+  customCss: '',
   portal: {
     background: '#ffcc00',
     padding: '2rem',
@@ -522,6 +538,7 @@ function createStyleForm(style: Record<string, unknown> | null): PortalStyleForm
   const eventCardInfo = readRecord(style, 'event-card-info')
 
   return {
+    customCss: readString(style, 'custom-css', defaults.customCss),
     portal: {
       background: readString(portal, 'background', defaults.portal.background),
       padding: readString(portal, 'padding', defaults.portal.padding),
@@ -596,6 +613,7 @@ function createStyleForm(style: Record<string, unknown> | null): PortalStyleForm
 
 function buildStylePayload(value: PortalStyleForm): PortalStylePayload {
   return {
+    'custom-css': value.customCss,
     portal: {
       background: value.portal.background,
       padding: value.portal.padding,
