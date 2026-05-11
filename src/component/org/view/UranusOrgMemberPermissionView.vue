@@ -29,17 +29,17 @@
     <div v-else class="member-permission__groups">
       <div v-for="group in sortedPermissionGroups" :key="group.type" class="member-permission__group">
         <UranusCard class="member-permission__card">
-          <h3>{{ group.label }}</h3>
-          <div v-for="entry in group.entries" :key="entry.label" class="member-permission__group">
-            <UranusCheckbox
-                :id="`perm-${group.type}-${entry.bit}`"
-                :label="entry.label + ' / ' + entry.bit"
-                :model-value="isBitEnabled(entry.bit)"
-                :value="entry.bit.toString()"
-                :disabled="isUpdatingBit === entry.bit || !canModifyPermissions"
-                @update:modelValue="(val: any) => onBitChange(entry.bit, val)"
-            />
-          </div>
+          <h2>{{ group.label }}</h2>
+          <UranusCheckbox
+              v-for="entry in group.entries" :key="entry.label"
+              :id="`perm-${group.type}-${entry.bit}`"
+              :label="entry.label"
+              :model-value="isBitEnabled(entry.bit)"
+              :value="entry.bit.toString()"
+              :disabled="isUpdatingBit === entry.bit || !canModifyPermissions"
+              @update:modelValue="(val: any) => onBitChange(entry.bit, val)"
+              class="member-permission__checkbox"
+          />
         </UranusCard>
       </div>
     </div>
@@ -87,10 +87,11 @@ const pageSubtitle = computed(() => uranusReplaceInTemplate(t('user_permissions_
 }))
 
 const entityTypeLabels = computed<Record<string, string>>(() => ({
-  org: t('user_permissions_type_org'),
+  organization: t('user_permissions_type_org'),
   venue: t('user_permissions_type_venue'),
   space: t('user_permissions_type_space'),
   event: t('user_permissions_type_event'),
+  portal: t('user_permissions_type_portal'),
 }))
 
 const isLoading = ref(true)
@@ -105,10 +106,11 @@ const updateError = ref<string | null>(null)
 const canModifyPermissions = computed(() => memberUuid.value != null && orgUuid.value != null)
 
 const groupOrder: Record<string, number> = {
-  org: 0,
+  organization: 0,
   venue: 1,
   space: 2,
   event: 3,
+  portal: 4
 }
 
 const sortedPermissionGroups = computed(() => {
@@ -345,87 +347,14 @@ const onBitChange = (bit: number, value: boolean | string[]) => {
 .member-permission__groups {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-}
-
-.member-permission__group-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.member-permission__group-header h2 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.member-permission__group-count {
-  margin: 0;
-  color: var(--uranus-muted-text);
-  font-size: 0.9rem;
+  gap: 1rem;
 }
 
 .member-permission__card {
   padding: 1rem;
 }
 
-.member-permission__bits {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.member-permission__bit {
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border-soft);
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
-}
-
-.member-permission__bit:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
-}
-
-.member-permission__bit-checkbox {
-  display: flex;
-  align-items: center;
-  margin-top: 0.2rem;
-}
-
-.member-permission__bit-checkbox input {
-  width: 1.1rem;
-  height: 1.1rem;
-}
-
-.member-permission__bit-content {
-  flex: 1;
-}
-
-.member-permission__bit-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 0.75rem;
-}
-
-.member-permission__bit-label {
-  font-weight: 600;
-}
-
-.member-permission__bit-code {
-  font-size: 0.85rem;
-  color: var(--uranus-muted-text);
-}
-
-.member-permission__bit-description {
-  margin: 0.35rem 0 0;
-  color: var(--uranus-muted-text);
-  font-size: 0.95rem;
+.member-permission__checkbox {
+  padding: 0.1rem 1rem;
 }
 </style>

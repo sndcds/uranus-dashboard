@@ -12,7 +12,7 @@
 
     <UranusCard>
       <UranusForm>
-        <h2>{{  t('search_partner_organization') }}</h2>
+        <h2>{{ t('search_partner_organization') }}</h2>
         <p>Gebe hier den Anfang des Namens an oder das Zeichen * und einen Teil des Namens den du suchst.</p>
         <UranusOrgTypeahead ref="orgTypeahead" v-model:selectedOrg="chosenOrg" />
       </UranusForm>
