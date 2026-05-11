@@ -14,39 +14,56 @@
       </UranusButton>
     </div>
 
-    <div class="team-members-grid">
+    <div class="team-grid">
       <UranusCard v-for="member in members" :key="member.user_uuid" class="team-member-card">
+        <div class="team-member-avatar">
+          <img
+              v-if="member.avatar_url"
+              :src="member.avatar_url"
+              :alt="member.display_name || member.email"
+          />
+        </div>
 
-          <div class="team-member-avatar">
-            <img
-                v-if="member.avatar_url"
-                :src="member.avatar_url"
-                :alt="member.display_name || member.email"
+        <div class="team-member-content">
+          <h2>{{ member.display_name || member.email }}</h2>
+          <p>{{ member.email }}</p>
+          <div>
+            <UranusIconAction
+                :icon="Edit" :title="t('edit')"
+                :to="`/admin/org/${orgUuid}/member/${member.user_uuid}/permissions`"
+            />
+
+            <UranusIconAction
+                :icon="Trash2"
+                :title="t('delete')"
+                :onClick="() => onRemoveMember"
             />
           </div>
+        </div>
+      </UranusCard>
 
-          <div class="team-member-content">
-            <h2>{{ member.display_name || member.email }}</h2>
-            <p v-if="member.username">{{ member.username }}</p>
-            <p>{{ member.email }}</p>
-            <div>
-              <UranusIconAction
-                  :icon="Edit" :title="t('edit')"
-                  :to="`/admin/org/${orgUuid}/member/${member.user_uuid}/permissions`"
-              />
+      <template v-if="invitations.length > 0" class="team-members-grid">
 
-              <UranusIconAction
-                  :icon="Trash2"
-                  :title="t('delete')"
-                  :onClick="() => onRemoveMember"
-              />
-            </div>
+        <h2>{{ t('org_team_user_invitations') }}</h2>
+        <UranusCard v-for="invitation in invitations" :key="invitation.user_uuid" class="team-member-card">
+          <div class="team-member-avatar">
+            <img
+                v-if="invitation.avatar_url"
+                :src="invitation.avatar_url"
+                :alt="invitation.display_name || invitation.email"
+            />
           </div>
-
-
+          <div class="team-member-content">
+            <h2>{{ invitation.display_name }}</h2>
+            <p>{{ invitation.email }}</p>
+            <p>{{ t('org_team_invited_on_date') }} {{ new Date(invitation.invited_at).toLocaleDateString() }}</p>
+          </div>
         </UranusCard>
-      </div>
+
+      </template>
+    </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -68,6 +85,7 @@ const orgUuid = computed(() => route.params.orgUuid as string)
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 const members = ref<any[]>([])
+const invitations = ref<any[]>([])
 
 const loadTeam = async () => {
   if (!orgUuid.value) {
@@ -86,6 +104,11 @@ const loadTeam = async () => {
     members.value = Array.isArray(apiResponse.data?.members)
         ? apiResponse.data.members
         : []
+
+    invitations.value = Array.isArray(apiResponse.data?.invitations)
+        ? apiResponse.data.invitations
+        : []
+
   } catch (err) {
     error.value =
         err instanceof Error ? err.message : t('org_team_load_error')
@@ -102,12 +125,10 @@ onMounted(loadTeam)
 </script>
 
 <style scoped lang="scss">
-.team-members-grid {
+.team-grid {
   display: flex;
   flex-direction: column;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 500px));
-  grid-auto-rows: auto;
-  gap: var(--uranus-grid-gap);
+  gap: 1rem;
   max-width: var(--uranus-dashboard-content-width);
 }
 

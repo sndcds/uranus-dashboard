@@ -49,7 +49,7 @@ export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLoc
         de: 'Standort',
         en: 'Location',
         da: 'Placering',
-    }
+    },
 }
 
 export default uranusI18nCalendarViewTranslations

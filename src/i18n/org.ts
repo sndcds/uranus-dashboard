@@ -104,6 +104,16 @@ export const uranusI18nOrgTranslations: Record<string, Record<UranusLocaleKey, s
         de: 'Du bist dabei, "{name}" zu löschen. Gib dein Passwort ein, um fortzufahren.',
         en: 'You are about to delete "{name}". Enter your password to continue.',
         da: 'Du er ved at slette "{name}". Indtast din adgangskode for at fortsætte.',
+    },
+    org_team_user_invitations: {
+        de: "Eingeladene Team-Mitglieder",
+        en: "Invited team members",
+        da: "Inviterede teammedlemmer",
+    },
+    org_team_invited_on_date: {
+        de: "Eingeladen am",
+        en: "Invited on",
+        da: "Inviteret den",
     }
 }
 

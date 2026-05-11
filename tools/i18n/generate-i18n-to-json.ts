@@ -20,6 +20,7 @@ import { uranusI18nPartnerTranslations } from '../../src/i18n/partner.ts'
 import { uranusI18nVenueTranslations } from '../../src/i18n/venue.ts'
 import { uranusI18nSpaceTranslations } from '../../src/i18n/space.ts'
 import { uranusI18nEventTranslations } from '../../src/i18n/event.ts'
+import { uranusI18nPortalTranslations } from '../../src/i18n/portal.ts'
 import { uranusI18nAccessibilityTranslations } from '../../src/i18n/accessibility.ts'
 import { uranusI18nVisitorInfoTranslations } from '../../src/i18n/visitor-info.ts'
 import { uranusI18nCalendarViewTranslations } from '../../src/i18n/calendar-view.ts'
@@ -45,6 +46,7 @@ locales.forEach((locale) => {
         ...Object.fromEntries(Object.entries(uranusI18nVenueTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nSpaceTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nEventTranslations).map(([k, v]) => [k, v[locale]])),
+        ...Object.fromEntries(Object.entries(uranusI18nPortalTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nAccessibilityTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nVisitorInfoTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nCalendarViewTranslations).map(([k, v]) => [k, v[locale]]))
