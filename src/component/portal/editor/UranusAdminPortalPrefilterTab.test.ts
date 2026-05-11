@@ -12,7 +12,7 @@ vi.mock('@/api.ts', () => ({
 
 const apiFetchMock = vi.mocked(apiFetch)
 
-function installPortalStore(filter: Record<string, unknown> | null = null) {
+function installPortalStore(prefilter: Record<string, unknown> | null = null) {
   const store = useUranusPortalStore()
   store.original = {
     uuid: 'portal-1',
@@ -20,8 +20,7 @@ function installPortalStore(filter: Record<string, unknown> | null = null) {
     name: 'Portal',
     description: null,
     spatialFilterMode: 'polygon',
-    prefilter: null,
-    filter,
+    prefilter,
     geometry: null,
     style: null,
   }
@@ -73,7 +72,7 @@ describe('UranusAdminPortalPrefilterTab', () => {
     apiFetchMock.mockResolvedValue({ data: null } as any)
   })
 
-  it('renders configured filter values', () => {
+  it('renders configured prefilter values from the loaded portal', () => {
     installPortalStore({
       categories: '1,3,6',
       city: 'Berlin',
@@ -82,6 +81,7 @@ describe('UranusAdminPortalPrefilterTab', () => {
 
     const wrapper = mountFilterTab()
 
+    expect(apiFetchMock).not.toHaveBeenCalled()
     expect(wrapper.text()).toContain('Taxonomy')
     expect(wrapper.get('#portal-filter-categories').element).toHaveProperty('value', '1,3,6')
     expect(wrapper.get('#portal-filter-city').element).toHaveProperty('value', 'Berlin')
@@ -106,7 +106,7 @@ describe('UranusAdminPortalPrefilterTab', () => {
       city: 'Berlin',
       radius: 10,
     })
-    expect(store.original?.filter).toEqual({
+    expect(store.original?.prefilter).toEqual({
       categories: '1,3',
       city: 'Berlin',
       radius: 10,

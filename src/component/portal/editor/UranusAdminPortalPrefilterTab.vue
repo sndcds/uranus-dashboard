@@ -182,8 +182,8 @@ const defaultFilterForm: PortalFilterForm = {
   language: '',
 }
 
-const form = reactive<PortalFilterForm>(createFilterForm(store.draft?.filter ?? null))
-const originalForm = computed(() => createFilterForm(store.original?.filter ?? null))
+const form = reactive<PortalFilterForm>(createFilterForm(store.draft?.prefilter ?? null))
+const originalForm = computed(() => createFilterForm(store.original?.prefilter ?? null))
 const isDirty = computed(() => stableSerialize(buildFilterPayload(form)) !== stableSerialize(buildFilterPayload(originalForm.value)))
 
 watch(isDirty, value => emit('dirty-change', value), { immediate: true })
@@ -281,8 +281,8 @@ async function commitTab() {
       body: JSON.stringify(filter),
     })
 
-    draft.filter = JSON.parse(JSON.stringify(filter))
-    original.filter = JSON.parse(JSON.stringify(filter))
+    draft.prefilter = JSON.parse(JSON.stringify(filter))
+    original.prefilter = JSON.parse(JSON.stringify(filter))
   } catch (err) {
     store.error = t('failed_to_save_portal')
     console.error(err)
@@ -294,8 +294,8 @@ async function commitTab() {
 function resetTab() {
   Object.assign(form, cloneForm(originalForm.value))
   if (store.draft && store.original) {
-    store.draft.filter = store.original.filter
-        ? JSON.parse(JSON.stringify(store.original.filter))
+    store.draft.prefilter = store.original.prefilter
+        ? JSON.parse(JSON.stringify(store.original.prefilter))
         : null
   }
 }

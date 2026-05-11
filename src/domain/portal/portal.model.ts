@@ -4,8 +4,8 @@ export interface PortalDTO {
     description?: string | null
     org_uuid: string
     spatial_filter_mode?: string | null
+    pre_filter?: Record<string, unknown> | string | null
     prefilter?: Record<string, unknown> | string | null
-    filter?: Record<string, unknown> | string | null
     geometry?: Record<string, unknown> | null
     style?: Record<string, unknown> | string | null
 }
@@ -17,7 +17,6 @@ export interface PortalModel {
     description: string | null
     spatialFilterMode: string | null
     prefilter: Record<string, unknown> | null
-    filter: Record<string, unknown> | null
     geometry: Record<string, unknown> | null
     style: Record<string, unknown> | null
 }
@@ -43,8 +42,7 @@ export function mapPortal(dto: PortalDTO): PortalModel {
         name: dto.name ?? '',
         description: dto.description ?? null,
         spatialFilterMode: dto.spatial_filter_mode ?? null,
-        prefilter: parseJsonObject(dto.prefilter),
-        filter: parseJsonObject(dto.filter),
+        prefilter: parseJsonObject(dto.pre_filter ?? dto.prefilter),
         geometry: dto.geometry ?? null,
         style: parseJsonObject(dto.style),
     }
@@ -58,7 +56,6 @@ export function createEmptyPortal(): PortalModel {
         description: null,
         spatialFilterMode: null,
         prefilter: null,
-        filter: null,
         geometry: null,
         style: null,
     }
