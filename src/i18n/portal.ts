@@ -29,5 +29,10 @@ export const uranusI18nPortalTranslations: Record<string, Record<UranusLocaleKey
         de: "Portal hinzufügen",
         en: "Add portal",
         da: "Tilføj portal",
+    },
+    edit_portal: {
+        de: 'Portal bearbeiten',
+        en: 'Edit portal',
+        da: 'Rediger portal',
     }
 }

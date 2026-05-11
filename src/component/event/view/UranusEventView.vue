@@ -96,18 +96,15 @@
         <!-- URLs -->
         <div
             v-if="event.eventLinks && event.eventLinks.length > 0"
-            class="uranus-public-event-section"
-        >
-          <div class="uranus-public-event-detail-links">
-            <UranusLink
-                v-for="(link, index) in event.eventLinks"
-                :key="index"
-                :url="link.url!"
-                :type="link.type"
-                :label="link.label"
-                size="20px"
-            />
-          </div>
+            class="uranus-public-event-detail-links">
+          <UranusLink
+              v-for="(link, index) in event.eventLinks"
+              :key="index"
+              :url="link.url!"
+              :type="link.type"
+              :label="link.label"
+              size="20px"
+          />
         </div>
      </section>
 
@@ -162,7 +159,7 @@
               {{ priceTypeLabel }}<br>
             </template>
             <template v-if="priceText">
-              {{ priceText }}
+              {{ priceText }}<br>
             </template>
 
             <UranusIconAction

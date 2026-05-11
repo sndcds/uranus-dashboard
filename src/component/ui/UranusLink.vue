@@ -82,6 +82,11 @@ const icon = computed(() => {
   color: var(--uranus-color);
 }
 
+.uranus-link > *:first-child {
+  flex: 0 0 auto;
+  flex-shrink: 0;
+}
+
 .uranus-link-label {
   white-space: nowrap;
 }
