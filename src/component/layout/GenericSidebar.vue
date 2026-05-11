@@ -70,7 +70,7 @@
             class="generic-sidebar__nav-item"
             active-class="generic-sidebar__nav-item--active"
             @click="handleLinkClick">
-          <PanelTop class="generic-sidebar__nav-icon"/>
+          <Orbit class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_portals') }}</span>
         </router-link>
       </template>
@@ -135,7 +135,7 @@
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import { LayoutDashboard, ListChecks, Building, Handshake, MapPin, Calendar, PanelTop } from 'lucide-vue-next'
+import { LayoutDashboard, ListChecks, Building, Handshake, MapPin, Calendar, Orbit } from 'lucide-vue-next'
 
 interface Props {
   isOpen: boolean

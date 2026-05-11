@@ -77,8 +77,9 @@ async function onSubmit() {
       body: JSON.stringify(payload),
     })
 
+
     if (apiResponse.status >= 200 && apiResponse.status <= 300) {
-      router.push({ name: 'admin-team-organization' })
+      router.push({ name: 'admin-team-org' })
       return
     }
 
