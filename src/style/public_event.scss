@@ -110,6 +110,8 @@
 
 .uranus-public-event-main-layout {
   display: flex;
+  flex: 1;
+  min-width: 0;
   flex-direction: column;
   gap: 16px;
 }
@@ -272,12 +274,18 @@
   }
 }
 
-
-
 .uranus-public-event-detail-links {
+  padding-left: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.uranus-public-event-detail-links > * {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .uranus-public-event-detail-link svg path {

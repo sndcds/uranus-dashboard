@@ -77,7 +77,7 @@ const orgUuid = computed(() => appStore.orgUuid)
 const canAddEvent = computed(() => !!metadata.value.can_add_event);
 const events = adminListEvents;
 type EventListDisplayMode = 'all' | 'grouped'
-const displayMode = ref<EventListDisplayMode>('all')
+const displayMode = ref<EventListDisplayMode>('grouped')
 const displayModeOptions = computed(() => [
   { label: t('show_grouped'), value: 'grouped' },
   { label: t('show_single'), value: 'all' },
