@@ -21,6 +21,7 @@ function installPortalStore(style: Record<string, unknown> | null = null) {
     description: null,
     spatialFilterMode: 'polygon',
     prefilter: null,
+    filter: null,
     geometry: null,
     style,
   }
