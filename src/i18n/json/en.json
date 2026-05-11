@@ -222,7 +222,7 @@
   "user_profile_loading": "Loading profile…",
   "user_profile_validation_error": "Please provide a display name and email address.",
   "user_permissions_title": "Permissions",
-  "user_permissions_subtitle": "These roles and capabilities are assigned to your account.",
+  "user_permissions_subtitle": "Manage permissions for [name] in [organization].",
   "user_permissions_loading": "Loading permissions…",
   "user_permissions_add_event": "Create event",
   "user_permissions_edit_event": "Edit event",

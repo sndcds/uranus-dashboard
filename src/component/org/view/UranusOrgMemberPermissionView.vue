@@ -83,7 +83,7 @@ const memberUuid = computed(() => {
 
 const pageSubtitle = computed(() => uranusReplaceInTemplate(t('user_permissions_subtitle'), {
   name: memberDisplayName.value ?? t('user_unknown'),
-  org: orgName.value ?? t('org_unknown'),
+  organization: orgName.value ?? t('org_unknown'),
 }))
 
 const entityTypeLabels = computed<Record<string, string>>(() => ({

@@ -111,9 +111,9 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         da: 'Rettigheder',
     },
     user_permissions_subtitle: {
-        de: 'Benutzerrechte von name] für [organization] verwalten.',
-        en: 'These roles and capabilities are assigned to your account.',
-        da: 'Disse roller og tilladelser er knyttet til din konto.',
+        de: 'Benutzerrechte von [name] für [organization] verwalten.',
+        en: 'Manage permissions for [name] in [organization].',
+        da: 'Administrer rettigheder for [name] i [organization].',
     },
     user_permissions_loading: {
         de: 'Berechtigungen werden geladen…',

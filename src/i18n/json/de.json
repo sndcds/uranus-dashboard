@@ -222,7 +222,7 @@
   "user_profile_loading": "Profil wird geladen…",
   "user_profile_validation_error": "Bitte gib Anzeigenamen und E-Mail-Adresse an.",
   "user_permissions_title": "Berechtigungen.",
-  "user_permissions_subtitle": "Benutzerrechte von name] für [organization] verwalten.",
+  "user_permissions_subtitle": "Benutzerrechte von [name] für [organization] verwalten.",
   "user_permissions_loading": "Berechtigungen werden geladen…",
   "user_permissions_add_event": "Event anlegen",
   "user_permissions_edit_event": "Event bearbeiten",

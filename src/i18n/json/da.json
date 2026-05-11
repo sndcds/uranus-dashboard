@@ -222,7 +222,7 @@
   "user_profile_loading": "Indlæser profil…",
   "user_profile_validation_error": "Angiv venligst visningsnavn og e-mailadresse.",
   "user_permissions_title": "Rettigheder",
-  "user_permissions_subtitle": "Disse roller og tilladelser er knyttet til din konto.",
+  "user_permissions_subtitle": "Administrer rettigheder for [name] i [organization].",
   "user_permissions_loading": "Indlæser rettigheder…",
   "user_permissions_add_event": "Opret begivenhed",
   "user_permissions_edit_event": "Rediger begivenhed",

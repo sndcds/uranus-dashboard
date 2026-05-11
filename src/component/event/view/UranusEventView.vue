@@ -159,7 +159,7 @@
               {{ priceTypeLabel }}<br>
             </template>
             <template v-if="priceText">
-              {{ priceText }}
+              {{ priceText }}<br>
             </template>
 
             <UranusIconAction
