@@ -14,7 +14,7 @@ export interface AdminEventListItem {
     canDeleteEvent: boolean
     canReleaseEvent: boolean
     canViewEventInsights: boolean
-    inOnlineEvent: boolean
+    isOnlineEvent: boolean
     orgUuid: string
     orgName?: string | null
     venueUuid?: string | null
