@@ -162,7 +162,37 @@
             />
           </div>
 
+          <div
+              v-if="event.registrationLink || event.registrationEmail || event.registrationPhone"
+              class="uranus-public-event-info-card">
+            <!--p class="uranus-public-event-info-label">{{ t('online_event_registration') }}</p-->
 
+            <UranusIconAction
+                v-if="event.registrationLink"
+                :to="event.registrationLink"
+                :label="t('online_event_registration_link')"
+                :icon="Link"
+                style="padding-left: 0;"
+            />
+
+            <UranusIconAction
+                v-if="event.registrationEmail"
+                :to="'mailto:' + event.registrationEmail"
+                :label="t('online_event_registration_email')"
+                :icon="Mail"
+                style="padding-left: 0;"
+            />
+
+            <template v-if="event.registrationPhone">
+              <p class="uranus-public-event-info-label">{{ t('online_event_registration_phone') }}</p>
+              {{ event.registrationPhone }}<br>
+            </template>
+
+            <template v-if="event.registrationPhone">
+              <p class="uranus-public-event-info-label">{{ t('online_event_registration_deadline') }}</p>
+              {{ event.registrationDeadline }}<br>
+            </template>
+          </div>
 
           <!-- Venue, Space, Location -->
           <UranusEventVenueDisplay :event="event" :eventDate="eventDate" />
@@ -252,7 +282,7 @@ import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
-import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash, Video } from 'lucide-vue-next'
+import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash, Video, Link, Mail } from 'lucide-vue-next'
 
 const route = useRoute()
 

@@ -35,6 +35,10 @@ export interface PublicEvent {
     meetingPoint: string | null
     participationInfo: string | null
     onlineLink: string | null
+    registrationLink: string | null
+    registrationEmail: string | null
+    registrationPhone: string | null
+    registrationDeadline: string | null
 
     maxAttendees: number | null
     priceType: string | null
@@ -108,6 +112,10 @@ export function mapPublicEventFromDTO(dto: PublicEventDTO, dateUuid?: string): P
 
         meetingPoint: dto.meeting_point ?? null,
         onlineLink: dto.online_link ?? null,
+        registrationLink: dto.registration_link ?? null,
+        registrationEmail: dto.registration_email ?? null,
+        registrationPhone: dto.registration_phone ?? null,
+        registrationDeadline: dto.registration_deadline ?? null,
 
         maxAttendees: dto.max_attendees ?? null,
         priceType: dto.price_type ?? null,

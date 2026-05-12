@@ -47,9 +47,10 @@ const emit = defineEmits<{
   (e: 'click'): void
 }>()
 
-// --- helpers ---
+
 const isExternal = computed(() => {
-  return typeof props.to === 'string' && /^https?:\/\//.test(props.to)
+  if (typeof props.to !== 'string') return false
+  return /^(https?:\/\/|mailto:|tel:)/i.test(props.to)
 })
 
 const componentType = computed(() => {
@@ -74,7 +75,7 @@ const componentProps = computed(() => {
 })
 
 // --- UI logic ---
-const resolvedIconSize = computed(() => props.iconSize ?? 22)
+const resolvedIconSize = computed(() => props.iconSize ?? 20)
 const isClickable = computed(() => !!props.onClick || !!props.to)
 
 // --- events ---

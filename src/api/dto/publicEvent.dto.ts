@@ -67,6 +67,11 @@ export interface PublicEventDTO {
     tags: string[]
     event_links: EventLinkDTO[]
     online_link: string | null
+    registration_link: string | null
+    registration_email: string | null
+    registration_phone: string | null
+    registration_deadline: string | null
+
 
     max_attendees?: number
     min_age?: number
