@@ -13,7 +13,7 @@
           :class="{ active: tab.key === activeTab, dirty: isTabDirty(tab.key) }"
           @click="activeTab = tab.key"
       >
-        <span>{{ tab.label }}</span>
+        <span>{{ t(tab.labelKey) }}</span>
         <span
             v-if="isTabDirty(tab.key)"
             class="tab-dirty-indicator"
@@ -61,6 +61,7 @@ import UranusAdminPortalBaseTab from '@/component/portal/editor/UranusAdminPorta
 import UranusAdminPortalPrefilterTab from '@/component/portal/editor/UranusAdminPortalPrefilterTab.vue'
 import UranusAdminPortalStyleTab from '@/component/portal/editor/UranusAdminPortalStyleTab.vue'
 import UranusAdminPortalGeometryTab from '@/component/portal/editor/UranusAdminPortalGeometryTab.vue'
+import UranusAdminPortalImagesTab from "@/component/portal/editor/UranusAdminPortalImagesTab.vue";
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import { useUranusPortalStore } from '@/store/portalStore.ts'
@@ -72,13 +73,14 @@ const router = useRouter()
 const portalStore = useUranusPortalStore()
 const portalUuid = computed(() => route.params.portalUuid as string)
 
-type TabKey = 'base' | 'prefilter' | 'style' | 'geometry'
+type TabKey = 'base' | 'prefilter' | 'style' | 'geometry' | 'images'
 const activeTab = ref<TabKey>('base')
 const tabs = [
-  { key: 'base', label: 'Base' },
-  { key: 'prefilter', label: 'Filter' },
-  { key: 'style', label: 'Style' },
-  { key: 'geometry', label: 'Geometry' },
+  { key: 'base', labelKey: 'portal_tab_base' },
+  { key: 'prefilter', labelKey: 'portal_tab_filter' },
+  { key: 'style', labelKey: 'portal_tab_style' },
+  { key: 'geometry', labelKey: 'portal_tab_geometry' },
+  { key: 'images', labelKey: 'portal_tab_images' },
 ] as const
 const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
 const showUnsavedChangesModal = ref(false)
@@ -92,6 +94,7 @@ const currentTabComponent = computed(() => {
     case 'prefilter': return UranusAdminPortalPrefilterTab
     case 'style': return UranusAdminPortalStyleTab
     case 'geometry': return UranusAdminPortalGeometryTab
+    case 'images': return UranusAdminPortalImagesTab
     default: return UranusAdminPortalBaseTab
   }
 })
@@ -102,6 +105,7 @@ function createCleanDirtyState(): Record<TabKey, boolean> {
     prefilter: false,
     style: false,
     geometry: false,
+    images: false,
   }
 }
 

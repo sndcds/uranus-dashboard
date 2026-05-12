@@ -34,5 +34,30 @@ export const uranusI18nPortalTranslations: Record<string, Record<UranusLocaleKey
         de: 'Portal bearbeiten',
         en: 'Edit portal',
         da: 'Rediger portal',
-    }
+    },
+    portal_tab_base: {
+        de: 'Grundlagen',
+        en: 'Basics',
+        da: 'Grundlæggende',
+    },
+    portal_tab_filter: {
+        de: 'Filter',
+        en: 'Filter',
+        da: 'Filter',
+    },
+    portal_tab_style: {
+        de: 'Stil',
+        en: 'Style',
+        da: 'Stil',
+    },
+    portal_tab_geometry: {
+        de: 'Geometrie',
+        en: 'Geometry',
+        da: 'Geometri',
+    },
+    portal_tab_images: {
+        de: 'Bilder',
+        en: 'Images',
+        da: 'Billeder',
+    },
 }

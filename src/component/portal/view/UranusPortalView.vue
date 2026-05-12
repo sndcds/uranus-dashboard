@@ -3,20 +3,30 @@
 -->
 
 <template>
+
   <component
       :is="'style'"
       v-if="portalCustomCss"
       type="text/css"
       v-text="portalCustomCss"
   ></component>
-  <component
-      :is="'style'"
-      v-if="portalStyleOverrideCss"
-      type="text/css"
-      v-text="portalStyleOverrideCss"
-  ></component>
-  <div class="uranus-portal-events" :style="portalCssVars">
+  <div
+      class="uranus-portal-events"
+      :style="{
+        '--portal-background-image': backgroundUrl ? `url(${backgroundUrl})` : undefined
+      }"
+  >
     <header class="uranus-portal-events__header">
+
+      <UranusLogoImage
+          v-if="logoUrl"
+          :logoURL="logoUrl"
+          theme="light"
+          :pixelCount="24000"
+          :maxWidth="480"
+          :maxHeight="240"
+      />
+
       <div>
         <h1>{{ portal?.name ?? t('events') }}</h1>
         <p>{{ portal?.description ?? eventCountInfo }}</p>
@@ -126,6 +136,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
 import { uranusFormatDateTime, uranusPluralizedText } from '@/util/UranusStringUtils.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
+import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 
 type PortalStyleSection = Record<string, string | number | null | undefined>
 
@@ -161,6 +172,8 @@ interface PortalDTO {
   pre_filter?: Record<string, unknown> | string | null
   prefilter?: Record<string, unknown> | null
   style?: PortalStyle | string | null
+  web_logo_uuid?: string | null
+  background_image_uuid?: string | null
 }
 
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -171,6 +184,20 @@ const eventListStore = useEventListStore()
 const filterStore = useEventsFilterStore()
 const typeLookupStore = useEventTypeLookupStore()
 const route = useRoute()
+
+const logoUrl = computed(() => {
+  const uuid = portal.value?.web_logo_uuid
+  return uuid
+      ? `http://localhost:9090/api/image/${uuid}?width=3600&type=png&quality=80`
+      : null
+})
+
+const backgroundUrl = computed(() => {
+  const uuid = portal.value?.background_image_uuid
+  return uuid
+      ? `http://localhost:9090/api/image/${uuid}?width=3600&type=png&quality=80`
+      : null
+})
 
 const filterScope = 'portal'
 const portalUuid = computed(() => route.params.uuid?.toString() ?? null)
@@ -200,192 +227,6 @@ const portalCustomCss = computed(() => {
   const css = normalizePortalStyle(portal.value?.style)?.['custom-css']
   return typeof css === 'string' && css.trim() ? css : ''
 })
-const portalCssVars = computed(() => {
-  const style = normalizePortalStyle(portal.value?.style)
-  const eventGrid = style?.['event-grid'] ?? style?.grid
-  const eventCard = style?.['event-card'] ?? style?.card
-  const eventCardHover = getStyleSection(eventCard?.hover)
-  const eventCardImage = style?.['event-card-image']
-  const eventCardImageHover = getStyleSection(eventCardImage?.hover)
-  const eventCardInfo = style?.['event-card-info']
-  const vars: Record<string, string> = {}
-
-  setStyleVar(vars, '--portal-event-padding', style?.portal?.padding)
-  setStyleVar(vars, '--portal-event-bg', style?.portal?.background)
-  setStyleVar(vars, '--portal-event-text', style?.portal?.color)
-  setStyleVar(vars, '--portal-event-font-family', style?.portal?.['font-family'])
-
-  setStyleVar(vars, '--portal-content-max-width', style?.content?.['max-width'])
-  setStyleVar(vars, '--portal-content-text-align', style?.content?.align)
-  setStyleVar(vars, '--portal-content-align-self', mapContentAlign(style?.content?.align))
-
-  setStyleVar(vars, '--portal-header-title-color', style?.header?.title?.color)
-  setStyleVar(vars, '--portal-header-title-font-size', style?.header?.title?.['font-size'])
-  setStyleVar(vars, '--portal-header-title-font-weight', style?.header?.title?.['font-weight'])
-  setStyleVar(vars, '--portal-header-title-line-height', style?.header?.title?.['line-height'])
-  setStyleVar(vars, '--portal-header-description-color', style?.header?.description?.color)
-  setStyleVar(vars, '--portal-header-description-font-size', style?.header?.description?.['font-size'])
-  setStyleVar(vars, '--portal-header-description-line-height', style?.header?.description?.['line-height'])
-
-  setStyleVar(vars, '--portal-event-grid-gap', eventGrid?.gap)
-  setStyleVar(vars, '--portal-event-grid-min-card-width', eventGrid?.['min-card-width'])
-
-  setStyleVar(vars, '--portal-event-card-bg', eventCard?.background)
-  setStyleVar(vars, '--portal-event-card-padding', eventCard?.padding)
-  setStyleVar(vars, '--portal-event-card-gap', eventCard?.gap)
-  setStyleVar(vars, '--portal-event-card-radius', eventCard?.radius ?? eventCard?.['border-radius'])
-  setStyleVar(vars, '--portal-event-card-border', eventCard?.border)
-  setStyleVar(vars, '--portal-event-card-shadow', eventCard?.shadow)
-  setStyleVar(vars, '--portal-event-card-transition', eventCard?.transition)
-  setStyleVar(vars, '--portal-event-card-hover-bg', eventCardHover?.background)
-  setStyleVar(vars, '--portal-event-card-hover-border', eventCardHover?.border)
-  setStyleVar(vars, '--portal-event-card-hover-shadow', eventCardHover?.shadow)
-  setStyleVar(vars, '--portal-event-card-hover-scale', eventCardHover?.scale)
-
-  setStyleVar(vars, '--portal-event-card-image-bg', eventCardImage?.background)
-  setStyleVar(vars, '--portal-event-card-image-aspect-ratio', eventCardImage?.['aspect-ratio'])
-  setStyleVar(vars, '--portal-event-card-image-radius', eventCardImage?.['border-radius'])
-  setStyleVar(vars, '--portal-event-card-image-object-fit', eventCardImage?.['object-fit'])
-  setStyleVar(vars, '--portal-event-card-image-filter', eventCardImage?.filter)
-  setStyleVar(vars, '--portal-event-card-image-transition', eventCardImage?.transition)
-  setStyleVar(vars, '--portal-event-card-image-hover-filter', eventCardImageHover?.filter)
-  setStyleVar(vars, '--portal-event-card-image-hover-scale', eventCardImageHover?.scale)
-
-  setStyleVar(vars, '--portal-event-card-info-padding', eventCardInfo?.padding)
-  setStyleVar(vars, '--portal-event-card-info-bg', eventCardInfo?.background)
-  setStyleVar(vars, '--portal-event-card-info-border', eventCardInfo?.border)
-  setStyleVar(vars, '--portal-event-card-info-radius', eventCardInfo?.['border-radius'])
-  setStyleVar(vars, '--portal-event-card-info-color', eventCardInfo?.color)
-  setStyleVar(vars, '--portal-event-card-title-font-family', eventCardInfo?.['title-font-family'])
-  setStyleVar(vars, '--portal-event-card-title-font-size', eventCardInfo?.['title-font-size'])
-  setStyleVar(vars, '--portal-event-card-title-font-weight', eventCardInfo?.['title-font-weight'])
-  setStyleVar(vars, '--portal-event-card-meta-font-family', eventCardInfo?.['meta-font-family'])
-  setStyleVar(vars, '--portal-event-card-meta-font-size', eventCardInfo?.['meta-font-size'])
-  setStyleVar(vars, '--portal-event-card-meta-font-weight', eventCardInfo?.['meta-font-weight'])
-  setStyleVar(vars, '--portal-event-card-meta-line-height', eventCardInfo?.['meta-line-height'])
-  setStyleVar(vars, '--portal-event-card-meta-gap', eventCardInfo?.['meta-gap'])
-
-  return vars
-})
-const portalStyleOverrideCss = computed(() => {
-  const style = normalizePortalStyle(portal.value?.style)
-  if (!style) return ''
-
-  const eventGrid = style['event-grid'] ?? style.grid
-  const eventCard = style['event-card'] ?? style.card
-  const eventCardHover = getStyleSection(eventCard?.hover)
-  const eventCardImage = style['event-card-image']
-  const eventCardImageHover = getStyleSection(eventCardImage?.hover)
-  const eventCardInfo = style['event-card-info']
-  const contentAlign = style.content?.align
-  const eventCardHoverScale = eventCardHover?.scale
-  const eventCardImageHoverScale = eventCardImageHover?.scale
-  const rules: string[] = []
-
-  appendCssRule(rules, '.uranus-portal-events', {
-    padding: style.portal?.padding,
-    background: style.portal?.background,
-    color: style.portal?.color,
-    'font-family': style.portal?.['font-family'],
-  })
-  appendCssRule(rules, '.uranus-portal-events__header', {
-    'max-width': style.content?.['max-width'],
-    'align-self': hasStyleValue(contentAlign) ? mapContentAlign(contentAlign) : undefined,
-    'text-align': contentAlign,
-  })
-  appendCssRule(
-      rules,
-      '.uranus-portal-events__type-scroller, .uranus-portal-events__grid, .uranus-portal-events__state, .uranus-portal-events__load-more-trigger',
-      {
-        'max-width': style.content?.['max-width'],
-        'align-self': hasStyleValue(contentAlign) ? mapContentAlign(contentAlign) : undefined,
-      }
-  )
-  appendCssRule(rules, '.uranus-portal-events__header h1', {
-    color: style.header?.title?.color,
-    'font-size': style.header?.title?.['font-size'],
-    'font-weight': style.header?.title?.['font-weight'],
-    'line-height': style.header?.title?.['line-height'],
-  })
-  appendCssRule(rules, '.uranus-portal-events__header p', {
-    color: style.header?.description?.color,
-    'font-size': style.header?.description?.['font-size'],
-    'line-height': style.header?.description?.['line-height'],
-  })
-  appendCssRule(rules, '.uranus-portal-events__grid', {
-    gap: eventGrid?.gap,
-    'grid-template-columns': eventGrid?.['min-card-width']
-        ? `repeat(auto-fill, minmax(${eventGrid['min-card-width']}, 1fr))`
-        : undefined,
-  })
-  appendCssRule(rules, '.uranus-portal-event-card', {
-    background: eventCard?.background,
-    padding: eventCard?.padding,
-    gap: eventCard?.gap,
-    border: eventCard?.border,
-    'border-radius': eventCard?.radius ?? eventCard?.['border-radius'],
-    'box-shadow': eventCard?.shadow,
-    transition: eventCard?.transition
-        ? [
-          `transform ${eventCard.transition}`,
-          `border ${eventCard.transition}`,
-          `background ${eventCard.transition}`,
-          `box-shadow ${eventCard.transition}`,
-        ].join(', ')
-        : undefined,
-  })
-  appendCssRule(rules, '.uranus-portal-event-card:hover', {
-    transform: hasStyleValue(eventCardHoverScale) ? `translateY(-2px) scale(${eventCardHoverScale})` : undefined,
-    border: eventCardHover?.border,
-    background: eventCardHover?.background,
-    'box-shadow': eventCardHover?.shadow,
-  })
-  appendCssRule(rules, '.uranus-portal-event-card__image-frame', {
-    background: eventCardImage?.background,
-    'aspect-ratio': eventCardImage?.['aspect-ratio'],
-    'border-radius': eventCardImage?.['border-radius'],
-  })
-  appendCssRule(rules, '.uranus-portal-event-card__image', {
-    filter: eventCardImage?.filter,
-    'object-fit': eventCardImage?.['object-fit'],
-    transition: eventCardImage?.transition
-        ? [
-          `filter ${eventCardImage.transition}`,
-          `transform ${eventCardImage.transition}`,
-        ].join(', ')
-        : undefined,
-  })
-  appendCssRule(rules, '.uranus-portal-event-card:hover .uranus-portal-event-card__image', {
-    filter: eventCardImageHover?.filter,
-    transform: hasStyleValue(eventCardImageHoverScale) ? `scale(${eventCardImageHoverScale})` : undefined,
-  })
-  appendCssRule(rules, '.uranus-portal-event-card__body', {
-    padding: eventCardInfo?.padding,
-    background: eventCardInfo?.background,
-    border: eventCardInfo?.border,
-    'border-radius': eventCardInfo?.['border-radius'],
-    color: eventCardInfo?.color,
-  })
-  appendCssRule(rules, '.uranus-portal-event-card__meta', {
-    color: eventCardInfo?.color,
-    'font-family': eventCardInfo?.['meta-font-family'],
-    'font-size': eventCardInfo?.['meta-font-size'],
-    'font-weight': eventCardInfo?.['meta-font-weight'],
-    'line-height': eventCardInfo?.['meta-line-height'],
-    gap: eventCardInfo?.['meta-gap'],
-  })
-  appendCssRule(rules, '.uranus-portal-event-card h2', {
-    color: eventCardInfo?.color,
-    'font-family': eventCardInfo?.['title-font-family'],
-    'font-size': eventCardInfo?.['title-font-size'],
-    'font-weight': eventCardInfo?.['title-font-weight'],
-  })
-  appendCssRule(rules, '.uranus-portal-event-card__subtitle', {
-    color: eventCardInfo?.color,
-  })
-
-  return rules.join('\n')
-})
 
 const initialized = ref(false)
 const isReloading = ref(false)
@@ -412,35 +253,6 @@ function getUniqueEventTypes(event: EventListItem) {
   const set = new Set<number>()
   event.eventTypes?.forEach((type: EventListItemEventType) => set.add(type.typeId))
   return Array.from(set)
-}
-
-function setStyleVar(vars: Record<string, string>, name: string, value: string | number | null | undefined) {
-  if (typeof value === 'string' && value.trim()) {
-    vars[name] = value.trim()
-  } else if (typeof value === 'number') {
-    vars[name] = value.toString()
-  }
-}
-
-function hasStyleValue(value: string | number | null | undefined) {
-  return typeof value === 'number' || (typeof value === 'string' && value.trim().length > 0)
-}
-
-function appendCssRule(
-    rules: string[],
-    selector: string,
-    declarations: Record<string, string | number | null | undefined>
-) {
-  const body = Object.entries(declarations)
-      .flatMap(([property, value]) => {
-        if (typeof value === 'string' && value.trim()) return [`  ${property}: ${value.trim()} !important;`]
-        if (typeof value === 'number') return [`  ${property}: ${value} !important;`]
-        return []
-      })
-
-  if (body.length) {
-    rules.push(`${selector} {\n${body.join('\n')}\n}`)
-  }
 }
 
 function normalizePortalStyle(style: PortalStyle | string | null | undefined): PortalStyle | null {
@@ -482,19 +294,6 @@ function isPrefilterValue(value: unknown): value is string | number {
   )
 }
 
-function getStyleSection(value: unknown): PortalStyleSection | undefined {
-  return value && typeof value === 'object' && !Array.isArray(value)
-      ? value as PortalStyleSection
-      : undefined
-}
-
-function mapContentAlign(value: string | number | null | undefined) {
-  if (value === 'center') return 'center'
-  if (value === 'right') return 'flex-end'
-  if (value === 'stretch') return 'stretch'
-  return 'flex-start'
-}
-
 async function fetchPortal() {
   if (!portalUuid.value) {
     portal.value = null
@@ -506,7 +305,8 @@ async function fetchPortal() {
   portalError.value = null
 
   try {
-    const apiResponse = await apiFetch<PortalDTO>(`/api/portal/${encodeURIComponent(portalUuid.value)}`)
+    const apiPath = `/api/portal/${encodeURIComponent(portalUuid.value)}`
+    const apiResponse = await apiFetch<PortalDTO>(apiPath)
     portal.value = apiResponse.data ?? null
   } catch (err) {
     portal.value = null
@@ -644,6 +444,10 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss">
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 .uranus-portal-events {
   --portal-event-bg: var(--uranus-bg);
   --portal-event-text: var(--uranus-color);
@@ -657,10 +461,6 @@ onBeforeUnmount(() => {
   gap: 1rem;
   width: 100%;
   min-height: 100vh;
-  padding: var(--portal-event-padding, clamp(1rem, 3vw, 2rem));
-  background: var(--portal-event-bg);
-  color: var(--portal-event-text);
-  font-family: var(--portal-event-font-family, inherit);
 }
 
 .uranus-portal-events__header {
@@ -669,24 +469,21 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: 1rem;
   width: 100%;
-  max-width: var(--portal-content-max-width, none);
-  align-self: var(--portal-content-align-self, stretch);
-  text-align: var(--portal-content-text-align, left);
+  align-self: stretch;
+  text-align:  left;
 }
 
 .uranus-portal-events__header h1 {
   margin: 0;
-  color: var(--portal-header-title-color, var(--portal-event-text));
-  font-size: var(--portal-header-title-font-size, clamp(1.75rem, 4vw, 3rem));
-  font-weight: var(--portal-header-title-font-weight, 700);
-  line-height: var(--portal-header-title-line-height, 1);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .uranus-portal-events__header p {
   margin: 0.35rem 0 0;
-  color: var(--portal-header-description-color, var(--portal-event-muted));
-  font-size: var(--portal-header-description-font-size, 1rem);
-  line-height: var(--portal-header-description-line-height, 1.4);
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
 .uranus-portal-events__type-scroller,
@@ -711,26 +508,21 @@ onBeforeUnmount(() => {
 }
 
 .uranus-portal-events__type-chip {
-  border: 1px solid var(--portal-event-border);
   border-radius: 999px;
   padding: 0.45rem 0.75rem;
   background: transparent;
-  color: var(--portal-event-text);
   cursor: pointer;
   white-space: nowrap;
 }
 
 .uranus-portal-events__type-chip:hover,
 .uranus-portal-events__type-chip--active {
-  border-color: var(--portal-event-accent);
-  background: var(--portal-event-chip-bg);
-  color: var(--portal-event-accent);
 }
 
 .uranus-portal-events__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--portal-event-grid-min-card-width, 240px), 1fr));
-  gap: var(--portal-event-grid-gap, clamp(0.75rem, 2vw, 1.25rem));
+  gap: 1rem;
 }
 
 .uranus-portal-event-card {
@@ -739,47 +531,26 @@ onBeforeUnmount(() => {
   min-height: 100%;
   flex-direction: column;
   overflow: hidden;
-  border: var(--portal-event-card-border, 1px solid var(--portal-event-border));
-  border-radius: var(--portal-event-card-radius, 6px);
-  gap: var(--portal-event-card-gap, 0);
-  padding: var(--portal-event-card-padding, 0);
-  background: var(--portal-event-card-bg, var(--portal-event-bg));
-  box-shadow: var(--portal-event-card-shadow, none);
-  color: var(--portal-event-text);
-  transition:
-      transform var(--portal-event-card-transition, 0.18s ease),
-      border var(--portal-event-card-transition, 0.18s ease),
-      background var(--portal-event-card-transition, 0.18s ease),
-      box-shadow var(--portal-event-card-transition, 0.18s ease);
+  gap: 0;
+  padding: 0;
 }
 
 .uranus-portal-event-card:hover {
-  transform: translateY(-2px) scale(var(--portal-event-card-hover-scale, 1));
-  border: var(--portal-event-card-hover-border, var(--portal-event-card-border, 1px solid var(--portal-event-accent)));
-  background: var(--portal-event-card-hover-bg, var(--portal-event-card-bg, var(--portal-event-bg)));
-  box-shadow: var(--portal-event-card-hover-shadow, var(--portal-event-card-shadow, none));
-  color: var(--portal-event-text);
+  color: inherit !important;
 }
 
 .uranus-portal-event-card__image-frame {
-  aspect-ratio: var(--portal-event-card-image-aspect-ratio, 4 / 3);
+  aspect-ratio: var(--portal-event-card-image-aspect-ratio, 7 / 5);
   overflow: hidden;
-  border-radius: var(--portal-event-card-image-radius, 0);
-  background: var(--portal-event-card-image-bg, var(--portal-event-chip-bg));
 }
 
 .uranus-portal-event-card__image {
   width: 100%;
   height: 100%;
-  filter: var(--portal-event-card-image-filter, none);
-  object-fit: var(--portal-event-card-image-object-fit, cover);
-  transition:
-      filter var(--portal-event-card-image-transition, 0.25s ease),
-      transform var(--portal-event-card-image-transition, 0.25s ease);
+  transition: transform var(--portal-event-card-image-transition, 0.25s ease);
 }
 
 .uranus-portal-event-card:hover .uranus-portal-event-card__image {
-  filter: var(--portal-event-card-image-hover-filter, var(--portal-event-card-image-filter, none));
   transform: scale(var(--portal-event-card-image-hover-scale, 1.04));
 }
 
@@ -787,37 +558,23 @@ onBeforeUnmount(() => {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 0.65rem;
-  padding: var(--portal-event-card-info-padding, 0.9rem);
-  border: var(--portal-event-card-info-border, 0);
-  border-radius: var(--portal-event-card-info-radius, 0);
-  background: var(--portal-event-card-info-bg, transparent);
-  color: var(--portal-event-card-info-color, var(--portal-event-text));
+  gap: 0.8rem;
+  padding: 1rem;
 }
 
 .uranus-portal-event-card__meta {
   display: flex;
   flex-direction: column;
-  gap: var(--portal-event-card-meta-gap, 0.2rem);
-  color: var(--portal-event-card-info-color, var(--portal-event-muted));
-  font-family: var(--portal-event-card-meta-font-family, inherit);
-  font-size: var(--portal-event-card-meta-font-size, 0.9rem);
-  font-weight: var(--portal-event-card-meta-font-weight, 400);
-  line-height: var(--portal-event-card-meta-line-height, 1.35);
+  gap: 0.2rem;
 }
 
 .uranus-portal-event-card h2 {
   margin: 0;
-  color: var(--portal-event-card-info-color, var(--portal-event-text));
-  font-family: var(--portal-event-card-title-font-family, inherit);
-  font-size: var(--portal-event-card-title-font-size, 1.2rem);
-  font-weight: var(--portal-event-card-title-font-weight, 700);
   line-height: 1.15;
 }
 
 .uranus-portal-event-card__subtitle {
   margin: 0;
-  color: var(--portal-event-card-info-color, var(--portal-event-muted));
   line-height: 1.4;
 }
 
@@ -831,8 +588,6 @@ onBeforeUnmount(() => {
 .uranus-portal-event-card__tag {
   border-radius: 999px;
   padding: 0.25rem 0.5rem;
-  background: var(--portal-event-chip-bg);
-  color: var(--portal-event-muted);
   font-size: 0.8rem;
 }
 
@@ -841,7 +596,6 @@ onBeforeUnmount(() => {
   min-height: 12rem;
   align-items: center;
   justify-content: center;
-  color: var(--portal-event-muted);
 }
 
 .uranus-portal-events__state--inline {
