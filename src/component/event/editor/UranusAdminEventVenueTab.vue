@@ -41,6 +41,7 @@
             <UranusTextfield
                 id="online-registration-link"
                 :label="t('event_online_registration_link')"
+                v-model="draft.registrationLink"
             />
           </UranusFormCol>
 
@@ -48,6 +49,7 @@
             <UranusDateInput
                 id="online-registration-last_date"
                 :label="t('event_online_registration_last_date')"
+                v-model="draft.registrationDeadline"
             />
           </UranusFormCol>
 
@@ -55,6 +57,7 @@
             <UranusTextfield
                 id="online-contact-email"
                 :label="t('event_online_contact_mail')"
+                v-model="draft.registrationEmail"
             />
           </UranusFormCol>
 
@@ -62,6 +65,7 @@
             <UranusTextfield
                 id="online-contact-phone"
                 :label="t('event_online_contact_phone')"
+                v-model="draft.registrationPhone"
             />
           </UranusFormCol>
         </UranusGridLayout>
@@ -183,15 +187,7 @@ onMounted(async () => {
 })
 
 const isDirty = computed(() => {
-  if (!store.draft || !store.original) return false
-  const d = store.draft
-  const o = store.original
-  return (
-      (d.venueUuid ?? null) !== (o.venueUuid ?? null) ||
-      (d.spaceUuid ?? null) !== (o.spaceUuid ?? null) ||
-      (d.meetingPoint ?? '') !== (o.meetingPoint ?? '') ||
-      (d.onlineLink ?? '') !== (o.onlineLink ?? '')
-  )
+  return !store.isVenueTabEqual()
 })
 
 watch(isDirty, (value) => {
@@ -209,6 +205,10 @@ async function commitTab() {
       space_uuid: draft.value.spaceUuid,
       meeting_point: draft.value.meetingPoint,
       online_link: draft.value.onlineLink,
+      registration_link: draft.value.registrationLink,
+      registration_email: draft.value.registrationEmail,
+      registration_phone: draft.value.registrationPhone,
+      registration_deadline: draft.value.registrationDeadline
     }
 
     await apiFetch(`/api/admin/event/${draft.value.uuid}/venue`, {
@@ -220,6 +220,11 @@ async function commitTab() {
     store.original.spaceUuid = draft.value.spaceUuid
     store.original.meetingPoint = draft.value.meetingPoint
     store.original.onlineLink = draft.value.onlineLink
+    store.original.registrationLink = draft.value.registrationLink
+    store.original.registrationEmail = draft.value.registrationEmail
+    store.original.registrationPhone = draft.value.registrationPhone
+    store.original.registrationDeadline = draft.value.registrationDeadline
+
   } catch (err) {
     store.error = 'Failed to save event settings'
     console.error(err)
@@ -234,6 +239,10 @@ function resetTab() {
   draft.value.spaceUuid = store.original.spaceUuid
   draft.value.meetingPoint = store.original.meetingPoint
   draft.value.onlineLink = store.original.onlineLink
+  draft.value.registrationLink = store.original.registrationLink
+  draft.value.registrationDeadline = store.original.registrationDeadline
+  draft.value.registrationEmail = store.original.registrationEmail
+  draft.value.registrationPhone = store.original.registrationPhone
 }
 </script>
 

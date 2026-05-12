@@ -35,6 +35,10 @@ export type AdminEvent = {
     spaceUuid: string | null
     meetingPoint: string | null
     onlineLink: string | null
+    registrationLink: string | null
+    registrationEmail: string | null
+    registrationPhone: string | null
+    registrationDeadline: string | null
 
     participationInfo: string | null
     languages: string[] | null
@@ -80,6 +84,10 @@ export function createAdminEvent(props: Partial<AdminEvent> = {}): AdminEvent {
         spaceUuid: null,
         meetingPoint: null,
         onlineLink: null,
+        registrationLink: null,
+        registrationDeadline: null,
+        registrationEmail: null,
+        registrationPhone: null,
 
         participationInfo: null,
         languages: null,

@@ -30,6 +30,25 @@ export const useAdminEventStore = defineStore('uranusAdminEvent', () => {
         return JSON.stringify(original.value) !== JSON.stringify(draft.value)
     })
 
+    function isVenueTabEqual() {
+        const a = draft.value
+        const b = original.value
+        if (a === b) { return true }
+        if (!a || !b) return false
+        //console.log(JSON.stringify(a, null, 2))
+        //console.log(JSON.stringify(b, null, 2))
+        return (
+            a.venueUuid === b.venueUuid &&
+            a.spaceUuid === b.spaceUuid &&
+            a.meetingPoint === b.meetingPoint &&
+            a.onlineLink === b.onlineLink &&
+            a.registrationLink === b.registrationLink &&
+            a.registrationDeadline === b.registrationDeadline &&
+            a.registrationEmail === b.registrationEmail &&
+            a.registrationPhone === b.registrationPhone
+        )
+    }
+
     const hasDates = computed(() =>
         (draft.value?.eventDates?.length ?? 0) > 0
     )
@@ -110,6 +129,7 @@ export const useAdminEventStore = defineStore('uranusAdminEvent', () => {
         // Getters
         isLoaded,
         isDirty,
+        isVenueTabEqual,
         hasDates,
         hasMultipleDates,
         primaryDate,

@@ -40,6 +40,16 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: '~~count~~ events',
         da: '~~count~~ begivenheder'
     },
+    online_event: {
+        de: 'Online Veranstaltung',
+        en: 'Online event',
+        da: 'Online begivenhed',
+    },
+    online_event_link: {
+        de: 'Link zur Online Veranstaltung',
+        en: 'Link to online event',
+        da: 'Link til online begivenheden',
+    },
     event_category: {
         de: 'Kategorie',
         en: 'Category',
