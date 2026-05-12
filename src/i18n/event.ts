@@ -43,27 +43,37 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
     online_event: {
         de: 'Online Veranstaltung',
         en: 'Online event',
-        da: 'Online begivenhed',
+        da: 'Onlinebegivenhed',
     },
     online_event_link: {
         de: 'Link zur Online Veranstaltung',
         en: 'Link to online event',
-        da: 'Link til online begivenheden',
+        da: 'Link til onlinebegivenhed',
     },
     online_event_registration: {
         de: 'Registrierung',
         en: 'Register',
-        da: 'Registrer',
+        da: 'Tilmeld',
     },
     online_event_registration_link: {
         de: 'Anmeldenlink',
         en: 'Registration link',
-        da: 'Registreringslink',
+        da: 'Tilmeldingslink',
     },
     online_event_registration_email: {
         de: 'Per E-Mail anmelden',
-        en: 'Email registration',
-        da: 'Registrer med e-mail',
+        en: 'Register by email',
+        da: 'Tilmeld via e-mail',
+    },
+    online_event_registration_phone: {
+        de: 'Telefonische Registrierung',
+        en: 'Register by phone',
+        da: 'Tilmeld telefonisk',
+    },
+    online_event_registration_deadline: {
+        de: 'Spätestens am',
+        en: 'No later than',
+        da: 'Senest den',
     },
     event_category: {
         de: 'Kategorie',
