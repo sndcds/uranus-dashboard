@@ -199,7 +199,7 @@ const routes = [
     },
     {
         path: '/portal/:uuid',
-        name: 'event-slideshow',
+        name: 'event-portal',
         component: UranusPortalView,
     },
     {
