@@ -24,7 +24,7 @@
               :class="{ active: tab.key === activeTab, dirty: isTabDirty(tab.key) }"
               @click="activeTab = tab.key"
           >
-            <span>{{ tab.label }}</span>
+            <span>{{ t(tab.labelKey) }}</span>
             <span
                 v-if="isTabDirty(tab.key)"
                 class="tab-dirty-indicator"
@@ -88,8 +88,9 @@ import UranusAdminEventBaseTab from '@/component/event/editor/UranusAdminEventBa
 import UranusAdminEventDatesTab from '@/component/event/editor/UranusAdminEventDatesTab.vue'
 import UranusAdminEventTagsTab from '@/component/event/editor/UranusAdminEventTagsTab.vue'
 import UranusAdminEventLinksTabs from '@/component/event/editor/UranusAdminEventLinksTabs.vue'
-import UranusAdminEventParticipationTab from '@/component/event/editor/UranusAdminEventParticipationTab.vue'
+import UranusAdminEventParticipateTab from '@/component/event/editor/UranusAdminEventParticipateTab.vue'
 import UranusAdminEventVenueTab from '@/component/event/editor/UranusAdminEventVenueTab.vue'
+import UranusAdminEventRegisterTab from '@/component/event/editor/UranusAdminEventRegisterTab.vue'
 import UranusAdminEventTicketTab from '@/component/event/editor/UranusAdminEventTicketTab.vue'
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
 import UranusAdminEventVisitorInfo from '@/component/event/editor/UranusAdminEventVisitorInfo.vue'
@@ -141,18 +142,19 @@ const unsavedChangesLabel = computed(() =>
     te('unsaved_changes') ? t('unsaved_changes') : 'Es gibt ungespeicherte Änderungen.'
 )
 
-type TabKey = 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participation' | 'ticket' | 'visitor'
+type TabKey = 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participate' | 'register' | 'ticket' | 'visitor'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
-  { key: 'base', label: 'Was' },
-  { key: 'venue', label: 'Wo' },
-  { key: 'dates', label: 'Wann' },
-  { key: 'tags', label: 'Tags' },
-  { key: 'links', label: 'Links' },
-  { key: 'participation', label: 'Teilnahme' },
-  { key: 'ticket', label: 'Ticket' },
-  { key: 'visitor', label: 'Infos' }
+  { key: 'base', labelKey: 'event_tab_base' },
+  { key: 'venue', labelKey: 'event_tab_venue' },
+  { key: 'dates', labelKey: 'event_tab_dates' },
+  { key: 'tags', labelKey: 'event_tab_tags' },
+  { key: 'links', labelKey: 'event_tab_links' },
+  { key: 'participate', labelKey: 'event_tab_participate' },
+  { key: 'register', labelKey: 'event_tab_register' },
+  { key: 'ticket', labelKey: 'event_tab_ticket' },
+  { key: 'visitor', labelKey: 'event_tab_visitor' },
 ] as const
 
 const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
@@ -168,7 +170,8 @@ function createCleanDirtyState(): Record<TabKey, boolean> {
     dates: false,
     tags: false,
     links: false,
-    participation: false,
+    participate: false,
+    register: false,
     ticket: false,
     visitor: false,
   }
@@ -188,7 +191,8 @@ const currentTabComponent = computed(() => {
     case 'venue': return UranusAdminEventVenueTab
     case 'tags': return UranusAdminEventTagsTab
     case 'links': return UranusAdminEventLinksTabs
-    case 'participation': return UranusAdminEventParticipationTab
+    case 'participate': return UranusAdminEventParticipateTab
+    case 'register': return UranusAdminEventRegisterTab
     case 'ticket': return UranusAdminEventTicketTab
     case 'visitor': return UranusAdminEventVisitorInfo
     case 'base':

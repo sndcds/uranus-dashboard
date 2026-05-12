@@ -1,11 +1,11 @@
 <!--
-  src/component/event/editor/UranusAdminEventParticipationTab.vue
+  src/component/event/editor/UranusAdminEventParticipateTab.vue
 -->
 
 <template>
   <section class="participation-tab">
-
     <UranusForm>
+      <h2>{{t('event_participation') }}</h2>
       <UranusFormRow :cols="2" style="max-width: 600px;">
         <UranusNumberInput
             id="event-min-age"

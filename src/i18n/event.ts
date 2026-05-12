@@ -30,6 +30,51 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Title',
         da: 'Overskrift',
     },
+    event_tab_base: {
+        de: 'Was',
+        en: 'What',
+        da: 'Hvad',
+    },
+    event_tab_venue: {
+        de: 'Wo',
+        en: 'Where',
+        da: 'Hvor',
+    },
+    event_tab_dates: {
+        de: 'Wann',
+        en: 'When',
+        da: 'Hvornår',
+    },
+    event_tab_tags: {
+        de: 'Tags',
+        en: 'Tags',
+        da: 'Tags',
+    },
+    event_tab_links: {
+        de: 'Links',
+        en: 'Links',
+        da: 'Links',
+    },
+    event_tab_participate: {
+        de: 'Teilnahme',
+        en: 'Participation',
+        da: 'Deltagelse',
+    },
+    event_tab_register: {
+        de: 'Anmeldung',
+        en: 'Registration',
+        da: 'Tilmelding',
+    },
+    event_tab_ticket: {
+        de: 'Ticket',
+        en: 'Ticket',
+        da: 'Billet',
+    },
+    event_tab_visitor: {
+        de: 'Infos',
+        en: 'Info',
+        da: 'Info',
+    },
     event_count_singular: {
         de: '1 Veranstaltung',
         en: '1 event',
@@ -50,27 +95,32 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Link to online event',
         da: 'Link til onlinebegivenhed',
     },
-    online_event_registration: {
-        de: 'Registrierung',
+    event_participation: {
+        de: 'Teilnahme',
+        en: 'Participation',
+        da: 'Deltagelse',
+    },
+    event_registration: {
+        de: 'Anmeldung',
         en: 'Register',
         da: 'Tilmeld',
     },
-    online_event_registration_link: {
+    event_registration_link: {
         de: 'Anmeldenlink',
         en: 'Registration link',
         da: 'Tilmeldingslink',
     },
-    online_event_registration_email: {
+    event_registration_email: {
         de: 'Per E-Mail anmelden',
         en: 'Register by email',
         da: 'Tilmeld via e-mail',
     },
-    online_event_registration_phone: {
-        de: 'Telefonische Registrierung',
+    event_registration_phone: {
+        de: 'Telefonische Anmeldung',
         en: 'Register by phone',
         da: 'Tilmeld telefonisk',
     },
-    online_event_registration_deadline: {
+    event_registration_deadline: {
         de: 'Spätestens am',
         en: 'No later than',
         da: 'Senest den',

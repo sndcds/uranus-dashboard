@@ -4,7 +4,6 @@
 
 <template>
   <section class="price-tab">
-
     <UranusCard class="ticket-options">
       <h2>{{ t('event_ticket_options') }}</h2>
       <UranusCheckbox
@@ -136,34 +135,11 @@ const draftTicketFlags = computed({
   },
 })
 
-// Fields tracked for this tab
-const priceFields = [
-    'priceType',
-    'minPrice',
-    'maxPrice',
-    'currency',
-    'ticketFlags',
-    'ticketLink'
-] as const
-
-const isDirty = computed(() => {
-  const draftVal = store.draft
-  const original = store.original
-  if (!draftVal || !original) return false
-
-  return priceFields.some((key) => {
-    return JSON.stringify(draftVal[key]) !== JSON.stringify(original[key])
-  })
-})
+const isDirty = computed(() => { return !store.isTicketTabEqual() })
 
 watch(isDirty, (value) => {
   emit('dirty-change', value)
 }, { immediate: true })
-
-function parseFloatOrNull(e: Event): number | null {
-  const target = e.target as HTMLInputElement
-  return target.value === '' ? null : parseFloat(target.value)
-}
 
 function buildPayload(
     draft: AdminEvent,
