@@ -137,6 +137,7 @@ import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vu
 import { uranusFormatDateTime, uranusPluralizedText } from '@/util/UranusStringUtils.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
+import { apiBaseUrl } from '@/util/UranusUtils.ts'
 
 type PortalStyleSection = Record<string, string | number | null | undefined>
 
@@ -184,18 +185,19 @@ const eventListStore = useEventListStore()
 const filterStore = useEventsFilterStore()
 const typeLookupStore = useEventTypeLookupStore()
 const route = useRoute()
+const apiBase = apiBaseUrl()
 
 const logoUrl = computed(() => {
   const uuid = portal.value?.web_logo_uuid
   return uuid
-      ? `http://localhost:9090/api/image/${uuid}?width=3600&type=png&quality=80`
+      ? `${apiBase}/api/image/${uuid}?width=3600&type=png&quality=80`
       : null
 })
 
 const backgroundUrl = computed(() => {
   const uuid = portal.value?.background_image_uuid
   return uuid
-      ? `http://localhost:9090/api/image/${uuid}?width=3600&type=png&quality=80`
+      ? `${apiBase}/api/image/${uuid}?width=3600&type=png&quality=80`
       : null
 })
 
