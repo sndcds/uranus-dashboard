@@ -165,12 +165,12 @@
           <div
               v-if="event.registrationLink || event.registrationEmail || event.registrationPhone"
               class="uranus-public-event-info-card">
-            <!--p class="uranus-public-event-info-label">{{ t('online_event_registration') }}</p-->
+            <!--p class="uranus-public-event-info-label">{{ t('event_registration') }}</p-->
 
             <UranusIconAction
                 v-if="event.registrationLink"
                 :to="event.registrationLink"
-                :label="t('online_event_registration_link')"
+                :label="t('event_registration_link')"
                 :icon="Link"
                 style="padding-left: 0;"
             />
@@ -178,18 +178,18 @@
             <UranusIconAction
                 v-if="event.registrationEmail"
                 :to="'mailto:' + event.registrationEmail"
-                :label="t('online_event_registration_email')"
+                :label="t('event_registration_email')"
                 :icon="Mail"
                 style="padding-left: 0;"
             />
 
             <template v-if="event.registrationPhone">
-              <p class="uranus-public-event-info-label">{{ t('online_event_registration_phone') }}</p>
+              <p class="uranus-public-event-info-label">{{ t('event_registration_phone') }}</p>
               {{ event.registrationPhone }}<br>
             </template>
 
             <template v-if="event.registrationPhone">
-              <p class="uranus-public-event-info-label">{{ t('online_event_registration_deadline') }}</p>
+              <p class="uranus-public-event-info-label">{{ t('event_registration_deadline') }}</p>
               {{ event.registrationDeadline }}<br>
             </template>
           </div>

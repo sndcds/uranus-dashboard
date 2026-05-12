@@ -35,43 +35,6 @@
             placeholder="https://..."
             v-model="draft.onlineLink"
         />
-
-        <UranusGridLayout>
-          <UranusFormCol :span="6">
-            <UranusTextfield
-                id="online-registration-link"
-                :label="t('event_online_registration_link')"
-                v-model="draft.registrationLink"
-            />
-          </UranusFormCol>
-
-          <UranusFormCol :span="6">
-            <UranusDateInput
-                id="online-registration-last_date"
-                :label="t('event_online_registration_last_date')"
-                v-model="draft.registrationDeadline"
-            />
-          </UranusFormCol>
-
-          <UranusFormCol :span="6">
-            <UranusTextfield
-                id="online-contact-email"
-                :label="t('event_online_contact_mail')"
-                v-model="draft.registrationEmail"
-            />
-          </UranusFormCol>
-
-          <UranusFormCol :span="6">
-            <UranusTextfield
-                id="online-contact-phone"
-                :label="t('event_online_contact_phone')"
-                v-model="draft.registrationPhone"
-            />
-          </UranusFormCol>
-        </UranusGridLayout>
-
-
-
       </UranusCard>
 
       <UranusFormActions>
@@ -118,9 +81,6 @@ import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import { Save, Undo, MapPin } from 'lucide-vue-next'
-import UranusGridLayout from '@/component/ui/UranusGridLayout.vue'
-import UranusFormCol from '@/component/ui/UranusFormCol.vue'
-import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -186,9 +146,7 @@ onMounted(async () => {
   await choosableVenuesStore.refresh(appStore.orgUuid)
 })
 
-const isDirty = computed(() => {
-  return !store.isVenueTabEqual()
-})
+const isDirty = computed(() => { return !store.isVenueTabEqual() })
 
 watch(isDirty, (value) => {
   emit('dirty-change', value)
@@ -205,10 +163,6 @@ async function commitTab() {
       space_uuid: draft.value.spaceUuid,
       meeting_point: draft.value.meetingPoint,
       online_link: draft.value.onlineLink,
-      registration_link: draft.value.registrationLink,
-      registration_email: draft.value.registrationEmail,
-      registration_phone: draft.value.registrationPhone,
-      registration_deadline: draft.value.registrationDeadline
     }
 
     await apiFetch(`/api/admin/event/${draft.value.uuid}/venue`, {
@@ -220,10 +174,6 @@ async function commitTab() {
     store.original.spaceUuid = draft.value.spaceUuid
     store.original.meetingPoint = draft.value.meetingPoint
     store.original.onlineLink = draft.value.onlineLink
-    store.original.registrationLink = draft.value.registrationLink
-    store.original.registrationEmail = draft.value.registrationEmail
-    store.original.registrationPhone = draft.value.registrationPhone
-    store.original.registrationDeadline = draft.value.registrationDeadline
 
   } catch (err) {
     store.error = 'Failed to save event settings'
@@ -239,10 +189,6 @@ function resetTab() {
   draft.value.spaceUuid = store.original.spaceUuid
   draft.value.meetingPoint = store.original.meetingPoint
   draft.value.onlineLink = store.original.onlineLink
-  draft.value.registrationLink = store.original.registrationLink
-  draft.value.registrationDeadline = store.original.registrationDeadline
-  draft.value.registrationEmail = store.original.registrationEmail
-  draft.value.registrationPhone = store.original.registrationPhone
 }
 </script>
 

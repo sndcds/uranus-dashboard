@@ -33,19 +33,51 @@ export const useAdminEventStore = defineStore('uranusAdminEvent', () => {
     function isVenueTabEqual() {
         const a = draft.value
         const b = original.value
-        if (a === b) { return true }
+        if (a === b) return true
         if (!a || !b) return false
-        //console.log(JSON.stringify(a, null, 2))
-        //console.log(JSON.stringify(b, null, 2))
         return (
             a.venueUuid === b.venueUuid &&
             a.spaceUuid === b.spaceUuid &&
             a.meetingPoint === b.meetingPoint &&
-            a.onlineLink === b.onlineLink &&
+            a.onlineLink === b.onlineLink
+        )
+    }
+
+    function isRegisterTabEqual() {
+        const a = draft.value
+        const b = original.value
+        if (a === b) return true
+        if (!a || !b) return false
+        return (
             a.registrationLink === b.registrationLink &&
-            a.registrationDeadline === b.registrationDeadline &&
             a.registrationEmail === b.registrationEmail &&
-            a.registrationPhone === b.registrationPhone
+            a.registrationPhone === b.registrationPhone &&
+            a.registrationDeadline === b.registrationDeadline
+        )
+    }
+
+    function isTicketTabEqual() {
+        const a = draft.value
+        const b = original.value
+        if (a === b) return true
+        if (!a || !b) return false
+
+        const aFlags = a.ticketFlags
+        const bFlags = b.ticketFlags
+        const sameTicketFlags =
+            Array.isArray(aFlags) &&
+            Array.isArray(bFlags) &&
+            aFlags.length === bFlags.length &&
+            new Set(aFlags).size === new Set(bFlags).size &&
+            [...aFlags].every(v => bFlags.includes(v))
+
+        return (
+            a.priceType === b.priceType &&
+            a.minPrice === b.minPrice &&
+            a.maxPrice === b.maxPrice &&
+            a.currency === b.currency &&
+            sameTicketFlags &&
+            a.ticketLink === b.ticketLink
         )
     }
 
@@ -130,6 +162,8 @@ export const useAdminEventStore = defineStore('uranusAdminEvent', () => {
         isLoaded,
         isDirty,
         isVenueTabEqual,
+        isRegisterTabEqual,
+        isTicketTabEqual,
         hasDates,
         hasMultipleDates,
         primaryDate,
