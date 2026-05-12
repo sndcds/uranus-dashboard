@@ -57,6 +57,9 @@
               locale
           ) }}
         </div>
+        <div v-if="event.isOnlineEvent" class="icon-and-info">
+          <Video class="small-icon"/> {{ t('online_event')}}
+        </div>
         <div v-if="hasVenue" class="icon-and-info">
           <MapPin class="small-icon"/> {{ event.venueName }}
           <template v-if="hasSpace"> / {{ event.spaceName }}</template>
@@ -132,7 +135,7 @@ import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import type { AdminEventListItem } from '@/domain/event/adminEventListItem.ts'
 import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { Eye, Pencil, Trash, Calendar, MapPin, Building } from 'lucide-vue-next'
+import { Eye, Pencil, Trash, Calendar, MapPin, Building, Video } from 'lucide-vue-next'
 import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
 import { uranusPluralizedText, uranusStringInterpolate } from "@/util/UranusStringUtils.ts";
 
@@ -380,9 +383,9 @@ const confirmDelete = async ({password, selectedOption}: {
 }
 
 .small-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--uranus-color-4)
+  width: 20px;
+  height: 20px;
+  color: var(--uranus-color-3)
 }
 
 </style>

@@ -47,6 +47,10 @@ export interface AdminEventDTO {
     occasion_type_id?: number | null
 
     online_link?: string | null
+    registration_link?: string | null
+    registration_email?: string | null
+    registration_phone?: string | null
+    registration_deadline?: string | null
 
     languages?: string[]
     dates?: AdminEventDateDTO[] | null

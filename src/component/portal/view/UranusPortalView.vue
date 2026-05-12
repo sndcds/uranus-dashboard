@@ -158,6 +158,7 @@ interface PortalDTO {
   description?: string | null
   org_uuid: string
   spatial_filter_mode?: string | null
+  pre_filter?: Record<string, unknown> | string | null
   prefilter?: Record<string, unknown> | null
   style?: PortalStyle | string | null
 }
@@ -175,7 +176,8 @@ const filterScope = 'portal'
 const portalUuid = computed(() => route.params.uuid?.toString() ?? null)
 const activeFilter = computed(() => ({
   ...filterStore.getFilter(filterScope),
-  portalUuid: portalUuid.value
+  portalUuid: portalUuid.value,
+  portalPrefilter: portalEventPrefilter.value,
 }))
 const activeEventTypeIds = computed(() => activeFilter.value.eventTypeIds)
 const eventCountInfo = computed(() =>
@@ -185,6 +187,15 @@ const showInitialLoading = computed(() => eventListStore.loading && !eventListSt
 const portal = ref<PortalDTO | null>(null)
 const portalLoading = ref(false)
 const portalError = ref<string | null>(null)
+const portalEventPrefilter = computed(() => {
+  const prefilter = normalizePortalPrefilter(portal.value?.pre_filter ?? portal.value?.prefilter)
+  const result: { age?: string | number | null, venues?: string | number | null } = {}
+
+  if (isPrefilterValue(prefilter?.age)) result.age = prefilter.age
+  if (isPrefilterValue(prefilter?.venues)) result.venues = prefilter.venues
+
+  return Object.keys(result).length ? result : null
+})
 const portalCustomCss = computed(() => {
   const css = normalizePortalStyle(portal.value?.style)?.['custom-css']
   return typeof css === 'string' && css.trim() ? css : ''
@@ -444,6 +455,31 @@ function normalizePortalStyle(style: PortalStyle | string | null | undefined): P
   } catch {
     return null
   }
+}
+
+function normalizePortalPrefilter(prefilter: Record<string, unknown> | string | null | undefined): Record<string, unknown> | null {
+  if (!prefilter) return null
+  if (typeof prefilter === 'object' && !Array.isArray(prefilter)) return prefilter
+
+  if (typeof prefilter === 'string') {
+    try {
+      const parsed = JSON.parse(prefilter)
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+          ? parsed as Record<string, unknown>
+          : null
+    } catch {
+      return null
+    }
+  }
+
+  return null
+}
+
+function isPrefilterValue(value: unknown): value is string | number {
+  return (
+      (typeof value === 'string' && value.trim().length > 0) ||
+      (typeof value === 'number' && Number.isFinite(value))
+  )
 }
 
 function getStyleSection(value: unknown): PortalStyleSection | undefined {

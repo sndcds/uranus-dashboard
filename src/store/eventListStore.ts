@@ -93,7 +93,11 @@ export const useEventListStore = defineStore('events', () => {
         if (filter.endDate) params.set("end", filter.endDate)
 
         // Venue filter
-        if (filter.venue?.uuid) params.set("venues", filter.venue.uuid)
+        if (filter.portalPrefilter?.venues) {
+            params.set("venues", filter.portalPrefilter.venues.toString())
+        } else if (filter.venue?.uuid) {
+            params.set("venues", filter.venue.uuid)
+        }
 
         // Portal filter
         if (filter.portalUuid) params.set("portal", filter.portalUuid)
@@ -106,7 +110,9 @@ export const useEventListStore = defineStore('events', () => {
         }
 
         // Age filter
-        if (filter.minAge && filter.maxAge) {
+        if (filter.portalPrefilter?.age) {
+            params.set("age", filter.portalPrefilter.age.toString())
+        } else if (filter.minAge && filter.maxAge) {
             params.set("age", `${filter.minAge},${filter.maxAge}`)
         } else if (filter.minAge) {
             params.set("age", filter.minAge.toString())

@@ -24,6 +24,10 @@ export interface UranusEventsFilter {
     priceCurrency?: string
     eventTypeIds: number[]
     portalUuid?: string | null
+    portalPrefilter?: {
+        age?: string | number | null
+        venues?: string | number | null
+    } | null
 }
 
 export type UranusEventsFilterScope = 'default' | 'venue' | 'portal'
@@ -45,7 +49,8 @@ const defaultFilter: UranusEventsFilter = {
     maxPrice: null,
     priceCurrency: 'EUR',
     eventTypeIds: [],
-    portalUuid: null
+    portalUuid: null,
+    portalPrefilter: null
 }
 
 function createDefaultFilter(): UranusEventsFilter {
@@ -66,7 +71,8 @@ function createDefaultFilter(): UranusEventsFilter {
         maxPrice: null,
         priceCurrency: 'EUR',
         eventTypeIds: [],
-        portalUuid: null
+        portalUuid: null,
+        portalPrefilter: null
     }
 }
 
@@ -76,7 +82,8 @@ function cloneFilter(filter: Partial<UranusEventsFilter> = {}): UranusEventsFilt
         ...filter,
         categories: filter.categories ? [...filter.categories] : null,
         venue: filter.venue ? { ...filter.venue } : null,
-        eventTypeIds: filter.eventTypeIds ? [...filter.eventTypeIds] : []
+        eventTypeIds: filter.eventTypeIds ? [...filter.eventTypeIds] : [],
+        portalPrefilter: filter.portalPrefilter ? { ...filter.portalPrefilter } : null
     }
 }
 

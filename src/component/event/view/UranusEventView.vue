@@ -110,6 +110,7 @@
 
       <!-- Sidebar -->
       <aside class="uranus-public-event-sidebar">
+
         <div class="uranus-public-event-info-section">
 
           <UranusEventDateTimeDisplay
@@ -149,6 +150,19 @@
                 style="padding-left: 0;"
             />
           </div>
+
+
+          <!-- Online Event -->
+          <div v-if="event.onlineLink" class="uranus-public-event-info-card">
+            <UranusIconAction
+                :to="event.onlineLink"
+                :label="t('online_event_link')"
+                :icon="Video"
+                style="padding-left: 0;"
+            />
+          </div>
+
+
 
           <!-- Venue, Space, Location -->
           <UranusEventVenueDisplay :event="event" :eventDate="eventDate" />
@@ -227,7 +241,7 @@ import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 import { type PublicEvent, mapPublicEventFromDTO } from '@/domain/event/publicEvent.model.ts'
 import { type PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
-import {uranusAgeRangeInfo, uranusPriceText, uranusStringInterpolate} from '@/util/UranusStringUtils.ts'
+import { uranusAgeRangeInfo, uranusPriceText, uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
@@ -237,8 +251,8 @@ import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDates
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
-import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash } from 'lucide-vue-next'
 import UranusLink from '@/component/ui/UranusLink.vue'
+import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash, Video } from 'lucide-vue-next'
 
 const route = useRoute()
 
