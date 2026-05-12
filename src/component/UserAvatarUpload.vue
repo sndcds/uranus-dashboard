@@ -171,8 +171,8 @@ const loadAvatar = async () => {
 
   isLoadingAvatar.value = true
   try {
-    const api_base = apiBaseUrl()
-    const res = await fetch(`${api_base}/api/user/${userUuid}/avatar/256`, {
+    const apiBase = apiBaseUrl()
+    const res = await fetch(`${apiBase}/api/user/${userUuid}/avatar/256`, {
       method: 'GET',
       headers,
       cache: 'no-store',
