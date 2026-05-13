@@ -24,7 +24,8 @@
   font-size: 1.25rem;
 }
 
-.uranus-button--primary {
+.uranus-button--primary,
+.uranus-button--danger {
   border: 2px solid var(--uranus-color-1);
   border-radius: 50px;
   background: var(--uranus-bg);
@@ -79,8 +80,13 @@
 }
 
 .uranus-button--danger {
-  background: #f44336;
-  color: white;
+  border-color: var(--uranus-danger-color);
+  color: var(--uranus-danger-color);
+  &:hover {
+    background: var(--uranus-danger-color);
+    border-color: var(--uranus-danger-color);
+    color: var(--uranus-danger-text-color);
+  }
 }
 
 /* Disabled / loading */

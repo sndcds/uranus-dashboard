@@ -366,9 +366,9 @@ onBeforeUnmount(() => {
 
 <style>
 .maplibregl-popup-content {
-  padding: 0 !important;
-  border-radius: 12px !important;
-  background: transparent !important;
+  padding: 10px !important;
+  border-radius: 2px !important;
+  background: var(--uranus-bg) !important;
   overflow: hidden;
   border: none !important;
 }

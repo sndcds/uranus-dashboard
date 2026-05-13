@@ -55,26 +55,11 @@
       @close="showReleaseModal = false"
   />
 
-  <UranusModal
+  <UranusUnsavedChangesModal
       :show="showUnsavedChangesModal"
-      title="Ungespeicherte Änderungen"
-      max-width="520px"
       @close="closeUnsavedChangesModal"
-  >
-    <p class="unsaved-changes-text">
-      Es gibt ungespeicherte Änderungen. Möchtest du die Bearbeitung verwerfen oder zur Bearbeitung zurückkehren?
-    </p>
-
-    <template #actions>
-      <UranusButton variant="tertiary" @click="closeUnsavedChangesModal">
-        Zurück zur Bearbeitung
-      </UranusButton>
-      <UranusButton variant="danger" @click="discardChangesAndGoBack">
-        Bearbeitung verwerfen
-      </UranusButton>
-    </template>
-  </UranusModal>
-
+      @confirm="discardChangesAndGoBack"
+  />
 </template>
 
 <script setup lang="ts">
@@ -96,8 +81,8 @@ import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModa
 import UranusAdminEventVisitorInfo from '@/component/event/editor/UranusAdminEventVisitorInfo.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusModal from '@/component/uranus/UranusModal.vue'
 import { StepBack, Rocket } from 'lucide-vue-next'
+import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChangesModal.vue'
 
 const showReleaseModal = ref(false)
 const showUnsavedChangesModal = ref(false)
