@@ -23,7 +23,7 @@
       </p>
       <a
           v-if="event.orgWebLink"
-          :href="event.orgWebLink"
+          :href="uranusEnsureHttpOrHttps(event.orgWebLink)"
           target="_blank"
           rel="noopener noreferrer"
       >
@@ -42,6 +42,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useThemeStore } from '@/store/themeStore.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
+import { uranusEnsureHttpOrHttps } from '@/util/url.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 

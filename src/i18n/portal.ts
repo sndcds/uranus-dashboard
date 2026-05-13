@@ -60,4 +60,19 @@ export const uranusI18nPortalTranslations: Record<string, Record<UranusLocaleKey
         en: 'Images',
         da: 'Billeder',
     },
+    create_portal: {
+        de: 'Portal erstellen',
+        en: 'Create portal',
+        da: 'Opret portal',
+    },
+    create_portal_description: {
+        de: 'Erstelle ein neues Portal für Ihre Organisation.',
+        en: 'Create a new portal for your organization.',
+        da: 'Opret en ny portal til din organisation.',
+    },
+    portal_name: {
+        de: 'Portalname',
+        en: 'Portal name',
+        da: 'Portalnavn',
+    },
 }

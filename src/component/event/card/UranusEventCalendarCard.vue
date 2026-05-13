@@ -49,7 +49,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
-import { uranusFormatDateTime } from '@/util/UranusStringUtils.ts'
+import { uranusFormatDateTime } from '@/util/string.ts'
 import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 

@@ -134,10 +134,10 @@ import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
-import { uranusFormatDateTime, uranusPluralizedText } from '@/util/UranusStringUtils.ts'
+import { uranusFormatDateTime, uranusPluralizedText } from '@/util/string.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
-import { apiBaseUrl } from '@/util/UranusUtils.ts'
+import { apiBaseUrl } from '@/util/util.ts'
 
 type PortalStyleSection = Record<string, string | number | null | undefined>
 

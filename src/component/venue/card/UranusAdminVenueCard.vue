@@ -117,7 +117,7 @@ import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import PlutoImage from '@/component/pluto/PlutoImage.vue'
-import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
+import { uranusStringInterpolate } from '@/util/string.ts'
 import { Edit, Trash2, Plus } from 'lucide-vue-next'
 
 

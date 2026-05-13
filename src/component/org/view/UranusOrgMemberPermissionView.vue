@@ -51,7 +51,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-import { uranusReplaceInTemplate } from '@/util/UranusStringUtils.ts'
+import { uranusReplaceInTemplate } from '@/util/string.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusCheckbox from "@/component/ui/UranusCheckbox.vue";

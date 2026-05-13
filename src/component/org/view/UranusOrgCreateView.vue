@@ -6,13 +6,13 @@
   <div class="uranus-main-layout">
     <UranusDashboardHero :title="t('create_org')" :subtitle="t('create_org_definition')" />
 
-    <UranusHelpPopup baseUrl="/help/create-organization" />
+    <UranusHelpPopup baseUrl="/help/create-org" />
 
     <UranusForm>
       <UranusTextfield
           size="medium"
           id="organization_name"
-          :label="t('organization_name')"
+          :label="t('org_name')"
           required
           v-model="orgName"
       />

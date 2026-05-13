@@ -19,7 +19,7 @@
     "src/i18n/user.ts"
   ],
   "scanned_code_files": [
-    "src/util/UranusStringUtils.ts",
+    "src/util/string.ts",
     "src/component/organization/card/UranusOrgCard.vue",
     "src/component/organization/view/UranusOrgTeamView.vue",
     "src/component/organization/view/UranusOrgListView.vue",

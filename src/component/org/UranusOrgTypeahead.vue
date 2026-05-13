@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import { apiBaseUrl } from '@/util/UranusUtils.ts'
+import { apiBaseUrl } from '@/util/util.ts'
 import type { OrgSelectInfo } from '@/domain/org/orgSelectInfo.model.ts'
 import type { CSSProperties } from 'vue'
 

@@ -50,7 +50,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusImageEditDialog from './UranusImageEditDialog.vue'
 import { apiFetch } from '@/api'
-import { buildPlutoSlotImageUrl } from '@/util/UranusUtils'
+import { buildPlutoSlotImageUrl } from '@/util/util.ts'
 import { type PlutoImage, loadPlutoImage } from '@/domain/image/plutoImage.model.ts'
 
 const { t } = useI18n()

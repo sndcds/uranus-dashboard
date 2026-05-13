@@ -23,7 +23,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
-import { formatDate } from '@/util/uranus-format-date-time.ts'
+import { formatDate } from '@/util/datetime.ts'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 

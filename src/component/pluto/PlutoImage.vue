@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useThemeStore } from '@/store/themeStore.ts'
-import { buildPlutoImageUrl } from '@/util/UranusUtils.ts'
+import { buildPlutoImageUrl } from '@/util/util.ts'
 
 const themeStore = useThemeStore()
 
