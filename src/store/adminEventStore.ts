@@ -56,17 +56,20 @@ export const useAdminEventStore = defineStore('uranusAdminEvent', () => {
         )
     }
 
+    function normalizeArray<T>(arr: T[] | null | undefined): T[] {
+        return Array.isArray(arr) ? arr : []
+    }
+
     function isTicketTabEqual() {
         const a = draft.value
         const b = original.value
         if (a === b) return true
         if (!a || !b) return false
 
-        const aFlags = a.ticketFlags
-        const bFlags = b.ticketFlags
+        const aFlags = normalizeArray(a.ticketFlags)
+        const bFlags = normalizeArray(b.ticketFlags)
+
         const sameTicketFlags =
-            Array.isArray(aFlags) &&
-            Array.isArray(bFlags) &&
             aFlags.length === bFlags.length &&
             new Set(aFlags).size === new Set(bFlags).size &&
             [...aFlags].every(v => bFlags.includes(v))
