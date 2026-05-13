@@ -60,6 +60,38 @@ export const useAdminEventStore = defineStore('uranusAdminEvent', () => {
         return Array.isArray(arr) ? arr : []
     }
 
+
+    function isEventLinksEqual() {
+        const a = draft.value
+        const b = original.value
+
+        if (a === b) return true
+        if (!a || !b) return false
+
+        const normalize = (v: any) => (v ?? '').trim()
+
+        const draftLinks = a.eventLinks ?? []
+        const originalLinks = b.eventLinks ?? []
+
+        if (draftLinks.length !== originalLinks.length) return false
+        if (normalize(a.sourceUrl) !== normalize(b.sourceUrl)) return false
+
+        const isEqual = (x: any, y: any) =>
+            x.label === y.label &&
+            x.type === y.type &&
+            normalize(x.url) === normalize(y.url)
+
+        const allMatch = draftLinks.every(d =>
+            originalLinks.some(o => isEqual(d, o))
+        )
+
+        const allOriginalMatch = originalLinks.every(o =>
+            draftLinks.some(d => isEqual(d, o))
+        )
+
+        return allMatch && allOriginalMatch
+    }
+
     function isTicketTabEqual() {
         const a = draft.value
         const b = original.value
@@ -166,6 +198,7 @@ export const useAdminEventStore = defineStore('uranusAdminEvent', () => {
         isDirty,
         isVenueTabEqual,
         isRegisterTabEqual,
+        isEventLinksEqual,
         isTicketTabEqual,
         hasDates,
         hasMultipleDates,

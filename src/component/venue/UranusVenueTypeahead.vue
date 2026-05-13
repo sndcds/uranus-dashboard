@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 import { apiBaseUrl } from '@/util/util.ts'
 import type { VenueSelectInfo } from '@/domain/venue/venueSelectInfo.model.ts'
 import type { CSSProperties } from 'vue'
@@ -51,25 +51,37 @@ const isOpen = ref(false)
 const ignoreQueryWatch = ref(false)
 const inputRef = ref<HTMLInputElement | null>(null)
 
-const popoverStyle = computed<CSSProperties>(() => {
-  if (!inputRef.value) {
-    return {
-      position: 'absolute',
-      top: '0px',
-      left: '0px',
-      width: '0px',
-      zIndex: 1000
-    }
-  }
-  const rect = inputRef.value.getBoundingClientRect()
-  return {
-    position: 'absolute',
-    top: `${rect.bottom + window.scrollY}px`,
-    left: `${rect.left + window.scrollX}px`,
+const popoverStyle = ref<CSSProperties>({
+  position: 'fixed',
+  top: '0px',
+  left: '0px',
+  width: '0px',
+  zIndex: 1000
+})
+
+function updatePopoverPosition() {
+  const el = inputRef.value
+  if (!el) return
+
+  const rect = el.getBoundingClientRect()
+
+  popoverStyle.value = {
+    position: 'fixed',
+    top: `${rect.bottom}px`,
+    left: `${rect.left}px`,
     width: `${rect.width}px`,
     zIndex: 1000
   }
-})
+}
+
+function handleReposition() {
+  if (isOpen.value) {
+    updatePopoverPosition()
+  }
+}
+
+window.addEventListener('scroll', handleReposition, true)
+window.addEventListener('resize', handleReposition)
 
 watch(query, (val) => {
   if (ignoreQueryWatch.value) return
@@ -100,6 +112,10 @@ async function fetchVenues(q: string) {
     results.value = json.data ?? []
     isOpen.value = results.value.length > 0
     selectedIndex.value = -1
+
+    if (isOpen.value) {
+      updatePopoverPosition()
+    }
   } catch (err) {
     console.error(err)
     results.value = []
@@ -155,14 +171,13 @@ function selectVenue(venue: VenueSelectInfo) {
   min-height: 100px;
   max-height: 400px;
   overflow-y: auto;
-  border: 0px solid #ccc;
-  background: white;
+  border: 1px solid var(--uranus-card-border-color);
+  background: var(--uranus-bg);
   z-index: 1000;
   padding: 0;
   margin: 0;
   list-style: none;
   border-radius: 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .popover li {
