@@ -61,7 +61,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
+import { uranusStringInterpolate } from '@/util/string.ts'
 
 interface Notification {
   event_uuid: string

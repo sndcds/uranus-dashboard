@@ -50,7 +50,7 @@ import type { PortalListItem } from '@/domain/portal/portalList.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
-import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
+import { uranusStringInterpolate } from '@/util/string.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 

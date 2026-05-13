@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
+import { uranusStringInterpolate } from '@/util/string.ts'
 
 const { t } = useI18n()
 

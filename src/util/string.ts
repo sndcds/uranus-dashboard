@@ -1,5 +1,5 @@
 /*
-    src/util/UranusStringUtils.ts
+    src/util/string.ts
  */
 
 // TODO: Check

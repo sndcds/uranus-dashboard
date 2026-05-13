@@ -100,7 +100,7 @@
           <UranusLink
               v-for="(link, index) in event.eventLinks"
               :key="index"
-              :url="link.url!"
+              :url="uranusEnsureHttpOrHttps(link.url)"
               :type="link.type"
               :label="link.label"
               size="20px"
@@ -155,7 +155,7 @@
           <!-- Online Event -->
           <div v-if="event.onlineLink" class="uranus-public-event-info-card">
             <UranusIconAction
-                :to="event.onlineLink"
+                :to="uranusEnsureHttpOrHttps(event.onlineLink)"
                 :label="t('online_event_link')"
                 :icon="Video"
                 style="padding-left: 0;"
@@ -169,7 +169,7 @@
 
             <UranusIconAction
                 v-if="event.registrationLink"
-                :to="event.registrationLink"
+                :to="uranusEnsureHttpOrHttps(event.registrationLink)"
                 :label="t('event_registration_link')"
                 :icon="Link"
                 style="padding-left: 0;"
@@ -210,7 +210,7 @@
                 v-if="event.ticketLink"
                 :label="t('event_ticket_link')"
                 :icon="Ticket"
-                :to="event.ticketLink"
+                :to="uranusEnsureHttpOrHttps(event.ticketLink)"
                 style="padding-left: 0;"
             />
           </div>
@@ -271,8 +271,9 @@ import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 import { type PublicEvent, mapPublicEventFromDTO } from '@/domain/event/publicEvent.model.ts'
 import { type PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
-import { uranusAgeRangeInfo, uranusPriceText, uranusStringInterpolate } from '@/util/UranusStringUtils.ts'
+import { uranusAgeRangeInfo, uranusPriceText, uranusStringInterpolate } from '@/util/string.ts'
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
+import { uranusEnsureHttpOrHttps } from '@/util/url.ts'
 
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
 import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'

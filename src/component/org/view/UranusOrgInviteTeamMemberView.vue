@@ -8,7 +8,7 @@
         :title="t('invite_team_member')"
         :subtitle="t('invite_organization_team_member')" />
 
-    <UranusHelpPopup baseUrl="/help/invite-organization-team-member" />
+    <UranusHelpPopup baseUrl="/help/invite-org-team-member" />
 
     <UranusForm @submit.prevent="onSubmit">
       <UranusTextfield

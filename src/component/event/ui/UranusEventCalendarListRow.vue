@@ -56,7 +56,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
-import { uranusFormatDayMonth } from '@/util/UranusStringUtils.ts'
+import { uranusFormatDayMonth } from '@/util/string.ts'
 import { ApiError, apiFetch } from '@/api.ts'
 import type { PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 import { mapPublicEventFromDTO, type PublicEvent } from '@/domain/event/publicEvent.model.ts'

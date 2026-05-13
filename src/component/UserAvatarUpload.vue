@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { apiFetch } from '@/api.ts'
-import { apiBaseUrl } from '@/util/UranusUtils.ts'
+import { apiBaseUrl } from '@/util/util.ts'
 import { useUserStore } from '@/store/userStore.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'

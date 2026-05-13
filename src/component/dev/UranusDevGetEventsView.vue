@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { apiBaseUrl } from '@/util/UranusUtils.ts'
+import { apiBaseUrl } from '@/util/util.ts'
 import UranusVenueTypeahead from '@/component/venue/UranusVenueTypeahead.vue'
 import type {VenueSelectInfo} from "@/domain/venue/venueSelectInfo.model.ts";
 

@@ -126,7 +126,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { ApiError } from '@/api.ts'
-import {uranusFormatEventDateTime } from '@/util/UranusUtils.ts'
+import {uranusFormatEventDateTime } from '@/util/util.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from "@/component/ui/UranusCard.vue";
@@ -137,7 +137,7 @@ import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Eye, Pencil, Trash, Calendar, MapPin, Building, Video } from 'lucide-vue-next'
 import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
-import { uranusPluralizedText, uranusStringInterpolate } from "@/util/UranusStringUtils.ts";
+import { uranusPluralizedText, uranusStringInterpolate } from "@/util/string.ts";
 
 const placeholderImage = '/assets/event-dummy.png'
 
