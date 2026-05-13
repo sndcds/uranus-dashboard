@@ -95,12 +95,20 @@
 
         <!-- URLs -->
         <div
-            v-if="event.eventLinks && event.eventLinks.length > 0"
+            v-if="event.eventLinks && event.eventLinks.length > 0 || event.orgWebLink"
             class="uranus-public-event-detail-links">
+          <UranusLink
+              v-if="event.orgWebLink"
+              key="org-web-link"
+              :url="uranusEnsureHttpOrHttps(event.orgWebLink)"
+              type="web"
+              size="20px"
+          />
+
           <UranusLink
               v-for="(link, index) in event.eventLinks"
               :key="index"
-              :url="uranusEnsureHttpOrHttps(link.url)"
+              :url="uranusEnsureHttpOrHttps(link.url!)"
               :type="link.type"
               :label="link.label"
               size="20px"

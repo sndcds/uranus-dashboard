@@ -108,23 +108,7 @@ onMounted(() => {
   }
 })
 
-const isDirty = computed(() => {
-  const draftLinks = store.draft?.eventLinks ?? []
-  const originalLinks = store.original?.eventLinks ?? []
-
-  if (draftLinks.length !== originalLinks.length) return true
-  if (store.draft?.sourceUrl !== store.original?.sourceUrl) return true
-
-  const isEqual = (a: EventLink, b: EventLink) =>
-      a.label === b.label &&
-      a.type === b.type &&
-      a.url === b.url
-
-  const allMatch = draftLinks.every(d => originalLinks.some(o => isEqual(d, o)))
-  const allOriginalMatch = originalLinks.every(o => draftLinks.some(d => isEqual(d, o)))
-
-  return !(allMatch && allOriginalMatch)
-})
+const isDirty = computed(() => { return !store.isEventLinksEqual() })
 
 watch(isDirty, (value) => {
   emit('dirty-change', value)
@@ -142,7 +126,7 @@ function removeUrl(index: number) {
 }
 
 async function onCommit() {
-  if (!store.draft) return
+  if (!store.draft || !store.original) return
   store.saving = true
   store.error = null
 
@@ -162,9 +146,10 @@ async function onCommit() {
       body: JSON.stringify(payload),
     })
 
-    store.original!.eventLinks = store.draft.eventLinks!.map(
+    store.original.eventLinks = store.draft.eventLinks!.map(
         u => new EventLink(u.label, u.type, u.url)
     )
+    store.original.sourceUrl = store.draft.sourceUrl
   } catch (err) {
     console.error(err)
     store.error = 'Failed to save event URLs'
@@ -174,10 +159,11 @@ async function onCommit() {
 }
 
 function resetUrlsTab() {
-  if (!store.draft) return
+  if (!store.draft || !store.original) return
   store.draft.eventLinks = store.original?.eventLinks?.map(
       u => new EventLink(u.label, u.type, u.url)
   ) ?? []
+  store.draft.sourceUrl = store.original.sourceUrl
 }
 </script>
 
