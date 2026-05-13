@@ -4,6 +4,14 @@
 
 <template>
   <section class="price-tab">
+
+    draft: {{ JSON.stringify(draftEvent.ticketFlags, null, 2) }}<br>
+    original: {{ JSON.stringify(store.original!.ticketFlags, null, 2) }}
+
+    <!--
+      original: {{ JSON.stringify(store.original, null, 2) }}
+    -->
+
     <UranusCard class="ticket-options">
       <h2>{{ t('event_ticket_options') }}</h2>
       <UranusCheckbox
