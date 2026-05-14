@@ -6,7 +6,7 @@
     <h1 class="uranus-admin-page-title">{{ t('edit_portal') }}</h1>
     <p>{{ portalStore.draft?.name }}</p>
 
-    <nav class="tabs">
+    <nav class="uranus-tabs">
       <button
           v-for="tab in tabs"
           :key="tab.key"
@@ -16,14 +16,14 @@
         <span>{{ t(tab.labelKey) }}</span>
         <span
             v-if="isTabDirty(tab.key)"
-            class="tab-dirty-indicator"
-            title="Ungespeicherte Änderungen"
-            aria-label="Ungespeicherte Änderungen"
+            class="uranus-tab-dirty-indicator"
+            :title="t('unsaved_changes')"
+            :aria-label="t('unsaved_changes')"
         ></span>
       </button>
     </nav>
 
-    <section class="tab-content">
+    <section class="uranus-tab-content">
       <component
           :is="currentTabComponent"
           @dirty-change="setActiveTabDirty"
@@ -31,25 +31,11 @@
     </section>
   </template>
 
-  <UranusModal
+  <UranusUnsavedChangesModal
       :show="showUnsavedChangesModal"
-      title="Ungespeicherte Änderungen"
-      max-width="520px"
       @close="closeUnsavedChangesModal"
-  >
-    <p class="unsaved-changes-text">
-      Es gibt ungespeicherte Änderungen. Möchtest du die Bearbeitung verwerfen oder zur Bearbeitung zurückkehren?
-    </p>
-
-    <template #actions>
-      <UranusButton variant="tertiary" @click="closeUnsavedChangesModal">
-        Zurück zur Bearbeitung
-      </UranusButton>
-      <UranusButton variant="danger" @click="discardChangesAndLeave">
-        Bearbeitung verwerfen
-      </UranusButton>
-    </template>
-  </UranusModal>
+      @confirm="discardChangesAndLeave"
+  />
 </template>
 
 <script setup lang="ts">
@@ -61,11 +47,10 @@ import UranusAdminPortalBaseTab from '@/component/portal/editor/UranusAdminPorta
 import UranusAdminPortalPrefilterTab from '@/component/portal/editor/UranusAdminPortalPrefilterTab.vue'
 import UranusAdminPortalStyleTab from '@/component/portal/editor/UranusAdminPortalStyleTab.vue'
 import UranusAdminPortalGeometryTab from '@/component/portal/editor/UranusAdminPortalGeometryTab.vue'
-import UranusAdminPortalImagesTab from "@/component/portal/editor/UranusAdminPortalImagesTab.vue";
-import UranusButton from '@/component/ui/UranusButton.vue'
-import UranusModal from '@/component/uranus/UranusModal.vue'
+import UranusAdminPortalImagesTab from '@/component/portal/editor/UranusAdminPortalImagesTab.vue'
 import { useUranusPortalStore } from '@/store/portalStore.ts'
 import type { PortalDTO } from '@/domain/portal/portal.model.ts'
+import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChangesModal.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
@@ -170,50 +155,3 @@ onUnmounted(() => {
   portalStore.clear()
 })
 </script>
-
-<style scoped>
-.tabs {
-  display: flex;
-  gap: 0.5rem;
-  border-bottom: 1px solid var(--uranus-color);
-}
-
-.tabs button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.tabs button.active {
-  border-bottom: 4px solid var(--uranus-color);
-  font-weight: bold;
-}
-
-.tabs button.dirty {
-  color: var(--uranus-link-color);
-}
-
-.tab-dirty-indicator {
-  display: inline-block;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  background: var(--uranus-link-color);
-}
-
-.tab-content {
-  width: 100%;
-  max-width: 1024px;
-  padding: 1rem 0;
-}
-
-.unsaved-changes-text {
-  margin: 0;
-  line-height: 1.5;
-}
-</style>

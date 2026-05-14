@@ -15,9 +15,10 @@
       </div>
 
       <UranusDashboardHero :title="t('edit_event')"/>
+
       <div v-if="adminEventStore.loading">Loading…</div>
       <template v-else-if="adminEventStore.isLoaded && adminEventStore.draft">
-        <nav class="tabs">
+        <nav class="uranus-tabs">
           <button
               v-for="tab in tabs"
               :key="tab.key"
@@ -27,18 +28,17 @@
             <span>{{ t(tab.labelKey) }}</span>
             <span
                 v-if="isTabDirty(tab.key)"
-                class="tab-dirty-indicator"
+                class="uranus-tab-dirty-indicator"
                 :aria-label="unsavedChangesLabel"
                 :title="unsavedChangesLabel"
             ></span>
           </button>
         </nav>
-
       </template>
     </div>
 
     <template v-if="adminEventStore.isLoaded && adminEventStore.draft">
-      <section class="tab-content">
+      <section class="uranus-tab-content">
         <component
             :is="currentTabComponent"
             @dirty-change="setActiveTabDirty"
@@ -124,7 +124,7 @@ const draftEvent = computed(() => adminEventStore.draft ?? {
 
 const eventUuid = computed(() => { return route.params.uuid })
 const unsavedChangesLabel = computed(() =>
-    te('unsaved_changes') ? t('unsaved_changes') : 'Es gibt ungespeicherte Änderungen.'
+    t('unsaved_changes')
 )
 
 type TabKey = 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participate' | 'register' | 'ticket' | 'visitor'
@@ -256,65 +256,18 @@ async function updateReleaseFields(payload: {
 }
 </script>
 
-
 <style scoped>
 .event-editor {
+  padding: 0 32px 32px 32px;
   width: 100%;
 }
 
 .event-editor-status-header {
+  padding-top: 32px;
   position: sticky;
-  top: 0;
+  top: 0px;
   z-index: 10;
   background: var(--uranus-bg);
-  padding: 1rem;
-  width: 100%;
-  overflow: hidden;
 }
 
-.tabs {
-  display: flex;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  border-bottom: 1px solid var(--uranus-color);
-}
-
-.tabs button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-size: 1rem;
-
-}
-
-.tabs button.active {
-  border-bottom: 3px solid var(--uranus-color);
-  font-weight: bold;
-}
-
-.tabs button.dirty {
-  color: var(--uranus-link-color);
-}
-
-.tab-dirty-indicator {
-  display: inline-block;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  background: var(--uranus-link-color);
-}
-
-.tab-content {
-  padding: 1rem;
-}
-
-.unsaved-changes-text {
-  margin: 0;
-  line-height: 1.5;
-}
 </style>

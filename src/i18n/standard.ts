@@ -730,6 +730,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Discard changes',
         da: 'Kassér ændringer',
     },
+    unsaved_changes: {
+        de: 'Es gibt ungespeicherte Änderungen',
+        en: 'There are unsaved changes',
+        da: 'Der er ændringer, som ikke er gemt',
+    }
 }
 
 export default uranusI18nStandardTranslations

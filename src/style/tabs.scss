@@ -1,0 +1,41 @@
+.uranus-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--uranus-color);
+}
+
+.uranus-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+
+}
+
+.uranus-tabs button.active {
+  border-bottom: 4px solid var(--uranus-color);
+  font-weight: bold;
+}
+
+.uranus-tabs button.dirty {
+  color: var(--uranus-link-color);
+}
+
+.uranus-tab-dirty-indicator {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--uranus-link-color);
+}
+
+.uranus-tab-content {
+  width: 100%;
+  max-width: 1024px;
+  padding: 1rem 0;
+}

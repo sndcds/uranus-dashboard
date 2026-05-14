@@ -144,6 +144,7 @@
   "modal_unsaved_changes_message": "Es gibt ungespeicherte Änderungen. Möchtest du die Bearbeitung verwerfen oder zur Bearbeitung zurückkehren?",
   "modal_unsaved_changes_cancel": "Weiter bearbeiten",
   "modal_unsaved_changes_confirm": "Bearbeitung verwerfen",
+  "unsaved_changes": "Es gibt ungespeicherte Änderungen",
   "signup": "Registrieren",
   "signup_subtitle": "Erstelle dein Konto in wenigen Schritten",
   "signup_loading": "Konto wird erstellt…",
