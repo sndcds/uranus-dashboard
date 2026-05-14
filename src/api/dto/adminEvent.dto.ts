@@ -9,7 +9,7 @@ export interface AdminEventDTO {
     release_status: string | null
     release_date: string | null
     external_id: string | null
-    source_url?: string | null
+    source_link?: string | null
     custom?: string | null
     style?: string | null
 

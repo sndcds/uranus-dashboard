@@ -4,7 +4,6 @@
 
 <template>
   <section class="links-tab" v-if="store.draft">
-
     <h2>{{ t('links') }}</h2>
       <UranusInput
           id="event-link-title"

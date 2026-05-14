@@ -87,7 +87,7 @@ import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChanges
 const showReleaseModal = ref(false)
 const showUnsavedChangesModal = ref(false)
 
-const { t, te, locale } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const router = useRouter()
 const adminEventStore = useAdminEventStore()
