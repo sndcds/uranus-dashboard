@@ -97,16 +97,28 @@ onBeforeUnmount(() => {
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
+  // important for small screens
+  overflow-y: auto;
 }
 
 .uranus-modal__content {
   display: flex;
   flex-direction: column;
-  gap: 0;
   width: 100%;
+  max-width: v-bind(maxWidth);
+
   background: var(--uranus-bg);
   border-radius: var(--uranus-card-border-radius);
   box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+
+  max-height: calc(100vh - 2rem);
+}
+
+.uranus-modal__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
 }
 
 .uranus-modal__header {
@@ -126,10 +138,6 @@ onBeforeUnmount(() => {
   margin: 0;
   font-size: 1.4rem;
   font-weight: 600;
-}
-
-.uranus-modal__body {
-  padding: clamp(1.25rem, 3vw, 1.75rem);
 }
 
 .uranus-modal-fade-enter-active,
@@ -170,5 +178,10 @@ onBeforeUnmount(() => {
 
 .uranus-modal__close:hover svg {
   transform: scale(1.2);
+}
+
+.uranus-modal__actions {
+  border-top: 1px solid var(--uranus-color-7);
+  padding: 0.5rem 2rem 2rem 1rem;
 }
 </style>
