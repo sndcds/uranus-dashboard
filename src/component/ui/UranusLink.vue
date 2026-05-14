@@ -33,7 +33,7 @@ import UranusSquareSVG from '@/component/ui/UranusSquareSVG.vue'
 const props = defineProps<{
   url: string;
   type: string | null;
-  label: string | null;
+  label?: string | null;
   size?: string;
 }>();
 

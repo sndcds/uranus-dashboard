@@ -14,7 +14,9 @@
         :to="`/event/${date.eventUuid}/date/${date.uuid}`"
         :class="{ 'is-current': date.uuid === currentDate?.uuid }"
     >
-      {{ formatDate(date.startDate ?? '', locale) }}<br>
+      <p>
+        {{ formatDate(date.startDate ?? '', locale) }}<template v-if="date.venueCity">, {{ date.venueCity }}</template>
+      </p>
     </router-link>
   </div>
 </template>
@@ -34,20 +36,29 @@ const props = defineProps<{
 
 const sortedDates = computed(() => {
   const allDates = [...props.dates]
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  // const now = new Date()
 
-  // add currentDate if present and not already included
+  // Add currentDate if present and not already included
   if (props.currentDate) {
     const exists = allDates.some(d => d.uuid === props.currentDate!.uuid)
+
     if (!exists) {
       allDates.push(props.currentDate)
     }
   }
 
-  return allDates.sort((a, b) => {
-    return new Date(a.startDate ?? '').getTime()
-        - new Date(b.startDate ?? '').getTime()
-  })
+  return allDates
+      .filter(date => {
+        if (!date.startDate) return false
 
+        return new Date(date.startDate) >= today
+      })
+      .sort((a, b) => {
+        return new Date(a.startDate!).getTime()
+            - new Date(b.startDate!).getTime()
+      })
 })
 </script>
 
