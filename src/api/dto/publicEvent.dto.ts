@@ -60,6 +60,7 @@ export interface PublicEventDTO {
     subtitle?: string
     description?: string
     summary?: string
+    source_link?: string
     image: PlutoImageDTO | null
 
     event_types: EventTypeDTO[]
