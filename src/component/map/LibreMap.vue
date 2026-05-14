@@ -1,3 +1,7 @@
+<!--
+  src/component/map/LibreMap.vue
+-->
+
 <template>
   <div ref="mapContainer" class="map-container"></div>
 </template>
@@ -366,8 +370,8 @@ onBeforeUnmount(() => {
 
 <style>
 .maplibregl-popup-content {
-  padding: 10px !important;
-  border-radius: 2px !important;
+  padding: 0;
+  border-radius: 8px !important;
   background: var(--uranus-bg) !important;
   overflow: hidden;
   border: none !important;
