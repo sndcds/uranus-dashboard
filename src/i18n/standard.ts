@@ -705,7 +705,26 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Grouped',
         da: 'Grupperet',
     },
-
+    modal_unsaved_changes_title: {
+        de: 'Ungespeicherte Änderungen',
+        en: 'Unsaved changes',
+        da: 'Ikke gemte ændringer',
+    },
+    modal_unsaved_changes_message: {
+        de: 'Es gibt ungespeicherte Änderungen. Möchtest du die Bearbeitung verwerfen oder zur Bearbeitung zurückkehren?',
+        en: 'You have unsaved changes. Do you want to discard them or continue editing?',
+        da: 'Du har ikke gemte ændringer. Vil du kassere dem eller fortsætte redigeringen?',
+    },
+    modal_unsaved_changes_cancel: {
+        de: 'Weiter bearbeiten',
+        en: 'Continue editing',
+        da: 'Fortsæt redigering',
+    },
+    modal_unsaved_changes_confirm: {
+        de: 'Bearbeitung verwerfen',
+        en: 'Discard changes',
+        da: 'Kassér ændringer',
+    },
 }
 
 export default uranusI18nStandardTranslations

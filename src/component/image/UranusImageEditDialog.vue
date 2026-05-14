@@ -3,76 +3,98 @@
 -->
 
 <template>
-  <div class="uranus-modal-backdrop">
-    <UranusCard class="uranus-modal-card">
-      <UranusForm class="uranus-form-wide" style="max-height: 800px;">
-        <h2>{{ title }}</h2>
+  <UranusModal
+      :show="true"
+      :title="title"
+      max-width="600px"
+      @close="onCancel"
+  >
+    <UranusForm class="uranus-form-wide">
 
-        <UranusFormRow>
+      <UranusFormRow>
+        <div
+            class="uranus-image-preview checker-bg"
+            @click="onImageClick($event)"
+        >
+          <img
+              v-if="localImageMeta.url"
+              :src="cacheBustedUrl"
+              class="uranus-preview-img checker-bg"
+          />
 
-          <div class="uranus-image-preview checker-bg" @click="onImageClick($event)">
-            <img
-                v-if="localImageMeta.url"
-                :src="cacheBustedUrl"
-                class="uranus-preview-img checker-bg"
-            />
-            <div v-else class="uranus-no-img">{{ t('click_to_upload') }}</div>
-            <input
-                ref="fileInput"
-                type="file"
-                accept="image/*"
-                class="uranus-hidden-file"
-                @change="onFileSelected"
-            />
-            <div v-if="localImageMeta.focusX !== null && localImageMeta.focusY !== null"
-                 class="focus-point"
-                 :style="{ left: `${localImageMeta.focusX * 100}%`, top: `${localImageMeta.focusY * 100}%`}">
-            </div>
+          <div v-else class="uranus-no-img">
+            {{ t('click_to_upload') }}
           </div>
-        </UranusFormRow>
 
-        <UranusFormRow>
-          <UranusTextfield
-              id="alt-text"
-              v-model="localImageMeta.altText as string"
-              :label="t('image_alt_text')"
-          />
-        </UranusFormRow>
-
-        <UranusFormRow>
-          <UranusTextfield
-              id="creator-name"
-              v-model="localImageMeta.creator as string"
-              :label="t('image_creator_name')"
-          />
-        </UranusFormRow>
-
-        <UranusFormRow :cols="2">
-          <UranusTextfield
-              id="copyright"
-              v-model="localImageMeta.copyright as string"
-              :label="t('image_copyright')"
+          <input
+              ref="fileInput"
+              type="file"
+              accept="image/*"
+              class="uranus-hidden-file"
+              @change="onFileSelected"
           />
 
-          <UranusLabel id="event-license" :label="t('license')">
-            <UranusLicenseSelect v-model="localImageMeta.licenseType" />
-          </UranusLabel>
-        </UranusFormRow>
+          <div
+              v-if="localImageMeta.focusX !== null && localImageMeta.focusY !== null"
+              class="focus-point"
+              :style="{
+              left: `${localImageMeta.focusX * 100}%`,
+              top: `${localImageMeta.focusY * 100}%`
+            }"
+          />
+        </div>
+      </UranusFormRow>
 
-        <UranusTextarea
-            id="event-description"
-            v-model="descriptionValue"
-            :label="t('image_description')"
-            height="100px" resize="none"
+      <UranusFormRow>
+        <UranusTextfield
+            id="alt-text"
+            v-model="localImageMeta.altText as string"
+            :label="t('image_alt_text')"
+        />
+      </UranusFormRow>
+
+      <UranusFormRow>
+        <UranusTextfield
+            id="creator-name"
+            v-model="localImageMeta.creator as string"
+            :label="t('image_creator_name')"
+        />
+      </UranusFormRow>
+
+      <UranusFormRow :cols="2">
+        <UranusTextfield
+            id="copyright"
+            v-model="localImageMeta.copyright as string"
+            :label="t('image_copyright')"
         />
 
-        <UranusFormActions>
-          <UranusButton :onClick="onCancel">{{ t('cancel') }}</UranusButton>
-          <UranusButton :onClick="onSave">{{ t('save') }}</UranusButton>
-        </UranusFormActions>
-      </UranusForm>
-    </UranusCard>
-  </div>
+        <UranusLabel id="event-license" :label="t('license')">
+          <UranusLicenseSelect v-model="localImageMeta.licenseType" />
+        </UranusLabel>
+      </UranusFormRow>
+
+      <UranusTextarea
+          id="event-description"
+          v-model="descriptionValue"
+          :label="t('image_description')"
+          height="100px"
+          resize="none"
+      />
+
+    </UranusForm>
+
+    <template #actions>
+      <UranusFormActions>
+        <UranusButton :onClick="onCancel">
+          {{ t('cancel') }}
+        </UranusButton>
+
+        <UranusButton :onClick="onSave">
+          {{ t('save') }}
+        </UranusButton>
+      </UranusFormActions>
+    </template>
+  </UranusModal>
 </template>
 
 <script setup lang="ts">
@@ -81,7 +103,6 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch, ApiError } from '@/api.ts'
 import { createPlutoImage } from '@/domain/image/plutoImage.model.ts'
 import type { PlutoImageDTO } from '@/api/dto/plutoImage.dto.ts'
-import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import { buildPlutoEditImageUrl } from '@/util/util.ts'
 import UranusTextarea from '@/component/ui/UranusTextarea.vue'
@@ -89,8 +110,9 @@ import UranusLicenseSelect from '@/component/select/UranusLicenseSelect.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
-import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusModal from "@/component/uranus/UranusModal.vue";
+import UranusFormActions from "@/component/ui/UranusFormActions.vue";
 
 const props = defineProps<{
   addModeTitle?: string | null
@@ -251,26 +273,6 @@ onMounted(async () => {
 </script>
 
 <style>
-.uranus-modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--uranus-backdrop-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.uranus-modal-card {
-  width: 90%;
-  max-width: 600px;
-  border-radius: 16px;
-  padding: var(--uranus-dialog-padding);
-}
-
 .uranus-image-preview {
   display: flex;
   position: relative;
