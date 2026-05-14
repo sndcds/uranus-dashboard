@@ -20,6 +20,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Help',
         da: 'Hjælp',
     },
+    details: {
+        de: 'Details',
+        en: 'Details',
+        da: 'Detaljer',
+    },
     accept: {
         de: 'Annehmen',
         en: 'Accept',

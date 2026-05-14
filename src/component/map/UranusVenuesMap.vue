@@ -9,6 +9,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import maplibregl, {
   type GeoJSONSource,
   type MapLayerMouseEvent,
@@ -18,6 +19,8 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { apiFetch } from '@/api.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 import venueMarkerIcon from '@/assets/map/marker.png'
+
+const { t } = useI18n()
 
 type BBox4326 = [number, number, number, number]
 
@@ -377,15 +380,33 @@ function createVenuePopupHtml(feature: MapGeoJSONFeature) {
   const properties = feature.properties ?? {}
   const uuid = String(properties.uuid ?? '')
   const infoUrl = uuid
-      ? router.resolve({ name: 'venue-details', params: { uuid } }).href
+      ? router.resolve({
+        name: 'venue-details',
+        params: { uuid },
+      }).href
       : '#'
 
   return `
-    <div class="venue-map-popup">
-      <strong class="venue-map-popup__title">${escapeHtml(String(properties.name ?? ''))}</strong>
-      <div class="venue-map-popup__city">${escapeHtml(String(properties.city ?? ''))}</div>
-      <div class="venue-map-popup__events">${Number(properties.upcomingEvents ?? 0)} kommende Events</div>
-      <a class="venue-map-popup__button" href="${escapeAttribute(infoUrl)}">Infos</a>
+    <div class="uranus-map-popup">
+      <div class="uranus-map-popup__header">
+        ${escapeHtml(t('venue'))}
+      </div>
+      <div class="uranus-map-popup__body">
+        <p class="uranus-map-popup__title-text">
+          ${escapeHtml(String(properties.name ?? ''))}
+        </p>
+        <p class="uranus-map-popup__text">
+          ${escapeHtml([properties.city, properties.country].filter(Boolean).join(', '))}
+        </p>
+      </div>
+      <div class="uranus-map-popup__footer">
+        <a
+          class="uranus-map-popup__action uranus-map-popup__action--button"
+          href="${escapeAttribute(infoUrl)}"
+        >
+          ${escapeHtml(t('details'))}
+        </a>
+      </div>
     </div>
   `
 }
@@ -434,58 +455,10 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .venues-map {
   width: 100%;
   height: 100%;
   min-height: 360px;
-}
-
-:global(.venue-map-popup) {
-  display: grid;
-  gap: 4px;
-  min-width: 180px;
-  color: var(--uranus-color);
-  background: var(--uranus-bg);
-}
-
-:global(.venue-map-popup__title) {
-  padding: 0.4rem;
-  font-size: 1rem;
-}
-
-:global(.venue-map-popup__city),
-:global(.venue-map-popup__events) {
-  padding: 0 0.4rem;
-  color: var(--uranus-color-3);
-}
-
-:global(.venue-map-popup__button) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-  margin-top: 6px;
-  padding: 5px 10px;
-  border-radius: 4px;
-  color: #ffffff;
-  background: #2563eb;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-:global(.maplibregl-popup-content) {
-  color: var(--uranus-color);
-  background: var(--uranus-bg);
-  border: 1px solid var(--uranus-color-6);
-}
-
-:global(.maplibregl-popup-tip) {
-  border-top-color: var(--uranus-bg);
-  border-bottom-color: var(--uranus-bg);
-}
-
-:global(.maplibregl-popup-close-button) {
-  color: var(--uranus-color);
 }
 </style>
