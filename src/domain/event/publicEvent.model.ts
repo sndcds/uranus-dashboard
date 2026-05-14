@@ -25,6 +25,7 @@ export interface PublicEvent {
     subtitle: string | null
     description: string | null
     summary: string | null
+    sourceUrl: string | null
     types: EventTypeModel[] // TODO: !!!!!
     tags: string[]
 
@@ -101,6 +102,7 @@ export function mapPublicEventFromDTO(dto: PublicEventDTO, dateUuid?: string): P
         title: dto.title ?? null,
         subtitle: dto.subtitle ?? null,
         description: dto.description ?? null,
+        sourceUrl: dto.source_link ?? null,
         summary: dto.summary ?? null,
         types,
         tags: Array.isArray(dto.tags) ? dto.tags.map(String) : [],
