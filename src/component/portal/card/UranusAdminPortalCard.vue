@@ -9,6 +9,16 @@
 
       <div class="uranus-card-button-container">
         <UranusButton
+            variant="secondary"
+            size="small"
+            :to="`/portal/${portalListItem.portalUuid}`"
+            target="_blank"
+        >
+          <template #icon><Eye /></template>
+          {{ t('preview') }}
+        </UranusButton>
+
+        <UranusButton
             v-if="portalListItem.canEditPortal"
             variant="secondary"
             size="small"
@@ -51,6 +61,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import { uranusStringInterpolate } from '@/util/string.ts'
+import { Eye } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })
 

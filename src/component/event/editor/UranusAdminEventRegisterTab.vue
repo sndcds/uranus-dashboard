@@ -151,6 +151,10 @@ function resetTab() {
   draft.value.registrationEmail = store.original.registrationEmail
   draft.value.registrationPhone = store.original.registrationPhone
 }
+
+defineExpose({
+  commitTab,
+})
 </script>
 
 <style scoped lang="scss">

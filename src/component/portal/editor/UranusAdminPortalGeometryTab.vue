@@ -78,4 +78,8 @@ function resetTab() {
   if (!store.draft || !store.original) return
   store.draft.spatialFilterMode = store.original.spatialFilterMode
 }
+
+defineExpose({
+  commitTab,
+})
 </script>

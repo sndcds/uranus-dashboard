@@ -25,18 +25,6 @@
       </UranusFormRow>
     </section>
 
-    <section class="portal-style-group">
-      <h2>Custom CSS</h2>
-      <UranusTextarea
-          id="portal-style-custom-css"
-          v-model="form.customCss"
-          label="CSS"
-          height="260px"
-          resize="vertical"
-          spellcheck="false"
-      />
-    </section>
-
     <UranusFormActions>
       <UranusButton @click="resetTab" :disabled="store.saving || !isDirty">
         {{ t('discard') }}
@@ -57,7 +45,6 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
-import UranusTextarea from '@/component/ui/UranusTextarea.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 
 type StyleFieldPath =
@@ -419,73 +406,73 @@ const styleGroups: Array<{ key: string, label: string, rows: StyleField[][] }> =
 const defaultStyleForm: PortalStyleForm = {
   customCss: '',
   portal: {
-    background: '#ffcc00',
-    padding: '2rem',
-    color: '#333',
-    fontFamily: 'Helvetica Neue, Arial',
+    background: 'var(--uranus-bg)',
+    padding: '0',
+    color: 'var(--uranus-color)',
+    fontFamily: 'inherit',
   },
   content: {
-    maxWidth: '1600px',
-    align: 'left',
+    maxWidth: 'none',
+    align: 'stretch',
   },
   header: {
     title: {
-      color: '#ffcc00',
-      fontSize: '2rem',
+      color: 'inherit',
+      fontSize: '1.6rem',
       fontWeight: 700,
-      lineHeight: 1.05,
+      lineHeight: 1,
     },
     description: {
-      color: 'black',
-      fontSize: '1.1rem',
+      color: 'inherit',
+      fontSize: '1rem',
       lineHeight: 1.4,
     },
   },
   eventGrid: {
-    gap: '20px',
-    minCardWidth: '260px',
+    gap: '1rem',
+    minCardWidth: '240px',
   },
   eventCard: {
-    background: '#ffcc66',
-    padding: '1rem',
-    gap: '1rem',
-    border: '1px solid green',
-    radius: '2px',
-    shadow: '0 1px 2px rgba(0,0,0,0.08)',
-    transition: '220ms ease',
+    background: 'transparent',
+    padding: '0',
+    gap: '0',
+    border: '0',
+    radius: '0',
+    shadow: 'none',
+    transition: '0.2s ease',
     hover: {
-      background: '#ff6600',
-      border: '1px solid green',
-      shadow: '0 3px 1px rgba(0,0,0,0.12)',
-      scale: 1.03,
+      background: 'transparent',
+      border: '0',
+      shadow: 'none',
+      scale: 1,
     },
   },
   eventCardImage: {
     background: 'transparent',
-    aspectRatio: '2 / 1',
-    borderRadius: '0.5rem',
+    aspectRatio: '7 / 5',
+    borderRadius: '0',
     objectFit: 'cover',
     filter: 'none',
-    transition: '220ms ease',
+    transition: '0.25s ease',
     hover: {
       filter: 'none',
-      scale: 1.03,
+      scale: 1.04,
     },
   },
   eventCardInfo: {
-    padding: '0.2rem',
-    background: '#ffcc99',
-    border: '1px solid green',
-    borderRadius: '2px',
-    color: '#ffcc00',
-    titleFontFamily: 'Helvetica-Neue, Arial',
-    titleFontSize: '2rem',
+    padding: '1rem',
+    background: 'transparent',
+    border: '0',
+    borderRadius: '0',
+    color: 'inherit',
+    titleFontFamily: 'inherit',
+    titleFontSize: '1.25rem',
     titleFontWeight: '700',
-    metaFontFamily: 'Helvetica-Neue, Arial',
-    metaFontSize: '2rem',
-    metaFontWeight: '500',
-    metaLineHeight: '1.05',
-    metaGap: '1.05',
+    metaFontFamily: 'inherit',
+    metaFontSize: '0.9rem',
+    metaFontWeight: '400',
+    metaLineHeight: '1.35',
+    metaGap: '0.2rem',
   },
 }
 
@@ -751,6 +738,10 @@ function resetTab() {
         : null
   }
 }
+
+defineExpose({
+  commitTab,
+})
 </script>
 
 <style scoped>

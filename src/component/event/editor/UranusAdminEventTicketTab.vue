@@ -203,6 +203,10 @@ function resetTab() {
   draft.ticketFlags = original.ticketFlags ?? null
   draft.ticketLink = original.ticketLink ?? null
 }
+
+defineExpose({
+  commitTab,
+})
 </script>
 
 <style lang="scss" scoped>

@@ -40,6 +40,7 @@
     <template v-if="adminEventStore.isLoaded && adminEventStore.draft">
       <section class="uranus-tab-content">
         <component
+            ref="activeTabComponentRef"
             :is="currentTabComponent"
             @dirty-change="setActiveTabDirty"
         />
@@ -83,6 +84,11 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import { StepBack, Rocket } from 'lucide-vue-next'
 import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChangesModal.vue'
+import { useSaveShortcut } from '@/composable/useSaveShortcut.ts'
+
+type EventEditorTabExpose = {
+  commitTab?: () => Promise<void> | void
+}
 
 const showReleaseModal = ref(false)
 const showUnsavedChangesModal = ref(false)
@@ -143,6 +149,7 @@ const tabs = [
 ] as const
 
 const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
+const activeTabComponentRef = ref<EventEditorTabExpose | null>(null)
 
 const hasDirtyTabs = computed(() =>
     Object.values(tabDirtyState.value).some(Boolean)
@@ -169,6 +176,15 @@ function isTabDirty(tabKey: TabKey) {
 function setActiveTabDirty(isDirty: boolean) {
   tabDirtyState.value[activeTab.value] = isDirty
 }
+
+async function saveActiveTab() {
+  if (adminEventStore.saving || !isTabDirty(activeTab.value)) return
+  await activeTabComponentRef.value?.commitTab?.()
+}
+
+useSaveShortcut(saveActiveTab, {
+  enabled: () => adminEventStore.isLoaded,
+})
 
 const currentTabComponent = computed(() => {
   switch (activeTab.value) {

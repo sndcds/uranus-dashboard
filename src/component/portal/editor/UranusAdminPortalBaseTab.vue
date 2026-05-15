@@ -124,4 +124,8 @@ function resetTab() {
   if (!draft || !original) return
   copyFields(original, draft)
 }
+
+defineExpose({
+  commitTab,
+})
 </script>

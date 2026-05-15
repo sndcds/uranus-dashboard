@@ -138,6 +138,10 @@ function resetAll() {
   store.draft.languages = [...store.original.languages!]
   store.draft.tags = [...store.original.tags!]
 }
+
+defineExpose({
+  commitTab: commitAll,
+})
 </script>
 
 <style scoped lang="scss">

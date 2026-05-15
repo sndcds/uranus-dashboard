@@ -124,6 +124,10 @@ function resetTab() {
       ? { lat: original.lat, lng: original.lon }
       : null
 }
+
+defineExpose({
+  commitTab,
+})
 </script>
 
 <style scoped lang="scss">

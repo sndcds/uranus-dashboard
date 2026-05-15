@@ -65,6 +65,108 @@
       </div>
     </section>
 
+    <section>
+      <h2>UranusIconAction</h2>
+
+      <h3>Icon-only Actions</h3>
+      <div class="grid icon-action-demo">
+        <UranusIconAction
+            title="Bearbeiten"
+            :icon="Edit"
+            :on-click="() => setIconActionMessage('Bearbeiten angeklickt')"
+        />
+        <UranusIconAction
+            title="Löschen"
+            :icon="Trash2"
+            :icon-size="18"
+            :on-click="() => setIconActionMessage('Löschen angeklickt')"
+        />
+        <UranusIconAction
+            title="Einstellungen"
+            :icon="Settings"
+            :icon-size="24"
+            :on-click="() => setIconActionMessage('Einstellungen angeklickt')"
+        />
+      </div>
+
+      <h3>Action mit Label</h3>
+      <div class="grid icon-action-demo">
+        <UranusIconAction
+            title="Synchronisieren"
+            label="Synchronisieren"
+            :icon="RefreshCcw"
+            :on-click="() => setIconActionMessage('Synchronisieren angeklickt')"
+        />
+        <UranusIconAction
+            title="Benachrichtigungen"
+            label="Benachrichtigungen"
+            :icon="Bell"
+            :on-click="() => setIconActionMessage('Benachrichtigungen angeklickt')"
+        />
+      </div>
+
+      <h3>Auswahlzustand</h3>
+      <div class="grid icon-action-demo">
+        <UranusIconAction
+            title="Listenansicht"
+            label="Liste"
+            :icon="Rows3"
+            :selected="selectedIconAction === 'list'"
+            :on-click="() => setSelectedIconAction('list')"
+        />
+        <UranusIconAction
+            title="Rasteransicht"
+            label="Raster"
+            :icon="LayoutGrid"
+            :selected="selectedIconAction === 'grid'"
+            :on-click="() => setSelectedIconAction('grid')"
+        />
+        <UranusIconAction
+            title="Kalenderansicht"
+            label="Kalender"
+            :icon="Calendar"
+            :selected="selectedIconAction === 'calendar'"
+            :on-click="() => setSelectedIconAction('calendar')"
+        />
+      </div>
+
+      <h3>Navigation</h3>
+      <div class="grid icon-action-demo">
+        <UranusIconAction
+            title="Interner Router-Link"
+            label="Theme View"
+            :icon="Route"
+            to="/dev-theme-view"
+        />
+        <UranusIconAction
+            title="Externer Link"
+            label="Website"
+            :icon="ExternalLink"
+            to="https://www.example.com"
+        />
+        <UranusIconAction
+            title="Kontakt per E-Mail"
+            label="E-Mail"
+            :icon="Mail"
+            to="mailto:hello@example.com"
+        />
+      </div>
+
+      <h3>Slot-Inhalt</h3>
+      <div class="grid icon-action-demo">
+        <UranusIconAction
+            title="Action mit Badge im Slot"
+            label="Inbox"
+            :icon="Inbox"
+            :on-click="() => setIconActionMessage('Inbox angeklickt')"
+        >
+          <span class="icon-action-badge">3</span>
+        </UranusIconAction>
+      </div>
+
+      <p class="icon-action-status">{{ iconActionMessage }}</p>
+    </section>
+
     <!-- Dashboard Buttons-->
     <section>
       <h2>UranusDashboardButton</h2>
@@ -118,6 +220,32 @@
     </section>
 
     <section>
+      <h2>UranusCalendarDaySelect</h2>
+
+      <div class="calendar-select-demo">
+        <div>
+          <h3>Einzelner Tag</h3>
+          <UranusCalendarDaySelect v-model="selectedCalendarDay" />
+          <p class="calendar-select-demo__value">
+            selectedCalendarDay: {{ selectedCalendarDay }}
+          </p>
+        </div>
+
+        <div>
+          <h3>Tag oder Zeitraum</h3>
+          <UranusCalendarDaySelect
+              v-model="selectedCalendarRange"
+              min-date="2026-05-01"
+              max-date="2026-12-31"
+          />
+          <p class="calendar-select-demo__value">
+            selectedCalendarRange: {{ selectedCalendarRange }}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
       <section class="chart-card">
         <h2>Monatsumsatz &ndash; Standard</h2>
         <p class="subtitle">Standard-Theme (CSS Custom Properties)</p>
@@ -153,8 +281,25 @@ import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 import UranusPrioritySelect from "@/component/ui/UranusPrioritySelect.vue";
 import UranusSegmentedSelect from "@/component/ui/UranusSegmentedSelect.vue";
 import UranusLineChart from "@/component/chart/UranusLineChart.vue";
+import UranusIconAction from "@/component/ui/UranusIconAction.vue";
+import UranusCalendarDaySelect from "@/component/ui/UranusCalendarDaySelect.vue";
 import {ref} from "vue";
-import {BarChart, Calendar, Clock} from "lucide-vue-next";
+import {
+  BarChart,
+  Bell,
+  Calendar,
+  Clock,
+  Edit,
+  ExternalLink,
+  Inbox,
+  LayoutGrid,
+  Mail,
+  RefreshCcw,
+  Route,
+  Rows3,
+  Settings,
+  Trash2
+} from "lucide-vue-next";
 
 const chartData = {
   x_axis: 'Monat',
@@ -185,6 +330,23 @@ const options = [
 ]
 
 const selected = ref('day')
+const selectedIconAction = ref<'list' | 'grid' | 'calendar'>('list')
+const iconActionMessage = ref('Noch keine IconAction angeklickt.')
+type CalendarDaySelection = string | { start: string; end: string } | null
+const selectedCalendarDay = ref<CalendarDaySelection>('2026-05-14')
+const selectedCalendarRange = ref<CalendarDaySelection>({
+  start: '2026-05-28',
+  end: '2026-06-04'
+})
+
+const setIconActionMessage = (message: string) => {
+  iconActionMessage.value = message
+}
+
+const setSelectedIconAction = (value: 'list' | 'grid' | 'calendar') => {
+  selectedIconAction.value = value
+  setIconActionMessage(`Auswahl geändert: ${value}`)
+}
 
 </script>
 
@@ -237,5 +399,46 @@ section {
   display: flex;
   flex-direction: row;
   gap: 4px;
+}
+
+.icon-action-demo {
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon-action-status {
+  margin: 1rem 0 0;
+  color: var(--uranus-card-color);
+}
+
+.icon-action-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  line-height: 1;
+  background: var(--uranus-select-bg);
+  color: var(--uranus-select-color);
+}
+
+.calendar-select-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 24px;
+  border-radius: var(--uranus-card-border-radius);
+  background: var(--uranus-bg);
+}
+
+.calendar-select-demo__value {
+  max-width: 34rem;
+  margin: 0.75rem 0 0;
+  color: var(--uranus-card-color);
+  font-family: monospace;
+  font-size: 0.85rem;
 }
 </style>

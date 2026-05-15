@@ -45,10 +45,25 @@ export const uranusI18nPortalTranslations: Record<string, Record<UranusLocaleKey
         en: 'Filter',
         da: 'Filter',
     },
+    portal_tab_header: {
+        de: 'Header',
+        en: 'Header',
+        da: 'Header',
+    },
     portal_tab_style: {
         de: 'Stil',
         en: 'Style',
         da: 'Stil',
+    },
+    portal_tab_css: {
+        de: 'CSS',
+        en: 'CSS',
+        da: 'CSS',
+    },
+    portal_tab_footer: {
+        de: 'Footer',
+        en: 'Footer',
+        da: 'Footer',
     },
     portal_tab_geometry: {
         de: 'Geometrie',

@@ -29,6 +29,7 @@
 
       <section class="uranus-tab-content">
         <component
+            ref="activeTabComponentRef"
             :is="currentTabComponent"
             @dirty-change="setActiveTabDirty"
         />
@@ -53,6 +54,11 @@ import UranusAdminOrgMapTab from '@/component/org/editor/UranusAdminOrgMapTab.vu
 import UranusAdminOrgLogoTab from '@/component/org/editor/UranusAdminOrgLogoTab.vue'
 import { useOrgStore } from '@/store/orgStore.ts'
 import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChangesModal.vue'
+import { useSaveShortcut } from '@/composable/useSaveShortcut.ts'
+
+type OrgEditorTabExpose = {
+  commitTab?: () => Promise<void> | void
+}
 
 const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
@@ -72,6 +78,7 @@ const tabs = [
   { key: 'logo', label: 'Logo' },
 ] as const
 const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
+const activeTabComponentRef = ref<OrgEditorTabExpose | null>(null)
 const hasDirtyTabs = computed(() =>
     Object.values(tabDirtyState.value).some(Boolean)
 )
@@ -91,6 +98,15 @@ function isTabDirty(tabKey: TabKey) {
 function setActiveTabDirty(isDirty: boolean) {
   tabDirtyState.value[activeTab.value] = isDirty
 }
+
+async function saveActiveTab() {
+  if (orgStore.saving || !isTabDirty(activeTab.value)) return
+  await activeTabComponentRef.value?.commitTab?.()
+}
+
+useSaveShortcut(saveActiveTab, {
+  enabled: () => orgStore.isLoaded,
+})
 
 function closeUnsavedChangesModal() {
   showUnsavedChangesModal.value = false

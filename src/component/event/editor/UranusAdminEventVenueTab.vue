@@ -190,6 +190,10 @@ function resetTab() {
   draft.value.meetingPoint = store.original.meetingPoint
   draft.value.onlineLink = store.original.onlineLink
 }
+
+defineExpose({
+  commitTab,
+})
 </script>
 
 <style scoped lang="scss">

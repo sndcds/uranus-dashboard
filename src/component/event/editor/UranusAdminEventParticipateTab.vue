@@ -171,6 +171,10 @@ function resetParticipationTab() {
   draft.maxAge = original.maxAge ?? null
   draft.participationInfo = original.participationInfo ?? null
 }
+
+defineExpose({
+  commitTab: commitParticipationTab,
+})
 </script>
 
 <style lang="scss" scoped>

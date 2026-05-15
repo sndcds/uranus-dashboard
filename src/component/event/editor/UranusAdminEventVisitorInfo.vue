@@ -88,6 +88,9 @@ async function onCommit() {
   }
 }
 
+defineExpose({
+  commitTab: onCommit,
+})
 </script>
 
 <style scoped>
