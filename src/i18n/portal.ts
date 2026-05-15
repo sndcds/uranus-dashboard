@@ -50,6 +50,11 @@ export const uranusI18nPortalTranslations: Record<string, Record<UranusLocaleKey
         en: 'Style',
         da: 'Stil',
     },
+    portal_tab_css: {
+        de: 'CSS',
+        en: 'CSS',
+        da: 'CSS',
+    },
     portal_tab_geometry: {
         de: 'Geometrie',
         en: 'Geometry',

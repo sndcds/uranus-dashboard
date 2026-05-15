@@ -299,6 +299,10 @@ function resetTab() {
         : null
   }
 }
+
+defineExpose({
+  commitTab,
+})
 </script>
 
 <style scoped>

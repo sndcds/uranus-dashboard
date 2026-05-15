@@ -229,6 +229,10 @@ function resetBaseTab() {
     (draft as any)[key] = (original as any)[key] ?? null
   })
 }
+
+defineExpose({
+  commitTab: commitBaseTab,
+})
 </script>
 
 <style lang="scss" scoped>

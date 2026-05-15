@@ -544,6 +544,7 @@
   "portal_tab_base": "Basics",
   "portal_tab_filter": "Filter",
   "portal_tab_style": "Style",
+  "portal_tab_css": "CSS",
   "portal_tab_geometry": "Geometry",
   "portal_tab_images": "Images",
   "create_portal": "Create portal",

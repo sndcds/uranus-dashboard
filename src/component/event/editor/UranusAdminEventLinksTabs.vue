@@ -164,6 +164,10 @@ function resetUrlsTab() {
   ) ?? []
   store.draft.sourceUrl = store.original.sourceUrl
 }
+
+defineExpose({
+  commitTab: onCommit,
+})
 </script>
 
 <style lang="scss">

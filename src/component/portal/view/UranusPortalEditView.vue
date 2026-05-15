@@ -25,6 +25,7 @@
 
     <section class="uranus-tab-content">
       <component
+          ref="activeTabComponentRef"
           :is="currentTabComponent"
           @dirty-change="setActiveTabDirty"
       />
@@ -46,11 +47,13 @@ import { apiFetch } from '@/api.ts'
 import UranusAdminPortalBaseTab from '@/component/portal/editor/UranusAdminPortalBaseTab.vue'
 import UranusAdminPortalPrefilterTab from '@/component/portal/editor/UranusAdminPortalPrefilterTab.vue'
 import UranusAdminPortalStyleTab from '@/component/portal/editor/UranusAdminPortalStyleTab.vue'
+import UranusAdminPortalCssTab from '@/component/portal/editor/UranusAdminPortalCssTab.vue'
 import UranusAdminPortalGeometryTab from '@/component/portal/editor/UranusAdminPortalGeometryTab.vue'
 import UranusAdminPortalImagesTab from '@/component/portal/editor/UranusAdminPortalImagesTab.vue'
 import { useUranusPortalStore } from '@/store/portalStore.ts'
 import type { PortalDTO } from '@/domain/portal/portal.model.ts'
 import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChangesModal.vue'
+import { useSaveShortcut } from '@/composable/useSaveShortcut.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 const route = useRoute()
@@ -58,16 +61,22 @@ const router = useRouter()
 const portalStore = useUranusPortalStore()
 const portalUuid = computed(() => route.params.portalUuid as string)
 
-type TabKey = 'base' | 'prefilter' | 'style' | 'geometry' | 'images'
+type TabKey = 'base' | 'prefilter' | 'style' | 'css' | 'geometry' | 'images'
+type PortalEditorTabExpose = {
+  commitTab?: () => Promise<void> | void
+}
+
 const activeTab = ref<TabKey>('base')
 const tabs = [
   { key: 'base', labelKey: 'portal_tab_base' },
   { key: 'prefilter', labelKey: 'portal_tab_filter' },
   { key: 'style', labelKey: 'portal_tab_style' },
+  { key: 'css', labelKey: 'portal_tab_css' },
   { key: 'geometry', labelKey: 'portal_tab_geometry' },
   { key: 'images', labelKey: 'portal_tab_images' },
 ] as const
 const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
+const activeTabComponentRef = ref<PortalEditorTabExpose | null>(null)
 const showUnsavedChangesModal = ref(false)
 const pendingRoute = ref<RouteLocationNormalized | null>(null)
 const allowRouteLeave = ref(false)
@@ -78,6 +87,7 @@ const currentTabComponent = computed(() => {
     case 'base': return UranusAdminPortalBaseTab
     case 'prefilter': return UranusAdminPortalPrefilterTab
     case 'style': return UranusAdminPortalStyleTab
+    case 'css': return UranusAdminPortalCssTab
     case 'geometry': return UranusAdminPortalGeometryTab
     case 'images': return UranusAdminPortalImagesTab
     default: return UranusAdminPortalBaseTab
@@ -89,6 +99,7 @@ function createCleanDirtyState(): Record<TabKey, boolean> {
     base: false,
     prefilter: false,
     style: false,
+    css: false,
     geometry: false,
     images: false,
   }
@@ -101,6 +112,15 @@ function isTabDirty(tabKey: TabKey) {
 function setActiveTabDirty(isDirty: boolean) {
   tabDirtyState.value[activeTab.value] = isDirty
 }
+
+async function saveActiveTab() {
+  if (portalStore.saving || !isTabDirty(activeTab.value)) return
+  await activeTabComponentRef.value?.commitTab?.()
+}
+
+useSaveShortcut(saveActiveTab, {
+  enabled: () => portalStore.isLoaded,
+})
 
 function closeUnsavedChangesModal() {
   showUnsavedChangesModal.value = false

@@ -71,4 +71,8 @@ async function commitTab() {
     store.saving = false
   }
 }
+
+defineExpose({
+  commitTab,
+})
 </script>

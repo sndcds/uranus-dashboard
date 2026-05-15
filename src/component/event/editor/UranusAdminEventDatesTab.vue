@@ -256,6 +256,10 @@ function resetDates() {
       ? store.original.eventDates.map(d => ({ ...d }))
       : []
 }
+
+defineExpose({
+  commitTab: commitDates,
+})
 </script>
 
 <style scoped lang="scss">

@@ -38,6 +38,7 @@
 
     <section class="uranus-tab-content">
       <component
+          ref="activeTabComponentRef"
           :is="currentTabComponent"
           @dirty-change="setActiveTabDirty"
       />
@@ -61,6 +62,11 @@ import SpaceAccessibilityTab from '@/component/space/editor/UranusSpaceAccessibi
 import { useUranusSpaceStore } from '@/store/spaceStore.ts'
 import type { SpaceDTO } from '@/api/dto/space.dto.ts'
 import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChangesModal.vue'
+import { useSaveShortcut } from '@/composable/useSaveShortcut.ts'
+
+type SpaceEditorTabExpose = {
+  commitTab?: () => Promise<void> | void
+}
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -81,6 +87,7 @@ const tabs = [
   { key: 'accessibility', label: 'Accessibility' },
 ] as const
 const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
+const activeTabComponentRef = ref<SpaceEditorTabExpose | null>(null)
 const hasDirtyTabs = computed(() =>
     Object.values(tabDirtyState.value).some(Boolean)
 )
@@ -99,6 +106,15 @@ function isTabDirty(tabKey: TabKey) {
 function setActiveTabDirty(isDirty: boolean) {
   tabDirtyState.value[activeTab.value] = isDirty
 }
+
+async function saveActiveTab() {
+  if (spaceStore.saving || !isTabDirty(activeTab.value)) return
+  await activeTabComponentRef.value?.commitTab?.()
+}
+
+useSaveShortcut(saveActiveTab, {
+  enabled: () => spaceStore.isLoaded,
+})
 
 function closeUnsavedChangesModal() {
   showUnsavedChangesModal.value = false
