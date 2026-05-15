@@ -8,6 +8,8 @@ export interface PortalDTO {
     prefilter?: Record<string, unknown> | string | null
     geometry?: Record<string, unknown> | null
     style?: Record<string, unknown> | string | null
+    header?: Record<string, unknown> | string | null
+    footer?: Record<string, unknown> | string | null
 }
 
 export interface PortalModel {
@@ -19,6 +21,8 @@ export interface PortalModel {
     prefilter: Record<string, unknown> | null
     geometry: Record<string, unknown> | null
     style: Record<string, unknown> | null
+    header: Record<string, unknown> | null
+    footer: Record<string, unknown> | null
 }
 
 function parseJsonObject(value: Record<string, unknown> | string | null | undefined): Record<string, unknown> | null {
@@ -45,6 +49,8 @@ export function mapPortal(dto: PortalDTO): PortalModel {
         prefilter: parseJsonObject(dto.pre_filter ?? dto.prefilter),
         geometry: dto.geometry ?? null,
         style: parseJsonObject(dto.style),
+        header: parseJsonObject(dto.header),
+        footer: parseJsonObject(dto.footer),
     }
 }
 
@@ -58,5 +64,7 @@ export function createEmptyPortal(): PortalModel {
         prefilter: null,
         geometry: null,
         style: null,
+        header: null,
+        footer: null,
     }
 }

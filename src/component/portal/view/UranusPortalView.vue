@@ -22,9 +22,24 @@
       :style="portalRootStyle"
   >
     <header class="uranus-portal-events__header">
+      <a
+          v-if="logoUrl && headerConfig.logoLinkUrl"
+          class="uranus-portal-events__logo-link"
+          :href="headerConfig.logoLinkUrl"
+          :target="headerConfig.logoLinkTarget"
+          :rel="getLinkRel(headerConfig.logoLinkTarget)"
+      >
+        <UranusLogoImage
+            :logoURL="logoUrl"
+            theme="light"
+            :pixelCount="24000"
+            :maxWidth="480"
+            :maxHeight="240"
+        />
+      </a>
 
       <UranusLogoImage
-          v-if="logoUrl"
+          v-else-if="logoUrl"
           :logoURL="logoUrl"
           theme="light"
           :pixelCount="24000"
@@ -45,6 +60,19 @@
       >
         {{ t('reset_filter') }}
       </UranusButton>
+
+      <nav v-if="headerConfig.buttons.length" class="uranus-portal-events__header-buttons">
+        <a
+            v-for="(button, index) in headerConfig.buttons"
+            :key="`${button.url}-${index}`"
+            :href="button.url"
+            :target="button.target"
+            :rel="getLinkRel(button.target)"
+            :class="['uranus-portal__button', button.cssClass]"
+        >
+          {{ button.label }}
+        </a>
+      </nav>
     </header>
 
     <UranusHorizontalScroller v-if="eventListStore.typeSummary.length" class="uranus-portal-events__type-scroller">
@@ -126,6 +154,54 @@
     <div v-if="isLoadingMore" class="uranus-portal-events__state uranus-portal-events__state--inline">
       Loading events...
     </div>
+
+    <footer
+        v-if="showPortalFooter"
+        class="uranus-portal-events__footer"
+    >
+      <a
+          v-if="footerConfig.showLogo && logoUrl && footerConfig.logoLinkUrl"
+          class="uranus-portal-events__footer-logo-link"
+          :href="footerConfig.logoLinkUrl"
+          :target="footerConfig.logoLinkTarget"
+          :rel="getLinkRel(footerConfig.logoLinkTarget)"
+      >
+        <UranusLogoImage
+            :logoURL="logoUrl"
+            theme="light"
+            :pixelCount="6000"
+            :maxWidth="180"
+            :maxHeight="90"
+        />
+      </a>
+
+      <UranusLogoImage
+          v-else-if="footerConfig.showLogo && logoUrl"
+          :logoURL="logoUrl"
+          theme="light"
+          :pixelCount="6000"
+          :maxWidth="180"
+          :maxHeight="90"
+      />
+
+      <div
+          v-if="footerTextHtml"
+          class="uranus-portal-events__footer-text"
+          v-html="footerTextHtml"
+      ></div>
+
+      <nav v-if="footerConfig.links.length" class="uranus-portal-events__footer-links">
+        <a
+            v-for="(link, index) in footerConfig.links"
+            :key="`${link.url}-${index}`"
+            :href="link.url"
+            :target="link.target"
+            :rel="getLinkRel(link.target)"
+        >
+          {{ link.label }}
+        </a>
+      </nav>
+    </footer>
   </div>
 </template>
 
@@ -144,6 +220,14 @@ import type { EventListItem, EventListItemEventType } from '@/domain/event/event
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 import { apiBaseUrl } from '@/util/util.ts'
 import '@/component/portal/style/uranusPortalEvents.scss'
+import { marked } from 'marked'
+import {
+  createFooterConfig,
+  createHeaderConfig,
+  type PortalFooterConfig,
+  type PortalHeaderConfig,
+  type PortalLinkTarget,
+} from '@/component/portal/editor/portalLayoutConfig.ts'
 
 type PortalStyleSection = Record<string, string | number | null | undefined>
 
@@ -179,6 +263,8 @@ interface PortalDTO {
   pre_filter?: Record<string, unknown> | string | null
   prefilter?: Record<string, unknown> | null
   style?: PortalStyle | string | null
+  header?: Record<string, unknown> | string | null
+  footer?: Record<string, unknown> | string | null
   web_logo_uuid?: string | null
   background_image_uuid?: string | null
 }
@@ -236,6 +322,14 @@ const portalCustomCss = computed(() => {
   return typeof css === 'string' && css.trim() ? css : ''
 })
 const normalizedPortalStyle = computed(() => normalizePortalStyle(portal.value?.style))
+const headerConfig = computed<PortalHeaderConfig>(() => createHeaderConfig(normalizeJsonObject(portal.value?.header)))
+const footerConfig = computed<PortalFooterConfig>(() => createFooterConfig(normalizeJsonObject(portal.value?.footer)))
+const footerTextHtml = computed(() => formatMarkdown(footerConfig.value.text))
+const showPortalFooter = computed(() =>
+    footerConfig.value.showLogo ||
+    !!footerTextHtml.value ||
+    footerConfig.value.links.length > 0
+)
 const portalRootStyle = computed(() => ({
   '--portal-background-image': backgroundUrl.value ? `url(${backgroundUrl.value})` : undefined,
 }))
@@ -276,17 +370,35 @@ function getUniqueEventTypes(event: EventListItem) {
 }
 
 function normalizePortalStyle(style: PortalStyle | string | null | undefined): PortalStyle | null {
-  if (!style) return null
-  if (typeof style === 'object') return style
+  return normalizeJsonObject(style) as PortalStyle | null
+}
+
+function normalizeJsonObject(value: Record<string, unknown> | string | null | undefined): Record<string, unknown> | null {
+  if (!value) return null
+  if (typeof value === 'object' && !Array.isArray(value)) return value
 
   try {
-    const parsed = JSON.parse(style)
+    const parsed = JSON.parse(value)
     return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
-        ? parsed as PortalStyle
+        ? parsed as Record<string, unknown>
         : null
   } catch {
     return null
   }
+}
+
+function formatMarkdown(markdown: string) {
+  if (!markdown.trim()) return ''
+
+  try {
+    return marked(markdown)
+  } catch {
+    return markdown
+  }
+}
+
+function getLinkRel(target: PortalLinkTarget) {
+  return target === '_blank' ? 'noopener noreferrer' : undefined
 }
 
 function createPortalStructuredCss(style: PortalStyle, portalUuid: string) {

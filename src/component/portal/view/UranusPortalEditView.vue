@@ -46,8 +46,10 @@ import { onBeforeRouteLeave, useRoute, useRouter, type RouteLocationNormalized }
 import { apiFetch } from '@/api.ts'
 import UranusAdminPortalBaseTab from '@/component/portal/editor/UranusAdminPortalBaseTab.vue'
 import UranusAdminPortalPrefilterTab from '@/component/portal/editor/UranusAdminPortalPrefilterTab.vue'
+import UranusAdminPortalHeaderTab from '@/component/portal/editor/UranusAdminPortalHeaderTab.vue'
 import UranusAdminPortalStyleTab from '@/component/portal/editor/UranusAdminPortalStyleTab.vue'
 import UranusAdminPortalCssTab from '@/component/portal/editor/UranusAdminPortalCssTab.vue'
+import UranusAdminPortalFooterTab from '@/component/portal/editor/UranusAdminPortalFooterTab.vue'
 import UranusAdminPortalGeometryTab from '@/component/portal/editor/UranusAdminPortalGeometryTab.vue'
 import UranusAdminPortalImagesTab from '@/component/portal/editor/UranusAdminPortalImagesTab.vue'
 import { useUranusPortalStore } from '@/store/portalStore.ts'
@@ -61,7 +63,7 @@ const router = useRouter()
 const portalStore = useUranusPortalStore()
 const portalUuid = computed(() => route.params.portalUuid as string)
 
-type TabKey = 'base' | 'prefilter' | 'style' | 'css' | 'geometry' | 'images'
+type TabKey = 'base' | 'prefilter' | 'header' | 'style' | 'css' | 'footer' | 'geometry' | 'images'
 type PortalEditorTabExpose = {
   commitTab?: () => Promise<void> | void
 }
@@ -70,8 +72,10 @@ const activeTab = ref<TabKey>('base')
 const tabs = [
   { key: 'base', labelKey: 'portal_tab_base' },
   { key: 'prefilter', labelKey: 'portal_tab_filter' },
+  { key: 'header', labelKey: 'portal_tab_header' },
   { key: 'style', labelKey: 'portal_tab_style' },
   { key: 'css', labelKey: 'portal_tab_css' },
+  { key: 'footer', labelKey: 'portal_tab_footer' },
   { key: 'geometry', labelKey: 'portal_tab_geometry' },
   { key: 'images', labelKey: 'portal_tab_images' },
 ] as const
@@ -86,8 +90,10 @@ const currentTabComponent = computed(() => {
   switch (activeTab.value) {
     case 'base': return UranusAdminPortalBaseTab
     case 'prefilter': return UranusAdminPortalPrefilterTab
+    case 'header': return UranusAdminPortalHeaderTab
     case 'style': return UranusAdminPortalStyleTab
     case 'css': return UranusAdminPortalCssTab
+    case 'footer': return UranusAdminPortalFooterTab
     case 'geometry': return UranusAdminPortalGeometryTab
     case 'images': return UranusAdminPortalImagesTab
     default: return UranusAdminPortalBaseTab
@@ -98,8 +104,10 @@ function createCleanDirtyState(): Record<TabKey, boolean> {
   return {
     base: false,
     prefilter: false,
+    header: false,
     style: false,
     css: false,
+    footer: false,
     geometry: false,
     images: false,
   }
