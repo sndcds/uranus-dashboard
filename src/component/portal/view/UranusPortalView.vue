@@ -3,7 +3,6 @@
 -->
 
 <template>
-
   <component
       :is="'style'"
       v-if="portalCustomCss"
@@ -18,50 +17,47 @@
   ></component>
   <div
       class="uranus-portal-events"
+      :class="`uranus-portal-events--header-${headerConfig.layout}`"
       :data-portal-uuid="portalUuid"
       :style="portalRootStyle"
   >
-    <header class="uranus-portal-events__header">
-      <a
-          v-if="logoUrl && headerConfig.logoLinkUrl"
-          class="uranus-portal-events__logo-link"
-          :href="headerConfig.logoLinkUrl"
-          :target="headerConfig.logoLinkTarget"
-          :rel="getLinkRel(headerConfig.logoLinkTarget)"
-      >
+    <header
+        class="uranus-portal-events-header"
+        :class="portalHeaderLayoutClass"
+    >
+      <div class="uranus-portal-events-header__logo">
+        <a
+            v-if="logoUrl && headerConfig.logoLinkUrl"
+            class="uranus-portal-events__logo-link"
+            :href="headerConfig.logoLinkUrl"
+            :target="headerConfig.logoLinkTarget"
+            :rel="getLinkRel(headerConfig.logoLinkTarget)"
+        >
+          <UranusLogoImage
+              :logoURL="logoUrl"
+              theme="light"
+              :pixelCount="24000"
+              :maxWidth="480"
+              :maxHeight="240"
+          />
+        </a>
+
         <UranusLogoImage
+            v-else-if="logoUrl"
             :logoURL="logoUrl"
             theme="light"
             :pixelCount="24000"
             :maxWidth="480"
             :maxHeight="240"
         />
-      </a>
+      </div>
 
-      <UranusLogoImage
-          v-else-if="logoUrl"
-          :logoURL="logoUrl"
-          theme="light"
-          :pixelCount="24000"
-          :maxWidth="480"
-          :maxHeight="240"
-      />
-
-      <div>
+      <div class="uranus-portal-events-header__title">
         <h1>{{ portal?.name ?? t('events') }}</h1>
         <p>{{ portal?.description ?? eventCountInfo }}</p>
       </div>
 
-      <UranusButton
-          v-if="activeEventTypeIds.length"
-          size="small"
-          variant="tertiary"
-          @click="onResetFilter"
-      >
-        {{ t('reset_filter') }}
-      </UranusButton>
-
-      <nav v-if="headerConfig.buttons.length" class="uranus-portal-events__header-buttons">
+      <nav class="uranus-portal-events-header__buttons">
         <a
             v-for="(button, index) in headerConfig.buttons"
             :key="`${button.url}-${index}`"
@@ -73,6 +69,19 @@
           {{ button.label }}
         </a>
       </nav>
+
+      <div class="uranus-portal-events-header__search">
+        <UranusButton
+            v-if="activeEventTypeIds.length"
+            size="small"
+            variant="tertiary"
+            @click="onResetFilter"
+        >
+          {{ t('reset_filter') }}
+        </UranusButton>
+      </div>
+
+      <div class="uranus-portal-events-header__icon-links"></div>
     </header>
 
     <UranusHorizontalScroller v-if="eventListStore.typeSummary.length" class="uranus-portal-events__type-scroller">
@@ -323,6 +332,11 @@ const portalCustomCss = computed(() => {
 })
 const normalizedPortalStyle = computed(() => normalizePortalStyle(portal.value?.style))
 const headerConfig = computed<PortalHeaderConfig>(() => createHeaderConfig(normalizeJsonObject(portal.value?.header)))
+const portalHeaderLayoutClass = computed(() => {
+  return headerConfig.value.layout === 'centered'
+      ? 'uranus-portal-events-header__centered'
+      : 'uranus-portal-events-header__left'
+})
 const footerConfig = computed<PortalFooterConfig>(() => createFooterConfig(normalizeJsonObject(portal.value?.footer)))
 const footerTextHtml = computed(() => formatMarkdown(footerConfig.value.text))
 const showPortalFooter = computed(() =>
@@ -417,13 +431,13 @@ ${rootSelector} .uranus-portal-events__load-more-trigger`, [
       cssDeclaration('max-width', readStyleValue(style.content, 'max-width')),
       cssDeclaration('align-self', normalizeContentAlign(readStyleValue(style.content, 'align'))),
     ]),
-    createRule(`${rootSelector} .uranus-portal-events__header h1`, [
+    createRule(`${rootSelector} .uranus-portal-events-header h1`, [
       cssDeclaration('color', readStyleValue(style.header?.title, 'color')),
       cssDeclaration('font-size', readStyleValue(style.header?.title, 'font-size')),
       cssDeclaration('font-weight', readStyleValue(style.header?.title, 'font-weight')),
       cssDeclaration('line-height', readStyleValue(style.header?.title, 'line-height')),
     ]),
-    createRule(`${rootSelector} .uranus-portal-events__header p`, [
+    createRule(`${rootSelector} .uranus-portal-events-header p`, [
       cssDeclaration('color', readStyleValue(style.header?.description, 'color')),
       cssDeclaration('font-size', readStyleValue(style.header?.description, 'font-size')),
       cssDeclaration('line-height', readStyleValue(style.header?.description, 'line-height')),
