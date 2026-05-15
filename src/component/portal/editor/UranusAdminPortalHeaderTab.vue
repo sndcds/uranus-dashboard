@@ -1,6 +1,17 @@
 <template>
   <UranusForm>
     <section class="portal-layout-group">
+      <h2>Layout</h2>
+      <UranusLabel id="portal-header-layout" label="Header layout">
+        <select id="portal-header-layout" v-model="form.layout">
+          <option v-for="layout in portalHeaderLayouts" :key="layout" :value="layout">
+            {{ layout }}
+          </option>
+        </select>
+      </UranusLabel>
+    </section>
+
+    <section class="portal-layout-group">
       <h2>Logo</h2>
       <UranusFormRow :cols="2">
         <UranusTextfield
@@ -90,6 +101,7 @@ import {
   buildHeaderPayload,
   createEmptyHeaderButton,
   createHeaderConfig,
+  portalHeaderLayouts,
   portalLinkTargets,
   type PortalHeaderConfig,
 } from '@/component/portal/editor/portalLayoutConfig.ts'

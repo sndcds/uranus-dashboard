@@ -1,4 +1,5 @@
 export type PortalLinkTarget = '_self' | '_blank'
+export type PortalHeaderLayout = 'left' | 'centered'
 
 export type PortalHeaderButtonConfig = {
   label: string
@@ -8,6 +9,7 @@ export type PortalHeaderButtonConfig = {
 }
 
 export type PortalHeaderConfig = {
+  layout: PortalHeaderLayout
   logoLinkUrl: string
   logoLinkTarget: PortalLinkTarget
   buttons: PortalHeaderButtonConfig[]
@@ -28,11 +30,17 @@ export type PortalFooterConfig = {
 }
 
 const linkTargets: PortalLinkTarget[] = ['_self', '_blank']
+const headerLayouts: PortalHeaderLayout[] = ['left', 'centered']
 
 export const portalLinkTargets = linkTargets
+export const portalHeaderLayouts = headerLayouts
 
 export function isPortalLinkTarget(value: unknown): value is PortalLinkTarget {
   return value === '_self' || value === '_blank'
+}
+
+export function isPortalHeaderLayout(value: unknown): value is PortalHeaderLayout {
+  return value === 'left' || value === 'centered'
 }
 
 export function readRecord(source: Record<string, unknown> | null | undefined, key: string) {
@@ -57,6 +65,11 @@ export function readTarget(source: Record<string, unknown> | null | undefined, k
   return isPortalLinkTarget(value) ? value : fallback
 }
 
+export function readHeaderLayout(source: Record<string, unknown> | null | undefined, key: string, fallback: PortalHeaderLayout = 'left') {
+  const value = source?.[key]
+  return isPortalHeaderLayout(value) ? value : fallback
+}
+
 export function createEmptyHeaderButton(): PortalHeaderButtonConfig {
   return {
     label: '',
@@ -79,6 +92,7 @@ export function createHeaderConfig(source: Record<string, unknown> | null | unde
       : []
 
   return {
+    layout: readHeaderLayout(source, 'layout'),
     logoLinkUrl: readString(source, 'logoLinkUrl', readString(source, 'logo_link_url')),
     logoLinkTarget: readTarget(source, 'logoLinkTarget', readTarget(source, 'logo_link_target')),
     buttons,
@@ -87,6 +101,7 @@ export function createHeaderConfig(source: Record<string, unknown> | null | unde
 
 export function buildHeaderPayload(value: PortalHeaderConfig) {
   return {
+    layout: value.layout,
     logoLinkUrl: value.logoLinkUrl,
     logoLinkTarget: value.logoLinkTarget,
     buttons: value.buttons.map(button => ({
