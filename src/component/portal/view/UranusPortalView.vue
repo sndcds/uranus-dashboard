@@ -34,6 +34,7 @@
             :rel="getLinkRel(headerConfig.logoLinkTarget)"
         >
           <UranusLogoImage
+              class="uranus-portal-events-header__logo-image"
               :logoURL="logoUrl"
               theme="light"
               :pixelCount="24000"
@@ -44,6 +45,7 @@
 
         <UranusLogoImage
             v-else-if="logoUrl"
+            class="uranus-portal-events-header__logo-image"
             :logoURL="logoUrl"
             theme="light"
             :pixelCount="24000"
@@ -82,22 +84,26 @@
       </div>
 
       <div class="uranus-portal-events-header__icon-links"></div>
+
+      <div class="uranus-portal-events-header__event-types">
+        <UranusHorizontalScroller v-if="eventListStore.typeSummary.length" class="uranus-portal-events__type-scroller">
+          <div class="uranus-portal-events__type-list">
+            <button
+                v-for="entry in eventListStore.typeSummary"
+                :key="entry.typeId"
+                type="button"
+                class="uranus-portal-events__type-chip"
+                :class="{ 'uranus-portal-events__type-chip--active': activeEventTypeIds.includes(entry.typeId) }"
+                @click="toggleType(entry.typeId)"
+            >
+              {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
+            </button>
+          </div>
+        </UranusHorizontalScroller>
+      </div>
+
     </header>
 
-    <UranusHorizontalScroller v-if="eventListStore.typeSummary.length" class="uranus-portal-events__type-scroller">
-      <div class="uranus-portal-events__type-list">
-        <button
-            v-for="entry in eventListStore.typeSummary"
-            :key="entry.typeId"
-            type="button"
-            class="uranus-portal-events__type-chip"
-            :class="{ 'uranus-portal-events__type-chip--active': activeEventTypeIds.includes(entry.typeId) }"
-            @click="toggleType(entry.typeId)"
-        >
-          {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
-        </button>
-      </div>
-    </UranusHorizontalScroller>
 
     <div v-if="portalError" class="uranus-portal-events__state">
       {{ portalError }}
