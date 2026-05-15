@@ -9,8 +9,8 @@
         <div class="calendar-display-options">
           <UranusIconAction
               :icon="LayoutGrid"
-              :selected="displayMode === 'grid'"
-              @click="setDisplayMode('grid')"
+              :selected="displayMode === 'cards'"
+              @click="setDisplayMode('cards')"
           />
           <UranusIconAction
               :icon="Grip"
@@ -103,7 +103,7 @@
     </div>
 
     <transition name="fade" mode="out-in">
-        <div v-if="displayMode === 'grid'" class="calendar-card-layout">
+        <div v-if="displayMode === 'cards'" class="calendar-card-layout">
           <UranusEventCalendarCard
               v-for="event in eventListStore.events"
               :key="event.uuid"
@@ -184,10 +184,9 @@ import { Rows3, LayoutGrid, Map, Grip, CalendarDays, SlidersHorizontal, X } from
 import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
 import UranusEventsCalendarView from '@/component/event/view/UranusEventsCalendarView.vue'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
+import { isEventViewMode, type EventViewMode, useAppStore } from '@/store/appStore.ts'
 
 const { t, locale } = useI18n({ useScope: 'global' })
-
-type DisplayMode = 'list' | 'grid' | 'compact' | 'calendar' | 'map'
 
 const props = withDefaults(defineProps<{
   filterScope?: UranusEventsFilterScope
@@ -197,6 +196,7 @@ const props = withDefaults(defineProps<{
 
 const LOAD_MORE_ROOT_MARGIN = 300
 const isSwitchingMode = ref(false)
+const appStore = useAppStore()
 const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
 const eventListStore = useEventListStore()
@@ -224,9 +224,12 @@ const activeFilterCount = computed(() => {
   return count
 })
 
-const displayMode = ref<DisplayMode>('compact')
-function setDisplayMode(mode: DisplayMode) {
-  displayMode.value = mode
+const displayMode = computed<EventViewMode>(() => {
+  return isEventViewMode(appStore.eventViewMode) ? appStore.eventViewMode : 'compact'
+})
+
+function setDisplayMode(mode: EventViewMode) {
+  appStore.setEventViewMode(mode)
 }
 
 const initialized = ref(false)
@@ -380,6 +383,7 @@ function observeLoadMoreTrigger() {
 
 onMounted(async () => {
   document.addEventListener('click', onDocumentClick)
+  appStore.normalizeEventViewMode()
 
   await reloadEvents()
   initialized.value = true

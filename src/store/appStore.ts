@@ -5,20 +5,31 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+export type EventViewMode = 'cards' | 'compact' | 'list' | 'calendar' | 'map'
+export type EventGroupingMode = 'daily' | 'monthly'
+
+export function isEventViewMode(value: unknown): value is EventViewMode {
+    return value === 'cards'
+        || value === 'compact'
+        || value === 'list'
+        || value === 'calendar'
+        || value === 'map'
+}
+
 export const useAppStore = defineStore('app', () => {
     const orgUuid = ref<string | null>(null)
     const orgName = ref<string | null>(null)
     const orgLogoUrl = ref<string | null>(null)
     const orgLightThemeLogoUrl = ref<string | null>(null)
     const orgDarkThemeLogoUrl = ref<string | null>(null)
-    const eventViewMode = ref<'detailed' | 'compact' | 'tiles' | 'map'>('detailed')
-    const eventGroupingMode = ref<'daily' | 'monthly'>('daily')
+    const eventViewMode = ref<EventViewMode>('compact')
+    const eventGroupingMode = ref<EventGroupingMode>('daily')
 
-    function setOrgValues(uuid: string, name: string, logoUrl: string | null, LightThemeLogoUrl: string | null, darkThemeLogoUrl: string | null) {
+    function setOrgValues(uuid: string, name: string, logoUrl: string | null, lightThemeLogoUrl: string | null, darkThemeLogoUrl: string | null) {
         orgUuid.value = uuid
         orgName.value = name
         orgLogoUrl.value = logoUrl
-        orgLightThemeLogoUrl.value = LightThemeLogoUrl
+        orgLightThemeLogoUrl.value = lightThemeLogoUrl
         orgDarkThemeLogoUrl.value = darkThemeLogoUrl
     }
 
@@ -38,14 +49,23 @@ export const useAppStore = defineStore('app', () => {
         orgDarkThemeLogoUrl.value = null
     }
 
-    function setViewMode(mode: 'detailed' | 'compact' | 'tiles' | 'map') {
+    function setEventViewMode(mode: EventViewMode) {
         eventViewMode.value = mode
     }
 
-    function setGroupingMode(mode: 'daily' | 'monthly') {
-        eventGroupingMode.value = mode
+    function setViewMode(mode: EventViewMode) {
+        setEventViewMode(mode)
     }
 
+    function normalizeEventViewMode() {
+        if (!isEventViewMode(eventViewMode.value)) {
+            eventViewMode.value = 'compact'
+        }
+    }
+
+    function setGroupingMode(mode: EventGroupingMode) {
+        eventGroupingMode.value = mode
+    }
 
     return {
         orgUuid,
@@ -59,7 +79,9 @@ export const useAppStore = defineStore('app', () => {
         setOrgUuid,
         setOrgName,
         clearOrg,
+        setEventViewMode,
         setViewMode,
+        normalizeEventViewMode,
         setGroupingMode,
     }
 }, {
