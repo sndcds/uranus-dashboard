@@ -157,7 +157,14 @@
     </div>
 
     <div class="uranus-public-venue-calendar">
-      <UranusEventCalendar filter-scope="venue" />
+      <UranusEventCalendar
+          filter-scope="venue"
+          :display-modes="['cards', 'compact', 'list']"
+          initial-display-mode="compact"
+          :persist-display-mode="false"
+          :show-filter-controls="false"
+          type-filter-mode="select-single"
+      />
     </div>
   </div>
 </template>
@@ -283,7 +290,7 @@ watch(isLoading, (loading) => {
 watch(venue, (loadedVenue) => {
   if (!loadedVenue) return
 
-  filterStore.copyFilter('default', 'venue')
+  filterStore.resetFilter('venue')
   filterStore.setFilter({
     venue: {
       uuid: loadedVenue.uuid,

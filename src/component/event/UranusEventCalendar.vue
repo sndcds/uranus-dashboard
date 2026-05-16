@@ -8,40 +8,45 @@
       <div class="calendar-options">
         <div class="calendar-display-options">
           <UranusIconAction
+              v-if="isDisplayModeAllowed('cards')"
               :icon="LayoutGrid"
               :selected="displayMode === 'cards'"
               @click="setDisplayMode('cards')"
           />
           <UranusIconAction
+              v-if="isDisplayModeAllowed('compact')"
               :icon="Grip"
               :selected="displayMode === 'compact'"
               @click="setDisplayMode('compact')"
           />
           <UranusIconAction
+              v-if="isDisplayModeAllowed('list')"
               :icon="Rows3"
               :selected="displayMode === 'list'"
               @click="setDisplayMode('list')"
           />
           <UranusIconAction
+              v-if="isDisplayModeAllowed('calendar')"
               :icon="CalendarDays"
               :selected="displayMode === 'calendar'"
               @click="setDisplayMode('calendar')"
           />
           <UranusIconAction
+              v-if="isDisplayModeAllowed('map')"
               :icon="Map"
               :selected="displayMode === 'map'"
               @click="setDisplayMode('map')"
           />
         </div>
 
-        <UranusButton size="small" variant="tertiary" @click="onResetFilter()">
+        <UranusButton v-if="showFilterControls" size="small" variant="tertiary" @click="onResetFilter()">
           {{ t('reset_filter') }}
         </UranusButton>
 
         <div style="display: none;">{{ locale }}</div>
         <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
 
-        <div class="calendar-mobile-filter-menu">
+        <div v-if="showFilterControls" class="calendar-mobile-filter-menu">
           <UranusButton
               class="calendar-mobile-filter-button"
               size="small"
@@ -87,7 +92,27 @@
         </div>
       </div>
 
-      <UranusHorizontalScroller>
+      <div v-if="typeFilterMode === 'select-single'" class="calendar-event-type-select-container">
+        <label class="calendar-event-type-select-label" :for="eventTypeSelectId">
+          {{ t('event_type') }}
+        </label>
+        <select
+            :id="eventTypeSelectId"
+            v-model="selectedEventTypeId"
+            class="calendar-event-type-select"
+        >
+          <option value="">{{ t('all_events') }}</option>
+          <option
+              v-for="entry in eventTypeOptions"
+              :key="entry.typeId"
+              :value="String(entry.typeId)"
+          >
+            {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
+          </option>
+        </select>
+      </div>
+
+      <UranusHorizontalScroller v-else>
         <div class="calendar-event-type-chips-container">
           <span
               v-for="entry in eventListStore.typeSummary"
@@ -185,13 +210,24 @@ import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCo
 import UranusEventsCalendarView from '@/component/event/view/UranusEventsCalendarView.vue'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
 import { isEventViewMode, type EventViewMode, useAppStore } from '@/store/appStore.ts'
+import type { EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
 const props = withDefaults(defineProps<{
   filterScope?: UranusEventsFilterScope
+  displayModes?: EventViewMode[]
+  initialDisplayMode?: EventViewMode
+  persistDisplayMode?: boolean
+  showFilterControls?: boolean
+  typeFilterMode?: 'chips-multiple' | 'select-single'
 }>(), {
-  filterScope: 'default'
+  filterScope: 'default',
+  displayModes: () => ['cards', 'compact', 'list', 'calendar', 'map'],
+  initialDisplayMode: 'compact',
+  persistDisplayMode: true,
+  showFilterControls: true,
+  typeFilterMode: 'chips-multiple'
 })
 
 const LOAD_MORE_ROOT_MARGIN = 300
@@ -203,6 +239,12 @@ const eventListStore = useEventListStore()
 const filterScope = computed(() => props.filterScope)
 const activeFilter = computed(() => filterStore.getFilter(filterScope.value))
 const activeEventTypeIds = computed(() => activeFilter.value.eventTypeIds)
+const localDisplayMode = ref<EventViewMode>(props.initialDisplayMode)
+const singleTypeOptions = ref<EventListTypeSummary[]>([])
+const eventTypeOptions = computed(() =>
+    props.typeFilterMode === 'select-single' ? singleTypeOptions.value : eventListStore.typeSummary
+)
+const eventTypeSelectId = computed(() => `calendar-event-type-select-${filterScope.value}`)
 const calendarRoot = ref<HTMLElement | null>(null)
 const isMobileFilterOpen = ref(false)
 const activeFilterCount = computed(() => {
@@ -225,11 +267,29 @@ const activeFilterCount = computed(() => {
 })
 
 const displayMode = computed<EventViewMode>(() => {
-  return isEventViewMode(appStore.eventViewMode) ? appStore.eventViewMode : 'compact'
+  const requestedMode = props.persistDisplayMode && isEventViewMode(appStore.eventViewMode)
+      ? appStore.eventViewMode
+      : localDisplayMode.value
+
+  return isDisplayModeAllowed(requestedMode) ? requestedMode : fallbackDisplayMode.value
 })
 
 function setDisplayMode(mode: EventViewMode) {
-  appStore.setEventViewMode(mode)
+  if (!isDisplayModeAllowed(mode)) return
+
+  localDisplayMode.value = mode
+
+  if (props.persistDisplayMode) {
+    appStore.setEventViewMode(mode)
+  }
+}
+
+const fallbackDisplayMode = computed<EventViewMode>(() =>
+    props.displayModes.find(isEventViewMode) ?? 'compact'
+)
+
+function isDisplayModeAllowed(mode: EventViewMode) {
+  return props.displayModes.includes(mode)
 }
 
 const initialized = ref(false)
@@ -246,6 +306,16 @@ let filterTimeout: number | null = null
 const onResetFilter = () => {
   filterStore.resetFilter(filterScope.value)
 }
+
+const selectedEventTypeId = computed({
+  get: () => String(activeFilter.value.eventTypeIds[0] ?? ''),
+  set: (value: string) => {
+    const typeId = Number(value)
+    filterStore.setFilter({
+      eventTypeIds: value && Number.isFinite(typeId) ? [typeId] : [],
+    }, filterScope.value)
+  }
+})
 
 function toggleMobileFilter() {
   isMobileFilterOpen.value = !isMobileFilterOpen.value
@@ -278,6 +348,7 @@ async function reloadEvents() {
 
     await eventListStore.loadEvents(true, activeFilter.value)
     await eventListStore.loadTypeSummary(activeFilter.value)
+    rememberSingleTypeOptions()
     await waitForRenderedEvents()
 
     if (currentReloadRequest !== reloadRequestId) return
@@ -372,6 +443,23 @@ function toggleType(typeId: number) {
   filterStore.toggleEventType(typeId, filterScope.value)
 }
 
+function rememberSingleTypeOptions() {
+  if (props.typeFilterMode !== 'select-single') return
+  if (!eventListStore.typeSummary.length) return
+
+  const knownOptions = new globalThis.Map<number, EventListTypeSummary>(
+      singleTypeOptions.value.map(entry => [entry.typeId, entry])
+  )
+
+  for (const entry of eventListStore.typeSummary) {
+    knownOptions.set(entry.typeId, entry)
+  }
+
+  singleTypeOptions.value = Array.from(knownOptions.values())
+      .sort((a, b) => typeLookupStore.getTypeName(a.typeId, locale.value)
+          .localeCompare(typeLookupStore.getTypeName(b.typeId, locale.value), locale.value))
+}
+
 function observeLoadMoreTrigger() {
   observer?.disconnect()
 
@@ -383,7 +471,13 @@ function observeLoadMoreTrigger() {
 
 onMounted(async () => {
   document.addEventListener('click', onDocumentClick)
-  appStore.normalizeEventViewMode()
+  if (props.persistDisplayMode) {
+    appStore.normalizeEventViewMode()
+  }
+
+  if (!isDisplayModeAllowed(localDisplayMode.value)) {
+    localDisplayMode.value = fallbackDisplayMode.value
+  }
 
   await reloadEvents()
   initialized.value = true
@@ -469,6 +563,31 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.calendar-event-type-select-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 1rem;
+}
+
+.calendar-event-type-select-label {
+  color: var(--uranus-color-4);
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.calendar-event-type-select {
+  min-width: 220px;
+  max-width: min(320px, 100%);
+  min-height: 2rem;
+  border: 1px solid var(--uranus-color-6);
+  border-radius: 5px;
+  padding: 4px 8px;
+  background: var(--uranus-bg);
+  color: var(--uranus-color);
+  font: inherit;
 }
 
 .calendar-event-type-chip {
@@ -656,6 +775,16 @@ onBeforeUnmount(() => {
   .calendar-compact-layout,
   .calendar-list-layout {
     padding: 0.75rem;
+  }
+
+  .calendar-event-type-select-container {
+    width: 100%;
+    padding: 0;
+  }
+
+  .calendar-event-type-select {
+    flex: 1;
+    min-width: 0;
   }
 
   .calendar-card-layout {
