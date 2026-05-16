@@ -637,6 +637,12 @@
   "calendar_filter_city_label": "City",
   "calendar_filter_start_date": "Start date",
   "calendar_filter_end_date": "End date",
+  "calendar_filter_date_range": "Date range",
+  "calendar_filter_date_today": "Today",
+  "calendar_filter_date_tomorrow": "Tomorrow",
+  "calendar_filter_date_weekend": "Weekend",
+  "calendar_filter_date_next_week": "Next week",
+  "calendar_filter_date_custom": "Custom range",
   "calendar_filter_button_label": "Filter",
   "calendar_filter_reset_button_label": "Reset filter",
   "calendar_filter_use_gps": "Location"

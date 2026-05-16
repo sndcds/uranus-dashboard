@@ -637,6 +637,12 @@
   "calendar_filter_city_label": "By",
   "calendar_filter_start_date": "Start dato",
   "calendar_filter_end_date": "Slutdato",
+  "calendar_filter_date_range": "Datointerval",
+  "calendar_filter_date_today": "I dag",
+  "calendar_filter_date_tomorrow": "I morgen",
+  "calendar_filter_date_weekend": "Weekend",
+  "calendar_filter_date_next_week": "Næste uge",
+  "calendar_filter_date_custom": "Interval",
   "calendar_filter_button_label": "Filter",
   "calendar_filter_reset_button_label": "Nultil filter",
   "calendar_filter_use_gps": "Placering"
