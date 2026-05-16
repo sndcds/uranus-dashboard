@@ -35,6 +35,41 @@ export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLoc
         en: 'End date',
         da: 'Slutdato',
     },
+    calendar_filter_date_range: {
+        de: 'Zeitraum',
+        en: 'Date range',
+        da: 'Datointerval',
+    },
+    calendar_filter_date_all_events: {
+        de: 'Alle Events',
+        en: 'All events',
+        da: 'Alle begivenheder',
+    },
+    calendar_filter_date_today: {
+        de: 'Heute',
+        en: 'Today',
+        da: 'I dag',
+    },
+    calendar_filter_date_tomorrow: {
+        de: 'Morgen',
+        en: 'Tomorrow',
+        da: 'I morgen',
+    },
+    calendar_filter_date_weekend: {
+        de: 'Wochenende',
+        en: 'Weekend',
+        da: 'Weekend',
+    },
+    calendar_filter_date_next_week: {
+        de: 'Kommende Woche',
+        en: 'Next week',
+        da: 'Næste uge',
+    },
+    calendar_filter_date_custom: {
+        de: 'Bereich',
+        en: 'Custom range',
+        da: 'Interval',
+    },
     calendar_filter_button_label: {
         de: 'Filter',
         en: 'Filter',

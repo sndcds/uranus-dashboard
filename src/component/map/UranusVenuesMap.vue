@@ -18,6 +18,7 @@ import maplibregl, {
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { apiFetch } from '@/api.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
+import { useMapViewStore } from '@/store/mapViewStore.ts'
 import venueMarkerIcon from '@/assets/map/marker.png'
 
 const { t } = useI18n()
@@ -56,6 +57,7 @@ const DEFAULT_ZOOM = 8
 
 const themeStore = useThemeStore()
 const router = useRouter()
+const mapViewStore = useMapViewStore()
 
 const mapContainer = ref<HTMLElement | null>(null)
 const map = shallowRef<maplibregl.Map | null>(null)
@@ -173,12 +175,15 @@ function isFiniteNumber(value: unknown) {
 
 function createMap() {
   if (!mapContainer.value) return
+  const savedView = mapViewStore.getView('venues')
 
   const instance = new maplibregl.Map({
     container: mapContainer.value,
     style: mapStyle.value,
-    center: DEFAULT_CENTER,
-    zoom: DEFAULT_ZOOM,
+    center: savedView?.center ?? DEFAULT_CENTER,
+    zoom: savedView?.zoom ?? DEFAULT_ZOOM,
+    bearing: savedView?.bearing ?? 0,
+    pitch: savedView?.pitch ?? 0,
   })
 
   instance.addControl(new maplibregl.NavigationControl())
@@ -189,6 +194,7 @@ function createMap() {
   })
   instance.on('moveend', () => void loadVenuesForCurrentBounds())
   instance.on('resize', () => void loadVenuesForCurrentBounds())
+  bindViewStatePersistence(instance)
 
   map.value = instance
 }
@@ -326,6 +332,30 @@ async function addMarkerImage(instance: maplibregl.Map) {
 function updateVenueSource() {
   const source = map.value?.getSource(VENUES_SOURCE_ID) as GeoJSONSource | undefined
   source?.setData(venues.value as any)
+}
+
+function bindViewStatePersistence(instance: maplibregl.Map) {
+  const persist = () => {
+    const center = instance.getCenter()
+    const bounds = instance.getBounds()
+
+    mapViewStore.setView('venues', {
+      center: [center.lng, center.lat],
+      zoom: instance.getZoom(),
+      bearing: instance.getBearing(),
+      pitch: instance.getPitch(),
+      bbox: [
+        bounds.getWest(),
+        bounds.getSouth(),
+        bounds.getEast(),
+        bounds.getNorth(),
+      ],
+    })
+  }
+
+  instance.on('moveend', persist)
+  instance.on('rotateend', persist)
+  instance.on('pitchend', persist)
 }
 
 function onClusterClick(event: MapLayerMouseEvent) {

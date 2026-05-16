@@ -637,6 +637,13 @@
   "calendar_filter_city_label": "Ort",
   "calendar_filter_start_date": "Datum ab",
   "calendar_filter_end_date": "Datum bis",
+  "calendar_filter_date_range": "Zeitraum",
+  "calendar_filter_date_all_events": "Alle Events",
+  "calendar_filter_date_today": "Heute",
+  "calendar_filter_date_tomorrow": "Morgen",
+  "calendar_filter_date_weekend": "Wochenende",
+  "calendar_filter_date_next_week": "Kommende Woche",
+  "calendar_filter_date_custom": "Bereich",
   "calendar_filter_button_label": "Filter",
   "calendar_filter_reset_button_label": "Filter zurücksetzen",
   "calendar_filter_use_gps": "Standort"

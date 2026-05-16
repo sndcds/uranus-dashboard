@@ -10,6 +10,7 @@ export interface UranusEventsFilter {
     categories: number[] | null
     search: string | null
     city: string | null
+    dateRangeMode?: UranusEventsDateRangeMode
     startDate?: string | null
     endDate?: string | null
     venue: VenueSelectInfo | null
@@ -31,11 +32,13 @@ export interface UranusEventsFilter {
 }
 
 export type UranusEventsFilterScope = 'default' | 'venue' | 'portal'
+export type UranusEventsDateRangeMode = 'all_events' | 'today' | 'tomorrow' | 'weekend' | 'next_week' | 'custom'
 
 const defaultFilter: UranusEventsFilter = {
     categories: null,
     search: '',
     city: '',
+    dateRangeMode: 'today',
     startDate: '',
     endDate: '',
     venue: { uuid: '', name: '' },
@@ -58,6 +61,7 @@ function createDefaultFilter(): UranusEventsFilter {
         categories: null,
         search: '',
         city: '',
+        dateRangeMode: 'today',
         startDate: '',
         endDate: '',
         venue: { uuid: '', name: '' },
@@ -87,6 +91,24 @@ function cloneFilter(filter: Partial<UranusEventsFilter> = {}): UranusEventsFilt
     }
 }
 
+function normalizeLegacyDateRangeMode(filter: Partial<UranusEventsFilter>): Partial<UranusEventsFilter> {
+    if (filter.dateRangeMode) return filter
+
+    const hasStartDate = Boolean(filter.startDate)
+    const hasEndDate = Boolean(filter.endDate)
+    if (!hasStartDate && !hasEndDate) {
+        return {
+            ...filter,
+            dateRangeMode: 'all_events'
+        }
+    }
+
+    return {
+        ...filter,
+        dateRangeMode: 'custom'
+    }
+}
+
 export const useEventsFilterStore = defineStore("calendarFilter", () => {
     const filters = ref<Record<UranusEventsFilterScope, UranusEventsFilter>>({
         default: createDefaultFilter(),
@@ -106,7 +128,7 @@ export const useEventsFilterStore = defineStore("calendarFilter", () => {
     if (saved) {
         try {
             const parsed = JSON.parse(saved)
-            filters.value.default = cloneFilter({ ...defaultFilter, ...parsed })
+            filters.value.default = cloneFilter(normalizeLegacyDateRangeMode(parsed))
         } catch {
             filters.value.default = cloneFilter(defaultFilter)
         }

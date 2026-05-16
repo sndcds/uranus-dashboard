@@ -56,7 +56,12 @@
 
       <div class="uranus-portal-events-header__title">
         <h1>{{ portal?.name ?? t('events') }}</h1>
-        <p>{{ portal?.description ?? eventCountInfo }}</p>
+        <p>
+          {{
+            portal?.description
+            ?? (showInitialLoading ? '' : eventCountInfo)
+          }}
+        </p>
       </div>
 
       <nav class="uranus-portal-events-header__buttons">
