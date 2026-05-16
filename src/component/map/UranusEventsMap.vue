@@ -20,6 +20,7 @@ import { apiFetch } from '@/api.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { type UranusEventsFilterScope, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import { useMapViewStore } from '@/store/mapViewStore.ts'
 import venueMarkerIcon from '@/assets/map/marker-event.png'
 
 const { t } = useI18n()
@@ -66,6 +67,7 @@ const themeStore = useThemeStore()
 const router = useRouter()
 const eventListStore = useEventListStore()
 const filterStore = useEventsFilterStore()
+const mapViewStore = useMapViewStore()
 const activeFilter = computed(() => filterStore.getFilter(props.filterScope))
 
 const mapContainer = ref<HTMLElement | null>(null)
@@ -99,6 +101,7 @@ async function loadEventVenues() {
 
     eventVenues.value = normalizeEventVenueFeatureCollection(response?.data)
     updateEventVenueSource()
+    fitMapToEventVenues()
   } catch (error) {
     console.error('[UranusEventsMap] Failed to load event venues:', error)
   }
@@ -182,12 +185,15 @@ function isFiniteNumber(value: unknown) {
 
 function createMap() {
   if (!mapContainer.value) return
+  const savedView = mapViewStore.getView('events')
 
   const instance = new maplibregl.Map({
     container: mapContainer.value,
     style: mapStyle.value,
-    center: DEFAULT_CENTER,
-    zoom: DEFAULT_ZOOM,
+    center: savedView?.center ?? DEFAULT_CENTER,
+    zoom: savedView?.zoom ?? DEFAULT_ZOOM,
+    bearing: savedView?.bearing ?? 0,
+    pitch: savedView?.pitch ?? 0,
   })
 
   instance.addControl(new maplibregl.NavigationControl())
@@ -196,6 +202,7 @@ function createMap() {
     updateEventVenueSource()
     void loadEventVenues()
   })
+  bindViewStatePersistence(instance)
 
   map.value = instance
 }
@@ -352,6 +359,61 @@ async function addMarkerImage(instance: maplibregl.Map) {
 function updateEventVenueSource() {
   const source = map.value?.getSource(EVENTS_SOURCE_ID) as GeoJSONSource | undefined
   source?.setData(eventVenues.value as any)
+}
+
+function fitMapToEventVenues() {
+  const currentMap = map.value
+  const features = eventVenues.value.features
+  if (!currentMap || features.length === 0) return
+
+  if (features.length === 1) {
+    const feature = features[0]
+    if (!feature) return
+
+    currentMap.easeTo({
+      center: feature.geometry.coordinates,
+      zoom: Math.max(currentMap.getZoom(), 14),
+      duration: 500,
+    })
+    return
+  }
+
+  const bounds = new maplibregl.LngLatBounds()
+  features.forEach((feature) => {
+    bounds.extend(feature.geometry.coordinates)
+  })
+
+  if (bounds.isEmpty()) return
+
+  currentMap.fitBounds(bounds, {
+    padding: 56,
+    maxZoom: 14,
+    duration: 500,
+  })
+}
+
+function bindViewStatePersistence(instance: maplibregl.Map) {
+  const persist = () => {
+    const center = instance.getCenter()
+    const bounds = instance.getBounds()
+
+    mapViewStore.setView('events', {
+      center: [center.lng, center.lat],
+      zoom: instance.getZoom(),
+      bearing: instance.getBearing(),
+      pitch: instance.getPitch(),
+      bbox: [
+        bounds.getWest(),
+        bounds.getSouth(),
+        bounds.getEast(),
+        bounds.getNorth(),
+      ],
+    })
+  }
+
+  instance.on('moveend', persist)
+  instance.on('rotateend', persist)
+  instance.on('pitchend', persist)
 }
 
 function onClusterClick(event: MapLayerMouseEvent) {

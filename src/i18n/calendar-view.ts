@@ -40,6 +40,11 @@ export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLoc
         en: 'Date range',
         da: 'Datointerval',
     },
+    calendar_filter_date_all_events: {
+        de: 'Alle Events',
+        en: 'All events',
+        da: 'Alle begivenheder',
+    },
     calendar_filter_date_today: {
         de: 'Heute',
         en: 'Today',

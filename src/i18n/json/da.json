@@ -638,6 +638,7 @@
   "calendar_filter_start_date": "Start dato",
   "calendar_filter_end_date": "Slutdato",
   "calendar_filter_date_range": "Datointerval",
+  "calendar_filter_date_all_events": "Alle begivenheder",
   "calendar_filter_date_today": "I dag",
   "calendar_filter_date_tomorrow": "I morgen",
   "calendar_filter_date_weekend": "Weekend",

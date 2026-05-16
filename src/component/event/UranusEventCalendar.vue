@@ -304,7 +304,14 @@ const isLoadingMore = ref(false)
 let filterTimeout: number | null = null
 
 const onResetFilter = () => {
+  const currentDateRange = {
+    dateRangeMode: activeFilter.value.dateRangeMode,
+    startDate: activeFilter.value.startDate,
+    endDate: activeFilter.value.endDate,
+  }
+
   filterStore.resetFilter(filterScope.value)
+  filterStore.setFilter(currentDateRange, filterScope.value)
 }
 
 const selectedEventTypeId = computed({

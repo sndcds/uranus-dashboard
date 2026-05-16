@@ -21,6 +21,7 @@
             v-model="dateRangeMode"
             style="height: var(--uranus-input-height); width: 100%;"
         >
+          <option value="all_events">{{ t('calendar_filter_date_all_events') }}</option>
           <option value="today">{{ t('calendar_filter_date_today') }}</option>
           <option value="tomorrow">{{ t('calendar_filter_date_tomorrow') }}</option>
           <option value="weekend">{{ t('calendar_filter_date_weekend') }}</option>
@@ -162,7 +163,12 @@ import UranusVenueTypeahead from '@/component/venue/UranusVenueTypeahead.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
-import { type UranusEventsFilter, type UranusEventsFilterScope, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import {
+  type UranusEventsDateRangeMode,
+  type UranusEventsFilter,
+  type UranusEventsFilterScope,
+  useEventsFilterStore
+} from '@/store/eventsFilterStore.ts'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import { useGpsLocation } from '@/composable/useGpsLocation'
@@ -183,8 +189,12 @@ const emit = defineEmits<{
 
 const filterStore = useEventsFilterStore()
 const filter = computed(() => filterStore.getFilter(props.filterScope))
-type DateRangeMode = 'today' | 'tomorrow' | 'weekend' | 'next_week' | 'custom'
-const dateRangeMode = ref<DateRangeMode>('today')
+const dateRangeMode = computed<UranusEventsDateRangeMode>({
+  get: () => filter.value.dateRangeMode ?? inferDateRangeModeFromFilter(),
+  set: (mode) => {
+    filter.value.dateRangeMode = mode
+  }
+})
 
 // Add defaults if missing
 if (filter.value.useCurrentLocation === undefined) filter.value.useCurrentLocation = false
@@ -213,9 +223,16 @@ function addDays(date: Date, days: number) {
   return nextDate
 }
 
-function resolveDateRange(mode: Exclude<DateRangeMode, 'custom'>) {
+function resolveDateRange(mode: Exclude<UranusEventsDateRangeMode, 'custom'>) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+
+  if (mode === 'all_events') {
+    return {
+      startDate: formatDateInputValue(today),
+      endDate: ''
+    }
+  }
 
   if (mode === 'today') {
     return {
@@ -252,7 +269,27 @@ function resolveDateRange(mode: Exclude<DateRangeMode, 'custom'>) {
   }
 }
 
-function applyDateRangeMode(mode: DateRangeMode) {
+function inferDateRangeModeFromFilter(): UranusEventsDateRangeMode {
+  const startDate = filter.value.startDate ?? ''
+  const endDate = filter.value.endDate ?? ''
+  if (!startDate && !endDate) return 'all_events'
+
+  const modes: Exclude<UranusEventsDateRangeMode, 'custom'>[] = [
+    'all_events',
+    'today',
+    'tomorrow',
+    'weekend',
+    'next_week',
+  ]
+  const matchingMode = modes.find((mode) => {
+    const range = resolveDateRange(mode)
+    return range.startDate === startDate && range.endDate === endDate
+  })
+
+  return matchingMode ?? 'custom'
+}
+
+function applyDateRangeMode(mode: UranusEventsDateRangeMode) {
   if (mode === 'custom') return
 
   const range = resolveDateRange(mode)
