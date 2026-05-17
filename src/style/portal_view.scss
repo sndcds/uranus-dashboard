@@ -119,8 +119,11 @@
 .uranus-portal-events-header__search {
   grid-area: search;
   display: flex;
+  align-items: center;
+  justify-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
+  height: 2.5rem;
 }
 
 .uranus-portal-events-header__icon-links {
