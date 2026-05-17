@@ -26,32 +26,38 @@
         :class="portalHeaderLayoutClass"
     >
       <div v-if="headerConfig.showLogo" class="uranus-portal-events-header__logo">
-        <a
-            v-if="logoUrl && headerConfig.logoLinkUrl"
-            class="uranus-portal-events__logo-link"
-            :href="headerConfig.logoLinkUrl"
-            :target="headerConfig.logoLinkTarget"
-            :rel="getLinkRel(headerConfig.logoLinkTarget)"
+        <div
+            v-if="logoUrl"
+            class="uranus-portal-events-header__logo-frame"
+            :style="headerLogoFrameStyle"
         >
+          <a
+              v-if="headerConfig.logoLinkUrl"
+              class="uranus-portal-events__logo-link"
+              :href="headerConfig.logoLinkUrl"
+              :target="headerConfig.logoLinkTarget"
+              :rel="getLinkRel(headerConfig.logoLinkTarget)"
+          >
+            <UranusLogoImage
+                class="uranus-portal-events-header__logo-image"
+                :logoURL="logoUrl"
+                theme="light"
+                :pixelCount="headerLogoPixelCount"
+                :maxWidth="headerConfig.logoWidth"
+                :maxHeight="headerConfig.logoHeight"
+            />
+          </a>
+
           <UranusLogoImage
+              v-else
               class="uranus-portal-events-header__logo-image"
               :logoURL="logoUrl"
               theme="light"
-              :pixelCount="24000"
-              :maxWidth="480"
-              :maxHeight="240"
+              :pixelCount="headerLogoPixelCount"
+              :maxWidth="headerConfig.logoWidth"
+              :maxHeight="headerConfig.logoHeight"
           />
-        </a>
-
-        <UranusLogoImage
-            v-else-if="logoUrl"
-            class="uranus-portal-events-header__logo-image"
-            :logoURL="logoUrl"
-            theme="light"
-            :pixelCount="24000"
-            :maxWidth="480"
-            :maxHeight="240"
-        />
+        </div>
       </div>
 
       <div
@@ -179,30 +185,38 @@
         v-if="showPortalFooter"
         class="uranus-portal-events__footer"
     >
-      <a
-          v-if="footerConfig.showLogo && logoUrl && footerConfig.logoLinkUrl"
-          class="uranus-portal-events__footer-logo-link"
-          :href="footerConfig.logoLinkUrl"
-          :target="footerConfig.logoLinkTarget"
-          :rel="getLinkRel(footerConfig.logoLinkTarget)"
-      >
-        <UranusLogoImage
-            :logoURL="logoUrl"
-            theme="light"
-            :pixelCount="6000"
-            :maxWidth="180"
-            :maxHeight="90"
-        />
-      </a>
+      <div class="uranus-portal-events__footer-logo">
+        <div
+            v-if="footerConfig.showLogo && logoUrl"
+            class="uranus-portal-events__footer-logo-frame"
+            :style="footerLogoFrameStyle"
+        >
+          <a
+              v-if="footerConfig.logoLinkUrl"
+              class="uranus-portal-events__footer-logo-link"
+              :href="footerConfig.logoLinkUrl"
+              :target="footerConfig.logoLinkTarget"
+              :rel="getLinkRel(footerConfig.logoLinkTarget)"
+          >
+            <UranusLogoImage
+                :logoURL="logoUrl"
+                theme="light"
+                :pixelCount="footerLogoPixelCount"
+                :maxWidth="footerConfig.logoWidth"
+                :maxHeight="footerConfig.logoHeight"
+            />
+          </a>
 
-      <UranusLogoImage
-          v-else-if="footerConfig.showLogo && logoUrl"
-          :logoURL="logoUrl"
-          theme="light"
-          :pixelCount="6000"
-          :maxWidth="180"
-          :maxHeight="90"
-      />
+          <UranusLogoImage
+              v-else
+              :logoURL="logoUrl"
+              theme="light"
+              :pixelCount="footerLogoPixelCount"
+              :maxWidth="footerConfig.logoWidth"
+              :maxHeight="footerConfig.logoHeight"
+          />
+        </div>
+      </div>
 
       <div
           v-if="footerTextHtml"
@@ -366,6 +380,10 @@ const showPortalFooter = computed(() =>
     !!footerTextHtml.value ||
     footerConfig.value.links.length > 0
 )
+const headerLogoFrameStyle = computed(() => createPixelSizeStyle(headerConfig.value.logoWidth, headerConfig.value.logoHeight))
+const footerLogoFrameStyle = computed(() => createPixelSizeStyle(footerConfig.value.logoWidth, footerConfig.value.logoHeight))
+const headerLogoPixelCount = computed(() => headerConfig.value.logoWidth * headerConfig.value.logoHeight)
+const footerLogoPixelCount = computed(() => footerConfig.value.logoWidth * footerConfig.value.logoHeight)
 const portalRootStyle = computed(() => ({
   '--portal-background-image': backgroundUrl.value ? `url(${backgroundUrl.value})` : undefined,
 }))
@@ -436,6 +454,13 @@ function formatMarkdown(markdown: string) {
 
 function getLinkRel(target: PortalLinkTarget) {
   return target === '_blank' ? 'noopener noreferrer' : undefined
+}
+
+function createPixelSizeStyle(width: number, height: number) {
+  return {
+    width: `${width}px`,
+    height: `${height}px`,
+  }
 }
 
 function createPortalStructuredCss(style: PortalStyle, portalUuid: string) {

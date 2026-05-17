@@ -8,6 +8,20 @@
           label="Show small logo"
       />
       <UranusFormRow :cols="2">
+        <UranusNumberInput
+            id="portal-footer-logo-width"
+            v-model="form.logoWidth"
+            label="Logo width"
+            min="1"
+        />
+        <UranusNumberInput
+            id="portal-footer-logo-height"
+            v-model="form.logoHeight"
+            label="Logo height"
+            min="1"
+        />
+      </UranusFormRow>
+      <UranusFormRow :cols="2">
         <UranusTextfield
             id="portal-footer-logo-link-url"
             v-model="form.logoLinkUrl"
@@ -89,6 +103,7 @@ import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
+import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import {

@@ -35,6 +35,20 @@
     <section class="portal-layout-group">
       <h2>Logo</h2>
       <UranusFormRow :cols="2">
+        <UranusNumberInput
+            id="portal-header-logo-width"
+            v-model="form.logoWidth"
+            label="Logo width"
+            min="1"
+        />
+        <UranusNumberInput
+            id="portal-header-logo-height"
+            v-model="form.logoHeight"
+            label="Logo height"
+            min="1"
+        />
+      </UranusFormRow>
+      <UranusFormRow :cols="2">
         <UranusTextfield
             id="portal-header-logo-link-url"
             v-model="form.logoLinkUrl"
@@ -118,6 +132,7 @@ import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
+import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import {
   buildHeaderPayload,
