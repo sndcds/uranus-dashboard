@@ -27,7 +27,7 @@
     >
       <div v-if="headerConfig.showLogo" class="uranus-portal-events-header__logo">
         <div
-            v-if="logoUrl"
+            v-if="webLogoUrl"
             class="uranus-portal-events-header__logo-frame"
             :style="headerLogoFrameStyle"
         >
@@ -40,7 +40,7 @@
           >
             <UranusLogoImage
                 class="uranus-portal-events-header__logo-image"
-                :logoURL="logoUrl"
+                :logoURL="webLogoUrl"
                 theme="light"
                 :pixelCount="headerLogoPixelCount"
                 :maxWidth="headerConfig.logoWidth"
@@ -51,7 +51,7 @@
           <UranusLogoImage
               v-else
               class="uranus-portal-events-header__logo-image"
-              :logoURL="logoUrl"
+              :logoURL="webLogoUrl"
               theme="light"
               :pixelCount="headerLogoPixelCount"
               :maxWidth="headerConfig.logoWidth"
@@ -187,7 +187,7 @@
     >
       <div class="uranus-portal-events__footer-logo">
         <div
-            v-if="footerConfig.showLogo && logoUrl"
+            v-if="footerConfig.showLogo && footerLogoUrl"
             class="uranus-portal-events__footer-logo-frame"
             :style="footerLogoFrameStyle"
         >
@@ -199,7 +199,7 @@
               :rel="getLinkRel(footerConfig.logoLinkTarget)"
           >
             <UranusLogoImage
-                :logoURL="logoUrl"
+                :logoURL="footerLogoUrl"
                 theme="light"
                 :pixelCount="footerLogoPixelCount"
                 :maxWidth="footerConfig.logoWidth"
@@ -209,7 +209,7 @@
 
           <UranusLogoImage
               v-else
-              :logoURL="logoUrl"
+              :logoURL="footerLogoUrl"
               theme="light"
               :pixelCount="footerLogoPixelCount"
               :maxWidth="footerConfig.logoWidth"
@@ -249,7 +249,7 @@ import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
-import { uranusFormatDateTime, uranusPluralizedText, uranusStringInterpolate } from '@/util/string.ts'
+import { uranusFormatDateTime, uranusPluralizedText } from '@/util/string.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 import { apiBaseUrl } from '@/util/util.ts'
@@ -301,6 +301,7 @@ interface PortalDTO {
   footer?: Record<string, unknown> | string | null
   web_logo_uuid?: string | null
   background_image_uuid?: string | null
+  footer_logo_uuid?: string | null
 }
 
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -313,17 +314,24 @@ const typeLookupStore = useEventTypeLookupStore()
 const route = useRoute()
 const apiBase = apiBaseUrl()
 
-const logoUrl = computed(() => {
+const webLogoUrl = computed(() => {
   const uuid = portal.value?.web_logo_uuid
   return uuid
-      ? `${apiBase}/api/image/${uuid}?width=3600&type=png&quality=80`
+      ? `${apiBase}/api/image/${uuid}?width=480&type=png&quality=80`
+      : null
+})
+
+const footerLogoUrl = computed(() => {
+  const uuid = portal.value?.footer_logo_uuid
+  return uuid
+      ? `${apiBase}/api/image/${uuid}?width=1920&type=png&quality=80`
       : null
 })
 
 const backgroundUrl = computed(() => {
   const uuid = portal.value?.background_image_uuid
   return uuid
-      ? `${apiBase}/api/image/${uuid}?width=3600&type=png&quality=80`
+      ? `${apiBase}/api/image/${uuid}?width=480&type=png&quality=80`
       : null
 })
 
