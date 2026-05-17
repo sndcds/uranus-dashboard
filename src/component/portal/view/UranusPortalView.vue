@@ -25,7 +25,7 @@
         class="uranus-portal-events-header"
         :class="portalHeaderLayoutClass"
     >
-      <div class="uranus-portal-events-header__logo">
+      <div v-if="headerConfig.showLogo" class="uranus-portal-events-header__logo">
         <a
             v-if="logoUrl && headerConfig.logoLinkUrl"
             class="uranus-portal-events__logo-link"
@@ -54,9 +54,12 @@
         />
       </div>
 
-      <div class="uranus-portal-events-header__title">
-        <h1>{{ portal?.name ?? t('events') }}</h1>
-        <p>
+      <div
+          v-if="headerConfig.showTitle || headerConfig.showDescription"
+          class="uranus-portal-events-header__title"
+      >
+        <h1 v-if="headerConfig.showTitle">{{ portal?.name ?? t('events') }}</h1>
+        <p v-if="headerConfig.showDescription">
           {{
             portal?.description
             ?? (showInitialLoading ? '' : eventCountInfo)
@@ -91,10 +94,13 @@
       <div class="uranus-portal-events-header__icon-links"></div>
 
       <div class="uranus-portal-events-header__event-types">
-        <UranusHorizontalScroller v-if="eventListStore.typeSummary.length" class="uranus-portal-events__type-scroller">
+        <UranusHorizontalScroller
+            v-if="eventListStore.typeSummary.length"
+            class="uranus-portal-events__type-scroller uranus-portal-event-type-scroller"
+        >
           <div class="uranus-portal-events__type-list">
             <button
-                v-for="entry in eventListStore.typeSummary"
+                v-for="entry in sortedTypeSummary"
                 :key="entry.typeId"
                 type="button"
                 class="uranus-portal-events__type-chip"
@@ -239,7 +245,7 @@ import { uranusFormatDateTime, uranusPluralizedText } from '@/util/string.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 import { apiBaseUrl } from '@/util/util.ts'
-import '@/component/portal/style/uranusPortalEvents.scss'
+import '@/style/portal_view.scss'
 import { marked } from 'marked'
 import {
   createFooterConfig,
@@ -325,6 +331,16 @@ const eventCountInfo = computed(() =>
     uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.totalEventCount)
 )
 const showInitialLoading = computed(() => eventListStore.loading && !eventListStore.events.length)
+
+const sortedTypeSummary = computed(() => {
+  return [...eventListStore.typeSummary].sort((a, b) => {
+    if (b.count !== a.count) return b.count - a.count
+    const nameA = typeLookupStore.getTypeName(a.typeId, locale.value)
+    const nameB = typeLookupStore.getTypeName(b.typeId, locale.value)
+    return nameA.localeCompare(nameB)
+  })
+})
+
 const portal = ref<PortalDTO | null>(null)
 const portalLoading = ref(false)
 const portalError = ref<string | null>(null)
@@ -398,9 +414,10 @@ function normalizePortalStyle(style: PortalStyle | string | null | undefined): P
   return normalizeJsonObject(style) as PortalStyle | null
 }
 
-function normalizeJsonObject(value: Record<string, unknown> | string | null | undefined): Record<string, unknown> | null {
+function normalizeJsonObject(value: object | string | null | undefined): Record<string, unknown> | null {
   if (!value) return null
-  if (typeof value === 'object' && !Array.isArray(value)) return value
+  if (typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>
+  if (typeof value !== 'string') return null
 
   try {
     const parsed = JSON.parse(value)
@@ -467,10 +484,10 @@ ${rootSelector} .uranus-portal-events__load-more-trigger`, [
       cssDeclaration('transition', readStyleValue(style['event-card'] ?? style.card, 'transition')),
     ]),
     createRule(`${rootSelector} .uranus-portal-event-card:hover`, [
-      cssDeclaration('background', readStyleValue((style['event-card'] ?? style.card)?.hover, 'background')),
-      cssDeclaration('border', readStyleValue((style['event-card'] ?? style.card)?.hover, 'border')),
-      cssDeclaration('box-shadow', readStyleValue((style['event-card'] ?? style.card)?.hover, 'shadow')),
-      cssDeclaration('transform', createScaleTransform(readStyleValue((style['event-card'] ?? style.card)?.hover, 'scale'))),
+      // cssDeclaration('background', readStyleValue((style['event-card'] ?? style.card)?.hover, 'background')),
+      // cssDeclaration('border', readStyleValue((style['event-card'] ?? style.card)?.hover, 'border')),
+      // cssDeclaration('box-shadow', readStyleValue((style['event-card'] ?? style.card)?.hover, 'shadow')),
+      //cssDeclaration('transform', createScaleTransform(readStyleValue((style['event-card'] ?? style.card)?.hover, 'scale'))),
     ]),
     createRule(`${rootSelector} .uranus-portal-event-card__image-frame`, [
       cssDeclaration('background', readStyleValue(style['event-card-image'], 'background')),

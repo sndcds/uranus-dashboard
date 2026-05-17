@@ -20,10 +20,10 @@ import { uranusI18nPartnerTranslations } from '../../src/i18n/partner.ts'
 import { uranusI18nVenueTranslations } from '../../src/i18n/venue.ts'
 import { uranusI18nSpaceTranslations } from '../../src/i18n/space.ts'
 import { uranusI18nEventTranslations } from '../../src/i18n/event.ts'
+import { uranusI18nEventFilterTranslations } from '../../src/i18n/event-filter.ts'
 import { uranusI18nPortalTranslations } from '../../src/i18n/portal.ts'
 import { uranusI18nAccessibilityTranslations } from '../../src/i18n/accessibility.ts'
 import { uranusI18nVisitorInfoTranslations } from '../../src/i18n/visitor-info.ts'
-import { uranusI18nCalendarViewTranslations } from '../../src/i18n/calendar-view.ts'
 
 const locales = ['de', 'en', 'da'] as const
 
@@ -33,7 +33,6 @@ if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true })
 locales.forEach((locale) => {
     const merged = {
         ...Object.fromEntries(Object.entries(uranusI18nStandardTranslations).map(([k, v]) => [k, v[locale]])),
-        // ...uranusI18nMessages[locale],
         ...Object.fromEntries(Object.entries(uranusI18nRegisterAndLoginTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nTodoTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nDashboardTranslations).map(([k, v]) => [k, v[locale]])),
@@ -46,10 +45,10 @@ locales.forEach((locale) => {
         ...Object.fromEntries(Object.entries(uranusI18nVenueTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nSpaceTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nEventTranslations).map(([k, v]) => [k, v[locale]])),
+        ...Object.fromEntries(Object.entries(uranusI18nEventFilterTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nPortalTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nAccessibilityTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nVisitorInfoTranslations).map(([k, v]) => [k, v[locale]])),
-        ...Object.fromEntries(Object.entries(uranusI18nCalendarViewTranslations).map(([k, v]) => [k, v[locale]]))
     }
     fs.writeFileSync(path.join(outputDir, `${locale}.json`), JSON.stringify(merged, null, 2))
 })

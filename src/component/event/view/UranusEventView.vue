@@ -118,9 +118,7 @@
 
       <!-- Sidebar -->
       <aside class="uranus-public-event-sidebar">
-
         <div class="uranus-public-event-info-section">
-
           <UranusEventDateTimeDisplay
               :startDate="eventStartDate"
               :startTime="eventStartTime"

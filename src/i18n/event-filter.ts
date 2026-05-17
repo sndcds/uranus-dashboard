@@ -4,7 +4,7 @@
 
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
-export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLocaleKey, string>> = {
+export const uranusI18nEventFilterTranslations: Record<string, Record<UranusLocaleKey, string>> = {
     calendar_filter_settings_title: {
         de: "Event-Filter-Einstellungen",
         en: "Event Filter Settings",
@@ -87,4 +87,4 @@ export const uranusI18nCalendarViewTranslations: Record<string, Record<UranusLoc
     },
 }
 
-export default uranusI18nCalendarViewTranslations
+export default uranusI18nEventFilterTranslations

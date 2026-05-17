@@ -115,7 +115,7 @@
       <UranusHorizontalScroller v-else>
         <div class="calendar-event-type-chips-container">
           <span
-              v-for="entry in eventListStore.typeSummary"
+              v-for="entry in sortedTypeSummary"
               :key="entry.typeId"
               class="calendar-event-type-chip"
               :class="{ active: activeEventTypeIds.includes(entry.typeId) }"
@@ -273,6 +273,10 @@ const displayMode = computed<EventViewMode>(() => {
 
   return isDisplayModeAllowed(requestedMode) ? requestedMode : fallbackDisplayMode.value
 })
+
+const sortedTypeSummary = computed(() =>
+    [...eventListStore.typeSummary].sort(compareEventTypes)
+)
 
 function setDisplayMode(mode: EventViewMode) {
   if (!isDisplayModeAllowed(mode)) return
@@ -450,6 +454,16 @@ function toggleType(typeId: number) {
   filterStore.toggleEventType(typeId, filterScope.value)
 }
 
+function compareEventTypes(a: EventListTypeSummary, b: EventListTypeSummary) {
+  if (b.count !== a.count) return b.count - a.count
+  return typeLookupStore
+      .getTypeName(a.typeId, locale.value)
+      .localeCompare(
+          typeLookupStore.getTypeName(b.typeId, locale.value),
+          locale.value
+      )
+}
+
 function rememberSingleTypeOptions() {
   if (props.typeFilterMode !== 'select-single') return
   if (!eventListStore.typeSummary.length) return
@@ -462,9 +476,7 @@ function rememberSingleTypeOptions() {
     knownOptions.set(entry.typeId, entry)
   }
 
-  singleTypeOptions.value = Array.from(knownOptions.values())
-      .sort((a, b) => typeLookupStore.getTypeName(a.typeId, locale.value)
-          .localeCompare(typeLookupStore.getTypeName(b.typeId, locale.value), locale.value))
+  singleTypeOptions.value = Array.from(knownOptions.values()).sort(compareEventTypes)
 }
 
 function observeLoadMoreTrigger() {

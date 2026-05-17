@@ -112,12 +112,16 @@ const onTouchMove = (e: TouchEvent) => {
   width: 2.6rem;
   height: 2.6rem;
   position: absolute;
-  color: var(--uranus-color);
+  color: var(--uranus-scroller-arrow-color, var(--uranus-color));
   cursor: pointer;
   padding: 0.4rem;
   transition: color 0.2s ease-in-out;
+
   &:hover {
-    color: var(--uranus-link-color-hover);
+    color: var(
+      --uranus-scroller-arrow-hover-color,
+      var(--uranus-link-color-hover)
+    );
   }
 }
 
