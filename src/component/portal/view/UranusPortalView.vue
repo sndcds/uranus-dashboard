@@ -239,7 +239,7 @@ import { uranusFormatDateTime, uranusPluralizedText } from '@/util/string.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 import { apiBaseUrl } from '@/util/util.ts'
-import '@/component/portal/style/uranusPortalEvents.scss'
+import '@/style/portal_view.scss'
 import { marked } from 'marked'
 import {
   createFooterConfig,
@@ -467,10 +467,10 @@ ${rootSelector} .uranus-portal-events__load-more-trigger`, [
       cssDeclaration('transition', readStyleValue(style['event-card'] ?? style.card, 'transition')),
     ]),
     createRule(`${rootSelector} .uranus-portal-event-card:hover`, [
-      cssDeclaration('background', readStyleValue((style['event-card'] ?? style.card)?.hover, 'background')),
-      cssDeclaration('border', readStyleValue((style['event-card'] ?? style.card)?.hover, 'border')),
-      cssDeclaration('box-shadow', readStyleValue((style['event-card'] ?? style.card)?.hover, 'shadow')),
-      cssDeclaration('transform', createScaleTransform(readStyleValue((style['event-card'] ?? style.card)?.hover, 'scale'))),
+      // cssDeclaration('background', readStyleValue((style['event-card'] ?? style.card)?.hover, 'background')),
+      // cssDeclaration('border', readStyleValue((style['event-card'] ?? style.card)?.hover, 'border')),
+      // cssDeclaration('box-shadow', readStyleValue((style['event-card'] ?? style.card)?.hover, 'shadow')),
+      //cssDeclaration('transform', createScaleTransform(readStyleValue((style['event-card'] ?? style.card)?.hover, 'scale'))),
     ]),
     createRule(`${rootSelector} .uranus-portal-event-card__image-frame`, [
       cssDeclaration('background', readStyleValue(style['event-card-image'], 'background')),

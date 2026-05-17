@@ -78,9 +78,9 @@
 
 .uranus-portal-events-header__left {
   grid-template-areas:
-    "logo title buttons icon-links"
-    "logo search search icon-links"
-    "event-types event-types event-types event-types";
+    "logo title"
+    "logo buttons"
+    "event-types event-types";
   grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: flex-start;
   text-align: left;
@@ -145,7 +145,7 @@
   margin: 0;
   color: var(--portal-header-title-color, inherit);
   font-size: var(--portal-header-title-font-size, 1.6rem);
-  font-weight: var(--portal-header-title-font-weight, 700);
+  font-weight: var(--portal-header-title-font-weight, 200);
   line-height: var(--portal-header-title-line-height, 1);
 }
 
@@ -205,9 +205,16 @@
 .uranus-portal-events__type-chip {
   border-radius: 999px;
   padding: 0.45rem 0.75rem;
-  background: transparent;
+  border: 0;
   cursor: pointer;
   white-space: nowrap;
+  color: #dd155b;
+  background: #fff3f4;
+/*
+  &--active {
+    color: white;
+    background: #f41865;
+  }*/
 }
 
 .uranus-portal-events__grid {
