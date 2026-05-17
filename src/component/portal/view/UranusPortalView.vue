@@ -81,6 +81,9 @@
       </nav>
 
       <div class="uranus-portal-events-header__search">
+        <div v-if="eventListStore.events.length">
+          {{ uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.events.length) }}
+        </div>
         <UranusButton
             v-if="activeEventTypeIds.length"
             size="small"
@@ -92,6 +95,7 @@
       </div>
 
       <div class="uranus-portal-events-header__icon-links"></div>
+
 
       <div class="uranus-portal-events-header__event-types">
         <UranusHorizontalScroller
@@ -124,13 +128,9 @@
       {{ eventListStore.error }}
     </div>
 
-    <div v-else-if="showInitialLoading || portalLoading" class="uranus-portal-events__state">
+    <!--div v-else-if="showInitialLoading || portalLoading" class="uranus-portal-events__state">
       Loading events...
-    </div>
-
-    <div v-else-if="!eventListStore.events.length" class="uranus-portal-events__state">
-      {{ t('result_count_plural', { count: 0 }) }}
-    </div>
+    </div-->
 
     <div v-else class="uranus-portal-events__grid">
       <router-link
@@ -241,7 +241,7 @@ import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
-import { uranusFormatDateTime, uranusPluralizedText } from '@/util/string.ts'
+import { uranusFormatDateTime, uranusPluralizedText, uranusStringInterpolate } from '@/util/string.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 import { apiBaseUrl } from '@/util/util.ts'
