@@ -134,6 +134,7 @@
 .uranus-portal-events-header__event-types {
   grid-area: event-types;
   min-width: 100%;
+  min-height: 50px;
 }
 
 .uranus-portal-events-header__centered .uranus-portal-events-header__buttons,
@@ -194,6 +195,7 @@
 .uranus-portal-events__type-scroller {
   position: relative;
   box-sizing: border-box;
+  min-height: 50px;
   overflow: hidden;
 }
 
