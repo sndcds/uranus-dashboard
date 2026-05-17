@@ -119,6 +119,7 @@ async function confirmDeletePortal({ password }: { password: string }) {
 <style scoped lang="scss">
 .portal-card {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;

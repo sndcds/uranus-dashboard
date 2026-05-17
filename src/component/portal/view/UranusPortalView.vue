@@ -94,10 +94,13 @@
       <div class="uranus-portal-events-header__icon-links"></div>
 
       <div class="uranus-portal-events-header__event-types">
-        <UranusHorizontalScroller v-if="eventListStore.typeSummary.length" class="uranus-portal-events__type-scroller">
+        <UranusHorizontalScroller
+            v-if="eventListStore.typeSummary.length"
+            class="uranus-portal-events__type-scroller uranus-portal-event-type-scroller"
+        >
           <div class="uranus-portal-events__type-list">
             <button
-                v-for="entry in eventListStore.typeSummary"
+                v-for="entry in sortedTypeSummary"
                 :key="entry.typeId"
                 type="button"
                 class="uranus-portal-events__type-chip"
@@ -328,6 +331,16 @@ const eventCountInfo = computed(() =>
     uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.totalEventCount)
 )
 const showInitialLoading = computed(() => eventListStore.loading && !eventListStore.events.length)
+
+const sortedTypeSummary = computed(() => {
+  return [...eventListStore.typeSummary].sort((a, b) => {
+    if (b.count !== a.count) return b.count - a.count
+    const nameA = typeLookupStore.getTypeName(a.typeId, locale.value)
+    const nameB = typeLookupStore.getTypeName(b.typeId, locale.value)
+    return nameA.localeCompare(nameB)
+  })
+})
+
 const portal = ref<PortalDTO | null>(null)
 const portalLoading = ref(false)
 const portalError = ref<string | null>(null)
