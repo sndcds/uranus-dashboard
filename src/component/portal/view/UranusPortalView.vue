@@ -84,6 +84,7 @@
       </nav>
 
       <div class="uranus-portal-events-header__search">
+        <UranusPortalDateRangeSelect v-model="portalDateRangeMode" />
         <div>{{ eventCountInfo }}</div>
         <UranusButton
             v-if="activeEventTypeIds.length"
@@ -246,9 +247,11 @@ import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import type { UranusEventsDateRangeMode } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
+import UranusPortalDateRangeSelect from '@/component/portal/UranusPortalDateRangeSelect.vue'
 import { uranusFormatDateTime, uranusPluralizedText } from '@/util/string.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
@@ -262,6 +265,12 @@ import {
   type PortalHeaderConfig,
   type PortalLinkTarget,
 } from '@/component/portal/editor/portalLayoutConfig.ts'
+import {
+  inferEventDateRangeMode,
+  resolveEventDateRange,
+  uranusPresetDateRangeModes,
+  type UranusPresetDateRangeMode,
+} from '@/util/eventDateRange.ts'
 
 type PortalStyleSection = Record<string, string | number | null | undefined>
 
@@ -337,12 +346,19 @@ const backgroundUrl = computed(() => {
 
 const filterScope = 'portal'
 const portalUuid = computed(() => route.params.uuid?.toString() ?? null)
+const portalFilter = computed(() => filterStore.getFilter(filterScope))
 const activeFilter = computed(() => ({
-  ...filterStore.getFilter(filterScope),
+  ...portalFilter.value,
   portalUuid: portalUuid.value,
   portalPrefilter: portalEventPrefilter.value,
 }))
 const activeEventTypeIds = computed(() => activeFilter.value.eventTypeIds)
+const portalDateRangeMode = computed<UranusPresetDateRangeMode>({
+  get: () => normalizePortalDateRangeMode(portalFilter.value.dateRangeMode),
+  set: (mode) => {
+    applyPortalDateRangeMode(mode)
+  }
+})
 const eventCountInfo = computed(() =>
     uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.events.length)
 )
@@ -415,6 +431,7 @@ let observer: IntersectionObserver | null = null
 
 function onResetFilter() {
   filterStore.resetFilter(filterScope)
+  applyPortalDateRangeMode(portalDateRangeMode.value)
 }
 
 function toggleType(typeId: number) {
@@ -462,6 +479,24 @@ function formatMarkdown(markdown: string) {
 
 function getLinkRel(target: PortalLinkTarget) {
   return target === '_blank' ? 'noopener noreferrer' : undefined
+}
+
+function normalizePortalDateRangeMode(mode: UranusEventsDateRangeMode | undefined): UranusPresetDateRangeMode {
+  if (mode && uranusPresetDateRangeModes.includes(mode as UranusPresetDateRangeMode)) {
+    return mode as UranusPresetDateRangeMode
+  }
+
+  const inferredMode = inferEventDateRangeMode(portalFilter.value.startDate, portalFilter.value.endDate)
+  return uranusPresetDateRangeModes.includes(inferredMode as UranusPresetDateRangeMode)
+      ? inferredMode as UranusPresetDateRangeMode
+      : 'all_events'
+}
+
+function applyPortalDateRangeMode(mode: UranusPresetDateRangeMode) {
+  const range = resolveEventDateRange(mode)
+  portalFilter.value.dateRangeMode = mode
+  portalFilter.value.startDate = range.startDate
+  portalFilter.value.endDate = range.endDate
 }
 
 function createPixelSizeStyle(width: number, height: number) {
@@ -775,6 +810,7 @@ onMounted(async () => {
 
   await typeLookupStore.initialize()
   await fetchPortal()
+  applyPortalDateRangeMode(portalDateRangeMode.value)
   await reloadEvents()
   initialized.value = true
 
