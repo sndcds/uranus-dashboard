@@ -174,6 +174,12 @@ import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import { useGpsLocation } from '@/composable/useGpsLocation'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusEventCategorySelectorAccordion from '@/component/event/panel/UranusEventCategorySelectorAccordion.vue'
+import {
+  inferEventDateRangeMode,
+  resolveEventDateRange,
+  uranusPresetDateRangeModes,
+  type UranusPresetDateRangeMode,
+} from '@/util/eventDateRange.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -209,90 +215,14 @@ const useCurrentLocationRef = computed({
 })
 const { latitude, longitude, locationError } = useGpsLocation(useCurrentLocationRef)
 
-function formatDateInputValue(date: Date) {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
-}
-
-function addDays(date: Date, days: number) {
-  const nextDate = new Date(date)
-  nextDate.setDate(nextDate.getDate() + days)
-  return nextDate
-}
-
-function resolveDateRange(mode: Exclude<UranusEventsDateRangeMode, 'custom'>) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
-  if (mode === 'all_events') {
-    return {
-      startDate: formatDateInputValue(today),
-      endDate: ''
-    }
-  }
-
-  if (mode === 'today') {
-    return {
-      startDate: formatDateInputValue(today),
-      endDate: formatDateInputValue(today)
-    }
-  }
-
-  if (mode === 'tomorrow') {
-    const tomorrow = addDays(today, 1)
-    return {
-      startDate: formatDateInputValue(tomorrow),
-      endDate: formatDateInputValue(tomorrow)
-    }
-  }
-
-  if (mode === 'weekend') {
-    const currentWeekday = today.getDay()
-    const daysUntilSaturday = currentWeekday === 0 ? 0 : (6 - currentWeekday + 7) % 7
-    const saturday = addDays(today, daysUntilSaturday)
-
-    return {
-      startDate: formatDateInputValue(saturday),
-      endDate: formatDateInputValue(currentWeekday === 0 ? saturday : addDays(saturday, 1))
-    }
-  }
-
-  const daysUntilNextMonday = ((8 - today.getDay()) % 7) || 7
-  const nextMonday = addDays(today, daysUntilNextMonday)
-
-  return {
-    startDate: formatDateInputValue(nextMonday),
-    endDate: formatDateInputValue(addDays(nextMonday, 6))
-  }
-}
-
 function inferDateRangeModeFromFilter(): UranusEventsDateRangeMode {
-  const startDate = filter.value.startDate ?? ''
-  const endDate = filter.value.endDate ?? ''
-  if (!startDate && !endDate) return 'all_events'
-
-  const modes: Exclude<UranusEventsDateRangeMode, 'custom'>[] = [
-    'all_events',
-    'today',
-    'tomorrow',
-    'weekend',
-    'next_week',
-  ]
-  const matchingMode = modes.find((mode) => {
-    const range = resolveDateRange(mode)
-    return range.startDate === startDate && range.endDate === endDate
-  })
-
-  return matchingMode ?? 'custom'
+  return inferEventDateRangeMode(filter.value.startDate, filter.value.endDate)
 }
 
 function applyDateRangeMode(mode: UranusEventsDateRangeMode) {
-  if (mode === 'custom') return
+  if (!uranusPresetDateRangeModes.includes(mode as UranusPresetDateRangeMode)) return
 
-  const range = resolveDateRange(mode)
+  const range = resolveEventDateRange(mode as UranusPresetDateRangeMode)
   filter.value.startDate = range.startDate
   filter.value.endDate = range.endDate
 }
