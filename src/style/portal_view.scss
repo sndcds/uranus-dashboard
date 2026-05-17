@@ -90,10 +90,8 @@
   grid-template-areas:
     "logo"
     "title"
-    "buttons"
-    "search"
-    "icon-links"
-    "event-types";
+    "event-types"
+    "search";
   grid-template-columns: minmax(0, 1fr);
   justify-items: center;
   text-align: center;

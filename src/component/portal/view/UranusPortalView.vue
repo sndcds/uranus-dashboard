@@ -60,10 +60,7 @@
       >
         <h1 v-if="headerConfig.showTitle">{{ portal?.name ?? t('events') }}</h1>
         <p v-if="headerConfig.showDescription">
-          {{
-            portal?.description
-            ?? (showInitialLoading ? '' : eventCountInfo)
-          }}
+          {{ portal?.description }}
         </p>
       </div>
 
@@ -81,9 +78,7 @@
       </nav>
 
       <div class="uranus-portal-events-header__search">
-        <div v-if="eventListStore.events.length">
-          {{ uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.events.length) }}
-        </div>
+        <div>{{ eventCountInfo }}</div>
         <UranusButton
             v-if="activeEventTypeIds.length"
             size="small"
@@ -118,7 +113,6 @@
       </div>
 
     </header>
-
 
     <div v-if="portalError" class="uranus-portal-events__state">
       {{ portalError }}
@@ -328,8 +322,9 @@ const activeFilter = computed(() => ({
 }))
 const activeEventTypeIds = computed(() => activeFilter.value.eventTypeIds)
 const eventCountInfo = computed(() =>
-    uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.totalEventCount)
+    uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.events.length)
 )
+
 const showInitialLoading = computed(() => eventListStore.loading && !eventListStore.events.length)
 
 const sortedTypeSummary = computed(() => {
