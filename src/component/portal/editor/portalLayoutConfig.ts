@@ -13,6 +13,8 @@ export type PortalHeaderConfig = {
   showLogo: boolean
   showTitle: boolean
   showDescription: boolean
+  logoWidth: number
+  logoHeight: number
   logoLinkUrl: string
   logoLinkTarget: PortalLinkTarget
   buttons: PortalHeaderButtonConfig[]
@@ -26,6 +28,8 @@ export type PortalFooterLinkConfig = {
 
 export type PortalFooterConfig = {
   showLogo: boolean
+  logoWidth: number
+  logoHeight: number
   logoLinkUrl: string
   logoLinkTarget: PortalLinkTarget
   text: string
@@ -61,6 +65,16 @@ export function readString(source: Record<string, unknown> | null | undefined, k
 export function readBoolean(source: Record<string, unknown> | null | undefined, key: string, fallback = false) {
   const value = source?.[key]
   return typeof value === 'boolean' ? value : fallback
+}
+
+export function readPositiveNumber(source: Record<string, unknown> | null | undefined, key: string, fallback: number) {
+  const value = source?.[key]
+  if (typeof value === 'number' && Number.isFinite(value) && value > 0) return value
+  if (typeof value === 'string') {
+    const parsed = Number(value)
+    if (Number.isFinite(parsed) && parsed > 0) return parsed
+  }
+  return fallback
 }
 
 export function readTarget(source: Record<string, unknown> | null | undefined, key: string, fallback: PortalLinkTarget = '_self') {
@@ -99,6 +113,8 @@ export function createHeaderConfig(source: Record<string, unknown> | null | unde
     showLogo: readBoolean(source, 'showLogo', readBoolean(source, 'show_logo', true)),
     showTitle: readBoolean(source, 'showTitle', readBoolean(source, 'show_title', true)),
     showDescription: readBoolean(source, 'showDescription', readBoolean(source, 'show_description', true)),
+    logoWidth: readPositiveNumber(source, 'logoWidth', readPositiveNumber(source, 'logo_width', 480)),
+    logoHeight: readPositiveNumber(source, 'logoHeight', readPositiveNumber(source, 'logo_height', 240)),
     logoLinkUrl: readString(source, 'logoLinkUrl', readString(source, 'logo_link_url')),
     logoLinkTarget: readTarget(source, 'logoLinkTarget', readTarget(source, 'logo_link_target')),
     buttons,
@@ -111,6 +127,8 @@ export function buildHeaderPayload(value: PortalHeaderConfig) {
     showLogo: value.showLogo,
     showTitle: value.showTitle,
     showDescription: value.showDescription,
+    logoWidth: value.logoWidth,
+    logoHeight: value.logoHeight,
     logoLinkUrl: value.logoLinkUrl,
     logoLinkTarget: value.logoLinkTarget,
     buttons: value.buttons.map(button => ({
@@ -143,6 +161,8 @@ export function createFooterConfig(source: Record<string, unknown> | null | unde
 
   return {
     showLogo: readBoolean(source, 'showLogo', readBoolean(source, 'show_logo', false)),
+    logoWidth: readPositiveNumber(source, 'logoWidth', readPositiveNumber(source, 'logo_width', 180)),
+    logoHeight: readPositiveNumber(source, 'logoHeight', readPositiveNumber(source, 'logo_height', 90)),
     logoLinkUrl: readString(source, 'logoLinkUrl', readString(source, 'logo_link_url')),
     logoLinkTarget: readTarget(source, 'logoLinkTarget', readTarget(source, 'logo_link_target')),
     text: readString(source, 'text'),
@@ -153,6 +173,8 @@ export function createFooterConfig(source: Record<string, unknown> | null | unde
 export function buildFooterPayload(value: PortalFooterConfig) {
   return {
     showLogo: value.showLogo,
+    logoWidth: value.logoWidth,
+    logoHeight: value.logoHeight,
     logoLinkUrl: value.logoLinkUrl,
     logoLinkTarget: value.logoLinkTarget,
     text: value.text,

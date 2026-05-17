@@ -29,10 +29,12 @@ export const useEventListStore = defineStore('events', () => {
     const loadEventsCounter = ref(0) // for infinite scroll
     let requestId = 0
 
-    function reset() {
+    function reset(options: { keepSummary?: boolean } = {}) {
         events.value = []
-        totalEventCount.value = 0
-        typeSummary.value = []
+        if (!options.keepSummary) {
+            totalEventCount.value = 0
+            typeSummary.value = []
+        }
         lastEventStartAt.value = null
         lastEventDateUuid.value = null
         loading.value = false
@@ -169,7 +171,7 @@ export const useEventListStore = defineStore('events', () => {
         const currentRequest = ++requestId
         if (loading.value) return
         if (!resetPage && !hasMore.value) return
-        if (resetPage) reset()
+        if (resetPage) reset({ keepSummary: true })
         loading.value = true
 
         try {

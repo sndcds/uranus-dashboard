@@ -102,6 +102,15 @@
   min-width: 0;
 }
 
+.uranus-portal-events-header__logo-frame,
+.uranus-portal-events__footer-logo-frame {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
 .uranus-portal-events-header__title {
   grid-area: title;
   min-width: 0;
@@ -134,6 +143,7 @@
 .uranus-portal-events-header__event-types {
   grid-area: event-types;
   min-width: 100%;
+  min-height: 50px;
 }
 
 .uranus-portal-events-header__centered .uranus-portal-events-header__buttons,
@@ -194,6 +204,7 @@
 .uranus-portal-events__type-scroller {
   position: relative;
   box-sizing: border-box;
+  min-height: 50px;
   overflow: hidden;
 }
 
@@ -333,8 +344,9 @@
 }
 
 .uranus-portal-events__footer {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-areas: "logo text links";
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
   align-items: flex-start;
   gap: 1rem;
   width: 100%;
@@ -343,9 +355,16 @@
   padding-top: 1rem;
 }
 
-.uranus-portal-events__footer-text {
-  flex: 1 1 18rem;
+.uranus-portal-events__footer-logo {
+  grid-area: logo;
   min-width: 0;
+  justify-self: start;
+}
+
+.uranus-portal-events__footer-text {
+  grid-area: text;
+  min-width: 0;
+  justify-self: center;
 }
 
 .uranus-portal-events__footer-text > :first-child {
@@ -357,10 +376,14 @@
 }
 
 .uranus-portal-events__footer-links {
+  grid-area: links;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-left: auto;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  justify-self: end;
+  text-align: right;
 }
 
 .uranus-portal-events__footer-links a {
@@ -380,6 +403,20 @@
   }
 
   .uranus-portal-events__footer-links {
-    margin-left: 0;
+    align-items: flex-start;
+    justify-self: start;
+    text-align: left;
+  }
+
+  .uranus-portal-events__footer {
+    grid-template-areas:
+      "logo"
+      "text"
+      "links";
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .uranus-portal-events__footer-text {
+    justify-self: stretch;
   }
 }
