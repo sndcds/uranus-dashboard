@@ -12,6 +12,27 @@
     </section>
 
     <section class="portal-layout-group">
+      <h2>Visible elements</h2>
+      <div class="portal-layout-checkboxes">
+        <UranusCheckbox
+            id="portal-header-show-logo"
+            v-model="form.showLogo"
+            label="Logo"
+        />
+        <UranusCheckbox
+            id="portal-header-show-title"
+            v-model="form.showTitle"
+            label="Titel"
+        />
+        <UranusCheckbox
+            id="portal-header-show-description"
+            v-model="form.showDescription"
+            label="Description"
+        />
+      </div>
+    </section>
+
+    <section class="portal-layout-group">
       <h2>Logo</h2>
       <UranusFormRow :cols="2">
         <UranusTextfield
@@ -92,6 +113,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useUranusPortalStore } from '@/store/portalStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
@@ -189,6 +211,12 @@ defineExpose({
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.portal-layout-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
 }
 
 .portal-layout-entry {

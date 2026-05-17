@@ -10,6 +10,9 @@ export type PortalHeaderButtonConfig = {
 
 export type PortalHeaderConfig = {
   layout: PortalHeaderLayout
+  showLogo: boolean
+  showTitle: boolean
+  showDescription: boolean
   logoLinkUrl: string
   logoLinkTarget: PortalLinkTarget
   buttons: PortalHeaderButtonConfig[]
@@ -93,6 +96,9 @@ export function createHeaderConfig(source: Record<string, unknown> | null | unde
 
   return {
     layout: readHeaderLayout(source, 'layout'),
+    showLogo: readBoolean(source, 'showLogo', readBoolean(source, 'show_logo', true)),
+    showTitle: readBoolean(source, 'showTitle', readBoolean(source, 'show_title', true)),
+    showDescription: readBoolean(source, 'showDescription', readBoolean(source, 'show_description', true)),
     logoLinkUrl: readString(source, 'logoLinkUrl', readString(source, 'logo_link_url')),
     logoLinkTarget: readTarget(source, 'logoLinkTarget', readTarget(source, 'logo_link_target')),
     buttons,
@@ -102,6 +108,9 @@ export function createHeaderConfig(source: Record<string, unknown> | null | unde
 export function buildHeaderPayload(value: PortalHeaderConfig) {
   return {
     layout: value.layout,
+    showLogo: value.showLogo,
+    showTitle: value.showTitle,
+    showDescription: value.showDescription,
     logoLinkUrl: value.logoLinkUrl,
     logoLinkTarget: value.logoLinkTarget,
     buttons: value.buttons.map(button => ({

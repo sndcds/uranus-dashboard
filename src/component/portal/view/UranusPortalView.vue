@@ -25,7 +25,7 @@
         class="uranus-portal-events-header"
         :class="portalHeaderLayoutClass"
     >
-      <div class="uranus-portal-events-header__logo">
+      <div v-if="headerConfig.showLogo" class="uranus-portal-events-header__logo">
         <a
             v-if="logoUrl && headerConfig.logoLinkUrl"
             class="uranus-portal-events__logo-link"
@@ -54,9 +54,12 @@
         />
       </div>
 
-      <div class="uranus-portal-events-header__title">
-        <h1>{{ portal?.name ?? t('events') }}</h1>
-        <p>
+      <div
+          v-if="headerConfig.showTitle || headerConfig.showDescription"
+          class="uranus-portal-events-header__title"
+      >
+        <h1 v-if="headerConfig.showTitle">{{ portal?.name ?? t('events') }}</h1>
+        <p v-if="headerConfig.showDescription">
           {{
             portal?.description
             ?? (showInitialLoading ? '' : eventCountInfo)
@@ -398,9 +401,10 @@ function normalizePortalStyle(style: PortalStyle | string | null | undefined): P
   return normalizeJsonObject(style) as PortalStyle | null
 }
 
-function normalizeJsonObject(value: Record<string, unknown> | string | null | undefined): Record<string, unknown> | null {
+function normalizeJsonObject(value: object | string | null | undefined): Record<string, unknown> | null {
   if (!value) return null
-  if (typeof value === 'object' && !Array.isArray(value)) return value
+  if (typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>
+  if (typeof value !== 'string') return null
 
   try {
     const parsed = JSON.parse(value)
