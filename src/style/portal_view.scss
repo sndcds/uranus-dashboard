@@ -346,13 +346,13 @@
 .uranus-portal-events__footer {
   display: grid;
   grid-template-areas: "logo text links";
-  grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
+  grid-template-columns: 220px 2fr 1fr;
   align-items: flex-start;
   gap: 1rem;
   width: 100%;
   max-width: var(--portal-content-max-width);
   align-self: var(--portal-content-align-self);
-  padding-top: 1rem;
+  padding: 1rem;
 }
 
 .uranus-portal-events__footer-logo {
@@ -402,18 +402,18 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .uranus-portal-events__footer-links {
-    align-items: flex-start;
-    justify-self: start;
-    text-align: left;
-  }
-
   .uranus-portal-events__footer {
     grid-template-areas:
       "logo"
       "text"
       "links";
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .uranus-portal-events__footer-links {
+    align-items: flex-start;
+    justify-self: start;
+    text-align: left;
   }
 
   .uranus-portal-events__footer-text {
