@@ -59,8 +59,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
@@ -78,6 +79,7 @@ import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import UranusOrgTitle from "@/component/layout/UranusOrgTitle.vue";
 
 const { t } = useI18n()
+const router = useRouter()
 const appStore = useAppStore()
 
 const orgTypeahead = ref<InstanceType<typeof UranusOrgTypeahead> | null>(null)
@@ -88,6 +90,7 @@ const message = ref<string>('')
 const isLoading = ref(true)
 const errorMessage = ref<string | null>(null)
 const successMessage = ref<string | null>(null)
+let redirectTimeout: ReturnType<typeof window.setTimeout> | null = null
 
 async function onSendRequest() {
   if (!chosenOrg.value) return
@@ -103,7 +106,7 @@ async function onSendRequest() {
   errorMessage.value = null
   try {
     const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/request`
-    const apiResponse = await apiFetch(apiPath, {
+    await apiFetch(apiPath, {
       method: 'POST',
       body: JSON.stringify({
         to_org_uuid: chosenOrg.value.uuid,
@@ -114,6 +117,9 @@ async function onSendRequest() {
     message.value = ''
     chosenOrg.value = null
     successMessage.value = t('partner_request_success')
+    redirectTimeout = window.setTimeout(() => {
+      router.push({ name: 'admin-partners' })
+    }, 5000)
   } catch (err: any) {
     if (err.error?.includes('(#1)')) {
       errorMessage.value = t('partnership_already_exists')
@@ -146,6 +152,12 @@ onMounted(async () => {
     }
   } finally {
     isLoading.value = false
+  }
+})
+
+onUnmounted(() => {
+  if (redirectTimeout) {
+    window.clearTimeout(redirectTimeout)
   }
 })
 </script>

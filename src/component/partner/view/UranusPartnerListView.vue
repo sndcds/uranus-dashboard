@@ -21,9 +21,18 @@
       {{ t('partner_no_membership_message') }}
     </UranusNotification>
 
-    <div>
+    <div class="partner-actions-bar">
       <UranusButton to="/admin/org/partner-request">
         {{ t('partner_send_request') }}
+      </UranusButton>
+      <UranusButton
+          v-if="hasPendingRequests"
+          variant="secondary"
+          :loading="isLoading"
+          :loading-text="t('loading')"
+          @click="reloadPartnerData"
+      >
+        {{ t('refresh') }}
       </UranusButton>
     </div>
 
@@ -35,17 +44,32 @@
       {{ error }}
     </UranusFeedback>
 
-    <UranusPartnerRequestCard :items="partnerRequests" direction="incoming" />
-    <UranusPartnerRequestCard :items="partnerRequests" direction="outgoing" />
+    <UranusPartnerRequestCard
+        :items="partnerRequests"
+        direction="incoming"
+        @request-updated="reloadPartnerData"
+    />
+    <UranusPartnerRequestCard
+        :items="partnerRequests"
+        :canAnswerPartnerRequests="canAnswerPartnerRequests"
+        direction="outgoing"
+        @request-updated="reloadPartnerData"
+    />
 
-    <UranusPartnerGrantCard :items="partnerList" direction="incoming" />
-    <UranusPartnerGrantCard :items="partnerList" direction="outgoing" />
+    <UranusPartnerGrantCard
+        :items="partnerList"
+        direction="incoming"
+    />
+    <UranusPartnerGrantCard
+        :items="partnerList"
+        direction="outgoing"
+    />
 
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
@@ -67,19 +91,25 @@ import UranusPartnerRequestCard from '@/component/partner/card/UranusPartnerRequ
 const { t } = useI18n()
 const appStore = useAppStore()
 
+const canAnswerPartnerRequests = ref(true)
 const partnerList = ref<PartnerListItem[]>([])
 const partnerRequests = ref<PartnerRequestItem[]>([])
 const isLoading = ref(true)
 const error = ref<string | null>(null)
+const hasPendingRequests = computed(() => partnerRequests.value.some(request => request.status === 'pending'))
 
+function sortByOrgName<T extends { orgName: string }>(items: T[]): T[] {
+  return [...items].sort((a, b) => a.orgName.localeCompare(b.orgName, undefined, { sensitivity: 'base' }))
+}
 
 const loadPartnerList = async () => {
+  error.value = null
   try {
     const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/grants`
     const apiResponse = await apiFetch<any>(apiPath)
 
     const data = apiResponse.data.partner_grants as PartnerDTO[]
-    partnerList.value = (data || []).map(dto => mapPartnerListItem(dto))
+    partnerList.value = sortByOrgName((data || []).map(dto => mapPartnerListItem(dto)))
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
@@ -87,8 +117,6 @@ const loadPartnerList = async () => {
     } else {
       error.value = 'Unknown error'
     }
-  } finally {
-    isLoading.value = false
   }
 }
 
@@ -97,8 +125,9 @@ const loadPartnerRequests = async () => {
     const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/requests`
     const apiResponse = await apiFetch<any>(apiPath)
 
+    canAnswerPartnerRequests.value = apiResponse.data.can_answer_partner_requests
     const data = apiResponse.data.partner_requests as PartnerRequestDTO[]
-    partnerRequests.value = (data || []).map(dto => mapPartnerRequestItem(dto))
+    partnerRequests.value = sortByOrgName((data || []).map(dto => mapPartnerRequestItem(dto)))
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
@@ -108,13 +137,27 @@ const loadPartnerRequests = async () => {
   }
 }
 
+const reloadPartnerData = async () => {
+  isLoading.value = true
+  await Promise.all([
+    loadPartnerList(),
+    loadPartnerRequests(),
+  ])
+  isLoading.value = false
+}
+
 onMounted(async () => {
-  loadPartnerList()
-  loadPartnerRequests()
+  reloadPartnerData()
 })
 </script>
 
 <style scoped lang="scss">
+.partner-actions-bar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .partner-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

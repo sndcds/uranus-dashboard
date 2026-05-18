@@ -200,6 +200,11 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'Portals',
         da: 'Portaler',
     },
+    user_permissions_type_partner: {
+        de: 'Partner',
+        en: 'Partners',
+        da: 'Partnere',
+    },
     user_permissions_invalid_response: {
         de: 'Antwort konnte nicht verarbeitet werden.',
         en: 'Received an unexpected response.',

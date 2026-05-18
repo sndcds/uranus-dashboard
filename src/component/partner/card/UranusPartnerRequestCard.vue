@@ -17,7 +17,7 @@
         </div>
 
         <div class="partner-meta">
-          <div class="status">
+          <div class="status status--pending">
             {{ t(item.status) }}
           </div>
 
@@ -30,7 +30,7 @@
           {{ item.message }}
         </div>
 
-        <div v-if="direction === 'incoming'" class="partner-actions">
+        <div v-if="canAnswerPartnerRequests && direction === 'incoming'" class="partner-actions">
           <UranusButton size="medium" @click="onReject(item)">{{ t('reject') }}</UranusButton>
           <UranusButton size="medium" @click="onAccept(item)">{{ t('accept') }}</UranusButton>
         </div>
@@ -52,9 +52,16 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 const { t } = useI18n()
 const appStore = useAppStore()
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   items: PartnerRequestItem[]
   direction: 'incoming' | 'outgoing'
+  canAnswerPartnerRequests?: boolean
+}>(), {
+  canAnswerPartnerRequests: false
+})
+
+const emit = defineEmits<{
+  'request-updated': []
 }>()
 
 const filteredItems = computed(() => {
@@ -77,6 +84,7 @@ async function onAccept(item: PartnerRequestItem) {
     })
 
     item.status = 'accepted'
+    emit('request-updated')
   } catch (e) {
     console.error('Failed to accept request', e)
   }
@@ -90,6 +98,7 @@ async function onReject(item: PartnerRequestItem) {
     })
 
     item.status = 'rejected'
+    emit('request-updated')
   } catch (e) {
     console.error('Failed to reject request', e)
   }
@@ -105,7 +114,9 @@ async function onReject(item: PartnerRequestItem) {
 
 .partner-card {
   border-top: 1px solid var(--uranus-dashboard-border-color);
+  border-left: 4px solid var(--uranus-pending-color);
   padding-top: 1.4rem;
+  padding-left: 1rem;
 }
 
 .partner-name {
@@ -118,6 +129,11 @@ async function onReject(item: PartnerRequestItem) {
   gap: 1rem;
   justify-content: flex-end;
   font-size: 0.9rem;
+}
+
+.status--pending {
+  color: var(--uranus-pending-color);
+  font-weight: 700;
 }
 
 .partner-message {
