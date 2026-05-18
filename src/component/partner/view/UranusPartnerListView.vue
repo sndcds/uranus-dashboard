@@ -51,12 +51,19 @@
     />
     <UranusPartnerRequestCard
         :items="partnerRequests"
+        :canAnswerPartnerRequests="canAnswerPartnerRequests"
         direction="outgoing"
         @request-updated="reloadPartnerData"
     />
 
-    <UranusPartnerGrantCard :items="partnerList" direction="incoming" />
-    <UranusPartnerGrantCard :items="partnerList" direction="outgoing" />
+    <UranusPartnerGrantCard
+        :items="partnerList"
+        direction="incoming"
+    />
+    <UranusPartnerGrantCard
+        :items="partnerList"
+        direction="outgoing"
+    />
 
   </div>
 </template>
@@ -84,6 +91,7 @@ import UranusPartnerRequestCard from '@/component/partner/card/UranusPartnerRequ
 const { t } = useI18n()
 const appStore = useAppStore()
 
+const canAnswerPartnerRequests = ref(true)
 const partnerList = ref<PartnerListItem[]>([])
 const partnerRequests = ref<PartnerRequestItem[]>([])
 const isLoading = ref(true)
@@ -117,6 +125,7 @@ const loadPartnerRequests = async () => {
     const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/requests`
     const apiResponse = await apiFetch<any>(apiPath)
 
+    canAnswerPartnerRequests.value = apiResponse.data.can_answer_partner_requests
     const data = apiResponse.data.partner_requests as PartnerRequestDTO[]
     partnerRequests.value = sortByOrgName((data || []).map(dto => mapPartnerRequestItem(dto)))
   } catch (err: unknown) {

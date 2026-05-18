@@ -92,6 +92,7 @@ const entityTypeLabels = computed<Record<string, string>>(() => ({
   space: t('user_permissions_type_space'),
   event: t('user_permissions_type_event'),
   portal: t('user_permissions_type_portal'),
+  partner: t('user_permissions_type_partner'),
 }))
 
 const isLoading = ref(true)

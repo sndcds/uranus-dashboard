@@ -29,7 +29,9 @@
             v-model="event.maxAttendees!" />
       </UranusFormRow>
 
-      <UranusFormRow>
+      <UranusFormRow
+        v-if="event.participationInfo"
+      >
         <UranusLabel
             id="event-participation-info"
            :label="t('event_participation_info')"

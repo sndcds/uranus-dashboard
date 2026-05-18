@@ -232,7 +232,7 @@
             </template>
             {{ ageLabel }}<br>
             <template v-if="event.participationInfo">
-              {{ event.participationInfo }}<br>
+              {{ formatMarkdown(event.participationInfo) }}<br>
             </template>
           </div>
 

@@ -30,7 +30,7 @@
           {{ item.message }}
         </div>
 
-        <div v-if="direction === 'incoming'" class="partner-actions">
+        <div v-if="canAnswerPartnerRequests && direction === 'incoming'" class="partner-actions">
           <UranusButton size="medium" @click="onReject(item)">{{ t('reject') }}</UranusButton>
           <UranusButton size="medium" @click="onAccept(item)">{{ t('accept') }}</UranusButton>
         </div>
@@ -52,10 +52,13 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 const { t } = useI18n()
 const appStore = useAppStore()
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   items: PartnerRequestItem[]
   direction: 'incoming' | 'outgoing'
-}>()
+  canAnswerPartnerRequests?: boolean
+}>(), {
+  canAnswerPartnerRequests: false
+})
 
 const emit = defineEmits<{
   'request-updated': []
