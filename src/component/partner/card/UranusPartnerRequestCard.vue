@@ -57,6 +57,10 @@ const props = defineProps<{
   direction: 'incoming' | 'outgoing'
 }>()
 
+const emit = defineEmits<{
+  'request-updated': []
+}>()
+
 const filteredItems = computed(() => {
   return props.items.filter(
       item =>
@@ -77,6 +81,7 @@ async function onAccept(item: PartnerRequestItem) {
     })
 
     item.status = 'accepted'
+    emit('request-updated')
   } catch (e) {
     console.error('Failed to accept request', e)
   }
@@ -90,6 +95,7 @@ async function onReject(item: PartnerRequestItem) {
     })
 
     item.status = 'rejected'
+    emit('request-updated')
   } catch (e) {
     console.error('Failed to reject request', e)
   }

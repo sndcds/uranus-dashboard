@@ -44,8 +44,16 @@
       {{ error }}
     </UranusFeedback>
 
-    <UranusPartnerRequestCard :items="partnerRequests" direction="incoming" />
-    <UranusPartnerRequestCard :items="partnerRequests" direction="outgoing" />
+    <UranusPartnerRequestCard
+        :items="partnerRequests"
+        direction="incoming"
+        @request-updated="reloadPartnerData"
+    />
+    <UranusPartnerRequestCard
+        :items="partnerRequests"
+        direction="outgoing"
+        @request-updated="reloadPartnerData"
+    />
 
     <UranusPartnerGrantCard :items="partnerList" direction="incoming" />
     <UranusPartnerGrantCard :items="partnerList" direction="outgoing" />
@@ -82,6 +90,9 @@ const isLoading = ref(true)
 const error = ref<string | null>(null)
 const hasPendingRequests = computed(() => partnerRequests.value.some(request => request.status === 'pending'))
 
+function sortByOrgName<T extends { orgName: string }>(items: T[]): T[] {
+  return [...items].sort((a, b) => a.orgName.localeCompare(b.orgName, undefined, { sensitivity: 'base' }))
+}
 
 const loadPartnerList = async () => {
   error.value = null
@@ -90,7 +101,7 @@ const loadPartnerList = async () => {
     const apiResponse = await apiFetch<any>(apiPath)
 
     const data = apiResponse.data.partner_grants as PartnerDTO[]
-    partnerList.value = (data || []).map(dto => mapPartnerListItem(dto))
+    partnerList.value = sortByOrgName((data || []).map(dto => mapPartnerListItem(dto)))
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
@@ -98,8 +109,6 @@ const loadPartnerList = async () => {
     } else {
       error.value = 'Unknown error'
     }
-  } finally {
-    isLoading.value = false
   }
 }
 
@@ -109,7 +118,7 @@ const loadPartnerRequests = async () => {
     const apiResponse = await apiFetch<any>(apiPath)
 
     const data = apiResponse.data.partner_requests as PartnerRequestDTO[]
-    partnerRequests.value = (data || []).map(dto => mapPartnerRequestItem(dto))
+    partnerRequests.value = sortByOrgName((data || []).map(dto => mapPartnerRequestItem(dto)))
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {
       const e = err as { data?: { error?: string } }
