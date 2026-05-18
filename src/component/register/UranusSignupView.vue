@@ -75,6 +75,7 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
+import { useTokenStore } from '@/store/uranusTokenStore.ts'
 
 import UranusPasswordInput from '@/component/ui/UranusPasswordInput.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
@@ -89,6 +90,7 @@ import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
 type SignupResponse = { message?: string;[key: string]: unknown }
 
 const { t, te, locale } = useI18n()
+const tokenStore = useTokenStore()
 
 const email = ref('')
 const repeatEmail = ref('')
@@ -204,7 +206,7 @@ const signup = async () => {
   isSubmitting.value = true
 
   try {
-    const apiResponse = await apiFetch<SignupResponse | null>(`/api/signup?lang=${locale.value}`, {
+    await apiFetch<SignupResponse | null>(`/api/signup?lang=${locale.value}`, {
       method: 'POST',
       body: JSON.stringify({
         email: trimmedEmail,
@@ -213,6 +215,7 @@ const signup = async () => {
     })
 
     resetForm()
+    tokenStore.markKnownAccount()
     signupSuccess.value = true
   } catch (err: any) {
     if (err.error?.includes('(#1)')) {
