@@ -22,12 +22,15 @@
     </UranusNotification>
 
     <div class="partner-actions-bar">
-      <UranusButton to="/admin/org/partner-request">
+      <UranusButton
+          v-if="canRequestPartner"
+          to="/admin/org/partner-request"
+      >
         {{ t('partner_send_request') }}
       </UranusButton>
       <UranusButton
           v-if="hasPendingRequests"
-          variant="secondary"
+          variant="primary"
           :loading="isLoading"
           :loading-text="t('loading')"
           @click="reloadPartnerData"
@@ -47,11 +50,11 @@
     <UranusPartnerRequestCard
         :items="partnerRequests"
         direction="incoming"
+        :canAnswerPartnerRequests="canAnswerPartnerRequests"
         @request-updated="reloadPartnerData"
     />
     <UranusPartnerRequestCard
         :items="partnerRequests"
-        :canAnswerPartnerRequests="canAnswerPartnerRequests"
         direction="outgoing"
         @request-updated="reloadPartnerData"
     />
@@ -62,6 +65,7 @@
     />
     <UranusPartnerGrantCard
         :items="partnerList"
+        :canEditPartnerRights="canEditPartnerRights"
         direction="outgoing"
     />
 
@@ -91,7 +95,11 @@ import UranusPartnerRequestCard from '@/component/partner/card/UranusPartnerRequ
 const { t } = useI18n()
 const appStore = useAppStore()
 
-const canAnswerPartnerRequests = ref(true)
+const canRequestPartner = ref(false)
+const canAnswerPartnerRequests = ref(false)
+const canEditPartnerRights = ref(false)
+const canDeletePartnership = ref(false)
+
 const partnerList = ref<PartnerListItem[]>([])
 const partnerRequests = ref<PartnerRequestItem[]>([])
 const isLoading = ref(true)
@@ -107,6 +115,11 @@ const loadPartnerList = async () => {
   try {
     const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/grants`
     const apiResponse = await apiFetch<any>(apiPath)
+
+    canRequestPartner.value = apiResponse.data.can_request_partner
+    canAnswerPartnerRequests.value = apiResponse.data.can_answer_partner_requests
+    canEditPartnerRights.value = apiResponse.data.can_edit_partner_rights
+    canDeletePartnership.value = apiResponse.data.can_delete_partnership
 
     const data = apiResponse.data.partner_grants as PartnerDTO[]
     partnerList.value = sortByOrgName((data || []).map(dto => mapPartnerListItem(dto)))
@@ -125,7 +138,6 @@ const loadPartnerRequests = async () => {
     const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/requests`
     const apiResponse = await apiFetch<any>(apiPath)
 
-    canAnswerPartnerRequests.value = apiResponse.data.can_answer_partner_requests
     const data = apiResponse.data.partner_requests as PartnerRequestDTO[]
     partnerRequests.value = sortByOrgName((data || []).map(dto => mapPartnerRequestItem(dto)))
   } catch (err: unknown) {
