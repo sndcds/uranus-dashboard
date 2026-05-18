@@ -33,6 +33,16 @@ export interface UranusEventsFilter {
 
 export type UranusEventsFilterScope = 'default' | 'venue' | 'portal'
 export type UranusEventsDateRangeMode = 'all_events' | 'today' | 'tomorrow' | 'weekend' | 'next_week' | 'custom'
+export type UranusPortalEventsDateRangeMode = Exclude<UranusEventsDateRangeMode, 'custom'>
+
+const PORTAL_DATE_RANGE_STORAGE_KEY = 'portal-date-range-mode'
+const portalDateRangeModes: UranusPortalEventsDateRangeMode[] = [
+    'all_events',
+    'today',
+    'tomorrow',
+    'weekend',
+    'next_week'
+]
 
 const defaultFilter: UranusEventsFilter = {
     categories: null,
@@ -109,12 +119,17 @@ function normalizeLegacyDateRangeMode(filter: Partial<UranusEventsFilter>): Part
     }
 }
 
+function isPortalDateRangeMode(value: unknown): value is UranusPortalEventsDateRangeMode {
+    return portalDateRangeModes.includes(value as UranusPortalEventsDateRangeMode)
+}
+
 export const useEventsFilterStore = defineStore("calendarFilter", () => {
     const filters = ref<Record<UranusEventsFilterScope, UranusEventsFilter>>({
         default: createDefaultFilter(),
         venue: createDefaultFilter(),
         portal: createDefaultFilter()
     })
+    const portalDateRangeMode = ref<UranusPortalEventsDateRangeMode>('all_events')
     const filter = computed({
         get: () => filters.value.default,
         set: (value: UranusEventsFilter) => {
@@ -134,6 +149,11 @@ export const useEventsFilterStore = defineStore("calendarFilter", () => {
         }
     }
 
+    const savedPortalDateRangeMode = localStorage.getItem(PORTAL_DATE_RANGE_STORAGE_KEY)
+    if (isPortalDateRangeMode(savedPortalDateRangeMode)) {
+        portalDateRangeMode.value = savedPortalDateRangeMode
+    }
+
     // Persist only the default scope. Route-local scopes are derived at runtime.
     watch(
         () => filters.value.default,
@@ -142,6 +162,10 @@ export const useEventsFilterStore = defineStore("calendarFilter", () => {
         },
         { deep: true }
     )
+
+    watch(portalDateRangeMode, (value) => {
+        localStorage.setItem(PORTAL_DATE_RANGE_STORAGE_KEY, value)
+    })
 
     function getFilter(scope: UranusEventsFilterScope = 'default') {
         return filters.value[scope]
@@ -156,6 +180,10 @@ export const useEventsFilterStore = defineStore("calendarFilter", () => {
 
     function resetFilter(scope: UranusEventsFilterScope = 'default') {
         filters.value[scope] = createDefaultFilter()
+    }
+
+    function setPortalDateRangeMode(mode: UranusPortalEventsDateRangeMode) {
+        portalDateRangeMode.value = mode
     }
 
     function copyFilter(
@@ -180,9 +208,11 @@ export const useEventsFilterStore = defineStore("calendarFilter", () => {
         filters,
         filter,
         eventTypeIds,
+        portalDateRangeMode,
         getFilter,
         setFilter,
         resetFilter,
+        setPortalDateRangeMode,
         copyFilter,
         toggleEventType
     }
