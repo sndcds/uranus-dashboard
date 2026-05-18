@@ -39,7 +39,7 @@
 
           <div>
             <UranusIconAction
-                v-if="direction === 'outgoing'"
+                v-if="canEditPartnerRights && direction === 'outgoing'"
                 :icon="Edit"
                 @click="onEditOutgoingGrants(item)"
                 style="margin-right: 0.2rem;"
@@ -117,10 +117,14 @@ const modalCanChoosePartner = ref<boolean>(false)
 const modalCanChoosePromoter = ref<boolean>(false)
 const modalCanSeeInsights = ref<boolean>(false)
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   items: PartnerListItem[]
   direction: 'incoming' | 'outgoing'
-}>()
+  canEditPartnerRights?: boolean
+}>(), {
+  canEditPartnerRights: false
+})
+
 
 const filteredItems = computed(() => {
   return props.items.filter(item => item.direction === props.direction)
