@@ -30,7 +30,7 @@
       </UranusButton>
       <UranusButton
           v-if="hasPendingRequests"
-          variant="secondary"
+          variant="primary"
           :loading="isLoading"
           :loading-text="t('loading')"
           @click="reloadPartnerData"
