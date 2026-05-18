@@ -17,7 +17,7 @@
         </div>
 
         <div class="partner-meta">
-          <div class="status">
+          <div class="status status--pending">
             {{ t(item.status) }}
           </div>
 
@@ -105,7 +105,9 @@ async function onReject(item: PartnerRequestItem) {
 
 .partner-card {
   border-top: 1px solid var(--uranus-dashboard-border-color);
+  border-left: 4px solid var(--uranus-pending-color);
   padding-top: 1.4rem;
+  padding-left: 1rem;
 }
 
 .partner-name {
@@ -118,6 +120,11 @@ async function onReject(item: PartnerRequestItem) {
   gap: 1rem;
   justify-content: flex-end;
   font-size: 0.9rem;
+}
+
+.status--pending {
+  color: var(--uranus-pending-color);
+  font-weight: 700;
 }
 
 .partner-message {

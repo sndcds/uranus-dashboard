@@ -200,6 +200,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Loading…',
         da: 'Indlæser…'
     },
+    refresh: {
+        de: 'Aktualisieren',
+        en: 'Refresh',
+        da: 'Opdater'
+    },
     completed: {
         de: 'Erledigt',
         en: 'Completed',

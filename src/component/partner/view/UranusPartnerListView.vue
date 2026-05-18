@@ -21,9 +21,18 @@
       {{ t('partner_no_membership_message') }}
     </UranusNotification>
 
-    <div>
+    <div class="partner-actions-bar">
       <UranusButton to="/admin/org/partner-request">
         {{ t('partner_send_request') }}
+      </UranusButton>
+      <UranusButton
+          v-if="hasPendingRequests"
+          variant="secondary"
+          :loading="isLoading"
+          :loading-text="t('loading')"
+          @click="reloadPartnerData"
+      >
+        {{ t('refresh') }}
       </UranusButton>
     </div>
 
@@ -45,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
@@ -71,9 +80,11 @@ const partnerList = ref<PartnerListItem[]>([])
 const partnerRequests = ref<PartnerRequestItem[]>([])
 const isLoading = ref(true)
 const error = ref<string | null>(null)
+const hasPendingRequests = computed(() => partnerRequests.value.some(request => request.status === 'pending'))
 
 
 const loadPartnerList = async () => {
+  error.value = null
   try {
     const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/grants`
     const apiResponse = await apiFetch<any>(apiPath)
@@ -108,13 +119,27 @@ const loadPartnerRequests = async () => {
   }
 }
 
+const reloadPartnerData = async () => {
+  isLoading.value = true
+  await Promise.all([
+    loadPartnerList(),
+    loadPartnerRequests(),
+  ])
+  isLoading.value = false
+}
+
 onMounted(async () => {
-  loadPartnerList()
-  loadPartnerRequests()
+  reloadPartnerData()
 })
 </script>
 
 <style scoped lang="scss">
+.partner-actions-bar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .partner-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
