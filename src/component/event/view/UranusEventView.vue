@@ -231,9 +231,7 @@
               <p>{{ maxAttendeesLabel }}</p>
             </template>
             {{ ageLabel }}<br>
-            <template v-if="event.participationInfo">
-              {{ formatMarkdown(event.participationInfo) }}<br>
-            </template>
+            <p v-if="event.participationInfo">{{ event.participationInfo }}</p>
           </div>
 
           <UranusEventAllDatesDisplay

@@ -32,12 +32,11 @@
       <UranusFormRow
         v-if="event.participationInfo"
       >
-        <UranusLabel
+        <UranusTextarea
             id="event-participation-info"
-           :label="t('event_participation_info')"
-        >
-          <UranusTextEditor v-model="event.participationInfo"/>
-        </UranusLabel>
+            :label="t('event_participation_info')"
+            v-model="event.participationInfo"
+        />
       </UranusFormRow>
 
     </UranusForm>
@@ -75,6 +74,7 @@ import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Save, Undo } from 'lucide-vue-next'
+import UranusTextarea from "@/component/ui/UranusTextarea.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
