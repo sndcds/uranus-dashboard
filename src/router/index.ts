@@ -208,6 +208,13 @@ const routes = [
         meta: { guestOnly: true },
         children: [
             {
+                path: '',
+                redirect: () => {
+                    const tokenStore = useTokenStore()
+                    return { name: tokenStore.hasKnownAccount ? 'app-login' : 'app-signup' }
+                },
+            },
+            {
                 path: 'login',
                 name: 'app-login',
                 component: UranusLoginView,
@@ -382,7 +389,7 @@ router.beforeEach((to, from) => {
 
     if (requiresAuth && !isAuthenticated) {
         return {
-            name: 'app-login',
+            name: tokenStore.hasKnownAccount ? 'app-login' : 'app-signup',
             query: { redirect: to.fullPath },
         }
     }

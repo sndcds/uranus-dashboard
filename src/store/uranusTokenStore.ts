@@ -67,16 +67,22 @@ export const useTokenStore = defineStore('token', () => {
   // State as refs
   const accessToken = ref<TokenValue>(null)
   const refreshToken = ref<TokenValue>(null)
+  const hasKnownAccount = ref(false)
 
   // Getters as computed
   const isAuthenticated = computed(() => Boolean(accessToken.value))
 
   // Actions as functions
   function setTokens(access: string, refresh?: string | null) {
+    markKnownAccount()
     setAccessToken(access)
     if (refresh !== undefined) {
       setRefreshToken(refresh)
     }
+  }
+
+  function markKnownAccount() {
+    hasKnownAccount.value = true
   }
 
   function setAccessToken(token: string) {
@@ -118,8 +124,10 @@ export const useTokenStore = defineStore('token', () => {
   return {
     accessToken,
     refreshToken,
+    hasKnownAccount,
     isAuthenticated,
     setTokens,
+    markKnownAccount,
     setAccessToken,
     setRefreshToken,
     clearTokens

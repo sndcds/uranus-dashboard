@@ -115,7 +115,7 @@
           <span class="generic-sidebar__nav-text">{{ t('nav_about') }}</span>
         </router-link>
 
-        <router-link v-if="!tokenStore.isAuthenticated" to="/app/login" class="generic-sidebar__nav-item"
+        <router-link v-if="!tokenStore.isAuthenticated" :to="authEntryRoute" class="generic-sidebar__nav-item"
           active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
           <span class="generic-sidebar__nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -124,7 +124,7 @@
                 fill="currentColor" />
             </svg>
           </span>
-          <span class="generic-sidebar__nav-text">{{ t('nav_login') }}</span>
+          <span class="generic-sidebar__nav-text">{{ authEntryLabel }}</span>
         </router-link>
       </template>
     </nav>
@@ -132,6 +132,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
@@ -151,6 +152,8 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const route = useRoute()
 const tokenStore = useTokenStore()
+const authEntryRoute = computed(() => tokenStore.hasKnownAccount ? '/app/login' : '/app/signup')
+const authEntryLabel = computed(() => tokenStore.hasKnownAccount ? t('nav_login') : t('nav_signup'))
 
 const handleLinkClick = () => {
   emit('close')

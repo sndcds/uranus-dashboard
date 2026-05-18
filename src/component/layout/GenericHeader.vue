@@ -44,10 +44,10 @@
 
           <router-link
               v-if="!tokenStore.isAuthenticated"
-              to="/app/login"
+              :to="authEntryRoute"
               class="generic-header__nav-link"
               active-class="generic-header__nav-link--active">
-            {{ t('nav_login') }}
+            {{ authEntryLabel }}
           </router-link>
 
         </nav>
@@ -198,6 +198,8 @@ const emit = defineEmits<{
 
 const isUserMenuOpen = ref(false)
 const isSettingsMenuOpen = ref(false)
+const authEntryRoute = computed(() => tokenStore.hasKnownAccount ? '/app/login' : '/app/signup')
+const authEntryLabel = computed(() => tokenStore.hasKnownAccount ? t('nav_login') : t('nav_signup'))
 
 // Theme and locale
 const currentTheme = ref<'light' | 'dark'>('light')
