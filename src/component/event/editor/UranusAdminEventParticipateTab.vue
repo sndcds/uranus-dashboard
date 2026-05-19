@@ -29,13 +29,12 @@
             v-model="event.maxAttendees!" />
       </UranusFormRow>
 
-      <UranusFormRow
-        v-if="event.participationInfo"
-      >
+      <UranusFormRow>
         <UranusTextarea
             id="event-participation-info"
             :label="t('event_participation_info')"
-            v-model="event.participationInfo"
+            v-model="event.participationInfo!"
+            style="min-height:120px"
         />
       </UranusFormRow>
 

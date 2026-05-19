@@ -331,14 +331,14 @@ const webLogoUrl = computed(() => {
 const footerLogoUrl = computed(() => {
   const uuid = portal.value?.footer_logo_uuid
   return uuid
-      ? `${apiBase}/api/image/${uuid}?width=1920&type=png&quality=80`
+      ? `${apiBase}/api/image/${uuid}?width=480&type=png&quality=80`
       : null
 })
 
 const backgroundUrl = computed(() => {
   const uuid = portal.value?.background_image_uuid
   return uuid
-      ? `${apiBase}/api/image/${uuid}?width=480&type=png&quality=80`
+      ? `${apiBase}/api/image/${uuid}?width=1920`
       : null
 })
 
