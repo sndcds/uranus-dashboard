@@ -155,6 +155,10 @@
                 :icon="Map"
                 style="padding-left: 0;"
             />
+            <UranusFavoriteListEventAction
+                :event-uuid="event.uuid"
+                :event-date-uuid="eventDate?.uuid ?? null"
+            />
           </div>
 
 
@@ -287,6 +291,7 @@ import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
+import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash, Video, Link, Mail } from 'lucide-vue-next'
 
 const route = useRoute()

@@ -22,10 +22,15 @@ export const useAppStore = defineStore('app', () => {
     const orgLogoUrl = ref<string | null>(null)
     const orgLightThemeLogoUrl = ref<string | null>(null)
     const orgDarkThemeLogoUrl = ref<string | null>(null)
+    const favoriteListUuid = ref<string | null>(null)
+    const favoriteListName = ref<string | null>(null)
     const eventViewMode = ref<EventViewMode>('compact')
     const eventGroupingMode = ref<EventGroupingMode>('daily')
 
     function setOrgValues(uuid: string, name: string, logoUrl: string | null, lightThemeLogoUrl: string | null, darkThemeLogoUrl: string | null) {
+        if (orgUuid.value !== uuid) {
+            clearFavoriteList()
+        }
         orgUuid.value = uuid
         orgName.value = name
         orgLogoUrl.value = logoUrl
@@ -34,6 +39,9 @@ export const useAppStore = defineStore('app', () => {
     }
 
     function setOrgUuid(uuid: string | null) {
+        if (orgUuid.value !== uuid) {
+            clearFavoriteList()
+        }
         orgUuid.value = uuid
     }
 
@@ -47,6 +55,17 @@ export const useAppStore = defineStore('app', () => {
         orgLogoUrl.value = null
         orgLightThemeLogoUrl.value = null
         orgDarkThemeLogoUrl.value = null
+        clearFavoriteList()
+    }
+
+    function setFavoriteList(uuid: string, name: string) {
+        favoriteListUuid.value = uuid
+        favoriteListName.value = name
+    }
+
+    function clearFavoriteList() {
+        favoriteListUuid.value = null
+        favoriteListName.value = null
     }
 
     function setEventViewMode(mode: EventViewMode) {
@@ -73,12 +92,16 @@ export const useAppStore = defineStore('app', () => {
         orgLogoUrl,
         orgLightThemeLogoUrl,
         orgDarkThemeLogoUrl,
+        favoriteListUuid,
+        favoriteListName,
         eventViewMode,
         eventGroupingMode,
         setOrgValues,
         setOrgUuid,
         setOrgName,
         clearOrg,
+        setFavoriteList,
+        clearFavoriteList,
         setEventViewMode,
         setViewMode,
         normalizeEventViewMode,

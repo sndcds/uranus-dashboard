@@ -46,6 +46,9 @@ import UranusPortalView from '@/component/portal/view/UranusPortalView.vue'
 import UranusAdminPortalListView from '@/component/portal/view/UranusAdminPortalListView.vue'
 import UranusPortalCreateView from '@/component/portal/view/UranusPortalCreateView.vue'
 import UranusPortalEditView from '@/component/portal/view/UranusPortalEditView.vue'
+import UranusFavoriteListListView from '@/component/favorite/view/UranusFavoriteListListView.vue'
+import UranusFavoriteListCreateView from '@/component/favorite/view/UranusFavoriteListCreateView.vue'
+import UranusFavoriteListEditView from '@/component/favorite/view/UranusFavoriteListEditView.vue'
 
 
 const routes = [
@@ -122,6 +125,21 @@ const routes = [
                 path: 'org/portals',
                 name: 'admin-portals',
                 component: UranusAdminPortalListView,
+            },
+            {
+                path: 'org/favorite-lists',
+                name: 'admin-favorite-lists',
+                component: UranusFavoriteListListView,
+            },
+            {
+                path: 'org/:orgUuid/favorite-list/create',
+                name: 'admin-create-favorite-list',
+                component: UranusFavoriteListCreateView,
+            },
+            {
+                path: 'org/favorite-lists/:favoriteListUuid/edit',
+                name: 'admin-edit-favorite-list',
+                component: UranusFavoriteListEditView,
             },
             {
                 path: 'org/partners',

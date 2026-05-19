@@ -91,6 +91,13 @@
             />
           </div>
 
+          <div class="uranus-public-event-info-card">
+            <UranusFavoriteListEventAction
+                :event-uuid="eventDetails.uuid"
+                :event-date-uuid="eventDateDetails?.uuid ?? props.event.dateUuid"
+            />
+          </div>
+
           <div
               v-if="eventDetails.registrationLink || eventDetails.registrationEmail || eventDetails.registrationPhone"
               class="uranus-public-event-info-card">
@@ -184,6 +191,7 @@ import UranusEventOrgDisplay from '@/component/event/ui/UranusEventOrgDisplay.vu
 import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
+import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { Accessibility, Link, Mail, Ticket, Video } from 'lucide-vue-next'
 
 const { t, locale } = useI18n({ useScope: 'global' })
