@@ -27,7 +27,7 @@ export interface UranusEventsFilter {
     portalUuid?: string | null
     portalPrefilter?: {
         age?: string | number | null
-        venues?: string | number | null
+        venues?: string | number | string[] | null
     } | null
 }
 

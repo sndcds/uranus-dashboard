@@ -378,10 +378,12 @@ const portalError = ref<string | null>(null)
 const portalRenderReady = computed(() => !portalLoading.value && (!!portal.value || !!portalError.value))
 const portalEventPrefilter = computed(() => {
   const prefilter = normalizePortalPrefilter(portal.value?.pre_filter ?? portal.value?.prefilter)
-  const result: { age?: string | number | null, venues?: string | number | null } = {}
+  const result: { age?: string | number | null, venues?: string | number | string[] | null } = {}
 
   if (isPrefilterValue(prefilter?.age)) result.age = prefilter.age
-  if (isPrefilterValue(prefilter?.venues)) result.venues = prefilter.venues
+  if (isPrefilterValue(prefilter?.venues) || isPrefilterStringList(prefilter?.venues)) {
+    result.venues = prefilter.venues
+  }
 
   return Object.keys(result).length ? result : null
 })
@@ -661,6 +663,10 @@ function isPrefilterValue(value: unknown): value is string | number {
       (typeof value === 'string' && value.trim().length > 0) ||
       (typeof value === 'number' && Number.isFinite(value))
   )
+}
+
+function isPrefilterStringList(value: unknown): value is string[] {
+  return Array.isArray(value) && value.some(item => typeof item === 'string' && item.trim().length > 0)
 }
 
 async function fetchPortal() {

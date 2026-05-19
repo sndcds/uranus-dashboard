@@ -7,6 +7,12 @@
     >
       <h2>{{ group.label }}</h2>
 
+      <UranusVenueUuidList
+          v-if="group.key === 'entities'"
+          v-model="form.venues"
+          label="Venues"
+      />
+
       <UranusFormRow
           v-for="row in group.rows"
           :key="row.map(field => field.key).join('-')"
@@ -47,6 +53,7 @@ import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusVenueUuidList from '@/component/venue/UranusVenueUuidList.vue'
 
 type FilterFieldKey =
     | 'categories'
@@ -68,16 +75,21 @@ type FilterFieldKey =
     | 'lat'
     | 'radius'
     | 'language'
+type TextFilterFieldKey = Exclude<FilterFieldKey, 'venues'>
 
 type FilterField = {
-  key: FilterFieldKey
+  key: TextFilterFieldKey
   label: string
   type?: 'text' | 'number' | 'date'
   placeholder?: string
 }
 
-type PortalFilterForm = Record<FilterFieldKey, string | number | null>
-type PortalFilterPayload = Partial<Record<FilterFieldKey, string | number>>
+type PortalFilterForm = Record<TextFilterFieldKey, string | number | null> & {
+  venues: string[]
+}
+type PortalFilterPayload = Partial<Record<TextFilterFieldKey, string | number> & {
+  venues: string[]
+}>
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useUranusPortalStore()
@@ -114,9 +126,6 @@ const filterGroups: Array<{ key: string, label: string, rows: FilterField[][] }>
     key: 'entities',
     label: 'Entities',
     rows: [
-      [
-        { key: 'venues', label: 'Venues', placeholder: '10,20' },
-      ],
       [
         { key: 'spaces', label: 'Spaces', placeholder: '5,6' },
         { key: 'space_types', label: 'Space types', placeholder: '1,2' },
@@ -163,7 +172,7 @@ const filterGroups: Array<{ key: string, label: string, rows: FilterField[][] }>
 const defaultFilterForm: PortalFilterForm = {
   categories: '',
   time: '',
-  venues: '',
+  venues: [],
   spaces: '',
   space_types: '',
   organizations: '',
@@ -199,6 +208,24 @@ function readString(source: Record<string, unknown> | null, key: FilterFieldKey,
       : (typeof fallback === 'string' ? fallback : '')
 }
 
+function readStringList(source: Record<string, unknown> | null, key: FilterFieldKey, fallback: unknown) {
+  const value = source?.[key]
+  if (Array.isArray(value)) {
+    return value
+        .map(item => String(item ?? '').trim())
+        .filter(Boolean)
+  }
+
+  if (typeof value === 'string') {
+    return value
+        .split(',')
+        .map(item => item.trim())
+        .filter(Boolean)
+  }
+
+  return Array.isArray(fallback) ? [...fallback] : []
+}
+
 function readNumber(source: Record<string, unknown> | null, key: FilterFieldKey, fallback: unknown) {
   const value = source?.[key]
   if (typeof value === 'number') return value
@@ -217,7 +244,7 @@ function createFilterForm(filter: Record<string, unknown> | null): PortalFilterF
   return {
     categories: readString(filter, 'categories', defaults.categories),
     time: readString(filter, 'time', defaults.time),
-    venues: readString(filter, 'venues', defaults.venues),
+    venues: readStringList(filter, 'venues', defaults.venues),
     spaces: readString(filter, 'spaces', defaults.spaces),
     space_types: readString(filter, 'space_types', defaults.space_types),
     organizations: readString(filter, 'organizations', defaults.organizations),
@@ -247,6 +274,10 @@ function buildFilterPayload(value: PortalFilterForm): PortalFilterPayload {
     } else if (typeof current === 'number' && Number.isFinite(current)) {
       payload[field.key] = current
     }
+  }
+
+  if (value.venues.length) {
+    payload.venues = [...value.venues]
   }
 
   return payload
