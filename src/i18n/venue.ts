@@ -110,6 +110,41 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Select venue',
         da: 'Vælg sted',
     },
+    venue_search_on_map: {
+        de: 'Ort auf Karte Suchen',
+        en: 'Search venue on map',
+        da: 'Søg sted på kort',
+    },
+    venue_back_to_list: {
+        de: 'Zur Liste',
+        en: 'Back to list',
+        da: 'Tilbage til listen',
+    },
+    venue_request_question: {
+        de: 'Diesen Ort als Veranstaltungsort anfragen?',
+        en: 'Request this place as a venue?',
+        da: 'Anmod om dette sted som spillested?',
+    },
+    venue_request_send: {
+        de: 'Anfrage senden',
+        en: 'Send request',
+        da: 'Send anmodning',
+    },
+    venue_request_missing_org: {
+        de: 'Für diesen Ort konnte keine Organisation gefunden werden.',
+        en: 'No organization could be found for this venue.',
+        da: 'Der kunne ikke findes en organisation for dette sted.',
+    },
+    venue_request_partner_message: {
+        de: 'Ich möchte "{venueName}" als Veranstaltungsort nutzen.',
+        en: 'I would like to use "{venueName}" as a venue.',
+        da: 'Jeg vil gerne bruge "{venueName}" som spillested.',
+    },
+    venue_request_success_followup: {
+        de: 'Die Anfrage für den Veranstaltungsort {venueName} wurde erfolgreich gesendet. Bitte schaue demnächst in den Bereich Partner, ob die Anfrage angenommen wurde.',
+        en: 'The request for the venue {venueName} was sent successfully. Please check the Partners area soon to see whether the request has been accepted.',
+        da: 'Anmodningen for spillestedet {venueName} blev sendt. Tjek snart Partner-området for at se, om anmodningen er blevet accepteret.',
+    },
     selectable_venues_by_user: {
         de: 'Diese Veranstaltungsorte kannst du für Events auswählen',
         en: 'These venues are available for you to select for events',
