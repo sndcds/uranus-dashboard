@@ -338,7 +338,7 @@ const footerLogoUrl = computed(() => {
 const backgroundUrl = computed(() => {
   const uuid = portal.value?.background_image_uuid
   return uuid
-      ? `${apiBase}/api/image/${uuid}?width=1920&type=png&quality=80`
+      ? `${apiBase}/api/image/${uuid}?width=1920`
       : null
 })
 
