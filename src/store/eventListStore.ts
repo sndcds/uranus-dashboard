@@ -14,6 +14,9 @@ import {
     from '@/api/dto/event.dto.ts'
 import { type UranusEventsFilter, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 
+interface LoadEventsOptions {
+    keepCurrentEvents?: boolean
+}
 
 export const useEventListStore = defineStore('events', () => {
     const events = ref<EventListItem[]>([])
@@ -166,12 +169,23 @@ export const useEventListStore = defineStore('events', () => {
 
     async function loadEvents(
         resetPage: boolean = false,
-        filter: UranusEventsFilter = filterStore.getFilter()
+        filter: UranusEventsFilter = filterStore.getFilter(),
+        options: LoadEventsOptions = {}
     ) {
         const currentRequest = ++requestId
         if (loading.value) return
         if (!resetPage && !hasMore.value) return
-        if (resetPage) reset({ keepSummary: true })
+        const replaceEvents = resetPage && options.keepCurrentEvents
+        if (resetPage) {
+            if (options.keepCurrentEvents) {
+                lastEventStartAt.value = null
+                lastEventDateUuid.value = null
+                error.value = null
+                hasMore.value = true
+            } else {
+                reset({ keepSummary: true })
+            }
+        }
         loading.value = true
 
         try {
@@ -184,10 +198,17 @@ export const useEventListStore = defineStore('events', () => {
             const apiData = apiResponse?.data
             const apiEvents = apiData?.events ?? []
             if (apiEvents.length === 0) {
+                if (replaceEvents) {
+                    events.value = []
+                }
                 hasMore.value = false
             } else {
                 const mappedEvents = apiEvents.map(mapEventDTO)
-                events.value.push(...mappedEvents)
+                if (replaceEvents) {
+                    events.value = mappedEvents
+                } else {
+                    events.value.push(...mappedEvents)
+                }
                 lastEventStartAt.value = apiData?.last_event_start_at ?? null
                 lastEventDateUuid.value = apiData?.last_event_date_uuid ?? null
                 hasMore.value = !!apiData?.last_event_date_uuid
