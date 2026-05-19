@@ -696,7 +696,9 @@ async function reloadEvents() {
     await waitForActiveEventLoad()
     if (currentReloadRequest !== reloadRequestId) return
 
-    await eventListStore.loadEvents(true, activeFilter.value)
+    await eventListStore.loadEvents(true, activeFilter.value, {
+      keepCurrentEvents: initialized.value && eventListStore.events.length > 0,
+    })
     await eventListStore.loadTypeSummary(activeFilter.value)
     await waitForRenderedEvents()
 
