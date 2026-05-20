@@ -47,6 +47,8 @@
       {{ error }}
     </UranusFeedback>
 
+    <UranusPartnershipConnectionsGraph />
+
     <UranusPartnerRequestCard
         :items="partnerRequests"
         direction="incoming"
@@ -91,6 +93,7 @@ import { useAppStore } from '@/store/appStore.ts'
 import UranusPartnerGrantCard from '@/component/partner/card/UranusPartnerGrantCard.vue'
 import UranusOrgTitle from '@/component/layout/UranusOrgTitle.vue'
 import UranusPartnerRequestCard from '@/component/partner/card/UranusPartnerRequestCard.vue'
+import UranusPartnershipConnectionsGraph from '@/component/partner/card/UranusPartnershipConnectionsGraph.vue'
 
 const { t } = useI18n()
 const appStore = useAppStore()
