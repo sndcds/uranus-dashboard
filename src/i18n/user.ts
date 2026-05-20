@@ -175,35 +175,40 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'Delete organization',
         da: 'Slet organisation',
     },
-    user_permissions_type_org: {
+    user_permissions_group_org: {
         de: 'Organisationen',
         en: 'Organizations',
         da: 'Organisationer',
     },
-    user_permissions_type_venue: {
+    user_permissions_group_venue: {
         de: 'Veranstaltungsorte',
         en: 'Venues',
         da: 'Steder',
     },
-    user_permissions_type_space: {
+    user_permissions_group_space: {
         de: 'Räume',
         en: 'Spaces',
         da: 'Lokaler',
     },
-    user_permissions_type_event: {
+    user_permissions_group_event: {
         de: 'Events',
         en: 'Events',
         da: 'Begivenheder',
     },
-    user_permissions_type_portal: {
+    user_permissions_group_portal: {
         de: 'Portale',
         en: 'Portals',
         da: 'Portaler',
     },
-    user_permissions_type_partner: {
+    user_permissions_group_partner: {
         de: 'Partner',
         en: 'Partners',
         da: 'Partnere',
+    },
+    user_permissions_group_favorite_list: {
+        de: 'Favoritenlisten',
+        en: 'Favorite lists',
+        da: 'Favoritlister',
     },
     user_permissions_invalid_response: {
         de: 'Antwort konnte nicht verarbeitet werden.',

@@ -119,10 +119,10 @@ const loadPartnerList = async () => {
     const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/grants`
     const apiResponse = await apiFetch<any>(apiPath)
 
-    canRequestPartner.value = apiResponse.data.can_request_partner
-    canAnswerPartnerRequests.value = apiResponse.data.can_answer_partner_requests
-    canEditPartnerRights.value = apiResponse.data.can_edit_partner_rights
-    canDeletePartnership.value = apiResponse.data.can_delete_partnership
+    canRequestPartner.value = apiResponse.data.request_partner
+    canAnswerPartnerRequests.value = apiResponse.data.answer_partner_requests
+    canEditPartnerRights.value = apiResponse.data.edit_partner_rights
+    canDeletePartnership.value = apiResponse.data.delete_partnership
 
     const data = apiResponse.data.partner_grants as PartnerDTO[]
     partnerList.value = sortByOrgName((data || []).map(dto => mapPartnerListItem(dto)))
