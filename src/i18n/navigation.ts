@@ -80,6 +80,11 @@ export const uranusI18nNavigationTranslations: Record<string, Record<UranusLocal
         en: 'Portals',
         da: 'Portaler'
     },
+    nav_favorite_lists: {
+        de: 'Favoritenlisten',
+        en: 'Favorite lists',
+        da: 'Favoritlister'
+    },
     scroll_to_map: {
         de: 'Karte anzeigen',
         en: 'View map',

@@ -1,10 +1,12 @@
 <!--
   src/component/partner/card/UranusPartnershipConnectionsGraph.vue
+
+  TODO: i18n translations
 -->
 
 <template>
   <UranusCard>
-    <h3>Partnership Connections</h3>
+    <h3>{{ t('partnership_connections') }}</h3>
 
     <UranusFeedback v-if="isLoading" type="warning">
       Loading partnership connections...
@@ -14,7 +16,7 @@
       {{ error }}
     </UranusFeedback>
 
-    <UranusFeedback v-else-if="connections.length === 0" type="info">
+    <UranusFeedback v-else-if="connections.length === 0" type="notice">
       No partnership connections found.
     </UranusFeedback>
 
@@ -76,9 +78,12 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+
+const { t } = useI18n()
 
 type OrgAccessGrant = {
   src_org_uuid: string
@@ -100,8 +105,6 @@ type GraphLine = {
   key: string
   path: string
 }
-
-const apiPath = '/api/admin/org/partnership-connections-by-user'
 
 const isLoading = ref(true)
 const error = ref<string | null>(null)
@@ -176,14 +179,9 @@ async function loadConnections() {
   error.value = null
 
   try {
+    const apiPath = '/api/admin/org/partnership-connections-by-user'
     const apiResponse = await apiFetch<any>(apiPath)
-    const grants = Array.isArray(apiResponse?.data?.org_access_grants)
-        ? apiResponse.data.org_access_grants
-        : Array.isArray(apiResponse?.org_access_grants)
-            ? apiResponse.org_access_grants
-            : []
-
-    connections.value = grants
+    connections.value = apiResponse?.data?.org_access_grants
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
