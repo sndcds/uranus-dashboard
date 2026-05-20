@@ -19,6 +19,10 @@
       <div class="calendar-meta">
         <span>{{ event.venue.city }}</span>
         <span>{{ formattedDateTime }}</span>
+        <UranusFavoriteListEventAction
+            :event-uuid="event.uuid"
+            :event-date-uuid="event.dateUuid"
+        />
       </div>
 
     </div>
@@ -29,6 +33,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
+import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { uranusFormatDateTime } from '@/util/string.ts'
 import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'

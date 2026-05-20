@@ -87,12 +87,13 @@ const pageSubtitle = computed(() => uranusReplaceInTemplate(t('user_permissions_
 }))
 
 const entityTypeLabels = computed<Record<string, string>>(() => ({
-  organization: t('user_permissions_type_org'),
-  venue: t('user_permissions_type_venue'),
-  space: t('user_permissions_type_space'),
-  event: t('user_permissions_type_event'),
-  portal: t('user_permissions_type_portal'),
-  partner: t('user_permissions_type_partner'),
+  organization: t('user_permissions_group_org'),
+  venue: t('user_permissions_group_venue'),
+  space: t('user_permissions_group_space'),
+  event: t('user_permissions_group_event'),
+  portal: t('user_permissions_group_portal'),
+  partner: t('user_permissions_group_partner'),
+  favorite_list: t('user_permissions_group_favorite_list'),
 }))
 
 const isLoading = ref(true)

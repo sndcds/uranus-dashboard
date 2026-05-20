@@ -105,6 +105,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'No',
         da: 'Nej'
     },
+    done: {
+        de: 'Fertig',
+        en: 'Done',
+        da: 'Færdig'
+    },
     light: {
         de: 'Hell',
         en: 'Light',

@@ -145,6 +145,16 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'The request for the venue {venueName} was sent successfully. Please check the Partners area soon to see whether the request has been accepted.',
         da: 'Anmodningen for spillestedet {venueName} blev sendt. Tjek snart Partner-området for at se, om anmodningen er blevet accepteret.',
     },
+    venue_added_to_selection: {
+        de: 'Veranstaltungsort hinzugefügt',
+        en: 'Venue added',
+        da: 'Sted tilføjet',
+    },
+    venue_selection_empty: {
+        de: 'Keine Veranstaltungsorte ausgewählt.',
+        en: 'No venues selected.',
+        da: 'Ingen steder valgt.',
+    },
     selectable_venues_by_user: {
         de: 'Diese Veranstaltungsorte kannst du für Events auswählen',
         en: 'These venues are available for you to select for events',
