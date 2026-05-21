@@ -81,7 +81,8 @@ async function loadFavoriteLists(orgUuid: string | null) {
   error.value = null
 
   try {
-    const apiResponse = await apiFetch<any>(`/api/admin/org/${orgUuid}/favorite-lists`)
+    const apiPath = `/api/admin/org/${orgUuid}/favorite-lists`
+    const apiResponse = await apiFetch<any>(apiPath)
     const rawLists = extractListPayload(apiResponse.data)
     favoriteLists.value = rawLists
         .map(mapFavoriteList)

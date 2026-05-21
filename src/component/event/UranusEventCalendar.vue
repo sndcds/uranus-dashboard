@@ -25,12 +25,13 @@
               :selected="displayMode === 'list'"
               @click="setDisplayMode('list')"
           />
-          <UranusIconAction
+          <!-- TODO: Implement view for this mode an show icon -->
+          <!--UranusIconAction
               v-if="isDisplayModeAllowed('calendar')"
               :icon="CalendarDays"
               :selected="displayMode === 'calendar'"
               @click="setDisplayMode('calendar')"
-          />
+          /-->
           <UranusIconAction
               v-if="isDisplayModeAllowed('map')"
               :icon="Map"

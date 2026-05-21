@@ -274,6 +274,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, ApiError } from '@/api.ts'
 import { marked } from 'marked'
+import { useAppStore } from '@/store/appStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 import { type PublicEvent, mapPublicEventFromDTO } from '@/domain/event/publicEvent.model.ts'
@@ -313,6 +314,8 @@ const loadingLabel = computed(() => t('loading'))
 const loadError = ref<string | null>(null)
 const isDownloadingIcs = ref(false)
 const isPreview = computed(() => route.params.mode === 'preview')
+
+const appStore = useAppStore()
 
 // Watch for changes in route params
 watch(
@@ -446,18 +449,20 @@ const loadEvent = async () => {
     const eventDateUuid = resolveRouteParam(route.params.eventDateUuid)
 
     const lang = locale.value || 'de'
-    let apiPath = null
+    let apiPath
     if (isPreview.value) {
       apiPath = `/api/admin/event/${eventUuid}/date/${eventDateUuid}?lang=${lang}`
     } else {
       apiPath = `/api/event/${eventUuid}/date/${eventDateUuid}?lang=${lang}`
     }
+
     if (!apiPath) {
       loadError.value = t('permission_denied')
       return
     }
 
-    console.log(apiPath)
+    console.log('apiPath', apiPath)
+
     const apiResponse = await apiFetch<PublicEventDTO>(apiPath)
     if (apiResponse.data) {
       const mappedEvent: PublicEvent | null = mapPublicEventFromDTO(apiResponse.data, eventDateUuid)
