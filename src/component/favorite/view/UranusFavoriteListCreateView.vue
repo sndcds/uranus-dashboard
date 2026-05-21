@@ -67,7 +67,6 @@ async function onCreate() {
 
   try {
     const apiPath = '/api/admin/favorite-list/create'
-    console.log(apiPath)
     const apiResponse = await apiFetch<any>(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -76,14 +75,13 @@ async function onCreate() {
         favorite_list_name: listName.value,
       }),
     })
-    console.log(JSON.stringify(apiResponse, null, 2))
 
     const listUuid = extractCreatedUuid(apiResponse)
     if (!listUuid) {
       throw new Error('Missing favorite list uuid')
     }
 
-    await router.push(`/admin/favorite-list/create`)
+    await router.push({ name: 'admin-favorite-lists' })
   } catch {
     error.value = t('favorite_list_create_error')
   } finally {
