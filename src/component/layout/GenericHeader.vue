@@ -35,12 +35,12 @@
             {{ t('nav_map') }}
           </router-link>
 
-          <router-link
+          <!--router-link
               to="/page/help"
               class="generic-header__nav-link"
               active-class="generic-header__nav-link--active">
             {{ t('help') }}
-          </router-link>
+          </router-link-->
 
           <router-link
               v-if="!tokenStore.isAuthenticated"
