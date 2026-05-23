@@ -27,6 +27,10 @@
             :url="venue.mainPhotoUrl!"
         />
 
+        <div class="uranus-public-event-section">
+          <h1>{{ venue.name }}</h1>
+        </div>
+
         <div v-if="venueTypeLabel" class="uranus-public-event-section">
           <div class="uranus-public-event-detail-tags">
             <span class="uranus-public-event-detail-tag">
