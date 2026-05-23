@@ -27,11 +27,6 @@
             :url="venue.mainPhotoUrl!"
         />
 
-        <div class="uranus-public-event-section">
-          <h1>{{ venue.name }}</h1>
-          <h2 v-if="venueTypeLabel">{{ venueTypeLabel }}</h2>
-        </div>
-
         <div v-if="venueTypeLabel" class="uranus-public-event-section">
           <div class="uranus-public-event-detail-tags">
             <span class="uranus-public-event-detail-tag">
@@ -48,7 +43,7 @@
           <div v-if="false" class="uranus-public-venue-space-list">
             <h2>{{ t('venue_spaces') }}</h2>
             <UranusAccordion
-                v-for="(space, index) in venue.spaces"
+                v-for="(space, index) in venue!.spaces"
                 :key="space.uuid"
                 :model-value="index === 0"
                 class="uranus-public-venue-space-accordion"
@@ -68,11 +63,11 @@
                 <div
                     v-if="space.description"
                     class="uranus-public-event-description"
-                    v-html="formatMarkdown(space.description)"
+                    v-html="formatMarkdown(space.description!)"
                 ></div>
                 <a
                     v-if="space.webLink"
-                    :href="space.webLink"
+                    :href="space.webLink!"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
@@ -177,7 +172,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { marked } from 'marked'
-import { Globe, Mail, Map, Phone } from 'lucide-vue-next'
+import { Globe, Mail, Phone } from 'lucide-vue-next'
 import { ApiError, apiFetch } from '@/api.ts'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useVenueTypeLookupStore } from '@/store/venueTypesLookupStore.ts'
@@ -187,12 +182,7 @@ import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusImage from '@/component/image/UranusImage.vue'
-import {
-  uranusFormatDateTime,
-  uranusFormatDayMonth,
-  uranusFormatFullDate,
-  uranusFormatSimpleDate
-} from "@/util/string.ts";
+import { uranusFormatFullDate } from '@/util/string.ts'
 
 type VenueDetailOrganization = {
   uuid: string | null
