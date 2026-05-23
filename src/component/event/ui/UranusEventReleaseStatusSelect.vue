@@ -39,18 +39,12 @@ const options = ref<{ key: string; name: string }[]>([])
 
 // Load data on mount
 onMounted(async () => {
-  /*
-  if (!store.loaded) {
-    await store.load(['en', 'de', 'da']); // TODO: Get from config!
-  }
-   */
   updateOptions()
 });
 
 // Update options whenever locale changes or store updates
 const updateOptions = () => {
   options.value = store.options(locale.value)
-  console.log(store.options(locale.value))
 };
 
 // Watch for prop changes
