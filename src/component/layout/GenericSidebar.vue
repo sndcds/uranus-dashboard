@@ -38,16 +38,6 @@
         </router-link>
 
         <router-link
-            to="/admin/org/partners"
-            class="generic-sidebar__nav-item"
-            active-class="generic-sidebar__nav-item--active"
-            @click="handleLinkClick"
-        >
-          <Handshake class="generic-sidebar__nav-icon"/>
-          <span class="generic-sidebar__nav-text">{{ t('nav_partners') }}</span>
-        </router-link>
-
-        <router-link
             to="/admin/org/venues"
             class="generic-sidebar__nav-item"
             active-class="generic-sidebar__nav-item--active" @click="handleLinkClick"
@@ -63,6 +53,18 @@
             @click="handleLinkClick">
           <Calendar class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_events') }}</span>
+        </router-link>
+
+        <hr>
+
+        <router-link
+            to="/admin/org/partners"
+            class="generic-sidebar__nav-item"
+            active-class="generic-sidebar__nav-item--active"
+            @click="handleLinkClick"
+        >
+          <Handshake class="generic-sidebar__nav-icon"/>
+          <span class="generic-sidebar__nav-text">{{ t('nav_partners') }}</span>
         </router-link>
 
         <router-link

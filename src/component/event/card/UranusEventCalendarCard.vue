@@ -11,7 +11,12 @@
       class="calendar-card custom-link"
   >
     <div class="calendar-image">
-      <img v-if="imageUrl" :src="imageUrl" :alt="t('event_image_alt_text')" />
+      <img v-if="imageUrl" :src="imageUrl" :alt="t('event_image_alt_text')">
+      <UranusFavoriteListEventAction
+          class="favorite-action"
+          :event-uuid="event.uuid"
+          :event-date-uuid="event.dateUuid"
+      />
     </div>
 
     <div class="calendar-text">
@@ -25,10 +30,6 @@
             v-if="isReleased"
             :releaseStatus="event.releaseStatus"
             tiny
-        />
-        <UranusFavoriteListEventAction
-            :event-uuid="event.uuid"
-            :event-date-uuid="event.dateUuid"
         />
       </div>
 
@@ -124,11 +125,12 @@ const getTypeName = (typeId: number) =>
 
 }
 
-.calendar-card:hover {
-  transform: translateY(-3px);
+.calendar-card:hover .calendar-image img {
+  transform: scale(1.1);
 }
 
 .calendar-image {
+  position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -138,13 +140,15 @@ const getTypeName = (typeId: number) =>
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: all 0.3s;
+
 }
 
 .calendar-text {
   padding: 0.8rem;
   display: flex;
   flex-direction: column;
-  flex: 1; /* 👈 THIS is the missing piece */
+  flex: 1;
   font-weight: 300;
   letter-spacing: 0.05em;
   // color: var(--uranus-color-3);
@@ -162,5 +166,15 @@ const getTypeName = (typeId: number) =>
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+}
+
+.favorite-action {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  background: white;
+  padding: 8px;
+  border-radius: 50%;
 }
 </style>

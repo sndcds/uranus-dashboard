@@ -25,14 +25,21 @@
         <defs>
           <marker
               id="partnership-arrow"
-              markerWidth="8"
-              markerHeight="8"
-              refX="7"
-              refY="4"
+              markerWidth="10"
+              markerHeight="10"
+              refX="9"
+              refY="5"
               orient="auto"
               markerUnits="strokeWidth"
           >
-            <path d="M0,0 L8,4 L0,8 z" fill="var(--uranus-color-4)" />
+            <path
+                d="M0,0 L8,5 L0,10"
+                fill="none"
+                stroke="var(--uranus-color-2)"
+                stroke-width="1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
           </marker>
         </defs>
 
@@ -47,7 +54,7 @@
 
       <div class="connections-graph__columns">
         <div class="connections-graph__column">
-          <div class="connections-graph__label">Sources</div>
+          <div class="connections-graph__label">{{ t('sources') }}</div>
           <div
               v-for="org in sourceNodes"
               :key="org.uuid"
@@ -60,7 +67,7 @@
         </div>
 
         <div class="connections-graph__column connections-graph__column--right">
-          <div class="connections-graph__label">Destinations</div>
+          <div class="connections-graph__label">{{ t('destinations') }}</div>
           <div
               v-for="org in destinationNodes"
               :key="org.uuid"
@@ -80,10 +87,12 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
+import { useAppStore } from '@/store/appStore.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 
 const { t } = useI18n()
+const appStore = useAppStore()
 
 type OrgAccessGrant = {
   src_org_uuid: string
@@ -179,7 +188,7 @@ async function loadConnections() {
   error.value = null
 
   try {
-    const apiPath = '/api/admin/org/partnership-connections-by-user'
+    const apiPath = `/api/admin/org/${appStore.orgUuid}/partnership-connections`
     const apiResponse = await apiFetch<any>(apiPath)
     connections.value = apiResponse?.data?.org_access_grants
   } catch (err) {
@@ -269,8 +278,8 @@ onBeforeUnmount(() => {
 
 .connections-graph__line {
   fill: none;
-  stroke: var(--uranus-color-4);
-  stroke-width: 2;
+  stroke: var(--uranus-color-2);
+  stroke-width: 1;
   opacity: 0.75;
 }
 
@@ -296,14 +305,13 @@ onBeforeUnmount(() => {
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.03em;
-  text-transform: uppercase;
   color: var(--uranus-color-4);
 }
 
 .org-node {
   width: min(100%, 320px);
   border-radius: 0.5rem;
-  border: 1px solid var(--uranus-dashboard-border-color);
+  border: 0 solid var(--uranus-dashboard-border-color);
   padding: 0.65rem 0.75rem;
   font-weight: 600;
   background: var(--uranus-card-bg);

@@ -22,12 +22,21 @@
       <slot name="actions">
         <!-- Fallback: built-in button -->
         <UranusButton
-            v-if="actionLabel && actionTo"
+            v-if="actionTo && actionLabel"
             :to="actionTo"
             size="small"
         >
           {{ actionLabel }}
         </UranusButton>
+        <template v-else-if="actionExternalLink">
+          <a
+              :href="actionTo"
+              target="_blank"
+              rel="noopener noreferrer"
+          >
+            {{ actionLabel }}
+          </a>
+        </template>
       </slot>
     </div>
   </div>
@@ -43,12 +52,32 @@ const props = defineProps({
     default: 'info',
     validator: (v: string) => ['info', 'warning', 'error'].includes(v),
   },
-
-  actionLabel: String,
-  actionTo: String,
+  actionLabel: {
+    type: String,
+    default: null,
+  },
+  actionTo: {
+    type: String,
+    default: null,
+  },
+  actionExternalLink: {
+    type: String,
+    default: null,
+  },
 })
 
 const notificationTypeClass = computed(() => {
   return `notification-type-${props.type}`
 })
 </script>
+
+<style lang="scss" scoped>
+a {
+  &:hover {
+    color: red;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+</style>

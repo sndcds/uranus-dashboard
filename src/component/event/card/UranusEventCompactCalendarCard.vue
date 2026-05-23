@@ -12,6 +12,11 @@
   >
     <div class="calendar-image">
       <img v-if="imageUrl" :src="imageUrl" :alt="t('event_image_alt_text')" />
+      <UranusFavoriteListEventAction
+          class="favorite-action"
+          :event-uuid="event.uuid"
+          :event-date-uuid="event.dateUuid"
+      />
     </div>
 
     <div class="calendar-text">
@@ -19,10 +24,6 @@
       <div class="calendar-meta">
         <span>{{ event.venue.city }}</span>
         <span>{{ formattedDateTime }}</span>
-        <UranusFavoriteListEventAction
-            :event-uuid="event.uuid"
-            :event-date-uuid="event.dateUuid"
-        />
       </div>
 
     </div>
@@ -143,5 +144,15 @@ const getTypeName = (typeId: number) =>
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+}
+
+.favorite-action {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  background: white;
+  padding: 8px;
+  border-radius: 50%;
 }
 </style>

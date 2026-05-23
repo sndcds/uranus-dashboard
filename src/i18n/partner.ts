@@ -16,9 +16,9 @@ export const uranusI18nPartnerTranslations: Record<string, Record<UranusLocaleKe
         da: 'Partnere',
     },
     partner_manage_description: {
-        de: 'Organisiere deine Partnerschaften und Anfragen.',
-        en: 'Organize your partnerships and requests.',
-        da: 'Organisér dine partnerskaber og anmodninger.',
+        de: 'Ein Partner ist eine verbundene Organisation, der du Rechte gibts odr von der du Rechte bekommst.',
+        en: 'A partner is a connected organization to which you grant permissions or from which you receive permissions.',
+        da: 'En partner er en tilknyttet organisation, som du giver rettigheder til eller modtager rettigheder fra.',
     },
     partner_send_request: {
         de: 'Anfrage an Partner senden',
@@ -36,9 +36,9 @@ export const uranusI18nPartnerTranslations: Record<string, Record<UranusLocaleKe
         da: 'Rettigheder givet til partnere',
     },
     partner_no_membership_message: {
-        de: 'Ein Partner ist eine verbundene Organisation oder Person; aktuell sind keine Partner verbunden.',
-        en: 'A partner is a connected organization or person; there are currently no partners connected.',
-        da: 'En partner er en tilknyttet organisation eller person; der er i øjeblikket ingen partnere forbundet.',
+        de: 'Aktuell sind keine Partner verbunden.',
+        en: 'There are currently no partners connected.',
+        da: 'Der er i øjeblikket ingen partnere forbundet.',
     },
     partner_request_title: {
         de: 'Partner Anfrage',
@@ -144,6 +144,11 @@ export const uranusI18nPartnerTranslations: Record<string, Record<UranusLocaleKe
         de: 'Anfragen an Partner',
         en: 'Requests to partners',
         da: 'Anmodninger til partnere',
+    },
+    partnership_connections: {
+        de: 'Partnerschaftsverbindungen',
+        en: 'Partnership connections',
+        da: 'Partnerskabsforbindelser',
     },
 }
 
