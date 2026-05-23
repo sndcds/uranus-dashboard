@@ -25,15 +25,18 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-const props = defineProps<{ modelValue?: boolean }>()
+const props = defineProps<{
+  open?: boolean
+}>()
+
 const emit = defineEmits<{
   (event: 'update:modelValue', value: boolean): void
 }>()
 
-const isOpen = ref(props.modelValue ?? false)
+const isOpen = ref(props.open ?? false)
 
 watch(
-    () => props.modelValue,
+    () => props.open,
     (value) => {
       if (value !== undefined) isOpen.value = value
     }

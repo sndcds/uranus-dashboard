@@ -150,6 +150,7 @@
   "unsaved_changes": "There are unsaved changes",
   "sources": "Sources",
   "destinations": "Destinations",
+  "address": "Address",
   "signup": "Sign up",
   "signup_subtitle": "Create your account in just a few steps",
   "signup_loading": "Creating account…",

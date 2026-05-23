@@ -45,8 +45,8 @@
         </div>
 
         <div v-if="venue.spaces.length" class="uranus-public-event-section">
-          <h2>{{ t('venue_spaces') }}</h2>
-          <div class="uranus-public-venue-space-list">
+          <div v-if="false" class="uranus-public-venue-space-list">
+            <h2>{{ t('venue_spaces') }}</h2>
             <UranusAccordion
                 v-for="(space, index) in venue.spaces"
                 :key="space.uuid"
@@ -87,7 +87,7 @@
       <aside class="uranus-public-event-sidebar">
         <div class="uranus-public-event-info-section">
           <div v-if="hasAddress">
-            <p class="uranus-public-event-info-label">{{ t('events_calendar_detail_address_label') }}</p>
+            <p class="uranus-public-event-info-label">{{ t('address') }}</p>
             <p v-if="venue.street || venue.houseNumber">
               {{ venue.street }} {{ venue.houseNumber }}
             </p>
@@ -100,7 +100,7 @@
           </div>
 
           <div v-if="venue.organization">
-            <p class="uranus-public-event-info-label">{{ t('event_organizer') }}</p>
+            <p class="uranus-public-event-info-label">{{ t('org') }}</p>
             <p v-if="venue.organization.webLink && venue.organization.name">
               <a :href="venue.organization.webLink" target="_blank" rel="noopener noreferrer">
                 {{ venue.organization.name }}&nbsp;↗
@@ -113,56 +113,50 @@
           </div>
 
           <div v-if="venue.openedAt || venue.closedAt">
-            <p class="uranus-public-event-info-label">{{ t('venue_details') }}</p>
-            <p v-if="venue.openedAt">{{ t('opened_at') }}: {{ venue.openedAt }}</p>
-            <p v-if="venue.closedAt">{{ t('closed_at') }}: {{ venue.closedAt }}</p>
+            <p v-if="venue.openedAt">{{ t('opened_at') }}: {{ uranusFormatFullDate(venue.openedAt, locale) }}</p>
+            <p v-if="venue.closedAt">{{ t('closed_at') }}: {{ uranusFormatFullDate(venue.closedAt, locale) }}</p>
           </div>
 
-          <UranusIconAction
-              v-if="venue.webLink"
-              :label="t('website')"
-              :icon="Globe"
-              :to="venue.webLink"
-              style="padding-left: 0;"
-          />
+          <div style="display: flex; flex-direction: column">
+            <UranusIconAction
+                v-if="venue.webLink"
+                :label="t('website')"
+                :icon="Globe"
+                :to="venue.webLink"
+                style="padding-left: 0;"
+            />
 
-          <UranusIconAction
-              v-if="venue.contactEmail"
-              :label="venue.contactEmail"
-              :icon="Mail"
-              :to="`mailto:${venue.contactEmail}`"
-              style="padding-left: 0;"
-          />
+            <UranusIconAction
+                v-if="venue.contactEmail"
+                :label="venue.contactEmail"
+                :icon="Mail"
+                :to="`mailto:${venue.contactEmail}`"
+                style="padding-left: 0;"
+            />
 
-          <UranusIconAction
-              v-if="venue.contactPhone"
-              :label="venue.contactPhone"
-              :icon="Phone"
-              :to="`tel:${venue.contactPhone}`"
-              style="padding-left: 0;"
-          />
+            <UranusIconAction
+                v-if="venue.contactPhone"
+                :label="venue.contactPhone"
+                :icon="Phone"
+                :to="`tel:${venue.contactPhone}`"
+                style="padding-left: 0;"
+            />
+          </div>
+        </div>
 
-          <UranusIconAction
-              v-if="hasLonLat"
-              :to="{ hash: '#venue-map' }"
-              :label="t('scroll_to_map')"
-              :icon="Map"
-              style="padding-left: 0;"
+        <div
+            v-if="hasLonLat"
+            class="uranus-public-venue-map-frame"
+        >
+          <UranusSinglePointMap
+              id="venue-map"
+              :lat="venue.lat!"
+              :lon="venue.lon!"
+              :name="venue.name"
           />
         </div>
-      </aside>
 
-      <div
-          v-if="hasLonLat"
-          class="uranus-public-venue-map-frame"
-      >
-        <UranusSinglePointMap
-            id="venue-map"
-            :lat="venue.lat!"
-            :lon="venue.lon!"
-            :name="venue.name"
-        />
-      </div>
+      </aside>
     </div>
 
     <div class="uranus-public-venue-calendar">
@@ -193,6 +187,12 @@ import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusImage from '@/component/image/UranusImage.vue'
+import {
+  uranusFormatDateTime,
+  uranusFormatDayMonth,
+  uranusFormatFullDate,
+  uranusFormatSimpleDate
+} from "@/util/string.ts";
 
 type VenueDetailOrganization = {
   uuid: string | null
@@ -487,9 +487,10 @@ onMounted(() => void loadVenue())
 
 .uranus-public-venue-map-frame {
   width: 100%;
-  height: 400px;
+  height: 300px;
   border-radius: 7px;
   overflow: clip;
+  margin-top: 2rem;
 }
 
 .uranus-public-venue-calendar {
