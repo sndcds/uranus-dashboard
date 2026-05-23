@@ -20,6 +20,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Help',
         da: 'Hjælp',
     },
+    show_manual_page: {
+        de: 'Zur Dokumentation',
+        en: 'Go to documentation',
+        da: 'Gå til dokumentationen',
+    },
     details: {
         de: 'Details',
         en: 'Details',
@@ -744,7 +749,17 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Es gibt ungespeicherte Änderungen',
         en: 'There are unsaved changes',
         da: 'Der er ændringer, som ikke er gemt',
-    }
+    },
+    sources: {
+        de: 'Quellen',
+        en: 'Sources',
+        da: 'Kilder',
+    },
+    destinations: {
+        de: 'Ziele',
+        en: 'Destinations',
+        da: 'Destinationer',
+    },
 }
 
 export default uranusI18nStandardTranslations

@@ -10,17 +10,11 @@
         :subtitle="t('partner_manage_description')"
     />
 
-    <!-- Empty State Message -->
-    <UranusNotification
+    <UranusInfo
         v-if="!isLoading && partnerList.length === 0"
-        type="info"
-        :button-text="t('show_manual_page')"
-        button-link="/help/permissions"
-    >
-      <template #title>{{ t('notification') }}</template>
-      {{ t('partner_no_membership_message') }}
-    </UranusNotification>
-
+        :infoText="t('partner_no_membership_message')"
+    />
+    
     <div class="partner-actions-bar">
       <UranusButton
           v-if="canRequestPartner"
@@ -88,6 +82,7 @@ import {
   type PartnerListItem,
   type PartnerRequestItem
 } from '@/domain/partner/partner.model.ts'
+import UranusInfo from '@/component/ui/UranusInfo.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import { useAppStore } from '@/store/appStore.ts'
 import UranusPartnerGrantCard from '@/component/partner/card/UranusPartnerGrantCard.vue'

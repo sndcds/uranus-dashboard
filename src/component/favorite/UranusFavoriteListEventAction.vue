@@ -25,13 +25,13 @@
       />
     </button>
 
-    <span
+    <!--span
         v-if="feedback"
         class="favorite-list-event-action__feedback"
         :class="`favorite-list-event-action__feedback--${feedbackType}`"
     >
       {{ feedback }}
-    </span>
+    </span-->
   </div>
 </template>
 

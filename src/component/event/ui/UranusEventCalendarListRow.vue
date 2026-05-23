@@ -462,7 +462,7 @@ const loadEvent = async () => {
 
 .row-description {
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .row-links {
