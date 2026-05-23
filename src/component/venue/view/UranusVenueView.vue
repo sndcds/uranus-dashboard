@@ -6,18 +6,27 @@
 -->
 
 <template>
+
   <div v-if="showLoading" class="uranus-public-event-state-info--loading">
     <span>{{ loadingLabel }}</span>
   </div>
 
   <div v-else-if="loadError !== null" class="uranus-public-event-state-info">
-    <h1 style="font-size:8rem;">404</h1>
+    <!-- TODO: UI/UX message about error for user -->
+    <h1 style="font-size:8rem;">Error</h1>
     <span>{{ loadError }}</span>
   </div>
 
   <div v-else-if="venue" class="uranus-public-event-frame">
+
     <div class="uranus-public-event-detail-layout">
+
       <section class="uranus-public-event-main-layout">
+        <UranusImage
+            class="xxx"
+            :url="venue.mainPhotoUrl!"
+        />
+
         <div class="uranus-public-event-section">
           <h1>{{ venue.name }}</h1>
           <h2 v-if="venueTypeLabel">{{ venueTypeLabel }}</h2>
@@ -176,13 +185,14 @@ import { useI18n } from 'vue-i18n'
 import { marked } from 'marked'
 import { Globe, Mail, Map, Phone } from 'lucide-vue-next'
 import { ApiError, apiFetch } from '@/api.ts'
+import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import { useVenueTypeLookupStore } from '@/store/venueTypesLookupStore.ts'
+import { useSpaceTypeLookupStore } from '@/store/spaceTypesLookupStore.ts'
 import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
-import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
-import { useVenueTypeLookupStore } from '@/store/venueTypesLookupStore.ts'
-import { useSpaceTypeLookupStore } from '@/store/spaceTypesLookupStore.ts'
+import UranusImage from '@/component/image/UranusImage.vue'
 
 type VenueDetailOrganization = {
   uuid: string | null
@@ -224,6 +234,8 @@ type VenueDetail = {
   description: string | null
   lon: number | null
   lat: number | null
+  mainPhotoUuid: string | null
+  mainPhotoUrl: string | null
   organization: VenueDetailOrganization | null
   spaces: VenueDetailSpace[]
 }
@@ -336,6 +348,8 @@ function mapVenueDetail(raw: any): VenueDetail | null {
     description: raw.description ?? null,
     lon: normalizeNumber(raw.lon),
     lat: normalizeNumber(raw.lat),
+    mainPhotoUuid: raw.main_photo_uuid,
+    mainPhotoUrl: raw.main_photo_url,
     organization: mapOrganization(raw.organization),
     spaces: Array.isArray(raw.spaces) ? raw.spaces.map(mapSpace).filter(Boolean) : [],
   }
@@ -480,5 +494,9 @@ onMounted(() => void loadVenue())
 
 .uranus-public-venue-calendar {
   margin-top: 32px;
+}
+
+.xxx {
+  width: 100%;
 }
 </style>

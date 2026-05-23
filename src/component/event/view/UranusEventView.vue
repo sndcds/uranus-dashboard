@@ -18,7 +18,8 @@
     <span>{{ loadingLabel }}</span>
   </div>
   <div v-else-if="loadError !== null" class="uranus-public-event-state-info">
-    <h1 style="font-size:8rem;">404</h1>
+    <!-- TODO: UI/UX message about error for user -->
+    <h1 style="font-size:8rem;">Error</h1>
     <span>{{ loadError }}</span>
   </div>
   <div v-else-if="event" class="uranus-public-event-frame">
