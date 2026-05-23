@@ -760,6 +760,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Destinations',
         da: 'Destinationer',
     },
+    address: {
+        de: 'Adresse',
+        en: 'Address',
+        da: 'Adresse',
+    }
 }
 
 export default uranusI18nStandardTranslations
