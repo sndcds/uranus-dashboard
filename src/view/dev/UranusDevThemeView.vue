@@ -213,10 +213,10 @@
     </section>
 
     <section>
-      <UranusFeedback :show="true" type="notice"><h1>Notice</h1>A notice text info box</UranusFeedback>
-      <UranusFeedback :show="true" type="success"><h1>Success</h1>A success text info box</UranusFeedback>
-      <UranusFeedback :show="true" type="warning"><h1>Warning</h1>A warning text info box</UranusFeedback>
-      <UranusFeedback :show="true" type="error"><h1>Error</h1>A error text info box</UranusFeedback>
+      <UranusFeedback v-if="true" type="notice"><h1>Notice</h1>A notice text info box</UranusFeedback>
+      <UranusFeedback v-if="true" type="success"><h1>Success</h1>A success text info box</UranusFeedback>
+      <UranusFeedback v-if="true" type="warning"><h1>Warning</h1>A warning text info box</UranusFeedback>
+      <UranusFeedback v-if="true" type="error"><h1>Error</h1>A error text info box</UranusFeedback>
     </section>
 
     <section>

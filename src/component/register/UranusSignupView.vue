@@ -40,7 +40,7 @@
 
         <p>{{ t('password_rules') }}</p>
 
-        <UranusFeedback :show="!!error" type="error">
+        <UranusFeedback v-if="!!error" type="error">
           {{ error }}
         </UranusFeedback>
 

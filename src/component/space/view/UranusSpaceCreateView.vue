@@ -17,7 +17,7 @@
           required
       />
 
-      <UranusFeedback type="error" :show="i18nErrorKey != null">
+      <UranusFeedback v-if="i18nErrorKey != null" type="error">
         {{ t(`${i18nErrorKey}`) }}
       </UranusFeedback>
 

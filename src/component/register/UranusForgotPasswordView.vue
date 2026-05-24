@@ -15,11 +15,11 @@
             :error="displayError('email') ?? ''"
             @input="handleInput" />
 
-        <UranusFeedback :show="!!error" type="error">
+        <UranusFeedback v-if="!!error" type="error">
           {{ error }}
         </UranusFeedback>
 
-        <UranusFeedback :show="!!success" type="success">
+        <UranusFeedback v-if="!!success" type="success">
           {{ success }}
         </UranusFeedback>
 

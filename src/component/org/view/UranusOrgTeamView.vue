@@ -5,11 +5,12 @@
         :subtitle="t('org_manage_team_description')"
     />
 
-    <!-- Todo: UranusFeedback -->
-    <p v-if="error">{{ error }}</p>
+    <UranusFeedback v-if="!!errorMessage" type="error">
+      {{ errorMessage }}
+    </UranusFeedback>
 
     <div>
-      <UranusButton :to="`/admin/org/${orgUuid}/invite-team-member`">
+      <UranusButton v-if="!errorMessage" :to="`/admin/org/${orgUuid}/invite-team-member`">
         {{ t('invite_team_member') }}
       </UranusButton>
     </div>
@@ -27,16 +28,18 @@
         <div class="team-member-content">
           <h2>{{ member.display_name || member.email }}</h2>
           <p>{{ member.email }}</p>
-          <div>
+          <div v-if="canManagePermissions">
             <UranusIconAction
                 :icon="Edit" :title="t('edit')"
                 :to="`/admin/org/${orgUuid}/member/${member.user_uuid}/permissions`"
+                style="padding: 0.5rem;"
             />
 
             <UranusIconAction
                 :icon="Trash2"
                 :title="t('delete')"
                 :onClick="() => onRemoveMember"
+                style="padding: 0.5rem;"
             />
           </div>
         </div>
@@ -73,9 +76,10 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
-import {Edit, Trash2} from "lucide-vue-next";
-import UranusIconAction from "@/component/ui/UranusIconAction.vue";
-import UranusButton from "@/component/ui/UranusButton.vue";
+import { Edit, Trash2 } from 'lucide-vue-next'
+import UranusIconAction from '@/component/ui/UranusIconAction.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -83,23 +87,27 @@ const route = useRoute()
 const orgUuid = computed(() => route.params.orgUuid as string)
 
 const isLoading = ref(true)
-const error = ref<string | null>(null)
+const errorMessage = ref<string | null>(null)
 const members = ref<any[]>([])
 const invitations = ref<any[]>([])
+const canManagePermissions = ref<boolean>(false)
+
 
 const loadTeam = async () => {
   if (!orgUuid.value) {
-    error.value = t('org_team_load_error')
+    errorMessage.value = t('org_team_load_error')
     isLoading.value = false
     return
   }
 
   isLoading.value = true
-  error.value = null
+  errorMessage.value = null
 
   try {
     const apiPath = `/api/admin/org/${orgUuid.value}/team?lang=${locale.value}`
     const apiResponse = await apiFetch<any>(apiPath)
+
+    canManagePermissions.value = apiResponse.data?.can_manage_permissions ?? false;
 
     members.value = Array.isArray(apiResponse.data?.members)
         ? apiResponse.data.members
@@ -108,9 +116,8 @@ const loadTeam = async () => {
     invitations.value = Array.isArray(apiResponse.data?.invitations)
         ? apiResponse.data.invitations
         : []
-
   } catch (err) {
-    error.value =
+    errorMessage.value =
         err instanceof Error ? err.message : t('org_team_load_error')
   } finally {
     isLoading.value = false

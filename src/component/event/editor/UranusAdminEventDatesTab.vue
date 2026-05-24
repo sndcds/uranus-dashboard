@@ -12,7 +12,7 @@
       </UranusInfoHeading>
     </UranusCard>
 
-    <UranusFeedback :show="!!store.error" type="error">
+    <UranusFeedback v-if="!!store.error" type="error">
       {{ store.error }}
     </UranusFeedback>
 

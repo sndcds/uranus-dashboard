@@ -139,9 +139,6 @@ async function onSave(payload: any, file: File | null) {
 
   } catch (err) {
     if (err instanceof ApiError) {
-      console.warn('API error:', err.status, err.message)
-
-      // example UX handling
       if (err.status === 413) {
         errorMessage.value = 'File too large'
       } else if (err.status === 401) {
@@ -149,11 +146,8 @@ async function onSave(payload: any, file: File | null) {
       } else {
         errorMessage.value = err.message
       }
-
       return
     }
-
-    console.error('Unexpected error:', err)
   }
 }
 

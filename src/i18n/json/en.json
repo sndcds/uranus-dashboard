@@ -330,6 +330,7 @@
   "partner_request_title": "Partner request",
   "partner_request_intro": "Here you can send a partner request to an organization. The organization can accept the request and grant you specific permissions.",
   "search_partner_organization": "Search partner organization",
+  "search_partner_organization_tip": "Enter the beginning of the name or the character * followed by part of the name you are searching for.",
   "send_partner_request": "Send request",
   "message_to_partner": "Message to partner",
   "partner_request_success": "The partner request has been sent successfully.",

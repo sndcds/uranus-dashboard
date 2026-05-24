@@ -20,7 +20,7 @@
           v-model="userEmailAddress"
       />
 
-      <UranusFeedback :show="!!error" type="error">
+      <UranusFeedback v-if="!!error" type="error">
         {{ error }}
       </UranusFeedback>
 

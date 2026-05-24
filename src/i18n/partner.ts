@@ -55,6 +55,11 @@ export const uranusI18nPartnerTranslations: Record<string, Record<UranusLocaleKe
         en: 'Search partner organization',
         da: 'Søg partnerorganisation',
     },
+    search_partner_organization_tip: {
+        de: 'Gebe hier den Anfang des Namens an oder das Zeichen * und einen Teil des Namens den du suchst.',
+        en: 'Enter the beginning of the name or the character * followed by part of the name you are searching for.',
+        da: 'Angiv begyndelsen af navnet eller tegnet * efterfulgt af en del af navnet du søger efter.',
+    },
     send_partner_request: {
         de: 'Sende Anfrage',
         en: 'Send request',

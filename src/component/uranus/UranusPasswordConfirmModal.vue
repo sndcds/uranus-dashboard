@@ -3,7 +3,7 @@
     <UranusForm :id="formId" @submit.prevent="handleSubmit">
       <span class="form-label">{{ question }}</span>
 
-      <UranusFeedback :show="!!props.error" type="error">
+      <UranusFeedback v-if="!!props.error" type="error">
         {{ props.error }}
       </UranusFeedback>
 

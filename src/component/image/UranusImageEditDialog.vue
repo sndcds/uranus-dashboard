@@ -84,7 +84,7 @@
     </UranusForm>
 
     <template #actions>
-      <UranusFeedback :show="!!errorMessage" type="error">
+      <UranusFeedback v-if="!!errorMessage" type="error">
         {{ errorMessage }}
       </UranusFeedback>
 

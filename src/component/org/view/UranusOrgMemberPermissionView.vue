@@ -8,30 +8,17 @@
   <div class="uranus-main-layout member-permission-view">
     <UranusDashboardHero :title="t('permissions')" :subtitle="pageSubtitle" />
 
-    <transition name="fade">
-      <p v-if="updateError" class="feedback feedback--error" role="alert">
-        {{ updateError }}
-      </p>
-    </transition>
+    <UranusFeedback v-if="!!errorMessage" type="error">
+      {{ errorMessage }}
+    </UranusFeedback>
 
-    <div v-if="isLoading" class="member-permission__state">
-      {{ t('user_permissions_loading') }}
-    </div>
-
-    <div v-else-if="error" class="member-permission__state member-permission__state--error" role="alert">
-      {{ error }}
-    </div>
-
-    <div v-else-if="!permissionGroups.length" class="member-permission__state">
-      {{ t('user_permissions_invalid_response') }}
-    </div>
-
-    <div v-else class="member-permission__groups">
+    <div v-if="!errorMessage" class="member-permission__groups">
       <div v-for="group in sortedPermissionGroups" :key="group.type" class="member-permission__group">
         <UranusCard class="member-permission__card">
           <h2>{{ group.label }}</h2>
           <UranusCheckbox
-              v-for="entry in group.entries" :key="entry.label"
+              v-for="entry in group.entries.filter(e => canTogglePermission(e.bit))"
+              :key="entry.label"
               :id="`perm-${group.type}-${entry.bit}`"
               :label="entry.label"
               :model-value="isBitEnabled(entry.bit)"
@@ -55,6 +42,8 @@ import { uranusReplaceInTemplate } from '@/util/string.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusCheckbox from "@/component/ui/UranusCheckbox.vue";
+import {useUserStore} from "@/store/userStore.ts";
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 interface PermissionBitEntry {
   bit: number
@@ -70,8 +59,10 @@ interface PermissionGroup {
 
 type PermissionListResponse = Record<string, PermissionBitEntry[] | null | undefined>
 
+
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
+const userStore = useUserStore()
 
 const orgUuid = computed(() => {
   return route.params.uuid
@@ -80,6 +71,17 @@ const orgUuid = computed(() => {
 const memberUuid = computed(() => {
   return route.params.memberUuid
 })
+
+
+function canTogglePermission(bit: number): boolean {
+  const protectedBits = [
+      5, // UserPermBitManagePermissions according to Go Implementation
+      6, // UserPermBitManageTeam according to Go Implementation
+  ];
+
+  if (userStore.userUuid == memberUuid.value) return !protectedBits.includes(bit);
+  return true
+}
 
 const pageSubtitle = computed(() => uranusReplaceInTemplate(t('user_permissions_subtitle'), {
   name: memberDisplayName.value ?? t('user_unknown'),
@@ -97,14 +99,13 @@ const entityTypeLabels = computed<Record<string, string>>(() => ({
 }))
 
 const isLoading = ref(true)
-const error = ref<string | null>(null)
+const errorMessage = ref<string | null>(null)
 const permissionGroups = ref<PermissionGroup[]>([])
 const selectedBits = ref<string[]>([])
 const memberDisplayName = ref<string | null>(null)
 const orgName = ref<string | null>(null)
 const permissionMask = ref<bigint | null>(null)
 const isUpdatingBit = ref<number | null>(null)
-const updateError = ref<string | null>(null)
 const canModifyPermissions = computed(() => memberUuid.value != null && orgUuid.value != null)
 
 const groupOrder: Record<string, number> = {
@@ -183,7 +184,7 @@ const loadOrg = async () => {
 
 const loadPermissions = async () => {
   isLoading.value = true
-  error.value = null
+  errorMessage.value = null
 
   try {
     const apiPath = `/api/admin/permissions/list${buildQuery()}`
@@ -215,10 +216,8 @@ const loadPermissions = async () => {
       .filter((group) => group.entries.length > 0)
 
     await loadUserPermissions()
-    updateError.value = null
   } catch (err) {
-    console.error('Failed to load permission list', err)
-    error.value = t('user_permissions_load_error')
+    errorMessage.value = t('user_permissions_load_error')
     permissionGroups.value = []
     selectedBits.value = []
     permissionMask.value = null
@@ -249,14 +248,14 @@ const updatePermission = async (
   enabled: boolean,
 ) => {
   if (!memberUuid.value) {
-    updateError.value = t('user_permissions_load_error')
+    errorMessage.value = t('user_permissions_load_error')
     return
   }
 
   const previous = selectedBits.value.slice()
   applyBitSelection(bit, enabled)
   isUpdatingBit.value = bit
-  updateError.value = null
+  errorMessage.value = null
 
   try {
     await apiFetch(`/api/admin/org/${orgUuid.value}/member/${memberUuid.value}/permissions`, {
@@ -265,9 +264,8 @@ const updatePermission = async (
     })
     updateLocalMask(bit, enabled)
   } catch (err) {
-    console.error('Failed to update permission bit', err)
     selectedBits.value = previous
-    updateError.value =
+    errorMessage.value =
       err instanceof Error && err.message ? err.message : t('user_permissions_load_error')
   } finally {
     isUpdatingBit.value = null
@@ -286,6 +284,7 @@ const loadUserPermissions = async () => {
   try {
     const apiPath = `/api/admin/org/${orgUuid.value}/member/${memberUuid.value}/permissions`
     const apiResponse = await apiFetch<{
+      can_manage_permissions?: boolean | null;
       permissions?: string | null;
       user_display_name?: string;
       user_id?: number
@@ -303,7 +302,7 @@ const loadUserPermissions = async () => {
     permissionMask.value = mask
     selectedBits.value = computeSelectedBitsFromMask(mask)
   } catch (err) {
-    console.error('Failed to load user permissions mask', err)
+    errorMessage.value = t('user_permissions_load_error')
     permissionMask.value = null
   }
 }

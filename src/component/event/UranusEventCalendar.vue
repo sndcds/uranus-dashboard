@@ -31,6 +31,7 @@
           <!-- TODO: Implement view for this mode and show icon -->
           <!--UranusIconAction
               v-if="isDisplayModeAllowed('calendar')"
+              class="calendar-display-type-icon"
               :icon="CalendarDays"
               :selected="displayMode === 'calendar'"
               @click="setDisplayMode('calendar')"
@@ -584,7 +585,7 @@ onBeforeUnmount(() => {
 }
 
 .calendar-display-type-icon {
-  padding: 10px;
+  padding: 0.5rem;
 }
 
 .calendar-event-type-chips-container {

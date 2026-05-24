@@ -6,7 +6,7 @@
   <div class="venue-request-map">
     <div ref="mapContainer" class="venue-request-map__canvas"></div>
 
-    <UranusFeedback :show="!!errorMessage" type="error">
+    <UranusFeedback v-if="!!errorMessage" type="error">
       {{ errorMessage }}
     </UranusFeedback>
   </div>
