@@ -84,6 +84,10 @@
     </UranusForm>
 
     <template #actions>
+      <UranusFeedback :show="!!errorMessage" type="error">
+        {{ errorMessage }}
+      </UranusFeedback>
+
       <UranusFormActions>
         <UranusButton :onClick="onCancel">
           {{ t('cancel') }}
@@ -113,6 +117,7 @@ import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusModal from "@/component/uranus/UranusModal.vue";
 import UranusFormActions from "@/component/ui/UranusFormActions.vue";
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const props = defineProps<{
   addModeTitle?: string | null
@@ -121,6 +126,7 @@ const props = defineProps<{
   contextUuid: string
   identifier: string
   fitMode?: 'cover' | 'contain'
+  errorMessage?: string | null
 }>()
 
 
@@ -245,30 +251,30 @@ function onSave() {
 }
 
 onMounted(async () => {
-    try {
-      const apiResponse = await apiFetch<PlutoImageDTO>(apiPath.value)
-      if (!apiResponse.data) return
+  try {
+    const apiResponse = await apiFetch<PlutoImageDTO>(apiPath.value)
+    if (!apiResponse.data) return
 
-      const meta = apiResponse.data
+    const meta = apiResponse.data
 
-      localImageMeta.uuid = meta.uuid ?? null
-      localImageMeta.url = localImageMeta.uuid !== null
-          ? buildPlutoEditImageUrl(localImageMeta.uuid, 800)
-          : null
-      localImageMeta.altText = meta.alt_text ?? null
-      localImageMeta.description = meta.description ?? null
-      localImageMeta.copyright = meta.copyright ?? null
-      localImageMeta.creator = meta.creator ?? null
-      localImageMeta.licenseType = meta.license ?? null
-      localImageMeta.focusX = meta.focus_x ?? null
-      localImageMeta.focusY = meta.focus_y ?? null
-    } catch (err) {
-      console.log("onMounted error")
-      if (err instanceof ApiError && err.status === 404) {
-        clearLocalImageMeta()
-        return
-      }
+    localImageMeta.uuid = meta.uuid ?? null
+    localImageMeta.url = localImageMeta.uuid !== null
+        ? buildPlutoEditImageUrl(localImageMeta.uuid, 800)
+        : null
+    localImageMeta.altText = meta.alt_text ?? null
+    localImageMeta.description = meta.description ?? null
+    localImageMeta.copyright = meta.copyright ?? null
+    localImageMeta.creator = meta.creator ?? null
+    localImageMeta.licenseType = meta.license ?? null
+    localImageMeta.focusX = meta.focus_x ?? null
+    localImageMeta.focusY = meta.focus_y ?? null
+  } catch (err) {
+    console.log("onMounted error")
+    if (err instanceof ApiError && err.status === 404) {
+      clearLocalImageMeta()
+      return
     }
+  }
 })
 </script>
 

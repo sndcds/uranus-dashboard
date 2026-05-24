@@ -23,6 +23,8 @@
 }
 
 .uranus-public-event-info-card {
+  display: flex;
+  flex-direction: column;
   padding: 0.6rem;
   border-radius: 4px;
   border-bottom: 0 solid var(--uranus-color-6);

@@ -38,6 +38,7 @@
         :contextUuid="contextUuid"
         :identifier="identifier"
         :fitMode="fitMode"
+        :errorMessage="errorMessage"
         @close="dialogOpen = false"
         @save="onSave"
     />
@@ -69,6 +70,9 @@ const props = defineProps<{
 // State
 const dialogOpen = ref(false)
 const reloadCounter = ref(0)
+const isSaving = ref(false)
+const errorMessage = ref<string | null>(null)
+
 const image = ref<PlutoImage | null>(null)
 
 const imageUuid = computed(() =>
@@ -113,23 +117,44 @@ function openDialog() {
 }
 
 
-async function onSave(
-    payload: any,
-    file: File | null,
-) {
+import { ApiError } from '@/api.ts'
+
+async function onSave(payload: any, file: File | null) {
   const form = new FormData()
 
   if (file) form.append('file', file)
-
   form.append('payload', JSON.stringify(payload))
 
   const apiPath = `/api/admin/image/${props.context}/${props.contextUuid}/${props.identifier}`
-  await apiFetch(apiPath,{ method: 'POST', body: form })
 
-  dialogOpen.value = false
+  try {
+    await apiFetch(apiPath, {
+      method: 'POST',
+      body: form
+    })
 
-  await loadImage()
-  incReloadCounter()
+    dialogOpen.value = false
+    await loadImage()
+    incReloadCounter()
+
+  } catch (err) {
+    if (err instanceof ApiError) {
+      console.warn('API error:', err.status, err.message)
+
+      // example UX handling
+      if (err.status === 413) {
+        errorMessage.value = 'File too large'
+      } else if (err.status === 401) {
+        errorMessage.value = 'Not authorized'
+      } else {
+        errorMessage.value = err.message
+      }
+
+      return
+    }
+
+    console.error('Unexpected error:', err)
+  }
 }
 
 
