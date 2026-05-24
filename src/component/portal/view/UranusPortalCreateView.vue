@@ -15,7 +15,7 @@
           required
       />
 
-      <UranusFeedback type="error" :show="!!error">
+      <UranusFeedback v-if="!!error" type="error">
         {{ error }}
       </UranusFeedback>
 

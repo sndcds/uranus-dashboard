@@ -330,6 +330,7 @@
   "partner_request_title": "Partneranmodning",
   "partner_request_intro": "Her kan du sende en partneranmodning til en organisation. Organisationen kan acceptere anmodningen og give dig specifikke rettigheder.",
   "search_partner_organization": "Søg partnerorganisation",
+  "search_partner_organization_tip": "Angiv begyndelsen af navnet eller tegnet * efterfulgt af en del af navnet du søger efter.",
   "send_partner_request": "Send anmodning",
   "message_to_partner": "Besked til partner",
   "partner_request_success": "Partneranmodningen er blevet sendt.",

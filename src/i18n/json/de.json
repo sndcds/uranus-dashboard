@@ -330,6 +330,7 @@
   "partner_request_title": "Partner Anfrage",
   "partner_request_intro": "Hier kannst du einer Organisation eine Partneranfrage senden. Die Organisation kann die Anfrage annehmen und dir bestimmte Rechte geben.",
   "search_partner_organization": "Partner-Organisation suchen",
+  "search_partner_organization_tip": "Gebe hier den Anfang des Namens an oder das Zeichen * und einen Teil des Namens den du suchst.",
   "send_partner_request": "Sende Anfrage",
   "message_to_partner": "Nachricht an Partner",
   "partner_request_success": "Die Partneranfrage wurde erfolgreich gesendet.",

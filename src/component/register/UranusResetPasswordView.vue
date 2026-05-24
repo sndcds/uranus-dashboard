@@ -23,10 +23,10 @@
 
         <p>{{ t('password_rules') }}</p>
 
-        <UranusFeedback :show="!!displayError" type="error">
+        <UranusFeedback v-if="!!displayError" type="error">
           {{ displayError }}
         </UranusFeedback>
-        <UranusFeedback :show="!!success" type="success">
+        <UranusFeedback v-if="!!success" type="success">
           {{ success }}
         </UranusFeedback>
 

@@ -24,7 +24,7 @@
           </UranusButton>
         </div>
 
-        <UranusFeedback :show="!!error" type="error">
+        <UranusFeedback v-if="!!error" type="error">
           <h3>{{ t('error_notification') }}</h3>
           <p>{{ error }}</p>
         </UranusFeedback>
@@ -38,7 +38,7 @@
               @deleted="handlePortalDeleted"
           />
 
-          <UranusFeedback :show="portalList.portals.length === 0" type="notice">
+          <UranusFeedback v-if="portalList.portals.length === 0" type="notice">
             <p>{{ t('portals_empty') }}</p>
           </UranusFeedback>
         </div>

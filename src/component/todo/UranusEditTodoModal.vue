@@ -51,7 +51,7 @@
         />
       </UranusFormRow>
 
-      <UranusFeedback :show="!!error" type="error">
+      <UranusFeedback v-if="!!error" type="error">
         {{ t(error) }}
       </UranusFeedback>
 

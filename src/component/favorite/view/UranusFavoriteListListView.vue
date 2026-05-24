@@ -23,11 +23,11 @@
         </UranusButton>
       </div>
 
-      <UranusFeedback :show="isLoading" type="warning">
+      <UranusFeedback v-if="isLoading" type="warning">
         {{ t('loading') }}
       </UranusFeedback>
 
-      <UranusFeedback :show="!!error" type="error">
+      <UranusFeedback v-if="!!error" type="error">
         {{ error }}
       </UranusFeedback>
 

@@ -6,11 +6,11 @@
         :subtitle="favoriteListStore.draft?.name ?? ''"
     />
 
-    <UranusFeedback :show="favoriteListStore.loading" type="warning">
+    <UranusFeedback v-if="favoriteListStore.loading" type="warning">
       {{ t('loading') }}
     </UranusFeedback>
 
-    <UranusFeedback :show="!!favoriteListStore.error" type="error">
+    <UranusFeedback v-if="!!favoriteListStore.error" type="error">
       {{ favoriteListStore.error }}
     </UranusFeedback>
 
@@ -31,7 +31,7 @@
         </UranusLabel>
       </UranusFormRow>
 
-      <UranusFeedback :show="!!saveError" type="error">
+      <UranusFeedback v-if="!!saveError" type="error">
         {{ saveError }}
       </UranusFeedback>
 

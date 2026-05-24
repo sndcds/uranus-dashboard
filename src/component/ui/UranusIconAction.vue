@@ -112,7 +112,7 @@ const handleKeydown = (event: KeyboardEvent) => {
   border-color: transparent;
   transition: background 0.2s ease, color 0.2s ease;
   color: var(--uranus-card-color);
-  margin: 0.25rem 0 ;
+  margin: 0.25rem 0;
   &.clickable {
     cursor: pointer;
     &:hover {

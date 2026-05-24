@@ -25,7 +25,7 @@
           <router-link to="/app/forgot-password">{{ t('forgot_password') }}</router-link>
         </div>
 
-        <UranusFeedback :show="!!displayErrorFeedback" type="error">
+        <UranusFeedback v-if="!!displayErrorFeedback" type="error">
           {{ displayErrorFeedback }}
         </UranusFeedback>
 

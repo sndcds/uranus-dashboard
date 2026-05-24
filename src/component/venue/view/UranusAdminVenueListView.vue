@@ -32,7 +32,7 @@
           </UranusButton>
         </div>
 
-        <UranusFeedback :show="!!error" type="error">
+        <UranusFeedback v-if="!!error" type="error">
           <h3>{{  t('error_notification') }}</h3>
           <p>{{ t('error_missing_permissions') }}</p>
         </UranusFeedback>
