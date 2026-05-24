@@ -9,23 +9,26 @@
         <div class="calendar-display-options">
           <UranusIconAction
               v-if="isDisplayModeAllowed('cards')"
+              class="calendar-display-type-icon"
               :icon="LayoutGrid"
               :selected="displayMode === 'cards'"
               @click="setDisplayMode('cards')"
           />
           <UranusIconAction
               v-if="isDisplayModeAllowed('compact')"
+              class="calendar-display-type-icon"
               :icon="Grip"
               :selected="displayMode === 'compact'"
               @click="setDisplayMode('compact')"
           />
           <UranusIconAction
               v-if="isDisplayModeAllowed('list')"
+              class="calendar-display-type-icon"
               :icon="Rows3"
               :selected="displayMode === 'list'"
               @click="setDisplayMode('list')"
           />
-          <!-- TODO: Implement view for this mode an show icon -->
+          <!-- TODO: Implement view for this mode and show icon -->
           <!--UranusIconAction
               v-if="isDisplayModeAllowed('calendar')"
               :icon="CalendarDays"
@@ -34,6 +37,7 @@
           /-->
           <UranusIconAction
               v-if="isDisplayModeAllowed('map')"
+              class="calendar-display-type-icon"
               :icon="Map"
               :selected="displayMode === 'map'"
               @click="setDisplayMode('map')"
@@ -577,6 +581,10 @@ onBeforeUnmount(() => {
   padding-top: 10px;
   background: var(--uranus-dashboard-bg);
   flex-shrink: 0;
+}
+
+.calendar-display-type-icon {
+  padding: 10px;
 }
 
 .calendar-event-type-chips-container {
