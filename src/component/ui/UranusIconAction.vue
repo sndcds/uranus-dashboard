@@ -108,12 +108,11 @@ const handleKeydown = (event: KeyboardEvent) => {
   justify-content: flex-start;
   gap: 6px;
   width: auto;
-  height: 36px;
+  height: auto;
   border-color: transparent;
   transition: background 0.2s ease, color 0.2s ease;
   color: var(--uranus-card-color);
-  padding: 0.5rem;
-  border-radius: 4px;
+  margin: 0.25rem 0 ;
   &.clickable {
     cursor: pointer;
     &:hover {

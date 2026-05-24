@@ -6,8 +6,9 @@
   <LibreMap
       class="map-container"
       :id="props.id"
+      :key="`${props.lat}-${props.lon}-${zoom}`"
       :layers="mapLayers"
-      :center="[lon, lat]"
+      :center="[props.lon, props.lat]"
       :zoom="zoom"
   />
 </template>

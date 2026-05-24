@@ -110,9 +110,17 @@ function getTypeGenreLabel(pair: EventTypePairModel) {
   if (!typeObj) return ''
 
   const genreId = pair.genreId
-  if (genreId == null || !typeObj.genres) return typeObj.name
 
-  return `${typeObj.name} / ${typeObj.genres[genreId] ?? ''}`
+  const genreLabel =
+      genreId != null && typeObj.genres
+          ? typeObj.genres[genreId]
+          : null
+
+  if (genreLabel) {
+    return `${typeObj.name} / ${genreLabel}`
+  }
+
+  return typeObj.name
 }
 </script>
 
