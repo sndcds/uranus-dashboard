@@ -133,35 +133,8 @@
 
           <UranusEventOrgDisplay :event="event" class="uranus-public-event-info-card" />
 
-          <div style="display: flex; flex-direction: column;" class="uranus-public-event-info-card">
-            <!-- Date & Time -->
-
-            <UranusIconAction
-                v-if="eventDate?.eventUuid"
-                :label="t('download_ics')"
-                :icon="CalendarArrowDown"
-                @click="onDownloadIcs"
-                style="padding-left: 0;"
-            />
-            <UranusIconAction
-                v-if="eventDate?.eventUuid"
-                :label="t('copy_link')"
-                :icon="CopySlash"
-                @click="onCopyLink"
-                style="padding-left: 0;"
-            />
-            <UranusIconAction
-                :to="{ hash: '#event-map' }"
-                :label="t('scroll_to_map')"
-                :icon="Map"
-                style="padding-left: 0;"
-            />
-            <UranusFavoriteListEventAction
-                :event-uuid="event.uuid"
-                :event-date-uuid="eventDate?.uuid ?? null"
-            />
-          </div>
-
+          <!-- Venue, Space, Location -->
+          <UranusEventVenueDisplay :event="event" :eventDate="eventDate" />
 
           <!-- Online Event -->
           <div v-if="event.onlineLink" class="uranus-public-event-info-card">
@@ -205,8 +178,6 @@
             </template>
           </div>
 
-          <!-- Venue, Space, Location -->
-          <UranusEventVenueDisplay :event="event" :eventDate="eventDate" />
 
           <div v-if="priceText || priceTypeLabel" class="uranus-public-event-info-card">
             <p class="uranus-public-event-info-label">{{ t('event_price') }}</p>
@@ -246,7 +217,34 @@
               class="uranus-public-event-info-card"
           />
 
-          <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-info-card uranus-public-event-tight-section">
+          <div class="uranus-public-event-info-card icon-actions">
+            <UranusIconAction
+                v-if="eventDate?.eventUuid"
+                :label="t('download_ics')"
+                :icon="CalendarArrowDown"
+                @click="onDownloadIcs"
+            />
+            <UranusIconAction
+                v-if="eventDate?.eventUuid"
+                :label="t('copy_link')"
+                :icon="CopySlash"
+                @click="onCopyLink"
+            />
+            <UranusIconAction
+                :to="{ hash: '#event-map' }"
+                :label="t('scroll_to_map')"
+                :icon="Map"
+            />
+            <UranusFavoriteListEventAction
+                :event-uuid="event.uuid"
+                :event-date-uuid="eventDate?.uuid ?? null"
+            />
+          </div>
+
+          <div
+              v-if="selectedAccessibilityLabels.length"
+              class="uranus-public-event-info-card uranus-public-event-tight-section"
+          >
             <UranusIconAction :icon="Accessibility" :label="t('accessibility')" style="padding-left: 0;" />
             <p v-for="label in selectedAccessibilityLabels" :key="label">
               {{ label }}
@@ -254,17 +252,18 @@
           </div>
 
         </div>
-      </aside>
 
-      <div style="width: 100%; height: 400px; border-radius: 7px;overflow: clip">
-        <UranusSinglePointMap
-            v-if="eventDate && eventDate.venueLat && eventDate.venueLon"
-            id="event-map"
-            :lat="parseFloat(eventDate.venueLat)"
-            :lon="parseFloat(eventDate.venueLon)"
-            :name="'Name der Venue'"
-        />
-      </div>
+        <div style="width: 100%; height: 400px; border-radius: 7px;overflow: clip">
+          <UranusSinglePointMap
+              v-if="eventDate && eventDate.venueLat && eventDate.venueLon"
+              id="event-map"
+              :lat="parseFloat(eventDate.venueLat)"
+              :lon="parseFloat(eventDate.venueLon)"
+              :name="'Name der Venue'"
+              style="max-height: 300px; margin-top: 1rem;"
+          />
+        </div>
+      </aside>
     </div>
   </div>
 </template>
@@ -275,7 +274,6 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, ApiError } from '@/api.ts'
 import { marked } from 'marked'
-import { useAppStore } from '@/store/appStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 import { type PublicEvent, mapPublicEventFromDTO } from '@/domain/event/publicEvent.model.ts'
@@ -315,8 +313,6 @@ const loadingLabel = computed(() => t('loading'))
 const loadError = ref<string | null>(null)
 const isDownloadingIcs = ref(false)
 const isPreview = computed(() => route.params.mode === 'preview')
-
-const appStore = useAppStore()
 
 // Watch for changes in route params
 watch(
@@ -555,3 +551,16 @@ const onCopyLink = async () => {
 }
 onMounted(() => void loadEvent())
 </script>
+
+<style lang="scss" scoped>
+.icon-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  span, a {
+    padding: 0px;
+  }
+}
+
+</style>
