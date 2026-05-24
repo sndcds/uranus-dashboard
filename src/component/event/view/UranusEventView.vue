@@ -174,7 +174,7 @@
 
             <template v-if="event.registrationPhone">
               <p class="uranus-public-event-info-label">{{ t('event_registration_deadline') }}</p>
-              {{ event.registrationDeadline }}<br>
+              {{ formatDate(event.registrationDeadline, locale) }}<br>
             </template>
           </div>
 
@@ -293,6 +293,7 @@ import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash, Video, Link, Mail } from 'lucide-vue-next'
+import {formatDate} from "@/util/datetime.ts";
 
 const route = useRoute()
 

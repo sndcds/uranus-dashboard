@@ -2,10 +2,11 @@ type DateFormatMode = 'long' | 'short'
 
 // Format date using Intl API
 export function formatDate(
-    date: string,
+    date: string | null,
     locale: string,
     mode: DateFormatMode = 'short'
 ) {
+    if (!date) return ''
     const options: Intl.DateTimeFormatOptions =
         mode === 'long'
             ? { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
