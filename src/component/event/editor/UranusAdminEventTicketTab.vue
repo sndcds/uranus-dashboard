@@ -4,14 +4,50 @@
 
 <template>
   <section class="price-tab">
-    <UranusCard class="ticket-options">
+    <UranusCard class="price-type-card">
+
+    <UranusForm>
+      <h2>{{ t('event_price') }}</h2>
+      <UranusFormRow min-col-width="320px" :cols="3">
+        <UranusNumberInput
+            id="event-min-price"
+            :label="t('event_min_price')"
+            :min="0"
+            v-model="draftEvent.minPrice!"
+        />
+        <UranusNumberInput
+            id="event-max-price"
+            :label="t('event_max_price')"
+            :min="0"
+            v-model="draftEvent.maxPrice!"
+        />
+        <UranusLabel id="event-currency" :label="t('currency')">
+          <UranusCurrencySelect
+              v-model="draftEvent.currency"
+              :placeholder="t('select_currency')"
+          />
+        </UranusLabel>
+      </UranusFormRow>
+    </UranusForm>
+      </UranusCard>
+
+    <UranusCard class="price-type-card">
+      <h2>{{ t('event_price_type') }}</h2>
+      <UranusRadioButton
+          v-for="option in priceTypeOptions"
+          :key="option.value"
+          v-model="draftEvent.priceType!"
+          :value="option.value"
+          name="event-price-type"
+          style="margin-left: 0.4rem;"
+      >
+        {{ option.label }}
+      </UranusRadioButton>
+    </UranusCard>
+
+
+    <UranusCard class="ticket-options-card">
       <h2>{{ t('event_ticket_options') }}</h2>
-      <UranusCheckbox
-          v-model="draftTicketFlags"
-          value="advance_ticket"
-          id="event-advance-ticket"
-          :label="t('event_advance_ticket')"
-      />
       <UranusCheckbox
           v-model="draftTicketFlags"
           value="ticket_required"
@@ -20,9 +56,15 @@
       />
       <UranusCheckbox
           v-model="draftTicketFlags"
-          value="on_site_ticket_sales"
-          id="event-on-site-ticket-sales"
-          :label="t('event_on_site_ticket_sales')"
+          value="advance_ticket"
+          id="event-advance-ticket"
+          :label="t('event_advance_ticket')"
+      />
+      <UranusCheckbox
+          v-model="draftTicketFlags"
+          value="presale_fee_applies"
+          id="event-advance-ticket"
+          :label="t('event_presale_fee_applies')"
       />
       <UranusCheckbox
           v-model="draftTicketFlags"
@@ -32,56 +74,23 @@
       />
       <UranusCheckbox
           v-model="draftTicketFlags"
+          value="on_site_ticket_sales"
+          id="event-on-site-ticket-sales"
+          :label="t('event_on_site_ticket_sales')"
+      />
+      <UranusCheckbox
+          v-model="draftTicketFlags"
           value="reduced_price_available"
           id="event-reduced-price-available"
           :label="t('event_reduced_price_available')"
       />
+      <UranusInput
+          id="event-ticket-link"
+          :label="t('event_ticket_link')"
+          placeholder="https://"
+          v-model="draftEvent.ticketLink"
+      />
     </UranusCard>
-
-    <UranusForm>
-      <UranusFormRow>
-        <UranusInput
-            id="event-ticket-link"
-            :label="t('event_ticket_link')"
-            placeholder="https://"
-            v-model="draftEvent.ticketLink"
-        />
-      </UranusFormRow>
-
-      <UranusFormRow :cols="2" style="max-width: 600px;">
-        <UranusLabel id="event-currency" :label="t('currency')">
-          <UranusCurrencySelect v-model="draftEvent.currency" :placeholder="t('select_currency')" />
-        </UranusLabel>
-
-        <UranusLabel id="event-currency" :label="t('event_price_type')">
-          <select v-model="draftEvent.priceType">
-            <option value="not_specified">{{ t('event_price_not_specified') }}</option>
-            <option value="free">{{ t('event_price_free') }}</option>
-            <option value="donation">{{ t('event_price_donation') }}</option>
-            <option value="regular_price">{{ t('event_price_regular') }}</option>
-            <option value="tiered_prices">{{ t('event_price_tiered') }}</option>
-          </select>
-        </UranusLabel>
-
-      </UranusFormRow>
-
-      <UranusFormRow :cols="2" style="max-width: 600px;">
-        <UranusNumberInput
-            id="event-min-attendees"
-            :label="t('event_min_price')"
-            :min="0"
-            v-model="draftEvent.minPrice!"
-        />
-        <UranusNumberInput
-            id="event-max-attendees"
-            :label="t('event_max_price')"
-            :min="0"
-            v-model="draftEvent.maxPrice!"
-        />
-      </UranusFormRow>
-
-    </UranusForm>
-
 
     <div class="tab-actions">
       <UranusButton :disabled="store.saving || !isDirty" @click="resetTab">
@@ -120,9 +129,34 @@ import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusInput from '@/component/ui/UranusInput.vue'
 import { Save, Undo } from 'lucide-vue-next'
+import UranusRadioButton from "@/component/ui/UranusRadioButton.vue";
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+
+const priceTypeOptions = [
+  {
+    value: 'not_specified',
+    label: t('event_price_not_specified'),
+  },
+  {
+    value: 'free',
+    label: t('event_price_free'),
+  },
+  {
+    value: 'donation',
+    label: t('event_price_donation'),
+  },
+  {
+    value: 'regular_price',
+    label: t('event_price_regular'),
+  },
+  {
+    value: 'tiered_prices',
+    label: t('event_price_tiered'),
+  },
+]
+
 const emit = defineEmits<{
   (event: 'dirty-change', value: boolean): void
 }>()
@@ -135,11 +169,19 @@ const draftTicketFlags = computed({
   },
 })
 
-const isDirty = computed(() => { return !store.isTicketTabEqual() })
+const isDirty = computed(() => {
+  if (draftEvent.value.ticketLink != null) {
+    if (draftEvent.value.ticketLink.trim().length < 1)
+      draftEvent.value.ticketLink = null
+  }
+  return !store.isTicketTabEqual()
+})
 
 watch(isDirty, (value) => {
   emit('dirty-change', value)
 }, { immediate: true })
+
+const normalize = (v?: string | null) => typeof v === 'string' ? v.trim() : v
 
 function buildPayload(
     draft: AdminEvent,
@@ -147,12 +189,16 @@ function buildPayload(
 ) {
   const payload: Record<string, any> = {}
 
+  const draftTicketLink = normalize(draft.ticketLink)
+  const originalTicketLink = normalize(original.ticketLink)
+
   if (draft.priceType !== original.priceType) { payload.price_type = draft.priceType }
   if (draft.minPrice !== original.minPrice) { payload.min_price = draft.minPrice }
   if (draft.maxPrice !== original.maxPrice) { payload.max_price = draft.maxPrice }
   if (draft.currency !== original.currency) { payload.currency = draft.currency }
   if (!equalStringArrays(draft.ticketFlags, original.ticketFlags)) { payload.ticket_flags = draft.ticketFlags }
-  if (draft.ticketLink !== original.ticketLink) { payload.ticket_link = draft.ticketLink }
+  if (draftTicketLink !== originalTicketLink) { payload.ticket_link = draftTicketLink }
+
   return payload
 }
 
@@ -250,8 +296,29 @@ defineExpose({
   }
 }
 
-.ticket-options {
+.price-type-card {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  h2 {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.ticket-options-card {
+  display: flex;
+  gap: 0.1rem;
+  h2 {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.cols-3-responsive {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .cols-3-responsive {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 </style>
