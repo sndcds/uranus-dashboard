@@ -172,7 +172,7 @@
               {{ event.registrationPhone }}<br>
             </template>
 
-            <template v-if="event.registrationPhone">
+            <template v-if="event.registrationDeadline">
               <p class="uranus-public-event-info-label">{{ t('event_registration_deadline') }}</p>
               {{ formatDate(event.registrationDeadline, locale) }}<br>
             </template>
@@ -459,8 +459,6 @@ const loadEvent = async () => {
       return
     }
 
-    console.log('apiPath', apiPath)
-
     const apiResponse = await apiFetch<PublicEventDTO>(apiPath)
     if (apiResponse.data) {
       const mappedEvent: PublicEvent | null = mapPublicEventFromDTO(apiResponse.data, eventDateUuid)
@@ -470,7 +468,6 @@ const loadEvent = async () => {
       }
       event.value = mappedEvent
       eventDate.value = mappedEvent.date
-      console.log(mappedEvent)
     }
   } catch (error: unknown) {
     if (error instanceof ApiError) {
@@ -479,7 +476,6 @@ const loadEvent = async () => {
       } else {
         loadError.value = error.message // : t('error_fetch_data_failed')
       }
-      console.log('ApiError', JSON.stringify(error, null, 2))
     }
   } finally {
     isLoading.value = false
@@ -518,7 +514,7 @@ const onDownloadIcs = async () => {
     document.body.removeChild(link)
     URL.revokeObjectURL(blobUrl)
   } catch (error) {
-    console.error('Failed to download ICS file', error)
+    // console.error('Failed to download ICS file', error)
   } finally {
     isDownloadingIcs.value = false
   }
@@ -547,7 +543,7 @@ const onCopyLink = async () => {
       copied.value = false
     }, 2000)
   } catch (err) {
-    console.error('Copy failed', err)
+    // console.error('Copy failed', err)
   }
 }
 onMounted(() => void loadEvent())
