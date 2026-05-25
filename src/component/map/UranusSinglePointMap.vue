@@ -10,6 +10,7 @@
       :layers="mapLayers"
       :center="[props.lon, props.lat]"
       :zoom="zoom"
+      :enablePopups="false"
   />
 </template>
 
