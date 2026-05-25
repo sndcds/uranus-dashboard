@@ -15,8 +15,7 @@ import { useThemeStore } from '@/store/themeStore.ts'
 
 const themeStore = useThemeStore()
 
-// Props
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   layers: Record<
       string,
       {
@@ -34,7 +33,10 @@ const props = defineProps<{
   >
   center?: LngLatLike
   zoom?: number
-}>()
+  enablePopups?: boolean
+}>(), {
+  enablePopups: true
+})
 
 const emit = defineEmits<{
   (e: 'mapLoaded', map: maplibregl.Map): void
@@ -142,15 +144,18 @@ const addClusteredLayer = (map: maplibregl.Map, layerName: string, layerData: an
 
   // Zoom on cluster click
   map.on('click', `${layerName}-clusters`, (e) => {
+    if (!props.enablePopups) return
     const features = map.queryRenderedFeatures(e.point, { layers: [`${layerName}-clusters`] })
     if (!features.length) return
 
     const cluster = features[0]
     if (!cluster) return
-    const coordinates: [number, number] =
-        cluster.geometry?.type === 'Point' && Array.isArray(cluster.geometry.coordinates)
-            ? [cluster.geometry.coordinates[0], cluster.geometry.coordinates[1]]
-            : [e.lngLat.lng, e.lngLat.lat]
+
+    const point = cluster.geometry as GeoJSON.Point
+    const coordinates: [number, number] = [
+      point.coordinates[0]!,
+      point.coordinates[1]!,
+    ]
 
     const currentZoom = map.getZoom()
     map.easeTo({ center: coordinates, zoom: Math.min(currentZoom + 2, 18), duration: 600 })
@@ -226,14 +231,16 @@ const addUnclusteredLayer = (map: maplibregl.Map, layerName: string, layerData: 
 
   // Popups
   map.on('click', `${layerName}-unclustered`, (e) => {
+    if (!props.enablePopups) return
     if (!e.features?.length) return
     const feature = e.features[0]
     if (!feature) return
 
-    const coords: [number, number] =
-        feature.geometry?.type === 'Point' && Array.isArray(feature.geometry.coordinates)
-            ? [feature.geometry.coordinates[0], feature.geometry.coordinates[1]]
-            : [e.lngLat.lng, e.lngLat.lat]
+    const point = feature.geometry as GeoJSON.Point
+    const coordinates: [number, number] = [
+      point.coordinates[0]!,
+      point.coordinates[1]!,
+    ]
 
     if (currentPopup) currentPopup.remove()
 
@@ -255,7 +262,7 @@ const addUnclusteredLayer = (map: maplibregl.Map, layerName: string, layerData: 
     `
 
     currentPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false })
-        .setLngLat(coords)
+        .setLngLat(coordinates)
         .setHTML(html)
         .addTo(map)
     attachPopupInteractions(currentPopup)
