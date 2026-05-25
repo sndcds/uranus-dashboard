@@ -10,7 +10,9 @@
     />
 
     <UranusCard>
-      <UranusFeedback :message="loadError" type="error" />
+      <UranusFeedback v-if="!!loadError" type="error">
+        {{ loadError }}
+      </UranusFeedback>
 
       <UranusForm @submit.prevent="submitProfile">
         <UserAvatarUpload
@@ -91,8 +93,13 @@
           </UranusFormRow>
         </div>
 
-        <UranusFeedback :message="submitError" type="error" />
-        <UranusFeedback :message="submitSuccess" type="success" />
+        <UranusFeedback v-if="!!submitError" type="error">
+          {{ submitError }}
+        </UranusFeedback>
+
+        <UranusFeedback v-if="!!submitSuccess" type="success">
+          {{ submitSuccess }}
+        </UranusFeedback>
 
         <div class="uranus-form-action-bar">
           <UranusButton type="submit" :disabled="isDirty">
