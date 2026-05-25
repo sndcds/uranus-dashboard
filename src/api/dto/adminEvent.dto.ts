@@ -55,4 +55,6 @@ export interface AdminEventDTO {
     languages?: string[]
     dates?: AdminEventDateDTO[] | null
     event_links: { label: string | null; type: string | null; url: string | null }[] | null
+
+    can_release?: boolean | null
 }

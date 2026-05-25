@@ -40,23 +40,19 @@
 
       <UranusCard>
         <h2>{{ t('description') }}</h2>
-        <UranusLabel id="event-description">
-          <UranusTextEditor
-              v-model="descriptionProxy"
-              ref="descriptionEditor"
-          />
-        </UranusLabel>
+        <UranusTextEditor
+            v-model="descriptionProxy"
+            ref="descriptionEditor"
+        />
       </UranusCard>
 
       <UranusCard>
         <h2>{{ t('summary') }}</h2>
         <span>Die Kurzbeschreibung wird nur in kompakten Ansichten angezeigt.</span>
-        <UranusLabel id="event-description">
-          <UranusTextEditor
-              v-model="summaryProxy"
-              ref="descriptionEditor"
-          />
-        </UranusLabel>
+        <UranusTextEditor
+            v-model="summaryProxy"
+            ref="descriptionEditor"
+        />
       </UranusCard>
 
       <div class="tab-actions">

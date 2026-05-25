@@ -230,11 +230,11 @@
                 :icon="CopySlash"
                 @click="onCopyLink"
             />
-            <UranusIconAction
+            <!--UranusIconAction
                 :to="{ hash: '#event-map' }"
                 :label="t('scroll_to_map')"
                 :icon="Map"
-            />
+            /-->
             <UranusFavoriteListEventAction
                 :event-uuid="event.uuid"
                 :event-date-uuid="eventDate?.uuid ?? null"

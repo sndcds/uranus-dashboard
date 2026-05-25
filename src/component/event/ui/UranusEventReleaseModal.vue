@@ -13,7 +13,7 @@
     <UranusForm>
       <UranusFormRow>
         <UranusLabel id="release-status" :label="t('event_release_status')">
-          <UranusEventReleaseStatusSelect v-model="localReleaseStatus" />
+          <UranusEventReleaseStatusSelect v-model="localReleaseStatus" render-as="buttons" />
         </UranusLabel>
       </UranusFormRow>
 

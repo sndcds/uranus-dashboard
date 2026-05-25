@@ -60,6 +60,7 @@ export function mapAdminEventFromDTO(dto: AdminEventDTO): AdminEvent {
         maxPrice: dto.max_price ?? null,
         ticketFlags: dto.ticket_flags ?? null,
         ticketLink: dto.ticket_link ?? null,
+        canRelease: dto.can_release ?? null,
     })
 }
 
