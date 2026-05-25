@@ -48,6 +48,12 @@
 
       <div class="date-pair" style="padding-top: 1.6rem;">
         <UranusCheckbox id="todo_completed" v-model="date.allDay" :label="t('event_all_day')" />
+        <UranusEventReleaseStatusSelect
+            v-model="date.releaseStatus"
+            renderAs="select"
+            mode="event_date_override"
+        />
+
       </div>
 
       <div class="date-actions">
@@ -103,6 +109,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Save, Undo, Plus, MapPin, Info } from 'lucide-vue-next'
+import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
@@ -115,9 +123,8 @@ import UranusTimeInput from '@/component/ui/UranusTimeInput.vue'
 import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
-import { Save, Undo, Plus, MapPin, Info } from 'lucide-vue-next'
-import { apiFetch } from '@/api.ts'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusEventReleaseStatusSelect from '@/component/event/ui/UranusEventReleaseStatusSelect.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
@@ -213,26 +220,24 @@ function removeDate(index: number) {
   store.removeEventDate(index)
 }
 
-function toSnakeCase(str: string) {
-  return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
-}
-
 async function commitDates() {
   if (!store.draft || !store.original) return
   store.saving = true
   store.error = null
 
   try {
-    const payload = store.draft.eventDates?.map(date => {
-      const result: Record<string, any> = {}
-      for (const key of Object.keys(date)) {
-        const value = (date as any)[key]
-        if (value !== null && value !== undefined) {
-          result[toSnakeCase(key)] = value
-        }
-      }
-      return result
-    }) ?? []
+    const payload = store.draft.eventDates?.map(date => ({
+      start_date: date.startDate,
+      start_time: date.startTime,
+      end_date: date.endDate,
+      end_time: date.endTime,
+      entry_time: date.entryTime,
+      duration: date.duration,
+      all_day: date.allDay,
+      venue_uuid: date.venueUuid,
+      space_uuid: date.spaceUuid,
+      release_status: date.releaseStatus ?? null,
+    })) ?? []
 
     await apiFetch(`/api/admin/event/${store.draft.uuid}/dates`, {
       method: 'PUT',

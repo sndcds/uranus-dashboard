@@ -23,73 +23,138 @@
       v-else
       class="uranus-event-release-buttons"
   >
-
     <template v-for="opt in options" :key="opt.key">
       <button
           type="button"
           class="uranus-event-release-button"
           :class="[
-            `uranus-event-release-${opt.key}`,
-            { active: selected === opt.key }
-          ]"
+          `uranus-event-release-${opt.key}`,
+          { active: selected === opt.key }
+        ]"
           @click="selected = opt.key"
       >
         {{ opt.name }}
       </button>
     </template>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n'
 
 const { locale } = useI18n({ useScope: 'global' })
 
 interface Props {
   modelValue?: string | null
   locale?: string
+  mode?: 'event' | 'event_date_override'
   renderAs?: 'select' | 'buttons'
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  renderAs: 'select'
+  renderAs: 'select',
+  mode: 'event_date_override',
 })
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: string): void
+  (e: 'update:modelValue', value: string | null): void
 }>()
-
-const selected = ref(props.modelValue ?? '')
 
 const store = useEventReleaseStatusStore()
 
-const options = ref<{ key: string; name: string }[]>([])
+/**
+ * Normalize input value:
+ * null/undefined => inherited
+ */
+const normalize = (val: string | null | undefined) =>
+    val ?? 'inherited'
 
-onMounted(() => {
-  updateOptions()
-})
+/**
+ * Selected state (internal UI value)
+ */
+const selected = ref<string>(normalize(props.modelValue))
 
-const updateOptions = () => {
-  options.value = store.options(locale.value)
-}
-
-watch(() => props.modelValue, (val) => {
-  selected.value = val ?? ''
-})
-
-watch(selected, (val) => {
-  emit("update:modelValue", val)
-})
-
-watch(() => props.locale, (val) => {
-  if (val) {
-    locale.value = val
-    updateOptions()
+/**
+ * Allowed keys based on mode
+ */
+const allowedKeys = computed(() => {
+  if (props.mode === 'event') {
+    return ['draft', 'review', 'released', 'cancelled', 'deferred', 'rescheduled']
   }
+
+  return ['inherited', 'cancelled', 'deferred', 'rescheduled']
 })
+
+/**
+ * Options (always derived from store + mode)
+ */
+const options = computed(() => {
+  const base = store.options(locale.value).filter(opt =>
+      allowedKeys.value.includes(opt.key)
+  )
+
+  // inject virtual "inherited" if needed
+  /*
+  if (allowedKeys.value.includes('inherited')) {
+    return [
+      { key: 'inherited', name: 'Inherited' },
+      ...base.filter(o => o.key !== 'inherited')
+    ]
+  }
+   */
+
+  return base
+})
+
+/**
+ * Keep selected in sync with incoming value
+ */
+watch(
+    () => props.modelValue,
+    (val) => {
+      selected.value = normalize(val)
+    },
+    { immediate: true }
+)
+
+/**
+ * Ensure selected is always valid when options change
+ */
+watch(
+    options,
+    (opts) => {
+      const keys = opts.map(o => o.key)
+
+      if (!keys.includes(selected.value)) {
+        selected.value = 'inherited'
+      }
+    },
+    { immediate: true }
+)
+
+/**
+ * Emit normalized value
+ */
+watch(selected, (val) => {
+  emit(
+      'update:modelValue',
+      val === 'inherited' ? null : val
+  )
+})
+
+/**
+ * External locale override support
+ */
+watch(
+    () => props.locale,
+    (val) => {
+      if (val) {
+        locale.value = val
+      }
+    }
+)
 </script>
 
 <style scoped>
