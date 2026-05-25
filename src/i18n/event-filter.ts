@@ -80,10 +80,15 @@ export const uranusI18nEventFilterTranslations: Record<string, Record<UranusLoca
         en: 'Reset filter',
         da: 'Nultil filter',
     },
-    calendar_filter_use_gps: {
-        de: 'Standort',
+    calendar_filter_location: {
+        de: 'Ort',
         en: 'Location',
-        da: 'Placering',
+        da: 'Sted',
+    },
+    calendar_filter_use_gps: {
+        de: 'Standort verwenden',
+        en: 'Use current location',
+        da: 'Brug nuværende placering',
     },
 }
 

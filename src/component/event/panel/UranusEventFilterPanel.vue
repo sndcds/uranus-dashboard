@@ -14,22 +14,31 @@
 <template>
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
-    <UranusFormRow :cols="1">
-      <UranusLabel id="date-range-mode" :label="t('calendar_filter_date_range')">
-        <select
-            id="date-range-mode"
-            v-model="dateRangeMode"
-            style="height: var(--uranus-input-height); width: 100%;"
-        >
-          <option value="all_events">{{ t('calendar_filter_date_all_events') }}</option>
-          <option value="today">{{ t('calendar_filter_date_today') }}</option>
-          <option value="tomorrow">{{ t('calendar_filter_date_tomorrow') }}</option>
-          <option value="weekend">{{ t('calendar_filter_date_weekend') }}</option>
-          <option value="next_week">{{ t('calendar_filter_date_next_week') }}</option>
-          <option value="custom">{{ t('calendar_filter_date_custom') }}</option>
-        </select>
-      </UranusLabel>
-    </UranusFormRow>
+    <div>
+      <UranusFormRow :cols="1">
+          <select
+              id="date-range-mode"
+              v-model="dateRangeMode"
+              style="height: var(--uranus-input-height); width: 100%;"
+          >
+            <option value="all_events">{{ t('calendar_filter_date_all_events') }}</option>
+            <option value="today">{{ t('calendar_filter_date_today') }}</option>
+            <option value="tomorrow">{{ t('calendar_filter_date_tomorrow') }}</option>
+            <option value="weekend">{{ t('calendar_filter_date_weekend') }}</option>
+            <option value="next_week">{{ t('calendar_filter_date_next_week') }}</option>
+            <option value="custom">{{ t('calendar_filter_date_custom') }}</option>
+          </select>
+      </UranusFormRow>
+
+      <UranusFormRow :cols="1">
+        <UranusTextfield
+            id="search-input"
+            v-model="filter.search!"
+            updateOn="enter"
+            :placeholder="t('calendar_filter_search_placeholder')"
+        />
+      </UranusFormRow>
+    </div>
 
     <UranusFormRow v-if="dateRangeMode === 'custom'" :cols="2">
         <UranusDateInput
@@ -49,17 +58,8 @@
     <div class="uranus-filter-accordions">
       <UranusEventCategorySelectorAccordion v-model="filter.categories" :multiple="true" />
 
-      <UranusAccordion v-model="searchOpen">
-        <template #title>{{ t('calendar_filter_search_label') }}</template>
-        <UranusFormRow :cols="1">
-          <UranusTextfield
-              id="search-input"
-              v-model="filter.search!"
-              updateOn="enter"
-              :label="t('calendar_filter_search_label')"
-              :placeholder="t('calendar_filter_search_placeholder')"
-          />
-        </UranusFormRow>
+      <UranusAccordion v-model="locationOpen">
+        <template #title>{{ t('calendar_filter_location') }}</template>
 
         <UranusFormRow :cols="1">
           <UranusTextfield
@@ -76,15 +76,11 @@
           </UranusLabel>
         </UranusFormRow>
 
-      </UranusAccordion>
-
-      <UranusAccordion v-model="locationOpen">
-        <template #title>{{ t('calendar_filter_use_gps') }}</template>
         <UranusFormRow :cols="1">
           <UranusCheckbox
               id="use-gps"
               v-model="filter.useCurrentLocation!"
-              label="Use GPS"
+              :label="t('calendar_filter_use_gps')"
           />
         </UranusFormRow>
 
