@@ -4,6 +4,7 @@
 
 <template>
   <div class="event-editor">
+
     <div class="event-editor-status-header">
       <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center;">
 

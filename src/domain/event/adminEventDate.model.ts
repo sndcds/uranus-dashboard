@@ -5,6 +5,7 @@
 export type AdminEventDate = {
     uuid: string
     eventUuid: string
+    releaseStatus: string | null
     startDate: string | null
     startTime: string | null
     endDate: string | null
@@ -23,6 +24,7 @@ export function createAdminEventDate(
     return {
         uuid: props.uuid ?? '',
         eventUuid: props.eventUuid ?? '',
+        releaseStatus: props.releaseStatus ?? null,
         startDate: props.startDate ?? null,
         startTime: props.startTime ?? null,
         endDate: props.endDate ?? null,

@@ -30,17 +30,7 @@
           </select>
       </UranusFormRow>
 
-      <UranusFormRow :cols="1">
-        <UranusTextfield
-            id="search-input"
-            v-model="filter.search!"
-            updateOn="enter"
-            :placeholder="t('calendar_filter_search_placeholder')"
-        />
-      </UranusFormRow>
-    </div>
-
-    <UranusFormRow v-if="dateRangeMode === 'custom'" :cols="2">
+      <UranusFormRow v-if="dateRangeMode === 'custom'" :cols="2">
         <UranusDateInput
             id="start-date"
             v-model="filter.startDate"
@@ -53,7 +43,17 @@
             :label="t('calendar_filter_end_date')"
             style="width: 100%;"
         />
-    </UranusFormRow>
+      </UranusFormRow>
+
+      <UranusFormRow :cols="1">
+        <UranusTextfield
+            id="search-input"
+            v-model="filter.search!"
+            updateOn="enter"
+            :placeholder="t('calendar_filter_search_placeholder')"
+        />
+      </UranusFormRow>
+    </div>
 
     <div class="uranus-filter-accordions">
       <UranusEventCategorySelectorAccordion v-model="filter.categories" :multiple="true" />

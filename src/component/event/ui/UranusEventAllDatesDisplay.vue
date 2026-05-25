@@ -14,9 +14,15 @@
         :to="`/event/${date.eventUuid}/date/${date.uuid}`"
         :class="{ 'is-current': date.uuid === currentDate?.uuid }"
     >
-      <p>
+      <div style="display: flex; gap: 0.4rem;">
         {{ formatDate(date.startDate ?? '', locale) }}<template v-if="date.venueCity">, {{ date.venueCity }}</template>
-      </p>
+
+        <UranusEventReleaseChip
+            v-if="['cancelled', 'deferred', 'rescheduled'].includes(date.releaseStatus ?? 'draft')"
+            :releaseStatus="date.releaseStatus"
+            :tiny="true"
+        />
+      </div>
     </router-link>
   </div>
 </template>
@@ -26,6 +32,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { formatDate } from '@/util/datetime.ts'
+import UranusEventReleaseChip from "@/component/event/ui/UranusEventReleaseChip.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })
 

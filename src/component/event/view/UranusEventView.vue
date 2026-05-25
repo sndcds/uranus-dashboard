@@ -51,9 +51,10 @@
           <h2 v-if="event.subtitle">
             {{ event.subtitle }}
           </h2>
+
           <UranusEventReleaseChip
-              v-if="['cancelled', 'deferred', 'rescheduled'].includes(event.releaseStatus ?? 'draft')"
-              :releaseStatus="event.releaseStatus"
+              v-if="['cancelled', 'deferred', 'rescheduled'].includes(eventReleaseStatus ?? 'draft')"
+              :releaseStatus="eventReleaseStatus"
           />
         </div>
 
@@ -390,6 +391,8 @@ const formatMarkdown = (markdown: string) => {
   try { return marked(markdown) }
   catch { return markdown }
 }
+
+const eventReleaseStatus = computed(() => eventDate.value?.releaseStatus ??  null)
 
 // Computed for date/time
 const eventStartDate = computed(() => eventDate.value?.startDate ?? event.value?.date.startDate ?? null)

@@ -5,6 +5,7 @@
 export interface AdminEventDateDTO {
     uuid: string
     event_uuid: string
+    release_status: string | null
     start_date?: string | null
     start_time?: string | null
     end_date?: string | null

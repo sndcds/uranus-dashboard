@@ -70,16 +70,14 @@ export function mapAdminEventDateFromDTO(
     return {
         uuid: dto.uuid,
         eventUuid: dto.event_uuid,
-
+        releaseStatus: dto.release_status,
         startDate: dto.start_date ?? null,
         startTime: dto.start_time ?? null,
         endDate: dto.end_date ?? null,
         endTime: dto.end_time ?? null,
         entryTime: dto.entry_time ?? null,
-
         duration: dto.duration ?? null,
         accessibilityInfo: dto.accessibility_info ?? null,
-
         venueUuid: dto.venue_uuid ?? null,
         spaceUuid: dto.space_uuid ?? null,
         allDay: dto.all_day ?? false
@@ -99,16 +97,14 @@ export function mapAdminEventDateToDTO(
     return {
         uuid: date.uuid,
         event_uuid: date.eventUuid,
-
+        release_status: date.releaseStatus,
         start_date: date.startDate ?? null,
         start_time: date.startTime ?? null,
         end_date: date.endDate ?? null,
         end_time: date.endTime ?? null,
         entry_time: date.entryTime ?? null,
-
         duration: date.duration ?? null,
         accessibility_info: date.accessibilityInfo ?? null,
-
         venue_uuid: date.venueUuid ?? null,
         space_uuid: date.spaceUuid ?? null,
     }
