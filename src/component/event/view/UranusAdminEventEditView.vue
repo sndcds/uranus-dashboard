@@ -5,13 +5,22 @@
 <template>
   <div class="event-editor">
     <div class="event-editor-status-header">
-      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center;">
+
         <UranusButton size="small" variant="tertiary" @click="goBack">
           <template #icon><StepBack /></template>{{ t('finish_edit') }}
         </UranusButton>
-        <UranusButton size="small" variant="tertiary" @click="showReleaseModal = true">
+
+        <UranusButton
+            v-if="canReleaseEvent"
+            size="small"
+            variant="tertiary"
+            @click="showReleaseModal = true"
+        >
           <template #icon><Rocket /></template>{{ t('event_release_settings') }}
         </UranusButton>
+
+        <UranusEventReleaseChip :releaseStatus="releaseStatus ?? ''" />
       </div>
 
       <UranusDashboardHero :title="t('edit_event')"/>
@@ -85,6 +94,7 @@ import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import { StepBack, Rocket } from 'lucide-vue-next'
 import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChangesModal.vue'
 import { useSaveShortcut } from '@/composable/useSaveShortcut.ts'
+import UranusEventReleaseChip from "@/component/event/ui/UranusEventReleaseChip.vue";
 
 type EventEditorTabExpose = {
   commitTab?: () => Promise<void> | void
@@ -169,6 +179,15 @@ function createCleanDirtyState(): Record<TabKey, boolean> {
   }
 }
 
+
+const canReleaseEvent = computed(() => {
+  return adminEventStore.original?.canRelease
+})
+
+const releaseStatus = computed(() => {
+  return adminEventStore.original?.releaseStatus ?? null
+})
+
 function isTabDirty(tabKey: TabKey) {
   return tabDirtyState.value[tabKey]
 }
@@ -215,9 +234,7 @@ onMounted(async () => {
     adminEventStore.loadFromApi(apiResponse.data)
     tabDirtyState.value = createCleanDirtyState()
   } catch (e) {
-    console.log(e)
     adminEventStore.error = 'Failed to load event'
-    console.log(e)
   } finally {
     adminEventStore.loading = false
   }

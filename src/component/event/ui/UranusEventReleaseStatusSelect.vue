@@ -3,7 +3,12 @@
 -->
 
 <template>
-  <select v-model="selected" class="uranus-select-event-release-status">
+  <!-- SELECT MODE -->
+  <select
+      v-if="renderAs === 'select'"
+      v-model="selected"
+      class="uranus-select-event-release-status"
+  >
     <option
         v-for="opt in options"
         :key="opt.key"
@@ -12,6 +17,28 @@
       {{ opt.name }}
     </option>
   </select>
+
+  <!-- BUTTON MODE -->
+  <div
+      v-else
+      class="uranus-event-release-buttons"
+  >
+
+    <template v-for="opt in options" :key="opt.key">
+      <button
+          type="button"
+          class="uranus-event-release-button"
+          :class="[
+            `uranus-event-release-${opt.key}`,
+            { active: selected === opt.key }
+          ]"
+          @click="selected = opt.key"
+      >
+        {{ opt.name }}
+      </button>
+    </template>
+
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -19,41 +46,44 @@ import { ref, watch, onMounted } from 'vue'
 import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 import { useI18n } from "vue-i18n";
 
-const { t, locale } = useI18n({ useScope: 'global' })
+const { locale } = useI18n({ useScope: 'global' })
 
-// Props: v-model binding for selected key and optional locale
 interface Props {
   modelValue?: string | null
   locale?: string
+  renderAs?: 'select' | 'buttons'
 }
-const props = defineProps<Props>()
+
+const props = withDefaults(defineProps<Props>(), {
+  renderAs: 'select'
+})
+
 const emit = defineEmits<{
   (e: "update:modelValue", value: string): void
-}>();
+}>()
 
 const selected = ref(props.modelValue ?? '')
 
-// Pinia store
 const store = useEventReleaseStatusStore()
+
 const options = ref<{ key: string; name: string }[]>([])
 
-// Load data on mount
-onMounted(async () => {
+onMounted(() => {
   updateOptions()
-});
+})
 
-// Update options whenever locale changes or store updates
 const updateOptions = () => {
   options.value = store.options(locale.value)
-};
+}
 
-// Watch for prop changes
 watch(() => props.modelValue, (val) => {
   selected.value = val ?? ''
-});
+})
+
 watch(selected, (val) => {
   emit("update:modelValue", val)
 })
+
 watch(() => props.locale, (val) => {
   if (val) {
     locale.value = val
@@ -63,6 +93,8 @@ watch(() => props.locale, (val) => {
 </script>
 
 <style scoped>
+
+/* SELECT */
 .uranus-select-event-release-status {
   padding: 0.4rem 0.6rem;
   border-radius: 4px;
@@ -71,7 +103,63 @@ watch(() => props.locale, (val) => {
   color: var(--uranus-color);
   font-size: 1rem;
 }
+
 .uranus-select-event-release-status option {
   padding: 0.2rem 0.4rem;
 }
+
+/* BUTTONS */
+.uranus-event-release-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.uranus-event-release-button {
+  border: 1px solid var(--uranus-input-border-color);
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  font-size: 1rem;
+  background: transparent;
+  color: var(--uranus-color);
+  transition: all 0.2s ease;
+}
+
+.uranus-event-release-draft.active {
+  border-color: var(--uranus-event-release-background-draft);
+  background: var(--uranus-event-release-background-draft);
+  color: var(--uranus-event-release-color-draft);
+}
+
+.uranus-event-release-review.active {
+  border-color: var(--uranus-event-release-background-review);
+  background: var(--uranus-event-release-background-review);
+  color: var(--uranus-event-release-color-review);
+}
+
+.uranus-event-release-released.active {
+  border-color: var(--uranus-event-release-background-released);
+  background: var(--uranus-event-release-background-released);
+  color: var(--uranus-event-release-color-released);
+}
+
+.uranus-event-release-cancelled.active {
+  border-color: var(--uranus-event-release-background-cancelled);
+  background: var(--uranus-event-release-background-cancelled);
+  color: var(--uranus-event-release-color-cancelled);
+}
+
+.uranus-event-release-deferred.active {
+  border-color: var(--uranus-event-release-background-deferred);
+  background: var(--uranus-event-release-background-deferred);
+  color: var(--uranus-event-release-color-deferred);
+}
+
+.uranus-event-release-rescheduled.active {
+  border-color: var(--uranus-event-release-background-rescheduled);
+  background: var(--uranus-event-release-background-rescheduled);
+  color: var(--uranus-event-release-color-rescheduled);
+}
+
 </style>
