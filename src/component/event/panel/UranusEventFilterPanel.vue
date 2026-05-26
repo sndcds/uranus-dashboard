@@ -26,6 +26,7 @@
             <option value="tomorrow">{{ t('calendar_filter_date_tomorrow') }}</option>
             <option value="weekend">{{ t('calendar_filter_date_weekend') }}</option>
             <option value="next_week">{{ t('calendar_filter_date_next_week') }}</option>
+            <option value="following_weekend">{{ t('calendar_filter_date_following_weekend') }}</option>
             <option value="custom">{{ t('calendar_filter_date_custom') }}</option>
           </select>
       </UranusFormRow>

@@ -59,6 +59,7 @@ const labelKeys: Record<UranusPresetDateRangeMode, string> = {
   tomorrow: 'calendar_filter_date_tomorrow',
   weekend: 'calendar_filter_date_weekend',
   next_week: 'calendar_filter_date_next_week',
+  following_weekend: 'calendar_filter_date_following_weekend',
 }
 
 const options = computed(() =>

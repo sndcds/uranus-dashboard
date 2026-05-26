@@ -65,6 +65,11 @@ export const uranusI18nEventFilterTranslations: Record<string, Record<UranusLoca
         en: 'Next week',
         da: 'Næste uge',
     },
+    calendar_filter_date_following_weekend: {
+        de: 'Wochenende danach',
+        en: 'Following weekend',
+        da: 'Weekenden derefter',
+    },
     calendar_filter_date_custom: {
         de: 'Bereich',
         en: 'Custom range',
