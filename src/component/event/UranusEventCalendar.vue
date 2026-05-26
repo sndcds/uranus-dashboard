@@ -45,7 +45,13 @@
           />
         </div>
 
-        <UranusButton v-if="showFilterControls" size="small" variant="tertiary" @click="onResetFilter()">
+        <UranusButton
+            v-if="showFilterControls"
+            class="calendar-reset-filter-button"
+            size="small"
+            variant="tertiary"
+            @click="onResetFilter()"
+        >
           {{ t('reset_filter') }}
         </UranusButton>
 
@@ -82,14 +88,23 @@
             >
               <div class="calendar-mobile-filter-header">
                 <strong>{{ t('calendar_filter_settings_title') }}</strong>
-                <button
-                    type="button"
-                    class="calendar-mobile-filter-close"
-                    :aria-label="t('cancel')"
-                    @click="closeMobileFilter"
-                >
-                  <X />
-                </button>
+                <div class="calendar-mobile-filter-actions">
+                  <UranusButton
+                      size="small"
+                      variant="tertiary"
+                      @click="onResetFilterAndClose"
+                  >
+                    {{ t('reset_filter') }}
+                  </UranusButton>
+                  <button
+                      type="button"
+                      class="calendar-mobile-filter-close"
+                      :aria-label="t('cancel')"
+                      @click="closeMobileFilter"
+                  >
+                    <X />
+                  </button>
+                </div>
               </div>
 
               <UranusEventFilterPanel :filter-scope="filterScope" />
@@ -322,6 +337,11 @@ const onResetFilter = () => {
 
   filterStore.resetFilter(filterScope.value)
   filterStore.setFilter(currentDateRange, filterScope.value)
+}
+
+const onResetFilterAndClose = () => {
+  onResetFilter()
+  closeMobileFilter()
 }
 
 const selectedEventTypeId = computed({
@@ -707,6 +727,12 @@ onBeforeUnmount(() => {
   background: var(--uranus-bg);
 }
 
+.calendar-mobile-filter-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .calendar-mobile-filter-close {
   display: inline-flex;
   width: 2rem;
@@ -761,6 +787,16 @@ onBeforeUnmount(() => {
   transform: translateY(-6px);
 }
 
+@media (max-width: 1023px) {
+  .calendar-mobile-filter-menu {
+    display: block;
+  }
+
+  .calendar-reset-filter-button {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .calendar-head {
     top: 0;
@@ -786,10 +822,6 @@ onBeforeUnmount(() => {
   .calendar-mobile-filter-menu {
     display: block;
     order: 1;
-  }
-
-  .calendar-options > .uranus-button {
-    display: none;
   }
 
   .calendar-event-count-info {
