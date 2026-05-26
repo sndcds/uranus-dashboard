@@ -45,7 +45,13 @@
           />
         </div>
 
-        <UranusButton v-if="showFilterControls" size="small" variant="tertiary" @click="onResetFilter()">
+        <UranusButton
+            v-if="showFilterControls"
+            class="calendar-reset-filter-button"
+            size="small"
+            variant="tertiary"
+            @click="onResetFilter()"
+        >
           {{ t('reset_filter') }}
         </UranusButton>
 
@@ -82,14 +88,23 @@
             >
               <div class="calendar-mobile-filter-header">
                 <strong>{{ t('calendar_filter_settings_title') }}</strong>
-                <button
-                    type="button"
-                    class="calendar-mobile-filter-close"
-                    :aria-label="t('cancel')"
-                    @click="closeMobileFilter"
-                >
-                  <X />
-                </button>
+                <div class="calendar-mobile-filter-actions">
+                  <UranusButton
+                      size="small"
+                      variant="tertiary"
+                      @click="onResetFilterAndClose"
+                  >
+                    {{ t('reset_filter') }}
+                  </UranusButton>
+                  <button
+                      type="button"
+                      class="calendar-mobile-filter-close"
+                      :aria-label="t('cancel')"
+                      @click="closeMobileFilter"
+                  >
+                    <X />
+                  </button>
+                </div>
               </div>
 
               <UranusEventFilterPanel :filter-scope="filterScope" />
@@ -98,39 +113,18 @@
         </div>
       </div>
 
-      <div v-if="typeFilterMode === 'select-single'" class="calendar-event-type-select-container">
-        <label class="calendar-event-type-select-label" :for="eventTypeSelectId">
+      <div class="calendar-event-type-select-container">
+        <span class="calendar-event-type-select-label">
           {{ t('event_type') }}
-        </label>
-        <select
-            :id="eventTypeSelectId"
+        </span>
+        <UranusPopupSelect
             v-model="selectedEventTypeId"
             class="calendar-event-type-select"
-        >
-          <option value="">{{ t('all_events') }}</option>
-          <option
-              v-for="entry in eventTypeOptions"
-              :key="entry.typeId"
-              :value="String(entry.typeId)"
-          >
-            {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
-          </option>
-        </select>
+            :options="eventTypeSelectOptions"
+            :placeholder="t('all_events')"
+            :aria-label="t('event_type')"
+        />
       </div>
-
-      <UranusHorizontalScroller v-else>
-        <div class="calendar-event-type-chips-container">
-          <span
-              v-for="entry in sortedTypeSummary"
-              :key="entry.typeId"
-              class="calendar-event-type-chip"
-              :class="{ active: activeEventTypeIds.includes(entry.typeId) }"
-              @click="toggleType(entry.typeId)"
-          >
-            {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
-          </span>
-        </div>
-      </UranusHorizontalScroller>
     </div>
 
     <transition name="fade" mode="out-in">
@@ -205,12 +199,12 @@ import { type UranusEventsFilterScope, useEventsFilterStore } from '@/store/even
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { uranusPluralizedText } from '@/util/string.ts'
-import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
 import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
 import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendarListRow.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusEventsMap from '@/component/map/UranusEventsMap.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
 import { Rows3, LayoutGrid, Map, Grip, CalendarDays, SlidersHorizontal, X } from 'lucide-vue-next'
 import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
 import UranusEventsCalendarView from '@/component/event/view/UranusEventsCalendarView.vue'
@@ -248,9 +242,17 @@ const activeEventTypeIds = computed(() => activeFilter.value.eventTypeIds)
 const localDisplayMode = ref<EventViewMode>(props.initialDisplayMode)
 const singleTypeOptions = ref<EventListTypeSummary[]>([])
 const eventTypeOptions = computed(() =>
-    props.typeFilterMode === 'select-single' ? singleTypeOptions.value : eventListStore.typeSummary
+  props.typeFilterMode === 'select-single'
+    ? singleTypeOptions.value
+    : [...eventListStore.typeSummary].sort(compareEventTypes)
 )
-const eventTypeSelectId = computed(() => `calendar-event-type-select-${filterScope.value}`)
+const eventTypeSelectOptions = computed<UranusPopupSelectOption[]>(() => [
+  { value: '', label: t('all_events') },
+  ...eventTypeOptions.value.map((entry) => ({
+    value: String(entry.typeId),
+    label: `${typeLookupStore.getTypeName(entry.typeId, locale.value)} (${entry.count})`,
+  })),
+])
 const calendarRoot = ref<HTMLElement | null>(null)
 const isMobileFilterOpen = ref(false)
 const activeFilterCount = computed(() => {
@@ -279,10 +281,6 @@ const displayMode = computed<EventViewMode>(() => {
 
   return isDisplayModeAllowed(requestedMode) ? requestedMode : fallbackDisplayMode.value
 })
-
-const sortedTypeSummary = computed(() =>
-    [...eventListStore.typeSummary].sort(compareEventTypes)
-)
 
 function setDisplayMode(mode: EventViewMode) {
   if (!isDisplayModeAllowed(mode)) return
@@ -322,6 +320,11 @@ const onResetFilter = () => {
 
   filterStore.resetFilter(filterScope.value)
   filterStore.setFilter(currentDateRange, filterScope.value)
+}
+
+const onResetFilterAndClose = () => {
+  onResetFilter()
+  closeMobileFilter()
 }
 
 const selectedEventTypeId = computed({
@@ -455,10 +458,6 @@ watch(displayMode, async () => {
 
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
-
-function toggleType(typeId: number) {
-  filterStore.toggleEventType(typeId, filterScope.value)
-}
 
 function compareEventTypes(a: EventListTypeSummary, b: EventListTypeSummary) {
   if (b.count !== a.count) return b.count - a.count
@@ -610,13 +609,11 @@ onBeforeUnmount(() => {
 .calendar-event-type-select {
   min-width: 220px;
   max-width: min(320px, 100%);
-  min-height: 2rem;
-  border: 1px solid var(--uranus-color-6);
-  border-radius: 5px;
-  padding: 4px 8px;
-  background: var(--uranus-bg);
-  color: var(--uranus-color);
-  font: inherit;
+  width: 100%;
+}
+
+.calendar-event-type-select :deep(.uranus-popup-select__trigger) {
+  border-color: var(--uranus-color-6);
 }
 
 .calendar-event-type-chip {
@@ -707,6 +704,12 @@ onBeforeUnmount(() => {
   background: var(--uranus-bg);
 }
 
+.calendar-mobile-filter-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .calendar-mobile-filter-close {
   display: inline-flex;
   width: 2rem;
@@ -761,6 +764,16 @@ onBeforeUnmount(() => {
   transform: translateY(-6px);
 }
 
+@media (max-width: 1023px) {
+  .calendar-mobile-filter-menu {
+    display: block;
+  }
+
+  .calendar-reset-filter-button {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .calendar-head {
     top: 0;
@@ -786,10 +799,6 @@ onBeforeUnmount(() => {
   .calendar-mobile-filter-menu {
     display: block;
     order: 1;
-  }
-
-  .calendar-options > .uranus-button {
-    display: none;
   }
 
   .calendar-event-count-info {

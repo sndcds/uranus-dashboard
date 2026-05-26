@@ -110,7 +110,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from "vue-i18n"
 import { apiFetch } from '@/api.ts'
-import {type VenueListItem, type VenueListSpace} from '@/domain/venue/venueList.model.ts'
+import {type VenueListItem, type VenueListSpace} from '@/domain/venue/venueList.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'

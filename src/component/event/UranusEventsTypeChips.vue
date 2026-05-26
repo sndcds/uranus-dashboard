@@ -1,3 +1,7 @@
+<!--
+  src/component/event/UranusEventsTypeChips.vue
+-->
+
 <template>
   <div class="chips-wrapper" ref="wrapper">
     <button class="scroll-btn left" @click="scroll(-150)">‹</button>
