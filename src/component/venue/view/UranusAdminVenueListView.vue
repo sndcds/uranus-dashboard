@@ -38,8 +38,8 @@
         </UranusFeedback>
 
         <div v-if="venueList" class="uranus-vertical-flex">
-          <UranusAdminVenueCard
-              v-for="item in venueList?.venues ?? []"
+            <UranusAdminVenueCard
+              v-for="item in sortedVenues"
               :key="item.venueUuid"
               :venueListItem="item"
               :orgUuid="appStore.orgUuid"
@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted} from 'vue'
+import {computed, ref, onMounted} from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
@@ -75,6 +75,13 @@ const choosableVenuesStore = useChoosableVenuesStore()
 const isLoading = ref(true)
 const venueList = ref<VenueListModel | null>(null)
 const error = ref<string | null>(null)
+const sortedVenues = computed(() => {
+  const venues = venueList.value?.venues ?? []
+
+  return [...venues].sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+  )
+})
 
 const loadVenues = async (uuid: string | null) => {
   isLoading.value = true
