@@ -567,6 +567,7 @@
   "calendar_filter_date_tomorrow": "I morgen",
   "calendar_filter_date_weekend": "Weekend",
   "calendar_filter_date_next_week": "Næste uge",
+  "calendar_filter_date_following_weekend": "Weekenden derefter",
   "calendar_filter_date_custom": "Interval",
   "calendar_filter_button_label": "Filter",
   "calendar_filter_reset_button_label": "Nultil filter",

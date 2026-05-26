@@ -32,7 +32,7 @@ export interface UranusEventsFilter {
 }
 
 export type UranusEventsFilterScope = 'default' | 'venue' | 'portal'
-export type UranusEventsDateRangeMode = 'all_events' | 'today' | 'tomorrow' | 'weekend' | 'next_week' | 'custom'
+export type UranusEventsDateRangeMode = 'all_events' | 'today' | 'tomorrow' | 'weekend' | 'next_week' | 'following_weekend' | 'custom'
 export type UranusPortalEventsDateRangeMode = Exclude<UranusEventsDateRangeMode, 'custom'>
 
 const PORTAL_DATE_RANGE_STORAGE_KEY = 'portal-date-range-mode'
@@ -41,7 +41,8 @@ const portalDateRangeModes: UranusPortalEventsDateRangeMode[] = [
     'today',
     'tomorrow',
     'weekend',
-    'next_week'
+    'next_week',
+    'following_weekend'
 ]
 
 const defaultFilter: UranusEventsFilter = {
