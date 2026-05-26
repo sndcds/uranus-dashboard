@@ -101,23 +101,21 @@
 
 
       <div class="uranus-portal-events-header__event-types">
-        <UranusHorizontalScroller
+        <div
             v-if="eventListStore.typeSummary.length"
             class="uranus-portal-events__type-scroller uranus-portal-event-type-scroller"
         >
-          <div class="uranus-portal-events__type-list">
-            <button
-                v-for="entry in sortedTypeSummary"
-                :key="entry.typeId"
-                type="button"
-                class="uranus-portal-events__type-chip"
-                :class="{ 'uranus-portal-events__type-chip--active': activeEventTypeIds.includes(entry.typeId) }"
-                @click="toggleType(entry.typeId)"
-            >
-              {{ typeLookupStore.getTypeName(entry.typeId, locale) }} ({{ entry.count }})
-            </button>
-          </div>
-        </UranusHorizontalScroller>
+          <span class="uranus-portal-events__type-select-label">
+            {{ t('event_type') }}
+          </span>
+          <UranusPopupSelect
+              v-model="selectedPortalEventTypeId"
+              class="uranus-portal-events__type-select"
+              :options="portalEventTypeOptions"
+              :placeholder="t('all_events')"
+              :aria-label="t('event_type')"
+          />
+        </div>
       </div>
 
     </header>
@@ -250,7 +248,7 @@ import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import UranusHorizontalScroller from '@/component/ui/UranusHorizontalScroller.vue'
+import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
 import UranusPortalDateRangeSelect from '@/component/portal/UranusPortalDateRangeSelect.vue'
 import { uranusFormatDateTime, uranusPluralizedText } from '@/util/string.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
@@ -351,6 +349,15 @@ const activeFilter = computed(() => ({
   portalPrefilter: portalEventPrefilter.value,
 }))
 const activeEventTypeIds = computed(() => activeFilter.value.eventTypeIds)
+const selectedPortalEventTypeId = computed({
+  get: () => String(activeEventTypeIds.value[0] ?? ''),
+  set: (value: string) => {
+    const typeId = Number(value)
+    filterStore.setFilter({
+      eventTypeIds: value && Number.isFinite(typeId) ? [typeId] : [],
+    }, filterScope)
+  }
+})
 const portalDateRangeMode = computed<UranusPresetDateRangeMode>({
   get: () => filterStore.portalDateRangeMode,
   set: (mode) => {
@@ -371,6 +378,13 @@ const sortedTypeSummary = computed(() => {
     return nameA.localeCompare(nameB)
   })
 })
+const portalEventTypeOptions = computed<UranusPopupSelectOption[]>(() => [
+  { value: '', label: t('all_events') },
+  ...sortedTypeSummary.value.map((entry) => ({
+    value: String(entry.typeId),
+    label: `${typeLookupStore.getTypeName(entry.typeId, locale.value)} (${entry.count})`,
+  })),
+])
 
 const portal = ref<PortalDTO | null>(null)
 const portalLoading = ref(false)
@@ -433,10 +447,6 @@ let observer: IntersectionObserver | null = null
 function onResetFilter() {
   filterStore.resetFilter(filterScope)
   applyPortalDateRangeMode(portalDateRangeMode.value)
-}
-
-function toggleType(typeId: number) {
-  filterStore.toggleEventType(typeId, filterScope)
 }
 
 function formatEventDateTime(event: EventListItem) {
