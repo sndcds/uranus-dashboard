@@ -57,7 +57,7 @@ import {computed, ref, onMounted} from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
-import { mapVenueList, type VenueListModel } from '@/domain/venue/venueList.model.ts'
+import { mapVenueList, type VenueList } from '@/domain/venue/venueList.ts'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
 
 import UranusAdminVenueCard from '@/component/venue/card/UranusAdminVenueCard.vue'
@@ -73,13 +73,12 @@ const appStore = useAppStore()
 const choosableVenuesStore = useChoosableVenuesStore()
 
 const isLoading = ref(true)
-const venueList = ref<VenueListModel | null>(null)
+const venueList = ref<VenueList | null>(null)
 const error = ref<string | null>(null)
 const sortedVenues = computed(() => {
   const venues = venueList.value?.venues ?? []
-
   return [...venues].sort((a, b) =>
-      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+      a.venueName.localeCompare(b.venueName, undefined, { sensitivity: 'base' })
   )
 })
 

@@ -31,7 +31,7 @@ export interface VenueListItem {
     darkThemeLogoUuid?: string | null
 }
 
-export interface VenueListModel {
+export interface VenueList {
     orgUuid: string
     orgName: string
     totalEventCount: number
@@ -90,7 +90,7 @@ export function mapVenueListItem(dto: VenueListItemDTO): VenueListItem {
     }
 }
 
-export function mapVenueList(dto: VenueListDTO): VenueListModel {
+export function mapVenueList(dto: VenueListDTO): VenueList {
     return {
         orgUuid: dto.org_uuid,
         orgName: dto.org_name,
@@ -140,7 +140,7 @@ export function toVenueItemDTO(model: VenueListItem): VenueListItemDTO {
     }
 }
 
-export function toVenueListDTO(model: VenueListModel): VenueListDTO {
+export function toVenueListDTO(model: VenueList): VenueListDTO {
     return {
         org_uuid: model.orgUuid,
         org_name: model.orgName,
@@ -157,7 +157,7 @@ export function toVenueListDTO(model: VenueListModel): VenueListDTO {
 /**
  * Factory for empty organization detail
  */
-export function createEmptyOrgVenueList(): VenueListModel {
+export function createEmptyOrgVenueList(): VenueList {
     return {
         orgUuid: '',
         orgName: '',
