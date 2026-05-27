@@ -140,7 +140,7 @@
             name: 'event-details',
             params: { uuid: event.uuid, eventDateUuid: event.dateUuid }
           }"
-          class="uranus-portal-event-card custom-link"
+          class="uranus-portal-event-card"
       >
         <div class="uranus-portal-event-card__image-frame">
           <img
