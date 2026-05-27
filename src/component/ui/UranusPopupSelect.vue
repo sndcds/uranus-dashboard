@@ -1,3 +1,7 @@
+<!--
+  src/component/ui/UranusPopupSelect.vue
+-->
+
 <template>
   <div ref="root" class="uranus-popup-select">
     <button
@@ -119,7 +123,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: 0.5rem;
   border: 1px solid var(--uranus-color-6);
-  border-radius: 6px;
+  border-radius: var(--uranus-input-border-radius);
   padding: 0.35rem 0.6rem;
   background: var(--uranus-bg);
   color: var(--uranus-color);
@@ -154,7 +158,7 @@ onBeforeUnmount(() => {
   max-height: min(18rem, 45vh);
   overflow: auto;
   border: 1px solid var(--uranus-color-6);
-  border-radius: 8px;
+  border-radius: var(--uranus-input-border-radius);
   padding: 0.25rem;
   background: var(--uranus-bg);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
@@ -164,20 +168,25 @@ onBeforeUnmount(() => {
   display: block;
   width: 100%;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--uranus-input-border-radius);
   padding: 0.4rem 0.55rem;
   background: transparent;
   color: var(--uranus-color);
   font: inherit;
   text-align: left;
-}
 
-.uranus-popup-select__option:hover {
-  background: var(--uranus-color-8);
-}
+  &:hover {
+    background: var(--uranus-color-8);
+  }
 
-.uranus-popup-select__option--selected {
-  background: var(--uranus-select-bg);
-  color: var(--uranus-select-color);
+  &--selected {
+    background: var(--uranus-select-bg);
+    color: var(--uranus-select-color);
+
+    &:hover {
+      background: var(--uranus-select-bg-hover);
+      color: var(--uranus-select-color);
+    }
+  }
 }
 </style>

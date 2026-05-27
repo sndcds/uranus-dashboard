@@ -109,7 +109,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from "vue-i18n"
-import { apiFetch } from '@/api.ts'
+import {ApiError, apiFetch} from '@/api.ts'
 import {type VenueListItem, type VenueListSpace} from '@/domain/venue/venueList.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
@@ -119,6 +119,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import PlutoImage from '@/component/pluto/PlutoImage.vue'
 import { uranusStringInterpolate } from '@/util/string.ts'
 import { Edit, Trash2, Plus } from 'lucide-vue-next'
+import { apiErrorI18nKey } from '@/util/api_error.ts'
 
 
 const { t } = useI18n()
@@ -188,19 +189,13 @@ const confirmDeleteVenue = async ({ password }: { password: string }) => {
 
     emit('deleted', pendingVenueUuid.value)
     cancelDeleteVenue()
-  } catch (err: unknown) {
-    const status =
-        typeof err === 'object' && err !== null
-            ? (err as { status?: number }).status
-            : undefined
-
-    if (status === 401 || status === 403) {
-      deleteVenueError.value = t('incorrect_password')
+  } catch (err) {
+    if (err instanceof ApiError) {
+      deleteVenueError.value = t(apiErrorI18nKey(err.status, 'failed_to_delete_venue'))
     } else {
       deleteVenueError.value = t('failed_to_delete_venue')
     }
-    // NO throw here — just set the error for the modal
-  } finally {
+ } finally {
     isDeletingVenue.value = false
   }
 }
@@ -238,11 +233,9 @@ const confirmDeleteSpace = async ({ password }: { password: string }) => {
     }
 
     cancelDeleteSpace()
-  } catch (err: unknown) {
-    console.error('Failed to delete space:', err)
-    const status = typeof err === 'object' && err !== null ? (err as { status?: number }).status : undefined
-    if (status === 401 || status === 403) {
-      deleteSpaceError.value = t('incorrect_password')
+  } catch (err) {
+    if (err instanceof ApiError) {
+      deleteSpaceError.value = t(apiErrorI18nKey(err.status, 'failed_to_delete_space'))
     } else {
       deleteSpaceError.value = t('failed_to_delete_space')
     }

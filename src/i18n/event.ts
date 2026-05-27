@@ -205,6 +205,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'All events',
         da: 'Alle begivenheder',
     },
+    all_event_types: {
+        de: 'Alle Typen',
+        en: 'All types',
+        da: 'Alle typer',
+    },
     create_event: {
         de: 'Neues Event erstellen',
         en: 'Create a new event',

@@ -57,6 +57,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
+import { apiErrorI18nKey } from '@/util/api_error.ts'
 
 const props = defineProps<{
   list: FavoriteList
@@ -104,11 +105,11 @@ async function confirmDelete({ password }: { password: string }) {
 
     emit('deleted', props.list.uuid)
     cancelDelete()
-  } catch (error) {
-    if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
-      deleteError.value = t('incorrect_password')
+  } catch (err) {
+    if (err instanceof ApiError) {
+      deleteError.value = t(apiErrorI18nKey(err.status, 'failed_to_delete_favorite_list'))
     } else {
-      deleteError.value = t('favorite_list_delete_error')
+      deleteError.value = t('failed_to_delete_favorite_list')
     }
   } finally {
     isDeleting.value = false

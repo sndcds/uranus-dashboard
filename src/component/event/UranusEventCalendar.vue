@@ -45,6 +45,16 @@
           />
         </div>
 
+        <div class="calendar-event-type-select-container">
+          <UranusPopupSelect
+              v-model="selectedEventTypeId"
+              class="calendar-event-type-select"
+              :options="eventTypeSelectOptions"
+              :placeholder="t('all_event_types')"
+              :aria-label="t('event_type')"
+          />
+        </div>
+
         <UranusButton
             v-if="showFilterControls"
             class="calendar-reset-filter-button"
@@ -55,14 +65,11 @@
           {{ t('reset_filter') }}
         </UranusButton>
 
-        <div style="display: none;">{{ locale }}</div>
-        <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
-
         <div v-if="showFilterControls" class="calendar-mobile-filter-menu">
           <UranusButton
               class="calendar-mobile-filter-button"
               size="small"
-              variant="secondary"
+              variant="tertiary"
               :aria-expanded="isMobileFilterOpen"
               aria-controls="calendar-mobile-filter-panel"
               @click.stop="toggleMobileFilter"
@@ -111,19 +118,8 @@
             </div>
           </transition>
         </div>
-      </div>
+        <div class="calendar-event-count-info">{{ eventCountInfo }}</div>
 
-      <div class="calendar-event-type-select-container">
-        <span class="calendar-event-type-select-label">
-          {{ t('event_type') }}
-        </span>
-        <UranusPopupSelect
-            v-model="selectedEventTypeId"
-            class="calendar-event-type-select"
-            :options="eventTypeSelectOptions"
-            :placeholder="t('all_events')"
-            :aria-label="t('event_type')"
-        />
       </div>
     </div>
 
@@ -195,7 +191,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type UranusEventsFilterScope, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import {type UranusEventsFilter, type UranusEventsFilterScope, useEventsFilterStore} from '@/store/eventsFilterStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { uranusPluralizedText } from '@/util/string.ts'
@@ -247,7 +243,7 @@ const eventTypeOptions = computed(() =>
     : [...eventListStore.typeSummary].sort(compareEventTypes)
 )
 const eventTypeSelectOptions = computed<UranusPopupSelectOption[]>(() => [
-  { value: '', label: t('all_events') },
+  { value: '', label: t('all_event_types') },
   ...eventTypeOptions.value.map((entry) => ({
     value: String(entry.typeId),
     label: `${typeLookupStore.getTypeName(entry.typeId, locale.value)} (${entry.count})`,
@@ -312,14 +308,21 @@ const isLoadingMore = ref(false)
 let filterTimeout: number | null = null
 
 const onResetFilter = () => {
-  const currentDateRange = {
-    dateRangeMode: activeFilter.value.dateRangeMode,
-    startDate: activeFilter.value.startDate,
-    endDate: activeFilter.value.endDate,
+  const currentDateRange: Partial<UranusEventsFilter> = {
+    ...(activeFilter.value.dateRangeMode !== undefined && {
+      dateRangeMode: activeFilter.value.dateRangeMode,
+    }),
+    ...(activeFilter.value.startDate !== undefined && {
+      startDate: activeFilter.value.startDate,
+    }),
+
+    ...(activeFilter.value.endDate !== undefined && {
+      endDate: activeFilter.value.endDate,
+    }),
   }
 
   filterStore.resetFilter(filterScope.value)
-  filterStore.setFilter(currentDateRange, filterScope.value)
+  // filterStore.setFilter(currentDateRange, filterScope.value)
 }
 
 const onResetFilterAndClose = () => {
@@ -578,7 +581,7 @@ onBeforeUnmount(() => {
   gap: 8px;
   top: 80px;
   z-index: 10;
-  padding-top: 10px;
+  padding: 0.5rem 1rem;
   background: var(--uranus-dashboard-bg);
   flex-shrink: 0;
 }
@@ -597,13 +600,6 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 0 1rem;
-}
-
-.calendar-event-type-select-label {
-  color: var(--uranus-color-4);
-  font-size: 0.95rem;
-  white-space: nowrap;
 }
 
 .calendar-event-type-select {
@@ -645,7 +641,6 @@ onBeforeUnmount(() => {
   gap: 0.5rem;
   align-items: center;
   padding: 0;
-  margin-left: 32px;
 }
 
 .calendar-display-options {
@@ -661,6 +656,7 @@ onBeforeUnmount(() => {
 
 .calendar-mobile-filter-button {
   position: relative;
+  height: 32px;
 }
 
 .calendar-mobile-filter-count {
@@ -670,7 +666,8 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  padding: 0 0.35rem;
+  // padding: 0 0.35rem;
+  margin-left: 0.25rem;
   background: var(--uranus-select-bg);
   color: var(--uranus-select-color);
   font-size: 0.78rem;
@@ -776,53 +773,60 @@ onBeforeUnmount(() => {
 
 @media (max-width: 768px) {
   .calendar-head {
-    top: 0;
+    top: 80px;
     align-items: stretch;
     padding: 0.5rem 0.75rem;
   }
 
   .calendar-options {
-    width: 100%;
+    display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    align-items: center;
     gap: 0.5rem;
-    margin-left: 0;
+    width: 100%;
   }
 
-  .calendar-display-options {
-    order: 2;
+  /* First row */
+  .calendar-event-type-select-container {
+    order: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .calendar-event-type-select {
     width: 100%;
-    justify-content: space-between;
-    padding-top: 0.25rem;
+    min-width: 0;
   }
 
   .calendar-mobile-filter-menu {
     display: block;
-    order: 1;
+    order: 2;
+    flex-shrink: 0;
   }
 
   .calendar-event-count-info {
-    order: 1;
+    order: 3;
     margin-left: auto;
     padding: 0;
     font-size: 0.9rem;
     white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Second row */
+  .calendar-display-options {
+    order: 4;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding-top: 0.25rem;
   }
 
   .calendar-card-layout,
   .calendar-compact-layout,
   .calendar-list-layout {
     padding: 0.75rem;
-  }
-
-  .calendar-event-type-select-container {
-    width: 100%;
-    padding: 0;
-  }
-
-  .calendar-event-type-select {
-    flex: 1;
-    min-width: 0;
   }
 
   .calendar-card-layout {

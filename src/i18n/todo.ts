@@ -19,7 +19,13 @@ export const uranusI18nTodoTranslations: Record<string, Record<UranusLocaleKey, 
         de: 'Aufgaben konnten nicht geladen werden',
         en: 'Could not load todos',
         da: 'Kunne ikke hente opgaver',
-    }
+    },
+    failed_to_delete_todo: {
+        de: 'Die Aufgaben konnte nicht gelöscht werden. Bitte versuche es erneut.',
+        en: 'The todo could not be deletet. Please try again.',
+        da: 'Opgaven kunne ikke slettes. Prøv igen.',
+    },
+
 }
 
 export default uranusI18nTodoTranslations

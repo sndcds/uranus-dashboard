@@ -72,7 +72,7 @@ function createDefaultFilter(): UranusEventsFilter {
         categories: null,
         search: '',
         city: '',
-        dateRangeMode: 'today',
+        dateRangeMode: 'all_events',
         startDate: '',
         endDate: '',
         venue: { uuid: '', name: '' },

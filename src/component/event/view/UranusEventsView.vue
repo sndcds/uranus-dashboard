@@ -1,5 +1,5 @@
 <!--
-  src/view/public/UranusEventsView.vue
+  src/component/event/view/UranusEventsView.vue
 
   UranusEventsView acts as the main container for the public events page.
   It composes the event filter panel and the event calendar, handling their
@@ -19,7 +19,7 @@
   <div class="calendar-view">
 
     <!-- Sidebar for desktop, modal for mobile -->
-    <div class="sidebar">
+    <div class="filter-panel">
       <UranusEventFilterPanel
           v-if="isSidebarVisible || showFilterModal"
           :isSavingFilter="isSavingFilter"
@@ -90,7 +90,7 @@ const onCancelFilter = () => showFilterModal.value = false
   height: 100%;
 }
 
-.sidebar {
+.filter-panel {
   width: 300px;
   flex: 0 0 300px;
   position: sticky;

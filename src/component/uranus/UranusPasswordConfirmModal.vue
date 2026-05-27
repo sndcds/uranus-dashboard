@@ -1,3 +1,7 @@
+<!--
+  src/component/uranus/UranusPasswordConfirmModal.vue
+-->
+
 <template>
   <UranusModal :show="show" :title="title" max-width="520px" @close="$emit('cancel')">
     <UranusForm :id="formId" @submit.prevent="handleSubmit">

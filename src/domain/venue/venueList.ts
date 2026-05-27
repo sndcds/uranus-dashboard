@@ -43,7 +43,6 @@ export interface VenueList {
     venues: VenueListItem[]
 }
 
-
 export function mapVenueListSpace(dto: VenueListSpaceDTO): VenueListSpace {
     return {
         spaceUuid: dto.space_uuid,

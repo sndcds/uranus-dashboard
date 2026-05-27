@@ -42,13 +42,18 @@ export const uranusI18nSpaceTranslations: Record<string, Record<UranusLocaleKey,
     },
     confirm_delete_space: {
         de: 'Du bist dabei den Raum "~~name~~" zu löschen. Gib dein Passwort ein, um fortzufahren.',
-        en: 'You are about to delete the space "{name}". Enter your password to continue.',
-        da: 'Du er ved at slette lokale "{name}". Indtast din adgangskode for at fortsætte.',
+        en: 'You are about to delete the space "~~name~~". Enter your password to continue.',
+        da: 'Du er ved at slette lokale "~~name~~". Indtast din adgangskode for at fortsætte.',
     },
     spaces_empty: {
         de: 'Noch keine Räume angelegt.',
         en: 'No spaces added yet.',
         da: 'Ingen lokaler oprettet endnu.',
+    },
+    failed_to_delete_space: {
+        de: 'Der Raum konnte nicht gelöscht werden. Bitte versuche es erneut.',
+        en: 'The space could not be deletet. Please try again.',
+        da: 'Lokalet kunne ikke slettes. Prøv igen.',
     },
 }
 
