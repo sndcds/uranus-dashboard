@@ -96,7 +96,7 @@ const onCancelFilter = () => showFilterModal.value = false
   position: sticky;
   top: 80px;
   max-height: 100vh;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .calendar-body {

@@ -54,7 +54,7 @@ function toggleOpen() {
 <style scoped lang="scss">
 .accordion {
   border: 0 solid #ccc;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .accordion-header {
@@ -114,6 +114,7 @@ function toggleOpen() {
 .accordion-body {
   padding-left: 1.4rem;
   border-bottom: 0 solid var(--uranus-input-border-color);
+  overflow: visible;
   transition: all 0.3s ease;
 }
 

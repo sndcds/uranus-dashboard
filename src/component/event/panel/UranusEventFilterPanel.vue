@@ -15,20 +15,14 @@
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
     <div>
-      <UranusFormRow :cols="1">
-          <select
-              id="date-range-mode"
-              v-model="dateRangeMode"
-              style="height: var(--uranus-input-height); width: 100%;"
-          >
-            <option value="all_events">{{ t('calendar_filter_date_all_events') }}</option>
-            <option value="today">{{ t('calendar_filter_date_today') }}</option>
-            <option value="tomorrow">{{ t('calendar_filter_date_tomorrow') }}</option>
-            <option value="weekend">{{ t('calendar_filter_date_weekend') }}</option>
-            <option value="next_week">{{ t('calendar_filter_date_next_week') }}</option>
-            <option value="following_weekend">{{ t('calendar_filter_date_following_weekend') }}</option>
-            <option value="custom">{{ t('calendar_filter_date_custom') }}</option>
-          </select>
+      <UranusFormRow :cols="1" class="uranus-filter-panel__select-row">
+        <UranusPopupSelect
+            id="date-range-mode"
+            v-model="dateRangeMode"
+            class="uranus-filter-panel__select"
+            :options="dateRangeModeOptions"
+            :aria-label="t('calendar_filter_date_range')"
+        />
       </UranusFormRow>
 
       <UranusFormRow v-if="dateRangeMode === 'custom'" :cols="2">
@@ -121,15 +115,15 @@
 
       <UranusAccordion v-model="priceOpen">
         <template #title>{{ t('price') }}</template>
-        <UranusFormRow :cols="1">
+        <UranusFormRow :cols="1" class="uranus-filter-panel__select-row">
           <UranusLabel id="price-type" label="Preisart">
-            <select v-model="filter.priceType">
-              <option value="not_specified">{{ t('event_price_not_specified') }}</option>
-              <option value="free">{{ t('event_price_free') }}</option>
-              <option value="donation">{{ t('event_price_donation') }}</option>
-              <option value="regular_price">{{ t('event_price_regular') }}</option>
-              <option value="tiered_prices">{{ t('event_price_tiered') }}</option>
-            </select>
+            <UranusPopupSelect
+                v-model="filter.priceType"
+                class="uranus-filter-panel__select"
+                :options="priceTypeOptions"
+                :placeholder="t('event_price_not_specified')"
+                :aria-label="t('price')"
+            />
           </UranusLabel>
         </UranusFormRow>
         <UranusFormRow :cols="2">
@@ -140,10 +134,12 @@
               v-model="maxPriceModel"
           />
           <UranusLabel id="price-currency" label="Währung">
-            <select v-model="filter.priceCurrency" style="height: var(--uranus-input-height)">
-              <option value="EUR">Euro</option>
-              <option value="DKK">DKK</option>
-            </select>
+            <UranusPopupSelect
+                v-model="filter.priceCurrency"
+                class="uranus-filter-panel__select"
+                :options="priceCurrencyOptions"
+                :aria-label="t('currency')"
+            />
           </UranusLabel>
         </UranusFormRow>
       </UranusAccordion>
@@ -160,6 +156,7 @@ import UranusVenueTypeahead from '@/component/venue/UranusVenueTypeahead.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
 import {
   type UranusEventsDateRangeMode,
   type UranusEventsFilter,
@@ -198,6 +195,29 @@ const dateRangeMode = computed<UranusEventsDateRangeMode>({
     filter.value.dateRangeMode = mode
   }
 })
+
+const dateRangeModeOptions = computed<UranusPopupSelectOption[]>(() => [
+  { value: 'all_events', label: t('calendar_filter_date_all_events') },
+  { value: 'today', label: t('calendar_filter_date_today') },
+  { value: 'tomorrow', label: t('calendar_filter_date_tomorrow') },
+  { value: 'weekend', label: t('calendar_filter_date_weekend') },
+  { value: 'next_week', label: t('calendar_filter_date_next_week') },
+  { value: 'following_weekend', label: t('calendar_filter_date_following_weekend') },
+  { value: 'custom', label: t('calendar_filter_date_custom') },
+])
+
+const priceTypeOptions = computed<UranusPopupSelectOption[]>(() => [
+  { value: 'not_specified', label: t('event_price_not_specified') },
+  { value: 'free', label: t('event_price_free') },
+  { value: 'donation', label: t('event_price_donation') },
+  { value: 'regular_price', label: t('event_price_regular') },
+  { value: 'tiered_prices', label: t('event_price_tiered') },
+])
+
+const priceCurrencyOptions = computed<UranusPopupSelectOption[]>(() => [
+  { value: 'EUR', label: 'Euro' },
+  { value: 'DKK', label: 'DKK' },
+])
 
 // Add defaults if missing
 if (filter.value.useCurrentLocation === undefined) filter.value.useCurrentLocation = false
@@ -330,6 +350,19 @@ const onSaveFilter = () => {
 
 select {
   border: 1px solid var(--uranus-input-border-color) !important;
+}
+
+.uranus-filter-panel__select {
+  width: 100%;
+
+  :deep(.uranus-popup-select__trigger) {
+    min-height: var(--uranus-input-height);
+    height: var(--uranus-input-height);
+  }
+}
+
+.uranus-filter-panel__select-row {
+  overflow: visible;
 }
 
 </style>
