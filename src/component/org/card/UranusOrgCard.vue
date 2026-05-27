@@ -82,7 +82,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api.ts'
+import { ApiError, apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 
@@ -91,6 +91,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import type { OrgListItem } from '@/domain/org/orgListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
+import { apiErrorI18nKey } from '@/util/api_error.ts'
 
 const { t } = useI18n()
 const appStore = useAppStore()
@@ -151,9 +152,9 @@ const confirmDelete = async ({ password }: { password: string }) => {
 
     emit('deleted', pendingDeleteUuid.value)
     cancelDelete()
-  } catch (error: any) {
-    if (error.status === 401 || error.status === 403) {
-      deleteError.value = t('incorrect_password')
+  } catch (err) {
+    if (err instanceof ApiError) {
+      deleteError.value = t(apiErrorI18nKey(err.status, 'failed_to_delete_org'))
     } else {
       deleteError.value = t('failed_to_delete_org')
     }

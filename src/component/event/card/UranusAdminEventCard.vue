@@ -136,8 +136,9 @@ import type { AdminEventListItem } from '@/domain/event/adminEventListItem.ts'
 import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Eye, Pencil, Trash, Calendar, MapPin, Building, Video } from 'lucide-vue-next'
-import UranusEventCategoryDisplay from "@/component/event/ui/UranusEventCategoryDisplay.vue";
-import { uranusPluralizedText, uranusStringInterpolate } from "@/util/string.ts";
+import UranusEventCategoryDisplay from '@/component/event/ui/UranusEventCategoryDisplay.vue'
+import { uranusPluralizedText, uranusStringInterpolate } from '@/util/string.ts'
+import { apiErrorI18nKey } from '@/util/api_error.ts'
 
 const placeholderImage = '/assets/event-dummy.png'
 
@@ -285,13 +286,9 @@ const confirmDelete = async ({password, selectedOption}: {
     cancelDelete()
   } catch (err) {
     if (err instanceof ApiError) {
-      if (err.status === 401 || err.status === 403) {
-        deleteError.value = t('incorrect_password')
-      } else {
-        deleteError.value = t('failed_to_delete_event')
-      }
+      deleteError.value = t(apiErrorI18nKey(err.status, 'failed_to_delete_event'))
     } else {
-      deleteError.value = t('unknown_error')
+      deleteError.value = t('failed_to_delete_event')
     }
   } finally {
     isDeleting.value = false

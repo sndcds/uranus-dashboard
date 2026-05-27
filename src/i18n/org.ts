@@ -114,7 +114,12 @@ export const uranusI18nOrgTranslations: Record<string, Record<UranusLocaleKey, s
         de: "Eingeladen am",
         en: "Invited on",
         da: "Inviteret den",
-    }
+    },
+    failed_to_delete_org: {
+        de: 'Die Organisation konnte nicht gelöscht werden. Bitte versuche es erneut.',
+        en: 'The organizer could not be deletet. Please try again.',
+        da: 'Oganisationen kunne ikke slettes. Prøv igen.',
+    },
 }
 
 export default uranusI18nOrgTranslations

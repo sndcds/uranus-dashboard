@@ -55,13 +55,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api.ts'
+import { ApiError, apiFetch } from '@/api.ts'
 import type { PortalListItem } from '@/domain/portal/portalList.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import { uranusStringInterpolate } from '@/util/string.ts'
 import { Eye } from 'lucide-vue-next'
+import { apiErrorI18nKey } from '@/util/api_error.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -105,11 +106,12 @@ async function confirmDeletePortal({ password }: { password: string }) {
 
     emit('deleted', props.portalListItem.portalUuid)
     cancelDeletePortal()
-  } catch (err: unknown) {
-    const status = typeof err === 'object' && err !== null ? (err as { status?: number }).status : undefined
-    deleteError.value = status === 401 || status === 403
-        ? t('incorrect_password')
-        : t('failed_to_delete_portal')
+  } catch (err) {
+    if (err instanceof ApiError) {
+      deleteError.value = t(apiErrorI18nKey(err.status, 'failed_to_delete_portal'))
+    } else {
+      deleteError.value = t('failed_to_delete_portal')
+    }
   } finally {
     isDeleting.value = false
   }

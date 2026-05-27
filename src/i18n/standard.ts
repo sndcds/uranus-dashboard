@@ -764,7 +764,16 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         de: 'Adresse',
         en: 'Address',
         da: 'Adresse',
-    }
-}
+    },
+    error_message_incorrect_password: {
+        de: "Falsches Passwort. Bitte versuche es erneut.",
+        en: "Incorrect password. Please try again.",
+        da: "Forkert adgangskode. Prøv igen.",
+    },
+    error_message_forbidden_action: {
+        de: "Du hast keine Berechtigung, diese Aktion auszuführen.",
+        en: "You do not have permission to perform this action.",
+        da: "Du har ikke tilladelse til at udføre denne handling.",
+    },}
 
 export default uranusI18nStandardTranslations

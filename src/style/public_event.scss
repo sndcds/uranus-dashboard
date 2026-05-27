@@ -187,33 +187,30 @@
 .uranus-public-event-tag {
   display: inline-flex;
   align-items: center;
-  padding: 0.1rem 0.6rem 0.1rem 0.6rem;
-  border-radius: 3px;
+  padding: 0.1rem 0.8rem 0.1rem 0.8rem;
+  border: 1px solid var(--uranus-color-6);
+  border-radius: 999px;
   font-weight: 500;
   font-size: 0.95rem;
   white-space: nowrap;
   flex-shrink: 0;
-
 }
 
 .uranus-public-event-tag {
   font-weight: 300;
-  font-size: 1rem;
   color: var(--uranus-color-4);
+  border-width: 0;
 }
 
 .uranus-public-event-detail-tag {
-  // background: var(--uranus-event-tag-background);
   color: var(--uranus-event-tag-color);
-  font-size: 0.9rem;
   border: 1px solid var(--uranus-event-tag-color);
-  border-radius: 30px;
   font-weight: 300;
 }
 
 .uranus-public-event-language-tag {
-  background: var(--uranus-language-tag-background);
   color: var(--uranus-language-tag-color);
+  border: 1px solid var(--uranus-language-tag-color);
 }
 
 .uranus-public-event-tag {
@@ -230,13 +227,16 @@
     margin-bottom: 0;
   }
 
-  p {
-    margin: 0 0 1rem 0; /* bottom spacing for paragraphs */
+  p, ul, ol, li {
+    font-size: 1.1rem;
+    line-height: 1.6;
   }
 
-  p + p {
-    margin-top: 1.4rem;
-  }
+  p + p {margin-top: 1.4rem; }
+  h1 + p { margin-top: 0.4rem; }
+  h2 + p { margin-top: 0.3rem; }
+  p + h1 { margin-top: 2.4rem; }
+  p + h2 { margin-top: 2rem; }
 
   hr { /* Used as spacer */
     opacity: 0;
@@ -255,27 +255,32 @@
   h3 { font-size: 1.6rem; font-weight: 300; }
   h4 { font-size: 1.3rem; font-weight: 300; }
 
-  h1 { margin-top: 3rem; }
-
   h1 + * { margin-top: 1.5rem; }
   h2 + * { margin-top: 1rem; }
   h3 + * { margin-top: 0.5rem; }
   h4 + * { margin-top: 0.25rem; }
 
-  h1 + h3, h2 + h3 { margin-top: 3rem; }
-  h1 + h4, h2 + h4 { margin-top: 3rem; }
-
   ul, ol {
     line-height: 1.6rem;
-    margin-bottom: 2rem;
+    margin-bottom: 0;
   }
   ul li, ol li {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
+    padding: 0 10px;
+  }
+
+  li p {
+    margin: 0;
+  }
+
+  .uranus-public-event-description > :first-child {
+    margin-top: 0 !important;
   }
 }
 
 .uranus-public-event-detail-links {
   padding-left: 1rem;
+  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;

@@ -22,7 +22,7 @@ import UranusInviteActivateView from '@/component/user/UranusInviteActivateView.
 import UranusOrgTeamView from '@/component/org/view/UranusOrgTeamView.vue'
 import UranusOrgInviteTeamMemberView from '@/component/org/view/UranusOrgInviteTeamMemberView.vue'
 import UranusOrgMemberPermissionView from '@/component/org/view/UranusOrgMemberPermissionView.vue'
-import UranusEventsView from '@/view/public/UranusEventsView.vue'
+import UranusEventsView from '@/component/event/view/UranusEventsView.vue'
 import UranusEventCalendarView from '@/view/public/UranusEventCalendarView.vue'
 import UranusEventSlideshowView from '@/component/slideshow/UranusEventSlideshowView.vue'
 import UranusDevThemeView from '@/view/dev/UranusDevThemeView.vue'

@@ -81,7 +81,7 @@ export const uranusI18nPortalTranslations: Record<string, Record<UranusLocaleKey
         da: 'Opret portal',
     },
     create_portal_description: {
-        de: 'Erstelle ein neues Portal für Ihre Organisation.',
+        de: 'Erstelle ein neues Portal für deine Organisation.',
         en: 'Create a new portal for your organization.',
         da: 'Opret en ny portal til din organisation.',
     },
@@ -89,5 +89,10 @@ export const uranusI18nPortalTranslations: Record<string, Record<UranusLocaleKey
         de: 'Portalname',
         en: 'Portal name',
         da: 'Portalnavn',
+    },
+    failed_to_delete_portal: {
+        de: 'Das Portal konnte nicht gelöscht werden. Bitte versuche es erneut.',
+        en: 'The portal could not be deletet. Please try again.',
+        da: 'Portalen kunne ikke slettes. Prøv igen.',
     },
 }
