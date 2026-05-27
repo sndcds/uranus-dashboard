@@ -22,6 +22,7 @@
     <div
       v-if="open"
       class="uranus-popup-select__popup"
+      :style="popupStyle"
       role="listbox"
       :aria-label="ariaLabel"
     >
@@ -42,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { ChevronDown } from 'lucide-vue-next'
 
 export interface UranusPopupSelectOption {
@@ -68,6 +69,9 @@ const emit = defineEmits<{
 
 const root = ref<HTMLElement | null>(null)
 const open = ref(false)
+const popupStyle = ref<Record<string, string>>({})
+
+let cleanupListeners: (() => void) | null = null
 
 const selectedLabel = computed(() => {
   const selected = props.options.find((option) => option.value === props.modelValue)
@@ -77,16 +81,51 @@ const selectedLabel = computed(() => {
 
 function toggleOpen() {
   if (props.disabled) return
-  open.value = !open.value
+  if (open.value) {
+    closePopup()
+    return
+  }
+
+  updatePopupPosition()
+  open.value = true
 }
 
 function openPopup() {
   if (props.disabled) return
+  updatePopupPosition()
   open.value = true
 }
 
 function closePopup() {
   open.value = false
+}
+
+function updatePopupPosition() {
+  if (!root.value) return
+
+  const rect = root.value.getBoundingClientRect()
+  popupStyle.value = {
+    position: 'fixed',
+    top: `${rect.bottom + 4}px`,
+    left: `${rect.left}px`,
+    width: `${rect.width}px`,
+  }
+}
+
+function addPositionListeners() {
+  const onViewportChange = () => updatePopupPosition()
+  window.addEventListener('resize', onViewportChange)
+  window.addEventListener('scroll', onViewportChange, true)
+
+  cleanupListeners = () => {
+    window.removeEventListener('resize', onViewportChange)
+    window.removeEventListener('scroll', onViewportChange, true)
+  }
+}
+
+function removePositionListeners() {
+  cleanupListeners?.()
+  cleanupListeners = null
 }
 
 function selectOption(value: string) {
@@ -104,8 +143,17 @@ onMounted(() => {
   document.addEventListener('pointerdown', onDocumentPointerDown)
 })
 
+watch(open, async (isOpen) => {
+  if (isOpen) {
+    addPositionListeners()
+  } else {
+    removePositionListeners()
+  }
+})
+
 onBeforeUnmount(() => {
   document.removeEventListener('pointerdown', onDocumentPointerDown)
+  removePositionListeners()
 })
 </script>
 
@@ -150,11 +198,7 @@ onBeforeUnmount(() => {
 }
 
 .uranus-popup-select__popup {
-  position: absolute;
-  top: calc(100% + 0.3rem);
-  left: 0;
-  right: 0;
-  z-index: 30;
+  z-index: 2000;
   max-height: min(18rem, 45vh);
   overflow: auto;
   border: 1px solid var(--uranus-color-6);
