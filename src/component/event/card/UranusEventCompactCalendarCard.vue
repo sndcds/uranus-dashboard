@@ -8,7 +8,7 @@
       name: 'event-details',
       params: { uuid: event.uuid, eventDateUuid: event.dateUuid }
     }"
-      class="calendar-card custom-link"
+      class="calendar-card"
   >
     <div class="calendar-image">
       <img v-if="imageUrl" :src="imageUrl" :alt="t('event_image_alt_text')" />
@@ -102,7 +102,6 @@ const getTypeName = (typeId: number) =>
 .card-footer {
   margin-top: auto;
   padding-top: 10px;
-
 }
 
 .calendar-image {

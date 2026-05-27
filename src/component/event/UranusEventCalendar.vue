@@ -556,7 +556,9 @@ onBeforeUnmount(() => {
 
 .calendar-compact-layout > * {
   aspect-ratio: 1 / 1;
-  max-width: 260px;
+  width: 100%;
+  max-width: none;
+  justify-self: stretch;
 }
 
 .calendar-list-layout {
