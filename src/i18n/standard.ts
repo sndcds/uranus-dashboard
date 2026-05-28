@@ -175,6 +175,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Edit',
         da: 'Rediger'
     },
+    close: {
+        de: 'Schließen',
+        en: 'Close',
+        da: 'Luk'
+    },
     cancel: {
         de: 'Abbrechen',
         en: 'Cancel',

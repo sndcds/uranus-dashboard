@@ -20,6 +20,7 @@
             id="date-range-mode"
             v-model="dateRangeMode"
             class="uranus-filter-panel__select"
+            width="100%"
             :options="dateRangeModeOptions"
             :aria-label="t('calendar_filter_date_range')"
         />
@@ -113,13 +114,15 @@
         </UranusFormRow>
       </UranusAccordion>
 
+      <!-- TODO: i18n -->
       <UranusAccordion v-model="priceOpen">
         <template #title>{{ t('price') }}</template>
         <UranusFormRow :cols="1" class="uranus-filter-panel__select-row">
           <UranusLabel id="price-type" label="Preisart">
             <UranusPopupSelect
-                v-model="filter.priceType"
+                v-model="filter.priceType!"
                 class="uranus-filter-panel__select"
+                width="100%"
                 :options="priceTypeOptions"
                 :placeholder="t('event_price_not_specified')"
                 :aria-label="t('price')"
@@ -135,8 +138,9 @@
           />
           <UranusLabel id="price-currency" label="Währung">
             <UranusPopupSelect
-                v-model="filter.priceCurrency"
+                v-model="filter.priceCurrency!"
                 class="uranus-filter-panel__select"
+                width="100%"
                 :options="priceCurrencyOptions"
                 :aria-label="t('currency')"
             />

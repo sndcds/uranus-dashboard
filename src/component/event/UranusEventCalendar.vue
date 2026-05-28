@@ -49,6 +49,7 @@
           <UranusPopupSelect
               v-model="selectedEventTypeId"
               class="calendar-event-type-select"
+              width="100%"
               :options="eventTypeSelectOptions"
               :placeholder="t('all_event_types')"
               :aria-label="t('event_type')"

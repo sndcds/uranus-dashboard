@@ -85,8 +85,14 @@
       </nav>
 
       <div class="uranus-portal-events-header__search">
-        <UranusPortalDateRangeSelect v-model="portalDateRangeMode" />
-        <div>{{ eventCountInfo }}</div>
+        a
+        <UranusPopupSelect
+            v-model="portalDateRangeMode"
+            width="100%"
+            :options="dateRangeOptions"
+            :aria-label="t('date_range')"
+        />
+
         <UranusButton
             v-if="activeEventTypeIds.length"
             size="small"
@@ -95,28 +101,18 @@
         >
           {{ t('reset_filter') }}
         </UranusButton>
+
+        b
+        <UranusPopupSelect
+            v-model="selectedPortalEventTypeId"
+            width="100%"
+            :options="portalEventTypeOptions"
+            :placeholder="t('all_events')"
+            :aria-label="t('event_type')"
+        />
       </div>
 
       <div class="uranus-portal-events-header__icon-links"></div>
-
-
-      <div class="uranus-portal-events-header__event-types">
-        <div
-            v-if="eventListStore.typeSummary.length"
-            class="uranus-portal-events__type-scroller uranus-portal-event-type-scroller"
-        >
-          <span class="uranus-portal-events__type-select-label">
-            {{ t('event_type') }}
-          </span>
-          <UranusPopupSelect
-              v-model="selectedPortalEventTypeId"
-              class="uranus-portal-events__type-select"
-              :options="portalEventTypeOptions"
-              :placeholder="t('all_events')"
-              :aria-label="t('event_type')"
-          />
-        </div>
-      </div>
 
     </header>
 
@@ -249,7 +245,6 @@ import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
-import UranusPortalDateRangeSelect from '@/component/portal/UranusPortalDateRangeSelect.vue'
 import { uranusFormatDateTime, uranusPluralizedText } from '@/util/string.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
@@ -319,6 +314,38 @@ const typeLookupStore = useEventTypeLookupStore()
 const route = useRoute()
 const apiBase = apiBaseUrl()
 
+
+const dateRangeOptions = computed(() => [
+  {
+    value: 'all_events',
+    label: t('calendar_filter_date_all_events'),
+  },
+  {
+    value: 'today',
+    label: t('calendar_filter_date_today'),
+  },
+  {
+    value: 'tomorrow',
+    label: t('calendar_filter_date_tomorrow'),
+  },
+  {
+    value: 'weekend',
+    label: t('calendar_filter_date_weekend'),
+  },
+  {
+    value: 'next_week',
+    label: t('calendar_filter_date_next_week'),
+  },
+  {
+    value: 'following_weekend',
+    label: t('calendar_filter_date_following_weekend'),
+  },
+] satisfies {
+  value: string
+  label: string
+}[])
+
+
 const webLogoUrl = computed(() => {
   const uuid = portal.value?.web_logo_uuid
   return uuid
@@ -379,7 +406,7 @@ const sortedTypeSummary = computed(() => {
   })
 })
 const portalEventTypeOptions = computed<UranusPopupSelectOption[]>(() => [
-  { value: '', label: t('all_events') },
+  { value: '', label: t('all_event_types') },
   ...sortedTypeSummary.value.map((entry) => ({
     value: String(entry.typeId),
     label: `${typeLookupStore.getTypeName(entry.typeId, locale.value)} (${entry.count})`,
@@ -517,9 +544,9 @@ function createPortalStructuredCss(style: PortalStyle, portalUuid: string) {
       cssDeclaration('font-family', readStyleValue(style.portal, 'font-family')),
     ]),
     createRule(`${rootSelector} .uranus-portal-events__type-scroller,
-${rootSelector} .uranus-portal-events__grid,
-${rootSelector} .uranus-portal-events__state,
-${rootSelector} .uranus-portal-events__load-more-trigger`, [
+      ${rootSelector} .uranus-portal-events__grid,
+      ${rootSelector} .uranus-portal-events__state,
+      ${rootSelector} .uranus-portal-events__load-more-trigger`, [
       cssDeclaration('max-width', readStyleValue(style.content, 'max-width')),
       cssDeclaration('align-self', normalizeContentAlign(readStyleValue(style.content, 'align'))),
     ]),
