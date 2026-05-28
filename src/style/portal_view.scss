@@ -109,11 +109,13 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: cyan;
 }
 
 .uranus-portal-events-header__title {
   grid-area: title;
   min-width: 0;
+  background: powderblue;
 }
 
 .uranus-portal-events-header__buttons {
@@ -121,16 +123,18 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  background: greenyellow;
 }
 
 .uranus-portal-events-header__search {
-  grid-area: search;
+  grid-area: event-types;
   display: flex;
   align-items: center;
   justify-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
-  height: 2.5rem;
+  // height: 2.5rem;
+  background: yellow;
 }
 
 .uranus-portal-events-header__icon-links {
@@ -138,12 +142,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  background: lightcoral;
 }
 
 .uranus-portal-events-header__event-types {
   grid-area: event-types;
   min-width: 100%;
   min-height: 50px;
+  background: violet;
 }
 
 .uranus-portal-events-header__centered .uranus-portal-events-header__buttons,
@@ -234,6 +240,7 @@
 
 .uranus-portal-events__type-select .uranus-popup-select__option {
   color: var(--portal-event-text);
+  background: red;
 }
 
 .uranus-portal-events__grid {

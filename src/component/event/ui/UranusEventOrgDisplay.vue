@@ -13,7 +13,7 @@
         :pixelCount="8000"
         :maxWidth="200"
         :maxHeight="140"
-        :linkUrl="event.orgWebLink ?? null"
+        :linkUrl="event.orgWebLink ? uranusEnsureHttpOrHttps(event.orgWebLink ) : null"
         linkTarget="_blank"
     />
 

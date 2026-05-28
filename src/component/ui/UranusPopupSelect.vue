@@ -5,36 +5,37 @@
 <template>
   <div ref="root" class="uranus-popup-select">
     <button
-      type="button"
-      class="uranus-popup-select__trigger"
-      :aria-expanded="open ? 'true' : 'false'"
-      aria-haspopup="listbox"
-      :aria-label="ariaLabel"
-      :disabled="disabled"
-      @click="toggleOpen"
-      @keydown.down.prevent="openPopup"
-      @keydown.esc.prevent="closePopup"
+        type="button"
+        class="uranus-popup-select__trigger"
+        :style="triggerStyle"
+        :aria-expanded="open ? 'true' : 'false'"
+        aria-haspopup="listbox"
+        :aria-label="ariaLabel"
+        :disabled="disabled"
+        @click="toggleOpen"
+        @keydown.down.prevent="openPopup"
+        @keydown.esc.prevent="closePopup"
     >
       <span class="uranus-popup-select__label">{{ selectedLabel }}</span>
       <ChevronDown class="uranus-popup-select__icon" aria-hidden="true" />
     </button>
 
     <div
-      v-if="open"
-      class="uranus-popup-select__popup"
-      :style="popupStyle"
-      role="listbox"
-      :aria-label="ariaLabel"
+        v-if="open"
+        class="uranus-popup-select__popup"
+        :style="popupStyle"
+        role="listbox"
+        :aria-label="ariaLabel"
     >
       <button
-        v-for="option in options"
-        :key="option.value"
-        type="button"
-        class="uranus-popup-select__option"
-        :class="{ 'uranus-popup-select__option--selected': option.value === modelValue }"
-        role="option"
-        :aria-selected="option.value === modelValue ? 'true' : 'false'"
-        @click="selectOption(option.value)"
+          v-for="option in options"
+          :key="option.value"
+          type="button"
+          class="uranus-popup-select__option"
+          :class="{ 'uranus-popup-select__option--selected': option.value === modelValue }"
+          role="option"
+          :aria-selected="option.value === modelValue ? 'true' : 'false'"
+          @click="selectOption(option.value)"
       >
         {{ option.label }}
       </button>
@@ -57,10 +58,28 @@ const props = withDefaults(defineProps<{
   placeholder?: string
   ariaLabel?: string
   disabled?: boolean
+
+  /**
+   * Width of the trigger button.
+   * Examples:
+   *  - '12rem'
+   *  - '240px'
+   *  - '100%'
+   *  - 'auto'
+   */
+  width?: string
+
+  /**
+   * Maximum width of popup.
+   */
+  maxPopupWidth?: string
 }>(), {
   placeholder: '',
   ariaLabel: 'Select option',
   disabled: false,
+
+  width: 'auto',
+  maxPopupWidth: '24rem',
 })
 
 const emit = defineEmits<{
@@ -69,18 +88,28 @@ const emit = defineEmits<{
 
 const root = ref<HTMLElement | null>(null)
 const open = ref(false)
+
 const popupStyle = ref<Record<string, string>>({})
 
 let cleanupListeners: (() => void) | null = null
 
+const triggerStyle = computed(() => ({
+  width: props.width,
+}))
+
 const selectedLabel = computed(() => {
-  const selected = props.options.find((option) => option.value === props.modelValue)
+  const selected = props.options.find(
+      (option) => option.value === props.modelValue
+  )
+
   if (selected) return selected.label
+
   return props.placeholder
 })
 
 function toggleOpen() {
   if (props.disabled) return
+
   if (open.value) {
     closePopup()
     return
@@ -92,6 +121,7 @@ function toggleOpen() {
 
 function openPopup() {
   if (props.disabled) return
+
   updatePopupPosition()
   open.value = true
 }
@@ -104,16 +134,22 @@ function updatePopupPosition() {
   if (!root.value) return
 
   const rect = root.value.getBoundingClientRect()
+
   popupStyle.value = {
     position: 'fixed',
     top: `${rect.bottom + 4}px`,
     left: `${rect.left}px`,
-    width: `${rect.width}px`,
+
+    minWidth: `${rect.width}px`,
+    maxWidth: props.maxPopupWidth,
+
+    width: 'max-content',
   }
 }
 
 function addPositionListeners() {
   const onViewportChange = () => updatePopupPosition()
+
   window.addEventListener('resize', onViewportChange)
   window.addEventListener('scroll', onViewportChange, true)
 
@@ -135,7 +171,15 @@ function selectOption(value: string) {
 
 function onDocumentPointerDown(event: PointerEvent) {
   const target = event.target
-  if (!(target instanceof Node) || !root.value || root.value.contains(target)) return
+
+  if (
+      !(target instanceof Node) ||
+      !root.value ||
+      root.value.contains(target)
+  ) {
+    return
+  }
+
   closePopup()
 }
 
@@ -143,7 +187,7 @@ onMounted(() => {
   document.addEventListener('pointerdown', onDocumentPointerDown)
 })
 
-watch(open, async (isOpen) => {
+watch(open, (isOpen) => {
   if (isOpen) {
     addPositionListeners()
   } else {
@@ -160,21 +204,24 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .uranus-popup-select {
   position: relative;
-  width: 100%;
+  display: inline-block;
 }
 
 .uranus-popup-select__trigger {
   display: inline-flex;
-  width: 100%;
   min-height: 2rem;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+
   border: 1px solid var(--uranus-color-6);
   border-radius: var(--uranus-input-border-radius);
+
   padding: 0.35rem 0.6rem;
+
   background: var(--uranus-bg);
   color: var(--uranus-color);
+
   font: inherit;
   text-align: left;
 }
@@ -186,6 +233,7 @@ onBeforeUnmount(() => {
 
 .uranus-popup-select__label {
   min-width: 0;
+
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -199,25 +247,38 @@ onBeforeUnmount(() => {
 
 .uranus-popup-select__popup {
   z-index: 2000;
+
   max-height: min(18rem, 45vh);
-  overflow: auto;
+
+  overflow-y: auto;
+  overflow-x: auto;
+
   border: 1px solid var(--uranus-color-6);
   border-radius: var(--uranus-input-border-radius);
+
   padding: 0.25rem;
+
   background: var(--uranus-bg);
+
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
 }
 
 .uranus-popup-select__option {
   display: block;
   width: 100%;
+
   border: 0;
   border-radius: var(--uranus-input-border-radius);
+
   padding: 0.4rem 0.55rem;
+
   background: transparent;
   color: var(--uranus-color);
+
   font: inherit;
   text-align: left;
+
+  white-space: nowrap;
 
   &:hover {
     background: var(--uranus-color-8);

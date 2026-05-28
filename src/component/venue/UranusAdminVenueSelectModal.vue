@@ -11,6 +11,7 @@
   >
     <template v-if="viewMode === 'success'">
       <div class="venue-request-success">
+        {{ requestSuccessMessage }}
         {{ t('venue_request_success_followup', { venueName: requestedVenueName }) }}
       </div>
     </template>
@@ -62,7 +63,7 @@
 
     <template #actions>
       <UranusButton variant="tertiary" @click="$emit('close')">
-        {{ t('cancel') }}
+        {{ t('close') }}
       </UranusButton>
     </template>
   </UranusModal>
@@ -75,6 +76,7 @@ import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusAdminVenueRequestMap from '@/component/venue/UranusAdminVenueRequestMap.vue'
 import { type BasicVenueSpacesInfo } from '@/domain/venue/basicVenueInfo.model.ts'
+import { uranusStringInterpolate } from '@/util/string.ts'
 
 const { t } = useI18n()
 
@@ -93,6 +95,10 @@ const containerRef = ref<HTMLDivElement | null>(null)
 const viewMode = ref<'list' | 'map' | 'success'>('list')
 const requestedVenueName = ref('')
 const modalMaxWidth = computed(() => viewMode.value === 'map' ? '960px' : '600px')
+
+const requestSuccessMessage = computed(() =>
+  uranusStringInterpolate(t('venue_request_success_followup'), { venueName: requestedVenueName.value })
+)
 
 
 // Select a venue/space

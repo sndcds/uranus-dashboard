@@ -26,6 +26,7 @@ import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import { useAppStore } from '@/store/appStore.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 import venueMarkerIcon from '@/assets/map/marker.png'
+import {uranusStringInterpolate} from "@/util/string.ts";
 
 type BBox4326 = [number, number, number, number]
 
@@ -396,7 +397,7 @@ async function resolveVenueOrgUuid(properties: Record<string, any>) {
 }
 
 function createRequestMessage(venueName: string) {
-  return t('venue_request_partner_message', { venueName })
+  return uranusStringInterpolate(t('venue_request_partner_message'), { venueName: venueName })
 }
 
 function mapPartnerRequestError(error: unknown) {
