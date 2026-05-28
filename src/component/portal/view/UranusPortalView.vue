@@ -85,7 +85,6 @@
       </nav>
 
       <div class="uranus-portal-events-header__search">
-        a
         <UranusPopupSelect
             v-model="portalDateRangeMode"
             width="100%"
@@ -102,7 +101,6 @@
           {{ t('reset_filter') }}
         </UranusButton>
 
-        b
         <UranusPopupSelect
             v-model="selectedPortalEventTypeId"
             width="100%"
