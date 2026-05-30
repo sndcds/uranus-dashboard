@@ -68,6 +68,10 @@
       </a>
     </nav>
 
+    <nav v-if="$slots['content-nav']" class="uranus-portal-events-header__content-nav">
+      <slot name="content-nav" />
+    </nav>
+
     <div class="uranus-portal-events-header__search">
       <slot name="search" />
     </div>

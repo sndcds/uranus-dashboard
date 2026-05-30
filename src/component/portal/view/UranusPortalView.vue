@@ -28,6 +28,17 @@
         :description="portal?.description ?? null"
         :logo-url="webLogoUrl"
     >
+      <template #content-nav>
+        <button
+            v-for="view in contentViews"
+            :key="view.id"
+            :class="['uranus-portal__button', { 'uranus-portal__button--active': activeContentView === view.id }]"
+            @click="activeContentView = view.id"
+        >
+          {{ view.label }}
+        </button>
+      </template>
+
       <template #search>
         <UranusPopupSelect
             v-model="portalDateRangeMode"
@@ -56,66 +67,12 @@
     </UranusPortalHeader>
 
 
-    <div v-if="portalError" class="uranus-portal-events__state">
-      {{ portalError }}
-    </div>
-
-    <div v-else-if="eventListStore.error" class="uranus-portal-events__state">
-      {{ eventListStore.error }}
-    </div>
-
-    <!--div v-else-if="showInitialLoading || portalLoading" class="uranus-portal-events__state">
-      Loading events...
-    </div-->
-
-    <div v-else class="uranus-portal-events__grid">
-      <router-link
-          v-for="event in eventListStore.events"
-          :key="`${event.uuid}-${event.dateUuid}`"
-          :to="{
-            name: 'event-details',
-            params: { uuid: event.uuid, eventDateUuid: event.dateUuid }
-          }"
-          class="uranus-portal-event-card"
-      >
-        <div class="uranus-portal-event-card__image-frame">
-          <img
-              :src="eventListStore.getEventImageUrl(event, { width: 640, ratio: '4:3' })"
-              :alt="event.title"
-              class="uranus-portal-event-card__image"
-          />
-        </div>
-
-        <div class="uranus-portal-event-card__body">
-          <div class="uranus-portal-event-card__meta">
-            <span>{{ formatEventDateTime(event) }}</span>
-            <span>{{ event.venue.name }} · {{ event.venue.city }}</span>
-          </div>
-
-          <h2>{{ event.title }}</h2>
-
-          <p v-if="event.subtitle" class="uranus-portal-event-card__subtitle">
-            {{ event.subtitle }}
-          </p>
-
-          <div v-if="getUniqueEventTypes(event).length" class="uranus-portal-event-card__tags">
-            <span
-                v-for="typeId in getUniqueEventTypes(event)"
-                :key="typeId"
-                class="uranus-portal-event-card__tag"
-            >
-              {{ typeLookupStore.getTypeName(typeId, locale) }}
-            </span>
-          </div>
-        </div>
-      </router-link>
-    </div>
-
-    <div ref="loadMoreTrigger" class="uranus-portal-events__load-more-trigger" aria-hidden="true"></div>
-
-    <div v-if="isLoadingMore" class="uranus-portal-events__state uranus-portal-events__state--inline">
-      Loading events...
-    </div>
+    <UranusPortalEventListContent
+        v-if="activeContentView === 'events'"
+        :active-filter="activeFilter"
+        :portal-error="portalError"
+        :portal-ready="portalRenderReady"
+    />
 
     <UranusPortalFooter
         :config="footerConfig"
@@ -127,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
@@ -136,8 +93,6 @@ import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
-import { uranusFormatDateTime, uranusPluralizedText } from '@/util/string.ts'
-import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import { apiBaseUrl } from '@/util/util.ts'
 import '@/style/portal_view.scss'
 import { marked } from 'marked'
@@ -163,6 +118,7 @@ import {
 } from '@/component/portal/util/portalParser'
 import UranusPortalFooter from '@/component/portal/UranusPortalFooter.vue'
 import UranusPortalHeader from '@/component/portal/UranusPortalHeader.vue'
+import UranusPortalEventListContent from '@/component/portal/view/UranusPortalEventListContent.vue'
 
 
 interface PortalDTO {
@@ -182,8 +138,6 @@ interface PortalDTO {
 }
 
 const { t, locale } = useI18n({ useScope: 'global' })
-
-const LOAD_MORE_ROOT_MARGIN = 300
 
 const eventListStore = useEventListStore()
 const filterStore = useEventsFilterStore()
@@ -268,11 +222,6 @@ const portalDateRangeMode = computed<UranusPresetDateRangeMode>({
     applyPortalDateRangeMode(mode)
   }
 })
-const eventCountInfo = computed(() =>
-    uranusPluralizedText(t, 'result_count_singular', 'result_count_plural', eventListStore.events.length)
-)
-
-const showInitialLoading = computed(() => eventListStore.loading && !eventListStore.events.length)
 
 const sortedTypeSummary = computed(() => {
   return [...eventListStore.typeSummary].sort((a, b) => {
@@ -329,28 +278,14 @@ const portalStructuredCss = computed(() => {
   return createPortalStructuredCss(style, uuid)
 })
 
-const initialized = ref(false)
-const isReloading = ref(false)
-const isLoadingMore = ref(false)
-const loadMoreTrigger = ref<HTMLElement | null>(null)
-
-let reloadRequestId = 0
-let filterTimeout: number | null = null
-let observer: IntersectionObserver | null = null
+const activeContentView = ref<'events'>('events')
+const contentViews = computed(() => [
+  { id: 'events' as const, label: t('events') },
+])
 
 function onResetFilter() {
   filterStore.resetFilter(filterScope)
   applyPortalDateRangeMode(portalDateRangeMode.value)
-}
-
-function formatEventDateTime(event: EventListItem) {
-  return uranusFormatDateTime(event.startDate, event.startTime, locale.value)
-}
-
-function getUniqueEventTypes(event: EventListItem) {
-  const set = new Set<number>()
-  event.eventTypes?.forEach((type: EventListItemEventType) => set.add(type.typeId))
-  return Array.from(set)
 }
 
 function normalizePortalStyle(style: PortalStyle | string | null | undefined): PortalStyle | null {
@@ -397,131 +332,12 @@ async function fetchPortal() {
   }
 }
 
-async function reloadEvents() {
-  const currentReloadRequest = ++reloadRequestId
-
-  isReloading.value = true
-  observer?.disconnect()
-
-  try {
-    await waitForActiveEventLoad()
-    if (currentReloadRequest !== reloadRequestId) return
-
-    await eventListStore.loadEvents(true, activeFilter.value, {
-      keepCurrentEvents: initialized.value && eventListStore.events.length > 0,
-    })
-    await eventListStore.loadTypeSummary(activeFilter.value)
-    await waitForRenderedEvents()
-
-    if (currentReloadRequest !== reloadRequestId) return
-
-    observeLoadMoreTrigger()
-    await loadMoreWhileTriggerIsNearViewport()
-  } finally {
-    if (currentReloadRequest === reloadRequestId) {
-      isReloading.value = false
-      observeLoadMoreTrigger()
-    }
-  }
-}
-
-async function waitForRenderedEvents() {
-  await nextTick()
-  await new Promise<void>(resolve => window.requestAnimationFrame(() => resolve()))
-}
-
-async function waitForActiveEventLoad() {
-  while (eventListStore.loading) {
-    await waitForRenderedEvents()
-  }
-}
-
-function isLoadMoreTriggerNearViewport() {
-  const el = loadMoreTrigger.value
-  if (!el) return false
-
-  const rect = el.getBoundingClientRect()
-  return (
-      rect.top <= window.innerHeight + LOAD_MORE_ROOT_MARGIN &&
-      rect.bottom >= -LOAD_MORE_ROOT_MARGIN
-  )
-}
-
-async function loadMoreWhileTriggerIsNearViewport() {
-  if (isLoadingMore.value || isReloading.value) return
-
-  isLoadingMore.value = true
-
-  try {
-    while (
-        eventListStore.hasMore &&
-        !eventListStore.loading &&
-        !isReloading.value &&
-        isLoadMoreTriggerNearViewport()
-        ) {
-      const eventCountBeforeLoad = eventListStore.events.length
-
-      await eventListStore.loadEvents(false, activeFilter.value)
-      await waitForRenderedEvents()
-
-      if (eventListStore.error || eventListStore.events.length === eventCountBeforeLoad) {
-        break
-      }
-    }
-  } finally {
-    isLoadingMore.value = false
-  }
-}
-
-function observeLoadMoreTrigger() {
-  observer?.disconnect()
-
-  const el = loadMoreTrigger.value
-  if (!el || !observer) return
-
-  observer.observe(el)
-}
-
-watch(
-    () => activeFilter.value,
-    () => {
-      if (!initialized.value) return
-      if (filterTimeout) clearTimeout(filterTimeout)
-      filterTimeout = window.setTimeout(() => {
-        void reloadEvents()
-      }, 200)
-    },
-    { deep: true }
-)
-
 watch(portalUuid, async () => {
-  if (!initialized.value) return
   await fetchPortal()
 })
 
 onMounted(async () => {
-  observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0]
-        if (entry?.isIntersecting) {
-          void loadMoreWhileTriggerIsNearViewport()
-        }
-      },
-      { rootMargin: `${LOAD_MORE_ROOT_MARGIN}px` }
-  )
-
-  await typeLookupStore.initialize()
   await fetchPortal()
   applyPortalDateRangeMode(portalDateRangeMode.value)
-  await reloadEvents()
-  initialized.value = true
-
-  observeLoadMoreTrigger()
-  await loadMoreWhileTriggerIsNearViewport()
-})
-
-onBeforeUnmount(() => {
-  observer?.disconnect()
-  if (filterTimeout) clearTimeout(filterTimeout)
 })
 </script>

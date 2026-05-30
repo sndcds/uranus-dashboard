@@ -80,6 +80,7 @@
   grid-template-areas:
     "logo title"
     "logo buttons"
+    "content-nav content-nav"
     "event-types event-types";
   grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: flex-start;
@@ -90,6 +91,7 @@
   grid-template-areas:
     "logo"
     "title"
+    "content-nav"
     "event-types"
     "search";
   grid-template-columns: minmax(0, 1fr);
@@ -118,6 +120,13 @@
 
 .uranus-portal-events-header__buttons {
   grid-area: buttons;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.uranus-portal-events-header__content-nav {
+  grid-area: content-nav;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
