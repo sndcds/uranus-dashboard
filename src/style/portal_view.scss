@@ -193,11 +193,23 @@
 
 .uranus-portal-events__type-scroller,
 .uranus-portal-events__grid,
+.uranus-portal-events__map-wrapper,
 .uranus-portal-events__state,
 .uranus-portal-events__load-more-trigger {
   width: 100%;
   max-width: var(--portal-content-max-width);
   align-self: var(--portal-content-align-self);
+}
+
+.uranus-portal-events__map-wrapper {
+  min-height: min(68vh, 760px);
+}
+
+.uranus-portal-events__map-wrapper .venues-map {
+  height: 100%;
+  min-height: min(68vh, 760px);
+  border-radius: var(--uranus-tiny-border-radius);
+  overflow: hidden;
 }
 
 .uranus-portal-events__type-scroller {
