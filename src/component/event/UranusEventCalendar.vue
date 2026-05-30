@@ -140,9 +140,17 @@
                 :key="`${event.uuid}-${event.dateUuid}`"
                 class="calendar-week-event"
             >
-              <span class="calendar-week-event__time">{{ formatEventStartTime(event) }}</span>
-              <span class="calendar-week-event__title">{{ event.title }}</span>
-              <span class="calendar-week-event__venue">{{ event.venue.name }} · {{ event.venue.city }}</span>
+              <router-link
+                  class="calendar-week-event__link"
+                  :to="{
+                    name: 'event-details',
+                    params: { uuid: event.uuid, eventDateUuid: event.dateUuid }
+                  }"
+              >
+                <span class="calendar-week-event__time">{{ formatEventStartTime(event) }}</span>
+                <span class="calendar-week-event__title">{{ event.title }}</span>
+                <span class="calendar-week-event__venue">{{ event.venue.name }} · {{ event.venue.city }}</span>
+              </router-link>
             </li>
           </ul>
 
@@ -621,8 +629,26 @@ onBeforeUnmount(() => {
 }
 
 .calendar-week-event {
+  display: block;
+}
+
+.calendar-week-event__link {
   display: grid;
   gap: 0.15rem;
+  padding: 0.45rem 0.5rem;
+  background: #f2f2f2;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.calendar-week-event__link:hover {
+  background: #e8e8e8;
+}
+
+.calendar-week-event__link:focus-visible {
+  outline: 2px solid var(--uranus-select-bg);
+  outline-offset: 1px;
 }
 
 .calendar-week-event__time {
