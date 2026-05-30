@@ -10,29 +10,30 @@
           <UranusIconAction
               class="calendar-display-type-icon"
               :icon="LayoutGrid"
-              :selected="appStore.eventViewMode === 'cards' && !isCalendarSheetMode"
+            :selected="activeViewMode === 'cards'"
               @click="setGlobalMode('cards')"
           />
           <UranusIconAction
               class="calendar-display-type-icon"
               :icon="Grip"
-              :selected="appStore.eventViewMode === 'compact' && !isCalendarSheetMode"
+            :selected="activeViewMode === 'compact'"
               @click="setGlobalMode('compact')"
           />
           <UranusIconAction
               class="calendar-display-type-icon"
               :icon="Rows3"
-              :selected="appStore.eventViewMode === 'list' && !isCalendarSheetMode"
+            :selected="activeViewMode === 'list'"
               @click="setGlobalMode('list')"
           />
           <UranusIconAction
               class="calendar-display-type-icon"
               :icon="CalendarDays"
-              :selected="appStore.eventViewMode === 'calendar' || isCalendarSheetMode"
+            :selected="activeViewMode === 'calendar'"
               @click="setGlobalMode('calendar')"
           />
 
           <button
+            v-if="activeViewMode === 'calendar'"
               type="button"
               class="calendar-mode-button"
               :class="{ 'is-active': calendarMode === 'week' }"
@@ -42,6 +43,7 @@
             {{ calendarLabels.week }}
           </button>
           <button
+              v-if="activeViewMode === 'calendar'"
               type="button"
               class="calendar-mode-button"
               :class="{ 'is-active': calendarMode === 'month' }"
@@ -131,7 +133,7 @@
       </div>
     </div>
 
-    <section class="calendar-sheet-layout">
+    <section v-if="activeViewMode === 'calendar'" class="calendar-sheet-layout">
       <div v-if="calendarMode === 'week'" class="calendar-week-header">
         <UranusButton size="small" variant="tertiary" @click="goToPreviousWeek">
           <template #icon>
@@ -190,6 +192,40 @@
       </div>
     </section>
 
+    <div v-else-if="activeViewMode === 'cards'" class="calendar-card-layout">
+      <UranusEventCalendarCard
+          v-for="event in eventListStore.events"
+          :key="`${event.uuid}-${event.dateUuid}`"
+          :event="event"
+          :locale="locale"
+          :event-list-store="eventListStore"
+          :type-lookup-store="typeLookupStore"
+      />
+      <div></div><div></div><div></div>
+    </div>
+
+    <div v-else-if="activeViewMode === 'compact'" class="calendar-compact-layout">
+      <UranusEventCompactCalendarCard
+          v-for="event in eventListStore.events"
+          :key="`${event.uuid}-${event.dateUuid}`"
+          :event="event"
+          :locale="locale"
+          :event-list-store="eventListStore"
+          :type-lookup-store="typeLookupStore"
+      />
+    </div>
+
+    <div v-else class="calendar-list-layout">
+      <UranusEventCalendarListRow
+          v-for="event in eventListStore.events"
+          :key="`${event.uuid}-${event.dateUuid}`"
+          :event="event"
+          :locale="locale"
+          :event-list-store="eventListStore"
+          :type-lookup-store="typeLookupStore"
+      />
+    </div>
+
     <div ref="loadMoreTrigger" class="load-more-trigger" aria-hidden="true"></div>
 
     <!--div v-if="eventListStore.loading" class="loading-indicator">
@@ -213,6 +249,9 @@ import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
 import { SlidersHorizontal, X, ChevronLeft, ChevronRight, Rows3, CalendarDays, LayoutGrid, Grip } from 'lucide-vue-next'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
+import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
+import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
+import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendarListRow.vue'
 import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
 import type { EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
 import { addDays, formatDateKey, startOfWeek } from '@/component/calendar/uranusCalendar.ts'
@@ -252,7 +291,14 @@ const eventTypeSelectOptions = computed<UranusPopupSelectOption[]>(() => [
 ])
 const calendarMode = ref<'week' | 'month'>('week')
 const weekAnchorDate = ref(startOfWeek(new Date()))
-const isCalendarSheetMode = computed(() => calendarMode.value === 'week' || calendarMode.value === 'month')
+const activeViewMode = computed<EventViewMode>(() => {
+  const currentMode = appStore.eventViewMode
+  if (currentMode === 'cards' || currentMode === 'compact' || currentMode === 'list' || currentMode === 'calendar') {
+    return currentMode
+  }
+
+  return 'calendar'
+})
 const calendarRoot = ref<HTMLElement | null>(null)
 const isMobileFilterOpen = ref(false)
 
@@ -355,7 +401,7 @@ function onDocumentClick(event: MouseEvent) {
 
 async function reloadEvents() {
   const currentReloadRequest = ++reloadRequestId
-  const effectiveFilter = createWeeklyApiFilter(activeFilter.value)
+  const effectiveFilter = createEffectiveApiFilter(activeFilter.value)
 
   isReloading.value = true
   observer?.disconnect()
@@ -417,7 +463,7 @@ async function loadMoreWhileTriggerIsNearViewport() {
         isLoadMoreTriggerNearViewport()
         ) {
       const eventCountBeforeLoad = eventListStore.events.length
-      const effectiveFilter = createWeeklyApiFilter(activeFilter.value)
+      const effectiveFilter = createEffectiveApiFilter(activeFilter.value)
 
       await eventListStore.loadEvents(false, effectiveFilter)
       await waitForRenderedEvents()
@@ -442,6 +488,11 @@ watch(
     },
     { deep: true }
 )
+
+watch(activeViewMode, () => {
+  if (!initialized.value) return
+  void reloadEvents()
+})
 
 watch(weekAnchorDate, () => {
   if (!initialized.value) return
@@ -543,6 +594,11 @@ function createWeeklyApiFilter(filter: UranusEventsFilter): UranusEventsFilter {
   }
 }
 
+function createEffectiveApiFilter(filter: UranusEventsFilter): UranusEventsFilter {
+  if (activeViewMode.value !== 'calendar') return filter
+  return createWeeklyApiFilter(filter)
+}
+
 function compareEventTypes(a: EventListTypeSummary, b: EventListTypeSummary) {
   if (b.count !== a.count) return b.count - a.count
   return typeLookupStore
@@ -579,6 +635,10 @@ function observeLoadMoreTrigger() {
 
 onMounted(async () => {
   document.addEventListener('click', onDocumentClick)
+
+  if (appStore.eventViewMode === 'map') {
+    appStore.setEventViewMode('calendar')
+  }
 
   await reloadEvents()
   initialized.value = true
