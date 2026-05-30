@@ -84,6 +84,15 @@
           <ListPlus class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_favorite_lists') }}</span>
         </router-link>
+
+        <router-link
+            to="/page/help"
+            class="generic-sidebar__nav-item"
+            active-class="generic-sidebar__nav-item--active"
+            @click="handleLinkClick">
+          <ListPlus class="generic-sidebar__nav-icon"/>
+          <span class="generic-sidebar__nav-text">{{ t('nav_help') }}</span>
+        </router-link>
       </template>
 
       <!-- Visitor Navigation -->
