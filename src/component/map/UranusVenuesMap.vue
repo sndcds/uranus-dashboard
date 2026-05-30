@@ -23,6 +23,18 @@ import venueMarkerIcon from '@/assets/map/marker.png'
 
 const { t } = useI18n()
 
+type UranusVenuesMapLoadMode = 'bounds' | 'all'
+
+const props = withDefaults(defineProps<{
+  loadMode?: UranusVenuesMapLoadMode
+  showDetailsAction?: boolean
+  persistViewState?: boolean
+}>(), {
+  loadMode: 'bounds',
+  showDetailsAction: true,
+  persistViewState: true,
+})
+
 type BBox4326 = [number, number, number, number]
 
 type VenueProperties = {
@@ -54,6 +66,7 @@ const MARKER_LABEL_LAYER_ID = 'venues-marker-label'
 const MARKER_IMAGE_ID = 'venue-marker'
 const DEFAULT_CENTER: [number, number] = [9.5, 54.3]
 const DEFAULT_ZOOM = 8
+const WORLD_BBOX_4326: BBox4326 = [-180, -90, 180, 90]
 
 const themeStore = useThemeStore()
 const router = useRouter()
@@ -63,7 +76,7 @@ const mapContainer = ref<HTMLElement | null>(null)
 const map = shallowRef<maplibregl.Map | null>(null)
 let popup: maplibregl.Popup | null = null
 let loadRequestId = 0
-let lastLoadedBBoxKey: string | null = null
+let lastLoadedRequestKey: string | null = null
 
 const venues = ref<VenueFeatureCollection>({
   type: 'FeatureCollection',
@@ -92,18 +105,31 @@ async function loadVenuesForCurrentBounds() {
 
   const bbox = getMapBBox4326(currentMap)
   const bboxKey = createBBoxKey(bbox)
-  if (bboxKey === lastLoadedBBoxKey) return
+  const params = new URLSearchParams({ bbox: bbox.join(',') })
+  await loadVenues(`/api/venues/geojson?${params.toString()}`, bboxKey)
+}
+
+async function loadAllVenues() {
+  const params = new URLSearchParams({ bbox: WORLD_BBOX_4326.join(',') })
+  await loadVenues(`/api/venues/geojson?${params.toString()}`, 'all')
+}
+
+async function loadVenues(apiPath: string, requestKey: string) {
+  if (requestKey === lastLoadedRequestKey) return
 
   const currentRequestId = ++loadRequestId
-  const params = new URLSearchParams({ bbox: bbox.join(',') })
 
   try {
-    const response = await apiFetch<any>(`/api/venues/geojson?${params.toString()}`)
+    const response = await apiFetch<any>(apiPath)
     if (currentRequestId !== loadRequestId) return
 
-    lastLoadedBBoxKey = bboxKey
+    lastLoadedRequestKey = requestKey
     venues.value = normalizeVenueFeatureCollection(response?.data)
     updateVenueSource()
+
+    if (props.loadMode === 'all') {
+      fitMapToVenues()
+    }
   } catch (error) {
     console.error('[UranusVenuesMap] Failed to load venues:', error)
   }
@@ -190,11 +216,22 @@ function createMap() {
   instance.once('load', () => {
     addVenueSourceAndLayers(instance)
     updateVenueSource()
+    if (props.loadMode === 'all') {
+      void loadAllVenues()
+      return
+    }
+
     void loadVenuesForCurrentBounds()
   })
-  instance.on('moveend', () => void loadVenuesForCurrentBounds())
-  instance.on('resize', () => void loadVenuesForCurrentBounds())
-  bindViewStatePersistence(instance)
+
+  if (props.loadMode === 'bounds') {
+    instance.on('moveend', () => void loadVenuesForCurrentBounds())
+    instance.on('resize', () => void loadVenuesForCurrentBounds())
+  }
+
+  if (props.persistViewState) {
+    bindViewStatePersistence(instance)
+  }
 
   map.value = instance
 }
@@ -334,6 +371,37 @@ function updateVenueSource() {
   source?.setData(venues.value as any)
 }
 
+function fitMapToVenues() {
+  const currentMap = map.value
+  const features = venues.value.features
+  if (!currentMap || features.length === 0) return
+
+  if (features.length === 1) {
+    const feature = features[0]
+    if (!feature) return
+
+    currentMap.easeTo({
+      center: feature.geometry.coordinates,
+      zoom: Math.max(currentMap.getZoom(), 14),
+      duration: 500,
+    })
+    return
+  }
+
+  const bounds = new maplibregl.LngLatBounds()
+  features.forEach((feature) => {
+    bounds.extend(feature.geometry.coordinates)
+  })
+
+  if (bounds.isEmpty()) return
+
+  currentMap.fitBounds(bounds, {
+    padding: 56,
+    maxZoom: 14,
+    duration: 500,
+  })
+}
+
 function bindViewStatePersistence(instance: maplibregl.Map) {
   const persist = () => {
     const center = instance.getCenter()
@@ -408,6 +476,25 @@ function getPointCoordinates(feature: MapGeoJSONFeature): [number, number] | nul
 
 function createVenuePopupHtml(feature: MapGeoJSONFeature) {
   const properties = feature.properties ?? {}
+
+  if (!props.showDetailsAction) {
+    return `
+      <div class="uranus-map-popup">
+        <div class="uranus-map-popup__header">
+          ${escapeHtml(t('venue'))}
+        </div>
+        <div class="uranus-map-popup__body">
+          <p class="uranus-map-popup__title-text">
+            ${escapeHtml(String(properties.name ?? ''))}
+          </p>
+          <p class="uranus-map-popup__text">
+            ${escapeHtml([properties.city, properties.country].filter(Boolean).join(', '))}
+          </p>
+        </div>
+      </div>
+    `
+  }
+
   const uuid = String(properties.uuid ?? '')
   const infoUrl = uuid
       ? router.resolve({
@@ -472,6 +559,13 @@ watch(mapStyle, (style) => {
   currentMap.once('styledata', () => {
     addVenueSourceAndLayers(currentMap)
     updateVenueSource()
+
+    if (props.loadMode === 'all') {
+      void loadAllVenues()
+      return
+    }
+
+    void loadVenuesForCurrentBounds()
   })
 })
 
