@@ -315,6 +315,7 @@ function onDocumentClick(event: MouseEvent) {
 
 async function reloadEvents() {
   const currentReloadRequest = ++reloadRequestId
+  const effectiveFilter = createWeeklyApiFilter(activeFilter.value)
 
   isReloading.value = true
   observer?.disconnect()
@@ -323,8 +324,8 @@ async function reloadEvents() {
     await waitForActiveEventLoad()
     if (currentReloadRequest !== reloadRequestId) return
 
-    await eventListStore.loadEvents(true, activeFilter.value)
-    await eventListStore.loadTypeSummary(activeFilter.value)
+    await eventListStore.loadEvents(true, effectiveFilter)
+    await eventListStore.loadTypeSummary(effectiveFilter)
     rememberSingleTypeOptions()
     await waitForRenderedEvents()
 
@@ -376,8 +377,9 @@ async function loadMoreWhileTriggerIsNearViewport() {
         isLoadMoreTriggerNearViewport()
         ) {
       const eventCountBeforeLoad = eventListStore.events.length
+      const effectiveFilter = createWeeklyApiFilter(activeFilter.value)
 
-      await eventListStore.loadEvents(false, activeFilter.value)
+      await eventListStore.loadEvents(false, effectiveFilter)
       await waitForRenderedEvents()
 
       if (eventListStore.error || eventListStore.events.length === eventCountBeforeLoad) {
@@ -400,6 +402,11 @@ watch(
     },
     { deep: true }
 )
+
+watch(weekAnchorDate, () => {
+  if (!initialized.value) return
+  void reloadEvents()
+})
 
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
@@ -478,6 +485,18 @@ function formatEventStartTime(event: EventListItem) {
     hour: '2-digit',
     minute: '2-digit',
   }).format(toEventDateTime(event))
+}
+
+function createWeeklyApiFilter(filter: UranusEventsFilter): UranusEventsFilter {
+  const weekStart = weekAnchorDate.value
+  const weekEnd = addDays(weekStart, 6)
+
+  return {
+    ...filter,
+    dateRangeMode: 'custom',
+    startDate: formatDateKey(weekStart),
+    endDate: formatDateKey(weekEnd),
+  }
 }
 
 function compareEventTypes(a: EventListTypeSummary, b: EventListTypeSummary) {
