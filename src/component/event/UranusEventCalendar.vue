@@ -7,42 +7,22 @@
     <div class="calendar-head">
       <div class="calendar-options">
         <div class="calendar-display-options">
-          <UranusIconAction
-              v-if="isDisplayModeAllowed('cards')"
-              class="calendar-display-type-icon"
-              :icon="LayoutGrid"
-              :selected="displayMode === 'cards'"
-              @click="setDisplayMode('cards')"
-          />
-          <UranusIconAction
-              v-if="isDisplayModeAllowed('compact')"
-              class="calendar-display-type-icon"
-              :icon="Grip"
-              :selected="displayMode === 'compact'"
-              @click="setDisplayMode('compact')"
-          />
-          <UranusIconAction
-              v-if="isDisplayModeAllowed('list')"
-              class="calendar-display-type-icon"
-              :icon="Rows3"
-              :selected="displayMode === 'list'"
-              @click="setDisplayMode('list')"
-          />
-          <!-- TODO: Implement view for this mode and show icon -->
-          <!--UranusIconAction
-              v-if="isDisplayModeAllowed('calendar')"
-              class="calendar-display-type-icon"
-              :icon="CalendarDays"
-              :selected="displayMode === 'calendar'"
-              @click="setDisplayMode('calendar')"
-          /-->
-          <UranusIconAction
-              v-if="isDisplayModeAllowed('map')"
-              class="calendar-display-type-icon"
-              :icon="Map"
-              :selected="displayMode === 'map'"
-              @click="setDisplayMode('map')"
-          />
+          <button
+              type="button"
+              class="calendar-mode-button"
+              :class="{ 'is-active': calendarMode === 'week' }"
+              @click="calendarMode = 'week'"
+          >
+            {{ calendarLabels.week }}
+          </button>
+          <button
+              type="button"
+              class="calendar-mode-button"
+              :class="{ 'is-active': calendarMode === 'month' }"
+              @click="calendarMode = 'month'"
+          >
+            {{ calendarLabels.month }}
+          </button>
         </div>
 
         <div class="calendar-event-type-select-container">
@@ -124,61 +104,57 @@
       </div>
     </div>
 
-    <transition name="fade" mode="out-in">
-        <div v-if="displayMode === 'cards'" class="calendar-card-layout">
-          <UranusEventCalendarCard
-              v-for="event in eventListStore.events"
-              :key="event.uuid"
-              :event="event"
-              :locale="locale"
-              :event-list-store="eventListStore"
-              :type-lookup-store="typeLookupStore"
-          />
-          <!-- Hack to keep fewer than 4 entries in 4 column grid layout -->
-          <div></div><div></div><div></div>
+    <section class="calendar-sheet-layout">
+      <div v-if="calendarMode === 'week'" class="calendar-week-header">
+        <UranusButton size="small" variant="tertiary" @click="goToPreviousWeek">
+          <template #icon>
+            <ChevronLeft />
+          </template>
+          {{ calendarLabels.previous }}
+        </UranusButton>
+
+        <div class="calendar-week-range">{{ weekRangeLabel }}</div>
+
+        <UranusButton size="small" variant="tertiary" @click="goToNextWeek">
+          {{ calendarLabels.next }}
+          <template #icon>
+            <ChevronRight />
+          </template>
+        </UranusButton>
+      </div>
+
+      <div v-if="calendarMode === 'week'" class="calendar-week-grid">
+        <article
+            v-for="day in weekDays"
+            :key="day.dateKey"
+            class="calendar-week-day"
+        >
+          <header class="calendar-week-day__header">
+            <strong>{{ day.weekday }}</strong>
+            <span>{{ day.dateLabel }}</span>
+          </header>
+
+          <ul v-if="day.events.length" class="calendar-week-day__events">
+            <li
+                v-for="event in day.events"
+                :key="`${event.uuid}-${event.dateUuid}`"
+                class="calendar-week-event"
+            >
+              <span class="calendar-week-event__time">{{ formatEventStartTime(event) }}</span>
+              <span class="calendar-week-event__title">{{ event.title }}</span>
+              <span class="calendar-week-event__venue">{{ event.venue.name }} · {{ event.venue.city }}</span>
+            </li>
+          </ul>
+
+          <p v-else class="calendar-week-day__empty">{{ calendarLabels.emptyDay }}</p>
         </div>
 
-        <div v-else-if="displayMode === 'compact'" class="calendar-compact-layout">
-          <UranusEventCompactCalendarCard
-              v-for="event in eventListStore.events"
-              :key="event.uuid"
-              :event="event"
-              :locale="locale"
-              :event-list-store="eventListStore"
-              :type-lookup-store="typeLookupStore"
-          />
-        </div>
+      <div v-else class="calendar-month-placeholder">
+        {{ calendarLabels.monthPlaceholder }}
+      </div>
+    </section>
 
-        <div v-else-if="displayMode === 'list'" class="calendar-list-layout">
-          <UranusEventCalendarListRow
-              v-for="event in eventListStore.events"
-              :key="event.uuid"
-              :event="event"
-              :locale="locale"
-              :event-list-store="eventListStore"
-              :type-lookup-store="typeLookupStore"
-          />
-        </div>
-
-        <div v-else-if="displayMode === 'calendar'" class="calendar-classic-layout">
-          <UranusEventsCalendarView :event-list="eventListStore.events" />
-        </div>
-
-      <!--/div-->
-    </transition>
-
-    <div
-        v-if="displayMode !== 'map' && displayMode !== 'calendar'"
-        ref="loadMoreTrigger"
-        class="load-more-trigger"
-        aria-hidden="true"
-    ></div>
-
-    <UranusEventsMap
-        v-if="displayMode === 'map'"
-        :filter-scope="filterScope"
-        class="calendar-map-layout"
-    />
+    <div ref="loadMoreTrigger" class="load-more-trigger" aria-hidden="true"></div>
 
     <!--div v-if="eventListStore.loading" class="loading-indicator">
       Loading more events…
@@ -196,47 +172,32 @@ import {type UranusEventsFilter, type UranusEventsFilterScope, useEventsFilterSt
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { uranusPluralizedText } from '@/util/string.ts'
-import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
-import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendarListRow.vue'
-import UranusIconAction from '@/component/ui/UranusIconAction.vue'
-import UranusEventsMap from '@/component/map/UranusEventsMap.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
-import { Rows3, LayoutGrid, Map, Grip, CalendarDays, SlidersHorizontal, X } from 'lucide-vue-next'
-import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
-import UranusEventsCalendarView from '@/component/event/view/UranusEventsCalendarView.vue'
+import { SlidersHorizontal, X, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
-import { isEventViewMode, type EventViewMode, useAppStore } from '@/store/appStore.ts'
+import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
 import type { EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
+import { addDays, formatDateKey, startOfWeek } from '@/component/calendar/uranusCalendar.ts'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
 const props = withDefaults(defineProps<{
   filterScope?: UranusEventsFilterScope
-  displayModes?: EventViewMode[]
-  initialDisplayMode?: EventViewMode
-  persistDisplayMode?: boolean
   showFilterControls?: boolean
   typeFilterMode?: 'chips-multiple' | 'select-single'
 }>(), {
   filterScope: 'default',
-  displayModes: () => ['cards', 'compact', 'list', 'calendar', 'map'],
-  initialDisplayMode: 'compact',
-  persistDisplayMode: true,
   showFilterControls: true,
   typeFilterMode: 'chips-multiple'
 })
 
 const LOAD_MORE_ROOT_MARGIN = 300
-const isSwitchingMode = ref(false)
-const appStore = useAppStore()
 const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
 const eventListStore = useEventListStore()
 const filterScope = computed(() => props.filterScope)
 const activeFilter = computed(() => filterStore.getFilter(filterScope.value))
-const activeEventTypeIds = computed(() => activeFilter.value.eventTypeIds)
-const localDisplayMode = ref<EventViewMode>(props.initialDisplayMode)
 const singleTypeOptions = ref<EventListTypeSummary[]>([])
 const eventTypeOptions = computed(() =>
   props.typeFilterMode === 'select-single'
@@ -250,8 +211,26 @@ const eventTypeSelectOptions = computed<UranusPopupSelectOption[]>(() => [
     label: `${typeLookupStore.getTypeName(entry.typeId, locale.value)} (${entry.count})`,
   })),
 ])
+const calendarMode = ref<'week' | 'month'>('week')
+const weekAnchorDate = ref(startOfWeek(new Date()))
 const calendarRoot = ref<HTMLElement | null>(null)
 const isMobileFilterOpen = ref(false)
+
+const calendarLabels = computed(() => {
+  const isGerman = locale.value.startsWith('de')
+
+  return {
+    week: isGerman ? 'Wochenansicht' : 'Week view',
+    month: isGerman ? 'Monatsansicht' : 'Month view',
+    previous: isGerman ? 'Vorherige Woche' : 'Previous week',
+    next: isGerman ? 'Naechste Woche' : 'Next week',
+    emptyDay: isGerman ? 'Keine Veranstaltungen' : 'No events',
+    monthPlaceholder: isGerman
+        ? 'Monatsansicht folgt im naechsten Schritt.'
+        : 'Month view will be added in the next step.',
+  }
+})
+
 const activeFilterCount = computed(() => {
   const filter = activeFilter.value
   let count = 0
@@ -270,32 +249,6 @@ const activeFilterCount = computed(() => {
 
   return count
 })
-
-const displayMode = computed<EventViewMode>(() => {
-  const requestedMode = props.persistDisplayMode && isEventViewMode(appStore.eventViewMode)
-      ? appStore.eventViewMode
-      : localDisplayMode.value
-
-  return isDisplayModeAllowed(requestedMode) ? requestedMode : fallbackDisplayMode.value
-})
-
-function setDisplayMode(mode: EventViewMode) {
-  if (!isDisplayModeAllowed(mode)) return
-
-  localDisplayMode.value = mode
-
-  if (props.persistDisplayMode) {
-    appStore.setEventViewMode(mode)
-  }
-}
-
-const fallbackDisplayMode = computed<EventViewMode>(() =>
-    props.displayModes.find(isEventViewMode) ?? 'compact'
-)
-
-function isDisplayModeAllowed(mode: EventViewMode) {
-  return props.displayModes.includes(mode)
-}
 
 const initialized = ref(false)
 let reloadRequestId = 0
@@ -401,7 +354,7 @@ async function waitForActiveEventLoad() {
 
 function isLoadMoreTriggerNearViewport() {
   const el = loadMoreTrigger.value
-  if (!el || displayMode.value === 'map' || displayMode.value === 'calendar') return false
+  if (!el) return false
 
   const rect = el.getBoundingClientRect()
   return (
@@ -411,7 +364,7 @@ function isLoadMoreTriggerNearViewport() {
 }
 
 async function loadMoreWhileTriggerIsNearViewport() {
-  if (isLoadingMore.value || isReloading.value || isSwitchingMode.value || displayMode.value === 'map' || displayMode.value === 'calendar') return
+  if (isLoadingMore.value || isReloading.value) return
 
   isLoadingMore.value = true
 
@@ -420,7 +373,6 @@ async function loadMoreWhileTriggerIsNearViewport() {
         eventListStore.hasMore &&
         !eventListStore.loading &&
         !isReloading.value &&
-        !isSwitchingMode.value &&
         isLoadMoreTriggerNearViewport()
         ) {
       const eventCountBeforeLoad = eventListStore.events.length
@@ -449,19 +401,84 @@ watch(
     { deep: true }
 )
 
-watch(displayMode, async () => {
-  if (!initialized.value) return
-  isSwitchingMode.value = true
-  observer?.disconnect() // stop infinite scroll during transition
-  await reloadEvents()
-  await waitForRenderedEvents()
-  isSwitchingMode.value = false
-  observeLoadMoreTrigger()
-  await loadMoreWhileTriggerIsNearViewport()
-})
-
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
+
+const eventsByDate = computed(() => {
+  const grouped = new globalThis.Map<string, EventListItem[]>()
+
+  eventListStore.events.forEach((event) => {
+    const dateKey = formatDateKey(toEventDateTime(event))
+    const bucket = grouped.get(dateKey) ?? []
+    bucket.push(event)
+    grouped.set(dateKey, bucket)
+  })
+
+  grouped.forEach((events) => {
+    events.sort((a, b) => toEventDateTime(a).getTime() - toEventDateTime(b).getTime())
+  })
+
+  return grouped
+})
+
+const weekRangeLabel = computed(() => {
+  const weekStart = weekAnchorDate.value
+  const weekEnd = addDays(weekStart, 6)
+  const formatter = new Intl.DateTimeFormat(locale.value, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })
+
+  return `${formatter.format(weekStart)} - ${formatter.format(weekEnd)}`
+})
+
+const weekDays = computed(() => {
+  const weekdayFormatter = new Intl.DateTimeFormat(locale.value, { weekday: 'long' })
+  const dateFormatter = new Intl.DateTimeFormat(locale.value, { day: '2-digit', month: '2-digit' })
+
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = addDays(weekAnchorDate.value, index)
+    const dateKey = formatDateKey(date)
+
+    return {
+      date,
+      dateKey,
+      weekday: weekdayFormatter.format(date),
+      dateLabel: dateFormatter.format(date),
+      events: eventsByDate.value.get(dateKey) ?? [],
+    }
+  })
+})
+
+function goToPreviousWeek() {
+  weekAnchorDate.value = addDays(weekAnchorDate.value, -7)
+}
+
+function goToNextWeek() {
+  weekAnchorDate.value = addDays(weekAnchorDate.value, 7)
+}
+
+function toEventDateTime(event: EventListItem) {
+  const [year, month, day] = event.startDate.split('-').map(Number)
+  const [hour = 0, minute = 0] = (event.startTime ?? '00:00').split(':').map(Number)
+
+  if (!year || !month || !day) {
+    const fallback = new Date(event.startDate)
+    return Number.isNaN(fallback.getTime()) ? new Date() : fallback
+  }
+
+  return new Date(year, month - 1, day, hour, minute)
+}
+
+function formatEventStartTime(event: EventListItem) {
+  if (!event.startTime) return '--:--'
+
+  return new Intl.DateTimeFormat(locale.value, {
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(toEventDateTime(event))
+}
 
 function compareEventTypes(a: EventListTypeSummary, b: EventListTypeSummary) {
   if (b.count !== a.count) return b.count - a.count
@@ -492,20 +509,13 @@ function observeLoadMoreTrigger() {
   observer?.disconnect()
 
   const el = loadMoreTrigger.value
-  if (!el || displayMode.value === 'map' || displayMode.value === 'calendar' || !observer) return
+  if (!el || !observer) return
 
   observer.observe(el)
 }
 
 onMounted(async () => {
   document.addEventListener('click', onDocumentClick)
-  if (props.persistDisplayMode) {
-    appStore.normalizeEventViewMode()
-  }
-
-  if (!isDisplayModeAllowed(localDisplayMode.value)) {
-    localDisplayMode.value = fallbackDisplayMode.value
-  }
 
   await reloadEvents()
   initialized.value = true
@@ -537,6 +547,87 @@ onBeforeUnmount(() => {
   width: 100%;
   flex: 1;
   min-height: 0;
+}
+
+.calendar-sheet-layout {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.calendar-week-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.calendar-week-range {
+  font-weight: 600;
+  text-align: center;
+}
+
+.calendar-week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.calendar-week-day {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  min-height: 220px;
+  padding: 0.75rem;
+  border: 1px solid var(--uranus-color-7);
+  background: var(--uranus-bg);
+}
+
+.calendar-week-day__header {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.calendar-week-day__header strong {
+  text-transform: capitalize;
+}
+
+.calendar-week-day__events {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.calendar-week-event {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.calendar-week-event__time {
+  font-size: 0.88rem;
+  color: var(--uranus-color-4);
+}
+
+.calendar-week-event__title {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.calendar-week-event__venue,
+.calendar-week-day__empty {
+  font-size: 0.9rem;
+  color: var(--uranus-color-4);
+}
+
+.calendar-month-placeholder {
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--uranus-color-7);
+  background: var(--uranus-bg);
+  color: var(--uranus-color-4);
 }
 
 .calendar-card-layout {
@@ -591,6 +682,20 @@ onBeforeUnmount(() => {
 
 .calendar-display-type-icon {
   padding: 0.5rem;
+}
+
+.calendar-mode-button {
+  border: 1px solid var(--uranus-color-6);
+  background: transparent;
+  color: var(--uranus-color);
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+}
+
+.calendar-mode-button.is-active {
+  border-color: var(--uranus-select-bg);
+  background: var(--uranus-select-bg);
+  color: var(--uranus-select-color);
 }
 
 .calendar-event-type-chips-container {
@@ -826,18 +931,17 @@ onBeforeUnmount(() => {
     padding-top: 0.25rem;
   }
 
-  .calendar-card-layout,
-  .calendar-compact-layout,
-  .calendar-list-layout {
+  .calendar-sheet-layout {
     padding: 0.75rem;
   }
 
-  .calendar-card-layout {
-    grid-template-columns: 1fr;
+  .calendar-week-header {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .calendar-compact-layout {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .calendar-week-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
