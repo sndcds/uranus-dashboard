@@ -335,6 +335,7 @@ function onDocumentClick(event: MouseEvent) {
 async function reloadEvents() {
   const currentReloadRequest = ++reloadRequestId
   const effectiveFilter = createEffectiveApiFilter(activeFilter.value)
+  const useWeeklyEndpoint = shouldUseWeeklyEndpoint()
 
   isReloading.value = true
   observer?.disconnect()
@@ -343,7 +344,11 @@ async function reloadEvents() {
     await waitForActiveEventLoad()
     if (currentReloadRequest !== reloadRequestId) return
 
-    await eventListStore.loadEvents(true, effectiveFilter)
+    if (useWeeklyEndpoint) {
+      await eventListStore.loadWeekEvents(true, effectiveFilter)
+    } else {
+      await eventListStore.loadEvents(true, effectiveFilter)
+    }
     await eventListStore.loadTypeSummary(effectiveFilter)
     rememberSingleTypeOptions()
     await waitForRenderedEvents()
@@ -385,6 +390,7 @@ function isLoadMoreTriggerNearViewport() {
 
 async function loadMoreWhileTriggerIsNearViewport() {
   if (isLoadingMore.value || isReloading.value) return
+  if (shouldUseWeeklyEndpoint()) return
 
   isLoadingMore.value = true
 
@@ -428,6 +434,11 @@ watch(activeViewMode, () => {
 })
 
 watch(weekAnchorDate, () => {
+  if (!initialized.value) return
+  void reloadEvents()
+})
+
+watch(calendarMode, () => {
   if (!initialized.value) return
   void reloadEvents()
 })
@@ -528,8 +539,12 @@ function createWeeklyApiFilter(filter: UranusEventsFilter): UranusEventsFilter {
 }
 
 function createEffectiveApiFilter(filter: UranusEventsFilter): UranusEventsFilter {
-  if (activeViewMode.value !== 'calendar') return filter
+  if (!shouldUseWeeklyEndpoint()) return filter
   return createWeeklyApiFilter(filter)
+}
+
+function shouldUseWeeklyEndpoint() {
+  return activeViewMode.value === 'calendar' && calendarMode.value === 'week'
 }
 
 function compareEventTypes(a: EventListTypeSummary, b: EventListTypeSummary) {
