@@ -22,139 +22,64 @@
       :data-portal-uuid="portalUuid"
       :style="portalRootStyle"
   >
-    <header
-        class="uranus-portal-events-header"
-        :class="portalHeaderLayoutClass"
+    <UranusPortalHeader
+        :config="headerConfig"
+        :title="portal?.name ?? t('events')"
+        :description="portal?.description ?? null"
+        :logo-url="webLogoUrl"
     >
-      <div v-if="headerConfig.showLogo" class="uranus-portal-events-header__logo">
-        <div
-            v-if="webLogoUrl"
-            class="uranus-portal-events-header__logo-frame"
-            :style="headerLogoFrameStyle"
+      <template #content-nav>
+        <button
+            v-for="view in contentViews"
+            :key="view.id"
+            :class="['uranus-portal__button', { 'uranus-portal__button--active': activeContentView === view.id }]"
+            @click="activeContentView = view.id"
         >
-          <a
-              v-if="headerConfig.logoLinkUrl"
-              class="uranus-portal-events__logo-link"
-              :href="headerConfig.logoLinkUrl"
-              :target="headerConfig.logoLinkTarget"
-              :rel="getLinkRel(headerConfig.logoLinkTarget)"
-          >
-            <UranusLogoImage
-                class="uranus-portal-events-header__logo-image"
-                :logoURL="webLogoUrl"
-                theme="light"
-                :pixelCount="headerLogoPixelCount"
-                :maxWidth="headerConfig.logoWidth"
-                :maxHeight="headerConfig.logoHeight"
-            />
-          </a>
+          {{ view.label }}
+        </button>
+      </template>
 
-          <UranusLogoImage
-              v-else
-              class="uranus-portal-events-header__logo-image"
-              :logoURL="webLogoUrl"
-              theme="light"
-              :pixelCount="headerLogoPixelCount"
-              :maxWidth="headerConfig.logoWidth"
-              :maxHeight="headerConfig.logoHeight"
-          />
-        </div>
-      </div>
+      <template #search>
+        <UranusPopupSelect
+            v-model="portalDateRangeMode"
+            width="100%"
+            :options="dateRangeOptions"
+            :aria-label="t('date_range')"
+        />
 
-      <div
-          v-if="headerConfig.showTitle || headerConfig.showDescription"
-          class="uranus-portal-events-header__title"
-      >
-        <h1 v-if="headerConfig.showTitle">{{ portal?.name ?? t('events') }}</h1>
-        <p v-if="headerConfig.showDescription">
-          {{ portal?.description }}
-        </p>
-      </div>
-
-      <nav class="uranus-portal-events-header__buttons">
-        <a
-            v-for="(button, index) in headerConfig.buttons"
-            :key="`${button.url}-${index}`"
-            :href="button.url"
-            :target="button.target"
-            :rel="getLinkRel(button.target)"
-            :class="['uranus-portal__button', button.cssClass]"
+        <UranusButton
+            v-if="activeEventTypeIds.length"
+            size="small"
+            variant="tertiary"
+            @click="onResetFilter"
         >
-          {{ button.label }}
-        </a>
-      </nav>
+          {{ t('reset_filter') }}
+        </UranusButton>
 
-      <div class="uranus-portal-events-header__icon-links"></div>
+        <UranusPopupSelect
+            v-model="selectedPortalEventTypeId"
+            width="100%"
+            :options="portalEventTypeOptions"
+            :placeholder="t('all_events')"
+            :aria-label="t('event_type')"
+        />
+      </template>
+    </UranusPortalHeader>
 
-    </header>
 
-    <div v-if="portalError" class="uranus-portal-events__state">
-      {{ portalError }}
-    </div>
+    <UranusPortalEventListContent
+        v-if="activeContentView === 'events'"
+        :active-filter="activeFilter"
+        :portal-error="portalError"
+        :portal-ready="portalRenderReady"
+    />
 
-    <div v-else class="uranus-portal-events__map-wrapper">
-      <UranusVenuesMap
-          load-mode="all"
-          :show-details-action="false"
-          :persist-view-state="false"
-      />
-    </div>
+    <UranusPortalFooter
+        :config="footerConfig"
+        :logo-url="footerLogoUrl"
+        :text-html="footerTextHtml"
+    />
 
-    <footer
-        v-if="showPortalFooter"
-        class="uranus-portal-events__footer"
-    >
-      <div class="uranus-portal-events__footer-logo">
-        <div
-            v-if="footerConfig.showLogo && footerLogoUrl"
-            class="uranus-portal-events__footer-logo-frame"
-            :style="footerLogoFrameStyle"
-        >
-          <a
-              v-if="footerConfig.logoLinkUrl"
-              class="uranus-portal-events__footer-logo-link"
-              :href="footerConfig.logoLinkUrl"
-              :target="footerConfig.logoLinkTarget"
-              :rel="getLinkRel(footerConfig.logoLinkTarget)"
-          >
-            <UranusLogoImage
-                :logoURL="footerLogoUrl"
-                theme="light"
-                :pixelCount="footerLogoPixelCount"
-                :maxWidth="footerConfig.logoWidth"
-                :maxHeight="footerConfig.logoHeight"
-            />
-          </a>
-
-          <UranusLogoImage
-              v-else
-              :logoURL="footerLogoUrl"
-              theme="light"
-              :pixelCount="footerLogoPixelCount"
-              :maxWidth="footerConfig.logoWidth"
-              :maxHeight="footerConfig.logoHeight"
-          />
-        </div>
-      </div>
-
-      <div
-          v-if="footerTextHtml"
-          class="uranus-portal-events__footer-text"
-          v-html="footerTextHtml"
-      ></div>
-
-      <nav v-if="footerConfig.links.length" class="uranus-portal-events__footer-links">
-        <a
-            v-for="(link, index) in footerConfig.links"
-            :key="`${link.url}-${index}`"
-            :href="link.url"
-            :target="link.target"
-            :rel="getLinkRel(link.target)"
-        >
-          {{ link.label }}
-        </a>
-      </nav>
-    </footer>
   </div>
 </template>
 
@@ -163,8 +88,11 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { apiFetch } from '@/api.ts'
-import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
-import UranusVenuesMap from '@/component/map/UranusVenuesMap.vue'
+import { useEventListStore } from '@/store/eventListStore.ts'
+import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
+import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
+import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
 import { apiBaseUrl } from '@/util/util.ts'
 import '@/style/portal_view.scss'
 import { marked } from 'marked'
@@ -173,33 +101,25 @@ import {
   createHeaderConfig,
   type PortalFooterConfig,
   type PortalHeaderConfig,
-  type PortalLinkTarget,
 } from '@/component/portal/editor/portalLayoutConfig.ts'
+import {
+  resolveEventDateRange,
+  type UranusPresetDateRangeMode,
+} from '@/util/eventDateRange.ts'
+import {
+  type PortalStyle,
+  createPortalStructuredCss,
+} from '@/component/portal/util/portalStyleGenerator'
+import {
+  normalizeJsonObject,
+  normalizePortalPrefilter,
+  isPrefilterValue,
+  isPrefilterStringList,
+} from '@/component/portal/util/portalParser'
+import UranusPortalFooter from '@/component/portal/UranusPortalFooter.vue'
+import UranusPortalHeader from '@/component/portal/UranusPortalHeader.vue'
+import UranusPortalEventListContent from '@/component/portal/view/UranusPortalEventListContent.vue'
 
-type PortalStyleSection = Record<string, string | number | null | undefined>
-
-interface PortalStyle {
-  'custom-css'?: string
-  portal?: PortalStyleSection
-  content?: PortalStyleSection
-  header?: {
-    title?: PortalStyleSection
-    description?: PortalStyleSection
-  }
-  'event-grid'?: PortalStyleSection
-  'event-card'?: PortalStyleSection & {
-    hover?: PortalStyleSection
-  }
-  'event-card-image'?: PortalStyleSection & {
-    hover?: PortalStyleSection
-  }
-  'event-card-info'?: PortalStyleSection
-  'event-card-tags'?: PortalStyleSection
-  'event-card-type-chips'?: PortalStyleSection
-  // Legacy style keys kept for existing portal records.
-  grid?: PortalStyleSection
-  card?: PortalStyleSection
-}
 
 interface PortalDTO {
   uuid: string
@@ -217,10 +137,44 @@ interface PortalDTO {
   footer_logo_uuid?: string | null
 }
 
-const { t } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 
+const eventListStore = useEventListStore()
+const filterStore = useEventsFilterStore()
+const typeLookupStore = useEventTypeLookupStore()
 const route = useRoute()
 const apiBase = apiBaseUrl()
+
+
+const dateRangeOptions = computed(() => [
+  {
+    value: 'all_events',
+    label: t('calendar_filter_date_all_events'),
+  },
+  {
+    value: 'today',
+    label: t('calendar_filter_date_today'),
+  },
+  {
+    value: 'tomorrow',
+    label: t('calendar_filter_date_tomorrow'),
+  },
+  {
+    value: 'weekend',
+    label: t('calendar_filter_date_weekend'),
+  },
+  {
+    value: 'next_week',
+    label: t('calendar_filter_date_next_week'),
+  },
+  {
+    value: 'following_weekend',
+    label: t('calendar_filter_date_following_weekend'),
+  },
+] satisfies {
+  value: string
+  label: string
+}[])
 
 
 const webLogoUrl = computed(() => {
@@ -244,34 +198,74 @@ const backgroundUrl = computed(() => {
       : null
 })
 
+const filterScope = 'portal'
 const portalUuid = computed(() => route.params.uuid?.toString() ?? null)
+const portalFilter = computed(() => filterStore.getFilter(filterScope))
+const activeFilter = computed(() => ({
+  ...portalFilter.value,
+  portalUuid: portalUuid.value,
+  portalPrefilter: portalEventPrefilter.value,
+}))
+const activeEventTypeIds = computed(() => activeFilter.value.eventTypeIds)
+const selectedPortalEventTypeId = computed({
+  get: () => String(activeEventTypeIds.value[0] ?? ''),
+  set: (value: string) => {
+    const typeId = Number(value)
+    filterStore.setFilter({
+      eventTypeIds: value && Number.isFinite(typeId) ? [typeId] : [],
+    }, filterScope)
+  }
+})
+const portalDateRangeMode = computed<UranusPresetDateRangeMode>({
+  get: () => filterStore.portalDateRangeMode,
+  set: (mode) => {
+    applyPortalDateRangeMode(mode)
+  }
+})
+
+const sortedTypeSummary = computed(() => {
+  return [...eventListStore.typeSummary].sort((a, b) => {
+    if (b.count !== a.count) return b.count - a.count
+    const nameA = typeLookupStore.getTypeName(a.typeId, locale.value)
+    const nameB = typeLookupStore.getTypeName(b.typeId, locale.value)
+    return nameA.localeCompare(nameB)
+  })
+})
+const portalEventTypeOptions = computed<UranusPopupSelectOption[]>(() => [
+  { value: '', label: t('all_event_types') },
+  ...sortedTypeSummary.value.map((entry) => ({
+    value: String(entry.typeId),
+    label: `${typeLookupStore.getTypeName(entry.typeId, locale.value)} (${entry.count})`,
+  })),
+])
 
 const portal = ref<PortalDTO | null>(null)
 const portalLoading = ref(false)
 const portalError = ref<string | null>(null)
 const portalRenderReady = computed(() => !portalLoading.value && (!!portal.value || !!portalError.value))
+const portalEventPrefilter = computed(() => {
+  const prefilter = normalizePortalPrefilter(portal.value?.pre_filter ?? portal.value?.prefilter)
+  const result: { age?: string | number | null, venues?: string | number | string[] | null } = {}
+
+  if (isPrefilterValue(prefilter?.age)) result.age = prefilter.age
+  if (isPrefilterValue(prefilter?.venues) || isPrefilterStringList(prefilter?.venues)) {
+    result.venues = prefilter.venues
+  }
+
+  return Object.keys(result).length ? result : null
+})
 const portalCustomCss = computed(() => {
   const css = normalizedPortalStyle.value?.['custom-css']
   return typeof css === 'string' && css.trim() ? css : ''
 })
 const normalizedPortalStyle = computed(() => normalizePortalStyle(portal.value?.style))
 const headerConfig = computed<PortalHeaderConfig>(() => createHeaderConfig(normalizeJsonObject(portal.value?.header)))
-const portalHeaderLayoutClass = computed(() => {
-  return headerConfig.value.layout === 'centered'
-      ? 'uranus-portal-events-header__centered'
-      : 'uranus-portal-events-header__left'
-})
 const footerConfig = computed<PortalFooterConfig>(() => createFooterConfig(normalizeJsonObject(portal.value?.footer)))
-const footerTextHtml = computed(() => formatMarkdown(footerConfig.value.text))
-const showPortalFooter = computed(() =>
-    footerConfig.value.showLogo ||
-    !!footerTextHtml.value ||
-    footerConfig.value.links.length > 0
+
+const footerTextHtml = computed<string>(() =>
+    formatMarkdown(footerConfig.value.text)
 )
-const headerLogoFrameStyle = computed(() => createPixelSizeStyle(headerConfig.value.logoWidth, headerConfig.value.logoHeight))
-const footerLogoFrameStyle = computed(() => createPixelSizeStyle(footerConfig.value.logoWidth, footerConfig.value.logoHeight))
-const headerLogoPixelCount = computed(() => headerConfig.value.logoWidth * headerConfig.value.logoHeight)
-const footerLogoPixelCount = computed(() => footerConfig.value.logoWidth * footerConfig.value.logoHeight)
+
 const portalRootStyle = computed(() => ({
   '--portal-background-image': backgroundUrl.value ? `url(${backgroundUrl.value})` : undefined,
 }))
@@ -284,190 +278,35 @@ const portalStructuredCss = computed(() => {
   return createPortalStructuredCss(style, uuid)
 })
 
-const initialized = ref(false)
+const activeContentView = ref<'events'>('events')
+const contentViews = computed(() => [
+  { id: 'events' as const, label: t('events') },
+])
+
+function onResetFilter() {
+  filterStore.resetFilter(filterScope)
+  applyPortalDateRangeMode(portalDateRangeMode.value)
+}
 
 function normalizePortalStyle(style: PortalStyle | string | null | undefined): PortalStyle | null {
   return normalizeJsonObject(style) as PortalStyle | null
 }
 
-function normalizeJsonObject(value: object | string | null | undefined): Record<string, unknown> | null {
-  if (!value) return null
-  if (typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>
-  if (typeof value !== 'string') return null
-
-  try {
-    const parsed = JSON.parse(value)
-    return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
-        ? parsed as Record<string, unknown>
-        : null
-  } catch {
-    return null
-  }
-}
-
-function formatMarkdown(markdown: string) {
+function formatMarkdown(markdown: string): string {
   if (!markdown.trim()) return ''
-
-  try {
-    return marked(markdown)
+ try {
+    return marked.parse(markdown) as string
   } catch {
     return markdown
   }
 }
 
-function getLinkRel(target: PortalLinkTarget) {
-  return target === '_blank' ? 'noopener noreferrer' : undefined
-}
-
-function createPixelSizeStyle(width: number, height: number) {
-  return {
-    width: `${width}px`,
-    height: `${height}px`,
-  }
-}
-
-function createPortalStructuredCss(style: PortalStyle, portalUuid: string) {
-  const rootSelector = `.uranus-portal-events[data-portal-uuid="${escapeCssString(portalUuid)}"]`
-  const parts = [
-    createRule(rootSelector, [
-      cssDeclaration('background', readStyleValue(style.portal, 'background')),
-      cssDeclaration('padding', readStyleValue(style.portal, 'padding')),
-      cssDeclaration('color', readStyleValue(style.portal, 'color')),
-      cssDeclaration('font-family', readStyleValue(style.portal, 'font-family')),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-events__type-scroller,
-      ${rootSelector} .uranus-portal-events__grid,
-      ${rootSelector} .uranus-portal-events__map-wrapper,
-      ${rootSelector} .uranus-portal-events__state,
-      ${rootSelector} .uranus-portal-events__load-more-trigger`, [
-      cssDeclaration('max-width', readStyleValue(style.content, 'max-width')),
-      cssDeclaration('align-self', normalizeContentAlign(readStyleValue(style.content, 'align'))),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-events-header h1`, [
-      cssDeclaration('color', readStyleValue(style.header?.title, 'color')),
-      cssDeclaration('font-size', readStyleValue(style.header?.title, 'font-size')),
-      cssDeclaration('font-weight', readStyleValue(style.header?.title, 'font-weight')),
-      cssDeclaration('line-height', readStyleValue(style.header?.title, 'line-height')),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-events-header p`, [
-      cssDeclaration('color', readStyleValue(style.header?.description, 'color')),
-      cssDeclaration('font-size', readStyleValue(style.header?.description, 'font-size')),
-      cssDeclaration('line-height', readStyleValue(style.header?.description, 'line-height')),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-events__grid`, [
-      cssDeclaration('gap', readStyleValue(style['event-grid'] ?? style.grid, 'gap')),
-      cssDeclaration('grid-template-columns', createGridTemplate(readStyleValue(style['event-grid'] ?? style.grid, 'min-card-width'))),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-event-card`, [
-      cssDeclaration('background', readStyleValue(style['event-card'] ?? style.card, 'background')),
-      cssDeclaration('padding', readStyleValue(style['event-card'] ?? style.card, 'padding')),
-      cssDeclaration('gap', readStyleValue(style['event-card'] ?? style.card, 'gap')),
-      cssDeclaration('border', readStyleValue(style['event-card'] ?? style.card, 'border')),
-      cssDeclaration('border-radius', readStyleValue(style['event-card'] ?? style.card, 'radius') ?? readStyleValue(style['event-card'] ?? style.card, 'border-radius')),
-      cssDeclaration('box-shadow', readStyleValue(style['event-card'] ?? style.card, 'shadow')),
-      cssDeclaration('transition', readStyleValue(style['event-card'] ?? style.card, 'transition')),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-event-card:hover`, [
-      // cssDeclaration('background', readStyleValue((style['event-card'] ?? style.card)?.hover, 'background')),
-      // cssDeclaration('border', readStyleValue((style['event-card'] ?? style.card)?.hover, 'border')),
-      // cssDeclaration('box-shadow', readStyleValue((style['event-card'] ?? style.card)?.hover, 'shadow')),
-      //cssDeclaration('transform', createScaleTransform(readStyleValue((style['event-card'] ?? style.card)?.hover, 'scale'))),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-event-card__image-frame`, [
-      cssDeclaration('background', readStyleValue(style['event-card-image'], 'background')),
-      cssDeclaration('aspect-ratio', readStyleValue(style['event-card-image'], 'aspect-ratio')),
-      cssDeclaration('border-radius', readStyleValue(style['event-card-image'], 'border-radius')),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-event-card__image`, [
-      cssDeclaration('object-fit', readStyleValue(style['event-card-image'], 'object-fit')),
-      cssDeclaration('filter', readStyleValue(style['event-card-image'], 'filter')),
-      cssDeclaration('transition', createImageTransition(readStyleValue(style['event-card-image'], 'transition'))),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-event-card:hover .uranus-portal-event-card__image`, [
-      cssDeclaration('filter', readStyleValue(style['event-card-image']?.hover, 'filter')),
-      cssDeclaration('transform', createScaleTransform(readStyleValue(style['event-card-image']?.hover, 'scale'))),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-event-card__body`, [
-      cssDeclaration('padding', readStyleValue(style['event-card-info'], 'padding')),
-      cssDeclaration('background', readStyleValue(style['event-card-info'], 'background')),
-      cssDeclaration('border', readStyleValue(style['event-card-info'], 'border')),
-      cssDeclaration('border-radius', readStyleValue(style['event-card-info'], 'border-radius')),
-      cssDeclaration('color', readStyleValue(style['event-card-info'], 'color')),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-event-card h2`, [
-      cssDeclaration('font-family', readStyleValue(style['event-card-info'], 'title-font-family')),
-      cssDeclaration('font-size', readStyleValue(style['event-card-info'], 'title-font-size')),
-      cssDeclaration('font-weight', readStyleValue(style['event-card-info'], 'title-font-weight')),
-    ]),
-    createRule(`${rootSelector} .uranus-portal-event-card__meta`, [
-      cssDeclaration('font-family', readStyleValue(style['event-card-info'], 'meta-font-family')),
-      cssDeclaration('font-size', readStyleValue(style['event-card-info'], 'meta-font-size')),
-      cssDeclaration('font-weight', readStyleValue(style['event-card-info'], 'meta-font-weight')),
-      cssDeclaration('line-height', readStyleValue(style['event-card-info'], 'meta-line-height')),
-      cssDeclaration('gap', readStyleValue(style['event-card-info'], 'meta-gap')),
-    ]),
-  ]
-
-  return parts.filter(Boolean).join('\n')
-}
-
-function readStyleValue(section: PortalStyleSection | null | undefined, key: string) {
-  const value = section?.[key]
-
-  if (value == null || value === '') return null
-  if (typeof value === 'number') return Number.isFinite(value) ? String(value) : null
-  if (typeof value !== 'string') return null
-
-  const trimmed = value.trim()
-  if (!trimmed || /[{};]/.test(trimmed)) return null
-
-  return trimmed
-}
-
-function createRule(selector: string, declarations: Array<string | null>) {
-  const body = declarations.filter(Boolean)
-  if (!body.length) return ''
-
-  return `${selector} {\n${body.map(declaration => `  ${declaration}`).join('\n')}\n}`
-}
-
-function cssDeclaration(property: string, value: string | null | undefined) {
-  return value ? `${property}: ${value};` : null
-}
-
-function createGridTemplate(minCardWidth: string | null) {
-  return minCardWidth ? `repeat(auto-fill, minmax(${minCardWidth}, 1fr))` : null
-}
-
-function createScaleTransform(scale: string | null) {
-  return scale ? `scale(${scale})` : null
-}
-
-function createImageTransition(transition: string | null) {
-  return transition ? `transform ${transition}, filter ${transition}` : null
-}
-
-function normalizeContentAlign(value: string | null) {
-  if (!value) return null
-
-  switch (value) {
-    case 'left':
-    case 'start':
-      return 'flex-start'
-    case 'center':
-      return 'center'
-    case 'right':
-    case 'end':
-      return 'flex-end'
-    case 'stretch':
-      return 'stretch'
-    default:
-      return value
-  }
-}
-
-function escapeCssString(value: string) {
-  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\a ')
+function applyPortalDateRangeMode(mode: UranusPresetDateRangeMode) {
+  const range = resolveEventDateRange(mode)
+  filterStore.setPortalDateRangeMode(mode)
+  portalFilter.value.dateRangeMode = mode
+  portalFilter.value.startDate = range.startDate
+  portalFilter.value.endDate = range.endDate
 }
 
 async function fetchPortal() {
@@ -494,12 +333,11 @@ async function fetchPortal() {
 }
 
 watch(portalUuid, async () => {
-  if (!initialized.value) return
   await fetchPortal()
 })
 
 onMounted(async () => {
   await fetchPortal()
-  initialized.value = true
+  applyPortalDateRangeMode(portalDateRangeMode.value)
 })
 </script>

@@ -6,8 +6,9 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { type EventListItem, type EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
-import { mapEventDTO } from '@/domain/event/eventListItem.mapper.ts'
+import { mapEventDTO, mapEventWeekDTO } from '@/domain/event/eventListItem.mapper.ts'
 import {
+    type EventWeekApiData,
     type EventListItemsApiData,
     type EventListTypeSummaryDTO,
     type EventListTypeCountDTO }
@@ -16,6 +17,11 @@ import { type UranusEventsFilter, useEventsFilterStore } from '@/store/eventsFil
 
 interface LoadEventsOptions {
     keepCurrentEvents?: boolean
+}
+
+interface LoadEventsEndpointOptions extends LoadEventsOptions {
+    paginationMode?: boolean
+    weeklyMode?: boolean
 }
 
 export const useEventListStore = defineStore('events', () => {
@@ -172,6 +178,30 @@ export const useEventListStore = defineStore('events', () => {
         filter: UranusEventsFilter = filterStore.getFilter(),
         options: LoadEventsOptions = {}
     ) {
+        await loadEventsFromEndpoint('/api/events', resetPage, filter, {
+            ...options,
+            paginationMode: true,
+        })
+    }
+
+    async function loadWeekEvents(
+        resetPage: boolean = false,
+        filter: UranusEventsFilter = filterStore.getFilter(),
+        options: LoadEventsOptions = {}
+    ) {
+        await loadEventsFromEndpoint('/api/events/week', resetPage, filter, {
+            ...options,
+            paginationMode: false,
+            weeklyMode: true,
+        })
+    }
+
+    async function loadEventsFromEndpoint(
+        endpointPath: string,
+        resetPage: boolean,
+        filter: UranusEventsFilter,
+        options: LoadEventsEndpointOptions
+    ) {
         const currentRequest = ++requestId
         if (loading.value) return
         if (!resetPage && !hasMore.value) return
@@ -189,29 +219,45 @@ export const useEventListStore = defineStore('events', () => {
         loading.value = true
 
         try {
-            const params = buildFilterParams(true, true, filter)
-            const apiPath = `/api/events?${params.toString()}`
-            const apiResponse = await apiFetch<EventListItemsApiData>(apiPath)
+            const params = buildFilterParams(options.paginationMode ?? true, true, filter)
+            if (options.weeklyMode) {
+                const weekStart = params.get('start')
+                params.delete('start')
+                params.delete('end')
+                if (weekStart) {
+                    params.set('week_start', weekStart)
+                }
+            }
+            const apiPath = `${endpointPath}?${params.toString()}`
+            const apiResponse = options.weeklyMode
+                ? await apiFetch<EventWeekApiData>(apiPath)
+                : await apiFetch<EventListItemsApiData>(apiPath)
 
             if (currentRequest !== requestId) return
 
-            const apiData = apiResponse?.data
-            const apiEvents = apiData?.events ?? []
+            const apiEvents = options.weeklyMode
+                ? (apiResponse.data?.days ?? []).flatMap((day) => day.events ?? [])
+                : (apiResponse.data?.events ?? [])
             if (apiEvents.length === 0) {
                 if (replaceEvents) {
                     events.value = []
                 }
                 hasMore.value = false
             } else {
-                const mappedEvents = apiEvents.map(mapEventDTO)
+                const mappedEvents = options.weeklyMode
+                    ? apiEvents.map(mapEventWeekDTO)
+                    : apiEvents.map(mapEventDTO)
                 if (replaceEvents) {
                     events.value = mappedEvents
                 } else {
                     events.value.push(...mappedEvents)
                 }
-                lastEventStartAt.value = apiData?.last_event_start_at ?? null
-                lastEventDateUuid.value = apiData?.last_event_date_uuid ?? null
-                hasMore.value = !!apiData?.last_event_date_uuid
+                const listApiData = options.weeklyMode ? null : apiResponse.data
+                lastEventStartAt.value = listApiData?.last_event_start_at ?? null
+                lastEventDateUuid.value = listApiData?.last_event_date_uuid ?? null
+                hasMore.value = (options.paginationMode ?? true)
+                    ? !!listApiData?.last_event_date_uuid
+                    : false
             }
 
             error.value = null
@@ -237,6 +283,7 @@ export const useEventListStore = defineStore('events', () => {
         hasEvents,
         hasMore,
         loadEvents,
+        loadWeekEvents,
         loadTypeSummary,
         getEventImageUrl,
         buildFilterParams

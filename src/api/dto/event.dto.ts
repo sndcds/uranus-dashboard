@@ -62,6 +62,30 @@ export interface EventListItemsApiData { // TODO: !!!!!
     last_event_date_uuid?: string
 }
 
+export interface EventWeekItemDTO {
+    title: string
+    types?: Array<[number, number]>
+    org_uuid?: string
+    subtitle?: string | null
+    event_uuid: string
+    image_uuid?: string | null
+    start_date: string
+    start_time?: string | null
+    venue_city?: string
+    venue_name?: string
+    event_date_uuid: string
+}
+
+export interface EventWeekDayDTO {
+    event_day: string
+    events: EventWeekItemDTO[]
+    more_count: number
+}
+
+export interface EventWeekApiData {
+    days: EventWeekDayDTO[]
+}
+
 export function mapEventTypeFromDTO(dto: EventTypeDTO): EventTypeModel { // TODO: !!!!!
     return {
         typeId: dto.type_id,

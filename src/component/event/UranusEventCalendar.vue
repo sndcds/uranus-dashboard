@@ -31,27 +31,6 @@
             :selected="activeViewMode === 'calendar'"
               @click="setGlobalMode('calendar')"
           />
-
-          <button
-            v-if="activeViewMode === 'calendar'"
-              type="button"
-              class="calendar-mode-button"
-              :class="{ 'is-active': calendarMode === 'week' }"
-              @click="calendarMode = 'week'"
-          >
-            <Rows3 :size="14" />
-            {{ calendarLabels.week }}
-          </button>
-          <button
-              v-if="activeViewMode === 'calendar'"
-              type="button"
-              class="calendar-mode-button"
-              :class="{ 'is-active': calendarMode === 'month' }"
-              @click="calendarMode = 'month'"
-          >
-            <CalendarDays :size="14" />
-            {{ calendarLabels.month }}
-          </button>
         </div>
 
         <div class="calendar-event-type-select-container">
@@ -133,64 +112,17 @@
       </div>
     </div>
 
-    <section v-if="activeViewMode === 'calendar'" class="calendar-sheet-layout">
-      <div v-if="calendarMode === 'week'" class="calendar-week-header">
-        <UranusButton size="small" variant="tertiary" @click="goToPreviousWeek">
-          <template #icon>
-            <ChevronLeft />
-          </template>
-          {{ calendarLabels.previous }}
-        </UranusButton>
-
-        <div class="calendar-week-range">{{ weekRangeLabel }}</div>
-
-        <UranusButton size="small" variant="tertiary" @click="goToNextWeek">
-          {{ calendarLabels.next }}
-          <template #icon>
-            <ChevronRight />
-          </template>
-        </UranusButton>
-      </div>
-
-      <div v-if="calendarMode === 'week'" class="calendar-week-grid">
-        <div
-            v-for="day in weekDays"
-            :key="day.dateKey"
-            class="calendar-week-day"
-        >
-          <header class="calendar-week-day__header">
-            <strong>{{ day.weekday }}</strong>
-            <span>{{ day.dateLabel }}</span>
-          </header>
-
-          <ul v-if="day.events.length" class="calendar-week-day__events">
-            <li
-                v-for="event in day.events"
-                :key="`${event.uuid}-${event.dateUuid}`"
-                class="calendar-week-event"
-            >
-              <router-link
-                  class="calendar-week-event__link"
-                  :to="{
-                    name: 'event-details',
-                    params: { uuid: event.uuid, eventDateUuid: event.dateUuid }
-                  }"
-              >
-                <span class="calendar-week-event__time">{{ formatEventStartTime(event) }}</span>
-                <span class="calendar-week-event__title">{{ event.title }}</span>
-                <span class="calendar-week-event__venue">{{ event.venue.name }} · {{ event.venue.city }}</span>
-              </router-link>
-            </li>
-          </ul>
-
-          <p v-else class="calendar-week-day__empty">{{ calendarLabels.emptyDay }}</p>
-        </div>
-      </div>
-
-      <div v-else class="calendar-month-placeholder">
-        {{ calendarLabels.monthPlaceholder }}
-      </div>
-    </section>
+    <UranusEventCalendarSheet
+      v-if="activeViewMode === 'calendar'"
+        :active-view-mode="activeViewMode"
+        v-model:calendar-mode="calendarMode"
+        :calendar-labels="calendarLabels"
+        :week-range-label="weekRangeLabel"
+        :week-days="weekDays"
+        :format-event-start-time="formatEventStartTime"
+        @previous-week="goToPreviousWeek"
+        @next-week="goToNextWeek"
+    />
 
     <div v-else-if="activeViewMode === 'cards'" class="calendar-card-layout">
       <UranusEventCalendarCard
@@ -247,11 +179,12 @@ import { uranusPluralizedText } from '@/util/string.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
-import { SlidersHorizontal, X, ChevronLeft, ChevronRight, Rows3, CalendarDays, LayoutGrid, Grip } from 'lucide-vue-next'
+import { SlidersHorizontal, X, Rows3, CalendarDays, LayoutGrid, Grip } from 'lucide-vue-next'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
 import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
 import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
 import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendarListRow.vue'
+import UranusEventCalendarSheet from '@/component/event/ui/UranusEventCalendarSheet.vue'
 import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
 import type { EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
 import { addDays, formatDateKey, startOfWeek } from '@/component/calendar/uranusCalendar.ts'
@@ -402,6 +335,7 @@ function onDocumentClick(event: MouseEvent) {
 async function reloadEvents() {
   const currentReloadRequest = ++reloadRequestId
   const effectiveFilter = createEffectiveApiFilter(activeFilter.value)
+  const useWeeklyEndpoint = shouldUseWeeklyEndpoint()
 
   isReloading.value = true
   observer?.disconnect()
@@ -410,7 +344,11 @@ async function reloadEvents() {
     await waitForActiveEventLoad()
     if (currentReloadRequest !== reloadRequestId) return
 
-    await eventListStore.loadEvents(true, effectiveFilter)
+    if (useWeeklyEndpoint) {
+      await eventListStore.loadWeekEvents(true, effectiveFilter)
+    } else {
+      await eventListStore.loadEvents(true, effectiveFilter)
+    }
     await eventListStore.loadTypeSummary(effectiveFilter)
     rememberSingleTypeOptions()
     await waitForRenderedEvents()
@@ -452,6 +390,7 @@ function isLoadMoreTriggerNearViewport() {
 
 async function loadMoreWhileTriggerIsNearViewport() {
   if (isLoadingMore.value || isReloading.value) return
+  if (shouldUseWeeklyEndpoint()) return
 
   isLoadingMore.value = true
 
@@ -495,6 +434,11 @@ watch(activeViewMode, () => {
 })
 
 watch(weekAnchorDate, () => {
+  if (!initialized.value) return
+  void reloadEvents()
+})
+
+watch(calendarMode, () => {
   if (!initialized.value) return
   void reloadEvents()
 })
@@ -595,8 +539,12 @@ function createWeeklyApiFilter(filter: UranusEventsFilter): UranusEventsFilter {
 }
 
 function createEffectiveApiFilter(filter: UranusEventsFilter): UranusEventsFilter {
-  if (activeViewMode.value !== 'calendar') return filter
+  if (!shouldUseWeeklyEndpoint()) return filter
   return createWeeklyApiFilter(filter)
+}
+
+function shouldUseWeeklyEndpoint() {
+  return activeViewMode.value === 'calendar' && calendarMode.value === 'week'
 }
 
 function compareEventTypes(a: EventListTypeSummary, b: EventListTypeSummary) {
@@ -672,105 +620,6 @@ onBeforeUnmount(() => {
   min-height: 0;
 }
 
-.calendar-sheet-layout {
-  display: grid;
-  gap: 0.75rem;
-  padding: 1rem;
-}
-
-.calendar-week-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.calendar-week-range {
-  font-weight: 600;
-  text-align: center;
-}
-
-.calendar-week-grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.calendar-week-day {
-  display: grid;
-  align-content: start;
-  gap: 0.6rem;
-  min-height: 220px;
-  padding: 0.75rem;
-  border: 1px solid var(--uranus-color-7);
-  background: var(--uranus-bg);
-}
-
-.calendar-week-day__header {
-  display: grid;
-  gap: 0.15rem;
-}
-
-.calendar-week-day__header strong {
-  text-transform: capitalize;
-}
-
-.calendar-week-day__events {
-  display: grid;
-  gap: 0.45rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.calendar-week-event {
-  display: block;
-}
-
-.calendar-week-event__link {
-  display: grid;
-  gap: 0.15rem;
-  padding: 0.45rem 0.5rem;
-  background: #f2f2f2;
-  color: inherit;
-  text-decoration: none;
-  transition: background-color 0.15s ease;
-}
-
-.calendar-week-event__link:hover {
-  background: #e8e8e8;
-}
-
-.calendar-week-event__link:focus-visible {
-  outline: 2px solid var(--uranus-select-bg);
-  outline-offset: 1px;
-}
-
-.calendar-week-event__time {
-  font-size: 0.88rem;
-  color: var(--uranus-color-4);
-}
-
-.calendar-week-event__title {
-  font-weight: 600;
-  line-height: 1.25;
-}
-
-.calendar-week-event__venue,
-.calendar-week-day__empty {
-  font-size: 0.9rem;
-  color: var(--uranus-color-4);
-}
-
-.calendar-month-placeholder {
-  min-height: 320px;
-  display: grid;
-  place-items: center;
-  border: 1px dashed var(--uranus-color-7);
-  background: var(--uranus-bg);
-  color: var(--uranus-color-4);
-}
-
 .calendar-card-layout {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -823,23 +672,6 @@ onBeforeUnmount(() => {
 
 .calendar-display-type-icon {
   padding: 0.5rem;
-}
-
-.calendar-mode-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  border: 1px solid var(--uranus-color-6);
-  background: transparent;
-  color: var(--uranus-color);
-  padding: 0.35rem 0.7rem;
-  cursor: pointer;
-}
-
-.calendar-mode-button.is-active {
-  border-color: var(--uranus-select-bg);
-  background: var(--uranus-select-bg);
-  color: var(--uranus-select-color);
 }
 
 .calendar-event-type-chips-container {
@@ -1073,19 +905,6 @@ onBeforeUnmount(() => {
     justify-content: center;
     gap: 2rem;
     padding-top: 0.25rem;
-  }
-
-  .calendar-sheet-layout {
-    padding: 0.75rem;
-  }
-
-  .calendar-week-header {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .calendar-week-grid {
-    grid-template-columns: 1fr;
   }
 }
 </style>
