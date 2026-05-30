@@ -85,6 +85,11 @@ export const uranusI18nNavigationTranslations: Record<string, Record<UranusLocal
         en: 'Favorite lists',
         da: 'Favoritlister'
     },
+    nav_help: {
+        de: 'Hilfe',
+        en: 'Help',
+        da: 'Hjælp'
+    },
     scroll_to_map: {
         de: 'Karte anzeigen',
         en: 'View map',
