@@ -124,7 +124,7 @@
       </div>
 
       <div v-if="calendarMode === 'week'" class="calendar-week-grid">
-        <article
+        <div
             v-for="day in weekDays"
             :key="day.dateKey"
             class="calendar-week-day"
@@ -148,6 +148,7 @@
 
           <p v-else class="calendar-week-day__empty">{{ calendarLabels.emptyDay }}</p>
         </div>
+      </div>
 
       <div v-else class="calendar-month-placeholder">
         {{ calendarLabels.monthPlaceholder }}
