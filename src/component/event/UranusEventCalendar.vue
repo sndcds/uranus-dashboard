@@ -13,6 +13,7 @@
               :class="{ 'is-active': calendarMode === 'week' }"
               @click="calendarMode = 'week'"
           >
+            <Rows3 :size="14" />
             {{ calendarLabels.week }}
           </button>
           <button
@@ -21,6 +22,7 @@
               :class="{ 'is-active': calendarMode === 'month' }"
               @click="calendarMode = 'month'"
           >
+            <CalendarDays :size="14" />
             {{ calendarLabels.month }}
           </button>
         </div>
@@ -183,7 +185,7 @@ import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { uranusPluralizedText } from '@/util/string.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
-import { SlidersHorizontal, X, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { SlidersHorizontal, X, ChevronLeft, ChevronRight, Rows3, CalendarDays } from 'lucide-vue-next'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
 import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
 import type { EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
@@ -731,6 +733,9 @@ onBeforeUnmount(() => {
 }
 
 .calendar-mode-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   border: 1px solid var(--uranus-color-6);
   background: transparent;
   color: var(--uranus-color);
