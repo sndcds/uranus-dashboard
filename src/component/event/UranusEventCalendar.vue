@@ -7,6 +7,31 @@
     <div class="calendar-head">
       <div class="calendar-options">
         <div class="calendar-display-options">
+          <UranusIconAction
+              class="calendar-display-type-icon"
+              :icon="LayoutGrid"
+              :selected="appStore.eventViewMode === 'cards' && !isCalendarSheetMode"
+              @click="setGlobalMode('cards')"
+          />
+          <UranusIconAction
+              class="calendar-display-type-icon"
+              :icon="Grip"
+              :selected="appStore.eventViewMode === 'compact' && !isCalendarSheetMode"
+              @click="setGlobalMode('compact')"
+          />
+          <UranusIconAction
+              class="calendar-display-type-icon"
+              :icon="Rows3"
+              :selected="appStore.eventViewMode === 'list' && !isCalendarSheetMode"
+              @click="setGlobalMode('list')"
+          />
+          <UranusIconAction
+              class="calendar-display-type-icon"
+              :icon="CalendarDays"
+              :selected="appStore.eventViewMode === 'calendar' || isCalendarSheetMode"
+              @click="setGlobalMode('calendar')"
+          />
+
           <button
               type="button"
               class="calendar-mode-button"
@@ -184,12 +209,14 @@ import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { uranusPluralizedText } from '@/util/string.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
-import { SlidersHorizontal, X, ChevronLeft, ChevronRight, Rows3, CalendarDays } from 'lucide-vue-next'
+import { SlidersHorizontal, X, ChevronLeft, ChevronRight, Rows3, CalendarDays, LayoutGrid, Grip } from 'lucide-vue-next'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
 import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
 import type { EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
 import { addDays, formatDateKey, startOfWeek } from '@/component/calendar/uranusCalendar.ts'
+import { type EventViewMode, useAppStore } from '@/store/appStore.ts'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -204,6 +231,7 @@ const props = withDefaults(defineProps<{
 })
 
 const LOAD_MORE_ROOT_MARGIN = 300
+const appStore = useAppStore()
 const typeLookupStore = useEventTypeLookupStore()
 const filterStore = useEventsFilterStore()
 const eventListStore = useEventListStore()
@@ -224,6 +252,7 @@ const eventTypeSelectOptions = computed<UranusPopupSelectOption[]>(() => [
 ])
 const calendarMode = ref<'week' | 'month'>('week')
 const weekAnchorDate = ref(startOfWeek(new Date()))
+const isCalendarSheetMode = computed(() => calendarMode.value === 'week' || calendarMode.value === 'month')
 const calendarRoot = ref<HTMLElement | null>(null)
 const isMobileFilterOpen = ref(false)
 
@@ -496,6 +525,10 @@ function formatEventStartTime(event: EventListItem) {
     hour: '2-digit',
     minute: '2-digit',
   }).format(toEventDateTime(event))
+}
+
+function setGlobalMode(mode: EventViewMode) {
+  appStore.setEventViewMode(mode)
 }
 
 function createWeeklyApiFilter(filter: UranusEventsFilter): UranusEventsFilter {
