@@ -34,6 +34,10 @@
           {{ calendarLabels.previous }}
         </UranusButton>
 
+        <UranusButton size="small" variant="tertiary" @click="emit('go-today')">
+          {{ calendarLabels.today }}
+        </UranusButton>
+
         <div class="calendar-week-range">{{ weekRangeLabel }}</div>
 
         <UranusButton size="small" variant="tertiary" @click="emit('next-week')">
@@ -49,10 +53,16 @@
             v-for="day in weekDays"
             :key="day.dateKey"
             class="calendar-week-day"
+            :class="{ 'calendar-week-day--today': day.dateKey === todayDateKey }"
         >
           <header class="calendar-week-day__header">
             <strong>{{ day.weekday }}</strong>
-            <span>{{ day.dateLabel }}</span>
+            <span
+                class="calendar-week-day__date"
+                :class="{ 'calendar-week-day__date--today': day.dateKey === todayDateKey }"
+            >
+              {{ day.dateLabel }}
+            </span>
           </header>
 
           <ul v-if="day.events.length" class="calendar-week-day__events">
@@ -61,6 +71,20 @@
                 :key="`${event.uuid}-${event.dateUuid}`"
                 class="calendar-week-event"
             >
+              <div
+                  v-if="event.categories.length"
+                  class="calendar-week-event__categories"
+                  :style="{ gridTemplateColumns: `repeat(${event.categories.length}, minmax(0, 1fr))` }"
+                  aria-hidden="true"
+              >
+                <span
+                    v-for="(categoryId, index) in event.categories"
+                    :key="`${event.uuid}-${event.dateUuid}-category-${index}`"
+                    class="calendar-week-event__category"
+                    :class="categoryClass(categoryId)"
+                />
+              </div>
+
               <router-link
                   class="calendar-week-event__link"
                   :to="{
@@ -87,16 +111,19 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { ChevronLeft, ChevronRight, Rows3, CalendarDays } from 'lucide-vue-next'
 import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
 import type { EventViewMode } from '@/store/appStore.ts'
+import { formatDateKey } from '@/component/calendar/uranusCalendar.ts'
 
 interface CalendarLabels {
   week: string
   month: string
   previous: string
   next: string
+  today: string
   emptyDay: string
   monthPlaceholder: string
 }
@@ -121,10 +148,32 @@ const emit = defineEmits<{
   'update:calendarMode': [mode: 'week' | 'month']
   'previous-week': []
   'next-week': []
+  'go-today': []
 }>()
+
+const todayDateKey = computed(() => formatDateKey(new Date()))
 
 function setCalendarMode(mode: 'week' | 'month') {
   emit('update:calendarMode', mode)
+}
+
+function categoryClass(categoryId: number) {
+  switch (categoryId) {
+    case 1:
+      return 'calendar-week-event__category--culture'
+    case 2:
+      return 'calendar-week-event__category--education'
+    case 3:
+      return 'calendar-week-event__category--sports'
+    case 4:
+      return 'calendar-week-event__category--leisure'
+    case 5:
+      return 'calendar-week-event__category--family'
+    case 6:
+      return 'calendar-week-event__category--society'
+    default:
+      return 'calendar-week-event__category--unknown'
+  }
 }
 </script>
 
@@ -185,7 +234,7 @@ function setCalendarMode(mode: 'week' | 'month') {
 .calendar-week-day {
   display: grid;
   align-content: start;
-  gap: 0.6rem;
+  gap: 0.2rem;
   min-height: 220px;
   padding: 0.75rem;
   border: 1px solid var(--uranus-color-7);
@@ -197,13 +246,24 @@ function setCalendarMode(mode: 'week' | 'month') {
   gap: 0.15rem;
 }
 
+.calendar-week-day__date {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.05rem 0.35rem;
+}
+
+.calendar-week-day__date--today {
+  background: var(--uranus-select-bg);
+  color: var(--uranus-select-color);
+}
+
 .calendar-week-day__header strong {
   text-transform: capitalize;
 }
 
 .calendar-week-day__events {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.2rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -211,20 +271,63 @@ function setCalendarMode(mode: 'week' | 'month') {
 
 .calendar-week-event {
   display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.calendar-week-event__categories {
+  display: grid;
+  height: 4px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.calendar-week-event__category {
+  display: block;
+  min-width: 0;
+}
+
+.calendar-week-event__category--culture {
+  background: var(--uranus-event-category-culture-color);
+}
+
+.calendar-week-event__category--education {
+  background: var(--uranus-event-category-education-color);
+}
+
+.calendar-week-event__category--sports {
+  background: var(--uranus-event-category-sports-color);
+}
+
+.calendar-week-event__category--leisure {
+  background: var(--uranus-event-category-leisure-color);
+}
+
+.calendar-week-event__category--family {
+  background: var(--uranus-event-category-family-color);
+}
+
+.calendar-week-event__category--society {
+  background: var(--uranus-event-category-society-color);
+}
+
+.calendar-week-event__category--unknown {
+  background: var(--uranus-color-6);
 }
 
 .calendar-week-event__link {
   display: grid;
   gap: 0.15rem;
   padding: 0.45rem 0.5rem;
-  background: #f2f2f2;
+  background: var(--uranus-color-9);
   color: inherit;
   text-decoration: none;
+  overflow: hidden;
   transition: background-color 0.15s ease;
 }
 
 .calendar-week-event__link:hover {
-  background: #e8e8e8;
+  background: var(--uranus-color-8);
 }
 
 .calendar-week-event__link:focus-visible {

@@ -89,7 +89,7 @@ export function mapEventWeekDTO(dto: EventWeekItemDTO): EventListItem {
 
         imageUrl: dto.image_uuid ? `/api/image/${dto.image_uuid}` : null,
 
-        categories: [],
+        categories: dto.categories ?? [],
 
         eventTypes: dto.types?.map(([typeId, genreId]) => ({
             typeId,
@@ -105,7 +105,7 @@ export function mapEventWeekDTO(dto: EventWeekItemDTO): EventListItem {
         },
 
         visitorInfoFlags: null,
-        releaseStatus: 'released'
+        releaseStatus: dto.release_status ?? 'released'
     }
 }
 

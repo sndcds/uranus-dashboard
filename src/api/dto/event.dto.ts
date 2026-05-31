@@ -67,12 +67,14 @@ export interface EventWeekItemDTO {
     types?: Array<[number, number]>
     org_uuid?: string
     subtitle?: string | null
+    categories?: number[]
     event_uuid: string
     image_uuid?: string | null
     start_date: string
     start_time?: string | null
     venue_city?: string
     venue_name?: string
+    release_status?: string
     event_date_uuid: string
 }
 
