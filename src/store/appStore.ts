@@ -7,6 +7,7 @@ import { ref } from 'vue'
 
 export type EventViewMode = 'cards' | 'compact' | 'list' | 'calendar' | 'map'
 export type EventGroupingMode = 'daily' | 'monthly'
+export type EventCalendarMode = 'week' | 'month'
 
 export function isEventViewMode(value: unknown): value is EventViewMode {
     return value === 'cards'
@@ -26,6 +27,8 @@ export const useAppStore = defineStore('app', () => {
     const favoriteListName = ref<string | null>(null)
     const eventViewMode = ref<EventViewMode>('compact')
     const eventGroupingMode = ref<EventGroupingMode>('daily')
+    const eventCalendarMode = ref<EventCalendarMode>('week')
+    const eventCalendarWeekStart = ref<string | null>(null)
 
     function setOrgValues(uuid: string, name: string, logoUrl: string | null, lightThemeLogoUrl: string | null, darkThemeLogoUrl: string | null) {
         if (orgUuid.value !== uuid) {
@@ -86,6 +89,14 @@ export const useAppStore = defineStore('app', () => {
         eventGroupingMode.value = mode
     }
 
+    function setEventCalendarMode(mode: EventCalendarMode) {
+        eventCalendarMode.value = mode
+    }
+
+    function setEventCalendarWeekStart(weekStart: string | null) {
+        eventCalendarWeekStart.value = weekStart
+    }
+
     return {
         orgUuid,
         orgName,
@@ -96,6 +107,8 @@ export const useAppStore = defineStore('app', () => {
         favoriteListName,
         eventViewMode,
         eventGroupingMode,
+        eventCalendarMode,
+        eventCalendarWeekStart,
         setOrgValues,
         setOrgUuid,
         setOrgName,
@@ -106,6 +119,8 @@ export const useAppStore = defineStore('app', () => {
         setViewMode,
         normalizeEventViewMode,
         setGroupingMode,
+        setEventCalendarMode,
+        setEventCalendarWeekStart,
     }
 }, {
     persist: true

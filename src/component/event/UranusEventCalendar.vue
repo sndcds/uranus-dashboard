@@ -223,8 +223,31 @@ const eventTypeSelectOptions = computed<UranusPopupSelectOption[]>(() => [
     label: `${typeLookupStore.getTypeName(entry.typeId, locale.value)} (${entry.count})`,
   })),
 ])
-const calendarMode = ref<'week' | 'month'>('week')
-const weekAnchorDate = ref(startOfWeek(new Date()))
+const calendarMode = ref<'week' | 'month'>(resolveInitialCalendarMode())
+const weekAnchorDate = ref(resolveInitialWeekAnchorDate())
+
+function resolveInitialCalendarMode() {
+  const savedMode = appStore.eventCalendarMode
+  if (savedMode === 'week' || savedMode === 'month') {
+    return savedMode
+  }
+
+  return 'week'
+}
+
+function resolveInitialWeekAnchorDate() {
+  const savedWeekStart = appStore.eventCalendarWeekStart
+  if (!savedWeekStart) {
+    return startOfWeek(new Date())
+  }
+
+  const [year, month, day] = savedWeekStart.split('-').map(Number)
+  if (!year || !month || !day) {
+    return startOfWeek(new Date())
+  }
+
+  return startOfWeek(new Date(year, month - 1, day))
+}
 const activeViewMode = computed<EventViewMode>(() => {
   const currentMode = appStore.eventViewMode
   if (currentMode === 'cards' || currentMode === 'compact' || currentMode === 'list' || currentMode === 'calendar') {
@@ -436,11 +459,13 @@ watch(activeViewMode, () => {
 })
 
 watch(weekAnchorDate, () => {
+  appStore.setEventCalendarWeekStart(formatDateKey(weekAnchorDate.value))
   if (!initialized.value) return
   void reloadEvents()
 })
 
 watch(calendarMode, () => {
+  appStore.setEventCalendarMode(calendarMode.value)
   if (!initialized.value) return
   void reloadEvents()
 })
@@ -511,7 +536,9 @@ function toEventDateTime(event: EventListItem) {
   const [year, month, day] = event.startDate.split('-').map(Number)
   const [hour = 0, minute = 0] = (event.startTime ?? '00:00').split(':').map(Number)
 
+
   if (!year || !month || !day) {
+  appStore.setEventCalendarWeekStart(formatDateKey(weekAnchorDate.value))
     const fallback = new Date(event.startDate)
     return Number.isNaN(fallback.getTime()) ? new Date() : fallback
   }
