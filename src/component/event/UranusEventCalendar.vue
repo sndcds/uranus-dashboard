@@ -268,7 +268,7 @@ const calendarLabels = computed(() => {
     previous: isGerman ? 'Vorherige Woche' : 'Previous week',
     next: isGerman ? 'Naechste Woche' : 'Next week',
     today: isGerman ? 'Heute' : 'Today',
-    emptyDay: isGerman ? 'Keine Veranstaltungen' : 'No events',
+    emptyDay: isGerman ? 'Keine' : 'No events',
     monthPlaceholder: isGerman
         ? 'Monatsansicht folgt im naechsten Schritt.'
         : 'Month view will be added in the next step.',

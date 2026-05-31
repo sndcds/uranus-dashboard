@@ -277,7 +277,7 @@ function categoryClass(categoryId: number) {
 
 .calendar-week-event__categories {
   display: grid;
-  height: 10px;
+  height: 4px;
   width: 100%;
   overflow: hidden;
 }
@@ -319,15 +319,15 @@ function categoryClass(categoryId: number) {
   display: grid;
   gap: 0.15rem;
   padding: 0.45rem 0.5rem;
-  background: #f2f2f2;
+  background: var(--uranus-color-9);
   color: inherit;
   text-decoration: none;
-  transition: background-color 0.15s ease;
   overflow: hidden;
+  transition: background-color 0.15s ease;
 }
 
 .calendar-week-event__link:hover {
-  background: #e8e8e8;
+  background: var(--uranus-color-8);
 }
 
 .calendar-week-event__link:focus-visible {

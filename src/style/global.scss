@@ -42,7 +42,7 @@
   --uranus-color-6: color-mix(in oklch, var(--uranus-color) 20%, var(--uranus-mix-bg));
   --uranus-color-7: color-mix(in oklch, var(--uranus-color) 10%, var(--uranus-mix-bg));
   --uranus-color-8: color-mix(in oklch, var(--uranus-color) 5%,  var(--uranus-mix-bg));
-  --uranus-color-9: var(--uranus-bg);
+  --uranus-color-9: color-mix(in oklch, var(--uranus-color) 2%,  var(--uranus-mix-bg));
 
   --uranus-secondary-color:var(--uranus-color);
   --uranus-secondary-bg:var(--uranus-color-8);
