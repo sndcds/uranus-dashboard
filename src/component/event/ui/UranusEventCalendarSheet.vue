@@ -185,7 +185,7 @@ function setCalendarMode(mode: 'week' | 'month') {
 .calendar-week-day {
   display: grid;
   align-content: start;
-  gap: 0.6rem;
+  gap: 0.2rem;
   min-height: 220px;
   padding: 0.75rem;
   border: 1px solid var(--uranus-color-7);
@@ -203,7 +203,7 @@ function setCalendarMode(mode: 'week' | 'month') {
 
 .calendar-week-day__events {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.2rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -211,6 +211,8 @@ function setCalendarMode(mode: 'week' | 'month') {
 
 .calendar-week-event {
   display: block;
+  width: 100%;
+  min-width: 0;
 }
 
 .calendar-week-event__link {
@@ -221,6 +223,7 @@ function setCalendarMode(mode: 'week' | 'month') {
   color: inherit;
   text-decoration: none;
   transition: background-color 0.15s ease;
+  overflow: hidden;
 }
 
 .calendar-week-event__link:hover {

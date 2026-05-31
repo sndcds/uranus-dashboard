@@ -113,7 +113,7 @@
     </div>
 
     <UranusEventCalendarSheet
-      v-if="activeViewMode === 'calendar'"
+        v-if="activeViewMode === 'calendar'"
         :active-view-mode="activeViewMode"
         v-model:calendar-mode="calendarMode"
         :calendar-labels="calendarLabels"
