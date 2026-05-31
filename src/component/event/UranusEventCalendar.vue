@@ -122,6 +122,7 @@
         :format-event-start-time="formatEventStartTime"
         @previous-week="goToPreviousWeek"
         @next-week="goToNextWeek"
+      @go-today="goToCurrentWeek"
     />
 
     <div v-else-if="activeViewMode === 'cards'" class="calendar-card-layout">
@@ -243,6 +244,7 @@ const calendarLabels = computed(() => {
     month: isGerman ? 'Monatsansicht' : 'Month view',
     previous: isGerman ? 'Vorherige Woche' : 'Previous week',
     next: isGerman ? 'Naechste Woche' : 'Next week',
+    today: isGerman ? 'Heute' : 'Today',
     emptyDay: isGerman ? 'Keine Veranstaltungen' : 'No events',
     monthPlaceholder: isGerman
         ? 'Monatsansicht folgt im naechsten Schritt.'
@@ -499,6 +501,10 @@ function goToPreviousWeek() {
 
 function goToNextWeek() {
   weekAnchorDate.value = addDays(weekAnchorDate.value, 7)
+}
+
+function goToCurrentWeek() {
+  weekAnchorDate.value = startOfWeek(new Date())
 }
 
 function toEventDateTime(event: EventListItem) {
