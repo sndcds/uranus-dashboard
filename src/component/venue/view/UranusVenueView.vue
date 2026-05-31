@@ -83,6 +83,7 @@
         </div>
       </section>
 
+      <!-- TODO: Rename "uranus-public-event-sidebar" etc. -->
       <aside class="uranus-public-event-sidebar">
 
         <div class="uranus-public-event-info-section">
@@ -96,7 +97,7 @@
                 :pixelCount="8000"
                 :maxWidth="200"
                 :maxHeight="140"
-                :linkUrl="venue.org!.webLink ?? null"
+                :linkUrl="venue.webLink ?? null"
                 linkTarget="_blank"
             />
           </div>
