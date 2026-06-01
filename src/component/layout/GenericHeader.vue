@@ -445,12 +445,12 @@ onUnmounted(() => {
   border-bottom: 0.2rem solid transparent;
 
   &:hover {
-    border-color: var(--uranus-nav-bg-hover);
+    border-color: var(--uranus-color);
   }
 
   &--active,
   &--active:hover {
-    border-color: var(--uranus-nav-bg-active);
+    border-color: var(--uranus-event-category-culture-color);
   }
 }
 
