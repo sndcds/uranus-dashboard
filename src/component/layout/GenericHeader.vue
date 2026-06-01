@@ -435,22 +435,37 @@ onUnmounted(() => {
 }
 
 .generic-header__nav-link {
+  position: relative;
   text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;
   padding: 0.8rem 0.6rem 0.6rem 0.6rem;
-  border-radius: 0;
-  transition: all 0.2s ease;
   color: var(--uranus-nav-color);
-  border-bottom: 0.2rem solid transparent;
+  border: none;
 
-  &:hover {
-    border-color: var(--uranus-color);
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background: var(--uranus-color-7);
+    border-radius: 999px;
+
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    transition: transform 0.35s ease;
   }
 
-  &--active,
-  &--active:hover {
-    border-color: var(--uranus-event-category-culture-color);
+  &:hover::after {
+    transform: translateX(-50%) scaleX(0.6);
+  }
+
+  &--active::after,
+  &--active:hover::after {
+    transform: translateX(-50%) scaleX(0.8);
+    background: var(--uranus-color);
   }
 }
 
