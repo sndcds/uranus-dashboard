@@ -372,6 +372,7 @@ onUnmounted(() => {
 .generic-header {
   position: sticky;
   top: 0;
+  height: 76px;
   z-index: 1000;
   background: var(--surface-primary);
   border-bottom: var(--uranus-dashboard-border-width) solid var(--uranus-dashboard-border-color);
