@@ -2,32 +2,71 @@
   src/component/ui/UranusFeedback.vue
 
   Usage:
-    <UranusFeedback v-if="displayErrorFeedback" type="error">
+    <UranusFeedback
+      v-if="displayErrorFeedback"
+      type="error"
+      :deleteSeconds="2"
+      :autoHideSeconds="5"
+    >
       {{ displayErrorFeedback }}
     </UranusFeedback>
 -->
 
 <template>
   <transition name="fade">
-    <div :class="feedbackClass" role="status">
+    <div v-if="isVisible" :class="feedbackClass" role="status">
       <slot />
     </div>
   </transition>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 
 interface Props {
   type?: 'notice' | 'success' | 'warning' | 'error'
+
+  /**
+   * Delay before the feedback becomes visible (in seconds)
+   */
+  deleteSeconds?: number
+
+  /**
+   * Optional auto-hide after showing (in seconds)
+   */
+  autoHideSeconds?: number
 }
 
 const props = defineProps<Props>()
+
+const isVisible = ref(false)
+
+let showTimer: ReturnType<typeof setTimeout> | null = null
+let hideTimer: ReturnType<typeof setTimeout> | null = null
 
 const feedbackClass = computed(() => [
   'feedback',
   props.type ? `feedback--${props.type}` : 'feedback--notice'
 ])
+
+onMounted(() => {
+  const delay = props.deleteSeconds ?? 0
+
+  showTimer = setTimeout(() => {
+    isVisible.value = true
+
+    if (props.autoHideSeconds) {
+      hideTimer = setTimeout(() => {
+        isVisible.value = false
+      }, props.autoHideSeconds * 1000)
+    }
+  }, delay * 1000)
+})
+
+onBeforeUnmount(() => {
+  if (showTimer) clearTimeout(showTimer)
+  if (hideTimer) clearTimeout(hideTimer)
+})
 </script>
 
 <style scoped>
