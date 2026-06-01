@@ -10,60 +10,76 @@
         :subtitle="t('partner_manage_description')"
     />
 
-    <UranusInfo
-        v-if="!isLoading && partnerList.length === 0"
-        :infoText="t('partner_no_membership_message')"
-    />
-    
-    <div class="partner-actions-bar">
-      <UranusButton
-          v-if="canRequestPartner"
-          to="/admin/org/partner-request"
-      >
-        {{ t('partner_send_request') }}
-      </UranusButton>
-      <UranusButton
-          v-if="hasPendingRequests"
-          variant="primary"
-          :loading="isLoading"
-          :loading-text="t('loading')"
-          @click="reloadPartnerData"
-      >
-        {{ t('refresh') }}
-      </UranusButton>
-    </div>
+    <UranusNotification
+        v-if="!appStore.orgUuid"
+        type="info"
+        :action-label="t('notification_cant_see_partners_action')"
+        action-to="/admin/orgs"
+    >
+      <template #title>
+        {{ t('notification_cant_see_partners_title') }}
+      </template>
 
-    <UranusFeedback v-if="isLoading" type="warning">
-      {{ t('loading') }}
-    </UranusFeedback>
+      <div v-html="t('notification_cant_see_partners_message')"></div>
+    </UranusNotification>
 
-    <UranusFeedback v-if="error" type="error">
-      {{ error }}
-    </UranusFeedback>
+    <template v-else>
 
-    <UranusPartnershipConnectionsGraph />
+      <UranusFeedback type="notice"
+          v-if="!isLoading && partnerList.length === 0"
+          :infoText="t('partner_no_membership_message')"
+      />
 
-    <UranusPartnerRequestCard
-        :items="partnerRequests"
-        direction="incoming"
-        :canAnswerPartnerRequests="canAnswerPartnerRequests"
-        @request-updated="reloadPartnerData"
-    />
-    <UranusPartnerRequestCard
-        :items="partnerRequests"
-        direction="outgoing"
-        @request-updated="reloadPartnerData"
-    />
+      <UranusFeedback v-if="isLoading" type="notice" :deleteSeconds="1">
+        {{ t('loading') }}
+      </UranusFeedback>
 
-    <UranusPartnerGrantCard
-        :items="partnerList"
-        direction="incoming"
-    />
-    <UranusPartnerGrantCard
-        :items="partnerList"
-        :canEditPartnerRights="canEditPartnerRights"
-        direction="outgoing"
-    />
+      <UranusFeedback v-if="error" type="error">
+        {{ error }}
+      </UranusFeedback>
+
+      <div class="partner-actions-bar">
+        <UranusButton
+            v-if="canRequestPartner"
+            to="/admin/org/partner-request"
+        >
+          {{ t('partner_send_request') }}
+        </UranusButton>
+        <UranusButton
+            v-if="hasPendingRequests"
+            variant="primary"
+            :loading="isLoading"
+            :loading-text="t('loading')"
+            @click="reloadPartnerData"
+        >
+          {{ t('refresh') }}
+        </UranusButton>
+      </div>
+
+      <UranusPartnershipConnectionsGraph />
+
+      <UranusPartnerRequestCard
+          :items="partnerRequests"
+          direction="incoming"
+          :canAnswerPartnerRequests="canAnswerPartnerRequests"
+          @request-updated="reloadPartnerData"
+      />
+      <UranusPartnerRequestCard
+          :items="partnerRequests"
+          direction="outgoing"
+          @request-updated="reloadPartnerData"
+      />
+
+      <UranusPartnerGrantCard
+          :items="partnerList"
+          direction="incoming"
+      />
+      <UranusPartnerGrantCard
+          :items="partnerList"
+          :canEditPartnerRights="canEditPartnerRights"
+          direction="outgoing"
+      />
+    </template>
 
   </div>
 </template>

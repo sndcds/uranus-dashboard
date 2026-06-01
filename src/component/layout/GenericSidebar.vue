@@ -90,60 +90,52 @@
             class="generic-sidebar__nav-item"
             active-class="generic-sidebar__nav-item--active"
             @click="handleLinkClick">
-          <ListPlus class="generic-sidebar__nav-icon"/>
+          <MessageCircleQuestionMark class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_help') }}</span>
         </router-link>
       </template>
 
       <!-- Visitor Navigation -->
       <template v-else>
-        <router-link v-if="tokenStore.isAuthenticated" to="/admin/dashboard" class="generic-sidebar__nav-item"
-          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
-          <span class="generic-sidebar__nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor" />
-            </svg>
-          </span>
-          <span class="generic-sidebar__nav-text">{{ t('dashboard') }}</span>
-        </router-link>
-        <router-link to="/" class="generic-sidebar__nav-item" :class="{ 'generic-sidebar__nav-item--active': route.path === '/' }" exact @click="handleLinkClick">
-          <span class="generic-sidebar__nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor" />
-            </svg>
-          </span>
+        <router-link
+            to="/"
+            class="generic-sidebar__nav-item"
+            :class="{ 'generic-sidebar__nav-item--active': route.path === '/' }"
+            exact
+            @click="handleLinkClick"
+        >
+          <Calendar class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_events') }}</span>
         </router-link>
-        <router-link to="/map" class="generic-sidebar__nav-item" active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
-          <span class="generic-sidebar__nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"
-                fill="currentColor" />
-            </svg>
-          </span>
+
+        <router-link
+            to="/map"
+            class="generic-sidebar__nav-item"
+            active-class="generic-sidebar__nav-item--active"
+            @click="handleLinkClick"
+        >
+          <Map class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_map') }}</span>
         </router-link>
 
-        <router-link to="/page/about" class="generic-sidebar__nav-item" active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
-          <span class="generic-sidebar__nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
-                fill="currentColor" />
-            </svg>
-          </span>
+        <router-link
+            to="/page/about"
+            class="generic-sidebar__nav-item"
+            active-class="generic-sidebar__nav-item--active"
+            @click="handleLinkClick"
+        >
+          <Info class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ t('nav_about') }}</span>
         </router-link>
 
-        <router-link v-if="!tokenStore.isAuthenticated" :to="authEntryRoute" class="generic-sidebar__nav-item"
-          active-class="generic-sidebar__nav-item--active" @click="handleLinkClick">
-          <span class="generic-sidebar__nav-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"
-                fill="currentColor" />
-            </svg>
-          </span>
+        <router-link
+            v-if="!tokenStore.isAuthenticated"
+            :to="authEntryRoute"
+            class="generic-sidebar__nav-item"
+            active-class="generic-sidebar__nav-item--active"
+            @click="handleLinkClick"
+        >
+          <LogIn class="generic-sidebar__nav-icon"/>
           <span class="generic-sidebar__nav-text">{{ authEntryLabel }}</span>
         </router-link>
       </template>
@@ -156,7 +148,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import { LayoutDashboard, ListChecks, Building, Handshake, MapPin, Calendar, Orbit, ListPlus } from 'lucide-vue-next'
+import { Info, LayoutDashboard, ListChecks, Building, Handshake, MapPin, Map, Calendar, Orbit, LogIn, ListPlus, MessageCircleQuestionMark } from 'lucide-vue-next'
 
 interface Props {
   isOpen: boolean

@@ -10,7 +10,7 @@
               to="/page/about"
               class="generic-header__nav-link"
               active-class="generic-header__nav-link--active">
-            Uranus
+            kulturbytes
           </router-link>
 
           <router-link
@@ -438,20 +438,19 @@ onUnmounted(() => {
   text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;
-  padding: 0.8rem 1rem;
-  border-radius: 0.375rem;
+  padding: 0.8rem 0.6rem 0.6rem 0.6rem;
+  border-radius: 0;
   transition: all 0.2s ease;
   color: var(--uranus-nav-color);
+  border-bottom: 0.2rem solid transparent;
 
   &:hover {
-    color: var(--uranus-nav-color-hover);
-    background: var(--uranus-nav-bg-hover);
+    border-color: var(--uranus-nav-bg-hover);
   }
 
   &--active,
   &--active:hover {
-    color: var(--uranus-nav-color-active);
-    background: var(--uranus-nav-bg-active);
+    border-color: var(--uranus-nav-bg-active);
   }
 }
 

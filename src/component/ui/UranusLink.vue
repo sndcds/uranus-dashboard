@@ -63,8 +63,10 @@ const ICONS: Record<
   web: { path: "/icons/web.svg", color: "#333" },
   github: { path: "/icons/github.svg", color: "#333" },
   gitlab: { path: "/icons/gitlab.svg", color: "#FC6D26" },
-  uranus: { path: "/icons/uranus.svg", color: "#6D26FC" },
   soundcloud: { path: "/icons/soundcloud.svg", color: "#FF5500" },
+  uranus: { path: "/icons/uranus.svg", color: "#6D26FC" },
+  kulturbytes: { path: "/icons/kulturbytes.svg", color: "#F20D5E" },
+
 };
 
 const icon = computed(() => {
