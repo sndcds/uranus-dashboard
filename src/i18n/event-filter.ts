@@ -80,11 +80,6 @@ export const uranusI18nEventFilterTranslations: Record<string, Record<UranusLoca
         en: 'Filter',
         da: 'Filter',
     },
-    calendar_filter_reset_button_label: {
-        de: 'Filter zurücksetzen',
-        en: 'Reset filter',
-        da: 'Nultil filter',
-    },
     calendar_filter_location: {
         de: 'Ort',
         en: 'Location',

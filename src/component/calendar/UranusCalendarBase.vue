@@ -1,3 +1,9 @@
+<!--
+  src/component/calendar/UranusCalendarBase.vue
+
+  TODO: Unused
+-->
+
 <template>
   <div class="uranus-calendar-base">
     <aside class="calendar-sidebar">

@@ -8,28 +8,39 @@
       <div class="calendar-options">
         <div class="calendar-display-options">
           <UranusIconAction
+              v-if="displayModes?.includes('cards')"
               class="calendar-display-type-icon"
               :icon="LayoutGrid"
-            :selected="activeViewMode === 'cards'"
+              :selected="activeViewMode === 'cards'"
               @click="setGlobalMode('cards')"
           />
           <UranusIconAction
+              v-if="displayModes?.includes('compact')"
               class="calendar-display-type-icon"
               :icon="Grip"
-            :selected="activeViewMode === 'compact'"
+              :selected="activeViewMode === 'compact'"
               @click="setGlobalMode('compact')"
           />
           <UranusIconAction
+              v-if="displayModes?.includes('list')"
               class="calendar-display-type-icon"
               :icon="Rows3"
-            :selected="activeViewMode === 'list'"
+              :selected="activeViewMode === 'list'"
               @click="setGlobalMode('list')"
           />
           <UranusIconAction
+              v-if="displayModes?.includes('calendar')"
               class="calendar-display-type-icon"
               :icon="CalendarDays"
-            :selected="activeViewMode === 'calendar'"
+              :selected="activeViewMode === 'calendar'"
               @click="setGlobalMode('calendar')"
+          />
+          <UranusIconAction
+              v-if="displayModes?.includes('map')"
+              class="calendar-display-type-icon"
+              :icon="Map"
+              :selected="activeViewMode === 'map'"
+              @click="setGlobalMode('map')"
           />
         </div>
 
@@ -112,20 +123,7 @@
       </div>
     </div>
 
-    <UranusEventCalendarSheet
-        v-if="activeViewMode === 'calendar'"
-        :active-view-mode="activeViewMode"
-        v-model:calendar-mode="calendarMode"
-        :calendar-labels="calendarLabels"
-        :week-range-label="weekRangeLabel"
-        :week-days="weekDays"
-        :format-event-start-time="formatEventStartTime"
-        @previous-week="goToPreviousWeek"
-        @next-week="goToNextWeek"
-      @go-today="goToCurrentWeek"
-    />
-
-    <div v-else-if="activeViewMode === 'cards'" class="calendar-card-layout">
+    <div v-if="activeViewMode === 'cards'" class="calendar-card-layout">
       <UranusEventCalendarCard
           v-for="event in eventListStore.events"
           :key="`${event.uuid}-${event.dateUuid}`"
@@ -148,7 +146,7 @@
       />
     </div>
 
-    <div v-else class="calendar-list-layout">
+    <div v-else-if="activeViewMode === 'list'" class="calendar-list-layout">
       <UranusEventCalendarListRow
           v-for="event in eventListStore.events"
           :key="`${event.uuid}-${event.dateUuid}`"
@@ -158,6 +156,25 @@
           :type-lookup-store="typeLookupStore"
       />
     </div>
+
+    <UranusEventCalendarSheet
+        v-else-if="activeViewMode === 'calendar'"
+        :active-view-mode="activeViewMode"
+        v-model:calendar-mode="calendarMode"
+        :calendar-labels="calendarLabels"
+        :week-range-label="weekRangeLabel"
+        :week-days="weekDays"
+        :format-event-start-time="formatEventStartTime"
+        @previous-week="goToPreviousWeek"
+        @next-week="goToNextWeek"
+        @go-today="goToCurrentWeek"
+    />
+
+    <UranusEventsMap
+        v-else-if="activeViewMode === 'map'"
+        :filterScope="filterScope"
+        class="calendar-map-layout"
+    />
 
     <div ref="loadMoreTrigger" class="load-more-trigger" aria-hidden="true"></div>
 
@@ -173,19 +190,20 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {type UranusEventsFilter, type UranusEventsFilterScope, useEventsFilterStore} from '@/store/eventsFilterStore.ts'
+import { type UranusEventsFilter, type UranusEventsFilterScope, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { uranusPluralizedText } from '@/util/string.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
-import { SlidersHorizontal, X, Rows3, CalendarDays, LayoutGrid, Grip } from 'lucide-vue-next'
+import { SlidersHorizontal, X, Rows3, CalendarDays, LayoutGrid, Grip, Map } from 'lucide-vue-next'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
 import UranusEventCalendarCard from '@/component/event/card/UranusEventCalendarCard.vue'
 import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCompactCalendarCard.vue'
 import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendarListRow.vue'
 import UranusEventCalendarSheet from '@/component/event/ui/UranusEventCalendarSheet.vue'
+import UranusEventsMap from '@/component/map/UranusEventsMap.vue'
 import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
 import type { EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
 import { addDays, formatDateKey, startOfWeek } from '@/component/calendar/uranusCalendar.ts'
@@ -196,10 +214,12 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const props = withDefaults(defineProps<{
   filterScope?: UranusEventsFilterScope
   showFilterControls?: boolean
+  displayModes?: string[]
   typeFilterMode?: 'chips-multiple' | 'select-single'
 }>(), {
   filterScope: 'default',
   showFilterControls: true,
+  displayModes: () => ['cards', 'compact', 'list', 'calendar', 'map'],
   typeFilterMode: 'chips-multiple'
 })
 
@@ -250,7 +270,11 @@ function resolveInitialWeekAnchorDate() {
 }
 const activeViewMode = computed<EventViewMode>(() => {
   const currentMode = appStore.eventViewMode
-  if (currentMode === 'cards' || currentMode === 'compact' || currentMode === 'list' || currentMode === 'calendar') {
+  if (currentMode === 'cards' ||
+      currentMode === 'compact' ||
+      currentMode === 'list' ||
+      currentMode === 'calendar' ||
+      currentMode === 'map') {
     return currentMode
   }
 
