@@ -914,7 +914,7 @@ onBeforeUnmount(() => {
 
 @media (max-width: 768px) {
   .calendar-head {
-    top: 80px;
+    top: 76px;
     align-items: stretch;
     padding: 0.5rem 0.75rem;
   }
