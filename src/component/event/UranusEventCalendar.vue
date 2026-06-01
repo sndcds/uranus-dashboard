@@ -720,7 +720,7 @@ onBeforeUnmount(() => {
   position: sticky;
   align-items: start;
   gap: 8px;
-  top: 80px;
+  top: 76px;
   z-index: 10;
   padding: 0.5rem 1rem;
   background: var(--uranus-dashboard-bg);
