@@ -47,6 +47,14 @@
             :aria-label="t('date_range')"
         />
 
+        <UranusPopupSelect
+            v-model="selectedPortalEventTypeId"
+            width="100%"
+            :options="portalEventTypeOptions"
+            :placeholder="t('all_events')"
+            :aria-label="t('event_type')"
+        />
+
         <UranusButton
             v-if="activeEventTypeIds.length"
             size="small"
@@ -55,14 +63,6 @@
         >
           {{ t('reset_filter') }}
         </UranusButton>
-
-        <UranusPopupSelect
-            v-model="selectedPortalEventTypeId"
-            width="100%"
-            :options="portalEventTypeOptions"
-            :placeholder="t('all_events')"
-            :aria-label="t('event_type')"
-        />
       </template>
     </UranusPortalHeader>
 

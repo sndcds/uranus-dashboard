@@ -1,3 +1,9 @@
+<!--
+  src/view/public/UranusEventCalendarView.vue
+
+  TODO: Unused
+-->
+
 <template>
   <div class="calendar-demo-view">
     <UranusCalendarBase

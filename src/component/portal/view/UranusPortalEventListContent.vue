@@ -13,7 +13,7 @@
     {{ eventListStore.error }}
   </div>
 
-  <div v-else class="uranus-portal-events__grid">
+  <div v-else-if="eventListStore.events.length > 0" class="uranus-portal-events__grid">
     <router-link
         v-for="event in eventListStore.events"
         :key="`${event.uuid}-${event.dateUuid}`"
@@ -56,6 +56,10 @@
     </router-link>
   </div>
 
+  <div v-else class="uranus-portal-no-events">
+    {{ t('no_events_to_display') }}
+  </div>
+
   <div ref="loadMoreTrigger" class="uranus-portal-events__load-more-trigger" aria-hidden="true"></div>
 
   <div v-if="isLoadingMore" class="uranus-portal-events__state uranus-portal-events__state--inline">
@@ -80,7 +84,7 @@ const props = defineProps<{
 
 const LOAD_MORE_ROOT_MARGIN = 300
 
-const { locale } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
 const eventListStore = useEventListStore()
 const typeLookupStore = useEventTypeLookupStore()
 

@@ -178,11 +178,9 @@
     <div class="uranus-public-venue-calendar">
       <UranusEventCalendar
           filter-scope="venue"
-          :display-modes="['cards', 'compact', 'list']"
-          initial-display-mode="compact"
-          :persist-display-mode="false"
-          :show-filter-controls="false"
-          type-filter-mode="select-single"
+          :displayModes="['cards', 'compact', 'list', 'calendar']"
+          :showFilterControls="false"
+          :typeFilterMode="'select-single'"
       />
     </div>
   </div>
