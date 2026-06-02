@@ -565,6 +565,7 @@
   "count_event_dates": "~~count~~ event dates",
   "no_events_to_display": "No matching events found",
   "no_events_to_display_message": "Choose a different date range or adjust your search settings.",
+  "event_without_date_message": "This event has no date!",
   "calendar_filter_settings_title": "Event Filter Settings",
   "calendar_filter_search_label": "Search",
   "calendar_filter_search_placeholder": "What are you looking for?",

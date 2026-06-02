@@ -565,6 +565,7 @@
   "count_event_dates": "~~count~~ Termine",
   "no_events_to_display": "Keine passenden Veranstaltungen gefunden",
   "no_events_to_display_message": "Wähle einen anderen Zeitraum oder passe die Sucheinstellungen an.",
+  "event_without_date_message": "Dieses Event hat kein Datum!",
   "calendar_filter_settings_title": "Event-Filter-Einstellungen",
   "calendar_filter_search_label": "Suche",
   "calendar_filter_search_placeholder": "Wonach suchst du?",

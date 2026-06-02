@@ -494,27 +494,27 @@ header {
   overflow: hidden;
 
   &.draft {
-    border-width: 4px;
+    border-width: 2px;
     border-color: var(--uranus-event-release-background-draft);
   }
 
   &.review {
-    border-width: 4px;
+    border-width: 2px;
     border-color: var(--uranus-event-release-background-review);
   }
 
   &.cancelled {
-    border-width: 4px;
+    border-width: 2px;
     border-color: var(--uranus-event-release-background-cancelled);
   }
 
   &.deferred {
-    border-width: 4px;
+    border-width: 2px;
     border-color: var(--uranus-event-release-background-deferred);
   }
 
   &.rescheduled {
-    border-width: 4px;
+    border-width: 2px;
     border-color: var(--uranus-event-release-background-rescheduled);
   }
 }

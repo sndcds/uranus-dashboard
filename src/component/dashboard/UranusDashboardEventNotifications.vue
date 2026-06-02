@@ -10,18 +10,22 @@
     </div>
 
     <div v-else>
-      <div v-if="isLoading" class="events-feedback">
+      <UranusFeedback v-if="isLoading" type="notice" :deleteSeconds="1">
         {{ t('notifications_loading') }}
-      </div>
-      <div v-else-if="!notifications.length" class="events-feedback">
+      </UranusFeedback>
+
+      <UranusFeedback v-else-if="!notifications.length" type="notice" :deleteSeconds="1">
         {{ t('no_messages') }}
-      </div>
+      </UranusFeedback>
+
       <div v-else class="uranus-dashboard-card-grid uranus-max-layout">
         <div
             v-for="notification in notifications"
             :key="notification.event_uuid"
             class="uranus-card notification-card"
         >
+          <UranusFeedback v-if="true" type="error">{{ t('event_without_date_message') }}</UranusFeedback>
+
           <UranusEventReleaseChip :releaseStatus="notification.release_status" />
           <ul class="event-card__details">
             <li class="event-card__title">
@@ -62,6 +66,7 @@ import { apiFetch } from '@/api.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { uranusStringInterpolate } from '@/util/string.ts'
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 interface Notification {
   event_uuid: string
@@ -217,18 +222,6 @@ onMounted(() => {
   margin-left: 0.5rem;
   color: var(--uranus-muted-text);
   font-size: 0.85rem;
-}
-
-.feedback {
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.9rem;
-
-  &--error {
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-  }
 }
 
 .events-feedback {

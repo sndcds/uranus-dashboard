@@ -59,4 +59,5 @@ await licenseLookup.initialize([...SUPPORTED_UI_LANGUAGES])
 const eventReleaseStatusStore = useEventReleaseStatusStore();
 await eventReleaseStatusStore.load([...SUPPORTED_UI_LANGUAGES]);
 
+
 app.mount('#app')

@@ -844,6 +844,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Wähle einen anderen Zeitraum oder passe die Sucheinstellungen an.',
         en: 'Choose a different date range or adjust your search settings.',
         da: 'Vælg en anden periode eller juster dine søgeindstillinger.',
+    },
+    event_without_date_message: {
+        de: 'Dieses Event hat kein Datum!',
+        en: 'This event has no date!',
+        da: 'Denne begivenhed har ingen dato!',
     }
 }
 
