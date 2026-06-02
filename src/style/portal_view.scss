@@ -71,7 +71,7 @@
 }
 
 .uranus-portal-events__logo-link,
-.uranus-portal-events__footer-logo-link {
+.uranus-portal__footer-logo-link {
   display: inline-flex;
   color: inherit;
 }
@@ -112,7 +112,7 @@
 }
 
 .uranus-portal-events-header__logo-frame,
-.uranus-portal-events__footer-logo-frame {
+.uranus-portal__footer-logo-frame {
   display: flex;
   min-width: 0;
   align-items: center;
@@ -378,7 +378,7 @@
   height: 1px;
 }
 
-.uranus-portal-events__footer {
+.uranus-portal__footer {
   display: grid;
   grid-template-areas: "logo text links";
   grid-template-columns: 220px 2fr 1fr;
@@ -391,27 +391,27 @@
   padding: 1rem;
 }
 
-.uranus-portal-events__footer-logo {
+.uranus-portal__footer-logo {
   grid-area: logo;
   min-width: 0;
   justify-self: start;
 }
 
-.uranus-portal-events__footer-text {
+.uranus-portal__footer-text {
   grid-area: text;
   min-width: 0;
   justify-self: center;
 }
 
-.uranus-portal-events__footer-text > :first-child {
+.uranus-portal__footer-text > :first-child {
   margin-top: 0;
 }
 
-.uranus-portal-events__footer-text > :last-child {
+.uranus-portal__footer-text > :last-child {
   margin-bottom: 0;
 }
 
-.uranus-portal-events__footer-links {
+.uranus-portal__footer-links {
   grid-area: links;
   display: flex;
   min-width: 0;
@@ -422,7 +422,7 @@
   text-align: right;
 }
 
-.uranus-portal-events__footer-links a {
+.uranus-portal__footer-links a {
   color: inherit;
 }
 
@@ -505,7 +505,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .uranus-portal-events__footer {
+  .uranus-portal__footer {
     grid-template-areas:
       "logo"
       "text"
@@ -513,13 +513,13 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .uranus-portal-events__footer-links {
+  .uranus-portal__footer-links {
     align-items: flex-start;
     justify-self: start;
     text-align: left;
   }
 
-  .uranus-portal-events__footer-text {
+  .uranus-portal__footer-text {
     justify-self: stretch;
   }
 }

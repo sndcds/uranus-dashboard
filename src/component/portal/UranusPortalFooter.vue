@@ -5,17 +5,17 @@
 <template>
   <footer
       v-if="visible"
-      class="uranus-portal-events__footer"
+      class="uranus-portal__footer"
   >
-    <div class="uranus-portal-events__footer-logo">
+    <div class="uranus-portal__footer-logo">
       <div
           v-if="config.showLogo && logoUrl"
-          class="uranus-portal-events__footer-logo-frame"
+          class="uranus-portal__footer-logo-frame"
           :style="logoFrameStyle"
       >
         <a
             v-if="config.logoLinkUrl"
-            class="uranus-portal-events__footer-logo-link"
+            class="uranus-portal__footer-logo-link"
             :href="config.logoLinkUrl"
             :target="config.logoLinkTarget"
             :rel="linkRel"
@@ -42,13 +42,13 @@
 
     <div
         v-if="textHtml"
-        class="uranus-portal-events__footer-text"
+        class="uranus-portal__footer-text"
         v-html="textHtml"
     />
 
     <nav
         v-if="config.links.length"
-        class="uranus-portal-events__footer-links"
+        class="uranus-portal__footer-links"
     >
       <a
           v-for="(link, index) in config.links"
