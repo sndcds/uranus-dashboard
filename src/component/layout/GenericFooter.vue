@@ -6,7 +6,7 @@
         <!-- Left side - Copyright and GitHub -->
         <div class="generic-layout__footer-left">
           <span class="generic-layout__footer-text">
-            &copy; {{ currentYear }} Uranus
+            &copy; {{ currentYear }} kulturbytes
           </span>
           <a
             href="https://github.com/sndcds/uranus-dashboard"
