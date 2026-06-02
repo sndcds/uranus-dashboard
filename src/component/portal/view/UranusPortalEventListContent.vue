@@ -57,7 +57,8 @@
   </div>
 
   <div v-else class="uranus-portal-no-events">
-    {{ t('no_events_to_display') }}
+    <h1>{{ t('no_events_to_display') }}</h1>
+    <p>{{ t('no_events_to_display_message') }}</p>
   </div>
 
   <div ref="loadMoreTrigger" class="uranus-portal-events__load-more-trigger" aria-hidden="true"></div>
