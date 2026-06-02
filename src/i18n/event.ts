@@ -839,6 +839,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Keine passenden Veranstaltungen gefunden',
         en: 'No matching events found',
         da: 'Ingen passende arrangementer fundet',
+    },
+    no_events_to_display_message: {
+        de: 'Wähle einen anderen Zeitraum oder passe die Sucheinstellungen an.',
+        en: 'Choose a different date range or adjust your search settings.',
+        da: 'Vælg en anden periode eller juster dine søgeindstillinger.',
     }
 }
 
