@@ -565,6 +565,7 @@
   "count_event_dates": "~~count~~ datoer",
   "no_events_to_display": "Ingen passende arrangementer fundet",
   "no_events_to_display_message": "Vælg en anden periode eller juster dine søgeindstillinger.",
+  "event_without_date_message": "Denne begivenhed har ingen dato!",
   "calendar_filter_settings_title": "Indstil filter",
   "calendar_filter_search_label": "Søg",
   "calendar_filter_search_placeholder": "Hvad søger du?",

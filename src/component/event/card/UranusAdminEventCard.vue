@@ -11,6 +11,8 @@
       :class="event.releaseStatus ?? 'default'"
   >
     <div class="card-head">
+      <UranusFeedback v-if="!event.seriesTotal" type="error">{{ t('event_without_date_message') }}</UranusFeedback>
+
       <div class="card-status">
         <UranusEventReleaseChip :releaseStatus="event.releaseStatus ?? ''" :tiny="true"/>
         <UranusEventCategoryDisplay v-if="event.categories" :categories="event.categories" />
@@ -139,6 +141,7 @@ import { Eye, Pencil, Trash, Calendar, MapPin, Building, Video } from 'lucide-vu
 import UranusEventCategoryDisplay from '@/component/event/ui/UranusEventCategoryDisplay.vue'
 import { uranusPluralizedText, uranusStringInterpolate } from '@/util/string.ts'
 import { apiErrorI18nKey } from '@/util/api_error.ts'
+import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const placeholderImage = '/assets/event-dummy.png'
 
