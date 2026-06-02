@@ -68,9 +68,11 @@
       </a>
     </nav>
 
-    <nav v-if="$slots['content-nav']" class="uranus-portal-header__content-nav">
-      <slot name="content-nav" />
-    </nav>
+    <div class="uranus-portal-header__content-nav">
+      <template v-if="$slots['content-nav']">
+        <slot name="content-nav" />
+      </template>
+    </div>
 
     <div class="uranus-portal-header__search">
       <slot name="search" />
