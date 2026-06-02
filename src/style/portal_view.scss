@@ -66,6 +66,8 @@
 
 .uranus-portal-no-events {
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
   align-items: center;
   justify-content: center;
   h1 {
