@@ -45,14 +45,14 @@ export function createPortalStructuredCss(style: PortalStyle, portalUuid: string
             ]
         ),
 
-        createRule(`${rootSelector} .uranus-portal-events-header h1`, [
+        createRule(`${rootSelector} .uranus-portal-header h1`, [
             cssDeclaration('color', readStyleValue(style.header?.title, 'color')),
             cssDeclaration('font-size', readStyleValue(style.header?.title, 'font-size')),
             cssDeclaration('font-weight', readStyleValue(style.header?.title, 'font-weight')),
             cssDeclaration('line-height', readStyleValue(style.header?.title, 'line-height')),
         ]),
 
-        createRule(`${rootSelector} .uranus-portal-events-header p`, [
+        createRule(`${rootSelector} .uranus-portal-header p`, [
             cssDeclaration('color', readStyleValue(style.header?.description, 'color')),
             cssDeclaration('font-size', readStyleValue(style.header?.description, 'font-size')),
             cssDeclaration('line-height', readStyleValue(style.header?.description, 'line-height')),

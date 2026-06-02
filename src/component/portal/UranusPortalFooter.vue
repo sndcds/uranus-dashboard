@@ -40,16 +40,11 @@
       </div>
     </div>
 
-    <div
-        v-if="textHtml"
-        class="uranus-portal__footer-text"
-        v-html="textHtml"
-    />
+    <div class="uranus-portal__footer-text">
+      <div v-if="textHtml" v-html="textHtml" />
+    </div>
 
-    <nav
-        v-if="config.links.length"
-        class="uranus-portal__footer-links"
-    >
+    <div class="uranus-portal__footer-links">
       <a
           v-for="(link, index) in config.links"
           :key="`${link.url}-${index}`"
@@ -61,7 +56,7 @@
       >
         {{ link.label }}
       </a>
-    </nav>
+    </div>
   </footer>
 </template>
 
