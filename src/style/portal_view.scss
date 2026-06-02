@@ -426,6 +426,18 @@
   color: inherit;
 }
 
+.uranus-portal__footer-provider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  a {
+    color: inherit !important;
+  }
+  a:hover {
+    opacity: 0.8;
+  }
+}
+
 // uranus-portal-date-select
 
 .uranus-portal-date-select {

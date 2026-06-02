@@ -58,6 +58,9 @@
       </a>
     </div>
   </footer>
+  <div class="uranus-portal__footer-provider">
+    Brought&nbsp;to&nbsp;you&nbsp;by&nbsp;&nbsp;<UranusSVG src="/icons/kulturbytes.svg" width="22px" />&nbsp;&nbsp;<a href="https://kulturbytes.de">kulturalbytes.de</a>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -67,6 +70,7 @@ import type {
   PortalFooterConfig,
   PortalLinkTarget,
 } from '@/component/portal/editor/portalLayoutConfig'
+import UranusSVG from '@/component/ui/UranusSVG.vue'
 
 const props = defineProps<{
   config: PortalFooterConfig
