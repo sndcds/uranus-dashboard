@@ -43,11 +43,11 @@
           {{ event.subtitle }}
         </p>
 
-        <div v-if="getUniqueEventTypes(event).length" class="uranus-portal-event-card__tags">
+        <div v-if="getUniqueEventTypes(event).length" class="uranus-portal-event-card__type-chips">
           <span
               v-for="typeId in getUniqueEventTypes(event)"
               :key="typeId"
-              class="uranus-portal-event-card__tag"
+              class="uranus-portal-event-card__type-chip"
           >
             {{ typeLookupStore.getTypeName(typeId, locale) }}
           </span>
