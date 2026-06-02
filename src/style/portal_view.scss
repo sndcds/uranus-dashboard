@@ -433,8 +433,9 @@
 .uranus-portal__footer-provider {
   display: flex;
   justify-content: center;
-  align-items: center;
   a {
+    display: flex;
+    justify-content: center;
     color: inherit !important;
   }
   a:hover {
