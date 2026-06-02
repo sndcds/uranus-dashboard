@@ -76,14 +76,14 @@
   color: inherit;
 }
 
-.uranus-portal-events-header {
+.uranus-portal-header {
   display: grid;
   gap: 1rem;
   width: 100%;
   align-self: stretch;
 }
 
-.uranus-portal-events-header__left {
+.uranus-portal-header__left {
   grid-template-areas:
     "logo title"
     "logo buttons"
@@ -94,7 +94,7 @@
   text-align: left;
 }
 
-.uranus-portal-events-header__centered {
+.uranus-portal-header__centered {
   grid-template-areas:
     "logo"
     "title"
@@ -106,12 +106,12 @@
   text-align: center;
 }
 
-.uranus-portal-events-header__logo {
+.uranus-portal-header__logo {
   grid-area: logo;
   min-width: 0;
 }
 
-.uranus-portal-events-header__logo-frame,
+.uranus-portal-header__logo-frame,
 .uranus-portal__footer-logo-frame {
   display: flex;
   min-width: 0;
@@ -120,26 +120,26 @@
   overflow: hidden;
 }
 
-.uranus-portal-events-header__title {
+.uranus-portal-header__title {
   grid-area: title;
   min-width: 0;
 }
 
-.uranus-portal-events-header__buttons {
+.uranus-portal-header__buttons {
   grid-area: buttons;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.uranus-portal-events-header__content-nav {
+.uranus-portal-header__content-nav {
   grid-area: content-nav;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.uranus-portal-events-header__search {
+.uranus-portal-header__search {
   grid-area: event-types;
   display: flex;
   align-items: center;
@@ -148,26 +148,26 @@
   gap: 0.5rem;
 }
 
-.uranus-portal-events-header__icon-links {
+.uranus-portal-header__icon-links {
   grid-area: icon-links;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.uranus-portal-events-header__event-types {
+.uranus-portal-header__event-types {
   grid-area: event-types;
   min-width: 100%;
   min-height: 50px;
 }
 
-.uranus-portal-events-header__centered .uranus-portal-events-header__buttons,
-.uranus-portal-events-header__centered .uranus-portal-events-header__search,
-.uranus-portal-events-header__centered .uranus-portal-events-header__icon-links {
+.uranus-portal-header__centered .uranus-portal-header__buttons,
+.uranus-portal-header__centered .uranus-portal-header__search,
+.uranus-portal-header__centered .uranus-portal-header__icon-links {
   justify-content: center;
 }
 
-.uranus-portal-events-header h1 {
+.uranus-portal-header h1 {
   margin: 0;
   color: var(--portal-header-title-color, inherit);
   font-size: var(--portal-header-title-font-size, 1.6rem);
@@ -200,7 +200,7 @@
   color: var(--portal-event-accent);
 }
 
-.uranus-portal-events-header p {
+.uranus-portal-header p {
   margin: 0.35rem 0 0;
   color: var(--portal-header-description-color, inherit);
   font-size: var(--portal-header-description-font-size, 1rem);
@@ -494,7 +494,7 @@
 }
 
 @media (max-width: 800px) {
-  .uranus-portal-events-header__left {
+  .uranus-portal-header__left {
     grid-template-areas:
       "logo"
       "title"

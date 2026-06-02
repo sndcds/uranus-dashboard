@@ -4,13 +4,13 @@
 
 <template>
   <header
-      class="uranus-portal-events-header"
+      class="uranus-portal-header"
       :class="layoutClass"
   >
-    <div v-if="config.showLogo" class="uranus-portal-events-header__logo">
+    <div v-if="config.showLogo" class="uranus-portal-header__logo">
       <div
           v-if="logoUrl"
-          class="uranus-portal-events-header__logo-frame"
+          class="uranus-portal-header__logo-frame"
           :style="logoFrameStyle"
       >
         <a
@@ -21,7 +21,7 @@
             :rel="linkRel(config.logoLinkTarget)"
         >
           <UranusLogoImage
-              class="uranus-portal-events-header__logo-image"
+              class="uranus-portal-header__logo-image"
               :logoURL="logoUrl"
               theme="light"
               :pixelCount="logoPixelCount"
@@ -32,7 +32,7 @@
 
         <UranusLogoImage
             v-else
-            class="uranus-portal-events-header__logo-image"
+            class="uranus-portal-header__logo-image"
             :logoURL="logoUrl"
             theme="light"
             :pixelCount="logoPixelCount"
@@ -44,7 +44,7 @@
 
     <div
         v-if="config.showTitle || config.showDescription"
-        class="uranus-portal-events-header__title"
+        class="uranus-portal-header__title"
     >
       <h1 v-if="config.showTitle">
         {{ title }}
@@ -55,7 +55,7 @@
       </p>
     </div>
 
-    <nav class="uranus-portal-events-header__buttons">
+    <nav class="uranus-portal-header__buttons">
       <a
           v-for="(button, index) in config.buttons"
           :key="`${button.url}-${index}`"
@@ -68,15 +68,15 @@
       </a>
     </nav>
 
-    <nav v-if="$slots['content-nav']" class="uranus-portal-events-header__content-nav">
+    <nav v-if="$slots['content-nav']" class="uranus-portal-header__content-nav">
       <slot name="content-nav" />
     </nav>
 
-    <div class="uranus-portal-events-header__search">
+    <div class="uranus-portal-header__search">
       <slot name="search" />
     </div>
 
-    <div class="uranus-portal-events-header__icon-links">
+    <div class="uranus-portal-header__icon-links">
       <slot name="icon-links" />
     </div>
   </header>
@@ -99,8 +99,8 @@ const props = defineProps<{
 
 const layoutClass = computed(() =>
     props.config.layout === 'centered'
-        ? 'uranus-portal-events-header__centered'
-        : 'uranus-portal-events-header__left'
+        ? 'uranus-portal-header__centered'
+        : 'uranus-portal-header__left'
 )
 
 const logoFrameStyle = computed(() => ({
