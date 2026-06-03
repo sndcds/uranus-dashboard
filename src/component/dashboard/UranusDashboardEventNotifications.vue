@@ -1,13 +1,13 @@
 <!--
-  UranusDashboardNotifications.vue
+  src/component/dashboard/UranusDashboardEventNotifications.vue
 -->
 
 <template>
   <div class="uranus-main-layout">
     <h1>{{ t('messages') }}</h1>
-    <div v-if="error" class="feedback feedback--error" role="alert">
+    <UranusFeedback v-if="error" type="error" :deleteSeconds="1">
       {{ error }}
-    </div>
+    </UranusFeedback>
 
     <div v-else>
       <UranusFeedback v-if="isLoading" type="notice" :deleteSeconds="1">
@@ -24,7 +24,13 @@
             :key="notification.event_uuid"
             class="uranus-card notification-card"
         >
-          <UranusFeedback v-if="true" type="error">{{ t('event_without_date_message') }}</UranusFeedback>
+          <UranusFeedback
+              v-if="notification.no_event_dates || notification.no_upcoming_date"
+              type="error"
+          >
+            {{ t('event_without_date_message') }}
+          </UranusFeedback>
+
 
           <UranusEventReleaseChip :releaseStatus="notification.release_status" />
           <ul class="event-card__details">
@@ -33,14 +39,11 @@
               <span>{{ t('event_organizer') }}: {{ notification.org_name }}</span>
             </li>
             <li>
-              <span class="event-card__value">
-                {{ t('event_starts') }}: {{ formatDate(notification.earliest_event_date) }}
-                ({{ formatEventCountdown(notification.days_until_event) }})
-              </span>
-            </li>
-            <li>
-              <span class="event-card__value">
-                {{ t('event_release_date') }}: {{ formatReleaseCountdown(notification.days_until_release) }}
+              <span v-if="notification.first_date" class="event-card__value">
+                {{ t('event_starts') }}: {{ formatDate(notification.first_date) }}
+                <template v-if="notification.days_until_first_date">
+                  ({{ formatEventCountdown(notification.days_until_first_date) }})
+                </template>
               </span>
             </li>
           </ul>
@@ -63,27 +66,41 @@
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
+import { useAppStore } from '@/store/appStore.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { uranusStringInterpolate } from '@/util/string.ts'
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
-interface Notification {
+interface EventNotification {
   event_uuid: string
   event_title: string
   org_uuid: string
   org_name: string
-  release_date: string
+
+  venue_uuid: string | null
+  venue_name: string | null
+  venue_city: string | null
+
   release_status: string | null
-  release_status_name?: string | null
-  earliest_event_date: string
-  days_until_release: number | null
-  days_until_event: number
+
+  first_date: string | null
+  days_until_first_date: number | null
+
+  no_image: boolean
+  no_event_dates: boolean
+  no_venue_or_online_link: boolean
+  no_event_type: boolean
+  no_title: boolean
+  no_upcoming_date: boolean
 }
 
-const { t, locale } = useI18n({ useScope: 'global' })
 
-const notifications = ref<Notification[]>([])
+
+const { t, locale } = useI18n({ useScope: 'global' })
+const appStore = useAppStore()
+
+const notifications = ref<EventNotification[]>([])
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 
@@ -104,32 +121,6 @@ const formatDate = (value: string) => {
   } catch {
     return value
   }
-}
-
-const formatReleaseStatus = (notification: Notification) => {
-  if (notification.release_status_name && notification.release_status_name.trim().length > 0) {
-    return notification.release_status_name
-  }
-  if (notification.release_status) {
-    return t('event_release_status_placeholder', { id: notification.release_status })
-  }
-  return t('event_release_status_placeholder', { id: '—' })
-}
-
-const formatReleaseCountdown = (days: number | null) => {
-  if (!days || Number.isNaN(days)) {
-    return `${t('not_specified')}`
-  }
-  if (days === 0) {
-    return t('today')
-  }
-  if (days === 1) {
-    return t('tomorrow')
-  }
-  if (days < 0) {
-    return `${Math.abs(days)} ${t('days_overdue')}`
-  }
-  return `${days} ${t('days_left')}`
 }
 
 const formatEventCountdown = (days: number) => {
@@ -155,8 +146,8 @@ const loadNotifications = async () => {
   error.value = null
 
   try {
-    const res = await apiFetch<{ notifications: Notification[] }>(
-        `/api/admin/user/notifications?lang=${locale.value}`
+    const res = await apiFetch<{ notifications: EventNotification[] }>(
+        `/api/admin/user/org/${appStore.orgUuid}/event/notifications`
     )
 
     if (Array.isArray(res.data?.notifications)) {
@@ -222,12 +213,6 @@ onMounted(() => {
   margin-left: 0.5rem;
   color: var(--uranus-muted-text);
   font-size: 0.85rem;
-}
-
-.events-feedback {
-  color: var(--uranus-muted-text);
-  font-weight: 500;
-  padding: 1rem 0;
 }
 
 .events-list {
