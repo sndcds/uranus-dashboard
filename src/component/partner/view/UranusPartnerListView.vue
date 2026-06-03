@@ -98,7 +98,6 @@ import {
   type PartnerListItem,
   type PartnerRequestItem
 } from '@/domain/partner/partner.model.ts'
-import UranusInfo from '@/component/ui/UranusInfo.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import { useAppStore } from '@/store/appStore.ts'
 import UranusPartnerGrantCard from '@/component/partner/card/UranusPartnerGrantCard.vue'
