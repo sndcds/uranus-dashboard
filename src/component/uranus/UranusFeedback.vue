@@ -5,7 +5,7 @@
     <UranusFeedback
       v-if="displayErrorFeedback"
       type="error"
-      :deleteSeconds="2"
+      :delaySeconds="2"
       :autoHideSeconds="5"
     >
       {{ displayErrorFeedback }}
@@ -29,7 +29,7 @@ interface Props {
   /**
    * Delay before the feedback becomes visible (in seconds)
    */
-  deleteSeconds?: number
+  delaySeconds?: number
 
   /**
    * Optional auto-hide after showing (in seconds)
@@ -50,7 +50,7 @@ const feedbackClass = computed(() => [
 ])
 
 onMounted(() => {
-  const delay = props.deleteSeconds ?? 0
+  const delay = props.delaySeconds ?? 0
 
   showTimer = setTimeout(() => {
     isVisible.value = true

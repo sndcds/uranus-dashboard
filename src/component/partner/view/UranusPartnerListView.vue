@@ -30,7 +30,7 @@
           :infoText="t('partner_no_membership_message')"
       />
 
-      <UranusFeedback v-if="isLoading" type="notice" :deleteSeconds="1">
+      <UranusFeedback v-if="isLoading" type="notice" :delaySeconds="1">
         {{ t('loading') }}
       </UranusFeedback>
 

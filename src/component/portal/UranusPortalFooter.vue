@@ -59,7 +59,7 @@
     </div>
   </footer>
   <div class="uranus-portal__footer-provider">
-    <a href="https://kulturbytes.de">Brought&nbsp;to&nbsp;you&nbsp;by&nbsp;&nbsp;<UranusSVG src="/icons/kulturbytes.svg" width="22px" />&nbsp;&nbsp;kulturalbytes.de</a>
+    <a href="https://kulturbytes.de">Developed&nbsp;with&nbsp;care&nbsp;by&nbsp;&nbsp;<UranusSVG src="/icons/kulturbytes.svg" width="22px" />&nbsp;&nbsp;kulturalbytes.de</a>
   </div>
 </template>
 

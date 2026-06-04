@@ -16,7 +16,7 @@ export const uranusI18nPartnerTranslations: Record<string, Record<UranusLocaleKe
         da: 'Partnere',
     },
     partner_manage_description: {
-        de: 'Ein Partner ist eine verbundene Organisation, der du Rechte gibts odr von der du Rechte bekommst.',
+        de: 'Ein Partner ist eine verbundene Organisation, der du Rechte gibts oder von der du Rechte bekommst.',
         en: 'A partner is a connected organization to which you grant permissions or from which you receive permissions.',
         da: 'En partner er en tilknyttet organisation, som du giver rettigheder til eller modtager rettigheder fra.',
     },
