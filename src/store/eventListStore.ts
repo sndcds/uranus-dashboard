@@ -257,7 +257,8 @@ export const useEventListStore = defineStore('events', () => {
                 if (currentRequest !== requestId) return
 
                 const eventList = apiResponse.data
-                if (!eventList || eventList.events.length < 1) {
+                const e = eventList?.events ?? []
+                if (e.length < 1 || !eventList) {
                     if (replaceEvents) {
                         events.value = []
                     }

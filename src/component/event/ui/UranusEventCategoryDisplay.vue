@@ -23,10 +23,10 @@ const CATEGORY_COLORS: Record<number, string> = {
 }
 
 const circles = computed(() => {
-  if (!props.categories || props.categories.length === 0) return []
-  return props.categories.map(cat => ({
-    id: cat,
-    color: CATEGORY_COLORS[cat] ?? '#999', // fallback grey
+  const categories = props.categories ?? []
+  return categories.map(category => ({
+    id: category,
+    color: CATEGORY_COLORS[category] ?? '#999',
   }))
 })
 </script>
