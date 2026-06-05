@@ -1,7 +1,7 @@
 // src/domain/mappers/event.mapper.ts
 
-import type { EventListItemDTO, EventWeekItemDTO } from '@/api/dto/event.dto'
-import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
+import type { EventListItemDTO, EventCalendarDayDTO } from '@/api/dto/event.dto'
+import type { EventListItem, EventCalendarDay } from '@/domain/event/eventListItem.model.ts'
 
 export function mapEventDTO(dto: EventListItemDTO): EventListItem {
     return {
@@ -56,56 +56,11 @@ export function mapEventDTO(dto: EventListItemDTO): EventListItem {
     }
 }
 
-export function mapEventWeekDTO(dto: EventWeekItemDTO): EventListItem {
+export function mapEventDayDTO(dto: EventCalendarDayDTO): EventCalendarDay {
     return {
-        uuid: dto.event_uuid,
-        dateUuid: dto.event_date_uuid,
-
-        title: dto.title,
-        subtitle: dto.subtitle ?? null,
-
-        startDate: dto.start_date,
-        startTime: dto.start_time ?? null,
-        entryTime: null,
-
-        space: {
-            id: '',
-            name: ''
-        },
-
-        venue: {
-            uuid: '',
-            name: dto.venue_name ?? '',
-            city: dto.venue_city ?? '',
-            address: '',
-            lat: null,
-            lon: null
-        },
-
-        organization: {
-            uuid: dto.org_uuid ?? '',
-            name: ''
-        },
-
-        imageUrl: dto.image_uuid ? `/api/image/${dto.image_uuid}` : null,
-
-        categories: dto.categories ?? [],
-
-        eventTypes: dto.types?.map(([typeId, genreId]) => ({
-            typeId,
-            genreId,
-        })) ?? [],
-
-        languages: [],
-        tags: [],
-
-        age: {
-            min: null,
-            max: null
-        },
-
-        visitorInfoFlags: null,
-        releaseStatus: dto.release_status ?? 'released'
+        eventDay: dto.event_day,
+        events: dto.events.map(mapEventDTO),
+        moreCount: dto.more_count
     }
 }
 

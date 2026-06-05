@@ -4,6 +4,7 @@
 
 <template>
   <div v-if="activeViewMode === 'calendar'" class="calendar-sheet">
+
     <div class="calendar-sheet-controls">
       <button
           type="button"
@@ -27,7 +28,7 @@
 
     <section class="calendar-sheet-layout">
       <div v-if="calendarMode === 'week'" class="calendar-week-header">
-        <UranusButton size="small" variant="tertiary" @click="emit('previous-week')">
+        <UranusButton size="small" variant="tertiary" @click="onPrevWeek()">
           <template #icon>
             <ChevronLeft />
           </template>
@@ -40,7 +41,7 @@
 
         <div class="calendar-week-range">{{ weekRangeLabel }}</div>
 
-        <UranusButton size="small" variant="tertiary" @click="emit('next-week')">
+        <UranusButton size="small" variant="tertiary" @click="onNextWeek()">
           {{ calendarLabels.next }}
           <template #icon>
             <ChevronRight />
@@ -97,6 +98,11 @@
                 <span class="calendar-week-event__venue">{{ event.venue.name }} · {{ event.venue.city }}</span>
               </router-link>
             </li>
+
+            <div class="calendar-week-event__more">
+              + {{ day.moreCount }} {{ day.moreCount === 1 ? 'more event' : 'more events' }}
+            </div>
+
           </ul>
 
           <p v-else class="calendar-week-day__empty">{{ calendarLabels.emptyDay }}</p>
@@ -133,6 +139,7 @@ interface CalendarWeekDay {
   weekday: string
   dateLabel: string
   events: EventListItem[]
+  moreCount: number
 }
 
 const props = defineProps<{
@@ -155,6 +162,14 @@ const todayDateKey = computed(() => formatDateKey(new Date()))
 
 function setCalendarMode(mode: 'week' | 'month') {
   emit('update:calendarMode', mode)
+}
+
+function onNextWeek() {
+  emit('next-week')
+}
+
+function onPrevWeek() {
+  emit('previous-week')
 }
 
 function categoryClass(categoryId: number) {

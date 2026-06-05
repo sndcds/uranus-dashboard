@@ -94,7 +94,6 @@ import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 const { setLanguage, getStoredLanguage } = useLanguage()
-import { SUPPORTED_UI_LANGUAGES } from '@/store/uranusConstants.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
 import { apiBaseUrl } from '@/util/util.ts'
@@ -188,14 +187,6 @@ const dateRangeOptions = computed(() => [
   value: string
   label: string
 }[])
-
-// Display locale options for portal label language selection
-const displayLocaleOptions = computed<UranusPopupSelectOption[]>(() => [
-  ...SUPPORTED_UI_LANGUAGES.map((lang) => ({
-    value: lang,
-    label: lang,
-  })),
-])
 
 
 const webLogoUrl = computed(() => {
