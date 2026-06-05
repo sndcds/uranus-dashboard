@@ -7,6 +7,20 @@
       class="uranus-portal-header"
       :class="layoutClass"
   >
+    <!-- Languages -->
+    <div class="uranus-portal-header__languages">
+      <span
+          v-for="lang in displayLocaleOptions"
+          :key="lang"
+          @click="setLang(lang)"
+          :class="{ active: lang === (displayLocale ?? locale) }"
+          class="uranus-portal-header__lang-button"
+      >
+        {{ lang }}
+      </span>
+    </div>
+
+    <!-- Logo -->
     <div v-if="config.showLogo" class="uranus-portal-header__logo">
       <div
           v-if="logoUrl"
@@ -15,7 +29,7 @@
       >
         <a
             v-if="config.logoLinkUrl"
-            class="uranus-portal-events__logo-link"
+            class="uranus-portal__logo-link"
             :href="config.logoLinkUrl"
             :target="config.logoLinkTarget"
             :rel="linkRel(config.logoLinkTarget)"
@@ -86,17 +100,34 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { SUPPORTED_UI_LANGUAGES } from '@/store/uranusConstants'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 import {
   type PortalHeaderConfig,
   type PortalLinkTarget,
 } from '@/component/portal/editor/portalLayoutConfig'
+import type { UranusLocaleKey } from '@/i18n/uranus-i18n-index.ts'
+
+const { locale } = useI18n({ useScope: 'global' })
+
+const displayLocale = defineModel<string | undefined>('displayLocale')
+const displayLocaleOptions = computed(() =>
+    SUPPORTED_UI_LANGUAGES.map((lang) => lang)
+)
+
+function setLang(lang: string) {
+  locale.value = lang
+  displayLocale.value = lang
+  localStorage.setItem('app-locale', lang)
+}
 
 const props = defineProps<{
   config: PortalHeaderConfig
   title: string
   description?: string | null
   logoUrl: string | null
+  displayLocale?: UranusLocaleKey
 }>()
 
 const layoutClass = computed(() =>

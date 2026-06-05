@@ -183,6 +183,7 @@ import { Inbox, Send, UserRoundCog, LogOut, Settings, Menu, Sun, Moon } from 'lu
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { useUserStore } from '@/store/userStore.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
+import { useLanguage } from '@/composable/useLanguage.ts'
 import UranusLogo from '@/component/ui/UranusLogo.vue'
 
 const { t, locale } = useI18n()
@@ -191,6 +192,7 @@ const route = useRoute()
 const tokenStore = useTokenStore()
 const userStore = useUserStore()
 const themeStore = useThemeStore()
+const { setLanguage, getStoredLanguage } = useLanguage()
 
 const emit = defineEmits<{
     'toggle-sidebar': []
@@ -255,27 +257,6 @@ const setTheme = async (theme: 'light' | 'dark') => {
       })
     } catch (err) {
       console.error('Failed to save theme setting:', err)
-    }
-  }
-}
-
-// Language switching
-const setLanguage = async (lang: string) => {
-  locale.value = lang
-  localStorage.setItem('app-locale', lang)
-
-  // Save to API if authenticated
-  if (tokenStore.isAuthenticated) {
-    try {
-      await apiFetch('/api/admin/user/settings', {
-        method: 'PUT',
-        body: JSON.stringify({
-          theme: currentTheme.value,
-          locale: lang
-        })
-      })
-    } catch (err) {
-      console.error('Failed to save language setting:', err)
     }
   }
 }

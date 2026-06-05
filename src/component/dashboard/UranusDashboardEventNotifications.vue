@@ -5,16 +5,16 @@
 <template>
   <div class="uranus-main-layout">
     <h1>{{ t('messages') }}</h1>
-    <UranusFeedback v-if="error" type="error" :deleteSeconds="1">
+    <UranusFeedback v-if="error" type="error" :delaySeconds="1">
       {{ error }}
     </UranusFeedback>
 
     <div v-else>
-      <UranusFeedback v-if="isLoading" type="notice" :deleteSeconds="1">
+      <UranusFeedback v-if="isLoading" type="notice" :delaySeconds="1">
         {{ t('notifications_loading') }}
       </UranusFeedback>
 
-      <UranusFeedback v-else-if="!notifications.length" type="notice" :deleteSeconds="1">
+      <UranusFeedback v-else-if="!notifications.length" type="notice" :delaySeconds="1">
         {{ t('no_messages') }}
       </UranusFeedback>
 

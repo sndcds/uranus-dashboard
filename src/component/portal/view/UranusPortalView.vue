@@ -17,8 +17,8 @@
   ></component>
   <div
       v-if="portalRenderReady"
-      class="uranus-portal-events"
-      :class="`uranus-portal-events--header-${headerConfig.layout}`"
+      class="uranus-portal"
+      :class="`uranus-portal--header-${headerConfig.layout}`"
       :data-portal-uuid="portalUuid"
       :style="portalRootStyle"
   >
@@ -27,6 +27,7 @@
         :title="portal?.name ?? t('events')"
         :description="portal?.description ?? null"
         :logo-url="webLogoUrl"
+        :display-locale="displayLocale as UranusLocaleKey"
     >
       <template #content-nav>
         <button
@@ -72,6 +73,7 @@
         :active-filter="activeFilter"
         :portal-error="portalError"
         :portal-ready="portalRenderReady"
+        :display-locale="displayLocale as UranusLocaleKey"
     />
 
     <UranusPortalFooter
@@ -91,6 +93,8 @@ import { apiFetch } from '@/api.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
+const { setLanguage, getStoredLanguage } = useLanguage()
+import { SUPPORTED_UI_LANGUAGES } from '@/store/uranusConstants.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
 import { apiBaseUrl } from '@/util/util.ts'
@@ -119,6 +123,8 @@ import {
 import UranusPortalFooter from '@/component/portal/UranusPortalFooter.vue'
 import UranusPortalHeader from '@/component/portal/UranusPortalHeader.vue'
 import UranusPortalEventListContent from '@/component/portal/view/UranusPortalEventListContent.vue'
+import type {UranusLocaleKey} from "@/i18n/uranus-i18n-index.ts";
+import {useLanguage} from "@/composable/useLanguage.ts";
 
 
 interface PortalDTO {
@@ -137,13 +143,20 @@ interface PortalDTO {
   footer_logo_uuid?: string | null
 }
 
-const { t, locale } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
 
 const eventListStore = useEventListStore()
 const filterStore = useEventsFilterStore()
 const typeLookupStore = useEventTypeLookupStore()
 const route = useRoute()
 const apiBase = apiBaseUrl()
+
+
+const displayLocale = ref(getStoredLanguage())
+
+watch(displayLocale, (value) => {
+  setLanguage(value)
+})
 
 
 const dateRangeOptions = computed(() => [
@@ -175,6 +188,14 @@ const dateRangeOptions = computed(() => [
   value: string
   label: string
 }[])
+
+// Display locale options for portal label language selection
+const displayLocaleOptions = computed<UranusPopupSelectOption[]>(() => [
+  ...SUPPORTED_UI_LANGUAGES.map((lang) => ({
+    value: lang,
+    label: lang,
+  })),
+])
 
 
 const webLogoUrl = computed(() => {
@@ -226,8 +247,8 @@ const portalDateRangeMode = computed<UranusPresetDateRangeMode>({
 const sortedTypeSummary = computed(() => {
   return [...eventListStore.typeSummary].sort((a, b) => {
     if (b.count !== a.count) return b.count - a.count
-    const nameA = typeLookupStore.getTypeName(a.typeId, locale.value)
-    const nameB = typeLookupStore.getTypeName(b.typeId, locale.value)
+    const nameA = typeLookupStore.getTypeName(a.typeId, displayLocale.value)
+    const nameB = typeLookupStore.getTypeName(b.typeId, displayLocale.value)
     return nameA.localeCompare(nameB)
   })
 })
@@ -235,7 +256,7 @@ const portalEventTypeOptions = computed<UranusPopupSelectOption[]>(() => [
   { value: '', label: t('all_event_types') },
   ...sortedTypeSummary.value.map((entry) => ({
     value: String(entry.typeId),
-    label: `${typeLookupStore.getTypeName(entry.typeId, locale.value)} (${entry.count})`,
+    label: `${typeLookupStore.getTypeName(entry.typeId, displayLocale.value)} (${entry.count})`,
   })),
 ])
 

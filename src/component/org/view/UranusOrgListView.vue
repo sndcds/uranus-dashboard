@@ -1,7 +1,5 @@
 <!--
   src/component/org/view/UranusAdminOrgListView.vue
-
-  organisations - mapped data from DTO
 -->
 
 <template>
@@ -29,7 +27,7 @@
       </UranusButton>
     </div>
 
-    <UranusFeedback v-if="isLoading" type="warning">
+    <UranusFeedback v-if="isLoading" type="warning" :delaySeconds="1">
       {{ t('loading') }}
     </UranusFeedback>
 
