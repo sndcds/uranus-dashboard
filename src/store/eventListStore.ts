@@ -5,13 +5,18 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { apiFetch } from '@/api.ts'
-import { type EventListItem, type EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
-import { mapEventDTO, mapEventWeekDTO } from '@/domain/event/eventListItem.mapper.ts'
 import {
-    type EventWeekApiData,
-    type EventListItemsApiData,
+    type EventCalendarDay,
+    type EventListItem,
+    type EventListTypeSummary
+} from '@/domain/event/eventListItem.model.ts'
+import { mapEventDTO, mapEventDayDTO } from '@/domain/event/eventListItem.mapper.ts'
+import {
+    type EventCalendarDTO,
+    type EventListDTO,
     type EventListTypeSummaryDTO,
-    type EventListTypeCountDTO }
+    type EventListTypeCountDTO,
+}
     from '@/api/dto/event.dto.ts'
 import { type UranusEventsFilter, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 
@@ -25,6 +30,7 @@ interface LoadEventsEndpointOptions extends LoadEventsOptions {
 }
 
 export const useEventListStore = defineStore('events', () => {
+    const calendarDays = ref<EventCalendarDay[]>([])
     const events = ref<EventListItem[]>([])
     const totalEventCount  = ref<number>(0)
     const typeSummary = ref<EventListTypeSummary[]>([])
@@ -39,6 +45,7 @@ export const useEventListStore = defineStore('events', () => {
     let requestId = 0
 
     function reset(options: { keepSummary?: boolean } = {}) {
+        calendarDays.value = []
         events.value = []
         if (!options.keepSummary) {
             totalEventCount.value = 0
@@ -53,6 +60,10 @@ export const useEventListStore = defineStore('events', () => {
 
     function getLoadEventsCount(): number {
         return loadEventsCounter.value
+    }
+
+    function hasCalendarDays(): boolean {
+        return calendarDays.value.length > 0
     }
 
     function hasEvents(): boolean {
@@ -197,7 +208,7 @@ export const useEventListStore = defineStore('events', () => {
     }
 
     async function loadEventsFromEndpoint(
-        endpointPath: string,
+        apiPath: string,
         resetPage: boolean,
         filter: UranusEventsFilter,
         options: LoadEventsEndpointOptions
@@ -228,36 +239,43 @@ export const useEventListStore = defineStore('events', () => {
                     params.set('week_start', weekStart)
                 }
             }
-            const apiPath = `${endpointPath}?${params.toString()}`
-            const apiResponse = options.weeklyMode
-                ? await apiFetch<EventWeekApiData>(apiPath)
-                : await apiFetch<EventListItemsApiData>(apiPath)
+            const apiPathWithParams = `${apiPath}?${params.toString()}`
 
-            if (currentRequest !== requestId) return
+            if (options.weeklyMode) {
+                const apiResponse= await apiFetch<EventCalendarDTO>(apiPathWithParams)
+                if (currentRequest !== requestId) return
 
-            const apiEvents = options.weeklyMode
-                ? (apiResponse.data?.days ?? []).flatMap((day) => day.events ?? [])
-                : (apiResponse.data?.events ?? [])
-            if (apiEvents.length === 0) {
-                if (replaceEvents) {
-                    events.value = []
-                }
-                hasMore.value = false
-            } else {
-                const mappedEvents = options.weeklyMode
-                    ? apiEvents.map(mapEventWeekDTO)
-                    : apiEvents.map(mapEventDTO)
-                if (replaceEvents) {
-                    events.value = mappedEvents
+                const eventCalendar = apiResponse.data
+                if (!eventCalendar || eventCalendar.days.length < 1) {
+                    calendarDays.value = []
                 } else {
-                    events.value.push(...mappedEvents)
+                    calendarDays.value = eventCalendar.days.map(mapEventDayDTO)
                 }
-                const listApiData = options.weeklyMode ? null : apiResponse.data
-                lastEventStartAt.value = listApiData?.last_event_start_at ?? null
-                lastEventDateUuid.value = listApiData?.last_event_date_uuid ?? null
-                hasMore.value = (options.paginationMode ?? true)
-                    ? !!listApiData?.last_event_date_uuid
-                    : false
+            }
+            else {
+                const apiResponse= await apiFetch<EventListDTO>(apiPathWithParams)
+                if (currentRequest !== requestId) return
+
+                const eventList = apiResponse.data
+                if (!eventList || eventList.events.length < 1) {
+                    if (replaceEvents) {
+                        events.value = []
+                    }
+                    hasMore.value = false
+                } else {
+                    const mappedEvents = eventList.events.map(mapEventDTO)
+                    if (replaceEvents) {
+                        events.value = mappedEvents
+                    } else {
+                        events.value.push(...mappedEvents)
+                    }
+
+                    lastEventStartAt.value = eventList?.last_event_start_at ?? null
+                    lastEventDateUuid.value = eventList?.last_event_date_uuid ?? null
+                    hasMore.value = (options.paginationMode ?? true)
+                        ? !!eventList?.last_event_date_uuid
+                        : false
+                }
             }
 
             error.value = null
@@ -273,6 +291,7 @@ export const useEventListStore = defineStore('events', () => {
     return {
         getLoadEventsCount,
         events,
+        calendarDays,
         totalEventCount,
         typeSummary,
         lastEventStartAt,
@@ -281,6 +300,7 @@ export const useEventListStore = defineStore('events', () => {
         reset,
         error,
         hasEvents,
+        hasCalendarDays,
         hasMore,
         loadEvents,
         loadWeekEvents,

@@ -56,3 +56,9 @@ export interface EventListItem {
     visitorInfoFlags: string | null
     releaseStatus: string
 }
+
+export interface EventCalendarDay {
+    eventDay: string
+    events: EventListItem[]
+    moreCount: number
+}

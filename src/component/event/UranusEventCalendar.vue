@@ -204,7 +204,7 @@ import UranusEventCompactCalendarCard from '@/component/event/card/UranusEventCo
 import UranusEventCalendarListRow from '@/component/event/ui/UranusEventCalendarListRow.vue'
 import UranusEventCalendarSheet from '@/component/event/ui/UranusEventCalendarSheet.vue'
 import UranusEventsMap from '@/component/map/UranusEventsMap.vue'
-import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
+import type {EventCalendarDay, EventListItem} from '@/domain/event/eventListItem.model.ts'
 import type { EventListTypeSummary } from '@/domain/event/eventListItem.model.ts'
 import { addDays, formatDateKey, startOfWeek } from '@/component/calendar/uranusCalendar.ts'
 import { type EventViewMode, useAppStore } from '@/store/appStore.ts'
@@ -497,22 +497,6 @@ watch(calendarMode, () => {
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 
-const eventsByDate = computed(() => {
-  const grouped = new globalThis.Map<string, EventListItem[]>()
-
-  eventListStore.events.forEach((event) => {
-    const dateKey = formatDateKey(toEventDateTime(event))
-    const bucket = grouped.get(dateKey) ?? []
-    bucket.push(event)
-    grouped.set(dateKey, bucket)
-  })
-
-  grouped.forEach((events) => {
-    events.sort((a, b) => toEventDateTime(a).getTime() - toEventDateTime(b).getTime())
-  })
-
-  return grouped
-})
 
 const weekRangeLabel = computed(() => {
   const weekStart = weekAnchorDate.value
@@ -526,23 +510,29 @@ const weekRangeLabel = computed(() => {
   return `${formatter.format(weekStart)} - ${formatter.format(weekEnd)}`
 })
 
-const weekDays = computed(() => {
-  const weekdayFormatter = new Intl.DateTimeFormat(locale.value, { weekday: 'long' })
-  const dateFormatter = new Intl.DateTimeFormat(locale.value, { day: '2-digit', month: '2-digit' })
+const weekDays = computed(() =>
+    eventListStore.calendarDays.map(day => ({
+      ...mapCalendarDayForView(locale.value)(day),
+      events: day.events.filter(e => e?.uuid && e?.dateUuid),
+    }))
+)
 
-  return Array.from({ length: 7 }, (_, index) => {
-    const date = addDays(weekAnchorDate.value, index)
-    const dateKey = formatDateKey(date)
+function mapCalendarDayForView(locale: string) {
+  const weekdayFormatter = new Intl.DateTimeFormat(locale, { weekday: 'long' })
+  const dateFormatter = new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit' })
+
+  return (day: EventCalendarDay) => {
+    const date = new Date(day.eventDay)
 
     return {
-      date,
-      dateKey,
+      dateKey: day.eventDay,
       weekday: weekdayFormatter.format(date),
       dateLabel: dateFormatter.format(date),
-      events: eventsByDate.value.get(dateKey) ?? [],
+      events: day.events,
+      moreCount: day.moreCount
     }
-  })
-})
+  }
+}
 
 function goToPreviousWeek() {
   weekAnchorDate.value = addDays(weekAnchorDate.value, -7)
