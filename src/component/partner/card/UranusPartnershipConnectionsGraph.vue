@@ -17,7 +17,7 @@
     </UranusFeedback>
 
     <UranusFeedback v-else-if="connections.length === 0" type="notice">
-      No partnership connections found.
+      {{ t('no_partnership_connections_found')}}
     </UranusFeedback>
 
     <div v-else ref="graphRootRef" class="connections-graph">
