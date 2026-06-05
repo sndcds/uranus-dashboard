@@ -5,15 +5,15 @@
 -->
 
 <template>
-  <div v-if="portalError" class="uranus-portal-events__state">
+  <div v-if="portalError" class="uranus-portal__state">
     {{ portalError }}
   </div>
 
-  <div v-else-if="eventListStore.error" class="uranus-portal-events__state">
+  <div v-else-if="eventListStore.error" class="uranus-portal__state">
     {{ eventListStore.error }}
   </div>
 
-  <div v-else-if="eventListStore.events.length > 0" class="uranus-portal-events__grid">
+  <div v-else-if="eventListStore.events.length > 0" class="uranus-portal__grid">
     <router-link
         v-for="event in eventListStore.events"
         :key="`${event.uuid}-${event.dateUuid}`"
@@ -49,7 +49,7 @@
               :key="typeId"
               class="uranus-portal-event-card__type-chip"
           >
-            {{ typeLookupStore.getTypeName(typeId, locale) }}
+            {{ typeLookupStore.getTypeName(typeId, props.displayLocale || locale) }}
           </span>
         </div>
       </div>
@@ -61,9 +61,9 @@
     <p>{{ t('no_events_to_display_message') }}</p>
   </div>
 
-  <div ref="loadMoreTrigger" class="uranus-portal-events__load-more-trigger" aria-hidden="true"></div>
+  <div ref="loadMoreTrigger" class="uranus-portal__load-more-trigger" aria-hidden="true"></div>
 
-  <div v-if="isLoadingMore" class="uranus-portal-events__state uranus-portal-events__state--inline">
+  <div v-if="isLoadingMore" class="uranus-portal__state uranus-portal__state--inline">
     Loading events...
   </div>
 </template>
@@ -76,11 +76,13 @@ import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import { uranusFormatDateTime } from '@/util/string.ts'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import type { UranusEventsFilter } from '@/store/eventsFilterStore.ts'
+import type { UranusLocaleKey } from '@/i18n/uranus-i18n-index.ts'
 
 const props = defineProps<{
   activeFilter: UranusEventsFilter
   portalError: string | null
   portalReady: boolean
+  displayLocale?: UranusLocaleKey
 }>()
 
 const LOAD_MORE_ROOT_MARGIN = 300

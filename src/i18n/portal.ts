@@ -95,4 +95,9 @@ export const uranusI18nPortalTranslations: Record<string, Record<UranusLocaleKey
         en: 'The portal could not be deletet. Please try again.',
         da: 'Portalen kunne ikke slettes. Prøv igen.',
     },
+    portal_label_language: {
+        de: 'Label-Sprache',
+        en: 'Label language',
+        da: 'Etiketsproget',
+    },
 }

@@ -24,7 +24,7 @@ export interface PortalStyle {
 
 export function createPortalStructuredCss(style: PortalStyle, portalUuid: string): string {
     const rootSelector =
-        `.uranus-portal-events[data-portal-uuid="${escapeCssString(portalUuid)}"]`
+        `.uranus-portal[data-portal-uuid="${escapeCssString(portalUuid)}"]`
 
     const parts = [
         createRule(rootSelector, [
@@ -35,10 +35,10 @@ export function createPortalStructuredCss(style: PortalStyle, portalUuid: string
         ]),
 
         createRule(
-            `${rootSelector} .uranus-portal-events__type-scroller,
-       ${rootSelector} .uranus-portal-events__grid,
-       ${rootSelector} .uranus-portal-events__state,
-       ${rootSelector} .uranus-portal-events__load-more-trigger`,
+            `${rootSelector} .uranus-portal__type-scroller,
+       ${rootSelector} .uranus-portal__grid,
+       ${rootSelector} .uranus-portal__state,
+       ${rootSelector} .uranus-portal__load-more-trigger`,
             [
                 cssDeclaration('max-width', readStyleValue(style.content, 'max-width')),
                 cssDeclaration('align-self', normalizeContentAlign(readStyleValue(style.content, 'align'))),
@@ -58,7 +58,7 @@ export function createPortalStructuredCss(style: PortalStyle, portalUuid: string
             cssDeclaration('line-height', readStyleValue(style.header?.description, 'line-height')),
         ]),
 
-        createRule(`${rootSelector} .uranus-portal-events__grid`, [
+        createRule(`${rootSelector} .uranus-portal__grid`, [
             cssDeclaration('gap', readStyleValue(style['event-grid'] ?? style.grid, 'gap')),
             cssDeclaration(
                 'grid-template-columns',

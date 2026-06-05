@@ -5,17 +5,17 @@
 <template>
   <footer
       v-if="visible"
-      class="uranus-portal__footer"
+      class="uranus-portal-footer"
   >
-    <div class="uranus-portal__footer-logo">
+    <div class="uranus-portal-footer__logo">
       <div
           v-if="config.showLogo && logoUrl"
-          class="uranus-portal__footer-logo-frame"
+          class="uranus-portal-footer__logo-frame"
           :style="logoFrameStyle"
       >
         <a
             v-if="config.logoLinkUrl"
-            class="uranus-portal__footer-logo-link"
+            class="uranus-portal-footer__logo-link"
             :href="config.logoLinkUrl"
             :target="config.logoLinkTarget"
             :rel="linkRel"
@@ -40,11 +40,11 @@
       </div>
     </div>
 
-    <div class="uranus-portal__footer-text">
+    <div class="uranus-portal-footer__text">
       <div v-if="textHtml" v-html="textHtml" />
     </div>
 
-    <div class="uranus-portal__footer-links">
+    <div class="uranus-portal-footer__links">
       <a
           v-for="(link, index) in config.links"
           :key="`${link.url}-${index}`"
@@ -58,7 +58,7 @@
       </a>
     </div>
   </footer>
-  <div class="uranus-portal__footer-provider">
+  <div class="uranus-portal-footer__provider">
     <a href="https://kulturbytes.de">Developed&nbsp;with&nbsp;care&nbsp;by&nbsp;&nbsp;<UranusSVG src="/icons/kulturbytes.svg" width="22px" />&nbsp;&nbsp;kulturalbytes.de</a>
   </div>
 </template>
