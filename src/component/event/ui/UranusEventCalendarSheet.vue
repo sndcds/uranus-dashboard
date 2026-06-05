@@ -99,9 +99,9 @@
               </router-link>
             </li>
 
-            <div class="calendar-week-event__more">
-              + {{ day.moreCount }} {{ day.moreCount === 1 ? 'more event' : 'more events' }}
-            </div>
+            <li v-if="(day.moreCount ?? 0) > 0 || true" class="calendar-week-day__more">
+              + {{ day.moreCount }} more
+            </li>
 
           </ul>
 
@@ -373,6 +373,11 @@ function categoryClass(categoryId: number) {
   border: 1px dashed var(--uranus-color-7);
   background: var(--uranus-bg);
   color: var(--uranus-color-4);
+}
+
+.calendar-week-day__more {
+  color: var(--uranus-color-3);
+  padding: 0.5rem
 }
 
 @media (max-width: 768px) {
