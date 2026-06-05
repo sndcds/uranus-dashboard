@@ -120,6 +120,26 @@ export const uranusI18nOrgTranslations: Record<string, Record<UranusLocaleKey, s
         en: 'The organizer could not be deletet. Please try again.',
         da: 'Oganisationen kunne ikke slettes. Prøv igen.',
     },
+    favorite_lists: {
+        de: 'Favoritenlisten',
+        en: 'Favorite lists',
+        da: 'Favoritlister',
+    },
+    favorite_lists_description: {
+        de: 'Verwalte deine gespeicherten Favoriten an einem Ort.',
+        en: 'Manage your saved favorites in one place.',
+        da: 'Administrer dine gemte favoritter ét sted.',
+    },
+    favorite_list_create: {
+        de: 'Neue Liste erstellen',
+        en: 'Create new list',
+        da: 'Opret ny liste',
+    },
+    favorite_lists_empty: {
+        de: 'Du hast noch keine Favoritenlisten.',
+        en: 'You don’t have any favorite lists yet.',
+        da: 'Du har endnu ingen favoritlister.',
+    },
 }
 
 export default uranusI18nOrgTranslations

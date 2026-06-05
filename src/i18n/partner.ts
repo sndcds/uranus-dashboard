@@ -155,6 +155,11 @@ export const uranusI18nPartnerTranslations: Record<string, Record<UranusLocaleKe
         en: 'Partnership connections',
         da: 'Partnerskabsforbindelser',
     },
+    no_partnership_connections_found: {
+        de: 'Keine Partnerschaftsverbindungen gefunden.',
+        en: 'No partnership connections found.',
+        da: 'Ingen partnerskabsforbindelser fundet.',
+    }
 }
 
 export default uranusI18nPartnerTranslations
