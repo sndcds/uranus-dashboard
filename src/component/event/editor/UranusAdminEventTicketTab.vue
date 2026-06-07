@@ -48,12 +48,12 @@
 
     <UranusCard class="ticket-options-card">
       <h2>{{ t('event_ticket_options') }}</h2>
-      <UranusCheckbox
+      <!--UranusCheckbox
           v-model="draftTicketFlags"
           value="ticket_required"
           id="event-ticket-required"
           :label="t('event_ticket_required')"
-      />
+      /-->
       <UranusCheckbox
           v-model="draftTicketFlags"
           value="advance_ticket"
@@ -66,12 +66,12 @@
           id="event-advance-ticket"
           :label="t('event_presale_fee_applies')"
       />
-      <UranusCheckbox
+      <!--UranusCheckbox
           v-model="draftTicketFlags"
           value="registration_required"
           id="event-registration-required"
           :label="t('event_registration_required')"
-      />
+      /-->
       <UranusCheckbox
           v-model="draftTicketFlags"
           value="on_site_ticket_sales"
