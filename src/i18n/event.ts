@@ -686,9 +686,9 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Forsalg',
     },
     event_presale_fee_applies: {
-        de: 'Zzgl. Vorverkaufsgebühr',
-        en: 'Additional presale fee applies',
-        da: 'Ekskl. forsalgsgebyr',
+        de: 'zzgl. Vorverkaufsgebühr',
+        en: 'plus presale service fee',
+        da: 'ekskl. forsalggebyr',
     },
     event_ticket_required: {
         de: 'Ticket erforderlich',
@@ -855,11 +855,6 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'This event has no date!',
         da: 'Denne begivenhed har ingen dato!',
     },
-    event_presale_fee_applies: {
-        de: 'zzgl. Vorverkaufsgebühr',
-        en: 'plus presale service fee',
-        da: 'ekskl. forsalggebyr',
-    }
 }
 
 export default uranusI18nEventTranslations
