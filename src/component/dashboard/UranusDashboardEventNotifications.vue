@@ -145,9 +145,15 @@ const loadNotifications = async () => {
   isLoading.value = true
   error.value = null
 
+  if (appStore.orgUuid === null) {
+    notifications.value = []
+    isLoading.value = false
+    return
+  }
+
   try {
     const res = await apiFetch<{ notifications: EventNotification[] }>(
-        `/api/admin/user/org/${appStore.orgUuid}/event/notifications`
+        `/api/admin/user/org/${appStore.orgUuid}/event/notifications?event-lookahead-days=14`
     )
 
     if (Array.isArray(res.data?.notifications)) {

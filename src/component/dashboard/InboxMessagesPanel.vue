@@ -1,4 +1,8 @@
-<!-- TODO -->
+<!--
+  src/component/dashboard/InboxMessagesPanel.vue
+
+  TODO:
+-->
 
 <template>
   <section class="messages-panel" aria-labelledby="dashboard-messages-heading">

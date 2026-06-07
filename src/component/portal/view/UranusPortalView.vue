@@ -93,7 +93,6 @@ import { apiFetch } from '@/api.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
-const { setLanguage, getStoredLanguage } = useLanguage()
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusPopupSelect, { type UranusPopupSelectOption } from '@/component/ui/UranusPopupSelect.vue'
 import { apiBaseUrl } from '@/util/util.ts'
@@ -125,6 +124,7 @@ import UranusPortalEventListContent from '@/component/portal/view/UranusPortalEv
 import type {UranusLocaleKey} from "@/i18n/uranus-i18n-index.ts";
 import {useLanguage} from "@/composable/useLanguage.ts";
 
+const { setLanguage, getStoredLanguage } = useLanguage()
 
 interface PortalDTO {
   uuid: string

@@ -192,7 +192,7 @@ const route = useRoute()
 const tokenStore = useTokenStore()
 const userStore = useUserStore()
 const themeStore = useThemeStore()
-const { setLanguage, getStoredLanguage } = useLanguage()
+const { setLanguage } = useLanguage()
 
 const emit = defineEmits<{
     'toggle-sidebar': []
