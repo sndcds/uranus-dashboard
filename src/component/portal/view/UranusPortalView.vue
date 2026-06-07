@@ -40,7 +40,7 @@
         </button>
       </template>
 
-      <template #search>
+      <template v-if="activeContentView === 'events'" #search>
         <UranusPopupSelect
             v-model="portalDateRangeMode"
             width="100%"
@@ -75,6 +75,13 @@
         :portal-ready="portalRenderReady"
         :display-locale="displayLocale as UranusLocaleKey"
     />
+
+    <div v-else-if="activeContentView === 'map'" class="uranus-portal__map-wrapper">
+      <UranusVenuesMap
+        :portal-uuid="portalUuid"
+        :load-mode="'bounds'"
+      />
+    </div>
 
     <UranusPortalFooter
         :config="footerConfig"
@@ -121,6 +128,7 @@ import {
 import UranusPortalFooter from '@/component/portal/UranusPortalFooter.vue'
 import UranusPortalHeader from '@/component/portal/UranusPortalHeader.vue'
 import UranusPortalEventListContent from '@/component/portal/view/UranusPortalEventListContent.vue'
+import UranusVenuesMap from '@/component/map/UranusVenuesMap.vue'
 import type {UranusLocaleKey} from "@/i18n/uranus-i18n-index.ts";
 import {useLanguage} from "@/composable/useLanguage.ts";
 
@@ -290,9 +298,10 @@ const portalStructuredCss = computed(() => {
   return createPortalStructuredCss(style, uuid)
 })
 
-const activeContentView = ref<'events'>('events')
+const activeContentView = ref<'events' | 'map'>('events')
 const contentViews = computed(() => [
   { id: 'events' as const, label: t('events') },
+  { id: 'map' as const, label: t('nav_map') },
 ])
 
 function onResetFilter() {
