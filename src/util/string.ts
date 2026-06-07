@@ -78,13 +78,31 @@ export function uranusFormatSimpleDate(input: string, locale = 'en') {
 }
 
 
-export const uranusFormatDateTime = (dateStr: string, timeStr?: string | null, locale = 'en') => {
+export const uranusFormatDateTime = (
+    dateStr: string,
+    timeStr?: string | null,
+    locale = 'en',
+    withWeekday = false,
+    longWeekday = false
+) => {
     if (!dateStr) return ''
-    const dateTime = timeStr ? new Date(`${dateStr}T${timeStr}`) : new Date(dateStr)
-    return new Intl.DateTimeFormat(locale, {
+
+    const dateTime = timeStr
+        ? new Date(`${dateStr}T${timeStr}`)
+        : new Date(dateStr)
+
+    const weekday = withWeekday
+        ? new Intl.DateTimeFormat(locale, {
+            weekday: longWeekday ? 'long' : 'short'
+        }).format(dateTime)
+        : ''
+
+    const dateTimeFormatted = new Intl.DateTimeFormat(locale, {
         dateStyle: 'short',
         timeStyle: timeStr ? 'short' : undefined
     }).format(dateTime)
+
+    return weekday ? `${weekday}, ${dateTimeFormatted}` : dateTimeFormatted
 }
 
 export const uranusFormatDayMonth = (dateString: string, locale: string) => {
@@ -208,13 +226,13 @@ export function uranusPriceText(
         });
     }
     if (min) {
-        return uranusStringInterpolate(t('event_price_from_sentence'), {
-            min: formatNumber(min), currency: currency
+        return uranusStringInterpolate(t('event_price_sentence'), {
+            value: formatNumber(min), currency: currency
         });
     }
     if (max) {
-        return uranusStringInterpolate(t('event_price_until_sentence'), {
-            max: formatNumber(max), currency: currency
+        return uranusStringInterpolate(t('event_price_sentence'), {
+            value: formatNumber(max), currency: currency
         });
     }
     return null

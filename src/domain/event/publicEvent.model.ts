@@ -5,7 +5,8 @@
 import { type PlutoImage, mapPlutoImageFromDTO, type PlutoLogoImageRef } from '@/domain/image/plutoImage.model.ts'
 import { type PublicEventDate, mapEventDate } from './publicEventDate.model.ts'
 import { type EventTypeModel, mapEventTypeFromDTO } from './eventType.model.ts'
-import { type EventLink } from './eventLink.model.ts'
+import { type EventLink } from '@/domain/event/eventLink.model.ts'
+import { type EventTicketFlags } from '@/domain/event/eventTicketFlags.model.ts'
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 
 
@@ -43,7 +44,7 @@ export interface PublicEvent {
 
     maxAttendees: number | null
     priceType: string | null
-    ticketFlags: string[] | []
+    ticketFlags: EventTicketFlags[]
     ticketLink: string | null
     currency: string | null
     minPrice: number | null
@@ -121,7 +122,9 @@ export function mapPublicEventFromDTO(dto: PublicEventDTO, dateUuid?: string): P
 
         maxAttendees: dto.max_attendees ?? null,
         priceType: dto.price_type ?? null,
-        ticketFlags: dto.ticket_flags ?? [],
+        ticketFlags: Array.isArray(dto.ticket_flags)
+            ? dto.ticket_flags
+            : [] as EventTicketFlags[],
         ticketLink: dto.ticket_link ?? null,
         currency: dto.currency ?? null,
         minPrice: dto.min_price ?? null,

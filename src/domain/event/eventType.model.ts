@@ -1,4 +1,6 @@
-// src/domain/event/UranusEventType.ts
+/*
+    src/domain/event/UranusEventType.ts
+*/
 
 export interface EventTypeModel {
     typeId: number

@@ -625,6 +625,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Maximum price',
         da: 'Højeste pris',
     },
+    event_price_sentence: {
+        de: '~~value~~ ~~currency~~',
+        en: '~~value~~ ~~currency~~',
+        da: '~~value~~ ~~currency~~',
+    },
     event_price_from_sentence: {
         de: 'Ab ~~min~~ ~~currency~~',
         en: 'From ~~min~~ ~~currency~~',
@@ -849,6 +854,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Dieses Event hat kein Datum!',
         en: 'This event has no date!',
         da: 'Denne begivenhed har ingen dato!',
+    },
+    event_presale_fee_applies: {
+        de: 'zzgl. Vorverkaufsgebühr',
+        en: 'plus presale service fee',
+        da: 'ekskl. forsalggebyr',
     }
 }
 

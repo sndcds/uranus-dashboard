@@ -75,11 +75,7 @@ const imageUrl = computed(() =>
 )
 
 const formattedDateTime = computed(() =>
-    uranusFormatDateTime(
-        props.event.startDate,
-        props.event.startTime,
-        props.locale
-    )
+    uranusFormatDateTime(props.event.startDate, props.event.startTime, props.locale, true, true)
 )
 
 const isReleased = computed(() =>
@@ -151,13 +147,12 @@ const getTypeName = (typeId: number) =>
   flex: 1;
   font-weight: 300;
   letter-spacing: 0.05em;
-  // color: var(--uranus-color-3);
   gap: 4px;
 }
 
 .calendar-text h2 {
-  font-size: 1.6rem;
-  // color: var(--uranus-color);
+  font-size: 1.5rem;
+  line-height: 1.8rem;
   margin-bottom: 0.6rem;
   letter-spacing: 0;
 }
