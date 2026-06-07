@@ -49,7 +49,7 @@
               :key="typeId"
               class="uranus-portal-event-card__type-chip"
           >
-            {{ typeLookupStore.getTypeName(typeId, props.displayLocale || locale) }}
+            {{ typeLookupStore.getTypeName(typeId, effectiveLocale) }}
           </span>
         </div>
       </div>
@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
@@ -90,6 +90,8 @@ const LOAD_MORE_ROOT_MARGIN = 300
 const { t, locale } = useI18n({ useScope: 'global' })
 const eventListStore = useEventListStore()
 const typeLookupStore = useEventTypeLookupStore()
+
+const effectiveLocale = computed(() => props.displayLocale ?? locale.value)
 
 const isLoadingMore = ref(false)
 const isReloading = ref(false)
