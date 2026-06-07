@@ -17,11 +17,13 @@
     <!-- Loading state -->
     <span>{{ loadingLabel }}</span>
   </div>
+
   <div v-else-if="loadError !== null" class="uranus-public-event-state-info">
     <!-- TODO: UI/UX message about error for user -->
     <h1 style="font-size:8rem;">Error</h1>
     <span>{{ loadError }}</span>
   </div>
+
   <div v-else-if="event" class="uranus-public-event-frame">
     <!-- Event content -->
     <div class="uranus-public-event-detail-layout">
@@ -58,7 +60,7 @@
           />
         </div>
 
-        <!-- Event type and genres -->
+        <!-- Type and genres -->
         <div
             v-if="event.types && event.types.length"
             class="uranus-public-event-section">
@@ -179,7 +181,7 @@
             </template>
           </div>
 
-
+          <!-- Price -->
           <div v-if="priceText || priceTypeLabel" class="uranus-public-event-info-card">
             <p class="uranus-public-event-info-label">{{ t('event_price') }}</p>
             <template v-if="priceTypeLabel">
@@ -187,6 +189,9 @@
             </template>
             <template v-if="priceText">
               {{ priceText }}<br>
+            </template>
+            <template v-if="presaleFee">
+              {{ presaleFee }}<br>
             </template>
 
             <UranusIconAction
@@ -293,7 +298,7 @@ import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
-import { Ticket, Map, Accessibility, CalendarArrowDown, CopySlash, Video, Link, Mail } from 'lucide-vue-next'
+import { Ticket, Accessibility, CalendarArrowDown, CopySlash, Video, Link, Mail } from 'lucide-vue-next'
 import {formatDate} from "@/util/datetime.ts";
 
 const route = useRoute()
@@ -414,6 +419,13 @@ const maxAttendeesLabel = computed(() => {
 const priceText = computed(() => {
   return uranusPriceText(t, event.value?.minPrice, event.value?.maxPrice, event.value?.currency ?? '')
 })
+
+const presaleFee = computed(() =>
+    event.value!.ticketFlags?.includes('presale_fee_applies')
+        ? t('event_presale_fee_applies')
+        : null
+)
+
 
 const priceTypeLabel = computed(() => {
   const map: Record<string, string | null> = {

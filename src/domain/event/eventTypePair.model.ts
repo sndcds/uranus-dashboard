@@ -1,3 +1,7 @@
+/*
+    src/domain/event/eventTypePair.model.ts
+ */
+
 export interface EventTypePairModel {
     typeId: number | null
     genreId: number | null

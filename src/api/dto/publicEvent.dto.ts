@@ -4,6 +4,8 @@
 
 import type { EventTypeDTO } from "@/api/dto/event.dto.ts";
 import type { PlutoImageDTO } from '@/api/dto/plutoImage.dto.ts'
+import { type EventTicketFlags } from '@/domain/event/eventTicketFlags.model.ts'
+
 
 export interface EventLinkDTO {
     label?: string | null
@@ -73,7 +75,6 @@ export interface PublicEventDTO {
     registration_phone: string | null
     registration_deadline: string | null
 
-
     max_attendees?: number
     min_age?: number
     max_age?: number
@@ -91,7 +92,7 @@ export interface PublicEventDTO {
     participation_info?: string
     meeting_point?: string
 
-    ticket_flags?: string[]
+    ticket_flags?: EventTicketFlags[]
     ticket_link?: string
 
     date: PublicEventDateDTO
