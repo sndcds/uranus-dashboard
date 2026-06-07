@@ -16,10 +16,6 @@
         :action-label="t('notification_cant_see_venues_action')"
         action-to="/admin/orgs"
     >
-      <template #title>
-        {{ t('notification_cant_see_venues_title') }}
-      </template>
-
       <div v-html="t('notification_cant_see_venues_message')"></div>
     </UranusNotification>
 
