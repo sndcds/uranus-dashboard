@@ -79,23 +79,23 @@ onBeforeUnmount(() => {
 
 /* Variants */
 .feedback--notice {
-  background: rgba(var(--uranus-notice-color-rgb), 0.08);
-  color: rgb(var(--uranus-notice-color-rgb));
+  background: var(--uranus-feedback-info-bg);
+  border: 1px solid var(--uranus-feedback-info-border-color);
 }
 
 .feedback--success {
-  background: rgba(var(--uranus-feedback-success-rgb), 0.08);
-  color: rgb(var(--uranus-feedback-success-rgb));
+  background: var(--uranus-feedback-success-bg);
+  border: 1px solid var(--uranus-feedback-success-border-color);
 }
 
 .feedback--warning {
-  background: rgba(var(--uranus-feedback-warning-rgb), 0.08);
-  color: rgb(var(--uranus-feedback-warning-rgb));
+  background: var(--uranus-feedback-warning-bg);
+  border: 1px solid var(--uranus-feedback-warning-border-color);
 }
 
 .feedback--error {
-  background: rgba(var(--uranus-error-color-rgb), 0.08);
-  color: rgb(var(--uranus-error-color-rgb));
+  background: var(--uranus-feedback-error-bg);
+  border: 1px solid var(--uranus-feedback-error-border-color);
 }
 
 /* Transition */

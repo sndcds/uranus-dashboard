@@ -6,15 +6,7 @@
         :subtitle="t('favorite_lists_description')"
     />
 
-    <UranusNotification
-        v-if="!appStore.orgUuid"
-        type="info"
-        :action-label="t('nav_orgs')"
-        action-to="/admin/orgs"
-    >
-      <template #title>{{ t('notification') }}</template>
-      {{ t('favorite_lists_no_active_org') }}
-    </UranusNotification>
+    <UranusOrgRequiredNotification v-if="!appStore.orgUuid" :org-uuid="appStore.orgUuid" />
 
     <template v-else>
       <div>
@@ -31,13 +23,9 @@
         {{ error }}
       </UranusFeedback>
 
-      <UranusNotification
-          v-if="!isLoading && favoriteLists.length === 0"
-          type="info"
-      >
-        <template #title>{{ t('notification') }}</template>
+      <UranusFeedback v-if="!isLoading && favoriteLists.length === 0" type="notice">
         {{ t('favorite_lists_empty') }}
-      </UranusNotification>
+      </UranusFeedback>
 
       <div class="favorite-list-grid">
         <UranusFavoriteListCard
@@ -66,6 +54,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import UranusOrgTitle from '@/component/layout/UranusOrgTitle.vue'
+import UranusOrgRequiredNotification from '@/component/org/UranusOrgRequiredNotification.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const appStore = useAppStore()

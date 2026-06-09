@@ -10,21 +10,9 @@
         :subtitle="t('partner_manage_description')"
     />
 
-    <UranusNotification
-        v-if="!appStore.orgUuid"
-        type="info"
-        :action-label="t('notification_cant_see_partners_action')"
-        action-to="/admin/orgs"
-    >
-      <template #title>
-        {{ t('notification_cant_see_partners_title') }}
-      </template>
-
-      <div v-html="t('notification_cant_see_partners_message')"></div>
-    </UranusNotification>
+    <UranusOrgRequiredNotification v-if="!appStore.orgUuid" :org-uuid="appStore.orgUuid" />
 
     <template v-else>
-
       <UranusFeedback type="notice"
           v-if="!isLoading && partnerList.length === 0"
           :infoText="t('partner_no_membership_message')"
@@ -89,7 +77,6 @@ import { computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import type {PartnerDTO, PartnerRequestDTO} from '@/api/dto/partnerDTO.ts'
 import {
@@ -104,6 +91,7 @@ import UranusPartnerGrantCard from '@/component/partner/card/UranusPartnerGrantC
 import UranusOrgTitle from '@/component/layout/UranusOrgTitle.vue'
 import UranusPartnerRequestCard from '@/component/partner/card/UranusPartnerRequestCard.vue'
 import UranusPartnershipConnectionsGraph from '@/component/partner/card/UranusPartnershipConnectionsGraph.vue'
+import UranusOrgRequiredNotification from '@/component/org/UranusOrgRequiredNotification.vue'
 
 const { t } = useI18n()
 const appStore = useAppStore()

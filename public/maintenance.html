@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wartungsarbeiten – Kulturbytes</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: #0f0f0f;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 24px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
+        .dot {
+            display: inline-block;
+            animation: blink 1.2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Kulturbytes wird gerade gewartet<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></h1>
+    <p>Die Seite ist bald wieder erreichbar.</p>
+</div>
+</body>
+</html>
