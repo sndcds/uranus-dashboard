@@ -29,10 +29,12 @@ const props = withDefaults(defineProps<{
   loadMode?: UranusVenuesMapLoadMode
   showDetailsAction?: boolean
   persistViewState?: boolean
+  portalUuid?: string | null
 }>(), {
   loadMode: 'bounds',
   showDetailsAction: true,
   persistViewState: true,
+  portalUuid: null,
 })
 
 type BBox4326 = [number, number, number, number]
@@ -106,11 +108,17 @@ async function loadVenuesForCurrentBounds() {
   const bbox = getMapBBox4326(currentMap)
   const bboxKey = createBBoxKey(bbox)
   const params = new URLSearchParams({ bbox: bbox.join(',') })
+  if (props.portalUuid) {
+    params.append('portal-uuid', props.portalUuid)
+  }
   await loadVenues(`/api/venues/geojson?${params.toString()}`, bboxKey)
 }
 
 async function loadAllVenues() {
   const params = new URLSearchParams({ bbox: WORLD_BBOX_4326.join(',') })
+  if (props.portalUuid) {
+    params.append('portal-uuid', props.portalUuid)
+  }
   await loadVenues(`/api/venues/geojson?${params.toString()}`, 'all')
 }
 
@@ -136,7 +144,8 @@ async function loadVenues(apiPath: string, requestKey: string) {
 }
 
 function createBBoxKey(bbox: BBox4326) {
-  return bbox.map(value => value.toFixed(5)).join(',')
+  const portalKey = props.portalUuid ?? ''
+  return `${bbox.map(value => value.toFixed(5)).join(',')}|${portalKey}`
 }
 
 function normalizeVenueFeatureCollection(data: any): VenueFeatureCollection {
@@ -567,6 +576,18 @@ watch(mapStyle, (style) => {
 
     void loadVenuesForCurrentBounds()
   })
+})
+
+watch(() => props.portalUuid, () => {
+  if (!map.value) return
+
+  lastLoadedRequestKey = null
+  if (props.loadMode === 'all') {
+    void loadAllVenues()
+    return
+  }
+
+  void loadVenuesForCurrentBounds()
 })
 
 onMounted(() => {

@@ -49,7 +49,7 @@
               :key="typeId"
               class="uranus-portal-event-card__type-chip"
           >
-            {{ typeLookupStore.getTypeName(typeId, props.displayLocale || locale) }}
+            {{ labelForEventType(typeId) }}
           </span>
         </div>
       </div>
@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
@@ -91,6 +91,8 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const eventListStore = useEventListStore()
 const typeLookupStore = useEventTypeLookupStore()
 
+const effectiveLocale = computed(() => locale.value)
+
 const isLoadingMore = ref(false)
 const isReloading = ref(false)
 const loadMoreTrigger = ref<HTMLElement | null>(null)
@@ -109,6 +111,11 @@ function getUniqueEventTypes(event: EventListItem) {
   event.eventTypes?.forEach((type: EventListItemEventType) => set.add(type.typeId))
   return Array.from(set)
 }
+
+
+const labelForEventType = (typeId: number) =>
+    typeLookupStore.getTypeName(typeId, effectiveLocale.value)
+
 
 function isLoadMoreTriggerNearViewport() {
   const el = loadMoreTrigger.value

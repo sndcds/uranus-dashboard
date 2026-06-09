@@ -55,14 +55,6 @@
   --uranus-color-dark: oklch(96% 0.008 var(--uranus-hue));
   --uranus-color-light: oklch(20% 0.03 var(--uranus-hue));
 
-  --uranus-notify-info-bg-color: var(--uranus-bg);
-  --uranus-notify-info-color: #aac9ff;
-  --uranus-notify-info-title-color: #000000;
-  --uranus-notify-warning-color: #fde689;
-  --uranus-notify-warning-title-color: #000000;
-  --uranus-notify-error-color: #d83535;
-  --uranus-notify-error-title-color: #ffffff;
-
   --uranus-low-priority_color: #12d68c;
   --uranus-medium-priority_color: #f6ca34;
   --uranus-high-priority_color: #fd6b6b;
@@ -187,14 +179,14 @@
   --uranus-tiny-border-radius: 3px;
   --uranus-input-height: 36px;
 
-  --uranus-feedback-warning-rgb: 237, 186, 74;
-  --uranus-feedback-success-rgb: 40, 167, 69;
-
-  --uranus-feedback-error-color: var(--uranus-error-color);
-  --uranus-feedback-warning-color: #edba4a;
-  --uranus-feedback-success-color: #28a745;
-
-
+  --uranus-feedback-info-bg: rgba(96, 135, 218, 0.1);
+  --uranus-feedback-info-border-color: rgba(96, 135, 218, 0.5);
+  --uranus-feedback-success-bg: rgba(92, 205, 119, 0.15);
+  --uranus-feedback-success-border-color: rgba(92, 205, 119, 0.5);
+  --uranus-feedback-warning-bg: rgba(237, 186, 74, 0.1);
+  --uranus-feedback-warning-border-color: rgba(237, 186, 74, 0.5);
+  --uranus-feedback-error-bg: rgba(237, 96, 86, 0.15);
+  --uranus-feedback-error-border-color: rgba(237, 96, 86, 0.5);
 
 
   // App menu
@@ -226,14 +218,6 @@
   --uranus-bg-dark: oklch(20% 0.02 var(--uranus-hue));
   --uranus-bg-light: oklch(32% 0.06 var(--uranus-hue));
 
-  --uranus-notify-info-color: #9fc4fb;
-  --uranus-notify-info-bg-color: var(--uranus-bg);
-  --uranus-notify-warning-color: #fde689;
-  --uranus-notify-warning-bg-color: #faf8d8;
-  --uranus-notify-error-title-bg: #d83535;
-  --uranus-notify-error-title-color: #ffffff;
-  --uranus-notify-error-bg: #fee2e2;
-  --uranus-notify-error-color: #ac1b1b;
   --uranus-pending-color: #f2c94c;
 
   // // //

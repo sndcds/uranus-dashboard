@@ -140,6 +140,16 @@ export const uranusI18nOrgTranslations: Record<string, Record<UranusLocaleKey, s
         en: 'You don’t have any favorite lists yet.',
         da: 'Du har endnu ingen favoritlister.',
     },
+    org_notify_cant_see_content: {
+        de: '<p>Keine Organisationsdaten sichtbar.<br>Bitte wähle eine <strong>Organisation</strong>, um fortzufahren.</p>',
+        en: '<p>No organization data available.<br>Please select an <strong>organization</strong> to continue.</p>',
+        da: '<p>Ingen organisationsdata tilgængelig.<br>Vælg en <strong>organisation</strong> for at fortsætte.</p>',
+    },
+    org_notify_cant_see_content_action: {
+        de: 'Zu den Organisationen',
+        en: 'Go to Organizations',
+        da: 'Til organisationerne',
+    },
 }
 
 export default uranusI18nOrgTranslations

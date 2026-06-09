@@ -95,6 +95,21 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Notification',
         da: 'Bemærk',
     },
+    notification_info: {
+        de: 'Hinweis',
+        en: 'Notification',
+        da: 'Bemærk',
+    },
+    notification_warning: {
+        en: 'Warning',
+        de: 'Warnung',
+        da: 'Advarsel',
+    },
+    notification_error: {
+        en: 'Error',
+        de: 'Fehler',
+        da: 'Fejl',
+    },
     password_required: {
         de: 'Ein Passwort ist erforderlich',
         en: 'A password is required',

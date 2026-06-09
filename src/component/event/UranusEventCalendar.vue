@@ -631,7 +631,7 @@ function observeLoadMoreTrigger() {
 onMounted(async () => {
   document.addEventListener('click', onDocumentClick)
 
-  if (appStore.eventViewMode === 'map') {
+  if (appStore.eventViewMode === 'map' && !props.displayModes?.includes('map')) {
     appStore.setEventViewMode('calendar')
   }
 

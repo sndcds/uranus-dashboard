@@ -6,15 +6,7 @@
         :subtitle="t('portals_list_hero_description')"
     />
 
-    <UranusNotification
-        v-if="!appStore.orgUuid"
-        type="info"
-        :action-label="t('notification_cant_see_portals_action')"
-        action-to="/admin/orgs"
-    >
-      <template #title>{{ t('notification_cant_see_portals_title') }}</template>
-      <div v-html="t('notification_cant_see_portals_message')"></div>
-    </UranusNotification>
+    <UranusOrgRequiredNotification v-if="!appStore.orgUuid" :org-uuid="appStore.orgUuid" />
 
     <template v-else>
       <div v-if="!isLoading" class="uranus-main-layout">
@@ -39,7 +31,7 @@
           />
 
           <UranusFeedback v-if="portalList.portals.length === 0" type="notice">
-            <p>{{ t('portals_empty') }}</p>
+            {{ t('portals_empty') }}
           </UranusFeedback>
         </div>
       </div>
@@ -55,10 +47,10 @@ import { useAppStore } from '@/store/appStore.ts'
 import { mapPortalList, type PortalListModel } from '@/domain/portal/portalList.model.ts'
 import UranusAdminPortalCard from '@/component/portal/card/UranusAdminPortalCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import UranusOrgTitle from '@/component/layout/UranusOrgTitle.vue'
+import UranusOrgRequiredNotification from '@/component/org/UranusOrgRequiredNotification.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const appStore = useAppStore()

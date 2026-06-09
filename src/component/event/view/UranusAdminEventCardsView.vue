@@ -9,23 +9,12 @@
         :title="t('events')"
         :subtitle="t('events_hero_subtitle')" />
 
-    <!-- No Organization Selected Message -->
-    <UranusNotification v-if="deleteError" type="error">
-      <template #title>{{ t('error_notification') }}</template>
-      <template #default>{{ deleteError }}</template>
-    </UranusNotification>
+    <!-- Errors -->
+    <UranusFeedback v-if="deleteError" type="error" :delaySeconds="1">
+      {{ deleteError }}
+    </UranusFeedback>
 
-    <UranusNotification
-        v-if="!orgUuid"
-        type="info"
-        :action-label="t('notification_cant_see_events_action')"
-        action-to="/admin/orgs"
-    >
-      <template #title>{{ t('notification_cant_see_events_title') }}</template>
-      <template #default>
-        <div v-html="t('notification_cant_see_events_message')"></div>
-      </template>
-    </UranusNotification>
+    <UranusOrgRequiredNotification v-if="!appStore.orgUuid" :org-uuid="appStore.orgUuid" />
 
     <template v-else>
       <div v-if="!isLoading" class="event-list-toolbar">
@@ -59,12 +48,13 @@ import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/appStore.ts'
 import UranusAdminEventCard from '@/component/event/card/UranusAdminEventCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusNotification from '@/component/ui/UranusNotification.vue'
 import { useUranusAdminListEvents } from '@/composable/useUranusAdminListEvents.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusOrgTitle from "@/component/layout/UranusOrgTitle.vue";
 import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
 import type { AdminEventListItem } from '@/domain/event/adminEventListItem.ts'
+import UranusOrgRequiredNotification from '@/component/org/UranusOrgRequiredNotification.vue'
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const appStore = useAppStore()

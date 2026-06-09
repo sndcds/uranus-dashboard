@@ -69,28 +69,6 @@
                 :label="t('user_profile_username')"
             />
           </UranusFormRow>
-
-          <UranusFormRow :cols="2">
-            <UranusLabel id="profile_language" :label="t('language')">
-              <select id="profile_language" v-model="selectedLocale" class="uranus-admin-select"
-                :disabled="isSubmitting">
-                <option v-for="option in localeOptions" :key="option.value"
-                  :value="option.value">
-                  {{ option.label }}
-                </option>
-              </select>
-            </UranusLabel>
-
-            <UranusLabel id="profile_theme" :label="t('app_ui_theme')">
-              <select id="profile_theme" v-model="selectedTheme" class="uranus-admin-select"
-                :disabled="isSubmitting">
-                <option v-for="option in themeOptions" :key="option.value"
-                :value="option.value">
-                  {{ t(option.label) }}
-                </option>
-              </select>
-            </UranusLabel>
-          </UranusFormRow>
         </div>
 
         <UranusFeedback v-if="!!submitError" type="error">
@@ -122,12 +100,11 @@ import { apiFetch } from '@/api.ts'
 import UserAvatarUpload from '@/component/UserAvatarUpload.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
-import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
-import UranusForm from "@/component/ui/UranusForm.vue";
-import UranusTextfield from "@/component/ui/UranusTextfield.vue";
-import UranusButton from "@/component/ui/UranusButton.vue";
+import UranusForm from '@/component/ui/UranusForm.vue'
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 interface UserProfilePayload {
   user_uuid?: string | null
@@ -161,17 +138,6 @@ const isSubmitting = ref(false)
 const loadError = ref<string | null>(null)
 const submitError = ref<string | null>(null)
 const submitSuccess = ref<string | null>(null)
-
-const localeOptions: Array<{ value: string; label: string }> = [
-  { value: 'de', label: 'Deutsch' },
-  { value: 'da', label: 'Dansk' },
-  { value: 'en', label: 'English' },
-]
-
-const themeOptions: Array<{ value: ThemeMode; label: string }> = [
-  { value: 'light', label: 'light' },
-  { value: 'dark', label: 'dark' },
-]
 
 const selectedLocale = computed({
   get: () => locale.value,

@@ -60,21 +60,6 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Venue Name',
         da: 'Navn på stedet',
     },
-    notification_cant_see_venues_title: {
-        de: 'Warum kann ich keine Veranstaltungsorte sehen?',
-        en: 'Why can’t I see any venues?',
-        da: 'Hvorfor kan jeg ikke se nogen steder?',
-    },
-    notification_cant_see_venues_message: {
-        de: '<p>Wähle eine <strong>Organisation</strong> für die du Veranstaltungsorte verwalten möchtest.</p>',
-        en: '<p>Select an <strong>organization</strong> for which you want to manage venues.</p>',
-        da: '<p>Vælg en <strong>organisation</strong>, som du vil administrere steder for.</p>',
-    },
-    notification_cant_see_venues_action: {
-        de: 'Zu den Organisationen',
-        en: 'Go to Organizations',
-        da: 'Til organisationerne',
-    },
     venue_images_title: {
         de: 'Bilder und Logos des Veranstaltungsorts',
         en: 'Venue images and logos',

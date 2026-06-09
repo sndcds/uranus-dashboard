@@ -765,16 +765,6 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Why can’t I see any events?',
         da: 'Hvorfor kan jeg ikke se nogen begivenheder?',
     },
-    notification_cant_see_events_message: {
-        de: '<p>Wähle eine <strong>Organisation</strong> für die du Events verwalten möchtest.</p>',
-        en: '<p>Select an <strong>organization</strong> for which you want to manage events.</p>',
-        da: '<p>Vælg en <strong>organisation</strong>, som du vil administrere begivenheder for.</p>',
-    },
-    notification_cant_see_events_action: {
-        de: 'Zu den Organisationen',
-        en: 'Go to Organizations',
-        da: 'Til organisationerne',
-    },
     event_date_delete_confirm: {
         de: 'Möchtest du dieses Datum wirklich löschen?',
         en: 'Are you sure you want to delete this date?',

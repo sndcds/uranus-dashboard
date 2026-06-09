@@ -5,9 +5,12 @@
 <template>
   <div class="uranus-main-layout">
     <h1>{{ t('messages') }}</h1>
+
     <UranusFeedback v-if="error" type="error" :delaySeconds="1">
       {{ error }}
     </UranusFeedback>
+
+    <UranusOrgRequiredNotification v-if="!appStore.orgUuid" :org-uuid="appStore.orgUuid" />
 
     <div v-else>
       <UranusFeedback v-if="isLoading" type="notice" :delaySeconds="1">
@@ -70,7 +73,8 @@ import { useAppStore } from '@/store/appStore.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { uranusStringInterpolate } from '@/util/string.ts'
-import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusOrgRequiredNotification from '@/component/org/UranusOrgRequiredNotification.vue'
 
 interface EventNotification {
   event_uuid: string
@@ -145,9 +149,15 @@ const loadNotifications = async () => {
   isLoading.value = true
   error.value = null
 
+  if (appStore.orgUuid === null) {
+    notifications.value = []
+    isLoading.value = false
+    return
+  }
+
   try {
     const res = await apiFetch<{ notifications: EventNotification[] }>(
-        `/api/admin/user/org/${appStore.orgUuid}/event/notifications`
+        `/api/admin/user/org/${appStore.orgUuid}/event/notifications?event-lookahead-days=14`
     )
 
     if (Array.isArray(res.data?.notifications)) {

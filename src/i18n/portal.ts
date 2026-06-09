@@ -16,14 +16,14 @@ export const uranusI18nPortalTranslations: Record<string, Record<UranusLocaleKey
         da: 'Portaler',
     },
     portals_list_hero_description: {
-        de: "Benutzerdefinierte Event-Portale verwalten",
-        en: "Manage user-defined event portals",
-        da: "Administrer brugerdefinerede begivenhedsportaler",
+        de: "Benutzerdefinierte Event-Portale verwalten.",
+        en: "Manage user-defined event portals.",
+        da: "Administrer brugerdefinerede begivenhedsportaler.",
     },
     portals_empty: {
-        de: "Noch keine Portale definiert",
-        en: "No portals defined yet",
-        da: "Ingen portaler er defineret endnu",
+        de: "Noch keine Portale definiert.",
+        en: "No portals defined yet.",
+        da: "Ingen portaler er defineret endnu.",
     },
     portal_add: {
         de: "Portal hinzufügen",

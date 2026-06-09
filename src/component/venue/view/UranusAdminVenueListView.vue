@@ -10,19 +10,7 @@
         :subtitle="t('venues_list_hero_description')"
     />
 
-    <UranusNotification
-        v-if="!appStore.orgUuid"
-        type="info"
-        :action-label="t('notification_cant_see_venues_action')"
-        action-to="/admin/orgs"
-    >
-      <template #title>
-        {{ t('notification_cant_see_venues_title') }}
-      </template>
-
-      <div v-html="t('notification_cant_see_venues_message')"></div>
-    </UranusNotification>
-
+    <UranusOrgRequiredNotification v-if="!appStore.orgUuid" :org-uuid="appStore.orgUuid" />
 
     <template v-else>
       <div v-if="!isLoading" class="uranus-main-layout">
@@ -59,13 +47,12 @@ import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 import { mapVenueList, type VenueList } from '@/domain/venue/venueList.ts'
 import { useChoosableVenuesStore } from '@/store/choosableVenuesStore.ts'
-
 import UranusAdminVenueCard from '@/component/venue/card/UranusAdminVenueCard.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
-import UranusOrgTitle from "@/component/layout/UranusOrgTitle.vue";
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusOrgTitle from '@/component/layout/UranusOrgTitle.vue'
+import UranusOrgRequiredNotification from '@/component/org/UranusOrgRequiredNotification.vue'
 
 
 const { t } = useI18n()
