@@ -390,11 +390,6 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: 'Account activation failed. Please try again or contact support.',
         da: 'Kontoaktivering mislykkedes. Prøv igen eller kontakt support.',
     },
-    invite_team_member: {
-        de: 'Teammitglied einladen',
-        en: 'Invite team member',
-        da: 'Inviter team medlem',
-    },
     invite_accept_welcome_title: {
         de: "Willkommen an Bord",
         en: "Welcome aboard",

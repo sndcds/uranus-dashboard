@@ -68,7 +68,10 @@
     <UranusPasswordConfirmModal
         :show="showDeleteModal"
         :title="t('confirm_delete_org')"
-        :question="t('confirm_delete_org_description', { name: org.name })"
+        :question="uranusStringInterpolate(
+            t('confirm_delete_org_description'),
+            { name: org.name }
+        )"
         :confirm-text="t('delete')"
         :loading-text="t('deleting')"
         :error="deleteError"
@@ -85,13 +88,13 @@ import { useI18n } from 'vue-i18n'
 import { ApiError, apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
-
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import type { OrgListItem } from '@/domain/org/orgListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 import { apiErrorI18nKey } from '@/util/api_error.ts'
+import { uranusStringInterpolate } from '@/util/string.ts'
 
 const { t } = useI18n()
 const appStore = useAppStore()

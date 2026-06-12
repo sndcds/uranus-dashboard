@@ -101,9 +101,9 @@ export const uranusI18nOrgTranslations: Record<string, Record<UranusLocaleKey, s
         da: 'Er du sikker på, at du vil slette denne organisation? Denne handling kan ikke fortrydes.',
     },
     confirm_delete_org_description: {
-        de: 'Du bist dabei, "{name}" zu löschen. Gib dein Passwort ein, um fortzufahren.',
-        en: 'You are about to delete "{name}". Enter your password to continue.',
-        da: 'Du er ved at slette "{name}". Indtast din adgangskode for at fortsætte.',
+        de: 'Du bist dabei, "~~name~~" zu löschen. Gib dein Passwort ein, um fortzufahren.',
+        en: 'You are about to delete "~~name~~". Enter your password to continue.',
+        da: 'Du er ved at slette "~~name~~". Indtast din adgangskode for at fortsætte.',
     },
     org_team_user_invitations: {
         de: "Eingeladene Team-Mitglieder",
@@ -150,6 +150,16 @@ export const uranusI18nOrgTranslations: Record<string, Record<UranusLocaleKey, s
         en: 'Go to Organizations',
         da: 'Til organisationerne',
     },
+    org_invite_team_member: {
+        de: 'Teammitglied einladen',
+        en: 'Invite team member',
+        da: 'Inviter team medlem',
+    },
+    org_team_member_description: {
+        de: 'Teammitglieder können mit individuellen Rechten ausgestattet werden, um Aufgaben sinnvoll zu verteilen.<br><br><strong>Wichtig:</strong> Einladungen werden nur versendet, wenn bereits ein Konto mit dieser E-Mail-Adresse existiert. Aus Datenschutzgründen wird nicht bestätigt, ob eine Einladung zugestellt werden konnte.',
+        en: 'Team members can be assigned individual permissions to distribute tasks effectively.<br><br><strong>Important:</strong> Invitations are only sent if an account with this email address already exists. For privacy reasons, it is not confirmed whether an invitation could be delivered.',
+        da: 'Teammedlemmer kan tildeles individuelle rettigheder for at fordele opgaver på en meningsfuld måde.<br><br><strong>Vigtigt:</strong> Invitationer sendes kun, hvis der allerede findes en konto med denne e-mailadresse. Af hensyn til privatliv bekræftes det ikke, om en invitation blev leveret.',
+    }
 }
 
 export default uranusI18nOrgTranslations

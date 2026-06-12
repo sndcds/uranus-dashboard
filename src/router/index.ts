@@ -252,11 +252,17 @@ const routes = [
                 name: 'app-reset-password',
                 component: UranusResetPasswordView,
             },
+        ],
+    },
+    {
+        path: '/app/activate/account',
+        component: GenericLayout,
+        children: [
             {
-                path: 'activate/account',
+                path: '',
                 name: 'app-activate-account',
                 component: UserActivateView,
-            }
+            },
         ],
     },
     {
@@ -355,7 +361,6 @@ const routes = [
         component: GenericLayout,
         meta: {
             layoutMode: 'zero-padding',
-            customClass: 'uranus-about',
         },
         children: [
             {

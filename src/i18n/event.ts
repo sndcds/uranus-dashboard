@@ -845,6 +845,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'This event has no date!',
         da: 'Denne begivenhed har ingen dato!',
     },
+    more_events_label: {
+        de: "+~~moreCount~~ weitere",
+        en: "+~~moreCount~~ more events",
+        da: "+~~moreCount~~ flere",
+    }
 }
 
 export default uranusI18nEventTranslations
