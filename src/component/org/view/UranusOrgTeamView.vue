@@ -11,7 +11,7 @@
 
     <div>
       <UranusButton v-if="!errorMessage" :to="`/admin/org/${orgUuid}/invite-team-member`">
-        {{ t('invite_team_member') }}
+        {{ t('org_invite_team_member') }}
       </UranusButton>
     </div>
 

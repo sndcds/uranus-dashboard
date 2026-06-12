@@ -5,10 +5,12 @@
 <template>
   <div class="uranus-main-layout">
     <UranusDashboardHero
-        :title="t('invite_team_member')"
-        :subtitle="t('invite_organization_team_member')" />
+        :title="t('org_invite_team_member')"
+        :subtitle="''" />
 
-    <UranusHelpPopup baseUrl="/help/invite-org-team-member" />
+    <div v-html="t('org_team_member_description')" />
+
+    <UranusHelpPopup baseUrl="/help/org-invite-team-member" />
 
     <UranusForm @submit.prevent="onSubmit">
       <UranusTextfield

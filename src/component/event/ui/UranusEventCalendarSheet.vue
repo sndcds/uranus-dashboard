@@ -99,8 +99,8 @@
               </router-link>
             </li>
 
-            <li v-if="(day.moreCount ?? 0) > 0 || true" class="calendar-week-day__more">
-              + {{ day.moreCount }} more
+            <li v-if="(day.moreCount ?? 0) > 0" class="calendar-week-day__more">
+              {{ moreEventsLabel(day.moreCount) }}
             </li>
 
           </ul>
@@ -118,11 +118,15 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { ChevronLeft, ChevronRight, Rows3, CalendarDays } from 'lucide-vue-next'
 import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
 import type { EventViewMode } from '@/store/appStore.ts'
 import { formatDateKey } from '@/component/calendar/uranusCalendar.ts'
+import { uranusStringInterpolate } from '@/util/string.ts'
+
+const { t } = useI18n()
 
 interface CalendarLabels {
   week: string
@@ -170,6 +174,15 @@ function onNextWeek() {
 
 function onPrevWeek() {
   emit('previous-week')
+}
+
+const moreEventsLabel = (moreCount: number) => {
+  return uranusStringInterpolate(
+      t('more_events_label'),
+      {
+        moreCount,
+      }
+  )
 }
 
 function categoryClass(categoryId: number) {
