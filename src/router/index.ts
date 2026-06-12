@@ -172,11 +172,6 @@ const routes = [
                 component: UranusMessageSendView,
             },
             {
-                path: 'invite/accept',
-                name: 'admin-accept-invite',
-                component: UranusInviteActivateView,
-            },
-            {
                 path: 'org/:uuid/member/:memberUuid/permissions',
                 name: 'admin-edit-member-permission',
                 component: UranusOrgMemberPermissionView,
@@ -255,13 +250,18 @@ const routes = [
         ],
     },
     {
-        path: '/app/activate/account',
+        path: '/app/activate',
         component: GenericLayout,
         children: [
             {
-                path: '',
+                path: 'account',
                 name: 'app-activate-account',
                 component: UserActivateView,
+            },
+            {
+                path: 'team-invitation',
+                name: 'app-activate-team-invitation',
+                component: UranusInviteActivateView,
             },
         ],
     },
