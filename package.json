@@ -21,7 +21,10 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "typecheck": "vue-tsc --noEmit",
-    "generate:i18n": "ts-node-esm tools/i18n/generate-i18n-to-json.ts"
+    "generate:i18n": "ts-node-esm tools/i18n/generate-i18n-to-json.ts",
+    "generate:share-pages": "ts-node-esm tools/share/generate-share-pages.ts",
+    "generate:share-sitemap": "ts-node-esm tools/share/generate-share-sitemap.ts",
+    "generate:share": "pnpm generate:share-pages && pnpm generate:share-sitemap"
   },
   "dependencies": {
     "@georgedoescode/spline": "^1.0.1",

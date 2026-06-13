@@ -1,0 +1,11 @@
+[
+  {
+    "eventUuid": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+    "eventDateUuid": "11111111-2222-3333-4444-555555555555",
+    "locales": ["de", "en"]
+  },
+  {
+    "eventUuid": "ffffffff-1111-2222-3333-444444444444",
+    "eventDateUuid": "99999999-8888-7777-6666-555555555555"
+  }
+]

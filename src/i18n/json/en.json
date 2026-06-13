@@ -298,7 +298,7 @@
   "activation_success": "Your account has been successfully activated!",
   "redirecting_to_login": "Redirecting you to the login page…",
   "activation_no_token": "No activation token provided. Please check the link from your email.",
-  "activation_failed": "Account activation failed. Please try again or contact support.",
+  "activation_failed": "Account activation failed.<br>Please try again or contact support.",
   "invite_accept_welcome_title": "Welcome aboard",
   "invite_accept_joined_org_message": "You’ve successfully joined the team at",
   "invite_accept_no_action_required_message": "No further action is required — your account is fully set up and ready to use.",

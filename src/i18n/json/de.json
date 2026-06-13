@@ -298,7 +298,7 @@
   "activation_success": "Dein Konto wurde erfolgreich aktiviert!",
   "redirecting_to_login": "Du wirst zur Anmeldeseite weitergeleitet…",
   "activation_no_token": "Kein Aktivierungstoken gefunden. Bitte überprüfe den Link aus deiner E-Mail.",
-  "activation_failed": "Kontoaktivierung fehlgeschlagen. Bitte versuche es erneut oder kontaktiere den Support.",
+  "activation_failed": "Kontoaktivierung fehlgeschlagen.<br>Bitte versuche es erneut oder kontaktiere den Support.",
   "invite_accept_welcome_title": "Willkommen an Bord",
   "invite_accept_joined_org_message": "Du bist dem Team bei erfolgreich beigetreten",
   "invite_accept_no_action_required_message": "Keine weiteren Schritte erforderlich — dein Konto ist vollständig eingerichtet und bereit zur Nutzung.",

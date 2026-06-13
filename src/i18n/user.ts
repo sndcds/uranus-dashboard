@@ -386,9 +386,9 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         da: 'Intet aktiveringstoken fundet. Tjek venligst linket fra din e-mail.',
     },
     activation_failed: {
-        de: 'Kontoaktivierung fehlgeschlagen. Bitte versuche es erneut oder kontaktiere den Support.',
-        en: 'Account activation failed. Please try again or contact support.',
-        da: 'Kontoaktivering mislykkedes. Prøv igen eller kontakt support.',
+        de: 'Kontoaktivierung fehlgeschlagen.<br>Bitte versuche es erneut oder kontaktiere den Support.',
+        en: 'Account activation failed.<br>Please try again or contact support.',
+        da: 'Kontoaktivering mislykkedes.<br>Prøv igen eller kontakt support.',
     },
     invite_accept_welcome_title: {
         de: "Willkommen an Bord",

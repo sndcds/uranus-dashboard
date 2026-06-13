@@ -298,7 +298,7 @@
   "activation_success": "Din konto er blevet aktiveret!",
   "redirecting_to_login": "Sender dig videre til login…",
   "activation_no_token": "Intet aktiveringstoken fundet. Tjek venligst linket fra din e-mail.",
-  "activation_failed": "Kontoaktivering mislykkedes. Prøv igen eller kontakt support.",
+  "activation_failed": "Kontoaktivering mislykkedes.<br>Prøv igen eller kontakt support.",
   "invite_accept_welcome_title": "Velkommen ombord",
   "invite_accept_joined_org_message": "Du er nu blevet medlem af teamet hos",
   "invite_accept_no_action_required_message": "Ingen yderligere handling er nødvendig — din konto er fuldt opsat og klar til brug.",

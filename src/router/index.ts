@@ -18,7 +18,7 @@ import UranusVenueView from '@/component/venue/view/UranusVenueView.vue'
 import UranusEventView from '@/component/event/view/UranusEventView.vue'
 import UranusHtmlView from '@/view/public/UranusHTMLView.vue'
 import UserActivateView from '@/component/register/UserActivateView.vue'
-import UranusInviteActivateView from '@/component/user/UranusInviteActivateView.vue'
+import UranusOrgTeamInviteActivateView from '@/component/user/UranusOrgTeamInviteActivateView.vue'
 import UranusOrgTeamView from '@/component/org/view/UranusOrgTeamView.vue'
 import UranusOrgInviteTeamMemberView from '@/component/org/view/UranusOrgInviteTeamMemberView.vue'
 import UranusOrgMemberPermissionView from '@/component/org/view/UranusOrgMemberPermissionView.vue'
@@ -42,6 +42,7 @@ import UranusDevGetEventsView from '@/component/dev/UranusDevGetEventsView.vue'
 import UranusMapView from '@/view/public/UranusMapView.vue'
 import ContentOnlyLayout from '@/component/layout/ContentOnlyLayout.vue'
 import UranusDevI18nTestsView from '@/view/dev/UranusDevI18nTestsView.vue'
+import UranusDevStatusCardScenariosView from '@/view/dev/UranusDevStatusCardScenariosView.vue'
 import UranusPortalView from '@/component/portal/view/UranusPortalView.vue'
 import UranusAdminPortalListView from '@/component/portal/view/UranusAdminPortalListView.vue'
 import UranusPortalCreateView from '@/component/portal/view/UranusPortalCreateView.vue'
@@ -261,7 +262,7 @@ const routes = [
             {
                 path: 'team-invitation',
                 name: 'app-activate-team-invitation',
-                component: UranusInviteActivateView,
+                component: UranusOrgTeamInviteActivateView,
             },
         ],
     },
@@ -353,6 +354,12 @@ const routes = [
                 path: 'dev-get-events',
                 name: 'dev-get-events',
                 component: UranusDevGetEventsView
+            },
+            {
+                path: 'dev-status-card-scenarios',
+                name: 'dev-status-card-scenarios',
+                component: UranusDevStatusCardScenariosView,
+                meta: { layoutMode: 'zero-padding' },
             },
         ],
     },
