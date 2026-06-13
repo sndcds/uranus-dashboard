@@ -18,76 +18,88 @@
   <div
       v-if="portalRenderReady"
       class="uranus-portal"
-      :class="`uranus-portal--header-${headerConfig.layout}`"
+      :class="[
+        `uranus-portal--header-${headerConfig.layout}`,
+        { 'uranus-portal--map-fullscreen': activeContentView === 'map' }
+      ]"
       :data-portal-uuid="portalUuid"
       :style="portalRootStyle"
   >
-    <UranusPortalHeader
-        :config="headerConfig"
-        :title="portal?.name ?? t('events')"
-        :description="portal?.description ?? null"
-        :logo-url="webLogoUrl"
-        :display-locale="displayLocale as UranusLocaleKey"
-    >
-      <template #content-nav>
-        <button
-            v-for="view in contentViews"
-            :key="view.id"
-            :class="['uranus-portal__button', { 'uranus-portal__button--active': activeContentView === view.id }]"
-            @click="activeContentView = view.id"
-        >
-          {{ view.label }}
-        </button>
-      </template>
+    <template v-if="activeContentView === 'events'">
+      <UranusPortalHeader
+          :config="headerConfig"
+          :title="portal?.name ?? t('events')"
+          :description="portal?.description ?? null"
+          :logo-url="webLogoUrl"
+          :display-locale="displayLocale as UranusLocaleKey"
+      >
+        <template #content-nav>
+          <button
+              v-for="view in contentViews"
+              :key="view.id"
+              :class="['uranus-portal__button', { 'uranus-portal__button--active': activeContentView === view.id }]"
+              @click="activeContentView = view.id"
+          >
+            {{ view.label }}
+          </button>
+        </template>
 
-      <template v-if="activeContentView === 'events'" #search>
-        <UranusPopupSelect
-            v-model="portalDateRangeMode"
-            width="100%"
-            :options="dateRangeOptions"
-            :aria-label="t('date_range')"
-        />
+        <template #search>
+          <UranusPopupSelect
+              v-model="portalDateRangeMode"
+              width="100%"
+              :options="dateRangeOptions"
+              :aria-label="t('date_range')"
+          />
 
-        <UranusPopupSelect
-            v-model="selectedPortalEventTypeId"
-            width="100%"
-            :options="portalEventTypeOptions"
-            :placeholder="t('all_events')"
-            :aria-label="t('event_type')"
-        />
+          <UranusPopupSelect
+              v-model="selectedPortalEventTypeId"
+              width="100%"
+              :options="portalEventTypeOptions"
+              :placeholder="t('all_events')"
+              :aria-label="t('event_type')"
+          />
 
-        <UranusButton
-            v-if="activeEventTypeIds.length"
-            size="small"
-            variant="tertiary"
-            @click="onResetFilter"
-        >
-          {{ t('reset_filter') }}
-        </UranusButton>
-      </template>
-    </UranusPortalHeader>
+          <UranusButton
+              v-if="activeEventTypeIds.length"
+              size="small"
+              variant="tertiary"
+              @click="onResetFilter"
+          >
+            {{ t('reset_filter') }}
+          </UranusButton>
+        </template>
+      </UranusPortalHeader>
 
+      <UranusPortalEventListContent
+          :active-filter="activeFilter"
+          :portal-error="portalError"
+          :portal-ready="portalRenderReady"
+          :display-locale="displayLocale as UranusLocaleKey"
+      />
 
-    <UranusPortalEventListContent
-        v-if="activeContentView === 'events'"
-        :active-filter="activeFilter"
-        :portal-error="portalError"
-        :portal-ready="portalRenderReady"
-        :display-locale="displayLocale as UranusLocaleKey"
-    />
+      <UranusPortalFooter
+          :config="footerConfig"
+          :logo-url="footerLogoUrl"
+          :text-html="footerTextHtml"
+      />
+    </template>
 
-    <div v-else-if="activeContentView === 'map'" class="uranus-portal__map-wrapper">
+    <div v-else-if="activeContentView === 'map'" class="uranus-portal__map-fullscreen-stage">
+      <UranusButton
+          class="uranus-portal__map-back-button"
+          size="small"
+          variant="primary"
+          @click="activeContentView = 'events'"
+      >
+        Zurueck
+      </UranusButton>
+
       <UranusVenuesMap
-        :portal-uuid="portalUuid"
-        :load-mode="'bounds'"
+          :portal-uuid="portalUuid"
+          :load-mode="'bounds'"
       />
     </div>
-
-    <UranusPortalFooter
-        :config="footerConfig"
-        :logo-url="footerLogoUrl"
-        :text-html="footerTextHtml"
-    />
 
   </div>
 </template>
