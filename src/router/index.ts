@@ -42,6 +42,7 @@ import UranusDevGetEventsView from '@/component/dev/UranusDevGetEventsView.vue'
 import UranusMapView from '@/view/public/UranusMapView.vue'
 import ContentOnlyLayout from '@/component/layout/ContentOnlyLayout.vue'
 import UranusDevI18nTestsView from '@/view/dev/UranusDevI18nTestsView.vue'
+import UranusDevStatusCardScenariosView from '@/view/dev/UranusDevStatusCardScenariosView.vue'
 import UranusPortalView from '@/component/portal/view/UranusPortalView.vue'
 import UranusAdminPortalListView from '@/component/portal/view/UranusAdminPortalListView.vue'
 import UranusPortalCreateView from '@/component/portal/view/UranusPortalCreateView.vue'
@@ -353,6 +354,12 @@ const routes = [
                 path: 'dev-get-events',
                 name: 'dev-get-events',
                 component: UranusDevGetEventsView
+            },
+            {
+                path: 'dev-status-card-scenarios',
+                name: 'dev-status-card-scenarios',
+                component: UranusDevStatusCardScenariosView,
+                meta: { layoutMode: 'zero-padding' },
             },
         ],
     },
