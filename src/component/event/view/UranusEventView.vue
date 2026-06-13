@@ -209,10 +209,8 @@
               class="uranus-public-event-info-card"
           >
             <p class="uranus-public-event-info-label">{{ t('event_participation_info') }}</p>
-            <template v-if="(event.maxAttendees ?? 0) > 0">
-              <p>{{ maxAttendeesLabel }}</p>
-            </template>
-            {{ ageLabel }}<br>
+            <p v-if="(event.maxAttendees ?? 0) > 0">{{ maxAttendeesLabel }}</p>
+            <p v-if="ageLabel">{{ ageLabel }}</p>
             <p v-if="event.participationInfo">{{ event.participationInfo }}</p>
           </div>
 
