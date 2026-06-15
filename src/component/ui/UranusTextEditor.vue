@@ -1,3 +1,7 @@
+<!--
+  src/component/ui/UranusTextEditor.vue
+-->
+
 <template>
   <div v-if="editor" class="container tiptap">
     <!-- Toolbar -->
