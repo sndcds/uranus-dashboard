@@ -61,11 +61,15 @@
 
     <!-- Editor -->
     <editor-content class="uranus-md-editor" :editor="editor" />
+
+    <p v-if="showRemainingCounter" class="editor-counter" :class="{ 'is-limit': remainingCharacters <= 0 }">
+      {{ remainingCharacters }}
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import { TextStyle } from '@tiptap/extension-text-style'
@@ -91,22 +95,67 @@ const turndown = new TurndownService({
 })
 
 // Props and emit
-const props = defineProps<{ modelValue?: string }>()
+const props = withDefaults(defineProps<{
+  modelValue?: string
+  maxLength?: number
+  showRemaining?: boolean
+}>(), {
+  maxLength: undefined,
+  showRemaining: true,
+})
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
 
 const editor = ref<Editor | null>(null)
+const lastValidHtml = ref('')
+
+const hasMaxLength = computed(() =>
+  Number.isFinite(props.maxLength) && Number(props.maxLength) > 0
+)
+
+const currentLength = computed(() => getCharacterCount(props.modelValue ?? ''))
+const remainingCharacters = computed(() => {
+  if (!hasMaxLength.value) return 0
+  return Math.max(0, Number(props.maxLength) - currentLength.value)
+})
+
+const showRemainingCounter = computed(() => hasMaxLength.value && props.showRemaining)
+
+function getCharacterCount(value: string) {
+  return Array.from(value).length
+}
+
+function trimToMaxLength(value: string) {
+  if (!hasMaxLength.value) return value
+  const maxLength = Number(props.maxLength)
+  return Array.from(value).slice(0, maxLength).join('')
+}
 
 // Initialize editor
 onMounted(() => {
+  const initialMarkdown = trimToMaxLength((props.modelValue ?? '') || '')
+
   editor.value = new Editor({
     extensions: [StarterKit, TextStyle, Color],
-    content: md.render((props.modelValue ?? '') || ''),
+    content: md.render(initialMarkdown),
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
       const markdown = turndown.turndown(html)
+
+      if (hasMaxLength.value && getCharacterCount(markdown) > Number(props.maxLength)) {
+        editor.commands.setContent(lastValidHtml.value || md.render(trimToMaxLength(props.modelValue ?? '')), false)
+        return
+      }
+
+      lastValidHtml.value = html
       emit('update:modelValue', markdown)
     }
   })
+
+  lastValidHtml.value = editor.value.getHTML()
+
+  if (initialMarkdown !== (props.modelValue ?? '')) {
+    emit('update:modelValue', initialMarkdown)
+  }
 })
 
 // Watch for external changes to update editor
@@ -114,10 +163,19 @@ watch(
     () => props.modelValue,
     (newVal) => {
       if (!editor.value) return
+
+      const normalizedValue = trimToMaxLength(newVal ?? '')
+
+      if (normalizedValue !== (newVal ?? '')) {
+        emit('update:modelValue', normalizedValue)
+        return
+      }
+
       const currentMarkdown = turndown.turndown(editor.value.getHTML())
-      if (newVal !== currentMarkdown) {
-        const html = newVal ? md.render(newVal) : ''
+      if (normalizedValue !== currentMarkdown) {
+        const html = normalizedValue ? md.render(normalizedValue) : ''
         editor.value.commands.setContent(html, false) // false = do not add to undo history
+        lastValidHtml.value = editor.value.getHTML()
       }
     }
 )
@@ -171,5 +229,16 @@ button {
 button.is-active {
   background: var(--uranus-select-bg);
   color: var(--uranus-select-color);
+}
+
+.editor-counter {
+  margin: 0.5rem 0 0;
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--uranus-medium-contrast-color);
+}
+
+.editor-counter.is-limit {
+  color: var(--uranus-error-color);
 }
 </style>
