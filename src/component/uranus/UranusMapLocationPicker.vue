@@ -224,7 +224,7 @@ const onMapClick = (e: MapMouseEvent) => {
 const computedCenter = computed(() => {
   return props.modelValue
       ? [props.modelValue.lng, props.modelValue.lat]
-      : [13.405, 52.52]
+      : [9.498, 54.84]
 })
 
 /* ------------------------------------------------------------------
