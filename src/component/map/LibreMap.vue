@@ -282,7 +282,7 @@ onMounted(() => {
             ? '/versatiles/versatiles-dark-style.json'
             : '/versatiles/versatiles-style.json',
     center: defaultCenter,
-    zoom: 12,
+    zoom: defaultZoom,
     minZoom: 2,
     maxZoom: 19
   });
