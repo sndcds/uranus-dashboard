@@ -7,7 +7,7 @@
     <UranusMapRenderer
         :layers="layers"
         :center="computedCenter"
-        :zoom="props.zoom ?? 12"
+        :zoom="props.zoom ?? 10"
         :mapStyle="mapStyle"
         @loaded="onMapLoaded"
     />
@@ -26,7 +26,7 @@ import {
   useAttrs
 } from 'vue'
 import type { FeatureCollection } from 'geojson'
-import type { Map as MapLibreMap, MapMouseEvent } from 'maplibre-gl'
+import type { Map as MapLibreMap, MapMouseEvent, LngLatLike } from 'maplibre-gl'
 import UranusMapRenderer, { type MapLayer } from '@/component/map/UranusMapRenderer.vue'
 import markerIcon from '@/assets/map/marker.png'
 import { useThemeStore } from '@/store/themeStore.ts'
@@ -221,10 +221,10 @@ const onMapClick = (e: MapMouseEvent) => {
 /* ------------------------------------------------------------------
  * Center handling
  * ------------------------------------------------------------------ */
-const computedCenter = computed(() => {
+const computedCenter = computed<LngLatLike>(() => {
   return props.modelValue
       ? [props.modelValue.lng, props.modelValue.lat]
-      : [9.498, 54.84]
+      : [9.4370, 54.788]
 })
 
 /* ------------------------------------------------------------------

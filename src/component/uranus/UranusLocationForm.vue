@@ -9,7 +9,7 @@
       <UranusMapLocationPicker
           class="location-map"
           v-model="internalLocation"
-          :zoom="12"
+          :zoom="10"
           :selectable="true"
       />
     </UranusFormRow>
