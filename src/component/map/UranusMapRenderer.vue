@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, shallowRef, onMounted, onBeforeUnmount, watch, unref} from 'vue'
+import { ref, shallowRef, onMounted, onBeforeUnmount, watch, unref } from 'vue'
 import type { FeatureCollection } from 'geojson'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'

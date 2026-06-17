@@ -47,8 +47,7 @@ const mapInstance = ref<maplibregl.Map | null>(null)
 defineExpose({ map: mapInstance })
 
 let currentPopup: Popup | null = null
-
-const defaultCenter: LngLatLike = props.center ?? [9.498, 54.84]
+const defaultCenter: LngLatLike = props.center ?? [9.4370, 54.7882]
 const defaultZoom = props.zoom ?? 8
 
 // Define the handler separately
