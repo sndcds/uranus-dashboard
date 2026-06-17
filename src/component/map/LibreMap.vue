@@ -48,7 +48,7 @@ defineExpose({ map: mapInstance })
 
 let currentPopup: Popup | null = null
 
-const defaultCenter: LngLatLike = props.center ?? [9.5, 54.3]
+const defaultCenter: LngLatLike = props.center ?? [9.498, 54.84]
 const defaultZoom = props.zoom ?? 8
 
 // Define the handler separately
