@@ -12,7 +12,6 @@
     <template v-if="viewMode === 'success'">
       <div class="venue-request-success">
         {{ requestSuccessMessage }}
-        {{ t('venue_request_success_followup', { venueName: requestedVenueName }) }}
       </div>
     </template>
 

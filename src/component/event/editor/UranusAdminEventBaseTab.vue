@@ -51,7 +51,7 @@
         <span>Die Kurzbeschreibung wird nur in kompakten Ansichten angezeigt.</span>
         <UranusTextEditor
             v-model="summaryProxy"
-            ref="descriptionEditor"
+          :max-length="2000"
         />
       </UranusCard>
 
