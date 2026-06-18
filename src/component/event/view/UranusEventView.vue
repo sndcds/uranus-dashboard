@@ -297,7 +297,7 @@ import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { Ticket, Accessibility, CalendarArrowDown, CopySlash, Video, Link, Mail } from 'lucide-vue-next'
-import {formatDate} from "@/util/datetime.ts";
+import {formatDate} from "@/util/dateTime.ts";
 
 const route = useRoute()
 

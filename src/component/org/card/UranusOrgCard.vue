@@ -93,7 +93,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import type { OrgListItem } from '@/domain/org/orgListItem.model.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
-import { apiErrorI18nKey } from '@/util/api_error.ts'
+import { apiErrorI18nKey } from '@/util/apiError.ts'
 import { uranusStringInterpolate } from '@/util/string.ts'
 
 const { t } = useI18n()

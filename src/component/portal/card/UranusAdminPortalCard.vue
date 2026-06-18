@@ -62,7 +62,7 @@ import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import { uranusStringInterpolate } from '@/util/string.ts'
 import { Eye } from 'lucide-vue-next'
-import { apiErrorI18nKey } from '@/util/api_error.ts'
+import { apiErrorI18nKey } from '@/util/apiError.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 

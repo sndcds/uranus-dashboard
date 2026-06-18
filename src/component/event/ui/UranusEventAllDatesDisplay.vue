@@ -31,7 +31,8 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
-import { formatDate } from '@/util/datetime.ts'
+import { formatDate } from '@/util/dateTime.ts'
+import { getStartDateTime } from '@/util/dateTime'
 import UranusEventReleaseChip from "@/component/event/ui/UranusEventReleaseChip.vue";
 
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -43,29 +44,27 @@ const props = defineProps<{
 
 const sortedDates = computed(() => {
   const allDates = [...props.dates]
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  // const now = new Date()
 
-  // Add currentDate if present and not already included
   if (props.currentDate) {
-    const exists = allDates.some(d => d.uuid === props.currentDate!.uuid)
+    const exists = allDates.some(
+        d => d.uuid === props.currentDate!.uuid
+    )
 
     if (!exists) {
       allDates.push(props.currentDate)
     }
   }
 
-  return allDates
-      .filter(date => {
-        if (!date.startDate) return false
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
-        return new Date(date.startDate) >= today
-      })
-      .sort((a, b) => {
-        return new Date(a.startDate!).getTime()
-            - new Date(b.startDate!).getTime()
-      })
+  return allDates
+      .map(date => ({
+        ...date,
+        _dt: getStartDateTime(date.startDate, date.startTime),
+      }))
+      .filter(d => d._dt && d._dt >= today)
+      .sort((a, b) => a._dt!.getTime() - b._dt!.getTime())
 })
 </script>
 

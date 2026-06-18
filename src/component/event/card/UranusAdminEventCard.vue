@@ -140,7 +140,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import { Eye, Pencil, Trash, Calendar, MapPin, Building, Video } from 'lucide-vue-next'
 import UranusEventCategoryDisplay from '@/component/event/ui/UranusEventCategoryDisplay.vue'
 import { uranusPluralizedText, uranusStringInterpolate } from '@/util/string.ts'
-import { apiErrorI18nKey } from '@/util/api_error.ts'
+import { apiErrorI18nKey } from '@/util/apiError.ts'
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const placeholderImage = '/assets/event-dummy.png'

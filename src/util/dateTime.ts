@@ -1,3 +1,34 @@
+/*
+    src/util/dateTime.ts
+ */
+
+export function getStartDateTime(
+    startDate?: string | null,
+    startTime?: string | null,
+): Date | null {
+    if (!startDate) return null
+
+    const date = new Date(startDate)
+
+    if (startTime) {
+        const [hours = 0, minutes = 0] =
+            startTime.split(':').map(Number)
+
+        date.setHours(hours, minutes, 0, 0)
+    }
+
+    return date
+}
+
+export function isFuture(
+    startDate?: string | null,
+    startTime?: string | null,
+): boolean {
+    const date = getStartDateTime(startDate, startTime)
+    return !!date && date >= new Date()
+}
+
+
 type DateFormatMode = 'long' | 'short'
 
 // Format date using Intl API
