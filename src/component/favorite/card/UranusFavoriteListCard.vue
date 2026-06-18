@@ -57,7 +57,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
-import { apiErrorI18nKey } from '@/util/api_error.ts'
+import { apiErrorI18nKey } from '@/util/apiError.ts'
 
 const props = defineProps<{
   list: FavoriteList

@@ -41,7 +41,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { formatDate, formatTimeForUI, formatTimeRangeForUI } from "@/util/datetime.ts";
+import { formatDate, formatTimeForUI, formatTimeRangeForUI } from "@/util/dateTime.ts";
 
 interface Props {
   startDate: string | null // YYYY-MM-DD

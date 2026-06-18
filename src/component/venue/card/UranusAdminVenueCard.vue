@@ -119,7 +119,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import PlutoImage from '@/component/pluto/PlutoImage.vue'
 import { uranusStringInterpolate } from '@/util/string.ts'
 import { Edit, Trash2, Plus } from 'lucide-vue-next'
-import { apiErrorI18nKey } from '@/util/api_error.ts'
+import { apiErrorI18nKey } from '@/util/apiError.ts'
 
 
 const { t } = useI18n()
