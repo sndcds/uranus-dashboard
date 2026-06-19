@@ -106,7 +106,6 @@ const onEventDeleted = async ({eventUuid}: {
 onMounted(async () => {
   if (orgUuid) {
     await fetchAdminListEvents(orgUuid.value ?? '');
-    // await fetchAdminListEvents(orgUuid.value ?? '', '2020-01-01');
   }
 });
 </script>
