@@ -53,6 +53,14 @@
           />
 
           <UranusPopupSelect
+              v-model="selectedPortalCategoryId"
+              width="100%"
+              :options="portalCategoryOptions"
+              :placeholder="t('all_event_categories')"
+              :aria-label="t('event_filter_categories')"
+          />
+
+          <UranusPopupSelect
               v-model="selectedPortalEventTypeId"
               width="100%"
               :options="portalEventTypeOptions"
@@ -61,7 +69,7 @@
           />
 
           <UranusButton
-              v-if="activeEventTypeIds.length"
+              v-if="activeEventTypeIds.length || activeCategoryId"
               size="small"
               variant="tertiary"
               @click="onResetFilter"
@@ -248,6 +256,16 @@ const selectedPortalEventTypeId = computed({
     }, filterScope)
   }
 })
+const activeCategoryId = computed(() => portalFilter.value.categories?.[0] ?? 0)
+const selectedPortalCategoryId = computed({
+  get: () => String(activeCategoryId.value || ''),
+  set: (value: string) => {
+    const categoryId = Number(value)
+    filterStore.setFilter({
+      categories: value && Number.isFinite(categoryId) ? [categoryId] : null,
+    }, filterScope)
+  }
+})
 const portalDateRangeMode = computed<UranusPresetDateRangeMode>({
   get: () => filterStore.portalDateRangeMode,
   set: (mode) => {
@@ -263,6 +281,16 @@ const sortedTypeSummary = computed(() => {
     return nameA.localeCompare(nameB)
   })
 })
+const portalCategoryOptions = computed<UranusPopupSelectOption[]>(() => [
+  { value: '', label: t('all_event_categories') },
+  { value: '1', label: t('event_filter_category_culture') },
+  { value: '2', label: t('event_filter_category_education') },
+  { value: '3', label: t('event_filter_category_sports') },
+  { value: '4', label: t('event_filter_category_leisure') },
+  { value: '5', label: t('event_filter_category_family') },
+  { value: '6', label: t('event_filter_category_society') },
+])
+
 const portalEventTypeOptions = computed<UranusPopupSelectOption[]>(() => [
   { value: '', label: t('all_event_types') },
   ...sortedTypeSummary.value.map((entry) => ({

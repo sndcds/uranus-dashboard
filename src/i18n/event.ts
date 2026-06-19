@@ -510,6 +510,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Categories',
         da: 'Kategorier',
     },
+    all_event_categories: {
+        de: 'Alle Kategorien',
+        en: 'All categories',
+        da: 'Alle kategorier',
+    },
     event_filter_category_culture: {
         de: 'Kultur',
         en: 'Culture',
