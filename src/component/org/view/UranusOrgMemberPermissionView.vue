@@ -65,7 +65,7 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const userStore = useUserStore()
 
 const orgUuid = computed(() => {
-  return route.params.uuid
+  return route.params.orgUuid
 })
 
 const memberUuid = computed(() => {

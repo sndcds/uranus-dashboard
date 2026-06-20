@@ -508,7 +508,7 @@ function createVenuePopupHtml(feature: MapGeoJSONFeature) {
   const infoUrl = uuid
       ? router.resolve({
         name: 'venue-details',
-        params: { uuid },
+        params: { 'identifier': uuid },
       }).href
       : '#'
 

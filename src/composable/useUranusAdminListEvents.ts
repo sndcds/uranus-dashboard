@@ -4,10 +4,10 @@
     2026-02-08, Roald
  */
 
-import { ref } from "vue";
+import { ref } from 'vue'
 import type { AdminEventListItem } from '@/domain/event/adminEventListItem.ts'
-import { camelCaseKeys } from "./useUranusAPI.ts";
-import { apiFetch } from "@/api.ts";
+import { camelCaseKeys } from './useUranusAPI.ts'
+import { apiFetch } from '@/api.ts'
 
 export function useUranusAdminListEvents() {
     const adminListEvents = ref<AdminEventListItem[]>([]);

@@ -173,7 +173,7 @@ const routes = [
                 component: UranusMessageSendView,
             },
             {
-                path: 'org/:uuid/member/:memberUuid/permissions',
+                path: 'org/:orgUuid/member/:memberUuid/permissions',
                 name: 'admin-edit-member-permission',
                 component: UranusOrgMemberPermissionView,
             },
@@ -322,7 +322,7 @@ const routes = [
                 component: UranusEventView,
             },
             {
-                path: 'venue/:uuid',
+                path: 'venue/:identifier',
                 name: 'venue-details',
                 component: UranusVenueView,
             },
