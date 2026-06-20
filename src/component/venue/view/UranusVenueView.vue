@@ -205,6 +205,7 @@ import UranusImage from '@/component/image/UranusImage.vue'
 import { uranusFormatFullDate } from '@/util/string.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 
+
 type VenueDetailOrg = {
   uuid: string | null
   name: string
@@ -253,7 +254,6 @@ type VenueDetail = {
   spaces: VenueDetailSpace[]
 }
 
-const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })
 const themeStore = useThemeStore()
 const filterStore = useEventsFilterStore()
@@ -265,6 +265,9 @@ const isLoading = ref(true)
 const showLoading = ref(false)
 const loadingLabel = computed(() => t('loading'))
 const loadError = ref<string | null>(null)
+
+
+const route = useRoute()
 
 const hasLonLat = computed(() =>
     Number.isFinite(venue.value?.lon) && Number.isFinite(venue.value?.lat)
@@ -289,7 +292,7 @@ const venueTypeLabel = computed(() => {
 })
 
 watch(
-    () => [route.params.uuid, locale.value],
+    () => [route.params.identifier, locale.value],
     () => {
       void loadVenue()
     }
@@ -432,7 +435,19 @@ function spaceFacts(space: VenueDetailSpace) {
 }
 
 async function loadVenue() {
-  const venueUuid = resolveRouteParam(route.params.uuid)
+  const identifier = route.params.identifier as string
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier)
+  let venueUuid = null
+  if (isUuid) {
+    venueUuid = resolveRouteParam(route.params.identifier)
+  } else {
+    const apiPath = `/api/venue/slug/${identifier}/uuid`
+    const apiResponse = await apiFetch<any>(apiPath)
+    venueUuid = apiResponse?.data?.uuid ?? null
+    console.log("slug:", identifier)
+    console.log("resolved uuid:", venueUuid)
+  }
+
   if (!venueUuid) {
     loadError.value = t('error_missing_params')
     isLoading.value = false
