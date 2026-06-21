@@ -20,7 +20,7 @@
         @click="saveToFavoriteList"
     >
       <component
-          :is="isSaved ? HeartHandshake : Heart"
+          :is="isSaved ? BookmarkCheck : Bookmark"
           class="favorite-list-event-action__icon"
       />
     </button>
@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Heart, HeartHandshake } from 'lucide-vue-next'
+import { BookmarkCheck, Bookmark } from 'lucide-vue-next'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'

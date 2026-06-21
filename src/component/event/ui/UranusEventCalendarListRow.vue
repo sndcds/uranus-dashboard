@@ -5,7 +5,7 @@
 <template>
   <div class="row" @click="toggleExpand">
     <div class="row-free-badge" v-if="isFreeEvent">
-      <img :src="freeBadgeUrl" :alt="t('event_price_free')" />
+      <Heart :size="18" />
     </div>
     <div class="date">{{ formattedDate }}</div>
     <div class="header">
@@ -195,7 +195,7 @@ import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDates
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
-import { Accessibility, Link, Mail, Ticket, Video } from 'lucide-vue-next'
+import {Accessibility, Heart, Link, Mail, Ticket, Video} from 'lucide-vue-next'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -300,7 +300,6 @@ const selectedAccessibilityLabels = computed(() => {
   return labels
 })
 
-const freeBadgeUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Star_symbol.svg'
 const isFreeEvent = computed(() => props.event.priceType === 'free')
 
 const hasEventTypes = computed(() =>
@@ -501,22 +500,17 @@ const loadEvent = async () => {
 
 .row-free-badge {
   position: absolute;
-  right: 1rem;
-  top: 0.75rem;
-  width: 3rem;
-  height: 3rem;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 0.8rem;
+  right: 0.5rem;
+  top: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  color: var(--uranus-ci-color);
+  background: var(--uranus-ci-light-bg);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
-}
-
-.row-free-badge img {
-  width: 1.6rem;
-  height: 1.6rem;
 }
 
 @media (max-width: 800px) {

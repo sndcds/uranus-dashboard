@@ -681,17 +681,10 @@ onBeforeUnmount(() => {
 
 .calendar-compact-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 4px;
   width: 100%;
   padding: 1rem;
-}
-
-.calendar-compact-layout > * {
-  aspect-ratio: 1 / 1;
-  width: 100%;
-  max-width: none;
-  justify-self: stretch;
 }
 
 .calendar-list-layout {

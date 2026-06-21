@@ -12,6 +12,9 @@
   >
     <div class="calendar-image">
       <img v-if="imageUrl" :src="imageUrl" :alt="t('event_image_alt_text')" />
+      <div v-if="isFreeEvent" class="calendar-card-free-badge">
+        <Heart :size="18" />
+      </div>
       <UranusFavoriteListEventAction
           class="favorite-action"
           :event-uuid="event.uuid"
@@ -19,9 +22,6 @@
       />
     </div>
 
-    <div v-if="isFreeEvent" class="calendar-card-free-badge">
-      <img :src="freeBadgeUrl" :alt="t('event_price_free')" />
-    </div>
 
     <div class="calendar-text">
       <h2>{{ event.title }}</h2>
@@ -37,11 +37,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
+import { Heart } from 'lucide-vue-next'
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { uranusFormatDateTime } from '@/util/string.ts'
 import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
+
 
 const { t } = useI18n()
 
@@ -58,7 +59,6 @@ const imageUrl = computed(() =>
     props.eventListStore.getEventImageUrl(props.event, { width: 240, ratio: '2:1' })
 )
 
-const freeBadgeUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Star_symbol.svg'
 const isFreeEvent = computed(() => props.event.priceType === 'free')
 
 const formattedDateTime = computed(() =>
@@ -96,13 +96,13 @@ const getTypeName = (typeId: number) =>
   cursor: pointer;
   overflow: hidden;
   background: var(--uranus-bg);
-  border: 0 solid var(--uranus-color-7);
+  border: 1px solid var(--uranus-color-7);
   border-radius: 2px;
   width: 100%;
   display: flex;
   flex-direction: column;
   color: var(--uranus-color);
-  transition: all 0.3s;
+  transition: all 0.1s;
   &:hover {
     color: var(--uranus-link-color) !important;
   }
@@ -115,7 +115,7 @@ const getTypeName = (typeId: number) =>
 
 .calendar-image {
   width: 100%;
-  aspect-ratio: 2 / 1;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
@@ -128,28 +128,6 @@ const getTypeName = (typeId: number) =>
   &:hover {
     transform: scale(1.1);
   }
-}
-
-.calendar-card-free-badge {
-  position: absolute;
-  right: 1rem;
-  top: 42%;
-  width: 3.2rem;
-  height: 3.2rem;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 0.8rem;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-
-.calendar-card-free-badge img {
-  width: 1.7rem;
-  height: 1.7rem;
-  object-fit: contain;
 }
 
 .calendar-text {
@@ -174,6 +152,21 @@ const getTypeName = (typeId: number) =>
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+}
+
+.calendar-card-free-badge {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  color: var(--uranus-ci-color);
+  background: var(--uranus-ci-light-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
 }
 
 .favorite-action {
