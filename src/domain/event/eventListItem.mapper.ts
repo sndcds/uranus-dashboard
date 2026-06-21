@@ -13,6 +13,8 @@ export function mapEventDTO(dto: EventListItemDTO): EventListItem {
 
         startDate: dto.start_date,
         startTime: dto.start_time ?? null,
+        endDate: dto.end_date ?? null,
+        endTime: dto.end_time ?? null,
         entryTime: dto.entry_time ?? null,
 
         space: {

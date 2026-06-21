@@ -19,6 +19,8 @@ export interface EventListItem {
 
     startDate: string
     startTime: string | null
+    endDate: string | null
+    endTime: string | null
     entryTime: string | null
 
     space: {
