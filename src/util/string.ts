@@ -89,8 +89,6 @@ export const uranusFormatDateTime = (
 ) => {
     if (!startDate) return ''
 
-    console.log(startDate, startTime, endDate, endTime)
-
     const start = new Date(
         startTime ? `${startDate}T${startTime}` : startDate
     )

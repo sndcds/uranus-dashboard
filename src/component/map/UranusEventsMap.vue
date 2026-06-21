@@ -31,6 +31,7 @@ type EventVenueProperties = {
   city: string
   country: string
   eventCount: number
+  events?: unknown[]
 }
 
 type EventVenueFeature = {
@@ -464,11 +465,12 @@ function getPointCoordinates(feature: MapGeoJSONFeature): [number, number] | nul
 }
 
 function createVenuePopupHtml(feature: MapGeoJSONFeature) {
-  const properties = feature.properties ?? {}
+  const properties = feature.properties as Record<string, unknown> ?? {}
   const uuid = String(properties.uuid ?? '')
   const infoUrl = uuid
-      ? router.resolve({ name: 'venue-details', params: { uuid } }).href
+      ? router.resolve({ name: 'venue-details', params: { identifier: uuid } }).href
       : '#'
+  const eventListHtml = createEventListHtml(properties)
 
   return `
     <div class="uranus-map-popup">
@@ -485,6 +487,7 @@ function createVenuePopupHtml(feature: MapGeoJSONFeature) {
         <p class="uranus-map-popup__text">
           ${t('events')}: ${Number(properties.eventCount ?? 0)}
         </p>
+        ${eventListHtml}
       </div>
       <div class="uranus-map-popup__footer">
         <a
@@ -496,6 +499,69 @@ function createVenuePopupHtml(feature: MapGeoJSONFeature) {
       </div>
     </div>
   `
+}
+
+function createEventListHtml(properties: Record<string, unknown>) {
+  const rawEvents = Array.isArray(properties.events) ? properties.events : []
+  const events = rawEvents.slice(0, 3).map((event) => {
+    if (typeof event !== 'object' || event === null) return null
+
+    const title = escapeHtml(String(
+      (event as any).title
+      ?? (event as any).name
+      ?? (event as any).subtitle
+      ?? ''
+    ))
+    const date = formatEventDate(String(
+      (event as any).startDate
+      ?? (event as any).start_date
+      ?? (event as any).date
+      ?? (event as any).eventDate
+      ?? ''
+    ))
+    const eventUuid = String((event as any).uuid ?? (event as any).eventUuid ?? '')
+    const eventDateUuid = String((event as any).dateUuid ?? (event as any).event_date_uuid ?? (event as any).eventDateUuid ?? '')
+    const eventUrl = eventUuid && eventDateUuid
+        ? router.resolve({ name: 'event-details', params: { uuid: eventUuid, eventDateUuid } }).href
+        : ''
+
+    if (!title) return null
+
+    const titleHtml = eventUrl
+        ? `<a class="uranus-map-popup__event-link" href="${escapeAttribute(eventUrl)}">${title}</a>`
+        : `<strong>${title}</strong>`
+
+    return `
+      <li class="uranus-map-popup__event-item">
+        ${titleHtml}${date ? ` • <span>${escapeHtml(date)}</span>` : ''}
+      </li>
+    `
+  }).filter(Boolean)
+
+  if (events.length === 0) return ''
+
+  const moreCount = Array.isArray(properties.events) && properties.events.length > events.length
+      ? properties.events.length - events.length
+      : 0
+
+  return `
+    <div class="uranus-map-popup__event-list">
+      <p class="uranus-map-popup__subtitle">${escapeHtml(t('events'))}</p>
+      <ul>${events.join('')}</ul>
+      ${moreCount > 0 ? `<p class="uranus-map-popup__more">${escapeHtml(t('more_events_label', { moreCount }))}</p>` : ''}
+    </div>
+  `
+}
+
+function formatEventDate(value: string) {
+  if (!value) return ''
+  const date = new Date(value)
+  if (!Number.isFinite(date.valueOf())) return ''
+  return new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(date)
 }
 
 function escapeHtml(value: string) {

@@ -270,13 +270,21 @@ function resolveInitialWeekAnchorDate() {
 }
 const activeViewMode = computed<EventViewMode>(() => {
   const currentMode = appStore.eventViewMode
-  if (currentMode === 'cards' ||
-      currentMode === 'compact' ||
-      currentMode === 'list' ||
-      currentMode === 'calendar' ||
-      currentMode === 'map') {
+  const allowedModes = props.displayModes ?? ['cards', 'compact', 'list', 'calendar', 'map']
+
+  if (allowedModes.includes(currentMode)) {
     return currentMode
   }
+
+  if (currentMode === 'map' && allowedModes.includes('cards')) {
+    return 'cards'
+  }
+
+  if (allowedModes.includes('cards')) return 'cards'
+  if (allowedModes.includes('compact')) return 'compact'
+  if (allowedModes.includes('list')) return 'list'
+  if (allowedModes.includes('calendar')) return 'calendar'
+  if (allowedModes.includes('map')) return 'map'
 
   return 'calendar'
 })
@@ -631,10 +639,6 @@ function observeLoadMoreTrigger() {
 onMounted(async () => {
   document.addEventListener('click', onDocumentClick)
 
-  if (appStore.eventViewMode === 'map' && !props.displayModes?.includes('map')) {
-    appStore.setEventViewMode('calendar')
-  }
-
   await reloadEvents()
   initialized.value = true
 
@@ -677,17 +681,10 @@ onBeforeUnmount(() => {
 
 .calendar-compact-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 4px;
   width: 100%;
   padding: 1rem;
-}
-
-.calendar-compact-layout > * {
-  aspect-ratio: 1 / 1;
-  width: 100%;
-  max-width: none;
-  justify-self: stretch;
 }
 
 .calendar-list-layout {

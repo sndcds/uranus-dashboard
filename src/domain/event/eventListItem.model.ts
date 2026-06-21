@@ -43,6 +43,7 @@ export interface EventListItem {
     }
 
     imageUrl: string | null
+    priceType?: string | null
 
     categories: number[]
     eventTypes: EventListItemEventType[]

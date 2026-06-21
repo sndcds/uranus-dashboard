@@ -46,6 +46,7 @@ export interface EventListItemDTO {
     venue_lon: number
     image_uuid: string
     image_path: string
+    price_type?: string | null
     org_uuid: string
     org_name: string
     categories: number[]
