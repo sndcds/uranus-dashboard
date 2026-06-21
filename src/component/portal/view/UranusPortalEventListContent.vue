@@ -103,7 +103,13 @@ let observer: IntersectionObserver | null = null
 let initialized = false
 
 function formatEventDateTime(event: EventListItem) {
-  return uranusFormatDateTime(event.startDate, event.startTime, locale.value)
+  return uranusFormatDateTime(
+      event.startDate,
+      event.startTime,
+      event.endDate,
+      event.endTime,
+      locale.value
+  )
 }
 
 function getUniqueEventTypes(event: EventListItem) {

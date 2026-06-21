@@ -75,7 +75,14 @@ const imageUrl = computed(() =>
 )
 
 const formattedDateTime = computed(() =>
-    uranusFormatDateTime(props.event.startDate, props.event.startTime, props.locale, true, true)
+    uranusFormatDateTime(
+        props.event.startDate,
+        props.event.startTime,
+        props.event.endDate,
+        props.event.endTime,
+        props.locale,
+        true
+    )
 )
 
 const isReleased = computed(() =>

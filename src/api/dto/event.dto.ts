@@ -28,6 +28,8 @@ export interface EventListItemDTO {
     subtitle?: string
     start_date: string
     start_time: string
+    end_date?: string
+    end_time?: string
     entry_time?: string
     space_uuid: string
     space_name: string

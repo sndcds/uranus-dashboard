@@ -79,30 +79,102 @@ export function uranusFormatSimpleDate(input: string, locale = 'en') {
 
 
 export const uranusFormatDateTime = (
-    dateStr: string,
-    timeStr?: string | null,
+    startDate: string,
+    startTime?: string | null,
+    endDate?: string | null,
+    endTime?: string | null,
     locale = 'en',
     withWeekday = false,
     longWeekday = false
 ) => {
-    if (!dateStr) return ''
+    if (!startDate) return ''
 
-    const dateTime = timeStr
-        ? new Date(`${dateStr}T${timeStr}`)
-        : new Date(dateStr)
+    console.log(startDate, startTime, endDate, endTime)
 
-    const weekday = withWeekday
-        ? new Intl.DateTimeFormat(locale, {
+    const start = new Date(
+        startTime ? `${startDate}T${startTime}` : startDate
+    )
+
+    // If an endTime is provided without an endDate,
+    // assume the end is on the same day as the start.
+    const effectiveEndDate = endDate || (endTime ? startDate : null)
+
+    const end = effectiveEndDate
+        ? new Date(
+            endTime
+                ? `${effectiveEndDate}T${endTime}`
+                : effectiveEndDate
+        )
+        : null
+
+    const formatDate = (date: Date) =>
+        new Intl.DateTimeFormat(locale, {
+            dateStyle: 'short'
+        }).format(date)
+
+    const formatTime = (date: Date) =>
+        new Intl.DateTimeFormat(locale, {
+            timeStyle: 'short'
+        }).format(date)
+
+    const formatDateTime = (date: Date, includeTime: boolean) =>
+        new Intl.DateTimeFormat(locale, {
+            dateStyle: 'short',
+            timeStyle: includeTime ? 'short' : undefined
+        }).format(date)
+
+    const formatWeekday = (date: Date) =>
+        new Intl.DateTimeFormat(locale, {
             weekday: longWeekday ? 'long' : 'short'
-        }).format(dateTime)
-        : ''
+        }).format(date)
 
-    const dateTimeFormatted = new Intl.DateTimeFormat(locale, {
-        dateStyle: 'short',
-        timeStyle: timeStr ? 'short' : undefined
-    }).format(dateTime)
+    const prependWeekday = (text: string) => {
+        if (!withWeekday) return text
+        return `${formatWeekday(start)}, ${text}`
+    }
 
-    return weekday ? `${weekday}, ${dateTimeFormatted}` : dateTimeFormatted
+    const startHasTime = !!startTime
+    const endHasTime = !!endTime
+
+    // No end provided → original behavior
+    if (!end) {
+        return prependWeekday(
+            formatDateTime(start, startHasTime)
+        )
+    }
+
+    const sameDay =
+        start.getFullYear() === end.getFullYear() &&
+        start.getMonth() === end.getMonth() &&
+        start.getDate() === end.getDate()
+
+    let result: string
+
+    if (sameDay) {
+        if (startHasTime && endHasTime) {
+            // 6/21/26, 9:00 AM – 1:00 PM
+            result = `${formatDate(start)}, ${formatTime(
+                start
+            )} – ${formatTime(end)}`
+        } else if (!startHasTime && !endHasTime) {
+            // Same date range with no times -> just the date
+            result = formatDate(start)
+        } else {
+            // Mixed time/no-time on same day
+            result = `${formatDateTime(
+                start,
+                startHasTime
+            )} – ${formatDateTime(end, endHasTime)}`
+        }
+    } else {
+        // Multi-day range
+        result = `${formatDateTime(
+            start,
+            startHasTime
+        )} – ${formatDateTime(end, endHasTime)}`
+    }
+
+    return prependWeekday(result)
 }
 
 export const uranusFormatDayMonth = (dateString: string, locale: string) => {
