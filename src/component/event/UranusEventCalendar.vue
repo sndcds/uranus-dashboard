@@ -270,13 +270,17 @@ function resolveInitialWeekAnchorDate() {
 }
 const activeViewMode = computed<EventViewMode>(() => {
   const currentMode = appStore.eventViewMode
-  if (currentMode === 'cards' ||
-      currentMode === 'compact' ||
-      currentMode === 'list' ||
-      currentMode === 'calendar' ||
-      currentMode === 'map') {
+  const allowedModes = props.displayModes ?? ['cards', 'compact', 'list', 'calendar', 'map']
+
+  if (allowedModes.includes(currentMode)) {
     return currentMode
   }
+
+  if (allowedModes.includes('calendar')) return 'calendar'
+  if (allowedModes.includes('cards')) return 'cards'
+  if (allowedModes.includes('compact')) return 'compact'
+  if (allowedModes.includes('list')) return 'list'
+  if (allowedModes.includes('map')) return 'map'
 
   return 'calendar'
 })
@@ -630,10 +634,6 @@ function observeLoadMoreTrigger() {
 
 onMounted(async () => {
   document.addEventListener('click', onDocumentClick)
-
-  if (appStore.eventViewMode === 'map' && !props.displayModes?.includes('map')) {
-    appStore.setEventViewMode('calendar')
-  }
 
   await reloadEvents()
   initialized.value = true
