@@ -4,6 +4,9 @@
 
 <template>
   <div class="row" @click="toggleExpand">
+    <div class="row-free-badge" v-if="isFreeEvent">
+      <img :src="freeBadgeUrl" :alt="t('event_price_free')" />
+    </div>
     <div class="date">{{ formattedDate }}</div>
     <div class="header">
       <div class="title">{{ event.title }}</div>
@@ -297,6 +300,9 @@ const selectedAccessibilityLabels = computed(() => {
   return labels
 })
 
+const freeBadgeUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Star_symbol.svg'
+const isFreeEvent = computed(() => props.event.priceType === 'free')
+
 const hasEventTypes = computed(() =>
     props.event.eventTypes?.length > 0
 )
@@ -370,6 +376,7 @@ const loadEvent = async () => {
 <style scoped lang="scss">
 
 .row {
+  position: relative;
   display: grid;
   grid-template-columns: 70px 1fr;
   gap: 10px;
@@ -490,6 +497,26 @@ const loadEvent = async () => {
 
 .row-state--error {
   color: var(--uranus-danger-color, #b91c1c);
+}
+
+.row-free-badge {
+  position: absolute;
+  right: 1rem;
+  top: 0.75rem;
+  width: 3rem;
+  height: 3rem;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.row-free-badge img {
+  width: 1.6rem;
+  height: 1.6rem;
 }
 
 @media (max-width: 800px) {

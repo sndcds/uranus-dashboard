@@ -19,6 +19,10 @@
       />
     </div>
 
+    <div v-if="isFreeEvent" class="calendar-card-free-badge">
+      <img :src="freeBadgeUrl" :alt="t('event_price_free')" />
+    </div>
+
     <div class="calendar-text">
       <h2>{{ event.title }}</h2>
 
@@ -73,6 +77,9 @@ const eventReleaseStatusStore = useEventReleaseStatusStore()
 const imageUrl = computed(() =>
     props.eventListStore.getEventImageUrl(props.event)
 )
+
+const freeBadgeUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Star_symbol.svg'
+const isFreeEvent = computed(() => props.event.priceType === 'free')
 
 const formattedDateTime = computed(() =>
     uranusFormatDateTime(
@@ -170,7 +177,29 @@ const getTypeName = (typeId: number) =>
   gap: 0.2rem;
 }
 
-.favorite-action {
+.calendar-card-free-badge {
+    position: absolute;
+    right: 1rem;
+    top: 42%;
+    width: 3.2rem;
+    height: 3.2rem;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 0.8rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .calendar-card-free-badge img {
+    width: 1.7rem;
+    height: 1.7rem;
+    object-fit: contain;
+  }
+
+  .favorite-action {
   position: absolute;
   top: 8px;
   right: 8px;

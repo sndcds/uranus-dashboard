@@ -37,6 +37,7 @@ export function mapEventDTO(dto: EventListItemDTO): EventListItem {
         },
 
         imageUrl: dto.image_path ?? null,
+        priceType: dto.price_type ?? null,
 
         categories: dto.categories ?? [],
 
