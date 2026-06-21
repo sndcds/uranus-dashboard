@@ -276,10 +276,14 @@ const activeViewMode = computed<EventViewMode>(() => {
     return currentMode
   }
 
-  if (allowedModes.includes('calendar')) return 'calendar'
+  if (currentMode === 'map' && allowedModes.includes('cards')) {
+    return 'cards'
+  }
+
   if (allowedModes.includes('cards')) return 'cards'
   if (allowedModes.includes('compact')) return 'compact'
   if (allowedModes.includes('list')) return 'list'
+  if (allowedModes.includes('calendar')) return 'calendar'
   if (allowedModes.includes('map')) return 'map'
 
   return 'calendar'
