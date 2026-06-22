@@ -327,6 +327,16 @@ const routes = [
                 component: UranusVenueView,
             },
             {
+                path: 'ort/:identifier',
+                name: 'venue-details-de',
+                component: UranusVenueView,
+            },
+            {
+                path: 'sted/:identifier',
+                name: 'venue-details-da',
+                component: UranusVenueView,
+            },
+            {
                 path: 'map',
                 name: 'map',
                 component: UranusMapView,
