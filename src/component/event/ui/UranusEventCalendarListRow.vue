@@ -4,9 +4,14 @@
 
 <template>
   <div class="row" @click="toggleExpand">
-    <div class="row-free-badge" v-if="isFreeEvent">
-      <Heart :size="18" />
-    </div>
+
+    <UranusEventPriceBadge
+        v-if="event.priceType && ['free', 'donation'].includes(event.priceType)"
+        class="row-free-badge"
+        :price-type="event.priceType"
+        :size="24"
+    />
+
     <div class="date">{{ formattedDate }}</div>
     <div class="header">
       <div class="title">{{ event.title }}</div>
@@ -72,105 +77,6 @@
           />
         </div>
 
-        <div class="row-info">
-          <UranusEventDateTimeDisplay
-              :startDate="eventStartDate"
-              :startTime="eventStartTime"
-              :endDate="eventEndDate"
-              :endTime="eventEndTime"
-              :entryTime="eventEntryTime"
-              :allDay="eventAllDay"
-              class="uranus-public-event-info-card"
-          />
-
-          <UranusEventOrgDisplay :event="eventDetails" class="uranus-public-event-info-card" />
-
-          <div v-if="eventDetails.onlineLink" class="uranus-public-event-info-card">
-            <UranusIconAction
-                :to="uranusEnsureHttpOrHttps(eventDetails.onlineLink)"
-                :label="t('online_event_link')"
-                :icon="Video"
-                style="padding-left: 0;"
-            />
-          </div>
-
-          <div class="uranus-public-event-info-card">
-            <UranusFavoriteListEventAction
-                :event-uuid="eventDetails.uuid"
-                :event-date-uuid="eventDateDetails?.uuid ?? props.event.dateUuid"
-            />
-          </div>
-
-          <div
-              v-if="eventDetails.registrationLink || eventDetails.registrationEmail || eventDetails.registrationPhone"
-              class="uranus-public-event-info-card">
-            <UranusIconAction
-                v-if="eventDetails.registrationLink"
-                :to="uranusEnsureHttpOrHttps(eventDetails.registrationLink)"
-                :label="t('event_registration_link')"
-                :icon="Link"
-                style="padding-left: 0;"
-            />
-
-            <UranusIconAction
-                v-if="eventDetails.registrationEmail"
-                :to="'mailto:' + eventDetails.registrationEmail"
-                :label="t('event_registration_email')"
-                :icon="Mail"
-                style="padding-left: 0;"
-            />
-
-            <template v-if="eventDetails.registrationPhone">
-              <p class="uranus-public-event-info-label">{{ t('event_registration_phone') }}</p>
-              <p>{{ eventDetails.registrationPhone }}</p>
-            </template>
-
-            <template v-if="eventDetails.registrationDeadline">
-              <p class="uranus-public-event-info-label">{{ t('event_registration_deadline') }}</p>
-              <p>{{ eventDetails.registrationDeadline }}</p>
-            </template>
-          </div>
-
-          <UranusEventVenueDisplay :event="eventDetails" :eventDate="eventDateDetails" />
-
-          <div v-if="priceText || priceTypeLabel" class="uranus-public-event-info-card">
-            <p class="uranus-public-event-info-label">{{ t('event_price') }}</p>
-            <p v-if="priceTypeLabel">{{ priceTypeLabel }}</p>
-            <p v-if="priceText">{{ priceText }}</p>
-
-            <UranusIconAction
-                v-if="eventDetails.ticketLink"
-                :label="t('event_ticket_link')"
-                :icon="Ticket"
-                :to="uranusEnsureHttpOrHttps(eventDetails.ticketLink)"
-                style="padding-left: 0;"
-            />
-          </div>
-
-          <div
-              v-if="(eventDetails.maxAttendees ?? 0) > 0 || ageLabel || !!eventDetails.participationInfo"
-              class="uranus-public-event-info-card"
-          >
-            <p class="uranus-public-event-info-label">{{ t('event_participation_info') }}</p>
-            <p v-if="(eventDetails.maxAttendees ?? 0) > 0">{{ maxAttendeesLabel }}</p>
-            <p v-if="ageLabel">{{ ageLabel }}</p>
-            <p v-if="eventDetails.participationInfo">{{ eventDetails.participationInfo }}</p>
-          </div>
-
-          <UranusEventAllDatesDisplay
-              v-if="eventDetails.furtherDates?.length"
-              :dates="eventDetails.furtherDates"
-              :currentDate="eventDateDetails"
-              class="uranus-public-event-info-card"
-          />
-
-          <div v-if="selectedAccessibilityLabels.length" class="uranus-public-event-info-card row-tight-section">
-            <UranusIconAction :icon="Accessibility" :label="t('accessibility')" style="padding-left: 0;" />
-            <p v-for="label in selectedAccessibilityLabels" :key="label">
-              {{ label }}
-            </p>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -195,7 +101,8 @@ import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDates
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
-import {Accessibility, Heart, Link, Mail, Ticket, Video} from 'lucide-vue-next'
+import {Accessibility, Link, Mail, Ticket, Video} from 'lucide-vue-next'
+import UranusEventPriceBadge from '@/component/event/ui/UranusEventPriceBadge.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -478,7 +385,8 @@ const loadEvent = async () => {
 }
 
 .row-info {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 0 16px;
 }
@@ -495,22 +403,12 @@ const loadEvent = async () => {
 }
 
 .row-state--error {
-  color: var(--uranus-danger-color, #b91c1c);
+  color: var(--uranus-error-color);
 }
 
 .row-free-badge {
-  position: absolute;
   right: 0.5rem;
   top: 0.5rem;
-  width: 2rem;
-  height: 2rem;
-  color: var(--uranus-ci-color);
-  background: var(--uranus-ci-light-bg);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
 }
 
 @media (max-width: 800px) {

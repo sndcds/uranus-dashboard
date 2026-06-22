@@ -11,10 +11,22 @@
       class="calendar-card"
   >
     <div class="calendar-image">
-      <img v-if="imageUrl" :src="imageUrl" :alt="t('event_image_alt_text')" />
-      <div v-if="isFreeEvent" class="calendar-card-free-badge">
-        <Heart :size="18" />
+      <div class="calendar-image-wrapper">
+        <img
+            v-if="imageUrl"
+            class="calendar-main-image"
+            :src="imageUrl"
+            :alt="t('event_image_alt_text')"
+        />
+
+        <UranusEventPriceBadge
+            v-if="event.priceType && ['free', 'donation'].includes(event.priceType)"
+            class="calendar-card-free-badge"
+            :price-type="event.priceType"
+            :size="18"
+        />
       </div>
+
       <UranusFavoriteListEventAction
           class="favorite-action"
           :event-uuid="event.uuid"
@@ -37,11 +49,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Heart } from 'lucide-vue-next'
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { uranusFormatDateTime } from '@/util/string.ts'
 import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
+import UranusEventPriceBadge from '@/component/event/ui/UranusEventPriceBadge.vue'
 
 
 const { t } = useI18n()
@@ -58,8 +70,6 @@ const eventReleaseStatusStore = useEventReleaseStatusStore()
 const imageUrl = computed(() =>
     props.eventListStore.getEventImageUrl(props.event, { width: 240, ratio: '2:1' })
 )
-
-const isFreeEvent = computed(() => props.event.priceType === 'free')
 
 const formattedDateTime = computed(() =>
     uranusFormatDateTime(
@@ -114,9 +124,26 @@ const getTypeName = (typeId: number) =>
 }
 
 .calendar-image {
+  position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
+}
+
+.calendar-image-wrapper {
+  width: 100%;
+  height: 100%;
   overflow: hidden;
+}
+
+.calendar-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.calendar-card:hover .calendar-main-image {
+  transform: scale(1.1);
 }
 
 .calendar-image img {
@@ -124,10 +151,6 @@ const getTypeName = (typeId: number) =>
   height: 100%;
   object-fit: cover;
   transition: all 0.3s;
-
-  &:hover {
-    transform: scale(1.1);
-  }
 }
 
 .calendar-text {
@@ -155,17 +178,8 @@ const getTypeName = (typeId: number) =>
 }
 
 .calendar-card-free-badge {
-  position: absolute;
   right: 0.5rem;
   bottom: 0.5rem;
-  width: 2rem;
-  height: 2rem;
-  color: var(--uranus-ci-color);
-  background: var(--uranus-ci-light-bg);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 2;
 }
 

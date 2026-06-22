@@ -18,11 +18,15 @@
             :src="imageUrl"
             :alt="t('event_image_alt_text')"
         >
-        <div v-if="isFreeEvent" class="calendar-card-free-badge">
-          <Heart :size="28" />
-        </div>
 
+        <UranusEventPriceBadge
+            v-if="event.priceType && ['free', 'donation'].includes(event.priceType)"
+            :price-type="event.priceType"
+            class="calendar-card-free-badge"
+            :size="26"
+        />
       </div>
+
       <UranusFavoriteListEventAction
           class="favorite-action"
           :event-uuid="event.uuid"
@@ -69,7 +73,7 @@ import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteLi
 import { uranusFormatDateTime } from '@/util/string.ts'
 import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
 import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
-import { Heart } from 'lucide-vue-next'
+import UranusEventPriceBadge from '@/component/event/ui/UranusEventPriceBadge.vue'
 
 const { t } = useI18n()
 
@@ -85,8 +89,6 @@ const eventReleaseStatusStore = useEventReleaseStatusStore()
 const imageUrl = computed(() =>
     props.eventListStore.getEventImageUrl(props.event)
 )
-
-const isFreeEvent = computed(() => props.event.priceType === 'free')
 
 const formattedDateTime = computed(() =>
     uranusFormatDateTime(
@@ -196,17 +198,8 @@ const getTypeName = (typeId: number) =>
 }
 
 .calendar-card-free-badge {
-  position: absolute;
   right: 0.5rem;
   bottom: -1rem;
-  width: 2.4rem;
-  height: 2.4rem;
-  color: var(--uranus-ci-color);
-  background: var(--uranus-ci-light-bg);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 2;
 }
 
