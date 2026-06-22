@@ -67,7 +67,7 @@
         </UranusFormRow>
 
         <UranusFormRow :cols="1">
-          <UranusLabel id="venue" :label="t('venue')">
+          <UranusLabel id="venue" :label="t('venue_name')">
             <UranusVenueTypeahead v-model:selectedVenue="filter.venue"/>
           </UranusLabel>
         </UranusFormRow>
@@ -129,7 +129,7 @@
             />
           </UranusLabel>
         </UranusFormRow>
-        <UranusFormRow :cols="2">
+        <UranusFormRow v-if="filter.priceType == 'max_price'" :cols="2">
           <UranusTextfield
               id="max-price"
               :label="t('event_filter_max_price')"
@@ -214,8 +214,7 @@ const priceTypeOptions = computed<UranusPopupSelectOption[]>(() => [
   { value: 'not_specified', label: t('event_price_not_specified') },
   { value: 'free', label: t('event_price_free') },
   { value: 'donation', label: t('event_price_donation') },
-  { value: 'regular_price', label: t('event_price_regular') },
-  { value: 'tiered_prices', label: t('event_price_tiered') },
+  { value: 'max_price', label: t('event_max_price') },
 ])
 
 const priceCurrencyOptions = computed<UranusPopupSelectOption[]>(() => [

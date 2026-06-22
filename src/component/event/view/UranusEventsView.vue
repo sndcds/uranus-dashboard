@@ -63,7 +63,6 @@ import { type UranusEventsFilter, useEventsFilterStore } from '@/store/eventsFil
 const filterStore = useEventsFilterStore()
 
 const onFilterChanged = (newFilter: UranusEventsFilter) => {
-  console.log(JSON.stringify(newFilter, null, 2))
   filterStore.setFilter(newFilter)
 }
 

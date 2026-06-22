@@ -21,7 +21,7 @@ export const uranusI18nEventFilterTranslations: Record<string, Record<UranusLoca
         da: 'Hvad søger du?',
     },
     calendar_filter_city_label: {
-        de: 'Ort',
+        de: 'Ort/Stadt',
         en: 'City',
         da: 'By',
     },

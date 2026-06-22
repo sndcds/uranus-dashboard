@@ -15,6 +15,11 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Venues',
         da: 'Steder',
     },
+    venue_name: {
+        de: 'Name des Veranstaltungsorts',
+        en: 'Venue name',
+        da: 'Stedets navn',
+    },
     venue_type: {
         de: 'Ortstyp',
         en: 'Venue type',
