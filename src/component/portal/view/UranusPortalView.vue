@@ -293,10 +293,20 @@ const portalCategoryOptions = computed<UranusPopupSelectOption[]>(() => [
 
 const portalEventTypeOptions = computed<UranusPopupSelectOption[]>(() => [
   { value: '', label: t('all_event_types') },
-  ...sortedTypeSummary.value.map((entry) => ({
-    value: String(entry.typeId),
-    label: `${typeLookupStore.getTypeName(entry.typeId, displayLocale.value)} (${entry.count})`,
-  })),
+  ...sortedTypeSummary.value
+      .slice()
+      .sort((a, b) =>
+          typeLookupStore
+              .getTypeName(a.typeId, displayLocale.value)
+              .localeCompare(
+                  typeLookupStore.getTypeName(b.typeId, displayLocale.value),
+                  displayLocale.value
+              )
+      )
+      .map((entry) => ({
+        value: String(entry.typeId),
+        label: `${typeLookupStore.getTypeName(entry.typeId, displayLocale.value)} (${entry.count})`,
+      })),
 ])
 
 const portal = ref<PortalDTO | null>(null)
