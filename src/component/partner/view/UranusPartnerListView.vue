@@ -13,11 +13,6 @@
     <UranusOrgRequiredNotification v-if="!appStore.orgUuid" :org-uuid="appStore.orgUuid" />
 
     <template v-else>
-      <UranusFeedback type="notice"
-          v-if="!isLoading && partnerList.length === 0"
-          :infoText="t('partner_no_membership_message')"
-      />
-
       <UranusFeedback v-if="isLoading" type="notice" :delaySeconds="1">
         {{ t('loading') }}
       </UranusFeedback>
@@ -33,6 +28,7 @@
         >
           {{ t('partner_send_request') }}
         </UranusButton>
+
         <UranusButton
             v-if="hasPendingRequests"
             variant="primary"

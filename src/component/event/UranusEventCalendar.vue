@@ -236,13 +236,25 @@ const eventTypeOptions = computed(() =>
     ? singleTypeOptions.value
     : [...eventListStore.typeSummary].sort(compareEventTypes)
 )
+
 const eventTypeSelectOptions = computed<UranusPopupSelectOption[]>(() => [
   { value: '', label: t('all_event_types') },
-  ...eventTypeOptions.value.map((entry) => ({
-    value: String(entry.typeId),
-    label: `${typeLookupStore.getTypeName(entry.typeId, locale.value)} (${entry.count})`,
-  })),
+  ...eventTypeOptions.value
+      .slice()
+      .sort((a, b) =>
+          typeLookupStore
+              .getTypeName(a.typeId, locale.value)
+              .localeCompare(
+                  typeLookupStore.getTypeName(b.typeId, locale.value),
+                  locale.value
+              )
+      )
+      .map((entry) => ({
+        value: String(entry.typeId),
+        label: `${typeLookupStore.getTypeName(entry.typeId, locale.value)} (${entry.count})`,
+      })),
 ])
+
 const calendarMode = ref<'week' | 'month'>(resolveInitialCalendarMode())
 const weekAnchorDate = ref(resolveInitialWeekAnchorDate())
 

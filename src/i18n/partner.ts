@@ -35,11 +35,6 @@ export const uranusI18nPartnerTranslations: Record<string, Record<UranusLocaleKe
         en: 'Rights Granted to Partners',
         da: 'Rettigheder givet til partnere',
     },
-    partner_no_membership_message: {
-        de: 'Aktuell sind keine Partner verbunden.',
-        en: 'There are currently no partners connected.',
-        da: 'Der er i øjeblikket ingen partnere forbundet.',
-    },
     partner_request_title: {
         de: 'Partner Anfrage',
         en: 'Partner request',
