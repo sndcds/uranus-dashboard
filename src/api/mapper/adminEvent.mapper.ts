@@ -6,7 +6,7 @@ import { type AdminEvent, createAdminEvent } from '@/domain/event/adminEvent.mod
 import { type AdminEventDTO } from '@/api/dto/adminEvent.dto.ts'
 import { type AdminEventDateDTO } from '@/api/dto/adminEventDate.dto.ts'
 import { type AdminEventDate } from '@/domain/event/adminEventDate.model.ts'
-import { EventLink } from '@/domain/event/eventLink.model.ts'
+import { EventLink } from '@/domain/event/eventProptypes.model.ts'
 import { createEventTypePair } from '@/domain/event/eventTypePair.model.ts'
 
 

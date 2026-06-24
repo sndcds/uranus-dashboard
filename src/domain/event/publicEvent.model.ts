@@ -2,10 +2,10 @@
     src/domain/event/publicEvent.model.ts
  */
 
-import { type PlutoImage, mapPlutoImageFromDTO, type PlutoLogoImageRef } from '@/domain/image/plutoImage.model.ts'
+import { mapPlutoImageFromDTO, type PlutoLogoImageRef } from '@/domain/image/plutoImage.model.ts'
 import { type PublicEventDate, mapEventDate } from './publicEventDate.model.ts'
 import { type EventTypeModel, mapEventTypeFromDTO } from './eventType.model.ts'
-import { type EventLink } from '@/domain/event/eventLink.model.ts'
+import { type EventImages, type EventLink } from '@/domain/event/eventProptypes.model.ts'
 import { type EventTicketFlags } from '@/domain/event/eventTicketFlags.model.ts'
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 
@@ -50,7 +50,7 @@ export interface PublicEvent {
     minPrice: number | null
     maxPrice: number | null
 
-    image: PlutoImage | null
+    images: EventImages
     eventLinks: EventLink[] // TODO: !!!!
 
     date: PublicEventDate    // TODO: !!!!
@@ -62,9 +62,17 @@ export function mapPublicEventFromDTO(dto: PublicEventDTO, dateUuid?: string): P
 
     const mapDate = (d: any): PublicEventDate => mapEventDate(d)
 
-    const image: PlutoImage | null = dto.image
-        ? mapPlutoImageFromDTO(dto.image)
-        : null
+    const images: EventImages =
+        dto.images && typeof dto.images === 'object'
+            ? Object.fromEntries(
+                Object.entries(dto.images)
+                    .map(([key, value]) => [
+                        key,
+                        mapPlutoImageFromDTO(value)
+                    ])
+                    .filter(([, value]) => value !== null)
+            ) as EventImages
+            : {}
 
     const furtherDates: PublicEventDate[] = Array.isArray(dto.further_dates)
         ? dto.further_dates.map(mapDate)
@@ -130,7 +138,7 @@ export function mapPublicEventFromDTO(dto: PublicEventDTO, dateUuid?: string): P
         minPrice: dto.min_price ?? null,
         maxPrice: dto.max_price ?? null,
 
-        image,
+        images,
         eventLinks,
         date,
         furtherDates,

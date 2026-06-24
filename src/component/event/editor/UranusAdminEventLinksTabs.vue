@@ -81,7 +81,7 @@
 import { computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
-import { EventLink } from '@/domain/event/eventLink.model.ts'
+import { EventLink } from '@/domain/event/eventProptypes.model.ts'
 import { apiFetch } from '@/api.ts'
 import UranusLinkTypeSelect from '@/component/select/UranusLinkTypeSelect.vue'
 import { Save, Undo } from 'lucide-vue-next'

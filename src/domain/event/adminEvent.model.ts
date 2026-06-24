@@ -2,7 +2,7 @@
     src/domain/event/adminEvent.model.ts
 */
 
-import { EventLink } from './eventLink.model.ts'
+import { EventLink } from './eventProptypes.model.ts'
 import { type AdminEventDate } from '@/domain/event/adminEventDate.model.ts'
 import { mapAdminEventFromDTO } from '@/api/mapper/adminEvent.mapper.ts'
 import { type EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'

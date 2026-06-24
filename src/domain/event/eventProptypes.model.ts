@@ -1,3 +1,5 @@
+import type { PlutoImage } from '@/domain/image/plutoImage.model.ts'
+
 export class EventLink {
     constructor(
         public label: string | null = null,
@@ -5,3 +7,5 @@ export class EventLink {
         public url: string | null = null,
     ) {}
 }
+
+export type EventImages = Record<string, PlutoImage>
