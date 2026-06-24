@@ -63,7 +63,7 @@ export interface PublicEventDTO {
     description?: string
     summary?: string
     source_link?: string
-    image: PlutoImageDTO | null
+    images?: Record<string, PlutoImageDTO> | null
 
     event_types: EventTypeDTO[]
     languages: string[]

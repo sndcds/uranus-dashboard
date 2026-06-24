@@ -32,16 +32,18 @@
       <section class="uranus-public-event-main-layout">
 
         <!-- Image -->
+        <!-- Image -->
         <div>
-          <div v-if="event.image?.url" class="uranus-public-event-image-frame">
+          <div v-if="event.images?.main?.url" class="uranus-public-event-image-frame">
             <img
-                :src="event.image.url.includes('?')
-                  ? `${event.image.url}&ratio=16:9&width=1280`
-                  : `${event.image.url}?ratio=16:9&width=1280`"
-                :alt="event.image.altText ?? event.title ?? ''"
+                :src="event.images.main.url.includes('?')
+                  ? `${event.images.main.url}&ratio=16:9&width=1280`
+                  : `${event.images.main.url}?ratio=16:9&width=1280`"
+                :alt="event.images.main.altText ?? event.title ?? ''"
                 class="uranus-public-event-image"
             />
           </div>
+
           <span v-if="imageCredit()" class="uranus-public-event-image-caption">
             {{ imageCredit() }}
           </span>
