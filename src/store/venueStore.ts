@@ -1,5 +1,10 @@
 /*
     src/store/venueStore.ts
+
+    Form editing store for a single venue that keeps track of:
+    – The original venue loaded from the backend.
+    – A mutable draft that the user edits.
+    – Whether there are unsaved changes.
  */
 
 import { defineStore } from 'pinia'
