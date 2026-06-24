@@ -88,6 +88,23 @@ watch(query, (val) => {
   fetchVenuesDebounced(val)
 })
 
+watch(
+    () => props.selectedVenue,
+    (venue) => {
+      query.value = venue?.name ?? ''
+    },
+    { immediate: true }
+)
+
+// Keeps the displayed text and the actual selected venue in sync.
+watch(query, (val) => {
+  if (ignoreQueryWatch.value) return
+  if (!val && props.selectedVenue) {
+    emit('update:selectedVenue', null)
+  }
+  fetchVenuesDebounced(val)
+})
+
 // Debounce helper
 function debounce<T extends (...args: any[]) => void>(func: T, wait = 300) {
   let timeout: ReturnType<typeof setTimeout> | null

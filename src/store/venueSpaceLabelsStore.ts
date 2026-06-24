@@ -1,3 +1,9 @@
+/*
+    src/store/venueSpaceLabelsStore.ts
+
+    Client-side cache for venue/space display labels.
+ */
+
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { apiFetch } from '@/api.ts'
