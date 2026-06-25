@@ -92,10 +92,8 @@ const onEventDeleted = async ({eventUuid}: {
 }) => {
   try {
     await fetchAdminListEvents(orgUuid.value)
-    console.log(`Event ${eventUuid} deleted successfully`)
   } catch (err) {
     console.error("Failed to refetch events after delete:", err)
-    // Optionally, set an error state
     deleteError.value = t('failed_to_refresh_events')
   } finally {
     // Optionally, reset loading state

@@ -74,7 +74,8 @@
       <div class="uranus-event-card-actions">
         <UranusButton
             v-if="canPreviewEvent"
-            variant="secondary" size="small"
+            variant="secondary"
+            size="small"
             :to="`/event/${event.uuid}/date/${event.dateUuid}/preview`"
             target="_blank"
         >
@@ -84,7 +85,8 @@
 
         <UranusButton
             v-if="event.canEditEvent"
-            variant="secondary" size="small"
+            variant="secondary"
+            size="small"
             :to="`/admin/event/${event.uuid}`"
         >
           <template #icon><Pencil /></template>
@@ -93,7 +95,8 @@
 
         <UranusButton
             v-if="event.canDeleteEvent"
-            variant="secondary" size="small"
+            variant="secondary"
+            size="small"
             @click.prevent.stop="requestDelete(event)"
         >
           <template #icon><Trash /></template>
@@ -249,7 +252,7 @@ const confirmDelete = async ({password, selectedOption}: {
   password: string
   selectedOption?: string | number
 }) => {
-  if (!password || !pendingDeleteUuid.value) return
+  if (!props.event.seriesTotal || !password || !pendingDeleteUuid.value) return
 
   isDeleting.value = true
   deleteError.value = ''
@@ -260,24 +263,15 @@ const confirmDelete = async ({password, selectedOption}: {
     const body: Record<string, unknown> = { password }
     if (deleteEntireSeries) body.delete_series = true
 
-    let url: string
-    if (deleteEntireSeries) {
-      url = `/api/admin/event/${pendingDeleteUuid.value}`
-    } else if (pendingEventDateUuid.value !== null) {
-      url = `/api/admin/event/${pendingDeleteUuid.value}/date/${pendingEventDateUuid.value}`
-    } else {
-      url = `/api/admin/event/${pendingDeleteUuid.value}`
+    let apiPath = `/api/admin/event/${pendingDeleteUuid.value}`
+    if (!deleteEntireSeries && pendingEventDateUuid.value !== null && props.event.seriesTotal > 1) {
+      apiPath = `/api/admin/event/${pendingDeleteUuid.value}/date/${pendingEventDateUuid.value}`
     }
 
-    const apiResponse = await apiFetch(url, {
+    const apiResponse = await apiFetch(apiPath, {
       method: 'DELETE',
       body: JSON.stringify(body),
     })
-
-    console.log(apiResponse)
-    console.log("pendingDeleteUuid.value", pendingDeleteUuid.value)
-    console.log("pendingEventDateUuid.value", pendingEventDateUuid.value)
-    console.log("deleteEntireSeries", deleteEntireSeries)
 
     // Success → emit deleted
     emit('deleted', {
