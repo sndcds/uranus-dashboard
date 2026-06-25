@@ -32,7 +32,6 @@
       <section class="uranus-public-event-main-layout">
 
         <!-- Image -->
-        <!-- Image -->
         <div>
           <div v-if="event.images?.main?.url" class="uranus-public-event-image-frame">
             <img
