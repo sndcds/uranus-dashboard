@@ -283,27 +283,45 @@ export function uranusPriceText(
     max: number | null | undefined,
     currency?: string | null
 ): string | null {
-    const formatNumber = (value: number) => {
-        return new Intl.NumberFormat(navigator.language, {
+
+    const formatNumber = (value: number) =>
+        new Intl.NumberFormat(navigator.language, {
             minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 2,
         }).format(value)
+
+    const hasMin = min !== null && min !== undefined
+    const hasMax = max !== null && max !== undefined
+
+    if (hasMin && hasMax) {
+        // treat identical prices as single value
+        if (min === max) {
+            return uranusStringInterpolate(t('event_price_sentence'), {
+                value: formatNumber(min),
+                currency,
+            })
+        }
+
+        return uranusStringInterpolate(t('event_price_between_sentence'), {
+            min: formatNumber(min),
+            max: formatNumber(max),
+            currency,
+        })
     }
 
-    if (min && max) {
-        return uranusStringInterpolate(t('event_price_between_sentence'), {
-            min: formatNumber(min), max: formatNumber(max), currency: currency
-        });
-    }
-    if (min) {
+    if (hasMin) {
         return uranusStringInterpolate(t('event_price_sentence'), {
-            value: formatNumber(min), currency: currency
-        });
+            value: formatNumber(min),
+            currency,
+        })
     }
-    if (max) {
+
+    if (hasMax) {
         return uranusStringInterpolate(t('event_price_sentence'), {
-            value: formatNumber(max), currency: currency
-        });
+            value: formatNumber(max),
+            currency,
+        })
     }
+
     return null
 }

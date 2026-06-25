@@ -390,10 +390,10 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Entry time',
         da: 'Indgangstid',
     },
-    event_duration: {
-        de: 'Dauer',
-        en: 'Duration',
-        da: 'Varighed',
+    event_duration_minutes: {
+        de: 'Dauer in Minuten',
+        en: 'Duration in minutes',
+        da: 'Varighed i minutter',
     },
     event_all_day: {
         de: 'Ganztägig',

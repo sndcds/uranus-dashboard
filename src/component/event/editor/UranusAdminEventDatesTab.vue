@@ -43,7 +43,7 @@
 
       <div class="date-pair">
         <UranusTimeInput id="entry-time" v-model="date.entryTime" :label="t('event_entry_time')" style="width: 100%;"/>
-        <UranusNumberInput id="duration" v-model="date.duration!" min="1" :label="t('event_duration')" />
+        <UranusNumberInput id="duration" v-model="date.duration!" min="1" :label="t('event_duration_minutes')" />
       </div>
 
       <div class="date-pair" style="padding-top: 1.6rem;">
@@ -225,17 +225,23 @@ async function commitDates() {
   store.saving = true
   store.error = null
 
+  const emptyToNull = (v: unknown) => {
+    if (v === null || v === undefined) return null
+    if (typeof v === "string" && v.trim() === "") return null
+    return v
+  }
+
   try {
     const payload = store.draft.eventDates?.map(date => ({
-      start_date: date.startDate,
-      start_time: date.startTime,
-      end_date: date.endDate,
-      end_time: date.endTime,
-      entry_time: date.entryTime,
-      duration: date.duration,
-      all_day: date.allDay,
-      venue_uuid: date.venueUuid,
-      space_uuid: date.spaceUuid,
+      start_date: emptyToNull(date.startDate),
+      start_time: emptyToNull(date.startTime),
+      end_date: emptyToNull(date.endDate),
+      end_time: emptyToNull(date.endTime),
+      entry_time: emptyToNull(date.entryTime),
+      duration: date.duration ?? null,
+      all_day: date.allDay ?? null,
+      venue_uuid: date.venueUuid ?? null,
+      space_uuid: date.spaceUuid ?? null,
       release_status: date.releaseStatus ?? null,
     })) ?? []
 
