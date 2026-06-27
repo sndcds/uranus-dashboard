@@ -21,6 +21,7 @@ import { useThemeStore } from '@/store/themeStore.ts'
 import { useMapViewStore } from '@/store/mapViewStore.ts'
 import venueMarkerIcon from '@/assets/map/marker.png'
 import venueMarkerSmallPlaceIcon from '@/assets/map/marker-playground.png'
+import venueMarkerSacredSpaceIcon from '@/assets/map/marker-sacred-space.png'
 
 const { t } = useI18n()
 
@@ -66,12 +67,17 @@ const MARKER_STYLE_GROUPS: MarkerStyleGroup[] = [
     icon: venueMarkerIcon,
     imageId: 'venue-marker-standard',
   },
-  // Fügen Sie weitere Gruppen hier hinzu:
   {
     id: 'small_places',
     styles: ['small_place'],
     icon: venueMarkerSmallPlaceIcon,
     imageId: 'venue-marker-small-place',
+  },
+  {
+    id: 'sacred_space',
+    styles: ['sacred_space'],
+    icon: venueMarkerSacredSpaceIcon,
+    imageId: 'venue-marker-sacred-space',
   },
 ]
 
