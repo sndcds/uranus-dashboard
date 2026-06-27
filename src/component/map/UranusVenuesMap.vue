@@ -20,6 +20,7 @@ import { apiFetch } from '@/api.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 import { useMapViewStore } from '@/store/mapViewStore.ts'
 import venueMarkerIcon from '@/assets/map/marker.png'
+import venueMarkerSmallPlaceIcon from '@/assets/map/marker-playground.png'
 
 const { t } = useI18n()
 
@@ -44,7 +45,35 @@ type VenueProperties = {
   name: string
   city: string
   upcomingEvents: number
+  markerStyle: string | null
 }
+
+/**
+ * Marker Style Gruppen für verschiedene Venue-Typen
+ * Ermöglicht zentrale Verwaltung von Marker-Stilen und deren Icons
+ */
+interface MarkerStyleGroup {
+  id: string
+  styles: string[]  // z.B. ['small_place']
+  icon: string  // Path zum Icon
+  imageId: string  // ID für MapLibre GL
+}
+
+const MARKER_STYLE_GROUPS: MarkerStyleGroup[] = [
+  {
+    id: 'standard',
+    styles: [],  // Falls markerStyle null/undefined ist
+    icon: venueMarkerIcon,
+    imageId: 'venue-marker-standard',
+  },
+  // Fügen Sie weitere Gruppen hier hinzu:
+  {
+    id: 'small_places',
+    styles: ['small_place'],
+    icon: venueMarkerSmallPlaceIcon,
+    imageId: 'venue-marker-small-place',
+  },
+]
 
 type VenueFeature = {
   type: 'Feature'
@@ -65,7 +94,6 @@ const CLUSTERS_LAYER_ID = 'venues-clusters'
 const CLUSTER_COUNT_LAYER_ID = 'venues-cluster-count'
 const MARKERS_LAYER_ID = 'venues-markers'
 const MARKER_LABEL_LAYER_ID = 'venues-marker-label'
-const MARKER_IMAGE_ID = 'venue-marker'
 const DEFAULT_CENTER: [number, number] = [9.5, 54.3]
 const DEFAULT_ZOOM = 8
 const WORLD_BBOX_4326: BBox4326 = [-180, -90, 180, 90]
@@ -182,6 +210,8 @@ function normalizeVenueFeature(raw: any): VenueFeature | null {
       ?? ''
   )
 
+  const markerStyle = properties.marker_style ?? properties.markerStyle ?? null
+
   return {
     type: 'Feature',
     geometry: {
@@ -200,12 +230,34 @@ function normalizeVenueFeature(raw: any): VenueFeature | null {
           ?? properties.count
           ?? 0
       ),
+      markerStyle: markerStyle ? String(markerStyle) : null,
     },
   }
 }
 
 function isFiniteNumber(value: unknown) {
   return Number.isFinite(Number(value))
+}
+
+/**
+ * Erstellt eine MapLibre GL Expression für das Marker-Icon-Mapping.
+ * Falls keine Stile konfiguriert sind, wird der Standard-Marker verwendet.
+ */
+function buildMarkerIconExpression(): any[] {
+  const cases: any[] = []
+
+  for (const group of MARKER_STYLE_GROUPS) {
+    for (const style of group.styles) {
+      cases.push(['==', ['get', 'markerStyle'], style])
+      cases.push(group.imageId)
+    }
+  }
+
+  if (cases.length === 0) {
+    return ['literal', 'venue-marker-standard']
+  }
+
+  return ['case', ...cases, 'venue-marker-standard']
 }
 
 function createMap() {
@@ -307,13 +359,15 @@ function addVenueSourceAndLayers(instance: maplibregl.Map) {
   }
 
   if (!instance.getLayer(MARKERS_LAYER_ID)) {
+    const iconExpression = buildMarkerIconExpression()
+
     instance.addLayer({
       id: MARKERS_LAYER_ID,
       type: 'symbol',
       source: VENUES_SOURCE_ID,
       filter: ['!', ['has', 'point_count']],
       layout: {
-        'icon-image': MARKER_IMAGE_ID,
+        'icon-image': iconExpression,
         'icon-size': 0.75,
         'icon-anchor': 'bottom',
         'icon-allow-overlap': true,
@@ -363,15 +417,21 @@ function bindMapEvents(instance: maplibregl.Map) {
 }
 
 async function addMarkerImage(instance: maplibregl.Map) {
-  if (instance.hasImage(MARKER_IMAGE_ID)) return
+  // Alle Marker-Style-Gruppen laden
+  for (const group of MARKER_STYLE_GROUPS) {
+    if (instance.hasImage(group.imageId)) continue
 
-  try {
-    const image = await instance.loadImage(venueMarkerIcon)
-    if (!instance.hasImage(MARKER_IMAGE_ID)) {
-      instance.addImage(MARKER_IMAGE_ID, image.data)
+    try {
+      const image = await instance.loadImage(group.icon)
+      if (!instance.hasImage(group.imageId)) {
+        instance.addImage(group.imageId, image.data)
+      }
+    } catch (error) {
+      console.error(
+          `[UranusVenuesMap] Failed to load marker image for style '${group.id}':`,
+          error
+      )
     }
-  } catch (error) {
-    console.error('[UranusVenuesMap] Failed to load marker image:', error)
   }
 }
 
