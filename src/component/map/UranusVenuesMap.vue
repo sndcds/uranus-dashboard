@@ -20,7 +20,7 @@ import { apiFetch } from '@/api.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 import { useMapViewStore } from '@/store/mapViewStore.ts'
 import venueMarkerIcon from '@/assets/map/marker.png'
-import venueMarkerSmallPlaceIcon from '@/assets/map/marker-station.png'
+import venueMarkerSmallPlaceIcon from '@/assets/map/marker-playground.png'
 
 const { t } = useI18n()
 
@@ -209,7 +209,7 @@ function normalizeVenueFeature(raw: any): VenueFeature | null {
       ?? properties.venue_uuid
       ?? ''
   )
-  
+
   const markerStyle = properties.marker_style ?? properties.markerStyle ?? null
 
   return {
