@@ -371,13 +371,16 @@ const selectedAccessibilityLabels = computed(() => {
 function imageCredit() {
   const e = event.value
   if (!e) return null
+  const image = e.images['main']
+  if (!image) return null
+
   let parts = ''
-  if (e.image?.creator) {
-    parts += t('image_by') + ': ' + e.image.creator
+  if (image.creator) {
+    parts += t('image_by') + ': ' + image.creator
   }
-  if (e.image?.copyright) {
-    if (e.image?.creator) { parts += ' ' }
-    parts += `© ${e.image.copyright}`
+  if (image?.copyright) {
+    if (image?.creator) { parts += ' ' }
+    parts += `© ${image.copyright}`
   }
   return parts.length > 0 ? parts : null
 }
