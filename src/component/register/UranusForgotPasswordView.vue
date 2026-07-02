@@ -114,6 +114,7 @@ const requestReset = async () => {
       method: 'POST',
       body: JSON.stringify({
         email: email.value.trim(),
+        referer: window.location.origin,
       }),
     })
 

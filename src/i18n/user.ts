@@ -420,6 +420,10 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: "To organizations page",
         da: "Til organisationssiden",
     },
-}
+    invite_activate_error_fallback: {
+        de: "Das hat leider nicht geklappt. Bitte kontaktiere die einladende Organisation.",
+        en: "Unfortunately, something went wrong. Please contact the inviting organization.",
+        da: "Det lykkedes desværre ikke. Kontakt venligst den inviterende organisation.",
+    }}
 
 export default uranusI18nUserTranslations

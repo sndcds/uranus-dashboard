@@ -305,6 +305,7 @@
   "invite_accept_permissions_info_message": "Du kan nu udføre handlinger og redigere indhold baseret på dine rettigheder. Du kan se alle dine medlemskaber og adgangsrettigheder på din profilside.",
   "invite_accept_membership_help_message": "Hvis du vil vide mere om, hvordan teammedlemskab fungerer, herunder roller og rettigheder, kan du læse mere her:",
   "invite_accept_go_to_orgs_cta": "Til organisationssiden",
+  "invite_activate_error_fallback": "Det lykkedes desværre ikke. Kontakt venligst den inviterende organisation.",
   "org": "Organisation",
   "orgs": "Organisationer",
   "org_editor": "Rediger organisation",

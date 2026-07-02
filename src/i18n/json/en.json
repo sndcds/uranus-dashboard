@@ -305,6 +305,7 @@
   "invite_accept_permissions_info_message": "You can now take actions and edit content based on your permissions. You can view all your memberships and access rights on your profile page.",
   "invite_accept_membership_help_message": "If you’d like to learn more about how team membership works, including roles and permissions, you can read more here:",
   "invite_accept_go_to_orgs_cta": "To organizations page",
+  "invite_activate_error_fallback": "Unfortunately, something went wrong. Please contact the inviting organization.",
   "org": "Organization",
   "orgs": "Organizations",
   "org_editor": "Edit organization",
