@@ -115,6 +115,9 @@ const acceptInvite = async () => {
   isProcessing.value = true
   errorMessage.value = null
 
+  const errorText = t('invite_activate_error_generic')
+
+
   try {
     const apiPath = '/api/admin/org/team/invite/accept'
     const apiResponse = await apiFetch<InviteAcceptResponse>(apiPath, {
@@ -122,23 +125,14 @@ const acceptInvite = async () => {
       body: JSON.stringify({ token }),
     })
 
-    console.log(JSON.stringify(apiResponse, null, 2))
-
     if (apiResponse.status != 200) {
-      throw new Error(t('invite_activate_error_generic'))
+      throw new Error()
     }
 
     inviteInfo.value = apiResponse.data as InviteAcceptResponse
-    startRedirectCountdown()
-  } catch (err: unknown) {
-    if (err instanceof Error && err.message) {
-      errorMessage.value = err.message
-    } else if (typeof err === 'object' && err && 'data' in err) {
-      const apiErr = err as { data?: { error?: string } }
-      errorMessage.value = apiErr.data?.error || t('invite_activate_error_generic')
-    } else {
-      errorMessage.value = t('invite_activate_error_generic')
-    }
+    // startRedirectCountdown()
+  } catch {
+    errorMessage.value = t('invite_activate_error_fallback')
   } finally {
     isProcessing.value = false
   }

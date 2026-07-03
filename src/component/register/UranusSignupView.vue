@@ -211,6 +211,7 @@ const signup = async () => {
       body: JSON.stringify({
         email: trimmedEmail,
         password: trimmedPassword,
+        referer: window.location.origin,
       }),
     })
 
