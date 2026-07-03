@@ -1,7 +1,7 @@
 /*
     src/i18n/uranus-i18n-visitor-information.ts
 
-    2026-02-23, Auto-generated
+    2026-07-03, Auto-generated
 */
 
 export const uranusI18nVisitorInfoTranslations: Record<string, Record<'en' | 'de' | 'da', string>> = {
@@ -100,6 +100,11 @@ export const uranusI18nVisitorInfoTranslations: Record<string, Record<'en' | 'de
         de: 'Indoor',
         da: 'Indendørs',
     },
+    lifeguard_on_site: {
+        en: 'Lifeguard on site',
+        de: 'Rettungsschwimmer vor Ort',
+        da: 'Livredder til stede',
+    },
     location_and_setting: {
         en: 'Location & Setting',
         de: 'Ort & Umgebung',
@@ -114,11 +119,6 @@ export const uranusI18nVisitorInfoTranslations: Record<string, Record<'en' | 'de
         en: 'Mobile Network Available',
         de: 'Mobilfunknetz verfügbar',
         da: 'Mobilnetværk tilgængeligt',
-    },
-    msb: {
-        en: 'MSB',
-        de: 'MSB',
-        da: 'MSB',
     },
     nature_location: {
         en: 'Nature Location',
@@ -193,7 +193,7 @@ export const uranusI18nVisitorInfoTranslations: Record<string, Record<'en' | 'de
     shade_available: {
         en: 'Shade Available',
         de: 'Schatten verfügbar',
-        da: 'Skygge tilgængelig',
+        da: 'Skal tilgængelig',
     },
     shuttle_service: {
         en: 'Shuttle Service',
@@ -312,7 +312,7 @@ export const uranusI18nVisitorInformationFlags = [
             { id: 40, name: 'fire_safety_measures' },
             { id: 41, name: 'surveillance_cameras' },
             { id: 42, name: 'access_wristbands' },
-            { id: 62, name: 'msb' },
+            { id: 43, name: 'lifeguard_on_site' },
         ],
     },
 ]
