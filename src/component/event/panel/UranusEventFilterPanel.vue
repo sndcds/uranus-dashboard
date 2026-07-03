@@ -15,6 +15,18 @@
   <UranusForm @submit.prevent="onSaveFilter" class="uranus-filter-panel">
 
     <div>
+      <UranusEventCategorySelector v-model="filter.categories" :multiple="true" />
+
+      <UranusFormRow :cols="1">
+        <UranusTextfield
+            id="search-input"
+            v-model="filter.search!"
+            updateOn="enter"
+            :placeholder="t('calendar_filter_search_placeholder')"
+            style="margin-bottom: 0.5rem"
+        />
+      </UranusFormRow>
+
       <UranusFormRow :cols="1" class="uranus-filter-panel__select-row">
         <UranusPopupSelect
             id="date-range-mode"
@@ -41,19 +53,9 @@
         />
       </UranusFormRow>
 
-      <UranusFormRow :cols="1">
-        <UranusTextfield
-            id="search-input"
-            v-model="filter.search!"
-            updateOn="enter"
-            :placeholder="t('calendar_filter_search_placeholder')"
-        />
-      </UranusFormRow>
     </div>
 
     <div class="uranus-filter-accordions">
-      <UranusEventCategorySelectorAccordion v-model="filter.categories" :multiple="true" />
-
       <UranusAccordion v-model="locationOpen">
         <template #title>{{ t('calendar_filter_location') }}</template>
 
@@ -171,7 +173,7 @@ import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 import { useGpsLocation } from '@/composable/useGpsLocation'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
-import UranusEventCategorySelectorAccordion from '@/component/event/panel/UranusEventCategorySelectorAccordion.vue'
+import UranusEventCategorySelector from '@/component/event/panel/UranusEventCategorySelector.vue'
 import {
   inferEventDateRangeMode,
   resolveEventDateRange,
@@ -299,7 +301,6 @@ watch([() => filter.value.useCurrentLocation, latitude, longitude], ([gpsActive,
   }
 })
 
-const searchOpen = ref(false)
 const locationOpen = ref(false)
 const audienceOpen = ref(false)
 const priceOpen = ref(false)

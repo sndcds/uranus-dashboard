@@ -1,30 +1,25 @@
 <!--
-  src/component/event/panel/UranusEventCategorySelectorAccordion.vue
+  src/component/event/panel/UranusEventCategorySelector.vue
 -->
 
 <template>
-  <UranusAccordion v-model="open">
-    <template #title>{{ t('event_filter_categories') }}</template>
-
-    <div class="category-selector">
-      <button
-          v-for="cat in categories"
-          :key="cat.id"
-          type="button"
-          :class="['category-chip', { selected: selected.includes(cat.id) }]"
-          :style="{ '--chip-color': cat.color }"
-          @click="toggleCategory(cat.id)"
-      >
-        {{ t(cat.label) }}
-      </button>
-    </div>
-  </UranusAccordion>
+  <div class="category-selector">
+    <button
+        v-for="cat in categories"
+        :key="cat.id"
+        type="button"
+        :class="['category-chip', { selected: selected.includes(cat.id) }]"
+        :style="{ '--chip-color': cat.color }"
+        @click="toggleCategory(cat.id)"
+    >
+      {{ t(cat.label) }}
+    </button>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import UranusAccordion from '@/component/ui/UranusAccordion.vue'
 
 
 const { t } = useI18n({ useScope: 'global' })
@@ -57,7 +52,6 @@ const categories: Category[] = [
 
 // Reactive state
 const selected = ref<number[]>(props.modelValue ?? [])
-const open = ref(false)
 
 // Watch for external changes
 watch(
