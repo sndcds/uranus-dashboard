@@ -4,6 +4,7 @@
 
 export interface PublicEventDate {
     uuid: string | null
+    slug: string | null
     eventUuid: string | null
     releaseStatus: string | null
 
@@ -53,6 +54,8 @@ export interface PublicEventDate {
 export function mapEventDate(dto: any): PublicEventDate {
     return {
         uuid: dto.uuid ?? null,
+        slug: dto.slug ?? null,
+
         eventUuid: dto.event_uuid ?? null,
         releaseStatus: dto.release_status ?? null,
 
