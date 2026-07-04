@@ -90,7 +90,7 @@
                   class="calendar-week-event__link"
                   :to="{
                     name: 'event-details',
-                    params: { uuid: event.uuid, eventDateUuid: event.dateUuid }
+                    params: { uuid: event.uuid, eventDateUuid: event.dateSlug }
                   }"
               >
                 <span class="calendar-week-event__time">{{ formatEventStartTime(event) }}</span>

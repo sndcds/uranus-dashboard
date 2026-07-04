@@ -48,8 +48,7 @@
         <div class="row-intro">
           <div class="image-frame">
             <img
-                :src="detailImageUrl"
-                :alt="eventDetails.image?.altText ?? eventDetails.title ?? ''"
+                :src="imageUrl"
                 class="uranus-public-event-image"
             />
           </div>
@@ -77,6 +76,18 @@
           />
         </div>
 
+        <UranusButton
+            :to="{
+              name: 'event-details',
+              params: {
+                uuid: event.uuid,
+                eventDateUuid: event.dateUuid
+              }
+            }"
+        >
+          {{ t('details') }}
+        </UranusButton>
+
       </div>
     </div>
 
@@ -87,22 +98,15 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { EventListItem, EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
-import { uranusAgeRangeInfo, uranusFormatDayMonth, uranusPriceText, uranusStringInterpolate } from '@/util/string.ts'
+import {uranusFormatDayMonth } from '@/util/string.ts'
 import { ApiError, apiFetch } from '@/api.ts'
 import type { PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 import { mapPublicEventFromDTO, type PublicEvent } from '@/domain/event/publicEvent.model.ts'
 import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { uranusEnsureHttpOrHttps } from '@/util/url.ts'
-import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
-import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
-import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'
-import UranusEventOrgDisplay from '@/component/event/ui/UranusEventOrgDisplay.vue'
-import UranusEventAllDatesDisplay from '@/component/event/ui/UranusEventAllDatesDisplay.vue'
-import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
-import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
-import {Accessibility, Link, Mail, Ticket, Video} from 'lucide-vue-next'
 import UranusEventPriceBadge from '@/component/event/ui/UranusEventPriceBadge.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -127,18 +131,10 @@ const formattedDate = computed(() =>
     )
 )
 
-const fallbackImageUrl = computed(() =>
-    props.eventListStore.getEventImageUrl(props.event, { width: 640, ratio: '16:9' })
+const imageUrl = computed(() =>
+    props.eventListStore.getEventImageUrl(props.event, { width: 240, ratio: '16:9' })
 )
 
-const detailImageUrl = computed(() => {
-  const url = eventDetails.value?.image?.url
-  if (!url) return fallbackImageUrl.value
-
-  return url.includes('?')
-      ? `${url}&ratio=16:9&width=640`
-      : `${url}?ratio=16:9&width=640`
-})
 
 const detailText = computed(() => {
   const summary = eventDetails.value?.summary?.trim()
@@ -150,62 +146,6 @@ const detailText = computed(() => {
 const hasLinks = computed(() =>
     Boolean(eventDetails.value?.sourceUrl || eventDetails.value?.eventLinks?.length)
 )
-
-const eventStartDate = computed(() => eventDateDetails.value?.startDate ?? eventDetails.value?.date.startDate ?? null)
-const eventStartTime = computed(() => eventDateDetails.value?.startTime ?? eventDetails.value?.date.startTime ?? null)
-const eventEndDate = computed(() => eventDateDetails.value?.endDate ?? eventDetails.value?.date.endDate ?? null)
-const eventEndTime = computed(() => eventDateDetails.value?.endTime ?? eventDetails.value?.date.endTime ?? null)
-const eventEntryTime = computed(() => eventDateDetails.value?.entryTime ?? eventDetails.value?.date.entryTime ?? null)
-const eventAllDay = computed(() => eventDateDetails.value?.allDay ?? eventDetails.value?.date.allDay ?? false)
-
-const ageLabel = computed(() => {
-  return uranusAgeRangeInfo(t, eventDetails.value?.minAge, eventDetails.value?.maxAge)
-})
-
-const maxAttendeesLabel = computed(() => {
-  return uranusStringInterpolate(t('event_max_count_attendees'), { count: eventDetails.value?.maxAttendees })
-})
-
-const priceText = computed(() => {
-  return uranusPriceText(t, eventDetails.value?.minPrice, eventDetails.value?.maxPrice, eventDetails.value?.currency ?? '')
-})
-
-const priceTypeLabel = computed(() => {
-  const map: Record<string, string | null> = {
-    not_specified: 'event_price_not_specified',
-    regular_price: null,
-    free: 'event_price_free',
-    donation: 'event_price_donation',
-    tiered_prices: 'event_price_tiered',
-  }
-
-  const priceType = eventDetails.value?.priceType ?? 'not_specified'
-  const key = map[priceType] || 'event_price_not_specified'
-
-  if (key === 'event_price_not_specified') {
-    return null
-  }
-
-  return t(key)
-})
-
-const selectedAccessibilityLabels = computed(() => {
-  if (!eventDetails.value?.date.accessibilityFlags) return []
-
-  const mask = BigInt(eventDetails.value.date.accessibilityFlags)
-  const labels: string[] = []
-
-  uranusI18nAccessibilityFlags.forEach(topic => {
-    topic.flags.forEach(flag => {
-      const flagValue = 1n << BigInt(flag.id)
-      if ((mask & flagValue) === flagValue) {
-        labels.push(t(flag.name))
-      }
-    })
-  })
-
-  return labels
-})
 
 const isFreeEvent = computed(() => props.event.priceType === 'free')
 

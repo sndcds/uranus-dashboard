@@ -24,6 +24,7 @@ export interface EventTypeDTO {
 export interface EventListItemDTO {
     uuid: string
     date_uuid: string
+    date_slug: string
     title: string
     subtitle?: string
     start_date: string
