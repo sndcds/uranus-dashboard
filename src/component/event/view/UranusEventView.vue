@@ -270,7 +270,7 @@
         </div>
 
         <UranusFacebookShareButton
-            :url="`https://kulturbytes.de/event/${event.uuid}/${event.date.slug}`"
+            :url="shareUrl"
             :quote="event.title!"
         />
       </aside>
@@ -281,6 +281,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, ApiError } from '@/api.ts'
 import { marked } from 'marked'
@@ -307,6 +308,7 @@ import { Ticket, Accessibility, CalendarArrowDown, CopySlash, Video, Link, Mail 
 import { formatDate } from '@/util/dateTime.ts'
 
 const route = useRoute()
+const router = useRouter()
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -325,6 +327,22 @@ const loadingLabel = computed(() => t('loading'))
 const loadError = ref<string | null>(null)
 const isDownloadingIcs = ref(false)
 const isPreview = computed(() => route.params.mode === 'preview')
+
+
+
+const shareUrl = computed(() => {
+  const href = router.resolve({
+    name: 'event-details',
+    params: {
+      uuid: event.value!.uuid,
+      eventDateUuid: event.value!.date.slug,
+    },
+  }).href
+
+  return `${window.location.origin}${href}`
+})
+
+
 
 // Watch for changes in route params
 watch(
