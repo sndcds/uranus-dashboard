@@ -464,10 +464,6 @@ const loadEvent = async () => {
     const eventUuid = resolveRouteParam(route.params.uuid)
     let eventDateUuid = resolveRouteParam(route.params.eventDateUuid) as string
 
-    if (!isUuid(eventDateUuid)) {
-      console.log("eventDateUuid:", eventDateUuid)
-    }
-
     const lang = locale.value || 'de'
     let apiPath
     if (isPreview.value) {
