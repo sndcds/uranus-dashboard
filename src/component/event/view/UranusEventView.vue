@@ -258,7 +258,7 @@
 
         </div>
 
-        <div style="width: 100%; height: 400px; border-radius: 7px;overflow: clip">
+        <div style="width: 100%; height: 400px; border-radius: 7px; overflow: clip">
           <UranusSinglePointMap
               v-if="eventDate && eventDate.venueLat && eventDate.venueLon"
               id="event-map"

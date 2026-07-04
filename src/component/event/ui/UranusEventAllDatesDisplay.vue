@@ -11,7 +11,7 @@
     <router-link
         v-for="date in sortedDates"
         :key="date.uuid!"
-        :to="`/event/${date.eventUuid}/date/${date.uuid}`"
+        :to="`/event/${date.eventUuid}/date/${date.slug}`"
         :class="{ 'is-current': date.uuid === currentDate?.uuid }"
     >
       <div style="display: flex; gap: 0.4rem;">
