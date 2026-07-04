@@ -835,6 +835,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: '~~count~~ event dates',
         da: '~~count~~ datoer',
     },
+    link_event_not_found: {
+        de: 'Diese Veranstaltung ist nicht verfügbar',
+        en: 'This event is not available',
+        da: 'Denne begivenhed er ikke tilgængelig',
+    },
     no_events_to_display: {
         de: 'Keine passenden Veranstaltungen gefunden',
         en: 'No matching events found',

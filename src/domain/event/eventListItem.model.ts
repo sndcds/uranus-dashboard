@@ -13,6 +13,7 @@ export interface EventListItemEventType {
 export interface EventListItem {
     uuid: string
     dateUuid: string
+    dateSlug: string
 
     title: string
     subtitle: string | null

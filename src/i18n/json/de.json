@@ -571,6 +571,7 @@
   "event_online_contact_phone": "Kontakt Telefon",
   "count_event_date": "1 Termin",
   "count_event_dates": "~~count~~ Termine",
+  "link_event_not_found": "Diese Veranstaltung ist nicht verfügbar",
   "no_events_to_display": "Keine passenden Veranstaltungen gefunden",
   "no_events_to_display_message": "Wähle einen anderen Zeitraum oder passe die Sucheinstellungen an.",
   "event_without_date_message": "Dieses Event hat kein Datum!",

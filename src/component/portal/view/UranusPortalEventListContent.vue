@@ -19,7 +19,7 @@
         :key="`${event.uuid}-${event.dateUuid}`"
         :to="{
           name: 'event-details',
-          params: { uuid: event.uuid, eventDateUuid: event.dateUuid }
+          params: { uuid: event.uuid, eventDateUuid: event.dateSlug }
         }"
         class="uranus-portal-event-card"
     >

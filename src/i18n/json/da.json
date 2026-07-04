@@ -571,6 +571,7 @@
   "event_online_contact_phone": "Kontakt telefon",
   "count_event_date": "1 dato",
   "count_event_dates": "~~count~~ datoer",
+  "link_event_not_found": "Denne begivenhed er ikke tilgængelig",
   "no_events_to_display": "Ingen passende arrangementer fundet",
   "no_events_to_display_message": "Vælg en anden periode eller juster dine søgeindstillinger.",
   "event_without_date_message": "Denne begivenhed har ingen dato!",

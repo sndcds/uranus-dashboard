@@ -23,7 +23,7 @@
 
       <section class="uranus-public-event-main-layout">
         <UranusImage
-            class="xxx"
+            class="main-photo"
             :url="venue.mainPhotoUrl!"
         />
 
@@ -204,6 +204,7 @@ import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusImage from '@/component/image/UranusImage.vue'
 import { uranusFormatFullDate } from '@/util/string.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
+import { isUuid } from '@/util/util.ts'
 
 
 type VenueDetailOrg = {
@@ -436,9 +437,9 @@ function spaceFacts(space: VenueDetailSpace) {
 
 async function loadVenue() {
   const identifier = route.params.identifier as string
-  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier)
+
   let venueUuid = null
-  if (isUuid) {
+  if (isUuid(identifier)) {
     venueUuid = resolveRouteParam(route.params.identifier)
   } else {
     const apiPath = `/api/venue/slug/${identifier}/uuid`
@@ -532,7 +533,7 @@ onMounted(() => void loadVenue())
   margin-top: 32px;
 }
 
-.xxx {
+.main-photo {
   width: 100%;
 }
 </style>

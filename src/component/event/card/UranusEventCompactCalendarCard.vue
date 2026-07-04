@@ -6,7 +6,7 @@
   <router-link
       :to="{
       name: 'event-details',
-      params: { uuid: event.uuid, eventDateUuid: event.dateUuid }
+      params: { uuid: event.uuid, eventDateUuid: event.dateSlug }
     }"
       class="calendar-card"
   >

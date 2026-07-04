@@ -298,7 +298,8 @@ import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { Ticket, Accessibility, CalendarArrowDown, CopySlash, Video, Link, Mail } from 'lucide-vue-next'
-import {formatDate} from "@/util/dateTime.ts";
+import { formatDate } from '@/util/dateTime.ts'
+import { isUuid } from '@/util/util.ts'
 
 const route = useRoute()
 
@@ -322,7 +323,7 @@ const isPreview = computed(() => route.params.mode === 'preview')
 
 // Watch for changes in route params
 watch(
-    () => [route.params.uuid, route.params.eventDateUuid],
+    () => [route.params.uuid, route.params.dateIdentifier],
     () => {
       loadEvent() // reload the event whenever id/date changes
     }
@@ -461,7 +462,11 @@ const loadEvent = async () => {
 
   try {
     const eventUuid = resolveRouteParam(route.params.uuid)
-    const eventDateUuid = resolveRouteParam(route.params.eventDateUuid)
+    let eventDateUuid = resolveRouteParam(route.params.eventDateUuid) as string
+
+    if (!isUuid(eventDateUuid)) {
+      console.log("eventDateUuid:", eventDateUuid)
+    }
 
     const lang = locale.value || 'de'
     let apiPath
@@ -489,7 +494,7 @@ const loadEvent = async () => {
   } catch (error: unknown) {
     if (error instanceof ApiError) {
       if (error.status === 404) {
-        loadError.value = t('error_fetch_data_failed')
+        loadError.value = t('link_event_not_found')
       } else {
         loadError.value = error.message // : t('error_fetch_data_failed')
       }

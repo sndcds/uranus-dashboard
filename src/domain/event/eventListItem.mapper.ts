@@ -7,6 +7,7 @@ export function mapEventDTO(dto: EventListItemDTO): EventListItem {
     return {
         uuid: dto.uuid,
         dateUuid: dto.date_uuid,
+        dateSlug: dto.date_slug,
 
         title: dto.title,
         subtitle: dto.subtitle ?? null,
