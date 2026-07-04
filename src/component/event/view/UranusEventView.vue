@@ -270,8 +270,8 @@
         </div>
 
         <UranusFacebookShareButton
-            :url="`https://kulturbytes.de/event/${event.uuid}/${event.dateSlug}`"
-            :quote="event.title"
+            :url="`https://kulturbytes.de/event/${event.uuid}/${event.date.slug}`"
+            :quote="event.title!"
         />
       </aside>
     </div>
