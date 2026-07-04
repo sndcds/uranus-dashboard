@@ -268,6 +268,11 @@
               style="max-height: 300px; margin-top: 1rem;"
           />
         </div>
+
+        <UranusFacebookShareButton
+            :url="`https://kulturbytes.de/event/${event.uuid}/${event.dateSlug}`"
+            :quote="event.title"
+        />
       </aside>
     </div>
   </div>
@@ -296,10 +301,10 @@ import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.
 import UranusSinglePointMap from '@/component/map/UranusSinglePointMap.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusLink from '@/component/ui/UranusLink.vue'
+import UranusFacebookShareButton from '@/component/ui/UranusFacebookShareButton.vue'
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { Ticket, Accessibility, CalendarArrowDown, CopySlash, Video, Link, Mail } from 'lucide-vue-next'
 import { formatDate } from '@/util/dateTime.ts'
-import { isUuid } from '@/util/util.ts'
 
 const route = useRoute()
 
