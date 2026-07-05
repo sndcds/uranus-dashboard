@@ -1,18 +1,57 @@
 <!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>kulturbytes</title>
-        <style>
-            html, body {
-                padding: 0; margin: 0; width: 100%; height: 100%;
-            }
-        </style>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<html lang="de">
+<head>
+    <title>Kulturbytes</title>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="description" content="Entdecke kulturelle Veranstaltungen, Konzerte, Ausstellungen und Erlebnisse mit Kulturbytes." />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Kulturbytes – Events & Kultur" />
+    <meta property="og:description" content="Entdecke Veranstaltungen und kulturelle Erlebnisse in deiner Nähe." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kulturbytes.de/" />
+    <meta property="og:image" content="https://kulturbytes.de/kulturbytes-og-image.jpg" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kulturbytes – Events & Kultur" />
+    <meta name="twitter:description" content="Entdecke Veranstaltungen und kulturelle Erlebnisse." />
+    <meta name="twitter:image" content="https://kulturbytes.de/kulturbytes-og-image.jpg" />
+
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="canonical" href="https://kulturbytes.de/" />
+
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Kulturbytes",
+            "url": "https://kulturbytes.de/",
+            "description": "Plattform für kulturelle Veranstaltungen und Erlebnisse"
+        }
+    </script>
+
+    <noscript>
+        <h1>Kulturbytes</h1>
+        <p>Entdecke kulturelle Veranstaltungen, Konzerte und Ausstellungen.</p>
+    </noscript>
+</head>
+
+<body>
+<div id="app"></div>
+<script type="module" src="/src/main.ts"></script>
+</body>
 </html>
