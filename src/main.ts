@@ -33,31 +33,25 @@ const themeStore = useThemeStore()
 themeStore.initTheme()
 
 const languageStore = useLanguageLookupStore()
-await languageStore.load([...SUPPORTED_UI_LANGUAGES])
-
 const linkTypeLookupStore = useLinkTypeLookupStore()
-await linkTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES])
-
 const eventTypeLookupStore = useEventTypeLookupStore()
-await eventTypeLookupStore.initialize([...SUPPORTED_UI_LANGUAGES])
-
 const currencyStore = useCurrencyLookupStore()
-await currencyStore.load([...SUPPORTED_UI_LANGUAGES])
+const venueTypeStore = useVenueTypeLookupStore()
+const spaceTypeStore = useSpaceTypeLookupStore()
+const legalFormStore = useLegalFormLookupStore()
+const licenseStore = useLicenseLookup()
+const eventReleaseStatusStore = useEventReleaseStatusStore()
 
-const venueTypeLookupStore = useVenueTypeLookupStore()
-await venueTypeLookupStore.initialize([...SUPPORTED_UI_LANGUAGES])
-
-const spaceTypeLookupStore = useSpaceTypeLookupStore()
-await spaceTypeLookupStore.initialize([...SUPPORTED_UI_LANGUAGES])
-
-const legalFormLookupStore = useLegalFormLookupStore()
-await legalFormLookupStore.initialize([...SUPPORTED_UI_LANGUAGES])
-
-const licenseLookup = useLicenseLookup()
-await licenseLookup.initialize([...SUPPORTED_UI_LANGUAGES])
-
-const eventReleaseStatusStore = useEventReleaseStatusStore();
-await eventReleaseStatusStore.load([...SUPPORTED_UI_LANGUAGES]);
-
+await Promise.all([
+    languageStore.load([...SUPPORTED_UI_LANGUAGES]),
+    linkTypeLookupStore.load([...SUPPORTED_UI_LANGUAGES]),
+    eventTypeLookupStore.initialize([...SUPPORTED_UI_LANGUAGES]),
+    currencyStore.load([...SUPPORTED_UI_LANGUAGES]),
+    venueTypeStore.initialize([...SUPPORTED_UI_LANGUAGES]),
+    spaceTypeStore.initialize([...SUPPORTED_UI_LANGUAGES]),
+    legalFormStore.initialize([...SUPPORTED_UI_LANGUAGES]),
+    licenseStore.initialize([...SUPPORTED_UI_LANGUAGES]),
+    eventReleaseStatusStore.load([...SUPPORTED_UI_LANGUAGES])
+])
 
 app.mount('#app')
