@@ -165,7 +165,7 @@ export const useEventListStore = defineStore('events', () => {
             const apiPath = `/api/events/type-summary?${params.toString()}`
             const apiResponse = await apiFetch<EventListTypeSummaryDTO>(apiPath)
             typeSummary.value = mapEventTypeSummaryArray(
-                apiResponse?.data?.summary ?? []
+                apiResponse?.data?.type_summary ?? []
             )
             totalEventCount.value = apiResponse?.data?.total_event_count ?? 0
         } catch (err) {
@@ -175,7 +175,7 @@ export const useEventListStore = defineStore('events', () => {
 
     function mapEventTypeSummary(dto: EventListTypeCountDTO) {
         return {
-            typeId: dto.type_id,
+            typeId: dto.id,
             count: dto.count
         }
     }
