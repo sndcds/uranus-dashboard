@@ -54,7 +54,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-
 import UranusModal from '@/component/uranus/UranusModal.vue'
 import UranusEventFilterPanel from '@/component/event/panel/UranusEventFilterPanel.vue'
 import UranusEventCalendar from '@/component/event/UranusEventCalendar.vue'

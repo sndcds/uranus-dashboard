@@ -5,12 +5,12 @@
 import { type EventTypeModel } from '@/domain/event/eventType.model.ts'
 
 export interface EventListTypeCountDTO {
-    type_id: number
+    id: number
     count: number
 }
 
 export interface EventListTypeSummaryDTO {
-    summary: EventListTypeCountDTO[]
+    type_summary: EventListTypeCountDTO[]
     total_event_count: number
 }
 
