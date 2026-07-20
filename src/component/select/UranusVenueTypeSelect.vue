@@ -1,7 +1,5 @@
 <!--
   src/component/select/UranusVenueTypeSelect.vue
-
-  2026-02-14, Roald
 -->
 
 <template>
@@ -10,7 +8,7 @@
       class="uranus-admin-select"
       @change="onChange"
   >
-    <option :value="null">
+    <option value="unspecified">
       {{ t('unspecified_venue_type') }}
     </option>
 
