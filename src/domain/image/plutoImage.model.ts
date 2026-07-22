@@ -43,7 +43,7 @@ export function mapPlutoImageFromDTO(dto: PlutoImageDTO): PlutoImage {
     return {
         uuid: dto.uuid ?? null,
         url: dto.url ?? null,
-        altText: dto.alt ?? null,
+        altText: dto.alt_text ?? null,
         description: dto.description ?? null,
         copyright: dto.copyright ?? null,
         creator: dto.creator ?? null,

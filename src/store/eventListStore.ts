@@ -118,7 +118,7 @@ export const useEventListStore = defineStore('events', () => {
         if (filter.portalPrefilter?.venues) {
             params.set("venues", filter.portalPrefilter.venues.toString())
         } else if (filter.venue?.uuid) {
-            params.set("venues", filter.venue.uuid)
+            params.set("venue_uuids", filter.venue.uuid)
         }
 
         // Portal filter
