@@ -23,8 +23,9 @@
 
       <section class="uranus-public-event-main-layout">
         <UranusImage
+            v-if="mainPhotoUrl"
             class="main-photo"
-            :url="venue.mainPhotoUrl!"
+            :url="mainPhotoUrl"
         />
 
         <div class="uranus-public-event-section">
@@ -89,10 +90,10 @@
         <div class="uranus-public-event-info-section">
           <div class="uranus-public-event-info-card">
             <UranusLogoImage
-                v-if="hasLogo"
-                :logoURL="venue.logoUrl ?? ''"
-                :lightThemeLogoURL="venue.logoUrl ?? ''"
-                :darkThemeLogoURL="venue.darkThemeLogoUrl ?? ''"
+                v-if="mainLogoUrl"
+                :logoURL="mainLogoUrl"
+                :lightThemeLogoURL="lightThemeLogoUrl"
+                :darkThemeLogoURL="darkThemeLogoUrl"
                 :theme="themeStore.theme"
                 :pixelCount="8000"
                 :maxWidth="200"
@@ -206,7 +207,6 @@ import { uranusFormatFullDate } from '@/util/string.ts'
 import UranusLogoImage from '@/component/ui/UranusLogoImage.vue'
 import { isUuid } from '@/util/util.ts'
 
-
 type VenueDetailOrg = {
   uuid: string | null
   name: string
@@ -247,10 +247,10 @@ type VenueDetail = {
   description: string | null
   lon: number | null
   lat: number | null
-  logoUrl: string | null
   darkThemeLogoUrl: string | null
   lightThemeLogoUrl: string | null
-  mainPhotoUrl: string | null
+  images: any| null
+  logos: any| null
   org: VenueDetailOrg | null
   spaces: VenueDetailSpace[]
 }
@@ -292,6 +292,22 @@ const venueTypeLabel = computed(() => {
       ?? ''
 })
 
+const mainPhotoUrl = computed(() =>
+    venue.value?.images?.main_photo?.url ?? null
+)
+
+const mainLogoUrl = computed(() =>
+    venue.value?.logos?.main_logo?.url ?? null
+)
+
+const lightThemeLogoUrl = computed(() =>
+    venue.value?.logos?.light_theme_logo?.url ?? null
+)
+
+const darkThemeLogoUrl = computed(() =>
+    venue.value?.logos?.dark_theme_logo?.url ?? null
+)
+
 watch(
     () => [route.params.identifier, locale.value],
     () => {
@@ -328,10 +344,6 @@ watch(venue, (loadedVenue) => {
     },
   }, 'venue')
 })
-
-const hasLogo = computed(() =>
-    !!(venue.value!.logoUrl || venue.value!.lightThemeLogoUrl || venue.value!.darkThemeLogoUrl)
-)
 
 function formatMarkdown(markdown: string) {
   try {
@@ -370,10 +382,10 @@ function mapVenueDetail(raw: any): VenueDetail | null {
     description: raw.description ?? null,
     lon: normalizeNumber(raw.lon),
     lat: normalizeNumber(raw.lat),
-    logoUrl: raw.logo_url,
     darkThemeLogoUrl: raw.dark_theme_logo_url,
     lightThemeLogoUrl: raw.light_theme_logo_url,
-    mainPhotoUrl: raw.main_photo_url,
+    images: raw.images,
+    logos: raw.logos,
     org: mapOrganization(raw.organization),
     spaces: Array.isArray(raw.spaces) ? raw.spaces.map(mapSpace).filter(Boolean) : [],
   }
