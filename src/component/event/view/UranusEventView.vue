@@ -134,6 +134,21 @@
               class="uranus-public-event-info-card"
               style="padding-top: 1rem; padding-bottom: 1rem"
           />
+          
+          <UranusLogoImage
+              v-if="event.logoMode && (event.logoMode & 2)"
+              :logoURL="event.date.venueLogos?.main_logo?.url ?? ''"
+              :lightThemeLogoURL="event.date.venueLogos?.dight_theme_logo?.url ?? ''"
+              :darkThemeLogoURL="event.date.venueLogos?.dark_theme_logo?.url ?? ''"
+              :theme="themeStore.theme"
+              :pixelCount="8000"
+              :maxWidth="200"
+              :maxHeight="140"
+              :linkUrl="event.orgWebLink ? uranusEnsureHttpOrHttps(event.orgWebLink ) : null"
+              linkTarget="_blank"
+          />
+
+
 
           <UranusEventOrgDisplay :event="event" class="uranus-public-event-info-card" />
 
@@ -293,7 +308,7 @@ import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
 import { uranusAgeRangeInfo, uranusPriceText, uranusStringInterpolate } from '@/util/string.ts'
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 import { uranusEnsureHttpOrHttps } from '@/util/url.ts'
-
+import { useThemeStore } from '@/store/themeStore.ts'
 import UranusEventDateTimeDisplay from '@/component/event/ui/UranusEventDateTimeDisplay.vue'
 import UranusEventVenueDisplay from '@/component/event/ui/UranusEventVenueDisplay.vue'
 import UranusEventOrgDisplay from '@/component/event/ui/UranusEventOrgDisplay.vue'
@@ -306,11 +321,12 @@ import UranusFacebookShareButton from '@/component/ui/UranusFacebookShareButton.
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { Ticket, Accessibility, CalendarArrowDown, CopySlash, Video, Link, Mail } from 'lucide-vue-next'
 import { formatDate } from '@/util/dateTime.ts'
+import UranusLogoImage from "@/component/ui/UranusLogoImage.vue";
 
 const route = useRoute()
 const router = useRouter()
-
 const { t, locale } = useI18n({ useScope: 'global' })
+const themeStore = useThemeStore()
 
 const typeLookupStore = useEventTypeLookupStore()
 const getTypeGenreName = (typeId: number, genreId: number | null) => typeLookupStore.getTypeGenreName(typeId, genreId, locale.value)
@@ -451,6 +467,18 @@ const presaleFee = computed(() =>
         ? t('event_presale_fee_applies')
         : null
 )
+
+const venueLogo = computed(() => {
+  if (!event.value) { return null }
+  if (event.value.logoMode && (event.value.logoMode & 2)) {
+    if (the)
+    venueLogoUrl: string | null
+    venueLightThemeLogoUrl: string | null
+    venueDarkThemeLogoUrl: string | null
+
+  }
+})
+
 
 
 const priceTypeLabel = computed(() => {

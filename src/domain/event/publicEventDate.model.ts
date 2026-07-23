@@ -2,6 +2,10 @@
     src/domain/event/publicEventDate.model.ts
  */
 
+import type {PlutoLogoImageRef} from "@/domain/image/plutoImage.model.ts";
+
+export type VenueLogos = Record<string, PlutoLogoImageRef>
+
 export interface PublicEventDate {
     uuid: string | null
     slug: string | null
@@ -36,12 +40,7 @@ export interface PublicEventDate {
     venueLon: string | null
     venueLat: string | null
     venueWebsite: string | null
-    venueLogoId: number | null
-    venueLightThemeLogoId: number | null
-    venueDarkThemeLogoId: number | null
-    venueLogoUrl: string | null
-    venueLightThemeLogoUrl: string | null
-    venueDarkThemeLogoUrl: string | null
+    venueLogos: VenueLogos
 
     spaceUuid: string | null
     spaceName: string | null
@@ -86,13 +85,8 @@ export function mapEventDate(dto: any): PublicEventDate {
         venueCountry: dto.venue_country ?? null,
         venueLon: dto.venue_lon ?? null,
         venueLat: dto.venue_lat ?? null,
-        venueWebsite: dto.venue_website ?? null,
-        venueLogoId: dto.venue_logo_id ?? null,
-        venueLightThemeLogoId: dto.venue_light_theme_logo_id ?? null,
-        venueDarkThemeLogoId: dto.venue_dark_theme_logo_id ?? null,
-        venueLogoUrl: dto.venue_logo_url ?? null,
-        venueLightThemeLogoUrl: dto.venue_light_theme_logo_url ?? null,
-        venueDarkThemeLogoUrl: dto.venue_dark_theme_logo_url ?? null,
+        venueWebsite: dto.venue_web_link ?? null,
+        venueLogos: dto.venue_logos ?? null,
 
         spaceUuid: dto.space_uuid ?? null,
         spaceName: dto.space_name ?? null,

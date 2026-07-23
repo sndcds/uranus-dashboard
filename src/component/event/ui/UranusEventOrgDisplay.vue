@@ -4,8 +4,9 @@
 
 <template>
   <div v-if="event.orgName">
+
     <UranusLogoImage
-        v-if="hasLogo"
+        v-if="event.logoMode && (event.logoMode & 1) && hasLogo"
         :logoURL="logoUrl"
         :lightThemeLogoURL="lightThemeLogoUrl"
         :darkThemeLogoURL="darkThemeLogoUrl"
@@ -51,6 +52,7 @@ const props = defineProps<{
     orgName?: string | null
     orgWebLink?: string | null
     orgLogos?: Record<string, { uuid: string; url: string }>
+    logoMode?: number | null
   }
 }>()
 

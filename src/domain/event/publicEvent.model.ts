@@ -21,6 +21,7 @@ export interface PublicEvent {
     orgName: string | null
     orgWebLink: string | null
     orgLogos: OrgLogos
+    logoMode: number | null
 
     title: string | null
     subtitle: string | null
@@ -107,6 +108,7 @@ export function mapPublicEventFromDTO(dto: PublicEventDTO, dateUuid?: string): P
         orgName: dto.org_name ?? null,
         orgWebLink: dto.org_web_link ?? null,
         orgLogos,
+        logoMode: dto.logo_mode ?? null,
 
         title: dto.title ?? null,
         subtitle: dto.subtitle ?? null,
