@@ -55,6 +55,16 @@ export const uranusI18nSpaceTranslations: Record<string, Record<UranusLocaleKey,
         en: 'The space could not be deletet. Please try again.',
         da: 'Lokalet kunne ikke slettes. Prøv igen.',
     },
+    space_tab_base: {
+        de: 'Grunddaten',
+        en: 'Basic',
+        da: 'Grundoplysninger',
+    },
+    space_tab_accessibility: {
+        de: 'Barrierefreiheit',
+        en: 'Accessibility',
+        da: 'Tilgængelighed',
+    },
 }
 
 export default uranusI18nSpaceTranslations

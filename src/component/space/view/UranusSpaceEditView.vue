@@ -26,7 +26,7 @@
           :class="{ active: tab.key === activeTab, dirty: isTabDirty(tab.key) }"
           @click="activeTab = tab.key"
       >
-        <span>{{ tab.label }}</span>
+        <span>{{ t(tab.labelKey) }}</span>
         <span
             v-if="isTabDirty(tab.key)"
             class="uranus-tab-dirty-indicator"
@@ -83,8 +83,8 @@ type TabKey = 'base' | 'accessibility'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
-  { key: 'base', label: 'Base' },
-  { key: 'accessibility', label: 'Accessibility' },
+  { key: 'base', labelKey: 'space_tab_base' },
+  { key: 'accessibility', labelKey: 'space_tab_accessibility' },
 ] as const
 const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
 const activeTabComponentRef = ref<SpaceEditorTabExpose | null>(null)

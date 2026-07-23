@@ -159,7 +159,22 @@ export const uranusI18nOrgTranslations: Record<string, Record<UranusLocaleKey, s
         de: 'Teammitglieder können mit individuellen Rechten ausgestattet werden, um Aufgaben sinnvoll zu verteilen.<br><br><strong>Wichtig:</strong> Einladungen werden nur versendet, wenn bereits ein Konto mit dieser E-Mail-Adresse existiert. Aus Datenschutzgründen wird nicht bestätigt, ob eine Einladung zugestellt werden konnte.',
         en: 'Team members can be assigned individual permissions to distribute tasks effectively.<br><br><strong>Important:</strong> Invitations are only sent if an account with this email address already exists. For privacy reasons, it is not confirmed whether an invitation could be delivered.',
         da: 'Teammedlemmer kan tildeles individuelle rettigheder for at fordele opgaver på en meningsfuld måde.<br><br><strong>Vigtigt:</strong> Invitationer sendes kun, hvis der allerede findes en konto med denne e-mailadresse. Af hensyn til privatliv bekræftes det ikke, om en invitation blev leveret.',
-    }
+    },
+    org_tab_base: {
+        de: 'Grunddaten',
+        en: 'Basic',
+        da: 'Grundoplysninger',
+    },
+    org_tab_map: {
+        de: 'Karte',
+        en: 'Map',
+        da: 'Kort',
+    },
+    org_tab_logo: {
+        de: 'Logo',
+        en: 'Logo',
+        da: 'Logo',
+    },
 }
 
 export default uranusI18nOrgTranslations
