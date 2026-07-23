@@ -36,9 +36,7 @@ export interface PublicEventDateDTO {
     venue_lon?: number
     venue_lat?: number
     venue_web_link?: string
-    venue_logo_url?: string
-    venue_light_theme_logo_url?: string
-    venue_dark_theme_logo_url?: string
+    venue_logos?: any
 
     space_uuid?: string
     space_name?: string
@@ -87,6 +85,7 @@ export interface PublicEventDTO {
     org_name?: string
     org_web_link?: string
     org_logos?: any
+    logo_mode?: number
 
     visitor_info_flag: string
     participation_info?: string

@@ -92,7 +92,7 @@ import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModa
 import UranusAdminEventVisitorInfo from '@/component/event/editor/UranusAdminEventVisitorInfo.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import { StepBack, Rocket } from 'lucide-vue-next'
+import {StepBack, Rocket, Eye} from 'lucide-vue-next'
 import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChangesModal.vue'
 import { useSaveShortcut } from '@/composable/useSaveShortcut.ts'
 import UranusEventReleaseChip from "@/component/event/ui/UranusEventReleaseChip.vue";
