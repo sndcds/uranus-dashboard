@@ -144,7 +144,27 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         de: 'Diese Veranstaltungsorte kannst du für Events auswählen',
         en: 'These venues are available for you to select for events',
         da: 'Disse steder kan du vælge til begivenheder',
-    }
+    },
+    venue_tab_base: {
+        de: 'Grunddaten',
+        en: 'Basic',
+        da: 'Grundoplysninger',
+    },
+    venue_tab_map: {
+        de: 'Karte',
+        en: 'Map',
+        da: 'Kort',
+    },
+    venue_tab_logo: {
+        de: 'Logo',
+        en: 'Logo',
+        da: 'Logo',
+    },
+    venue_tab_images: {
+        de: 'Bilder',
+        en: 'Images',
+        da: 'Billeder',
+    },
 }
 
 export default uranusI18nVenueTranslations

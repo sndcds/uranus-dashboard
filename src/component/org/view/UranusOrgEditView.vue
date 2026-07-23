@@ -17,7 +17,7 @@
             :class="{ active: tab.key === activeTab, dirty: isTabDirty(tab.key) }"
             @click="activeTab = tab.key"
         >
-          <span>{{ tab.label }}</span>
+          <span>{{ t(tab.labelKey) }}</span>
           <span
               v-if="isTabDirty(tab.key)"
               class="uranus-tab-dirty-indicator"
@@ -73,9 +73,9 @@ type TabKey = 'base' | 'map' | 'logo'
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
-  { key: 'base', label: 'Base' },
-  { key: 'map', label: 'Map' },
-  { key: 'logo', label: 'Logo' },
+  { key: 'base', labelKey: 'org_tab_base' },
+  { key: 'map', labelKey: 'org_tab_map' },
+  { key: 'logo', labelKey: 'org_tab_logo' },
 ] as const
 const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
 const activeTabComponentRef = ref<OrgEditorTabExpose | null>(null)
