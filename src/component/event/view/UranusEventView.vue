@@ -134,7 +134,7 @@
               class="uranus-public-event-info-card"
               style="padding-top: 1rem; padding-bottom: 1rem"
           />
-          
+
           <UranusLogoImage
               v-if="event.logoMode && (event.logoMode & 2)"
               :logoURL="event.date.venueLogos?.main_logo?.url ?? ''"
