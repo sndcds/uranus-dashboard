@@ -21,19 +21,19 @@
             {{ t('dashboard') }}
           </router-link>
 
-          <router-link
-              to="/"
+          <a
+              :href="eventsUrl"
               class="generic-header__nav-link"
-              :class="{ 'generic-header__nav-link--active': route.path === '/' }" exact>
+          >
             {{ t('events') }}
-          </router-link>
+          </a>
 
-          <router-link
-              to="/map"
+          <a
+              :href="venuesMapUrl"
               class="generic-header__nav-link"
-              active-class="generic-header__nav-link--active">
+          >
             {{ t('nav_map') }}
-          </router-link>
+          </a>
 
           <!--router-link
               to="/page/help"
@@ -317,6 +317,28 @@ const handleLogout = async () => {
   userStore.resetUserState()
   await router.replace({ name: 'app-login' })
 }
+
+const eventsUrl = computed(() => {
+  switch (locale.value) {
+    case 'da':
+      return 'https://kulturbytes.de/da/begivenheder'
+    case 'en':
+      return 'https://kulturbytes.de/en/events'
+    default:
+      return 'https://kulturbytes.de/de/veranstaltungen'
+  }
+})
+
+const venuesMapUrl = computed(() => {
+  switch (locale.value) {
+    case 'da':
+      return 'https://kulturbytes.de/da/steder/kort'
+    case 'en':
+      return 'https://kulturbytes.de/en/venues/map'
+    default:
+      return 'https://kulturbytes.de/de/orte/karte'
+  }
+})
 
 // Watch for authentication state changes
 watch(() => tokenStore.isAuthenticated, (isAuthenticated) => {
