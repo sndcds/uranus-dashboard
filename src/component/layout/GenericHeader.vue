@@ -23,6 +23,8 @@
 
           <a
               :href="eventsUrl"
+              target="_blank"
+              rel="noopener noreferrer"
               class="generic-header__nav-link"
           >
             {{ t('events') }}
@@ -30,6 +32,8 @@
 
           <a
               :href="venuesMapUrl"
+              target="_blank"
+              rel="noopener noreferrer"
               class="generic-header__nav-link"
           >
             {{ t('nav_map') }}
