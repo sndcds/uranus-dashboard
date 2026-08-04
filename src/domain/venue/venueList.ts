@@ -12,9 +12,12 @@ export interface VenueListSpace {
     canDeleteSpace: boolean
 }
 
+export type VenueRecordKind = 'standard' | 'provisional'
+
 export interface VenueListItem {
     venueUuid: string
     venueName: string
+    recordKind?: VenueRecordKind | null
     eventCount: number
     spaces: VenueListSpace[]
     canAddEvent: boolean
@@ -57,6 +60,7 @@ export function mapVenueListItem(dto: VenueListItemDTO): VenueListItem {
     return {
         venueUuid: dto.venue_uuid,
         venueName: dto.venue_name,
+        recordKind: dto.record_kind ?? 'standard',
         eventCount: dto.event_count,
         spaces: (dto.spaces ?? [])
             .map(space => ({
@@ -117,6 +121,7 @@ export function toVenueItemDTO(model: VenueListItem): VenueListItemDTO {
     return {
         venue_uuid: model.venueUuid,
         venue_name: model.venueName,
+        record_kind: model.recordKind ?? 'standard',
         event_count: model.eventCount,
         spaces: model.spaces.map(toVenueListSpaceDTO),
 
@@ -177,6 +182,7 @@ export function createEmptyVenue(): VenueListItem {
     return {
         venueUuid: '',
         venueName: '',
+        recordKind: 'standard',
         eventCount: 0,
         spaces: [],
         canAddEvent: false,

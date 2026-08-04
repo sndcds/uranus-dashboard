@@ -10,9 +10,12 @@ export interface VenueListSpaceDTO {
     can_delete_space: boolean
 }
 
+export type VenueListItemRecordKind = 'standard' | 'provisional'
+
 export interface VenueListItemDTO {
     venue_uuid: string
     venue_name: string
+    record_kind?: VenueListItemRecordKind | null
     event_count: number
     spaces?: VenueListSpaceDTO[]
     can_add_event: boolean
