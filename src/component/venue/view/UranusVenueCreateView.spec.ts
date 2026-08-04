@@ -56,12 +56,13 @@ describe('UranusVenueCreateView', () => {
       },
     })
 
-    const selects = wrapper.findAll('select')
-    expect(selects.length).toBeGreaterThanOrEqual(1)
+    const segmentedButtons = wrapper.findAll('button')
+    const optionTexts = segmentedButtons
+      .map(button => button.text())
+      .filter(text => text === 'Eigener Ort' || text === 'Provisorischer Ort')
 
-    const options = selects[0].findAll('option').map(option => option.text())
-    expect(options).toContain('Eigener Ort')
-    expect(options).toContain('Provisorischer Ort')
+    expect(optionTexts).toContain('Eigener Ort')
+    expect(optionTexts).toContain('Provisorischer Ort')
   })
 
   it('sends record_kind with the selected venue mode when creating a venue', async () => {
@@ -93,13 +94,14 @@ describe('UranusVenueCreateView', () => {
     })
 
     const nameInput = wrapper.find('#venue_name')
-    const recordSelect = wrapper.find('#venue_record_kind')
+    const provisionalButton = wrapper.findAll('button').find(button => button.text() === 'Provisorischer Ort')
     const createButton = wrapper.findAll('button').find(button => button.text() === 'Jetzt erstellen')
 
+    expect(provisionalButton).toBeTruthy()
     expect(createButton).toBeTruthy()
 
     await nameInput.setValue('Neue Location')
-    await recordSelect.setValue('provisional')
+    await provisionalButton!.trigger('click')
     await createButton!.trigger('click')
 
     expect(apiFetch).toHaveBeenCalledWith(

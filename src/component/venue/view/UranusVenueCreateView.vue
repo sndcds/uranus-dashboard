@@ -20,22 +20,15 @@
       />
 
       <div class="field-group">
-        <label for="venue_record_kind" class="uranus-label">
+        <label class="uranus-label">
           {{ t('venue_record_kind') }}
         </label>
 
-        <select
-            id="venue_record_kind"
+        <UranusSegmentedSelect
             v-model="recordKind"
-            class="uranus-admin-select"
-        >
-          <option value="standard">
-            {{ t('venue_record_kind_standard') }}
-          </option>
-          <option value="provisional">
-            {{ t('venue_record_kind_provisional') }}
-          </option>
-        </select>
+            :options="recordKindOptions"
+            full-width
+        />
       </div>
 
       <UranusFormActions>
@@ -60,9 +53,10 @@ import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
-import UranusTextfield from "@/component/ui/UranusTextfield.vue";
-import UranusFormActions from "@/component/ui/UranusFormActions.vue";
-import UranusHelpPopup from "@/component/uranus/UranusHelpPopup.vue";
+import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusFormActions from '@/component/ui/UranusFormActions.vue'
+import UranusHelpPopup from '@/component/uranus/UranusHelpPopup.vue'
+import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
 
 const { t } = useI18n()
 
@@ -70,6 +64,11 @@ const route = useRoute()
 const orgUuid = route.params.orgUuid
 const venueName = ref<string>('')
 const recordKind = ref<'standard' | 'provisional'>('standard')
+
+const recordKindOptions = [
+  { label: t('venue_record_kind_standard'), value: 'standard' },
+  { label: t('venue_record_kind_provisional'), value: 'provisional' },
+] as const
 
 async function onCreate() {
   if (venueName.value.trim().length < 1) {
@@ -120,13 +119,4 @@ async function onCreate() {
   color: var(--uranus-color-2);
 }
 
-.uranus-admin-select {
-  width: 100%;
-  min-height: 40px;
-  padding: 0 0.75rem;
-  border: var(--uranus-input-border);
-  border-radius: var(--uranus-input-border-radius);
-  background: var(--uranus-input-bg);
-  color: var(--uranus-color-2);
-}
 </style>
