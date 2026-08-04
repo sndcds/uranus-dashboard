@@ -186,7 +186,10 @@ async function loadVenuesForCurrentBounds() {
   if (bboxKey === lastLoadedBBoxKey) return
 
   const currentRequestId = ++loadRequestId
-  const params = new URLSearchParams({ bbox: bbox.join(',') })
+  const params = new URLSearchParams({
+    bbox: bbox.join(','),
+    record_kinds: 'standard'
+  })
 
   try {
     const response = await apiFetch<any>(`/api/venues/geojson?${params.toString()}`)
