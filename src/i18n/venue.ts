@@ -60,6 +60,21 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Venue Name',
         da: 'Navn på stedet',
     },
+    venue_record_kind: {
+        de: 'Art des Ortes',
+        en: 'Venue type',
+        da: 'Stedstype',
+    },
+    venue_record_kind_standard: {
+        de: 'Eigener Ort',
+        en: 'Own venue',
+        da: 'Eget sted',
+    },
+    venue_record_kind_provisional: {
+        de: 'Provisorischer Ort',
+        en: 'Provisional venue',
+        da: 'Midlertidigt sted',
+    },
     venue_images_title: {
         de: 'Bilder und Logos des Veranstaltungsorts',
         en: 'Venue images and logos',

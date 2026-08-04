@@ -12,12 +12,31 @@
 
     <UranusForm>
       <UranusTextfield
-          v-model="venueName",
+          v-model="venueName"
           size="medium"
           id="venue_name"
           :label="t('venue_name')"
           required
       />
+
+      <div class="field-group">
+        <label for="venue_record_kind" class="uranus-label">
+          {{ t('venue_record_kind') }}
+        </label>
+
+        <select
+            id="venue_record_kind"
+            v-model="recordKind"
+            class="uranus-admin-select"
+        >
+          <option value="standard">
+            {{ t('venue_record_kind_standard') }}
+          </option>
+          <option value="provisional">
+            {{ t('venue_record_kind_provisional') }}
+          </option>
+        </select>
+      </div>
 
       <UranusFormActions>
         <UranusButton
@@ -50,6 +69,7 @@ const { t } = useI18n()
 const route = useRoute()
 const orgUuid = route.params.orgUuid
 const venueName = ref<string>('')
+const recordKind = ref<'standard' | 'provisional'>('standard')
 
 async function onCreate() {
   if (venueName.value.trim().length < 1) {
@@ -61,7 +81,8 @@ async function onCreate() {
   try {
     const payload = {
       org_uuid: orgUuid,
-      venue_name: venueName.value.trim()
+      venue_name: venueName.value.trim(),
+      record_kind: recordKind.value,
     }
 
     const apiPath = '/api/admin/venue/create'
@@ -83,3 +104,29 @@ async function onCreate() {
 }
 
 </script>
+
+<style scoped lang="scss">
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.uranus-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+  color: var(--uranus-color-2);
+}
+
+.uranus-admin-select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 0.75rem;
+  border: var(--uranus-input-border);
+  border-radius: var(--uranus-input-border-radius);
+  background: var(--uranus-input-bg);
+  color: var(--uranus-color-2);
+}
+</style>
