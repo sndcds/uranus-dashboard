@@ -65,7 +65,7 @@ import { useRouter } from 'vue-router'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import type { PartnerDTO } from '@/api/dto/partnerDTO.ts'
+import type { PartnerDto } from '@/api/dto/partner.dto.ts'
 import { mapPartnerListItem, type PartnerListItem } from '@/domain/partner/partner.model.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import type { OrgSelectInfo } from '@/domain/org/orgSelectInfo.model.ts'
@@ -141,7 +141,7 @@ onMounted(async () => {
     const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/grants`
     const apiResponse = await apiFetch<any>(apiPath)
 
-    const data = apiResponse.data.partners as PartnerDTO[]
+    const data = apiResponse.data.partners as PartnerDto[]
     partnerListItems.value = (data || []).map(dto => mapPartnerListItem(dto))
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {

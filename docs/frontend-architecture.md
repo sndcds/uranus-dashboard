@@ -231,7 +231,7 @@ sequenceDiagram
     U->>V: Open /admin/org/{orgUuid}/edit
     V->>A: GET /api/admin/org/{orgUuid}
     A->>B: Request
-    B-->>A: OrgDTO
+    B-->>A: OrgDto
     A-->>V: data
     V->>S: loadFromApi
     U->>T: Edit base fields

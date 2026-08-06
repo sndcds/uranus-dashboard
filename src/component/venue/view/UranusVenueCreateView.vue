@@ -11,6 +11,23 @@
     <UranusHelpPopup baseUrl="/help/create-venue" />
 
     <UranusForm>
+      <div class="field-group">
+        <label class="uranus-label">
+          {{ t('venue_scope') }}
+        </label>
+
+        <UranusSegmentedSelect
+            v-model="venueScope"
+            :options="venueScopeOptions"
+        />
+
+        <div
+            v-if="venueScopeInfo"
+            class="field-info"
+            v-html="venueScopeInfo"
+        ></div>
+      </div>
+
       <UranusTextfield
           v-model="venueName"
           size="medium"
@@ -18,18 +35,6 @@
           :label="t('venue_name')"
           required
       />
-
-      <div class="field-group">
-        <label class="uranus-label">
-          {{ t('venue_record_kind') }}
-        </label>
-
-        <UranusSegmentedSelect
-            v-model="recordKind"
-            :options="recordKindOptions"
-            full-width
-        />
-      </div>
 
       <UranusFormActions>
         <UranusButton
@@ -45,7 +50,7 @@
 
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import router from '@/router/index.ts'
 import { useRoute } from 'vue-router'
@@ -63,12 +68,28 @@ const { t } = useI18n()
 const route = useRoute()
 const orgUuid = route.params.orgUuid
 const venueName = ref<string>('')
-const recordKind = ref<'standard' | 'provisional'>('standard')
+const venueScope = ref<'shared' | 'organization'>('shared')
 
-const recordKindOptions = [
-  { label: t('venue_record_kind_standard'), value: 'standard' },
-  { label: t('venue_record_kind_provisional'), value: 'provisional' },
-] as const
+
+type VenueScope = 'shared' | 'organization'
+
+const venueScopeOptions = computed(() =>
+    [
+      { label: t('venue_scope_shared'), value: 'shared' },
+      { label: t('venue_scope_organization'), value: 'organization' },
+    ] satisfies ReadonlyArray<{ label: string; value: VenueScope }>
+)
+
+const venueScopeInfo = computed(() => {
+  switch (venueScope.value) {
+    case 'shared':
+      return t('venue_scope_shared_info')
+    case 'organization':
+      return t('venue_scope_organization_info')
+    default:
+      return ''
+  }
+})
 
 async function onCreate() {
   if (venueName.value.trim().length < 1) {
@@ -81,7 +102,7 @@ async function onCreate() {
     const payload = {
       org_uuid: orgUuid,
       venue_name: venueName.value.trim(),
-      record_kind: recordKind.value,
+      scope: venueScope.value,
     }
 
     const apiPath = '/api/admin/venue/create'
@@ -112,11 +133,43 @@ async function onCreate() {
   width: 100%;
 }
 
+.field-info {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  border: 1px solid var(--uranus-feedback-info-border-color);
+  background: var(--uranus-feedback-info-bg);
+  color: var(--uranus-color);
+  padding: 1rem;
+  margin-top: 1rem;
+  width: 100%;
+
+  :deep(h3) {
+    margin: 0 0 .75rem;
+    font-size: 1.6rem;
+  }
+
+  :deep(p) {
+    margin: 0 0 .5rem;
+  }
+
+  :deep(ul) {
+    margin: .5rem 0;
+    padding-left: 1.5rem;
+  }
+
+  :deep(li) {
+    margin-bottom: .25rem;
+  }
+
+  :deep(strong) {
+    font-weight: 600;
+  }
+}
+
 .uranus-label {
   font-size: 0.85rem;
   font-weight: 500;
   margin-left: 0.5rem;
   color: var(--uranus-color-2);
 }
-
 </style>

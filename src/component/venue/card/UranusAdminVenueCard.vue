@@ -136,8 +136,8 @@ const eventCountText = computed(() => {
 })
 
 const showSpaceSection = computed(() => {
-  const recordKind = props.venueListItem.recordKind
-  return recordKind == null || recordKind === 'standard'
+  const scope = props.venueListItem.scope
+  return scope == null || scope === 'shared'
 })
 
 const emit = defineEmits<{

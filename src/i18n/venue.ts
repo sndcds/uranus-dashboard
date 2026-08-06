@@ -60,20 +60,38 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Venue Name',
         da: 'Navn på stedet',
     },
-    venue_record_kind: {
-        de: 'Art des Ortes',
-        en: 'Venue type',
-        da: 'Stedstype',
+    venue_scope: {
+        de: 'Zugehörigkeit des Ortes',
+        en: 'Venue ownership',
+        da: 'Stedets tilhørsforhold',
     },
-    venue_record_kind_standard: {
+    venue_scope_shared: {
         de: 'Eigener Ort',
         en: 'Own venue',
         da: 'Eget sted',
     },
-    venue_record_kind_provisional: {
+    venue_scope_organization: {
         de: 'Provisorischer Ort',
         en: 'Provisional venue',
         da: 'Midlertidigt sted',
+    },
+    venue_scope_shared_info: {
+        de: '<h3>Eigener Veranstaltungsort</h3>' +
+            'Dieser Ort wird von deiner Organisation verwaltet und ist zunächst nur für deine Organisation verfügbar.<br>' +
+            'Du kannst ihn später für andere Organisationen als Veranstaltungsort freigeben.',
+        en: 'a',
+        da: 'a'
+    },
+    venue_scope_organization_info: {
+        de: '<h3>Provisorischer Ort</h3>' +
+            'Wenn du für eine Veranstaltung einen Ort benötigst, der weder von deiner Organisation verwaltet wird ' +
+            'noch von einer anderen Organisation für dich freigegeben wurde, kannst du einen provisorischen Ort anlegen.<br>' +
+            'Provisorische Orte können nicht mit anderen Organisationen geteilt werden. ' +
+            'Außerdem können für sie keine Räume verwaltet werden.<br><br>' +
+            '<strong>Tipp</strong>: Prüfe zuerst, ob der Ort bereits auf der Karte vorhanden ist. ' +
+            'Falls ja, kannst du die verwaltende Organisation um eine Partnerschaft bitten, damit du den Ort für deine Veranstaltungen nutzen kannst.',
+        en: 'This venue is only available to <strong>this organization</strong>.',
+        da: 'Dette sted er kun tilgængeligt for <strong>denne organisation</strong>.'
     },
     venue_images_title: {
         de: 'Bilder und Logos des Veranstaltungsorts',

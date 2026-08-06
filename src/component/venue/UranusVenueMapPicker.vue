@@ -175,7 +175,7 @@ async function loadVenuesForCurrentBounds() {
   const currentRequestId = ++loadRequestId
   const params = new URLSearchParams({
     bbox: bbox.join(','),
-    record_kinds: ''
+    scopes: ''
   })
 
   try {

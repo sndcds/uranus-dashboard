@@ -2,7 +2,7 @@
     src/api/dto/org.dto.ts
  */
 
-export interface OrgDTO {
+export interface OrgDto {
     uuid: string | null
     name: string
     description?: string | null

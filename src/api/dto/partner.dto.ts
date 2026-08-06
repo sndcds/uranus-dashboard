@@ -5,7 +5,7 @@
 import type { PartnerDirection, PartnerStatus } from '@/domain/partner/partner.model.ts'
 
 
-export interface PartnerDTO {
+export interface PartnerDto {
     direction: PartnerDirection
     org_uuid: string
     org_name: string

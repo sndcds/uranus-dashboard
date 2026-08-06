@@ -112,7 +112,7 @@ function isSelected(venueUuid: string, spaceUuid: string | null) {
 }
 
 function getVenueDisplayName(venue: BasicVenueSpacesInfo) {
-  return venue.recordKind === 'provisional' ? `* ${venue.venueName}` : venue.venueName
+  return venue.scope === 'organization' ? `* ${venue.venueName}` : venue.venueName
 }
 
 function showMap() {

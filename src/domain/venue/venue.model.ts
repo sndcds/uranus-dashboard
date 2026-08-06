@@ -3,7 +3,7 @@
     2026-04-02, refactored
 */
 
-import type { VenueDTO, VenueRecordKind } from '@/api/dto/venue.dto.ts'
+import type { VenueDTO, VenueScope } from '@/api/dto/venue.dto.ts'
 
 /**
  * Frontend-friendly venue model
@@ -14,7 +14,7 @@ export interface VenueModel {
     orgUuid: string | null
     name: string
     type: string | null
-    recordKind: VenueRecordKind
+    scope: VenueScope
 
     street: string | null
     houseNumber: string | null
@@ -48,7 +48,7 @@ export function mapVenue(dto: VenueDTO): VenueModel {
         orgUuid: dto.org_uuid ?? null,
         name: dto.name ?? '',
         type: dto.type ?? null,
-        recordKind: dto.record_kind === 'provisional' ? 'provisional' : 'standard',
+        scope: dto.scope === 'organization' ? 'organization' : 'shared',
 
         street: dto.street ?? null,
         houseNumber: dto.house_number ?? null,
@@ -83,7 +83,7 @@ export function toVenueDTO(model: VenueModel): VenueDTO {
         org_uuid: model.orgUuid ?? null,
         name: model.name,
         type: model.type ?? null,
-        record_kind: model.recordKind ?? 'standard',
+        scope: model.scope ?? 'shared',
 
         street: model.street ?? null,
         house_number: model.houseNumber ?? null,
@@ -118,7 +118,7 @@ export function createEmptyVenue(): VenueModel {
         orgUuid: null,
         name: '',
         type: null,
-        recordKind: 'standard',
+        scope: 'shared',
 
         street: null,
         houseNumber: null,

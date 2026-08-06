@@ -2,7 +2,7 @@
     src/domain/partner/partnerListItem.model.ts
 */
 
-import type {PartnerDTO, PartnerRequestDTO} from '@/api/dto/partnerDTO.ts'
+import type {PartnerDto, PartnerRequestDTO} from '@/api/dto/partner.dto.ts'
 
 export type PartnerDirection = 'incoming' | 'outgoing'
 export type PartnerStatus = 'pending' | 'accepted' | 'rejected'
@@ -27,7 +27,7 @@ export interface PartnerListItem {
 /**
  * Convert DTO → frontend model
  */
-export function mapPartnerListItem(dto: PartnerDTO): PartnerListItem {
+export function mapPartnerListItem(dto: PartnerDto): PartnerListItem {
     return {
         direction: dto.direction,
         orgUuid: dto.org_uuid,
@@ -45,7 +45,7 @@ export function mapPartnerListItem(dto: PartnerDTO): PartnerListItem {
 /**
  * Convert frontend model → DTO
  */
-export function toOrgListItemDTO(model: PartnerListItem): PartnerDTO {
+export function toOrgListItemDTO(model: PartnerListItem): PartnerDto {
     return {
         direction: model.direction,
         org_uuid: model.orgUuid,

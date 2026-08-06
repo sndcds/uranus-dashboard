@@ -2,7 +2,7 @@
   src/domain/venue/venueList.ts
 */
 
-import type { VenueListDTO, VenueListItemDTO, VenueListSpaceDTO } from '@/api/dto/venueListDTO.ts'
+import type { VenueListDto, VenueListItemDTO, VenueListSpaceDTO } from '@/api/dto/venueList.dto.ts'
 
 export interface VenueListSpace {
     spaceUuid: string
@@ -12,12 +12,12 @@ export interface VenueListSpace {
     canDeleteSpace: boolean
 }
 
-export type VenueRecordKind = 'standard' | 'provisional'
+export type VenueScope = 'shared' | 'organization'
 
 export interface VenueListItem {
     venueUuid: string
     venueName: string
-    recordKind?: VenueRecordKind | null
+    scope?: VenueScope | null
     eventCount: number
     spaces: VenueListSpace[]
     canAddEvent: boolean
@@ -60,7 +60,7 @@ export function mapVenueListItem(dto: VenueListItemDTO): VenueListItem {
     return {
         venueUuid: dto.venue_uuid,
         venueName: dto.venue_name,
-        recordKind: dto.record_kind ?? 'standard',
+        scope: dto.scope ?? 'shared',
         eventCount: dto.event_count,
         spaces: (dto.spaces ?? [])
             .map(space => ({
@@ -93,7 +93,7 @@ export function mapVenueListItem(dto: VenueListItemDTO): VenueListItem {
     }
 }
 
-export function mapVenueList(dto: VenueListDTO): VenueList {
+export function mapVenueList(dto: VenueListDto): VenueList {
     return {
         orgUuid: dto.org_uuid,
         orgName: dto.org_name,
@@ -121,7 +121,7 @@ export function toVenueItemDTO(model: VenueListItem): VenueListItemDTO {
     return {
         venue_uuid: model.venueUuid,
         venue_name: model.venueName,
-        record_kind: model.recordKind ?? 'standard',
+        scope: model.scope ?? 'shared',
         event_count: model.eventCount,
         spaces: model.spaces.map(toVenueListSpaceDTO),
 
@@ -144,7 +144,7 @@ export function toVenueItemDTO(model: VenueListItem): VenueListItemDTO {
     }
 }
 
-export function toVenueListDTO(model: VenueList): VenueListDTO {
+export function toVenueListDTO(model: VenueList): VenueListDto {
     return {
         org_uuid: model.orgUuid,
         org_name: model.orgName,
@@ -182,7 +182,7 @@ export function createEmptyVenue(): VenueListItem {
     return {
         venueUuid: '',
         venueName: '',
-        recordKind: 'standard',
+        scope: 'shared',
         eventCount: 0,
         spaces: [],
         canAddEvent: false,

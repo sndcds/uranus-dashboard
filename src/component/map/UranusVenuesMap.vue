@@ -143,7 +143,7 @@ async function loadVenuesForCurrentBounds() {
   const bboxKey = createBBoxKey(bbox)
   const params = new URLSearchParams({
     bbox: bbox.join(','),
-    record_kinds: ''
+    scopes: ''
   })
   if (props.portalUuid) {
     params.append('portal-uuid', props.portalUuid)

@@ -2,7 +2,7 @@
     src/domain/org/org.model.ts
 */
 
-import type { OrgDTO } from '@/api/dto/orgDTO.ts'
+import type { OrgDto } from '@/api/dto/org.dto.ts'
 
 /**
  * Frontend-friendly organization model
@@ -41,7 +41,7 @@ export interface OrgModel {
 /**
  * Convert DTO → frontend model
  */
-export function mapOrg(dto: OrgDTO): OrgModel {
+export function mapOrg(dto: OrgDto): OrgModel {
     return {
         uuid: dto.uuid ?? null,
         name: dto.name ?? '',
@@ -78,7 +78,7 @@ export function mapOrg(dto: OrgDTO): OrgModel {
  * Convert frontend model → DTO
  * suitable for API calls
  */
-export function toOrgDTO(model: OrgModel): OrgDTO {
+export function toOrgDTO(model: OrgModel): OrgDto {
     return {
         uuid: model.uuid,
         name: model.name,
