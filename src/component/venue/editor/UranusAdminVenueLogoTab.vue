@@ -12,6 +12,7 @@
         identifier="main_logo"
         bgClass="padded"
         :width="220"
+        :label="t('main_logo')"
     />
     <UranusImageSlot
         context="venue"
@@ -19,6 +20,7 @@
         identifier="dark_theme_logo"
         bgClass="dark padded"
         :width="220"
+        :label="t('dark_theme_logo')"
     />
     <UranusImageSlot
         context="venue"
@@ -26,6 +28,7 @@
         identifier="light_theme_logo"
         bgClass="light padded"
         :width="220"
+        :label="t('light_theme_logo')"
     />
     <UranusImageSlot
         context="venue"
@@ -33,14 +36,18 @@
         identifier="avatar"
         bgClass="padded"
         :width="220"
+        :label="t('avatar')"
     />
   </section>
 </template>
 
 <script setup lang="ts">
+import { computed, watch } from 'vue'
+import {useI18n} from 'vue-i18n'
 import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
-import { useUranusVenueStore } from "@/store/venueStore.ts";
-import { computed, watch } from "vue";
+import { useUranusVenueStore } from '@/store/venueStore.ts'
+
+const { t } = useI18n({ useScope: 'global' })
 
 const store = useUranusVenueStore()
 const venue = computed(() => store.draft!)
