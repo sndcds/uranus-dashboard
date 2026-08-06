@@ -76,22 +76,42 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Midlertidigt sted',
     },
     venue_scope_shared_info: {
-        de: '<h3>Eigener Veranstaltungsort</h3>' +
-            'Dieser Ort wird von deiner Organisation verwaltet und ist zunächst nur für deine Organisation verfügbar.<br>' +
-            'Du kannst ihn später für andere Organisationen als Veranstaltungsort freigeben.',
-        en: 'a',
-        da: 'a'
+        de: '<h3>Eigener Ort</h3>' +
+            'Wähle <strong>Eigener Ort</strong>, wenn der Veranstaltungsort zu deiner Organisation gehört und du für ' +
+            'seine Verwaltung zuständig bist. Du entscheidest dann, welche Organisationen den Ort für Veranstaltungen nutzen können.<br><br>' +
+            'Eigene Orte können Räume enthalten, für die du Informationen zur Barrierefreiheit hinterlegen kannst. ' +
+            'Außerdem kannst du sie später für andere Organisationen als Veranstaltungsort freigeben.',
+        da: '<h3>Eget sted</h3>' +
+            'Vælg <strong>Eget sted</strong>, hvis arrangementsstedet tilhører din organisation, og du er ansvarlig for ' +
+            'at administrere det. Du bestemmer dermed, hvilke organisationer der kan bruge stedet til arrangementer.<br><br>' +
+            'Egne steder kan indeholde lokaler, hvor du kan tilføje oplysninger om tilgængelighed. ' +
+            'Du kan også senere gøre dem tilgængelige som arrangementssteder for andre organisationer.',
+
+        en: '<h3>Own venue</h3>' +
+            'Choose <strong>Own venue</strong> if the venue belongs to your organisation and you are responsible for ' +
+            'managing it. You then decide which organisations can use the venue for events.<br><br>' +
+            'Own venues can include spaces for which you can add accessibility information. ' +
+            'You can also make them available as event venues for other organisations later.',
     },
     venue_scope_organization_info: {
         de: '<h3>Provisorischer Ort</h3>' +
-            'Wenn du für eine Veranstaltung einen Ort benötigst, der weder von deiner Organisation verwaltet wird ' +
-            'noch von einer anderen Organisation für dich freigegeben wurde, kannst du einen provisorischen Ort anlegen.<br>' +
-            'Provisorische Orte können nicht mit anderen Organisationen geteilt werden. ' +
-            'Außerdem können für sie keine Räume verwaltet werden.<br><br>' +
-            '<strong>Tipp</strong>: Prüfe zuerst, ob der Ort bereits auf der Karte vorhanden ist. ' +
+            'Wähle <strong>Provisorischer Ort</strong>, wenn du für eine Veranstaltung einen Ort benötigst, der weder von deiner Organisation verwaltet wird ' +
+            'noch von einer anderen Organisation für dich freigegeben wurde.<br><br>' +
+            'Provisorische Orte können nicht mit anderen Organisationen geteilt werden und enthalten keine verwaltbaren Räume.<br>' +
+            '<strong>Tipp:</strong> Prüfe zuerst, ob der Ort bereits auf der Karte vorhanden ist. ' +
             'Falls ja, kannst du die verwaltende Organisation um eine Partnerschaft bitten, damit du den Ort für deine Veranstaltungen nutzen kannst.',
-        en: 'This venue is only available to <strong>this organization</strong>.',
-        da: 'Dette sted er kun tilgængeligt for <strong>denne organisation</strong>.'
+        da: '<h3>Midlertidigt sted</h3>' +
+            'Vælg <strong>Midlertidigt sted</strong>, hvis du har brug for et sted til et arrangement, som hverken administreres af din organisation ' +
+            'eller er gjort tilgængeligt for dig af en anden organisation.<br><br>' +
+            'Midlertidige steder kan ikke deles med andre organisationer og kan ikke indeholde administrerbare lokaler.<br>' +
+            '<strong>Tip:</strong> Undersøg først, om stedet allerede findes på kortet. ' +
+            'Hvis det gør, kan du bede den administrerende organisation om et partnerskab, så du kan bruge stedet til dine arrangementer.',
+        en: '<h3>Temporary venue</h3>' +
+            'Choose <strong>Temporary venue</strong> if you need a venue for an event that is neither managed by your organisation ' +
+            'nor made available to you by another organisation.<br><br>' +
+            'Temporary venues cannot be shared with other organisations and cannot contain manageable spaces.<br>' +
+            '<strong>Tip:</strong> First check whether the venue is already on the map. ' +
+            'If it is, you can ask the managing organisation for a partnership so that you can use the venue for your events.',
     },
     venue_images_title: {
         de: 'Bilder und Logos des Veranstaltungsorts',
