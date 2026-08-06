@@ -40,6 +40,16 @@ export const uranusI18nImageTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Description',
         da: 'Beskrivelse',
     },
+    set_focus_point: {
+        de: 'Mittelpunk setzen',
+        en: 'Set focus point',
+        da: 'Sæt fokuspunkt',
+    },
+    remove_focus_point: {
+        de: 'Fokuspunkt entfernen',
+        en: 'Remove focus point',
+        da: 'Fjern fokuspunkt',
+    },
     edit_image: {
         de: 'Bild bearbeiten',
         en: 'Edit image',

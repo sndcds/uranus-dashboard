@@ -12,10 +12,11 @@
     <UranusForm class="uranus-form-wide">
 
       <UranusFormRow>
-        <div
-            class="uranus-image-preview checker-bg"
-            @click="onImageClick($event)"
-        >
+        <div class="uranus-image-actions">
+          <div
+              class="uranus-image-preview checker-bg"
+              @click="onImageClick($event)"
+          >
           <img
               v-if="localImageMeta.url"
               :src="cacheBustedUrl"
@@ -34,14 +35,38 @@
               @change="onFileSelected"
           />
 
-          <div
-              v-if="localImageMeta.focusX !== null && localImageMeta.focusY !== null"
-              class="focus-point"
-              :style="{
-              left: `${localImageMeta.focusX * 100}%`,
-              top: `${localImageMeta.focusY * 100}%`
-            }"
-          />
+            <div
+                v-if="localImageMeta.focusX !== null && localImageMeta.focusY !== null"
+                class="focus-point"
+                :style="{
+                left: `${localImageMeta.focusX * 100}%`,
+                top: `${localImageMeta.focusY * 100}%`
+              }"
+            />
+          </div>
+
+          <div class="uranus-image-action-row">
+            <UranusButton
+                v-if="hasFocusPoint"
+                size="small"
+                variant="tertiary"
+                type="button"
+                @click="removeFocusPoint"
+            >
+              {{ t('remove_focus_point') }}
+            </UranusButton>
+
+            <UranusButton
+                v-else
+                size="small"
+                variant="tertiary"
+                type="button"
+                :class="['uranus-image-set-focus-button', { 'is-active': focusPointModeActive }]"
+                @click="toggleFocusPointMode"
+            >
+              {{ t('set_focus_point') }}
+            </UranusButton>
+          </div>
         </div>
       </UranusFormRow>
 
@@ -173,6 +198,11 @@ const { t } = useI18n()
 const fileInput = ref<HTMLInputElement | null>(null)
 const localImageMeta = reactive(createPlutoImage())
 const localImageFile = ref<File | null>(null)
+const focusPointModeActive = ref(false)
+
+const hasFocusPoint = computed(() => {
+  return localImageMeta.focusX !== null && localImageMeta.focusY !== null
+})
 
 
 function clearLocalImageMeta() {
@@ -191,9 +221,17 @@ function triggerFileSelect() {
   fileInput.value?.click()
 }
 
+function toggleFocusPointMode() {
+  focusPointModeActive.value = !focusPointModeActive.value
+}
+
+function removeFocusPoint() {
+  localImageMeta.focusX = null
+  localImageMeta.focusY = null
+}
+
 function onImageClick(e: MouseEvent) {
-  if (e.metaKey) {
-    // Command+click → set focus point
+  if (focusPointModeActive.value) {
     const img = e.currentTarget as HTMLDivElement
     const rect = img.getBoundingClientRect()
 
@@ -202,11 +240,10 @@ function onImageClick(e: MouseEvent) {
 
     localImageMeta.focusX = Math.min(Math.max(x, 0), 1)
     localImageMeta.focusY = Math.min(Math.max(y, 0), 1)
-    console.log('Focus point set:', localImageMeta.focusX, localImageMeta.focusY)
-  } else {
-    // Normal click → trigger file input
-    triggerFileSelect()
+    return
   }
+
+  triggerFileSelect()
 }
 
 function onFileSelected(e: Event) {
@@ -279,6 +316,18 @@ onMounted(async () => {
 </script>
 
 <style>
+.uranus-image-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.uranus-image-action-row {
+  display: flex;
+  justify-content: flex-start;
+}
+
 .uranus-image-preview {
   display: flex;
   position: relative;
@@ -324,6 +373,11 @@ onMounted(async () => {
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
+}
+
+.uranus-image-set-focus-button.is-active {
+  background: var(--uranus-color-6);
+  color: white;
 }
 
 .checker-bg {
