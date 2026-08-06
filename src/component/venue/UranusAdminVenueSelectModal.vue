@@ -28,7 +28,7 @@
               :class="{ selected: isSelected(venue.venueUuid, null) }"
               @click="select(venue.venueUuid, null)"
           >
-            {{ venue.venueName }} ({{ venue.city }})
+            {{ getVenueDisplayName(venue) }} ({{ venue.city }})
           </div>
 
           <div
@@ -109,6 +109,10 @@ function select(venueUuid: string, spaceUuid: string | null) {
 // Check if a venue/space is selected
 function isSelected(venueUuid: string, spaceUuid: string | null) {
   return props.modelValue?.venueUuid === venueUuid && props.modelValue?.spaceUuid === spaceUuid
+}
+
+function getVenueDisplayName(venue: BasicVenueSpacesInfo) {
+  return venue.scope === 'organization' ? `* ${venue.venueName}` : venue.venueName
 }
 
 function showMap() {

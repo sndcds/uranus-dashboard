@@ -4,6 +4,10 @@
 
 <template>
   <div class="map-wrapper" v-bind="attrs">
+    <div v-if="showHint" class="map-hint">
+      {{ hintText }}
+    </div>
+
     <UranusMapRenderer
         :layers="layers"
         :center="computedCenter"
@@ -14,6 +18,16 @@
 
     <footer class="map-footer">
       <slot name="footer" />
+      <UranusButton
+          v-if="hasActiveMarker"
+          type="button"
+          size="small"
+          variant="tertiary"
+          class="map-remove-button"
+          @click="removeMarker"
+      >
+        {{ t('remove_marker') }}
+      </UranusButton>
     </footer>
   </div>
 </template>
@@ -30,10 +44,11 @@ import type { Map as MapLibreMap, MapMouseEvent, LngLatLike } from 'maplibre-gl'
 import UranusMapRenderer, { type MapLayer } from '@/component/map/UranusMapRenderer.vue'
 import markerIcon from '@/assets/map/marker.png'
 import { useThemeStore } from '@/store/themeStore.ts'
-
+import { useI18n } from 'vue-i18n'
 
 const themeStore = useThemeStore()
 const attrs = useAttrs()
+const { t } = useI18n({ useScope: 'global' })
 
 /* ------------------------------------------------------------------
  * Props / Emits
@@ -54,7 +69,14 @@ const emit = defineEmits<{
 const map = ref<MapLibreMap | null>(null)
 const isDragging = ref(false)
 
+const isUnsetLocation = (value: { lat: number; lng: number } | null | undefined) => {
+  return !value || (value.lat === 0 && value.lng === 0)
+}
+
+const hasActiveMarker = computed(() => !isUnsetLocation(props.modelValue))
 const isSelectable = computed(() => props.selectable !== false)
+const showHint = computed(() => !hasActiveMarker.value)
+const hintText = computed(() => t('marker_set_location_hint'))
 
 /* ------------------------------------------------------------------
  * Map Style
@@ -69,7 +91,7 @@ const mapStyle = computed(() =>
  * Marker Data (GeoJSON)
  * ------------------------------------------------------------------ */
 const markerData = ref<FeatureCollection>(
-    props.modelValue
+    hasActiveMarker.value
         ? {
           type: 'FeatureCollection',
           features: [
@@ -78,8 +100,8 @@ const markerData = ref<FeatureCollection>(
               geometry: {
                 type: 'Point',
                 coordinates: [
-                  props.modelValue.lng,
-                  props.modelValue.lat
+                  props.modelValue!.lng,
+                  props.modelValue!.lat
                 ]
               },
               properties: {}
@@ -111,12 +133,6 @@ const clearMarker = () => {
     features: []
   }
 }
-
-/* ------------------------------------------------------------------
- * Modifier key helper
- * ------------------------------------------------------------------ */
-const isModifierPressed = (e: MouseEvent) =>
-    e.ctrlKey || e.metaKey
 
 /* ------------------------------------------------------------------
  * Layer Definition
@@ -176,9 +192,6 @@ const onMapLoaded = (m: MapLibreMap) => {
 const onMarkerMouseDown = (e: MapMouseEvent) => {
   if (!isSelectable.value || !map.value) return
 
-  const original = e.originalEvent as MouseEvent
-  if (!isModifierPressed(original)) return
-
   e.preventDefault()
   isDragging.value = true
   map.value.getCanvas().style.cursor = 'grabbing'
@@ -207,9 +220,6 @@ const onMapMouseUp = (e: MapMouseEvent) => {
 const onMapClick = (e: MapMouseEvent) => {
   if (!isSelectable.value || isDragging.value) return
 
-  const original = e.originalEvent as MouseEvent
-  if (!isModifierPressed(original)) return
-
   setMarker(e.lngLat.lng, e.lngLat.lat)
 
   emit('update:modelValue', {
@@ -218,13 +228,18 @@ const onMapClick = (e: MapMouseEvent) => {
   })
 }
 
+const removeMarker = () => {
+  clearMarker()
+  emit('update:modelValue', null)
+}
+
 /* ------------------------------------------------------------------
  * Center handling
  * ------------------------------------------------------------------ */
 const computedCenter = computed<LngLatLike>(() => {
-  return props.modelValue
-      ? [props.modelValue.lng, props.modelValue.lat]
-      : [9.4370, 54.788]
+  return hasActiveMarker.value
+      ? [props.modelValue!.lng, props.modelValue!.lat]
+      : [9.47, 54.2]
 })
 
 /* ------------------------------------------------------------------
@@ -235,8 +250,11 @@ watch(
     (val) => {
       if (!map.value) return
 
-      if (!val) {
+      if (isUnsetLocation(val)) {
         clearMarker()
+        map.value.easeTo({
+          center: [9.47, 54.2]
+        })
         return
       }
 
@@ -257,7 +275,30 @@ watch(
   height: 100%;
 }
 
+.map-hint {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: var(--uranus-tiny-border-radius);
+  background: var(--uranus-bg);
+  border: 1px solid var(--uranus-card-border-color);
+  font-size: 0.9rem;
+  color: var(--uranus-color-2);
+}
+
 .map-footer {
   flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.map-remove-button {
+  border: 1px solid var(--uranus-color-6);
+  background: var(--uranus-bg);
+  color: var(--uranus-color-2);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--uranus-tiny-border-radius);
 }
 </style>

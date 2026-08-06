@@ -2,11 +2,14 @@
     src/api/dto/venue.dto.ts
 */
 
+export type VenueScope = 'shared' | 'organization'
+
 export interface VenueDTO {
     uuid: string | null
     org_uuid: string | null
     name: string
     type: string | null
+    scope?: VenueScope | null
 
     street?: string | null
     house_number?: string | null

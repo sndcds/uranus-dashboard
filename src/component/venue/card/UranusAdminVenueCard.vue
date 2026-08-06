@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <section>
+    <section v-if="showSpaceSection">
       <div>
         <h3>{{ t('venue_spaces') }}
           <UranusIconAction
@@ -133,6 +133,11 @@ const eventCountText = computed(() => {
   const count = props.venueListItem.eventCount
   if (count === 1) return t('event_count_singular')
   return uranusStringInterpolate(t('event_count_plural'), { count })
+})
+
+const showSpaceSection = computed(() => {
+  const scope = props.venueListItem.scope
+  return scope == null || scope === 'shared'
 })
 
 const emit = defineEmits<{

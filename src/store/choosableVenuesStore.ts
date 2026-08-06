@@ -17,6 +17,7 @@ interface VenueDTO {
     uuid: string
     name: string
     org_uuid: string
+    scope?: 'shared' | 'organization' | null
     city: string | null
     country: string | null
     spaces: SpaceDTO[]
@@ -37,6 +38,7 @@ function mapVenuesToBasicInfos(dto: ChoosableVenuesResponseDTO | null): BasicVen
                 result.push({
                     venueUuid: venue.uuid,
                     venueName: venue.name,
+                    scope: venue.scope ?? 'shared',
                     spaceUuid: space.uuid,
                     spaceName: space.name,
                     city: venue.city,
@@ -48,6 +50,7 @@ function mapVenuesToBasicInfos(dto: ChoosableVenuesResponseDTO | null): BasicVen
             result.push({
                 venueUuid: venue.uuid,
                 venueName: venue.name,
+                scope: venue.scope ?? 'shared',
                 spaceUuid: null,
                 spaceName: null,
                 city: venue.city,
@@ -132,6 +135,7 @@ export const useChoosableVenuesStore = defineStore(
                     map.set(v.venueUuid, {
                         venueUuid: v.venueUuid,
                         venueName: v.venueName,
+                        scope: v.scope ?? 'shared',
                         city: v.city,
                         spaces: [],
                     })

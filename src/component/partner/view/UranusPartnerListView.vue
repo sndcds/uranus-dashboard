@@ -74,7 +74,7 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import type {PartnerDTO, PartnerRequestDTO} from '@/api/dto/partnerDTO.ts'
+import type {PartnerDto, PartnerRequestDTO} from '@/api/dto/partner.dto.ts'
 import {
   mapPartnerListItem,
   mapPartnerRequestItem,
@@ -118,7 +118,7 @@ const loadPartnerList = async () => {
     canEditPartnerRights.value = apiResponse.data.edit_partner_rights
     canDeletePartnership.value = apiResponse.data.delete_partnership
 
-    const data = apiResponse.data.partner_grants as PartnerDTO[]
+    const data = apiResponse.data.partner_grants as PartnerDto[]
     partnerList.value = sortByOrgName((data || []).map(dto => mapPartnerListItem(dto)))
   } catch (err: unknown) {
     if (typeof err === 'object' && err && 'data' in err) {

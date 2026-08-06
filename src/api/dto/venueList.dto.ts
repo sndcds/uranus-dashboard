@@ -10,12 +10,12 @@ export interface VenueListSpaceDTO {
     can_delete_space: boolean
 }
 
-export type VenueListItemRecordKind = 'standard' | 'provisional'
+export type VenueListItemScope = 'shared' | 'organization'
 
 export interface VenueListItemDTO {
     venue_uuid: string
     venue_name: string
-    record_kind?: VenueListItemRecordKind | null
+    scope?: VenueListItemScope | null
     event_count: number
     spaces?: VenueListSpaceDTO[]
     can_add_event: boolean
@@ -32,7 +32,7 @@ export interface VenueListItemDTO {
     dark_theme_logo_uuid?: string | null
 }
 
-export interface VenueListDTO {
+export interface VenueListDto {
     org_uuid: string
     org_name: string
     total_upcoming_events: number

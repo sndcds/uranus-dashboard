@@ -141,10 +141,14 @@ async function loadVenuesForCurrentBounds() {
 
   const bbox = getMapBBox4326(currentMap)
   const bboxKey = createBBoxKey(bbox)
-  const params = new URLSearchParams({ bbox: bbox.join(',') })
+  const params = new URLSearchParams({
+    bbox: bbox.join(','),
+    scopes: ''
+  })
   if (props.portalUuid) {
     params.append('portal-uuid', props.portalUuid)
   }
+
   await loadVenues(`/api/venues/geojson?${params.toString()}`, bboxKey)
 }
 

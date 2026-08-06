@@ -6,7 +6,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { OrgModel } from '@/domain/org/org.model.ts'
 import { mapOrg, createEmptyOrg } from '@/domain/org/org.model.ts'
-import type { OrgDTO } from '@/api/dto/orgDTO.ts'
+import type { OrgDto } from '@/api/dto/org.dto.ts'
 
 export const useOrgStore = defineStore('org', () => {
     // State
@@ -38,7 +38,7 @@ export const useOrgStore = defineStore('org', () => {
     })
 
     // Actions
-    function loadFromApi(raw: OrgDTO) {
+    function loadFromApi(raw: OrgDto) {
         const org = mapOrg(raw)
         original.value = org
         draft.value = cloneOrg(org)
