@@ -138,6 +138,8 @@
   "light_theme_logo": "Dunkles Logo",
   "dark_theme_logo": "Helles Logo",
   "avatar": "Avatar",
+  "main_photo": "Hauptfoto",
+  "gallery_photo": "Galeriebild",
   "email_and_password_required": "Bitte E-Mail und Passwort eingeben.",
   "password__doesnt_meet_security_requirements": "Das Passwort erfüllt nicht die Sicherheitsanforderungen.",
   "invalid_email_format": "Bitte gib eine gültige E-Mail-Adresse ein.",
