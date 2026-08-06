@@ -49,7 +49,7 @@
             <UranusButton
                 v-if="hasFocusPoint"
                 size="small"
-                variant="tertiary"
+                variant="secondary"
                 type="button"
                 @click="removeFocusPoint"
             >
@@ -59,12 +59,12 @@
             <UranusButton
                 v-else
                 size="small"
-                variant="tertiary"
+                variant="secondary"
                 type="button"
-                :class="['uranus-image-set-focus-button', { 'is-active': focusPointModeActive }]"
+                class="set-focus-button"
                 @click="toggleFocusPointMode"
             >
-              {{ t('set_focus_point') }}
+              {{ focusPointModeActive ? t('cancel_focus_point') : t('set_focus_point') }}
             </UranusButton>
           </div>
         </div>
@@ -240,6 +240,8 @@ function onImageClick(e: MouseEvent) {
 
     localImageMeta.focusX = Math.min(Math.max(x, 0), 1)
     localImageMeta.focusY = Math.min(Math.max(y, 0), 1)
+
+    focusPointModeActive.value = false
     return
   }
 
@@ -367,17 +369,12 @@ onMounted(async () => {
 
 .focus-point {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background-color: red;
+  width: 16px;
+  height: 16px;
+  border: 3px solid red;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
-}
-
-.uranus-image-set-focus-button.is-active {
-  background: var(--uranus-color-6);
-  color: white;
 }
 
 .checker-bg {
