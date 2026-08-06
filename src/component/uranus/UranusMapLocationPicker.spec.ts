@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { createI18n } from 'vue-i18n'
 
 import UranusMapLocationPicker from './UranusMapLocationPicker.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 vi.mock('@/store/themeStore.ts', () => ({
   useThemeStore: () => ({ theme: 'light' }),
@@ -20,6 +21,7 @@ describe('UranusMapLocationPicker', () => {
     const wrapper = mount(UranusMapLocationPicker, {
       props: { modelValue: null, selectable: true },
       global: {
+        components: { UranusButton },
         plugins: [
           createI18n({
             legacy: false,
@@ -43,6 +45,7 @@ describe('UranusMapLocationPicker', () => {
     const wrapper = mount(UranusMapLocationPicker, {
       props: { modelValue: { lat: 54.1, lng: 10.1 }, selectable: true },
       global: {
+        components: { UranusButton },
         plugins: [
           createI18n({
             legacy: false,
@@ -60,5 +63,37 @@ describe('UranusMapLocationPicker', () => {
 
     expect(wrapper.text()).toContain('Marker entfernen')
     expect(wrapper.text()).not.toContain('Klicke in die Karte, um einen Marker zu setzen.')
+  })
+
+  it('treats 0/0 coordinates as unset and uses the default map center', () => {
+    const wrapper = mount(UranusMapLocationPicker, {
+      props: { modelValue: { lat: 0, lng: 0 }, selectable: true },
+      global: {
+        components: { UranusButton },
+        stubs: {
+          UranusMapRenderer: {
+            name: 'UranusMapRenderer',
+            props: ['center'],
+            template: '<div class="mock-map" />',
+          },
+        },
+        plugins: [
+          createI18n({
+            legacy: false,
+            locale: 'de',
+            messages: {
+              de: {
+                marker_set_location_hint: 'Klicke in die Karte, um einen Marker zu setzen.',
+                remove_marker: 'Marker entfernen',
+              },
+            },
+          }),
+        ],
+      },
+    })
+
+    expect(wrapper.text()).toContain('Klicke in die Karte, um einen Marker zu setzen.')
+    expect(wrapper.text()).not.toContain('Marker entfernen')
+    expect(wrapper.findComponent({ name: 'UranusMapRenderer' }).props('center')).toEqual([9.47, 54.2])
   })
 })

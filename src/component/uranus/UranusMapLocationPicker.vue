@@ -19,7 +19,7 @@
     <footer class="map-footer">
       <slot name="footer" />
       <UranusButton
-          v-if="props.modelValue"
+          v-if="hasActiveMarker"
           type="button"
           size="small"
           variant="tertiary"
@@ -69,8 +69,13 @@ const emit = defineEmits<{
 const map = ref<MapLibreMap | null>(null)
 const isDragging = ref(false)
 
+const isUnsetLocation = (value: { lat: number; lng: number } | null | undefined) => {
+  return !value || (value.lat === 0 && value.lng === 0)
+}
+
+const hasActiveMarker = computed(() => !isUnsetLocation(props.modelValue))
 const isSelectable = computed(() => props.selectable !== false)
-const showHint = computed(() => !props.modelValue)
+const showHint = computed(() => !hasActiveMarker.value)
 const hintText = computed(() => t('marker_set_location_hint'))
 
 /* ------------------------------------------------------------------
@@ -86,7 +91,7 @@ const mapStyle = computed(() =>
  * Marker Data (GeoJSON)
  * ------------------------------------------------------------------ */
 const markerData = ref<FeatureCollection>(
-    props.modelValue
+    hasActiveMarker.value
         ? {
           type: 'FeatureCollection',
           features: [
@@ -95,8 +100,8 @@ const markerData = ref<FeatureCollection>(
               geometry: {
                 type: 'Point',
                 coordinates: [
-                  props.modelValue.lng,
-                  props.modelValue.lat
+                  props.modelValue!.lng,
+                  props.modelValue!.lat
                 ]
               },
               properties: {}
@@ -232,9 +237,9 @@ const removeMarker = () => {
  * Center handling
  * ------------------------------------------------------------------ */
 const computedCenter = computed<LngLatLike>(() => {
-  return props.modelValue
-      ? [props.modelValue.lng, props.modelValue.lat]
-      : [9.4370, 54.788]
+  return hasActiveMarker.value
+      ? [props.modelValue!.lng, props.modelValue!.lat]
+      : [9.47, 54.2]
 })
 
 /* ------------------------------------------------------------------
@@ -245,8 +250,11 @@ watch(
     (val) => {
       if (!map.value) return
 
-      if (!val) {
+      if (isUnsetLocation(val)) {
         clearMarker()
+        map.value.easeTo({
+          center: [9.47, 54.2]
+        })
         return
       }
 
