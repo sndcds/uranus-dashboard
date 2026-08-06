@@ -8,13 +8,13 @@
   <div class="uranus-main-layout">
     <UranusDashboardHero :title="t('create_venue')" :subtitle="t('create_venue_description')" />
 
-    <UranusHelpPopup baseUrl="/help/create-venue" />
+    <!--UranusHelpPopup baseUrl="/help/create-venue" /-->
 
     <UranusForm>
       <div class="field-group">
-        <label class="uranus-label">
-          {{ t('venue_scope') }}
-        </label>
+        <h3>
+          {{ t('venue_choose_scope_question') }}
+        </h3>
 
         <UranusSegmentedSelect
             v-model="venueScope"

@@ -60,10 +60,10 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Venue Name',
         da: 'Navn på stedet',
     },
-    venue_scope: {
-        de: 'Zugehörigkeit des Ortes',
-        en: 'Venue ownership',
-        da: 'Stedets tilhørsforhold',
+    venue_choose_scope_question: {
+        de: 'Welchen Ortstyp möchtest du erstellen?',
+        da: 'Hvilken type sted vil du oprette?',
+        en: 'What type of venue would you like to create?'
     },
     venue_scope_shared: {
         de: 'Eigener Ort',

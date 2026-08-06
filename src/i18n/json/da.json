@@ -384,7 +384,7 @@
   "venue_delete": "Slet sted",
   "edit_venue": "Rediger spillested",
   "venue_name": "Navn på stedet",
-  "venue_scope": "Stedets tilhørsforhold",
+  "venue_choose_scope_question": "Hvilken type sted vil du oprette?",
   "venue_scope_shared": "Eget sted",
   "venue_scope_organization": "Midlertidigt sted",
   "venue_scope_shared_info": "<h3>Eget sted</h3>Vælg <strong>Eget sted</strong>, hvis arrangementsstedet tilhører din organisation, og du er ansvarlig for at administrere det. Du bestemmer dermed, hvilke organisationer der kan bruge stedet til arrangementer.<br><br>Egne steder kan indeholde lokaler, hvor du kan tilføje oplysninger om tilgængelighed. Du kan også senere gøre dem tilgængelige som arrangementssteder for andre organisationer.",
