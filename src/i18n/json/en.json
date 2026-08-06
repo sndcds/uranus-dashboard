@@ -384,7 +384,7 @@
   "venue_delete": "Delete venue",
   "edit_venue": "Edit Venue",
   "venue_name": "Venue Name",
-  "venue_scope": "Venue ownership",
+  "venue_choose_scope_question": "What type of venue would you like to create?",
   "venue_scope_shared": "Own venue",
   "venue_scope_organization": "Provisional venue",
   "venue_scope_shared_info": "<h3>Own venue</h3>Choose <strong>Own venue</strong> if the venue belongs to your organisation and you are responsible for managing it. You then decide which organisations can use the venue for events.<br><br>Own venues can include spaces for which you can add accessibility information. You can also make them available as event venues for other organisations later.",

@@ -384,7 +384,7 @@
   "venue_delete": "Veranstaltungsort löschen",
   "edit_venue": "Veranstaltungsort bearbeiten",
   "venue_name": "Name des Veranstaltungsorts",
-  "venue_scope": "Zugehörigkeit des Ortes",
+  "venue_choose_scope_question": "Welchen Ortstyp möchtest du erstellen?",
   "venue_scope_shared": "Eigener Ort",
   "venue_scope_organization": "Provisorischer Ort",
   "venue_scope_shared_info": "<h3>Eigener Ort</h3>Wähle <strong>Eigener Ort</strong>, wenn der Veranstaltungsort zu deiner Organisation gehört und du für seine Verwaltung zuständig bist. Du entscheidest dann, welche Organisationen den Ort für Veranstaltungen nutzen können.<br><br>Eigene Orte können Räume enthalten, für die du Informationen zur Barrierefreiheit hinterlegen kannst. Außerdem kannst du sie später für andere Organisationen als Veranstaltungsort freigeben.",
