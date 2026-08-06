@@ -700,6 +700,16 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Avatar',
         da: 'Avatar',
     },
+    main_photo: {
+        de: 'Hauptfoto',
+        en: 'Main photo',
+        da: 'Hovedbillede'
+    },
+    gallery_photo: {
+        de: 'Galeriebild',
+        en: 'Gallery photo',
+        da: 'Galleribillede'
+    },
     email_and_password_required: {
         de: 'Bitte E-Mail und Passwort eingeben.',
         en: 'Please enter your email and password.',
