@@ -12,7 +12,7 @@
 
     <UranusForm>
       <div class="field-group">
-        <h3>
+        <h3 style="margin-bottom: .5rem">
           {{ t('venue_choose_scope_question') }}
         </h3>
 
