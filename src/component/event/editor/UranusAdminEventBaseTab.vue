@@ -60,7 +60,6 @@
           <UranusSegmentedSelect
               v-model="logoModeProxy"
               :options="logoModeOptions"
-              full-width
               size="medium"
           />
         </UranusLabel>
@@ -110,6 +109,7 @@ import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+
 const emit = defineEmits<{
   (event: 'dirty-change', value: boolean): void
 }>()
@@ -211,7 +211,8 @@ function buildPayload(draft: AdminEvent, original: AdminEvent) {
 
 // Commit tab changes
 async function commitBaseTab() {
-  const { draft, original } = store
+  const draft = store.draft
+  const original = store.original
   if (!draft || !original) return
 
   store.saving = true
