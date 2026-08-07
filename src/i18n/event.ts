@@ -175,6 +175,21 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Link to the official event page',
         da: 'Link til den officielle side med begivenheden',
     },
+    event_logo_mode: {
+        de: 'Verwendetes Logo',
+        en: 'Logo to use',
+        da: 'Logo der skal bruges',
+    },
+    event_logo_mode_organizer: {
+        de: 'Veranstalterlogo',
+        en: 'Organizer logo',
+        da: 'Arrangørlogo',
+    },
+    event_logo_mode_venue: {
+        de: 'Ortslogo',
+        en: 'Venue logo',
+        da: 'Stedlogo',
+    },
     event_link_title: {
         de: 'Linktitel',
         en: 'Link title',
