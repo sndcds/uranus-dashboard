@@ -12,7 +12,7 @@
 
     <UranusForm>
       <div class="field-group">
-        <h3>
+        <h3 style="margin-bottom: .5rem">
           {{ t('venue_choose_scope_question') }}
         </h3>
 
@@ -60,7 +60,6 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
-import UranusHelpPopup from '@/component/uranus/UranusHelpPopup.vue'
 import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
 
 const { t } = useI18n()
