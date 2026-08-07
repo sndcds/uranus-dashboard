@@ -55,6 +55,16 @@
         />
       </UranusCard>
 
+      <UranusFormRow>
+        <UranusLabel id="event-logo-mode" :label="t('event_logo_mode')">
+          <UranusSegmentedSelect
+              v-model="logoModeProxy"
+              :options="logoModeOptions"
+              size="medium"
+          />
+        </UranusLabel>
+      </UranusFormRow>
+
       <div class="tab-actions">
         <UranusButton :disabled="store.saving || !isDirty" @click="resetBaseTab">
           <template #icon><Undo /></template>
@@ -95,9 +105,11 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import { Save, Undo } from 'lucide-vue-next'
 import UranusEventCategorySelector from '@/component/event/ui/UranusEventCategorySelector.vue'
 import UranusCard from "@/component/ui/UranusCard.vue";
+import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+
 const emit = defineEmits<{
   (event: 'dirty-change', value: boolean): void
 }>()
@@ -122,6 +134,16 @@ const draftContentLanguage = computed({
   set: (val: string) => { if (store.draft) store.draft.contentLanguage = val }
 })
 
+const logoModeProxy = computed({
+  get: () => store.draft?.logoMode ?? 1,
+  set: (val: number) => { if (store.draft) store.draft.logoMode = val }
+})
+
+const logoModeOptions = computed(() => [
+  { label: t('event_logo_mode_organizer'), value: 1 },
+  { label: t('event_logo_mode_venue'), value: 2 },
+])
+
 // Fields to track for base tab dirty state
 const baseFields = [
   'releaseStatus',
@@ -132,6 +154,7 @@ const baseFields = [
   'subtitle',
   'description',
   'summary',
+  'logoMode',
 ] as const
 
 
@@ -181,13 +204,15 @@ function buildPayload(draft: AdminEvent, original: AdminEvent) {
   if (draft.subtitle !== original.subtitle) payload.subtitle = draft.subtitle
   if (draft.description !== original.description) payload.description = draft.description
   if (draft.summary !== original.summary) payload.summary = draft.summary
+  if (draft.logoMode !== original.logoMode) payload.logo_mode = draft.logoMode
 
   return payload
 }
 
 // Commit tab changes
 async function commitBaseTab() {
-  const { draft, original } = store
+  const draft = store.draft
+  const original = store.original
   if (!draft || !original) return
 
   store.saving = true

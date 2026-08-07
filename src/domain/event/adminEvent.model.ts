@@ -21,6 +21,7 @@ export type AdminEvent = {
     subtitle: string | null
     description: string | null
     summary: string | null
+    logoMode: number | null
     eventLinks: EventLink[] | null
 
     occasionTypeId: number | null
@@ -72,6 +73,7 @@ export function createAdminEvent(props: Partial<AdminEvent> = {}): AdminEvent {
         subtitle: null,
         description: null,
         summary: null,
+        logoMode: null,
         eventLinks: null,
 
         occasionTypeId: null,

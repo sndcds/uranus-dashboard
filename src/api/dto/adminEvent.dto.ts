@@ -28,6 +28,7 @@ export interface AdminEventDTO {
 
     description?: string | null
     summary?: string | null
+    logo_mode?: number | null
     participation_info?: string | null
     meeting_point?: string | null
 

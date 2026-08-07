@@ -32,7 +32,7 @@
         <img
             v-if="event.imageUrl"
             class="uranus-event-card-image"
-            :src="event.imageUrl + '?width=160&ratio=16:9'"
+            :src="imageSrc"
             :alt="event.title"
             @error="onImageError"
         />
@@ -147,9 +147,19 @@ import { apiErrorI18nKey } from '@/util/apiError.ts'
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 
 const placeholderImage = '/assets/event-dummy.png'
+const imageLoadFailed = ref(false)
+
+const imageSrc = computed(() => {
+  if (!props.event.imageUrl || imageLoadFailed.value) {
+    return placeholderImage
+  }
+
+  return `${props.event.imageUrl}?width=160&ratio=16:9`
+})
 
 const onImageError = (e: Event) => {
   const img = e.target as HTMLImageElement
+  imageLoadFailed.value = true
   img.src = placeholderImage
 }
 
