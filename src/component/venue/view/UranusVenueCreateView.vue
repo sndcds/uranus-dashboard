@@ -60,7 +60,6 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
-import UranusHelpPopup from '@/component/uranus/UranusHelpPopup.vue'
 import UranusSegmentedSelect from '@/component/ui/UranusSegmentedSelect.vue'
 
 const { t } = useI18n()
