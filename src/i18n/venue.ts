@@ -21,9 +21,9 @@ export const uranusI18nVenueTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Stedstype',
     },
     venues_list_hero_description: {
-        de: 'Alle Veranstaltungsorte, an denen du Events erstellen kannst.',
-        en: 'All venues where you can create events.',
-        da: 'Alle steder, hvor du kan oprette begivenheder.',
+        de: 'Verwalte die Veranstaltungsorte deiner Organisation und lege fest, wo deine Veranstaltungen stattfinden.',
+        en: 'Manage your organization’s venues and define where your events take place.',
+        da: 'Administrer din organisations spillesteder, og angiv, hvor dine arrangementer finder sted.',
     },
     unspecified_venue_type: {
         de: 'Unbekannter Ortstyp',

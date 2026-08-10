@@ -115,6 +115,16 @@ export const uranusI18nOrgTranslations: Record<string, Record<UranusLocaleKey, s
         en: "Invited on",
         da: "Inviteret den",
     },
+    remove_team_member: {
+        de: 'Teammitglied entfernen',
+        en: 'Remove team member',
+        da: 'Fjern teammedlem',
+    },
+    confirm_remove_team_member: {
+        de: 'Möchtest du dieses Teammitglied wirklich entfernen? Gib dein Passwort ein, um fortzufahren.',
+        en: 'Are you sure you want to remove this team member? Enter your password to continue.',
+        da: 'Er du sikker på, at du vil fjerne dette teammedlem? Indtast din adgangskode for at fortsætte.',
+    },
     failed_to_delete_org: {
         de: 'Die Organisation konnte nicht gelöscht werden. Bitte versuche es erneut.',
         en: 'The organizer could not be deletet. Please try again.',
