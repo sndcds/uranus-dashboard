@@ -21,7 +21,7 @@
           <UranusButton
               v-if="venueListItem.canDeleteVenue"
               variant="secondary" size="small"
-              @click="onDeleteVenue(venueListItem)"
+              @click.prevent.stop="onDeleteVenue(venueListItem)"
           >
             {{ t('delete') }}
           </UranusButton>
@@ -181,18 +181,19 @@ const cancelDeleteVenue = () => {
 }
 
 const confirmDeleteVenue = async ({ password }: { password: string }) => {
-  if (!pendingVenueUuid.value) return
+  const venueUuid = pendingVenueUuid.value
+  if (!venueUuid) return
 
   deleteVenueError.value = ''
   isDeletingVenue.value = true
 
   try {
-    await apiFetch(`/api/admin/venue/${pendingVenueUuid.value}`, {
+    await apiFetch(`/api/admin/venue/${venueUuid}`, {
       method: 'DELETE',
       body: JSON.stringify({ password }),
     })
 
-    emit('deleted', pendingVenueUuid.value)
+    emit('deleted', venueUuid)
     cancelDeleteVenue()
   } catch (err) {
     if (err instanceof ApiError) {
