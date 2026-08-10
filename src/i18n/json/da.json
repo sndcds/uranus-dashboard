@@ -335,6 +335,8 @@
   "confirm_delete_org_description": "Du er ved at slette \"~~name~~\". Indtast din adgangskode for at fortsætte.",
   "org_team_user_invitations": "Inviterede teammedlemmer",
   "org_team_invited_on_date": "Inviteret den",
+  "remove_team_member": "Fjern teammedlem",
+  "confirm_remove_team_member": "Er du sikker på, at du vil fjerne dette teammedlem? Indtast din adgangskode for at fortsætte.",
   "failed_to_delete_org": "Oganisationen kunne ikke slettes. Prøv igen.",
   "favorite_lists": "Favoritlister",
   "favorite_lists_description": "Administrer dine gemte favoritter ét sted.",

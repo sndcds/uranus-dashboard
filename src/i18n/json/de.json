@@ -335,6 +335,8 @@
   "confirm_delete_org_description": "Du bist dabei, \"~~name~~\" zu löschen. Gib dein Passwort ein, um fortzufahren.",
   "org_team_user_invitations": "Eingeladene Team-Mitglieder",
   "org_team_invited_on_date": "Eingeladen am",
+  "remove_team_member": "Teammitglied entfernen",
+  "confirm_remove_team_member": "Möchtest du dieses Teammitglied wirklich entfernen? Gib dein Passwort ein, um fortzufahren.",
   "failed_to_delete_org": "Die Organisation konnte nicht gelöscht werden. Bitte versuche es erneut.",
   "favorite_lists": "Favoritenlisten",
   "favorite_lists_description": "Verwalte deine gespeicherten Favoriten an einem Ort.",

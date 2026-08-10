@@ -67,6 +67,18 @@
     </div>
   </div>
 
+  <UranusPasswordConfirmModal
+      :show="showRemoveMemberModal"
+      :title="t('remove_team_member')"
+      :question="t('confirm_remove_team_member')"
+      :confirm-text="t('delete')"
+      :loading-text="t('deleting')"
+      :error="removeMemberError"
+      :is-submitting="isRemovingMember"
+      @confirm="confirmRemoveMember"
+      @cancel="cancelRemoveMember"
+  />
+
 </template>
 
 <script setup lang="ts">
@@ -80,6 +92,7 @@ import { Edit, Trash2 } from 'lucide-vue-next'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -91,6 +104,10 @@ const errorMessage = ref<string | null>(null)
 const members = ref<any[]>([])
 const invitations = ref<any[]>([])
 const canManagePermissions = ref<boolean>(false)
+const showRemoveMemberModal = ref(false)
+const removeMemberError = ref('')
+const isRemovingMember = ref(false)
+const pendingMemberUuid = ref<string | null>(null)
 
 
 const loadTeam = async () => {
@@ -127,17 +144,37 @@ const loadTeam = async () => {
 async function onRemoveMember(memberUuid: string) {
   if (!orgUuid.value || !memberUuid) return
 
-  errorMessage.value = null
+  pendingMemberUuid.value = memberUuid
+  removeMemberError.value = ''
+  showRemoveMemberModal.value = true
+}
+
+function cancelRemoveMember() {
+  showRemoveMemberModal.value = false
+  removeMemberError.value = ''
+  pendingMemberUuid.value = null
+}
+
+async function confirmRemoveMember({ password }: { password: string }) {
+  const memberUuid = pendingMemberUuid.value
+  if (!orgUuid.value || !memberUuid) return
+
+  removeMemberError.value = ''
+  isRemovingMember.value = true
 
   try {
     await apiFetch(`/api/admin/org/${orgUuid.value}/team/member/${memberUuid}`, {
       method: 'DELETE',
+      body: JSON.stringify({ password }),
     })
 
+    cancelRemoveMember()
     await loadTeam()
   } catch (err) {
-    errorMessage.value =
+    removeMemberError.value =
       err instanceof Error ? err.message : t('org_team_load_error')
+  } finally {
+    isRemovingMember.value = false
   }
 }
 
