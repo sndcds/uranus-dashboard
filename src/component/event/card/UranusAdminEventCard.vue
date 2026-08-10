@@ -262,26 +262,34 @@ const confirmDelete = async ({password, selectedOption}: {
   password: string
   selectedOption?: string | number
 }) => {
+  console.log("confirmDelete", selectedOption)
+  console.log("props.event.seriesTotal", props.event.seriesTotal)
+  console.log("pendingDeleteUuid.value", pendingDeleteUuid.value)
   if (!props.event.seriesTotal || !password || !pendingDeleteUuid.value) return
 
   isDeleting.value = true
   deleteError.value = ''
 
   try {
+    console.log("1...")
     const deleteEntireSeries = selectedOption === 'series'
 
+    console.log("2...")
     const body: Record<string, unknown> = { password }
     if (deleteEntireSeries) body.delete_series = true
 
+    console.log("3...")
     let apiPath = `/api/admin/event/${pendingDeleteUuid.value}`
     if (!deleteEntireSeries && pendingEventDateUuid.value !== null && props.event.seriesTotal > 1) {
       apiPath = `/api/admin/event/${pendingDeleteUuid.value}/date/${pendingEventDateUuid.value}`
     }
+    console.log("4...")
 
     const apiResponse = await apiFetch(apiPath, {
       method: 'DELETE',
       body: JSON.stringify(body),
     })
+    console.log("5...")
 
     // Success → emit deleted
     emit('deleted', {
@@ -289,6 +297,7 @@ const confirmDelete = async ({password, selectedOption}: {
       dateUuid: pendingEventDateUuid.value,
       deleteSeries: deleteEntireSeries,
     })
+    console.log("6...")
 
     cancelDelete()
   } catch (err) {
