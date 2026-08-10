@@ -38,6 +38,7 @@ import type { CSSProperties } from 'vue'
 
 const props = defineProps<{
   selectedOrg: OrgSelectInfo | null
+  excludeOrgUuid?: string | null
 }>()
 
 const emit = defineEmits<{
@@ -97,7 +98,10 @@ async function fetchOrgs(q: string) {
     const apiPath = apiBaseUrl() + `/api/choosable-orgs?name=*${encodeURIComponent(q)}*`
     const res = await fetch(apiPath)
     const json = await res.json()
-    results.value = json.data ?? []
+    const organizations = json.data ?? []
+    results.value = props.excludeOrgUuid
+      ? organizations.filter((org: OrgSelectInfo) => org.uuid !== props.excludeOrgUuid)
+      : organizations
     isOpen.value = results.value.length > 0
     selectedIndex.value = -1
   } catch (err) {

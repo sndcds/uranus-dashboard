@@ -14,7 +14,11 @@
       <UranusForm>
         <h2>{{ t('search_partner_organization') }}</h2>
         <p>{{ t('search_partner_organization_tip') }}</p>
-        <UranusOrgTypeahead ref="orgTypeahead" v-model:selectedOrg="chosenOrg" />
+        <UranusOrgTypeahead
+          ref="orgTypeahead"
+          v-model:selectedOrg="chosenOrg"
+          :exclude-org-uuid="appStore.orgUuid"
+        />
       </UranusForm>
     </UranusCard>
 
