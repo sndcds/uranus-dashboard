@@ -265,7 +265,7 @@ const confirmDelete = async ({password, selectedOption}: {
   console.log("confirmDelete", selectedOption)
   console.log("props.event.seriesTotal", props.event.seriesTotal)
   console.log("pendingDeleteUuid.value", pendingDeleteUuid.value)
-  if (!props.event.seriesTotal || !password || !pendingDeleteUuid.value) return
+  if (!password || !pendingDeleteUuid.value) return
 
   isDeleting.value = true
   deleteError.value = ''
