@@ -38,7 +38,7 @@
             <UranusIconAction
                 :icon="Trash2"
                 :title="t('delete')"
-                :onClick="() => onRemoveMember"
+                :onClick="() => onRemoveMember(member.user_uuid)"
                 style="padding: 0.5rem;"
             />
           </div>
@@ -124,8 +124,21 @@ const loadTeam = async () => {
   }
 }
 
-function onRemoveMember() {
+async function onRemoveMember(memberUuid: string) {
+  if (!orgUuid.value || !memberUuid) return
 
+  errorMessage.value = null
+
+  try {
+    await apiFetch(`/api/admin/org/${orgUuid.value}/team/member/${memberUuid}`, {
+      method: 'DELETE',
+    })
+
+    await loadTeam()
+  } catch (err) {
+    errorMessage.value =
+      err instanceof Error ? err.message : t('org_team_load_error')
+  }
 }
 
 onMounted(loadTeam)
