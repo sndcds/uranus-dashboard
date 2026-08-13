@@ -29,7 +29,7 @@
           {{ t('invite_accept_membership_help_message') }}
         </p>
 
-        <button class="uranus-button" type="button" @click="goToOrgs">
+        <button type="button" class="uranus-button--medium" @click="goToOrgs">
           {{ t('invite_accept_go_to_orgs_cta') }}
         </button>
       </template>
@@ -38,7 +38,7 @@
       <template #error>
         <p class="error-message">{{ errorMessage }}</p>
 
-        <router-link to="/admin/dashboard" class="uranus-button">
+        <router-link to="/admin/dashboard" class="uranus-button--medium">
           {{ t('invite_activate_back_to_login') }}
         </router-link>
       </template>
