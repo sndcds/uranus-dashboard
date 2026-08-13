@@ -207,6 +207,17 @@ const routes = [
         ],
     },
     {
+        path: '/app/activate',
+        component: GenericLayout,
+        children: [
+            {
+                path: 'team-invitation',
+                name: 'app-activate-team-invitation',
+                component: UranusOrgTeamInviteActivateView,
+            },
+        ],
+    },
+    {
         path: '/slideshow',
         name: 'event-slideshow',
         component: UranusEventSlideshowView,
@@ -258,11 +269,6 @@ const routes = [
                 path: 'account',
                 name: 'app-activate-account',
                 component: UserActivateView,
-            },
-            {
-                path: 'team-invitation',
-                name: 'app-activate-team-invitation',
-                component: UranusOrgTeamInviteActivateView,
             },
         ],
     },
