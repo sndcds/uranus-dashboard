@@ -6,7 +6,7 @@
   <UranusBasicCardPage>
     <UranusStatusCard
         :state="statusState"
-        :title="t('invite_accept_welcome_title')"
+        :title="statusState == 'success' ? t('invite_accept_welcome_title') : t('invite_accept_error_title')"
         :loading-message="t('invite_activate_processing')"
     >
 
@@ -119,7 +119,7 @@ const acceptInvite = async () => {
 
 
   try {
-    const apiPath = '/api/admin/org/team/invite/accept'
+    const apiPath = '/api/org/team/invite/accept'
     const apiResponse = await apiFetch<InviteAcceptResponse>(apiPath, {
       method: 'POST',
       body: JSON.stringify({ token }),
