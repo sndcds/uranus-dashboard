@@ -308,7 +308,7 @@
   "activation_failed": "Kontoaktivierung fehlgeschlagen.<br>Bitte versuche es erneut oder kontaktiere den Support.",
   "invite_accept_welcome_title": "Willkommen an Bord",
   "invite_accept_error_title": "Team-Beitritt fehlgeschlagen",
-  "invite_accept_joined_org_message": "Du bist dem Team bei erfolgreich beigetreten",
+  "invite_accept_joined_org_message": "Du bist dem Team erfolgreich beigetreten: ",
   "invite_accept_no_action_required_message": "Keine weiteren Schritte erforderlich — dein Konto ist vollständig eingerichtet und bereit zur Nutzung.",
   "invite_accept_permissions_info_message": "Du kannst nun entsprechend deiner Berechtigungen Inhalte bearbeiten und Aktionen ausführen. Alle deine Mitgliedschaften und Zugriffsrechte findest du auf deiner Profilseite.",
   "invite_accept_membership_help_message": "Wenn du mehr darüber erfahren möchtest, wie Teammitgliedschaften funktionieren, einschließlich Rollen und Berechtigungen, kannst du hier mehr lesen:",
