@@ -395,6 +395,11 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         en: "Welcome aboard",
         da: "Velkommen ombord",
     },
+    invite_accept_error_title: {
+        de: "Team-Beitritt fehlgeschlagen",
+        en: "Team join failed",
+        da: "Deltagelse i team mislykkedes",
+    },
     invite_accept_joined_org_message: {
         de: "Du bist dem Team bei erfolgreich beigetreten",
         en: "You’ve successfully joined the team at",
@@ -419,6 +424,11 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         de: "Zur Organisationsseite",
         en: "To organizations page",
         da: "Til organisationssiden",
+    },
+    invite_activate_back_to_login: {
+        de: "Zum Login",
+        en: "Go to login",
+        da: "Gå til login",
     },
     invite_activate_error_fallback: {
         de: "Das hat leider nicht geklappt. Bitte kontaktiere die einladende Organisation.",
