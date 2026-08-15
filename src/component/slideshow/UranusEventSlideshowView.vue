@@ -4,7 +4,7 @@
 
 <template>
   <div class="event-slideshow-page">
-    <UranusEventSlideshow v-if="events.length" :events="events" />
+    <UranusEventSlideshow v-if="events.length" :events="events" :preset="currentPreset" :duration="currentDuration" :transition_time="currentTransitionTime" />
     <div v-else class="loading">
       Loading events...
     </div>
@@ -17,13 +17,25 @@ import { apiFetch } from '@/api.ts'
 import UranusEventSlideshow from '@/component/slideshow/UranusEventSlideshow.vue'
 
 const events = ref<any[]>([])
+const currentPreset = 'full-hd-portrait ad-1x1'
+const currentDuration = 7
+const currentTransitionTime = 0.8
 
-async function fetchEvents(filters: Record<string, any> = {}) {
+async function fetchEvents(options: Record<string, any> = {}) {
   try {
-    const params = new URLSearchParams(filters).toString()
+    // API currently expects flat search params; if `filter` is provided,
+    // serialize its entries under their own keys.
+    const paramsObj: Record<string, any> = {}
+    if (options.filter && typeof options.filter === 'object') {
+      Object.assign(paramsObj, options.filter)
+    } else {
+      Object.assign(paramsObj, options)
+    }
+
+    const params = new URLSearchParams(paramsObj).toString()
     const apiPath = `/api/events${params ? `?${params}` : ''}`
     const apiResponse = await apiFetch<any>(apiPath)
-    events.value = apiResponse.data.events
+    events.value = apiResponse.data?.events || []
 
   } catch (error: any) {
     console.error('Failed to load events:', error) // TODO: Show error or placeholder content
@@ -31,10 +43,13 @@ async function fetchEvents(filters: Record<string, any> = {}) {
 }
 
 onMounted(() => {
-  fetchEvents({
-    search: 'jazz',
-    start: '2024-02-01',
-    end: '2027-12-31'
+    fetchEvents({
+    preset: currentPreset,
+    filter: {
+      search: 'jazz',
+      start: '2024-02-01',
+      end: '2027-12-31'
+    }
   })
 })
 </script>
