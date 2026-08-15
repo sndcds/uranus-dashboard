@@ -710,6 +710,31 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Gallery photo',
         da: 'Galleribillede'
     },
+    ad_1x1: {
+        de: 'Werbebild 1:1',
+        en: 'Advertisement image 1:1',
+        da: 'Annoncebillede 1:1'
+    },
+    ad_9x16: {
+        de: 'Werbebild 9:16',
+        en: 'Advertisement image 9:16',
+        da: 'Annoncebillede 9:16'
+    },
+    ad_16x9: {
+        de: 'Werbebild 16:9',
+        en: 'Advertisement image 16:9',
+        da: 'Annoncebillede 16:9'
+    },
+    poster: {
+        de: 'Plakat',
+        en: 'Poster',
+        da: 'Plakat'
+    },
+    insta_5x4: {
+        de: 'Instagram-Bild 5:4',
+        en: 'Instagram image 5:4',
+        da: 'Instagram-billede 5:4'
+    },
     email_and_password_required: {
         de: 'Bitte E-Mail und Passwort eingeben.',
         en: 'Please enter your email and password.',

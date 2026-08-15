@@ -89,13 +89,14 @@ import UranusAdminEventVenueTab from '@/component/event/editor/UranusAdminEventV
 import UranusAdminEventRegisterTab from '@/component/event/editor/UranusAdminEventRegisterTab.vue'
 import UranusAdminEventTicketTab from '@/component/event/editor/UranusAdminEventTicketTab.vue'
 import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModal.vue'
-import UranusAdminEventVisitorInfo from '@/component/event/editor/UranusAdminEventVisitorInfo.vue'
+import UranusAdminEventVisitorInfoTab from '@/component/event/editor/UranusAdminEventVisitorInfoTab.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import {StepBack, Rocket, Eye} from 'lucide-vue-next'
 import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChangesModal.vue'
 import { useSaveShortcut } from '@/composable/useSaveShortcut.ts'
 import UranusEventReleaseChip from "@/component/event/ui/UranusEventReleaseChip.vue";
+import UranusAdminEventImageTab from "@/component/event/editor/UranusAdminEventImageTab.vue";
 
 type EventEditorTabExpose = {
   commitTab?: () => Promise<void> | void
@@ -144,7 +145,18 @@ const unsavedChangesLabel = computed(() =>
     t('unsaved_changes')
 )
 
-type TabKey = 'base' | 'dates' | 'venue' | 'tags' | 'links' | 'participate' | 'register' | 'ticket' | 'visitor'
+type TabKey =
+    'base' |
+    'dates' |
+    'venue' |
+    'tags' |
+    'links' |
+    'participate' |
+    'register' |
+    'ticket' |
+    'visitor' |
+    'images'
+
 const activeTab = ref<TabKey>('base')
 
 const tabs = [
@@ -157,6 +169,7 @@ const tabs = [
   { key: 'register', labelKey: 'event_tab_register' },
   { key: 'ticket', labelKey: 'event_tab_ticket' },
   { key: 'visitor', labelKey: 'event_tab_visitor' },
+  { key: 'images', labelKey: 'event_tab_images' },
 ] as const
 
 const tabDirtyState = ref<Record<TabKey, boolean>>(createCleanDirtyState())
@@ -177,6 +190,7 @@ function createCleanDirtyState(): Record<TabKey, boolean> {
     register: false,
     ticket: false,
     visitor: false,
+    images: false,
   }
 }
 
@@ -215,7 +229,8 @@ const currentTabComponent = computed(() => {
     case 'participate': return UranusAdminEventParticipateTab
     case 'register': return UranusAdminEventRegisterTab
     case 'ticket': return UranusAdminEventTicketTab
-    case 'visitor': return UranusAdminEventVisitorInfo
+    case 'visitor': return UranusAdminEventVisitorInfoTab
+    case 'images': return UranusAdminEventImageTab
     case 'base':
     default:
       return UranusAdminEventBaseTab

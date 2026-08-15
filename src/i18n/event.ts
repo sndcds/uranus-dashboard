@@ -75,6 +75,11 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Info',
         da: 'Info',
     },
+    event_tab_images: {
+        de: 'Bilder',
+        en: 'Images',
+        da: 'Billeder',
+    },
     event_count_singular: {
         de: '1 Veranstaltung',
         en: '1 event',
