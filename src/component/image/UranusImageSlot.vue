@@ -113,6 +113,7 @@ async function loadImage() {
 
 
 function openDialog() {
+  errorMessage.value = null
   dialogOpen.value = true
 }
 
@@ -157,7 +158,7 @@ async function removeImage() {
 
   // Ask the user for confirmation
   const ok = confirm(t('delete_image_alert'))
-  if (!ok) return  // user canceled
+  if (!ok) return  // User canceled
 
   try {
     const apiPath = `/api/admin/image/${props.context}/${props.contextUuid}/${props.identifier}`

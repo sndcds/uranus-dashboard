@@ -92,7 +92,7 @@ function localizedDate(dateStr: string) {
 }
 
 .frame-9-16 {
-  /* keep the 9:16 ratio and be as large as possible within viewport */
+  /* Keep the 9:16 ratio and be as large as possible within viewport */
   width: min(calc(100vh * 9 / 16), 100vw);
   height: min(100vh, calc(100vw * 16 / 9));
   max-height: 100vh;
@@ -117,10 +117,10 @@ function localizedDate(dateStr: string) {
   overflow: hidden;
 }
 
-/* square image container that keeps the same size inside the 9:16 frame */
+/* Square image container that keeps the same size inside the 9:16 frame */
 .image-wrap.square {
   width: 100%;
-  /* use padding-top trick to force square aspect ratio */
+  /* Use padding-top trick to force square aspect ratio */
   position: relative;
   padding-top: 100%;
   flex: 0 0 auto;
