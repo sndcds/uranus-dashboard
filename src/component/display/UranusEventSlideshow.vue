@@ -19,8 +19,8 @@
 
 <script setup lang="ts">
 import {ref, onMounted, onBeforeUnmount, computed} from 'vue'
-import UranusEventSlide from '@/component/slideshow/UranusEventSlide.vue'
-import FullHdPortrait from '@/component/slideshow/presets/FullHdPortrait.vue'
+import UranusEventSlide from '@/component/display/UranusEventSlide.vue'
+import FullHdPortrait from '@/component/display/presets/FullHdPortrait.vue'
 
 
 const props = defineProps<{

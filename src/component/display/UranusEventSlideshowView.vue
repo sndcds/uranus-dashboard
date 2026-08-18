@@ -1,5 +1,5 @@
 <!--
-  src/component/slideshow/UranusEventSlideshowView.vue
+  src/component/display/UranusEventSlideshowView.vue
 -->
 
 <template>
@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { apiFetch } from '@/api.ts'
-import UranusEventSlideshow from '@/component/slideshow/UranusEventSlideshow.vue'
+import UranusEventSlideshow from '@/component/display/UranusEventSlideshow.vue'
 
 const events = ref<any[]>([])
 const currentPreset = 'full-hd-portrait ad-1x1'
@@ -42,15 +42,20 @@ async function fetchEvents(options: Record<string, any> = {}) {
   }
 }
 
+const requestJson = `{
+  "preset": {
+    "name": "full-hd-portrait ad-1x1"
+  },
+  "filter": {
+    "search": "jazz",
+    "start": "2024-02-01",
+    "end": "2027-12-31"
+  }
+}`
+
 onMounted(() => {
-    fetchEvents({
-    preset: currentPreset,
-    filter: {
-      search: 'jazz',
-      start: '2024-02-01',
-      end: '2027-12-31'
-    }
-  })
+    const options = JSON.parse(requestJson)
+    fetchEvents(options)
 })
 </script>
 

@@ -12,18 +12,28 @@
         identifier="web_logo"
         :width="220"
     />
+
+    <UranusImageSlot
+        context="portal"
+        :contextUuid="portal.uuid"
+        identifier="main_image"
+        :width="220"
+    />
+
     <UranusImageSlot
         context="portal"
         :contextUuid="portal.uuid"
         identifier="footer_logo"
         :width="220"
     />
+
     <UranusImageSlot
         context="portal"
         :contextUuid="portal.uuid"
         identifier="background_image"
         :width="220"
     />
+
   </section>
 </template>
 

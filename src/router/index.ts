@@ -24,7 +24,7 @@ import UranusOrgInviteTeamMemberView from '@/component/org/view/UranusOrgInviteT
 import UranusOrgMemberPermissionView from '@/component/org/view/UranusOrgMemberPermissionView.vue'
 import UranusEventsView from '@/component/event/view/UranusEventsView.vue'
 import UranusEventCalendarView from '@/view/public/UranusEventCalendarView.vue'
-import UranusEventSlideshowView from '@/component/slideshow/UranusEventSlideshowView.vue'
+import UranusEventSlideshowView from '@/component/display/UranusEventSlideshowView.vue'
 import UranusDevThemeView from '@/view/dev/UranusDevThemeView.vue'
 
 import GenericLayout from '@/component/layout/GenericLayout.vue'
@@ -218,8 +218,8 @@ const routes = [
         ],
     },
     {
-        path: '/slideshow',
-        name: 'event-slideshow',
+        path: '/event-display/:uuid/:code',
+        name: 'event-display',
         component: UranusEventSlideshowView,
     },
     {
