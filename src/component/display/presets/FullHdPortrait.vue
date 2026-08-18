@@ -8,8 +8,8 @@
           </div>
 
           <div class="meta">
-            <div class="date">{{ localizedDate(currentEvent.start_date) }}</div>
             <div class="title">{{ currentEvent.title }}</div>
+            <div class="date">{{ localizedDate(currentEvent.start_date) }}</div>
             <div class="venue">{{ currentEvent.venue_name }}</div>
           </div>
         </div>
@@ -135,17 +135,19 @@ function localizedDate(dateStr: string) {
 }
 
 .meta {
-  padding: 1rem;
-  background: rgba(0,0,0,0.6);
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(0,0,0,0.6);
   gap: 0.25rem;
   align-items: flex-start;
+  height: 100%;
 }
 
-.date { font-size: 1.1rem; opacity: 0.9; }
-.title { font-size: 1.6rem; font-weight: 700; }
-.venue { font-size: 1rem; opacity: 0.9; }
+.title { font-size: 3.2rem; font-weight: 900; margin-bottom: 1rem; }
+.date { font-size: 2rem; opacity: 0.8; }
+.venue { font-size: 2rem; opacity: 0.8; }
 
 .fade-enter-active, .fade-leave-active { transition: opacity var(--transition-time, 0.8s) ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0 }
