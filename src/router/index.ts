@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteLocationNormalized } from 'vue-router'
+import type { RouteLocationNormalized, NavigationGuard } from 'vue-router'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
 
 import UranusDashboardView from '@/component/dashboard/view/UranusDashboardView.vue'
@@ -225,6 +225,16 @@ const routes = [
     {
         path: '/portal/:uuid',
         name: 'event-portal',
+        beforeEnter: ((to) => {
+            if (to.params.uuid === '019e0b75-b034-7220-a7ba-23b7ee35b1a9') {
+                window.location.replace(
+                    'https://kulturbytes.de/de/portal/gluecksburg/'
+                )
+                return false
+            }
+
+            return true
+        }) satisfies NavigationGuard,
         component: UranusPortalView,
     },
     {
