@@ -228,7 +228,7 @@ const routes = [
         beforeEnter: ((to) => {
             if (to.params.uuid === '019e0b75-b034-7220-a7ba-23b7ee35b1a9') {
                 window.location.replace(
-                    'https://kulturbytes.de/de/portal/gluecksburg/'
+                    'https://kulturbytes.de/de/portal/gluecksburg/veranstaltungen'
                 )
                 return false
             }
