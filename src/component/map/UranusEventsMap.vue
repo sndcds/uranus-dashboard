@@ -21,6 +21,7 @@ import { useThemeStore } from '@/store/themeStore.ts'
 import { useEventListStore } from '@/store/eventListStore.ts'
 import { type UranusEventsFilterScope, useEventsFilterStore } from '@/store/eventsFilterStore.ts'
 import { useMapViewStore } from '@/store/mapViewStore.ts'
+import { extractGeoJsonCoordinates } from '@/util/geojson.ts'
 import venueMarkerIcon from '@/assets/map/marker-event.png'
 
 const { t } = useI18n()
@@ -126,18 +127,17 @@ function normalizeEventVenueFeatureCollection(data: any): EventVenueFeatureColle
 }
 
 function normalizeEventVenueFeature(raw: any): EventVenueFeature | null {
-  const coordinates = raw?.geometry?.coordinates
-      ?? (isFiniteNumber(raw?.lon) && isFiniteNumber(raw?.lat)
-          ? [raw.lon, raw.lat]
+  const coordinates = extractGeoJsonCoordinates(raw)
+      ?? ((isFiniteNumber(raw?.lon) && isFiniteNumber(raw?.lat))
+          ? [Number(raw.lon), Number(raw.lat)] as [number, number]
           : null)
-      ?? (isFiniteNumber(raw?.venue_lon) && isFiniteNumber(raw?.venue_lat)
-          ? [raw.venue_lon, raw.venue_lat]
+      ?? ((isFiniteNumber(raw?.venue_lon) && isFiniteNumber(raw?.venue_lat))
+          ? [Number(raw.venue_lon), Number(raw.venue_lat)] as [number, number]
           : null)
 
-  if (!Array.isArray(coordinates) || coordinates.length < 2) return null
+  if (!coordinates) return null
 
-  const lng = Number(coordinates[0])
-  const lat = Number(coordinates[1])
+  const [lng, lat] = coordinates
   if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null
 
   const properties = raw?.properties ?? raw

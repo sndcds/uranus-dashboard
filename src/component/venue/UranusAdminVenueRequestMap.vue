@@ -25,6 +25,7 @@ import { ApiError, apiFetch } from '@/api.ts'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import { useAppStore } from '@/store/appStore.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
+import { extractGeoJsonCoordinates } from '@/util/geojson.ts'
 import venueMarkerIcon from '@/assets/map/marker.png'
 import {uranusStringInterpolate} from "@/util/string.ts";
 
@@ -233,15 +234,14 @@ function normalizeVenueFeatureCollection(data: any): VenueFeatureCollection {
 }
 
 function normalizeVenueFeature(raw: any): VenueFeature | null {
-  const coordinates = raw?.geometry?.coordinates
-      ?? (isFiniteNumber(raw?.venue_lon) && isFiniteNumber(raw?.venue_lat)
-          ? [raw.venue_lon, raw.venue_lat]
+  const coordinates = extractGeoJsonCoordinates(raw)
+      ?? ((isFiniteNumber(raw?.venue_lon) && isFiniteNumber(raw?.venue_lat))
+          ? [Number(raw.venue_lon), Number(raw.venue_lat)] as [number, number]
           : null)
 
-  if (!Array.isArray(coordinates) || coordinates.length < 2) return null
+  if (!coordinates) return null
 
-  const lng = Number(coordinates[0])
-  const lat = Number(coordinates[1])
+  const [lng, lat] = coordinates
   if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null
 
   const properties = raw?.properties ?? raw
