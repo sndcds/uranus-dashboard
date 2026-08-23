@@ -130,7 +130,7 @@ async function onSave(payload: any, file: File | null) {
 
   try {
     await apiFetch(apiPath, {
-      method: 'POST',
+      method: 'PUT',
       body: form
     })
 
