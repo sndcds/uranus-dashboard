@@ -92,7 +92,7 @@ function localizedDate(dateStr: string) {
 }
 
 .frame-9-16 {
-  /* Keep the 9:16 ratio and be as large as possible within viewport */
+  container-type: inline-size;
   width: min(calc(100vh * 9 / 16), 100vw);
   height: min(100vh, calc(100vw * 16 / 9));
   max-height: 100vh;
@@ -145,9 +145,19 @@ function localizedDate(dateStr: string) {
   height: 100%;
 }
 
-.title { font-size: 3.2rem; font-weight: 900; margin-bottom: 1rem; }
-.date { font-size: 2rem; opacity: 0.8; }
-.venue { font-size: 2rem; opacity: 0.8; }
+.title {
+  font-size: 8cqw;
+  font-weight: 900;
+  margin-bottom: 1rem;
+}
+.date {
+  font-size: 5cqw;
+  opacity: 0.8;
+}
+.venue {
+  font-size: 5cqw;
+  opacity: 0.8;
+}
 
 .fade-enter-active, .fade-leave-active { transition: opacity var(--transition-time, 0.8s) ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0 }
