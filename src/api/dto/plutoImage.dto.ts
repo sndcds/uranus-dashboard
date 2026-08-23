@@ -10,6 +10,7 @@ export interface PlutoImageDTO {
     copyright?: string | null
     creator?: string | null
     license?: string | null
+    ai_label?: string | null
     focus_x?: number | null
     focus_y?: number | null
 }

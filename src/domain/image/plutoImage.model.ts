@@ -21,6 +21,7 @@ export interface PlutoImage {
     copyright: string | null
     creator: string | null
     licenseType: string | null
+    aiLabel: string | null
     focusX: number | null
     focusY: number | null
 }
@@ -34,6 +35,7 @@ export function createPlutoImage(): PlutoImage {
         copyright: null,
         creator: null,
         licenseType: null,
+        aiLabel: null,
         focusX: null,
         focusY: null,
     }
@@ -48,6 +50,7 @@ export function mapPlutoImageFromDTO(dto: PlutoImageDTO): PlutoImage {
         copyright: dto.copyright ?? null,
         creator: dto.creator ?? null,
         licenseType: dto.license ?? null,
+        aiLabel: dto.ai_label ?? null,
         focusX: dto.focus_x ?? null,
         focusY: dto.focus_y ?? null,
     }

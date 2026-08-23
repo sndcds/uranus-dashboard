@@ -25,6 +25,31 @@ export const uranusI18nImageTranslations: Record<string, Record<UranusLocaleKey,
         en: 'License',
         da: 'Licens',
     },
+    image_ai_label: {
+        de: 'KI-Status',
+        en: 'AI label',
+        da: 'AI-status',
+    },
+    ai_label_none: {
+        de: 'Keine KI verwendet',
+        en: 'No AI',
+        da: 'Ingen AI anvendt',
+    },
+    ai_label_ai: {
+        de: 'Mit KI erstellt/bearbeitet',
+        en: 'Basic icon',
+        da: 'Med AI oprettet/redigeret',
+    },
+    ai_label_ai_generated: {
+        de: 'KI-generiert',
+        en: 'Fully AI-generated',
+        da: 'AI-genereret',
+    },
+    ai_label_ai_modified: {
+        de: 'Teilweise mit KI bearbeitet',
+        en: 'Partially AI-modified',
+        da: 'Delvist AI-redigeret',
+    },
     image_focus_x: {
         de: 'Fokus X',
         en: 'Focus X',
