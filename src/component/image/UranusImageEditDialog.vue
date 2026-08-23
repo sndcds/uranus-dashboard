@@ -98,6 +98,21 @@
         </UranusLabel>
       </UranusFormRow>
 
+      <UranusFormRow>
+        <UranusLabel id="ai-label" :label="t('image_ai_label')">
+          <select
+              id="ai-label"
+              v-model="localImageMeta.aiLabel"
+              class="uranus-admin-select"
+          >
+            <option value="none">{{ t('ai_label_none') }}</option>
+            <option value="ai">{{ t('ai_label_ai') }}</option>
+            <option value="ai_generated">{{ t('ai_label_ai_generated') }}</option>
+            <option value="ai_modified">{{ t('ai_label_ai_modified') }}</option>
+          </select>
+        </UranusLabel>
+      </UranusFormRow>
+
       <UranusTextarea
           id="event-description"
           v-model="descriptionValue"
@@ -213,6 +228,7 @@ function clearLocalImageMeta() {
   localImageMeta.copyright = null
   localImageMeta.creator = null
   localImageMeta.licenseType = null
+  localImageMeta.aiLabel = null
   localImageMeta.focusX = null
   localImageMeta.focusY = null
 }
@@ -278,6 +294,7 @@ function onSave() {
     copyright: localImageMeta.copyright,
     creator: localImageMeta.creator,
     license: localImageMeta.licenseType,
+    ai_label: localImageMeta.aiLabel,
     focus_x: localImageMeta.focusX,
     focus_y: localImageMeta.focusY,
   }
@@ -305,6 +322,7 @@ onMounted(async () => {
     localImageMeta.copyright = meta.copyright ?? null
     localImageMeta.creator = meta.creator ?? null
     localImageMeta.licenseType = meta.license ?? null
+    localImageMeta.aiLabel = meta.ai_label ?? null
     localImageMeta.focusX = meta.focus_x ?? null
     localImageMeta.focusY = meta.focus_y ?? null
   } catch (err) {
@@ -365,6 +383,11 @@ onMounted(async () => {
 
 .uranus-hidden-file {
   display: none;
+}
+
+.uranus-admin-select {
+  flex: 0 0 auto;
+  width: 100%;
 }
 
 .focus-point {
