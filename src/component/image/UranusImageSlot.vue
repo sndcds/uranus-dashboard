@@ -105,12 +105,17 @@ const imageUrl = computed(() => {
   return url.toString()
 })
 
-
 async function loadImage() {
-  const apiPath = `/api/image/meta/${props.context}/${props.contextUuid}/${props.identifier}`
+  if (!props.contextUuid || !props.identifier) {
+    image.value = null
+    return
+  }
+
+  const apiPath =
+      `/api/image/meta/${props.context}/${props.contextUuid}/${props.identifier}`
+
   image.value = await loadPlutoImage(apiPath)
 }
-
 
 function openDialog() {
   errorMessage.value = null
