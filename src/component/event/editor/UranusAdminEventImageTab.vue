@@ -16,23 +16,23 @@
     <UranusImageSlot
         context="event"
         :contextUuid="event.uuid"
-        identifier="gallery_photo_1"
+        identifier="gallery_image_1"
         :width="220"
-        :label="t('gallery_photo') + ' 1'"
+        :label="t('gallery_image') + ' 1'"
     />
     <UranusImageSlot
         context="event"
         :contextUuid="event.uuid"
-        identifier="gallery_photo_2"
+        identifier="gallery_image_2"
         :width="220"
-        :label="t('gallery_photo') + ' 2'"
+        :label="t('gallery_image') + ' 2'"
     />
     <UranusImageSlot
         context="event"
         :contextUuid="event.uuid"
-        identifier="gallery_photo_3"
+        identifier="gallery_image_3"
         :width="220"
-        :label="t('gallery_photo') + ' 3'"
+        :label="t('gallery_image') + ' 3'"
     />
   </section>
 
