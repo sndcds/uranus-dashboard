@@ -1,10 +1,9 @@
 /*
-    src/domain/image/plutoImage.model.ts
- */
+   src/domain/image/plutoImage.model.ts
+*/
 
 import type { PlutoImageDTO } from '@/api/dto/plutoImage.dto.ts'
-import { apiFetch } from '@/api.ts'
-
+import { apiFetch, ApiError } from '@/api.ts'
 
 export interface PlutoLogoImageRef {
     uuid: string
@@ -56,13 +55,26 @@ export function mapPlutoImageFromDTO(dto: PlutoImageDTO): PlutoImage {
     }
 }
 
-export async function loadPlutoImage(apiPath: string): Promise<PlutoImage | null> {
+export async function loadPlutoImage(
+    apiPath: string
+): Promise<PlutoImage | null> {
     try {
         const apiResponse = await apiFetch<PlutoImageDTO>(apiPath)
         const dto = apiResponse.data
-        if (!dto) return null
+
+        if (!dto) {
+            return null
+        }
+
         return mapPlutoImageFromDTO(dto)
+
     } catch (err) {
+        // A missing image is an expected state for an empty image slot.
+        if (err instanceof ApiError && err.status === 404) {
+            return null
+        }
+
+        // Only unexpected errors should be logged.
         console.error('Failed to load pluto image:', err)
         return null
     }
