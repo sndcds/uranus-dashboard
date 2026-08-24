@@ -710,6 +710,11 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Gallery photo',
         da: 'Galleribillede'
     },
+    gallery_image: {
+        de: 'Galeriebild',
+        en: 'Gallery image',
+        da: 'Galleribillede'
+    },
     ad_1x1: {
         de: 'Werbebild 1:1',
         en: 'Advertisement image 1:1',
