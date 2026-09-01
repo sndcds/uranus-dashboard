@@ -17,35 +17,21 @@
     </UranusFeedback>
 
     <!-- Event dates -->
-    <div v-if="store.hasDates" class="dates-table-wrapper">
-      <table class="dates-table">
-        <thead>
-          <tr>
-            <th scope="col"><span class="sr-only">{{ t('event_edit_date') }}</span></th>
-            <th scope="col">{{ t('event_start_date') }}</th>
-            <th scope="col">{{ t('event_start_time') }}</th>
-            <th scope="col">{{ t('event_end_date') }}</th>
-            <th scope="col">{{ t('event_end_time') }}</th>
-            <th scope="col">{{ t('event_select_venue') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <UranusAdminEventDateTableRow
-              v-for="(date, index) in store.draft?.eventDates"
-              :key="date.uuid || index"
-              :date="date"
-              :index="index"
-              :open="openDateIndex === index"
-              :venue-label="venueLabels[makeKey(date.venueUuid, date.spaceUuid)] || ''"
-              :can-remove="store.hasMultipleDates"
-              @toggle="toggleDate(index)"
-              @select-venue="openVenueModal(date)"
-              @clear-venue="clearVenue(date)"
-              @select-location="openLocationModal(date)"
-              @remove="removeDate(index)"
-          />
-        </tbody>
-      </table>
+    <div v-if="store.hasDates" class="date-cards">
+      <UranusAdminEventDateTableRow
+          v-for="(date, index) in store.draft?.eventDates"
+          :key="date.uuid || index"
+          :date="date"
+          :index="index"
+          :open="openDateIndex === index"
+          :venue-label="venueLabels[makeKey(date.venueUuid, date.spaceUuid)] || ''"
+          :can-remove="store.hasMultipleDates"
+          @toggle="toggleDate(index)"
+          @select-venue="openVenueModal(date)"
+          @clear-venue="clearVenue(date)"
+          @select-location="openLocationModal(date)"
+          @remove="removeDate(index)"
+      />
     </div>
 
     <!-- Save / Discard buttons -->
@@ -324,67 +310,9 @@ defineExpose({
   }
 }
 
-.date-card {
+.date-cards {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  width: 100%;
-}
-
-.date-venue-name {
-  font-weight: 500;
-  flex-basis: 100%;
-
-  h2 {
-    font-weight: 500;
-  }
-}
-
-.date-actions {
-  display: flex;
-  flex-basis: 100%;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.dates-table-wrapper {
-  overflow-x: auto;
-  border: 1px solid var(--uranus-input-border-color);
-}
-
-.dates-table {
-  width: 100%;
-  min-width: 720px;
-  border-collapse: collapse;
-
-  th,
-  td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid var(--uranus-input-border-color);
-  }
-
-  th:first-child,
-  td:first-child {
-    width: 2.5rem;
-  }
-
-  tbody tr:last-child td {
-    border-bottom: 0;
-  }
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 </style>

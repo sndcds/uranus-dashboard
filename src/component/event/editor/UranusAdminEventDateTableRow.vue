@@ -1,26 +1,24 @@
 <template>
-  <tr class="date-summary-row" :class="{ 'is-open': open }" @click="emit('toggle')">
-    <td>
-      <button
-          type="button"
-          class="expand-button"
-          :aria-expanded="open"
-          :aria-controls="detailId"
-          @click.stop="emit('toggle')"
-      >
-        <ChevronDown :size="18" :class="{ 'is-open': open }" />
-        <span class="sr-only">{{ t('event_edit_date') }}</span>
-      </button>
-    </td>
-    <td>{{ date.startDate || '-' }}</td>
-    <td>{{ date.startTime || '-' }}</td>
-    <td>{{ date.endDate || '-' }}</td>
-    <td>{{ date.endTime || '-' }}</td>
-    <td>{{ venueLabel || '-' }}</td>
-  </tr>
-  <tr v-if="open" :id="detailId" class="date-detail-row">
-    <td :colspan="6">
-      <div class="date-editor">
+  <article class="date-card" :class="{ 'is-open': open }">
+    <button
+        type="button"
+        class="date-summary"
+        :aria-expanded="open"
+        :aria-controls="detailId"
+        @click="emit('toggle')"
+    >
+      <span class="date-summary-content">
+        <strong>{{ formattedStartDate || '-' }}</strong>
+        <span v-if="formattedDateTime">{{ formattedDateTime }}</span>
+        <template v-if="venueLabel">
+          <span>,</span>
+          <strong>{{ venueLabel }}</strong>
+        </template>
+      </span>
+      <ChevronDown :size="18" class="expand-icon" :class="{ 'is-open': open }" />
+      <span class="sr-only">{{ t('event_edit_date') }}</span>
+    </button>
+    <div v-if="open" :id="detailId" class="date-editor">
         <div class="date-pair">
           <UranusDateInput :id="`start-date-${index}`" v-model="date.startDate" :label="t('event_start_date')" required />
           <UranusTimeInput :id="`start-time-${index}`" v-model="date.startTime" :label="t('event_start_time')" required />
@@ -81,9 +79,8 @@
             {{ t('event_remove_date') }}
           </UranusButton>
         </div>
-      </div>
-    </td>
-  </tr>
+    </div>
+  </article>
 </template>
 
 <script setup lang="ts">
@@ -91,6 +88,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ChevronDown } from 'lucide-vue-next'
 import type { AdminEventDate } from '@/domain/event/adminEventDate.model.ts'
+import { formatDate, formatTimeForUI, formatTimeRangeForUI } from '@/util/dateTime.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'
@@ -116,7 +114,26 @@ const emit = defineEmits<{
   (event: 'remove'): void
 }>()
 
-const { t } = useI18n({ useScope: 'global' })
+const { t, locale } = useI18n({ useScope: 'global' })
+
+const formattedStartDate = computed(() => formatDate(props.date.startDate, locale.value))
+
+const formattedDateTime = computed(() => {
+  const sameDay = !props.date.endDate || props.date.endDate === props.date.startDate
+
+  if (sameDay) {
+    if (props.date.startTime && props.date.endTime) {
+      return formatTimeRangeForUI(props.date.startTime, locale.value, props.date.endTime)
+    }
+    return props.date.startTime ? formatTimeForUI(props.date.startTime, locale.value) : ''
+  }
+
+  const startTime = props.date.startTime ? ` ${formatTimeForUI(props.date.startTime, locale.value)}` : ''
+  const endDate = formatDate(props.date.endDate, locale.value)
+  const endTime = props.date.endTime ? ` ${formatTimeForUI(props.date.endTime, locale.value)}` : ''
+
+  return endDate ? `${startTime} - ${endDate}${endTime}` : startTime
+})
 
 const dateDescription = computed({
   get: () => props.date.dateDescription ?? '',
@@ -136,43 +153,50 @@ const detailId = `event-date-detail-${Math.random().toString(36).slice(2)}`
 </script>
 
 <style scoped lang="scss">
-.date-summary-row {
+.date-card {
+  border: 1px solid var(--uranus-input-border-color);
+}
+
+.date-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
   cursor: pointer;
 
   &:hover,
-  &.is-open {
+  .date-card.is-open & {
     background: var(--uranus-input-bg);
   }
 }
 
-.expand-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.25rem;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-
-  svg {
-    transition: transform 0.2s ease;
-
-    &.is-open {
-      transform: rotate(180deg);
-    }
-  }
+.date-summary-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.35rem;
 }
 
-.date-detail-row td {
-  padding: 0;
+.expand-icon {
+  flex: 0 0 auto;
+  margin-left: 0.75rem;
+  transition: transform 0.2s ease;
+
+  &.is-open {
+    transform: rotate(180deg);
+  }
 }
 
 .date-editor {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 1rem 1.25rem 1.25rem 2.75rem;
+  padding: 1rem;
   background: var(--uranus-input-bg);
 }
 
