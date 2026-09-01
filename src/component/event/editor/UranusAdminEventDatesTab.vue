@@ -274,6 +274,7 @@ defineExpose({
 .date-venue-name {
   font-weight: 500;
   flex-basis: 100%;
+
   h2 {
     font-weight: 500;
   }
@@ -285,6 +286,8 @@ defineExpose({
   justify-content: flex-end;
   gap: 0.5rem;
   margin-top: 1rem;
+}
+
 .dates-table-wrapper {
   overflow-x: auto;
   border: 1px solid var(--uranus-input-border-color);
@@ -322,4 +325,5 @@ defineExpose({
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
 </style>
