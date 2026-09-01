@@ -15,5 +15,10 @@ export interface AdminEventDateDTO {
     accessibility_info?: string | null
     venue_uuid?: string | null
     space_uuid?: string | null
+    ticket_link?: string | null
+    date_description?: string | null
+    date_venue_name?: string | null
+    date_venue_lat?: number | null
+    date_venue_lon?: number | null
     all_day?: boolean | null
 }

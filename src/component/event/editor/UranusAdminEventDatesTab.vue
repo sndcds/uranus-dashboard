@@ -41,6 +41,7 @@
               @toggle="toggleDate(index)"
               @select-venue="openVenueModal(date)"
               @clear-venue="clearVenue(date)"
+              @select-location="openLocationModal(date)"
               @remove="removeDate(index)"
           />
         </tbody>
@@ -74,6 +75,30 @@
         v-model="selectedPlace"
         @close="closeVenueModal"
     />
+
+    <UranusModal
+        :show="showLocationModal"
+        :title="t('event_date_select_location')"
+        max-width="960px"
+        @close="closeLocationModal"
+    >
+      <UranusLocationForm
+          v-model:modelValueLat="selectedLocation.lat"
+          v-model:modelValueLon="selectedLocation.lon"
+      />
+
+      <template #actions>
+        <UranusButton variant="tertiary" @click="clearLocation">
+          {{ t('clear') }}
+        </UranusButton>
+        <UranusButton variant="tertiary" @click="closeLocationModal">
+          {{ t('close') }}
+        </UranusButton>
+        <UranusButton @click="saveLocation">
+          {{ t('save') }}
+        </UranusButton>
+      </template>
+    </UranusModal>
   </section>
 </template>
 
@@ -92,6 +117,8 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import UranusAdminEventDateTableRow from '@/component/event/editor/UranusAdminEventDateTableRow.vue'
+import UranusLocationForm from '@/component/uranus/UranusLocationForm.vue'
+import UranusModal from '@/component/uranus/UranusModal.vue'
 import type { AdminEventDate } from '@/domain/event/adminEventDate.model.ts'
 
 const { t } = useI18n({ useScope: 'global' })
@@ -110,6 +137,9 @@ const activeDate = ref<any | null>(null)
 const selectedPlace = ref<{ venueUuid: string | null, spaceUuid: string | null }>({ venueUuid: null, spaceUuid: null })
 const venueLabels = ref<Record<string, string>>({})
 const openDateIndex = ref<number | null>(null)
+const showLocationModal = ref(false)
+const activeLocationDate = ref<AdminEventDate | null>(null)
+const selectedLocation = ref<{ lat: number | null, lon: number | null }>({ lat: null, lon: null })
 
 const isDirty = computed(() => {
   const draft = store.draft?.eventDates
@@ -185,6 +215,32 @@ function clearVenue(date: AdminEventDate) {
   }
 }
 
+function openLocationModal(date: AdminEventDate) {
+  activeLocationDate.value = date
+  selectedLocation.value = {
+    lat: date.dateVenueLat,
+    lon: date.dateVenueLon,
+  }
+  showLocationModal.value = true
+}
+
+function closeLocationModal() {
+  activeLocationDate.value = null
+  showLocationModal.value = false
+}
+
+function clearLocation() {
+  selectedLocation.value = { lat: null, lon: null }
+}
+
+function saveLocation() {
+  if (activeLocationDate.value) {
+    activeLocationDate.value.dateVenueLat = selectedLocation.value.lat
+    activeLocationDate.value.dateVenueLon = selectedLocation.value.lon
+  }
+  closeLocationModal()
+}
+
 function addDate() {
   store.addEventDate()
   openDateIndex.value = (store.draft?.eventDates?.length ?? 1) - 1
@@ -218,6 +274,11 @@ async function commitDates() {
       all_day: date.allDay ?? null,
       venue_uuid: date.venueUuid ?? null,
       space_uuid: date.spaceUuid ?? null,
+      ticket_link: emptyToNull(date.ticketLink),
+      date_description: emptyToNull(date.dateDescription),
+      date_venue_name: emptyToNull(date.dateVenueName),
+      date_venue_lat: date.dateVenueLat ?? null,
+      date_venue_lon: date.dateVenueLon ?? null,
       release_status: date.releaseStatus ?? null,
     })) ?? []
 

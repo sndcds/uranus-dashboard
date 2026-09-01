@@ -81,6 +81,11 @@ export function mapAdminEventDateFromDTO(
         accessibilityInfo: dto.accessibility_info ?? null,
         venueUuid: dto.venue_uuid ?? null,
         spaceUuid: dto.space_uuid ?? null,
+        ticketLink: dto.ticket_link ?? null,
+        dateDescription: dto.date_description ?? null,
+        dateVenueName: dto.date_venue_name ?? null,
+        dateVenueLat: dto.date_venue_lat ?? null,
+        dateVenueLon: dto.date_venue_lon ?? null,
         allDay: dto.all_day ?? false
     }
 }
@@ -108,6 +113,12 @@ export function mapAdminEventDateToDTO(
         accessibility_info: date.accessibilityInfo ?? null,
         venue_uuid: date.venueUuid ?? null,
         space_uuid: date.spaceUuid ?? null,
+        ticket_link: date.ticketLink ?? null,
+        date_description: date.dateDescription ?? null,
+        date_venue_name: date.dateVenueName ?? null,
+        date_venue_lat: date.dateVenueLat ?? null,
+        date_venue_lon: date.dateVenueLon ?? null,
+        all_day: date.allDay,
     }
 }
 

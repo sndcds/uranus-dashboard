@@ -33,7 +33,7 @@
 
         <div class="date-pair">
           <UranusTimeInput :id="`entry-time-${index}`" v-model="date.entryTime" :label="t('event_entry_time')" />
-          <UranusNumberInput :id="`duration-${index}`" v-model="date.duration" min="1" :label="t('event_duration_minutes')" />
+          <UranusNumberInput :id="`duration-${index}`" v-model="duration" min="1" :label="t('event_duration_minutes')" />
         </div>
 
         <div class="date-pair date-options">
@@ -45,12 +45,37 @@
           />
         </div>
 
+        <div class="date-pair">
+          <UranusInput
+              :id="`date-ticket-link-${index}`"
+              v-model="date.ticketLink"
+              type="url"
+              :label="t('event_date_ticket_link')"
+              placeholder="https://"
+          />
+          <UranusInput
+              :id="`date-venue-name-${index}`"
+              v-model="date.dateVenueName"
+              :label="t('event_date_venue_name')"
+          />
+        </div>
+
+        <UranusTextarea
+            :id="`date-description-${index}`"
+          v-model="dateDescription"
+            :label="t('event_date_description')"
+            resize="vertical"
+        />
+
         <div class="date-actions">
           <UranusButton size="small" variant="tertiary" @click="emit('select-venue')">
             {{ t('event_select_venue') }}
           </UranusButton>
           <UranusButton size="small" variant="tertiary" @click="emit('clear-venue')">
             {{ t('event_remove_venue') }}
+          </UranusButton>
+          <UranusButton size="small" variant="tertiary" @click="emit('select-location')">
+            {{ t('event_date_select_location') }}
           </UranusButton>
           <UranusButton v-if="canRemove" size="small" variant="tertiary" @click="emit('remove')">
             {{ t('event_remove_date') }}
@@ -62,6 +87,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ChevronDown } from 'lucide-vue-next'
 import type { AdminEventDate } from '@/domain/event/adminEventDate.model.ts'
@@ -70,9 +96,11 @@ import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusTimeInput from '@/component/ui/UranusTimeInput.vue'
+import UranusInput from '@/component/ui/UranusInput.vue'
+import UranusTextarea from '@/component/ui/UranusTextarea.vue'
 import UranusEventReleaseStatusSelect from '@/component/event/ui/UranusEventReleaseStatusSelect.vue'
 
-defineProps<{
+const props = defineProps<{
   date: AdminEventDate
   index: number
   open: boolean
@@ -84,10 +112,25 @@ const emit = defineEmits<{
   (event: 'toggle'): void
   (event: 'select-venue'): void
   (event: 'clear-venue'): void
+  (event: 'select-location'): void
   (event: 'remove'): void
 }>()
 
 const { t } = useI18n({ useScope: 'global' })
+
+const dateDescription = computed({
+  get: () => props.date.dateDescription ?? '',
+  set: (value: string) => {
+    props.date.dateDescription = value || null
+  },
+})
+
+const duration = computed({
+  get: () => props.date.duration ?? 0,
+  set: (value: number) => {
+    props.date.duration = value || null
+  },
+})
 
 const detailId = `event-date-detail-${Math.random().toString(36).slice(2)}`
 </script>
