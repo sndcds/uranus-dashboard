@@ -25,6 +25,8 @@ import { uranusI18nPortalTranslations } from '../../src/i18n/portal.ts'
 import { uranusI18nAccessibilityTranslations } from '../../src/i18n/accessibility.ts'
 import { uranusI18nVisitorInfoTranslations } from '../../src/i18n/visitor-info.ts'
 
+import { uranusI18nNotificationTranslations } from '../../src/i18n/notification.ts'
+
 const locales = ['de', 'en', 'da'] as const
 
 const outputDir = path.resolve(__dirname, '../../src/i18n/json/')
@@ -32,6 +34,7 @@ if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true })
 
 locales.forEach((locale) => {
     const merged = {
+        ...Object.fromEntries(Object.entries(uranusI18nNotificationTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nStandardTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nRegisterAndLoginTranslations).map(([k, v]) => [k, v[locale]])),
         ...Object.fromEntries(Object.entries(uranusI18nTodoTranslations).map(([k, v]) => [k, v[locale]])),
