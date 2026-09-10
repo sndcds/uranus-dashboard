@@ -71,6 +71,15 @@
         </span>
       </div>
       <p v-else class="uranus-not-set-info">{{ labels.empty }}</p>
+
+      <button
+          v-if="isEditing === undefined"
+          type="button"
+          class="uranus-edit-button"
+          @click="startEditing"
+      >
+        {{ labels.edit }}
+      </button>
     </template>
 
 </template>
@@ -151,6 +160,13 @@ const normalizedList = (tags?: string[]): string[] =>
 const displayTags = computed(() => normalizedList(props.tags))
 
 // --- Editing control ---
+const startEditing = () => {
+  draftTags.value = [...displayTags.value]
+  newTagName.value = ''
+  if (props.isEditing === undefined) {
+    internalEditing.value = true
+  }
+}
 
 const cancelEditing = () => {
   draftTags.value = []
