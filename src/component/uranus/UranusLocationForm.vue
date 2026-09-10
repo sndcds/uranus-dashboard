@@ -28,7 +28,6 @@ import { useI18n } from 'vue-i18n'
 import UranusMapLocationPicker from '@/component/uranus/UranusMapLocationPicker.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
-import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 
 type MapLocation = { lat: number; lng: number } | null

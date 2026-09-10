@@ -250,7 +250,7 @@ watch(
     (val) => {
       if (!map.value) return
 
-      if (isUnsetLocation(val)) {
+      if (!val || isUnsetLocation(val)) {
         clearMarker()
         map.value.easeTo({
           center: [9.47, 54.2]

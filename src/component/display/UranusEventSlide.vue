@@ -78,7 +78,6 @@ function randomTextStyle(seed: number) {
 
 const localizedStartDate = computed(() => formatDate(props.startDate, locale.value))
 
-
 function formatDate(dateStr: string, locale: string) {
   const date = new Date(dateStr)
 
@@ -88,13 +87,6 @@ function formatDate(dateStr: string, locale: string) {
     month: 'long',
     day: 'numeric',
   }).format(date)
-}
-
-function hexToRgba(hex: string, alpha: number) {
-  const r = parseInt(hex.slice(1, 3), 16)
-  const g = parseInt(hex.slice(3, 5), 16)
-  const b = parseInt(hex.slice(5, 7), 16)
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 </script>
 

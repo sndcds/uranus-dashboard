@@ -49,7 +49,7 @@
 
       <template v-if="venueListItem.spaces?.length">
         <div
-            v-for="(space, index) in venueListItem.spaces"
+            v-for="space in venueListItem.spaces"
             :key="space.spaceUuid"
             class="space-row"
         >
@@ -111,7 +111,6 @@ import { computed, ref } from 'vue'
 import { useI18n } from "vue-i18n"
 import {ApiError, apiFetch} from '@/api.ts'
 import {type VenueListItem, type VenueListSpace} from '@/domain/venue/venueList.ts'
-
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
@@ -120,7 +119,6 @@ import PlutoImage from '@/component/pluto/PlutoImage.vue'
 import { uranusStringInterpolate } from '@/util/string.ts'
 import { Edit, Trash2, Plus } from 'lucide-vue-next'
 import { apiErrorI18nKey } from '@/util/apiError.ts'
-
 
 const { t } = useI18n()
 

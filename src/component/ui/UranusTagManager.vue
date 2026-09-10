@@ -71,6 +71,15 @@
         </span>
       </div>
       <p v-else class="uranus-not-set-info">{{ labels.empty }}</p>
+
+      <button
+          v-if="isEditing === undefined"
+          type="button"
+          class="uranus-edit-button"
+          @click="startEditing"
+      >
+        {{ labels.edit }}
+      </button>
     </template>
 
 </template>
@@ -92,12 +101,12 @@ const props = withDefaults(
     saveLabel?: string
     cancelLabel?: string
     savingLabel?: string
-    isEditing?: boolean
+    isEditing?: boolean | undefined
   }>(),
   {
     tags: () => [],
     isSaving: false,
-    locationError: '',
+    error: '',
     title: '',
     editLabel: '',
     emptyLabel: '',

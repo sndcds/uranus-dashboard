@@ -28,6 +28,10 @@
         <div class="team-member-content">
           <h2>{{ member.display_name || member.email }}</h2>
           <p>{{ member.email }}</p>
+          <p>{{ t('notification_member_active') }}</p>
+          <UranusButton v-if="canManagePermissions && member.permissions_missing === true" :to="`/admin/org/${orgUuid}/member/${member.user_uuid}/permissions`">
+            {{ t('notification_permissions_action') }}
+          </UranusButton>
           <div v-if="canManagePermissions">
             <UranusIconAction
                 :icon="Edit" :title="t('edit')"
@@ -59,6 +63,7 @@
           <div class="team-member-content">
             <h2>{{ invitation.display_name }}</h2>
             <p>{{ invitation.email }}</p>
+            <p>{{ t('notification_invitation_pending') }}</p>
             <p>{{ t('org_team_invited_on_date') }} {{ new Date(invitation.invited_at).toLocaleDateString() }}</p>
           </div>
         </UranusCard>

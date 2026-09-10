@@ -137,11 +137,8 @@ const loadPartnerRequests = async () => {
 
     const data = apiResponse.data.partner_requests as PartnerRequestDTO[]
     partnerRequests.value = sortByOrgName((data || []).map(dto => mapPartnerRequestItem(dto)))
-  } catch (err: unknown) {
-    if (typeof err === 'object' && err && 'data' in err) {
-      const e = err as { data?: { error?: string } }
-    } else {
-    }
+  } catch {
+    // Keep the current request list if refreshing fails.
   } finally {
   }
 }

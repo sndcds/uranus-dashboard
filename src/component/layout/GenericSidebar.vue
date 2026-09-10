@@ -148,7 +148,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import { Info, LayoutDashboard, ListChecks, Building, Handshake, MapPin, Map, Calendar, Orbit, LogIn, ListPlus, MessageCircleQuestionMark } from 'lucide-vue-next'
+import { Info, LayoutDashboard, ListChecks, Building, Handshake, MapPin, Map, Calendar, Orbit, LogIn, ListPlus } from 'lucide-vue-next'
 
 interface Props {
   isOpen: boolean
@@ -170,7 +170,6 @@ const authEntryLabel = computed(() => tokenStore.hasKnownAccount ? t('nav_login'
 const handleLinkClick = () => {
   emit('close')
 }
-
 </script>
 
 <style scoped lang="scss">

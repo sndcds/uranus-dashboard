@@ -66,7 +66,7 @@ function onSelect() {
 async function fetchOptions() {
   isLoading.value = true
   try {
-    const { response } = await apiFetch(`/api/choosable-currencies?lang=${locale.value}`)
+    const { data: response } = await apiFetch(`/api/choosable-currencies?lang=${locale.value}`)
     options.value = (Array.isArray(response) ? response : []).map((item: any) => ({
       key: String(item.id ?? ''),
       label: item.name ?? item.id

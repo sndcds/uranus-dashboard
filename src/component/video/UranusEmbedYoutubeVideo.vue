@@ -10,7 +10,7 @@ function extractVideoId(url: string): string | null {
       /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&?/]+)/
 
   const match = url.match(regex)
-  return match ? match[1] : null
+  return match?.[1] ?? null
 }
 
 const embedUrl = computed(() => {

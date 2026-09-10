@@ -50,7 +50,6 @@ import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api.ts'
-
 import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusCardFooter from '@/component/layout/UranusCardFooter.vue'
@@ -74,7 +73,6 @@ const fieldErrors = reactive({
     password: null as string | null,
     confirmPassword: null as string | null,
 })
-
 
 const displayError = computed(() => {
     if (fieldErrors.password) return fieldErrors.password
@@ -156,7 +154,7 @@ const handleSubmit = async () => {
 
     try {
         const apiPath = '/api/reset-password'
-        const apiResponse = await apiFetch(apiPath, {
+        await apiFetch(apiPath, {
             method: 'POST',
             body: JSON.stringify({ token, new_password: trimmedPassword }),
         })

@@ -94,7 +94,7 @@ const message = ref<string>('')
 const isLoading = ref(true)
 const errorMessage = ref<string | null>(null)
 const successMessage = ref<string | null>(null)
-let redirectTimeout: ReturnType<typeof window.setTimeout> | null = null
+let redirectTimeout: number | null = null
 
 async function onSendRequest() {
   if (!chosenOrg.value) return

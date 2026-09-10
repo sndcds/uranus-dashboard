@@ -33,16 +33,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
-
 import GenericHeader from '@/component/layout/GenericHeader.vue'
 import GenericSidebar from '@/component/layout/GenericSidebar.vue'
 import GenericFooter from '@/component/layout/GenericFooter.vue'
-import { useAppStore } from '@/store/appStore.ts'
-import { useThemeStore } from '@/store/themeStore.ts'
 
 const route = useRoute()
-const appStore = useAppStore()
-const themeStore = useThemeStore()
 
 // Determine if we show admin sidebar
 const isAdminPage = computed(() => route.path.startsWith('/admin'))

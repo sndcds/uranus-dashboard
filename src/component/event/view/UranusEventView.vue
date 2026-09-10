@@ -149,7 +149,6 @@
           />
 
 
-
           <UranusEventOrgDisplay :event="event" class="uranus-public-event-info-card" />
 
           <!-- Venue, Space, Location -->
@@ -331,7 +330,6 @@ const themeStore = useThemeStore()
 const typeLookupStore = useEventTypeLookupStore()
 const getTypeGenreName = (typeId: number, genreId: number | null) => typeLookupStore.getTypeGenreName(typeId, genreId, locale.value)
 
-
 const languageLookupStore = useLanguageLookupStore()
 
 // State
@@ -344,8 +342,6 @@ const loadError = ref<string | null>(null)
 const isDownloadingIcs = ref(false)
 const isPreview = computed(() => route.params.mode === 'preview')
 
-
-
 const shareUrl = computed(() => {
   const href = router.resolve({
     name: 'event-details',
@@ -357,8 +353,6 @@ const shareUrl = computed(() => {
 
   return `${window.location.origin}${href}`
 })
-
-
 
 // Watch for changes in route params
 watch(
@@ -428,7 +422,6 @@ function imageCredit() {
 const resolveRouteParam = (param: string | string[] | undefined) =>
   Array.isArray(param) ? param[0] : param
 
-
 const getLanguageName = (langCode: string) => {
   const map = languageLookupStore.data[locale.value]
   return map?.[langCode] ?? langCode
@@ -457,7 +450,6 @@ const maxAttendeesLabel = computed(() => {
     return uranusStringInterpolate(t('event_max_count_attendees'), { count: event.value?.maxAttendees })
 })
 
-
 const priceText = computed(() => {
   return uranusPriceText(t, event.value?.minPrice, event.value?.maxPrice, event.value?.currency ?? '')
 })
@@ -467,19 +459,6 @@ const presaleFee = computed(() =>
         ? t('event_presale_fee_applies')
         : null
 )
-
-const venueLogo = computed(() => {
-  if (!event.value) { return null }
-  if (event.value.logoMode && (event.value.logoMode & 2)) {
-    if (the)
-    venueLogoUrl: string | null
-    venueLightThemeLogoUrl: string | null
-    venueDarkThemeLogoUrl: string | null
-
-  }
-})
-
-
 
 const priceTypeLabel = computed(() => {
   const map: Record<string, string | null> = {
@@ -499,12 +478,6 @@ const priceTypeLabel = computed(() => {
   }
 
   return t(key)
-})
-
-const hasLonLat = computed(() => {
-  if ((event.value?.date.venueLon && event.value?.date.venueLat) || (event.value?.date.venueLon && event.value?.date.venueLat))
-    return true
-  return false
 })
 
 const loadEvent = async () => {

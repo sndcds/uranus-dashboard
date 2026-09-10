@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api.ts'
@@ -71,8 +71,6 @@ const router = useRouter()
 const isProcessing = ref(true)
 const inviteInfo = ref<InviteAcceptResponse | null>(null)
 const errorMessage = ref<string | null>(null)
-const redirectSeconds = ref(5)
-let redirectTimer: ReturnType<typeof setInterval> | null = null
 
 const statusState = computed<'loading' | 'success' | 'error'>(() => {
   if (isProcessing.value) return 'loading'
@@ -90,20 +88,6 @@ const goToOrgs = () => {
   router.push(`/admin/orgs`)
 }
 
-const startRedirectCountdown = () => {
-  redirectSeconds.value = 5
-  redirectTimer && clearInterval(redirectTimer)
-  redirectTimer = setInterval(() => {
-    if (redirectSeconds.value <= 1) {
-      redirectTimer && clearInterval(redirectTimer)
-      goToOrgs()
-      return
-    }
-
-    redirectSeconds.value -= 1
-  }, 1000)
-}
-
 const acceptInvite = async () => {
   const token = (route.query.token as string | undefined) ?? ''
   if (!token) {
@@ -114,9 +98,6 @@ const acceptInvite = async () => {
 
   isProcessing.value = true
   errorMessage.value = null
-
-  const errorText = t('invite_activate_error_generic')
-
 
   try {
     const apiPath = '/api/org/team/invite/accept'
@@ -130,7 +111,6 @@ const acceptInvite = async () => {
     }
 
     inviteInfo.value = apiResponse.data as InviteAcceptResponse
-    // startRedirectCountdown()
   } catch {
     errorMessage.value = t('invite_activate_error_fallback')
   } finally {
@@ -140,12 +120,6 @@ const acceptInvite = async () => {
 
 onMounted(() => {
   void acceptInvite()
-})
-
-onBeforeUnmount(() => {
-  if (redirectTimer) {
-    clearInterval(redirectTimer)
-  }
 })
 </script>
 

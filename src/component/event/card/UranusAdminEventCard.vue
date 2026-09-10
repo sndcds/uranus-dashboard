@@ -132,7 +132,6 @@ import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { ApiError } from '@/api.ts'
 import {uranusFormatEventDateTime } from '@/util/util.ts'
-
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
 import UranusCard from "@/component/ui/UranusCard.vue";
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
@@ -192,14 +191,12 @@ const eventSeriesLabel = (event: AdminEventListItem) =>
 const hasVenue = computed(() => !!props.event.venueUuid)
 const hasSpace = computed(() => !!props.event.spaceUuid)
 
-
 const canPreviewEvent = computed(() => {
   const event = props.event
   if (event.canViewEventInsights || event.canEditEvent || event.canDeleteEvent) return true
   else if (event.releaseStatus == 'draft' || event.releaseStatus == 'review') return false
   return true
 })
-
 
 // Delete modal state
 const showDeleteModal = ref(false)
@@ -209,7 +206,6 @@ const pendingDeleteUuid = ref<string | null>(null)
 const pendingDeleteTitle = ref('')
 const pendingTimeSeriesTotal = ref(1)
 const pendingEventDateUuid = ref<string | null>(null)
-
 
 const deleteQuestion = computed(() => {
   if ((props.event.seriesTotal ?? 1) > 1) {
@@ -281,7 +277,7 @@ const confirmDelete = async ({password, selectedOption}: {
       apiPath = `/api/admin/event/${pendingDeleteUuid.value}/date/${pendingEventDateUuid.value}`
     }
 
-    const apiResponse = await apiFetch(apiPath, {
+    await apiFetch(apiPath, {
       method: 'DELETE',
       body: JSON.stringify(body),
     })

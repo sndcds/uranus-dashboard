@@ -38,7 +38,6 @@ import UranusBigIntFlagsEditor from '@/component/uranus/UranusBigIntFlagsEditor.
 import { uranusI18nVisitorInformationFlags } from '@/i18n/visitor-info.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import UranusCard from '@/component/ui/UranusCard.vue'
 import { Save, Undo } from 'lucide-vue-next'
 
 const { t } = useI18n({ useScope: 'global' })

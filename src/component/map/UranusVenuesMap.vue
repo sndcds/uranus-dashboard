@@ -7,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ExpressionSpecification } from 'maplibre-gl'
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -253,8 +254,8 @@ function isFiniteNumber(value: unknown) {
  * Erstellt eine MapLibre GL Expression für das Marker-Icon-Mapping.
  * Falls keine Stile konfiguriert sind, wird der Standard-Marker verwendet.
  */
-function buildMarkerIconExpression(): any[] {
-  const cases: any[] = []
+function buildMarkerIconExpression(): ExpressionSpecification {
+  const cases: (ExpressionSpecification | string)[] = []
 
   for (const group of MARKER_STYLE_GROUPS) {
     for (const style of group.styles) {
@@ -267,7 +268,7 @@ function buildMarkerIconExpression(): any[] {
     return ['literal', 'venue-marker-standard']
   }
 
-  return ['case', ...cases, 'venue-marker-standard']
+  return ['case', ...cases, 'venue-marker-standard'] as ExpressionSpecification
 }
 
 function createMap() {
