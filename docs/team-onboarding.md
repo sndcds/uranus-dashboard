@@ -46,6 +46,10 @@ to inspect failed or ambiguous SMTP deliveries without creating duplicate mail.
   empty/error/retry; English/Danish output; pagination; unsafe URLs; logout and
   stale-request isolation. No real email or external API is contacted.
 - `pnpm build`: production build.
+- A fresh archived checkout installed with pnpm 10.28.2 and
+  `pnpm install --frozen-lockfile` also passed all 28 tests. The GitHub test workflow
+  now uses this checked-in pnpm lockfile and Node 22.22.3; its previous `npm ci`
+  step failed because the legacy npm lockfile no longer matches package.json.
 - `pnpm generate:i18n`: regenerates committed JSON from the translation sources.
 - `pnpm typecheck`: the branch has the same 95 pre-existing diagnostics as `dev`
   before this work (unused declarations, legacy API response access, missing type
