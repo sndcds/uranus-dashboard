@@ -26,7 +26,10 @@
 
       <UranusDashboardHero :title="t('edit_event')"/>
 
-      <div v-if="adminEventStore.loading">Loading…</div>
+      <div v-if="adminEventStore.loading">
+        Loading…
+      </div>
+
       <template v-else-if="adminEventStore.isLoaded && adminEventStore.draft">
         <nav class="uranus-tabs">
           <button

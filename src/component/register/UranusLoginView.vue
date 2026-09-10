@@ -106,22 +106,15 @@ const invalidEmailMessage = computed(() => t('organization_form_invalid_email'))
 
 watch(email, (value) => {
   if (fieldErrors.email && value.trim()) {
-    const trimmed = value.trim()
-    if (isValidEmail(trimmed)) {
+    if (isValidEmail(value.trim())) {
       fieldErrors.email = undefined
-      if (error.value === fieldErrors.email) {
-        error.value = null
-      }
     }
   }
 })
 
-watch(password, (value) => {
-  if (fieldErrors.password && value.trim()) {
+watch(password, () => {
+  if (fieldErrors.password) {
     fieldErrors.password = undefined
-    if (error.value === fieldErrors.password) {
-      error.value = null
-    }
   }
 })
 
@@ -129,30 +122,34 @@ const login = async () => {
   error.value = null
   fieldErrors.email = undefined
   fieldErrors.password = undefined
-  const trimmedEmail = email.value.trim()
-  const trimmedPassword = password.value.trim()
+
+  const normalizedEmail = email.value.trim()
+
   // Validate email
-  if (!trimmedEmail) {
+  if (!normalizedEmail) {
     fieldErrors.email = requiredFieldMessage.value
     return
   }
-  if (!isValidEmail(trimmedEmail)) {
+
+  if (!isValidEmail(normalizedEmail)) {
     fieldErrors.email = invalidEmailMessage.value
     return
   }
-  // Validate password
-  if (!trimmedPassword) {
+
+  // Validate password — never trim or normalize passwords
+  if (!password.value) {
     fieldErrors.password = requiredFieldMessage.value
     return
   }
+
   isSubmitting.value = true
+
   try {
-    const apiPath = '/api/login'
-    const apiResponse = await apiFetch<any>(apiPath, {
+    const apiResponse = await apiFetch<any>('/api/login', {
       method: 'POST',
       body: JSON.stringify({
-        email: trimmedEmail,
-        password: trimmedPassword,
+        email: normalizedEmail,
+        password: password.value,
       }),
     })
 
@@ -164,7 +161,6 @@ const login = async () => {
       userStore.setUserAvatarUrl(responseData.avatar_url ?? null)
       if (responseData.locale) selectedLocale.value = responseData.locale
       if (responseData.theme) themeStore.setTheme(responseData.theme)
-      console.log(JSON.stringify(responseData, null, 2))
       router.replace(typeof route.query.redirect === 'string' ? route.query.redirect : '/page/about')
     } else {
       error.value = t('invalid_credentials')
@@ -180,6 +176,7 @@ const login = async () => {
     isSubmitting.value = false
   }
 }
+
 </script>
 <style scoped lang="scss">
 

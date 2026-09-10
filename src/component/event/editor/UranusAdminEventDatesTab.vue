@@ -251,6 +251,7 @@ async function commitDates() {
 
   try {
     const payload = store.draft.eventDates?.map(date => ({
+      uuid: emptyToNull(date.uuid),
       start_date: emptyToNull(date.startDate),
       start_time: emptyToNull(date.startTime),
       end_date: emptyToNull(date.endDate),
