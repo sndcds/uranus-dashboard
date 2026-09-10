@@ -27,7 +27,6 @@
 import { ref, computed } from 'vue'
 import { apiFetch, deepClean } from '@/api.ts'
 
-
 const { apiPath } = defineProps<{
   apiPath: string
 }>()
@@ -57,13 +56,13 @@ const handleSubmit = async () => {
 
   loading.value = true
   try {
-    const { status, response } = await apiFetch(apiPath, {
+    const { status, data } = await apiFetch(apiPath, {
       method: 'POST',
       body: JSON.stringify(deepClean(parsedJson)),
     })
 
     httpStatus.value = status
-    response.value = response
+    response.value = data
 
     if (status < 200 || status >= 300) {
       error.value = `API returned error status ${status}`

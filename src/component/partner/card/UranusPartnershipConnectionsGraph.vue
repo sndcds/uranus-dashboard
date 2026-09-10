@@ -167,7 +167,7 @@ const destinationNodes = computed<OrgNode[]>(() => {
   return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
 })
 
-function setSourceRef(uuid: string, element: Element | null) {
+function setSourceRef(uuid: string, element: unknown) {
   if (element instanceof HTMLElement) {
     sourceRefs.set(uuid, element)
   } else {
@@ -175,7 +175,7 @@ function setSourceRef(uuid: string, element: Element | null) {
   }
 }
 
-function setDestinationRef(uuid: string, element: Element | null) {
+function setDestinationRef(uuid: string, element: unknown) {
   if (element instanceof HTMLElement) {
     destinationRefs.set(uuid, element)
   } else {

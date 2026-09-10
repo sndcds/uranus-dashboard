@@ -7,22 +7,6 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
-
-// Optional: dynamic class based on route meta
-const contentClass = computed(() => {
-  const mode = route.meta.layoutMode as string | undefined
-  return [
-    'content-only-layout__content',
-    mode === 'zero-padding' ? 'zero-padding' : ''
-  ].filter(Boolean).join(' ')
-})
-</script>
-
 <style scoped lang="scss">
 .content-only-layout {
   overflow-y: auto;

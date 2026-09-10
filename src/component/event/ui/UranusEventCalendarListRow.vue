@@ -135,7 +135,6 @@ const imageUrl = computed(() =>
     props.eventListStore.getEventImageUrl(props.event, { width: 240, ratio: '16:9' })
 )
 
-
 const detailText = computed(() => {
   const summary = eventDetails.value?.summary?.trim()
   if (summary) return summary
@@ -146,8 +145,6 @@ const detailText = computed(() => {
 const hasLinks = computed(() =>
     Boolean(eventDetails.value?.sourceUrl || eventDetails.value?.eventLinks?.length)
 )
-
-const isFreeEvent = computed(() => props.event.priceType === 'free')
 
 const hasEventTypes = computed(() =>
     props.event.eventTypes?.length > 0
@@ -216,7 +213,6 @@ const loadEvent = async () => {
     isLoading.value = false
   }
 }
-
 </script>
 
 <style scoped lang="scss">

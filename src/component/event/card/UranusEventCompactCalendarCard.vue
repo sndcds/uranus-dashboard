@@ -51,10 +51,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusFavoriteListEventAction from '@/component/favorite/UranusFavoriteListEventAction.vue'
 import { uranusFormatDateTime } from '@/util/string.ts'
-import { useEventReleaseStatusStore } from '@/store/eventReleaseStatusStore.ts'
-import type { EventListItemEventType } from '@/domain/event/eventListItem.model.ts'
 import UranusEventPriceBadge from '@/component/event/ui/UranusEventPriceBadge.vue'
-
 
 const { t } = useI18n()
 
@@ -64,8 +61,6 @@ const props = defineProps<{
   eventListStore: any
   typeLookupStore: any
 }>()
-
-const eventReleaseStatusStore = useEventReleaseStatusStore()
 
 const imageUrl = computed(() =>
     props.eventListStore.getEventImageUrl(props.event, { width: 240, ratio: '2:1' })
@@ -80,24 +75,6 @@ const formattedDateTime = computed(() =>
         props.locale
     )
 )
-
-const isReleased = computed(() =>
-    eventReleaseStatusStore.isReleased(props.event.releaseStatus ?? '')
-)
-const hasEventTypes = computed(() =>
-    props.event.eventTypes?.length > 0
-)
-
-const uniqueEventTypes = computed(() => {
-  const set = new Set<number>()
-  props.event.eventTypes?.forEach((t: EventListItemEventType) =>
-      set.add(t.typeId)
-  )
-  return Array.from(set)
-})
-
-const getTypeName = (typeId: number) =>
-    props.typeLookupStore.data[props.locale]?.types?.[typeId]?.name ?? 'Unknown'
 </script>
 
 <style scoped lang="scss">

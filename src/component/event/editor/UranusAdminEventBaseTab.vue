@@ -87,15 +87,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
-
 import UranusLanguageSelect from '@/component/ui/UranusLanguageSelect.vue'
 import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
 import UranusImageSlot from '@/component/image/UranusImageSlot.vue'
-
 import type { AdminEvent } from '@/domain/event/adminEvent.model.ts'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
@@ -115,14 +113,12 @@ const emit = defineEmits<{
 }>()
 const event = computed(() => store.draft!)
 
-
 // Description editor
-const descriptionEditor = ref<InstanceType<typeof UranusTextEditor> | null>(null)
+
 const descriptionProxy = computed({
   get: () => store.draft?.description ?? '',
   set: (val: string) => { if (store.draft) store.draft.description = val }
 })
-
 
 const summaryProxy = computed({
   get: () => store.draft?.summary ?? '',
@@ -156,7 +152,6 @@ const baseFields = [
   'summary',
   'logoMode',
 ] as const
-
 
 function deepEqual(a: any, b: any): boolean {
   if (a === b) return true

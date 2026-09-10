@@ -21,7 +21,6 @@ import {useI18n} from "vue-i18n";
 
 const { t } = useI18n({ useScope: 'global' })
 
-
 const props = defineProps<{
   releaseStatus: string | null
   tiny?: boolean
@@ -43,8 +42,6 @@ const label = computed(() => {
 const colorClass = computed(() => {
   return props.releaseStatus
 })
-
-const date = computed(() => props.date ?? '')
 </script>
 
 <style scoped lang="scss">

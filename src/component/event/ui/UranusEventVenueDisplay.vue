@@ -5,15 +5,6 @@
 <template>
   <div v-if="hasVenueInfo" class="uranus-public-event-info-card">
 
-    <!--UranusLogoImage
-        :logoURL="logoUrl ?? ''"
-        :lightThemeLogoURL="lightThemeLogoUrl ?? ''"
-        :darkThemeLogoURL="darkThemeLogoUrl ?? ''"
-        :theme="themeStore.theme"
-        :maxWidth="180"
-        :maxHeight="80"
-    /-->
-
     <p class="uranus-public-event-info-label">{{ t('event_location') }}</p>
 
     <p v-if="eventDate?.venueWebsite && eventDate?.venueName">
@@ -49,7 +40,6 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import type { PublicEvent } from '@/domain/event/publicEvent.model.ts'
-import { useThemeStore } from '@/store/themeStore.ts'
 
 const { t } = useI18n({ useScope: 'global' })
 
@@ -67,16 +57,6 @@ const hasVenueInfo = computed(() => {
       e?.venueCity
   )
 })
-
-const logoUrl = computed(() => props.eventDate?.venueLogoUrl ?? null)
-
-const lightThemeLogoUrl = computed(
-    () => props.eventDate?.venueLightThemeLogoUrl ?? null
-)
-
-const darkThemeLogoUrl = computed(
-    () => props.eventDate?.venueDarkThemeLogoUrl ?? null
-)
 </script>
 
 <style scoped lang="scss">

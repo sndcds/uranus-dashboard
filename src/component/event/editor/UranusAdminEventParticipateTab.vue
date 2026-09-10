@@ -69,8 +69,6 @@ import type { AdminEvent } from '@/domain/event/adminEvent.model.ts'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
-import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
-import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import { Save, Undo } from 'lucide-vue-next'
 import UranusTextarea from "@/component/ui/UranusTextarea.vue";
@@ -107,10 +105,6 @@ watch(isDirty, (value) => {
 }, { immediate: true })
 
 // Helpers
-function parseNumberInput(e: Event): number | null {
-  const target = e.target as HTMLInputElement
-  return target.value === '' ? null : Number(target.value)
-}
 
 function buildPayload(
     draft: AdminEvent,

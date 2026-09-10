@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, defineEmits } from 'vue'
+import { computed } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
 
 const props = defineProps<{
@@ -46,7 +46,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'click'): void
 }>()
-
 
 const isExternal = computed(() => {
   if (typeof props.to !== 'string') return false

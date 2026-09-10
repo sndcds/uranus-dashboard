@@ -90,14 +90,6 @@ const currentValue = computed(() =>
 watch(currentValue, (val) => {
   emit('update:modelValue', val)
 })
-
-function reset() {
-  flags.value.value = props.modelValue ?? 0n
-}
-
-function save() {
-  emit('update:modelValue', currentValue.value)
-}
 </script>
 
 

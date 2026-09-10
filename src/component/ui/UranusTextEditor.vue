@@ -69,14 +69,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, shallowRef, watch, onMounted, onBeforeUnmount } from 'vue'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import { TextStyle } from '@tiptap/extension-text-style'
 import { Color } from '@tiptap/extension-color'
 import TurndownService from 'turndown'
 import MarkdownIt from 'markdown-it'
-
 import {
   Bold, Italic, Strikethrough, Code, SquareCode, Trash2, XCircle, Type,
   Heading1, Heading2, List, ListOrdered, Quote
@@ -96,16 +95,15 @@ const turndown = new TurndownService({
 
 // Props and emit
 const props = withDefaults(defineProps<{
-  modelValue?: string
+  modelValue?: string | null
   maxLength?: number
   showRemaining?: boolean
 }>(), {
-  maxLength: undefined,
   showRemaining: true,
 })
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
 
-const editor = ref<Editor | null>(null)
+const editor = shallowRef<Editor | null>(null)
 const lastValidHtml = ref('')
 
 const hasMaxLength = computed(() =>
@@ -142,7 +140,7 @@ onMounted(() => {
       const markdown = turndown.turndown(html)
 
       if (hasMaxLength.value && getCharacterCount(markdown) > Number(props.maxLength)) {
-        editor.commands.setContent(lastValidHtml.value || md.render(trimToMaxLength(props.modelValue ?? '')), false)
+        editor.commands.setContent(lastValidHtml.value || md.render(trimToMaxLength(props.modelValue ?? '')), { emitUpdate: false })
         return
       }
 
@@ -174,7 +172,7 @@ watch(
       const currentMarkdown = turndown.turndown(editor.value.getHTML())
       if (normalizedValue !== currentMarkdown) {
         const html = normalizedValue ? md.render(normalizedValue) : ''
-        editor.value.commands.setContent(html, false) // false = do not add to undo history
+        editor.value.commands.setContent(html, { emitUpdate: false }) // Avoid emitting an update for an external value
         lastValidHtml.value = editor.value.getHTML()
       }
     }

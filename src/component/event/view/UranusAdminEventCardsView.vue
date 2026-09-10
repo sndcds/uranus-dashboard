@@ -85,7 +85,7 @@ const displayedEvents = computed(() => {
   return Array.from(grouped.values())
 })
 
-const onEventDeleted = async ({eventUuid}: {
+const onEventDeleted = async (_payload: {
   eventUuid: string
   dateUuid: string | null
   deleteSeries: boolean

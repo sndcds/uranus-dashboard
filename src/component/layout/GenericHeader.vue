@@ -179,7 +179,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { isNavigationFailure, useRouter, useRoute } from 'vue-router'
+import { isNavigationFailure, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch, type LoginResponse } from '@/api.ts'
 import { applyTheme } from '@/composable/useTheme.ts'
@@ -192,7 +192,7 @@ import UranusLogo from '@/component/ui/UranusLogo.vue'
 
 const { t, locale } = useI18n()
 const router = useRouter()
-const route = useRoute()
+
 const tokenStore = useTokenStore()
 const userStore = useUserStore()
 const themeStore = useThemeStore()
@@ -220,7 +220,6 @@ const userAvatarUrl = computed({
   get: () => userStore.userAvatarUrl,
   set: (avatarUrl) => userStore.setUserAvatarUrl(avatarUrl)
 })
-
 
 const userInitials = computed(() => {
   const name = userName.value

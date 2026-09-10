@@ -37,10 +37,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, useId } from 'vue'
+import { onMounted, ref, watch, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
-
 import UranusLabel from "@/component/ui/UranusLabel.vue"
 
 // Models
@@ -48,7 +47,7 @@ const countryModel = defineModel<string>('countryCode', { default: '' })
 const stateModel = defineModel<string>('stateCode', { default: '' })
 
 // Translation
-const { t, te, locale } = useI18n()
+const { t, locale } = useI18n()
 
 // Data
 const countries = ref<{ code: string; name: string }[]>([])
@@ -94,7 +93,7 @@ const loadCountries = async () => {
   countriesLoading.value = true
   pendingCountryReload = false
   try {
-    const { response } = await apiFetch<{ country_code: string; country_name?: string | null }[]>(
+    const { data: response } = await apiFetch<{ country_code: string; country_name?: string | null }[]>(
       `/api/choosable-countries?lang=${locale.value}`
     )
     countries.value = Array.isArray(response)
@@ -136,7 +135,7 @@ const loadStates = async (countryCode: string) => {
 
   statesLoading.value = true
   try {
-    const { response } = await apiFetch<{ state_code: string; state_name?: string | null }[]>(
+    const { data: response } = await apiFetch<{ state_code: string; state_name?: string | null }[]>(
       `/api/choosable-states?country-code=${encodeURIComponent(trimmedCountry)}`
     )
     states.value = Array.isArray(response)

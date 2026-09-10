@@ -57,8 +57,6 @@ const email = ref('')
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
 const isSubmitting = ref(false)
-const errorMessageId = 'forgot-password-error'
-const successMessageId = 'forgot-password-success'
 
 const fieldErrors = reactive({
     email: null as string | null,

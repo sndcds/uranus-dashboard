@@ -350,21 +350,8 @@ const isLoadingMore = ref(false)
 let filterTimeout: number | null = null
 
 const onResetFilter = () => {
-  const currentDateRange: Partial<UranusEventsFilter> = {
-    ...(activeFilter.value.dateRangeMode !== undefined && {
-      dateRangeMode: activeFilter.value.dateRangeMode,
-    }),
-    ...(activeFilter.value.startDate !== undefined && {
-      startDate: activeFilter.value.startDate,
-    }),
-
-    ...(activeFilter.value.endDate !== undefined && {
-      endDate: activeFilter.value.endDate,
-    }),
-  }
 
   filterStore.resetFilter(filterScope.value)
-  // filterStore.setFilter(currentDateRange, filterScope.value)
 }
 
 const onResetFilterAndClose = () => {
@@ -517,7 +504,6 @@ watch(calendarMode, () => {
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 
-
 const weekRangeLabel = computed(() => {
   const weekStart = weekAnchorDate.value
   const weekEnd = addDays(weekStart, 6)
@@ -569,7 +555,6 @@ function goToCurrentWeek() {
 function toEventDateTime(event: EventListItem) {
   const [year, month, day] = event.startDate.split('-').map(Number)
   const [hour = 0, minute = 0] = (event.startTime ?? '00:00').split(':').map(Number)
-
 
   if (!year || !month || !day) {
   appStore.setEventCalendarWeekStart(formatDateKey(weekAnchorDate.value))

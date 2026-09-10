@@ -92,12 +92,12 @@ const props = withDefaults(
     saveLabel?: string
     cancelLabel?: string
     savingLabel?: string
-    isEditing?: boolean
+    isEditing?: boolean | undefined
   }>(),
   {
     tags: () => [],
     isSaving: false,
-    locationError: '',
+    error: '',
     title: '',
     editLabel: '',
     emptyLabel: '',
@@ -151,13 +151,6 @@ const normalizedList = (tags?: string[]): string[] =>
 const displayTags = computed(() => normalizedList(props.tags))
 
 // --- Editing control ---
-const startEditing = () => {
-  draftTags.value = [...displayTags.value]
-  newTagName.value = ''
-  if (props.isEditing === undefined) {
-    internalEditing.value = true
-  }
-}
 
 const cancelEditing = () => {
   draftTags.value = []

@@ -7,7 +7,7 @@ import { ref, shallowRef, onMounted, onBeforeUnmount, watch, unref } from 'vue'
 import type { FeatureCollection } from 'geojson'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import type { LayerSpecification, LngLatLike } from 'maplibre-gl'
+import type { LayerSpecification, LngLatLike, StyleSpecification } from 'maplibre-gl'
 
 type MapLibreMap = maplibregl.Map
 const DEBUG_PREFIX = '[UranusMapRenderer]'
@@ -41,7 +41,6 @@ export type MapLayer = {
   }
 }
 
-
 /**
  * PROPS
  */
@@ -49,7 +48,7 @@ const props = defineProps<{
   layers: MapLayer[]
   center?: LngLatLike
   zoom?: number
-  mapStyle?: string | Record<string, any>
+  mapStyle?: string | StyleSpecification
   defaultTextFont?: string[]
 }>()
 
@@ -57,7 +56,6 @@ const emit = defineEmits<{
   (e: 'loaded', map: MapLibreMap): void
   (e: 'feature-click', feature: any): void
 }>()
-
 
 /**
  * STATE
@@ -77,7 +75,7 @@ onMounted(() => {
 
   const instance = new maplibregl.Map({
     container: mapContainer.value,
-    style: unref(props.mapStyle),
+    ...(props.mapStyle ? { style: unref(props.mapStyle) } : {}),
     center: props.center ?? [9.5, 54.3],
     zoom: props.zoom ?? 8
   })

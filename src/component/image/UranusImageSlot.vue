@@ -70,7 +70,7 @@ const props = defineProps<{
 // State
 const dialogOpen = ref(false)
 const reloadCounter = ref(0)
-const isSaving = ref(false)
+
 const errorMessage = ref<string | null>(null)
 
 const image = ref<PlutoImage | null>(null)
@@ -122,7 +122,6 @@ function openDialog() {
   dialogOpen.value = true
 }
 
-
 import { ApiError } from '@/api.ts'
 
 async function onSave(payload: any, file: File | null) {
@@ -157,7 +156,6 @@ async function onSave(payload: any, file: File | null) {
   }
 }
 
-
 async function removeImage() {
   if (!imageUuid.value) return
 
@@ -175,11 +173,9 @@ async function removeImage() {
   }
 }
 
-
 function incReloadCounter() {
   reloadCounter.value++
 }
-
 
 // defineExpose({ incReloadCounter })
 

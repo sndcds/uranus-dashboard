@@ -47,14 +47,17 @@ to inspect failed or ambiguous SMTP deliveries without creating duplicate mail.
   stale-request isolation. No real email or external API is contacted.
 - `pnpm build`: production build.
 - A fresh archived checkout installed with pnpm 10.28.2 and
-  `pnpm install --frozen-lockfile` also passed all 28 tests. The GitHub test workflow
+  `pnpm install --frozen-lockfile` also passed typecheck and all 30 tests. The GitHub test workflow
   now uses this checked-in pnpm lockfile and Node 22.22.3; its previous `npm ci`
   step failed because the legacy npm lockfile no longer matches package.json.
 - `pnpm generate:i18n`: regenerates committed JSON from the translation sources.
-- `pnpm typecheck`: the branch has the same 95 pre-existing diagnostics as `dev`
-  before this work (unused declarations, legacy API response access, missing type
-  packages and component typing). No new diagnostics were introduced. Full-project
-  typecheck is **not green**; fixing those unrelated components remains separate work.
+- `pnpm typecheck`: passes with all existing strict compiler options enabled.
+  A separate prerequisite commit resolves the existing diagnostics: unused draft
+  code/macros, legacy API `response` reads, missing declaration packages, nullable
+  values, optional props and map/ref typing. TipTap 3 uses `shallowRef` and
+  `setContent(..., { emitUpdate: false })`; two regression tests cover external
+  Markdown synchronization and length-limit rollback. Only development type
+  dependencies are added. CI now runs the full typecheck before tests.
 - There is no project lint/format script or configuration. The existing ESLint
   executable in node_modules is broken. New notification files and their tests
   were checked with isolated temporary tooling: ESLint 9.39.1 with TypeScript

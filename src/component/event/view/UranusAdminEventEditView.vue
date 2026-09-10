@@ -92,7 +92,7 @@ import UranusEventReleaseModal from '@/component/event/ui/UranusEventReleaseModa
 import UranusAdminEventVisitorInfoTab from '@/component/event/editor/UranusAdminEventVisitorInfoTab.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
-import {StepBack, Rocket, Eye} from 'lucide-vue-next'
+import { StepBack, Rocket } from 'lucide-vue-next'
 import UranusUnsavedChangesModal from '@/component/ui/modal/UranusUnsavedChangesModal.vue'
 import { useSaveShortcut } from '@/composable/useSaveShortcut.ts'
 import UranusEventReleaseChip from "@/component/event/ui/UranusEventReleaseChip.vue";
@@ -109,7 +109,6 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const route = useRoute()
 const router = useRouter()
 const adminEventStore = useAdminEventStore()
-
 
 function goBack() {
   if (hasDirtyTabs.value) {
@@ -193,7 +192,6 @@ function createCleanDirtyState(): Record<TabKey, boolean> {
     images: false,
   }
 }
-
 
 const canReleaseEvent = computed(() => {
   return adminEventStore.original?.canRelease

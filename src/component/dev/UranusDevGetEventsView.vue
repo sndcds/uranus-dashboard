@@ -111,7 +111,7 @@ const apiExamples = [
   }
 ]
 
-function apiLink(path) {
+function apiLink(path: string) {
   const cleanPath = path.startsWith('/') ? path.slice(1) : path
 
   return {
@@ -127,7 +127,6 @@ const mappedExamples = computed(() =>
 )
 
 const chosenVenue = ref<VenueSelectInfo | null>(null)
-
 </script>
 
 <style scoped>

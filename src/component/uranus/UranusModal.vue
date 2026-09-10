@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useSlots, onMounted, onBeforeUnmount } from 'vue'
+import { computed, onMounted, onBeforeUnmount } from 'vue'
 import { X } from 'lucide-vue-next'
 
 const props = withDefaults(

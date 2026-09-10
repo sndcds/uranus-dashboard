@@ -51,7 +51,6 @@ import {
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusFavoriteListCard from '@/component/favorite/card/UranusFavoriteListCard.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import UranusNotification from '@/component/ui/UranusNotification.vue'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import UranusOrgTitle from '@/component/layout/UranusOrgTitle.vue'
 import UranusOrgRequiredNotification from '@/component/org/UranusOrgRequiredNotification.vue'
