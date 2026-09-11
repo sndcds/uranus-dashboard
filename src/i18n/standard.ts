@@ -420,6 +420,21 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         en: 'Website',
         da: 'Hjemmeside',
     },
+    input_invalid_url: {
+        de: 'Bitte gib eine gültige URL ein, die mit https:// oder http:// beginnt.',
+        en: 'Please enter a valid URL starting with https:// or http://.',
+        da: 'Indtast en gyldig URL, der begynder med https:// eller http://.',
+    },
+    input_url_missing_protocol: {
+        de: 'Der URL fehlt das Protokoll. Wähle aus, was vorangestellt werden soll.',
+        en: 'The URL is missing a protocol. Choose which one to prepend.',
+        da: 'URL’en mangler en protokol. Vælg, hvilken der skal sættes foran.',
+    },
+    input_url_add_protocol: {
+        de: '{protocol} voranstellen',
+        en: 'Prepend {protocol}',
+        da: 'Sæt {protocol} foran',
+    },
     license: {
         de: 'Lizenz',
         en: 'License',

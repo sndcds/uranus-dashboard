@@ -119,7 +119,7 @@ export function mapApiEventToListItem(apiEvent: any): EventListItem {
 Localization is **language-namespaced**:
 - Messages organized by domain: `src/i18n/event.ts`, `src/i18n/org.ts`, etc.
 - Compiled to JSON: `src/i18n/json/{de,en,da}.json` (build output for i18n generation)
-- Tool: `npm run generate:i18n` compiles TypeScript i18n files to JSON using `ts-node-esm tools/i18n/generate-i18n-to-json.ts`
+- Tool: `pnpm generate:i18n` compiles TypeScript i18n files to JSON using `ts-node-esm tools/i18n/generate-i18n-to-json.ts`
 
 **Usage in components**:
 ```vue
@@ -131,6 +131,8 @@ Localization is **language-namespaced**:
 **Locale persistence**: Current locale stored in `localStorage.getItem('app-locale')`, watched and auto-saved in `src/i18n/uranus-i18n-index.ts`
 
 ## Build & Development Workflows
+
+Use pnpm exclusively with the version pinned in `package.json` and the latest stable Node.js release (Current). Keep `pnpm-lock.yaml` committed and use `pnpm install --frozen-lockfile` in CI. Do not create npm or Yarn lockfiles.
 
 ### Local Development
 ```bash
@@ -304,4 +306,3 @@ describe('EventCard', () => {
 ---
 
 **Last Updated**: June 2026 | **Target Audience**: AI Code Assistants
-
