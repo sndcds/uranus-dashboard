@@ -15,6 +15,11 @@ export type AdminEventDate = {
     accessibilityInfo: string | null
     venueUuid: string | null
     spaceUuid: string | null
+    ticketLink: string | null
+    dateDescription: string | null
+    dateVenueName: string | null
+    dateVenueLat: number | null
+    dateVenueLon: number | null
     allDay: boolean
 }
 
@@ -34,6 +39,11 @@ export function createAdminEventDate(
         accessibilityInfo: props.accessibilityInfo ?? null,
         venueUuid: props.venueUuid ?? null,
         spaceUuid: props.spaceUuid ?? null,
+        ticketLink: props.ticketLink ?? null,
+        dateDescription: props.dateDescription ?? null,
+        dateVenueName: props.dateVenueName ?? null,
+        dateVenueLat: props.dateVenueLat ?? null,
+        dateVenueLon: props.dateVenueLon ?? null,
         allDay: props.allDay ?? false
     }
 }

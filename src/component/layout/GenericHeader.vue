@@ -141,26 +141,26 @@
             <div class="generic-header__user-dropdown-divider"></div>
 
             <nav class="generic-header__user-dropdown-nav">
-              <router-link
+              <!--router-link
                   to="/admin/user/messages/inbox"
                   class="generic-header__user-dropdown-item"
               >
                 <Inbox />
                 {{ t('user_messages_inbox') }}
+              </router-link-->
+
+              <!--router-link
+                  to="/admin/user/messages/send"
+                  class="generic-header__user-dropdown-item"
+              >
+                <Send />
+                {{ t('user_messages_send') }}
+              </router-link-->
+
+              <router-link to="/admin/user/profile" class="generic-header__user-dropdown-item">
+                <UserRoundCog />
+                {{ t('user_profile') }}
               </router-link>
-
-            <router-link
-                to="/admin/user/messages/send"
-                class="generic-header__user-dropdown-item"
-            >
-              <Send />
-              {{ t('user_messages_send') }}
-            </router-link>
-
-            <router-link to="/admin/user/profile" class="generic-header__user-dropdown-item">
-              <UserRoundCog />
-              {{ t('user_profile') }}
-            </router-link>
           </nav>
 
           <div class="generic-header__user-dropdown-divider"></div>
@@ -192,7 +192,6 @@ import UranusLogo from '@/component/ui/UranusLogo.vue'
 
 const { t, locale } = useI18n()
 const router = useRouter()
-const route = useRoute()
 const tokenStore = useTokenStore()
 const userStore = useUserStore()
 const themeStore = useThemeStore()

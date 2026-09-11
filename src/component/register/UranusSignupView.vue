@@ -87,144 +87,232 @@ import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import UranusCardFooter from '@/component/layout/UranusCardFooter.vue'
 import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
 
-type SignupResponse = { message?: string;[key: string]: unknown }
+interface SignupResponse {
+  data?: unknown
+  message?: string
+}
 
 const { t, te, locale } = useI18n()
 const tokenStore = useTokenStore()
 
+const signupSuccess = ref(false)
 const email = ref('')
 const repeatEmail = ref('')
 const password = ref('')
-const error = ref<string | null>(null)
-const isSubmitting = ref(false)
-const signupSuccess = ref(false)
 
-const fieldErrors = reactive({
-    email: null as string | null,
-    repeatEmail: null as string | null,
-    password: null as string | null,
+const isSubmitting = ref(false)
+const error = ref<string | null>(null)
+
+const fieldErrors = reactive<{
+  email: string | null
+  repeatEmail: string | null
+  password: string | null
+}>({
+  email: null,
+  repeatEmail: null,
+  password: null,
 })
+
 
 const signupSubtitle = computed(() => (te('signup_subtitle') ? t('signup_subtitle') : 'Create a new organization account to get started.'))
 
-const resetForm = () => {
-    email.value = ''
-    repeatEmail.value = ''
-    password.value = ''
-    fieldErrors.email = null
-    fieldErrors.repeatEmail = null
-    fieldErrors.password = null
-    error.value = null
-}
+const requiredFieldMessage = computed(() => t('required_field'))
 
-const isValidEmail = (value: string) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailPattern.test(value)
-}
+const invalidEmailMessage = computed(() => t('invalid_email'))
 
-const requiredFieldMessage = computed(() => t('input_required'))
-const invalidEmailMessage = computed(() => t('input_invalid_email'))
 const emailsDoNotMatchMessage = computed(() => t('emails_do_not_match'))
 
-watch(email, (value) => {
-    if (fieldErrors.email && value.trim()) {
-        const trimmed = value.trim()
-        if (isValidEmail(trimmed)) {
-            fieldErrors.email = null
-            if (error.value === fieldErrors.email) {
-                error.value = null
-            }
-        }
-    }
-})
+const isValidEmail = (value: string): boolean => {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailPattern.test(value)
+}
 
-watch(repeatEmail, (value) => {
-  if (fieldErrors.repeatEmail && value.trim()) {
-    const trimmedEmail = email.value.trim().toLowerCase()
-    const trimmedRepeatEmail = value.trim().toLowerCase()
-    if (trimmedRepeatEmail && trimmedEmail === trimmedRepeatEmail) {
-      fieldErrors.repeatEmail = null
-      if (error.value === fieldErrors.repeatEmail) {
-        error.value = null
-      }
-    }
-  }
-})
-
-watch(password, (value) => {
-  if (fieldErrors.password && value.trim()) {
-    fieldErrors.password = null
-    if (error.value === fieldErrors.password) {
-      error.value = null
-    }
-  }
-})
-
-const signup = async () => {
+const clearFieldError = (
+    field: keyof typeof fieldErrors,
+): void => {
+  fieldErrors[field] = null
   error.value = null
+}
+
+const resetForm = (): void => {
+  email.value = ''
+  repeatEmail.value = ''
+  password.value = ''
+
   fieldErrors.email = null
   fieldErrors.repeatEmail = null
   fieldErrors.password = null
 
-  const trimmedEmail = email.value.trim()
-  const trimmedRepeatEmail = repeatEmail.value.trim()
-  const trimmedPassword = password.value.trim()
+  error.value = null
+}
 
+watch(email, (value) => {
+  if (!fieldErrors.email) {
+    return
+  }
+
+  const normalizedEmail = value.trim()
+
+  if (normalizedEmail && isValidEmail(normalizedEmail)) {
+    clearFieldError('email')
+  }
+})
+
+watch(repeatEmail, (value) => {
+  if (!fieldErrors.repeatEmail) {
+    return
+  }
+
+  const normalizedEmail = email.value.trim().toLowerCase()
+  const normalizedRepeatEmail = value.trim().toLowerCase()
+
+  if (
+      normalizedRepeatEmail &&
+      isValidEmail(normalizedRepeatEmail) &&
+      normalizedEmail === normalizedRepeatEmail
+  ) {
+    clearFieldError('repeatEmail')
+  }
+})
+
+watch(password, (value) => {
+  if (!fieldErrors.password) {
+    return
+  }
+
+  /*
+   * IMPORTANT:
+   *
+   * Do not use value.trim() here.
+   *
+   * Whitespace is a valid part of a password and must not be
+   * silently removed or otherwise modified.
+   */
+  if (value.length > 0) {
+    clearFieldError('password')
+  }
+})
+
+const signup = async (): Promise<void> => {
+  error.value = null
+
+  fieldErrors.email = null
+  fieldErrors.repeatEmail = null
+  fieldErrors.password = null
+
+  /*
+   * Email addresses may be normalized by removing accidental
+   * surrounding whitespace.
+   *
+   * Passwords must NEVER be trimmed or otherwise modified.
+   */
+  const normalizedEmail = email.value.trim()
+  const normalizedRepeatEmail = repeatEmail.value.trim()
+
+  const passwordValue = password.value
+
+  // ------------------------------------------------------------
   // Validate email
-  if (!trimmedEmail) {
+  // ------------------------------------------------------------
+
+  if (!normalizedEmail) {
     fieldErrors.email = requiredFieldMessage.value
     return
   }
-  if (!isValidEmail(trimmedEmail)) {
+
+  if (!isValidEmail(normalizedEmail)) {
     fieldErrors.email = invalidEmailMessage.value
     return
   }
 
-  // Validate repeat email
-  if (!trimmedRepeatEmail) {
+  // ------------------------------------------------------------
+  // Validate repeated email
+  // ------------------------------------------------------------
+
+  if (!normalizedRepeatEmail) {
     fieldErrors.repeatEmail = requiredFieldMessage.value
     return
   }
-  if (!isValidEmail(trimmedRepeatEmail)) {
+
+  if (!isValidEmail(normalizedRepeatEmail)) {
     fieldErrors.repeatEmail = invalidEmailMessage.value
     return
   }
 
-  // Check if emails match
-  if (trimmedEmail.toLowerCase() !== trimmedRepeatEmail.toLowerCase()) {
+  if (
+      normalizedEmail.toLowerCase() !==
+      normalizedRepeatEmail.toLowerCase()
+  ) {
     fieldErrors.repeatEmail = emailsDoNotMatchMessage.value
     return
   }
 
+  // ------------------------------------------------------------
   // Validate password
-  if (!trimmedPassword) {
-    // TODO: Validate < 12 chars
+  // ------------------------------------------------------------
+
+  /*
+   * Do NOT use:
+   *
+   *     password.value.trim()
+   *
+   * A password containing leading/trailing whitespace is a valid
+   * password. The exact value entered by the user must be sent to
+   * the server.
+   */
+  if (!passwordValue) {
     fieldErrors.password = requiredFieldMessage.value
     return
   }
 
+  // ------------------------------------------------------------
+  // Submit
+  // ------------------------------------------------------------
+
   isSubmitting.value = true
 
   try {
-    await apiFetch<SignupResponse | null>(`/api/signup?lang=${locale.value}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        email: trimmedEmail,
-        password: trimmedPassword,
-        referer: window.location.origin,
-      }),
-    })
+    await apiFetch<SignupResponse | null>(
+        `/api/signup?lang=${encodeURIComponent(locale.value)}`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            email: normalizedEmail,
+
+            // IMPORTANT:
+            // Send the password exactly as entered.
+            password: passwordValue,
+
+            referer: window.location.origin,
+          }),
+        },
+    )
 
     resetForm()
     tokenStore.markKnownAccount()
     signupSuccess.value = true
-  } catch (err: any) {
-    if (err.error?.includes('(#1)')) {
-      error.value = t('email_and_password_required')
-    } else if (err.error?.includes('(#2)')) {
-      error.value = t('password__doesnt_meet_security_requirements')
-    } else if (err.error?.includes('(#3)')) {
-      error.value = t('invalid_email_format')
+  } catch (err: unknown) {
+    /*
+     * Keep the password untouched. In particular, do not
+     * normalize or trim it in error handling.
+     */
+
+    if (
+        err &&
+        typeof err === 'object' &&
+        'data' in err
+    ) {
+      const apiError = err as {
+        data?: {
+          message?: string
+          error?: string
+        }
+      }
+
+      error.value =
+          apiError.data?.message ??
+          apiError.data?.error ??
+          t('signup_failed')
     } else {
       error.value = t('signup_failed')
     }

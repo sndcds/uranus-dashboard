@@ -4,7 +4,11 @@
       <h1>{{ t('reset_password_title') }}</h1>
       <p>{{ t('reset_password_subtitle') }}</p>
 
-      <UranusForm @submit.prevent="handleSubmit" :aria-busy="isSubmitting" novalidate>
+      <UranusForm
+          @submit.prevent="handleSubmit"
+          :aria-busy="isSubmitting"
+          novalidate
+      >
         <UranusPasswordInput
             id="new-password"
             v-model="password"
@@ -23,23 +27,39 @@
 
         <p>{{ t('password_rules') }}</p>
 
-        <UranusFeedback v-if="!!displayError" type="error">
+        <UranusFeedback
+            v-if="displayError"
+            type="error"
+        >
           {{ displayError }}
         </UranusFeedback>
-        <UranusFeedback v-if="!!success" type="success">
+
+        <UranusFeedback
+            v-if="success"
+            type="success"
+        >
           {{ success }}
         </UranusFeedback>
 
         <UranusFormActions>
-          <UranusButton type="submit" :disabled="isSubmitting">
-            <span v-if="!isSubmitting">{{ t('reset_password_submit') }}</span>
-            <span v-else>{{ t('reset_password_submitting') }}</span>
+          <UranusButton
+              type="submit"
+              :disabled="isSubmitting"
+          >
+            <span v-if="!isSubmitting">
+              {{ t('reset_password_submit') }}
+            </span>
+            <span v-else>
+              {{ t('reset_password_submitting') }}
+            </span>
           </UranusButton>
         </UranusFormActions>
       </UranusForm>
 
       <UranusCardFooter>
-        <router-link to="/app/login">{{ t('back_to_login') }}</router-link>
+        <router-link to="/app/login">
+          {{ t('back_to_login') }}
+        </router-link>
       </UranusCardFooter>
     </UranusCard>
   </UranusBasicCardPage>
@@ -66,117 +86,166 @@ const router = useRouter()
 
 const password = ref('')
 const confirmPassword = ref('')
+
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
 const isSubmitting = ref(false)
 
 const fieldErrors = reactive({
-    password: null as string | null,
-    confirmPassword: null as string | null,
+  password: null as string | null,
+  confirmPassword: null as string | null,
 })
-
 
 const displayError = computed(() => {
-    if (fieldErrors.password) return fieldErrors.password
-    if (fieldErrors.confirmPassword) return fieldErrors.confirmPassword
-    return error.value
+  if (fieldErrors.password) {
+    return fieldErrors.password
+  }
+
+  if (fieldErrors.confirmPassword) {
+    return fieldErrors.confirmPassword
+  }
+
+  return error.value
 })
 
-const getTokenFromRoute = () => {
-    const tokenParam = route.query.token ?? route.params.token
-    if (Array.isArray(tokenParam)) {
-        return tokenParam[0]
-    }
-    return typeof tokenParam === 'string' ? tokenParam.trim() : ''
+const requiredFieldMessage = computed(
+    () => t('input_required') || 'This field is required'
+)
+
+const passwordMismatchMessage = computed(
+    () => t('reset_password_mismatch') || 'Passwords do not match'
+)
+
+/**
+ * Get the password-reset token from the route.
+ *
+ * Trimming the token is intentional here. The token is not a password
+ * and whitespace introduced by URL handling should not be significant.
+ */
+const getTokenFromRoute = (): string => {
+  const tokenParam = route.query.token ?? route.params.token
+
+  if (Array.isArray(tokenParam)) {
+    return typeof tokenParam[0] === 'string'
+        ? tokenParam[0].trim()
+        : ''
+  }
+
+  return typeof tokenParam === 'string'
+      ? tokenParam.trim()
+      : ''
 }
 
-const requiredFieldMessage = computed(() => t('input_required') || 'This field is required')
-const passwordMismatchMessage = computed(() => t('reset_password_mismatch') || 'Passwords do not match')
-
+/**
+ * Clear a password field error as soon as the user enters something.
+ *
+ * IMPORTANT:
+ * Do not trim or otherwise modify the password.
+ */
 watch(password, (value) => {
-    if (fieldErrors.password && value.trim()) {
-        fieldErrors.password = null
-        if (error.value === fieldErrors.password) {
-            error.value = null
-        }
-    }
+  if (fieldErrors.password && value.length > 0) {
+    fieldErrors.password = null
+  }
+
+  if (error.value) {
+    error.value = null
+  }
 })
 
+/**
+ * Clear the confirmation-field error when the user corrects it.
+ *
+ * The actual password values are compared exactly as entered.
+ */
 watch(confirmPassword, (value) => {
-    if (fieldErrors.confirmPassword && value.trim()) {
-        const trimmedPassword = password.value.trim()
-        const trimmedConfirm = value.trim()
-        if (trimmedConfirm && trimmedPassword === trimmedConfirm) {
-            fieldErrors.confirmPassword = null
-            if (error.value === fieldErrors.confirmPassword) {
-                error.value = null
-            }
-        }
-    }
+  if (
+      fieldErrors.confirmPassword &&
+      value.length > 0 &&
+      value === password.value
+  ) {
+    fieldErrors.confirmPassword = null
+  }
+
+  if (error.value) {
+    error.value = null
+  }
 })
 
 const handleSubmit = async () => {
-    if (isSubmitting.value) {
-        return
-    }
+  if (isSubmitting.value) {
+    return
+  }
 
-    error.value = null
-    success.value = null
+  error.value = null
+  success.value = null
+  fieldErrors.password = null
+  fieldErrors.confirmPassword = null
+
+  /*
+   * Do NOT trim passwords.
+   *
+   * Passwords are opaque user input. Leading/trailing whitespace,
+   * Unicode characters, etc. are part of the password.
+   */
+
+  // Validate password.
+  if (!password.value) {
+    fieldErrors.password = requiredFieldMessage.value
+    return
+  }
+
+  // Validate confirmation password.
+  if (!confirmPassword.value) {
+    fieldErrors.confirmPassword = requiredFieldMessage.value
+    return
+  }
+
+  // Compare the passwords exactly as entered.
+  if (password.value !== confirmPassword.value) {
+    fieldErrors.confirmPassword = passwordMismatchMessage.value
+    return
+  }
+
+  const token = getTokenFromRoute()
+
+  if (!token) {
+    error.value = t('reset_password_missing_token')
+    return
+  }
+
+  isSubmitting.value = true
+
+  try {
+    await apiFetch('/api/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({
+        token,
+        new_password: password.value,
+      }),
+    })
+
+    success.value = t('reset_password_success')
+
+    // Clear password values after successful reset.
+    password.value = ''
+    confirmPassword.value = ''
+
     fieldErrors.password = null
     fieldErrors.confirmPassword = null
 
-    const trimmedPassword = password.value.trim()
-    const trimmedConfirm = confirmPassword.value.trim()
-
-    // Validate password
-    if (!trimmedPassword) {
-        fieldErrors.password = requiredFieldMessage.value
-        return
+    setTimeout(() => {
+      router.push('/app/login')
+    }, 2000)
+  } catch (err: any) {
+    if (err?.error?.includes('(#1)')) {
+      error.value = t(
+          'password__doesnt_meet_security_requirements'
+      )
+    } else {
+      error.value = t('signup_failed')
     }
-
-    // Validate confirm password
-    if (!trimmedConfirm) {
-        fieldErrors.confirmPassword = requiredFieldMessage.value
-        return
-    }
-
-    // Check if passwords match
-    if (trimmedPassword !== trimmedConfirm) {
-        fieldErrors.confirmPassword = passwordMismatchMessage.value
-        return
-    }
-
-    const token = getTokenFromRoute()
-    if (!token) {
-        error.value = t('reset_password_missing_token')
-        return
-    }
-
-    isSubmitting.value = true
-
-    try {
-        const apiPath = '/api/reset-password'
-        const apiResponse = await apiFetch(apiPath, {
-            method: 'POST',
-            body: JSON.stringify({ token, new_password: trimmedPassword }),
-        })
-
-        success.value = t('reset_password_success')
-        password.value = ''
-        confirmPassword.value = ''
-        fieldErrors.password = null
-        fieldErrors.confirmPassword = null
-        setTimeout(() => {
-            router.push('/app/login')
-        }, 2000)
-    } catch (err: any) {
-      if (err.error?.includes('(#1)')) {
-        error.value = t('password__doesnt_meet_security_requirements')
-      } else {
-        error.value = t('signup_failed')
-      }
-    } finally {
-        isSubmitting.value = false
-    }
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>

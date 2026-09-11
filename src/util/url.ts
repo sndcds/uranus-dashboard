@@ -23,3 +23,32 @@ export function uranusEnsureHttpOrHttps(url: string): string {
     // Default to https if no protocol is provided
     return `https://${trimmed}`
 }
+
+export type HttpUrlValidation = 'valid' | 'missing-protocol' | 'invalid'
+
+function isHttpUrl(value: string): boolean {
+    // Reject malformed input that the URL parser would silently repair.
+    if (!/^https?:\/\/[^/?#\\]/i.test(value) || /[\s\u0000-\u001f\u007f\\]/u.test(value)) {
+        return false
+    }
+    try {
+        const url = new URL(value)
+        return (url.protocol === 'http:' || url.protocol === 'https:') && !!url.hostname
+    } catch {
+        return false
+    }
+}
+
+/** Empty values are allowed; required-field validation belongs to the form control. */
+export function validateHttpUrl(value: string | null | undefined): HttpUrlValidation {
+    const trimmed = value?.trim() ?? ''
+    if (!trimmed || isHttpUrl(trimmed)) return 'valid'
+
+    // A host with a numeric port is not an explicit URI scheme.
+    const hasScheme = /^[a-z][a-z\d+.-]*:/i.test(trimmed)
+    const hasHostPort = /^[^/:?#]+:\d+(?:[/?#]|$)/.test(trimmed)
+    if (hasScheme && !hasHostPort) return 'invalid'
+
+    const withoutProtocol = trimmed.replace(/^\/\//, '')
+    return isHttpUrl(`https://${withoutProtocol}`) ? 'missing-protocol' : 'invalid'
+}

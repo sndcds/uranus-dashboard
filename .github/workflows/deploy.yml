@@ -21,13 +21,16 @@ jobs:
               run: |
                   ssh -o StrictHostKeyChecking=no -p "${{ secrets.SSH_PORT }}" \
                   "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" << 'EOF'
+                  set -eu
+                  export PNPM_HOME="${PNPM_HOME:-$HOME/.local/share/pnpm}"
+                  export PATH="$PNPM_HOME:$PATH"
                   cd /opt/git/uranus-dashboard/
 
                   git fetch origin
                   git reset --hard origin/main
 
-                  # WICHTIG: ohne --omit=dev
-                  npm ci
+                  pnpm runtime set node latest --global
+                  pnpm install --frozen-lockfile --prod=false
 
-                  npm run build
+                  pnpm run build
                   EOF

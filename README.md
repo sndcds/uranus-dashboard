@@ -19,3 +19,20 @@ The dashboard serves as the main interface for accessing and administering the U
 - TypeScript
 - Vite
 - Uranus API (backend service)
+
+## Development
+
+Use pnpm exclusively and the latest stable Node.js release (Current). The pnpm
+version is pinned in `package.json`; `pnpm-lock.yaml` is the dependency lockfile.
+With nvm, run `nvm install` and `nvm use` to select the latest Node.js release.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm test --run
+pnpm build
+```
+
+The deployment SSH user needs the pinned pnpm version installed, with `PNPM_HOME`
+on its PATH (defaults to `~/.local/share/pnpm`). Deployment uses pnpm to install
+the latest Node.js runtime before installing dependencies and building the app.

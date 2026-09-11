@@ -810,6 +810,26 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Remove date',
         da: 'Fjern dato',
     },
+    event_date_ticket_link: {
+        de: 'Ticket-Link für diesen Termin',
+        en: 'Ticket link for this date',
+        da: 'Billetlink for denne dato',
+    },
+    event_date_description: {
+        de: 'Beschreibung für diesen Termin',
+        en: 'Description for this date',
+        da: 'Beskrivelse for denne dato',
+    },
+    event_date_venue_name: {
+        de: 'Veranstaltungsort für diesen Termin',
+        en: 'Venue for this date',
+        da: 'Sted for denne dato',
+    },
+    event_date_select_location: {
+        de: 'Ort für diesen Termin wählen',
+        en: 'Select location for this date',
+        da: 'Vælg placering for denne dato',
+    },
     event_release_notice: {
         de: 'Bitte veröffentliche ausschließlich Inhalte, für die du über alle erforderlichen Nutzungsrechte verfügst und die keine Urheberrechte Dritter verletzen. Mit dem Klick auf „Speichern“ bestätigst du dies.',
         en: 'Please publish only content for which you hold all necessary usage rights and which does not infringe third-party copyrights. By clicking “Save”, you confirm this.',

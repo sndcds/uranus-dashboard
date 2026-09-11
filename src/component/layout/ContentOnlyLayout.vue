@@ -25,21 +25,20 @@ const contentClass = computed(() => {
 
 <style scoped lang="scss">
 .content-only-layout {
-  overflow-y: auto;
   box-sizing: border-box;
-  min-height: 100%;
-  height: 100vh;
+  min-height: 100dvh;
+  height: auto;
   background: var(--uranus-bg);
 }
 
-/* Main content wrapper */
 .content-only-layout__main {
   box-sizing: border-box;
   width: 100%;
+  min-height: 100dvh;
+  height: auto;
   background: var(--uranus-bg);
   padding: 0;
   max-width: 100%;
-  height: 100vh;
 }
 
 /* Optional zero padding mode */
