@@ -431,9 +431,9 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         da: 'URL’en mangler en protokol. Vælg, hvilken der skal sættes foran.',
     },
     input_url_add_protocol: {
-        de: '{protocol} voranstellen',
-        en: 'Prepend {protocol}',
-        da: 'Sæt {protocol} foran',
+        de: '~~protocol~~ voranstellen',
+        en: 'Prepend ~~protocol~~',
+        da: 'Sæt ~~protocol~~ foran',
     },
     license: {
         de: 'Lizenz',

@@ -84,7 +84,7 @@
   "website": "Webseite",
   "input_invalid_url": "Bitte gib eine gültige URL ein, die mit https:// oder http:// beginnt.",
   "input_url_missing_protocol": "Der URL fehlt das Protokoll. Wähle aus, was vorangestellt werden soll.",
-  "input_url_add_protocol": "{protocol} voranstellen",
+  "input_url_add_protocol": "~~protocol~~ voranstellen",
   "license": "Lizenz",
   "team": "Team",
   "team_members": "Teammitglieder",
