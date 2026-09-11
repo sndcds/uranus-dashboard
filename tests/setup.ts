@@ -1,5 +1,9 @@
 import { afterEach, vi } from 'vitest'
 import { config } from '@vue/test-utils'
+import { Storage } from 'happy-dom'
+
+// Use browser storage even when Node exposes its own localStorage global.
+vi.stubGlobal('localStorage', new Storage())
 
 afterEach(() => {
   vi.clearAllMocks()

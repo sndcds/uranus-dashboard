@@ -21,7 +21,7 @@
       <UranusLabel id="org-legal-form" :label="t('legal_form')">
         <UranusLegalFormSelect v-model="org.legalForm" />
       </UranusLabel>
-      <UranusTextfield id="org-web-link" type="url" :label="t('website')" v-model="org.webLink" placeholder="https://"/>
+      <UranusUrlInput ref="webLinkInput" id="org-web-link" :label="t('website')" v-model="org.webLink" />
     </UranusFormRow>
 
     <UranusFormRow :cols="2">
@@ -62,7 +62,7 @@
 
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useOrgStore } from '@/store/orgStore.ts'
@@ -73,6 +73,7 @@ import UranusLegalFormSelect from '@/component/select/UranusLegalFormSelect.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormRow from '@/component/ui/UranusFormRow.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusUrlInput from '@/component/ui/UranusUrlInput.vue'
 import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
@@ -82,6 +83,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const store = useOrgStore()
 const org = computed(() => store.draft!)
+const webLinkInput = ref<InstanceType<typeof UranusUrlInput> | null>(null)
 const emit = defineEmits<{
   (event: 'dirty-change', value: boolean): void
 }>()
@@ -159,6 +161,8 @@ async function commitTab() {
   const draft = store.draft
   const original = store.original
   if (!draft || !original) return
+
+  if (!webLinkInput.value?.validate()) return
 
   store.saving = true
   store.error = null
