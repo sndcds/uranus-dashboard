@@ -8,7 +8,6 @@
         @click="emit('toggle')"
     >
       <span class="date-summary-content">
-        uuid: {{ date.uuid }}
         <strong>{{ formattedStartDate || '-' }}</strong>
         <span v-if="formattedDateTime">{{ formattedDateTime }}</span>
         <template v-if="venueLabel">
