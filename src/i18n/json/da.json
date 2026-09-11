@@ -84,7 +84,7 @@
   "website": "Hjemmeside",
   "input_invalid_url": "Indtast en gyldig URL, der begynder med https:// eller http://.",
   "input_url_missing_protocol": "URL’en mangler en protokol. Vælg, hvilken der skal sættes foran.",
-  "input_url_add_protocol": "Sæt {protocol} foran",
+  "input_url_add_protocol": "Sæt ~~protocol~~ foran",
   "license": "Licens",
   "team": "Team",
   "team_members": "Medlemmer i teamet",

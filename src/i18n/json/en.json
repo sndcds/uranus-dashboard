@@ -84,7 +84,7 @@
   "website": "Website",
   "input_invalid_url": "Please enter a valid URL starting with https:// or http://.",
   "input_url_missing_protocol": "The URL is missing a protocol. Choose which one to prepend.",
-  "input_url_add_protocol": "Prepend {protocol}",
+  "input_url_add_protocol": "Prepend ~~protocol~~",
   "license": "License",
   "team": "Team",
   "team_members": "Team members",

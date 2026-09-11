@@ -32,7 +32,7 @@
           :disabled="disabled || readonly"
           @click="addProtocol(protocol)"
       >
-        {{ t('input_url_add_protocol', { protocol }) }}
+        {{ uranusStringInterpolate(t('input_url_add_protocol'), { protocol }) }}
       </UranusButton>
     </div>
   </div>
@@ -44,6 +44,7 @@ import { useI18n } from 'vue-i18n'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusLabel from '@/component/ui/UranusLabel.vue'
 import { validateHttpUrl } from '@/util/url'
+import {uranusStringInterpolate} from "@/util/string.ts";
 
 defineOptions({ inheritAttrs: false })
 
