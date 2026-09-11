@@ -143,7 +143,7 @@ const dateDescription = computed({
 })
 
 const duration = computed({
-  get: () => props.date.duration ?? 0,
+  get: () => props.date.duration,
   set: (value: number) => {
     props.date.duration = value || null
   },
