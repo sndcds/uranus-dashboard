@@ -13,20 +13,11 @@
       <!-- SUCCESS -->
       <template #success>
         <p class="success-message">
-          {{ t('invite_accept_joined_org_message') }}
-          <strong>{{ inviteInfo?.org_name }}</strong>
+          {{ uranusStringInterpolate(t('invite_accept_joined_org_message'), {name: inviteInfo?.org_name}) }}
         </p>
 
         <p class="info-message">
           {{ t('invite_accept_permissions_info_message') }}
-        </p>
-
-        <p class="info-message">
-          {{ t('invite_accept_no_action_required_message') }}
-        </p>
-
-        <p class="help-message">
-          {{ t('invite_accept_membership_help_message') }}
         </p>
 
         <button type="button" class="uranus-button uranus-button--primary uranus-button--medium" @click="goToOrgs">
@@ -52,6 +43,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api.ts'
+import { uranusStringInterpolate } from '@/util/string.ts'
 import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
 import UranusStatusCard from '@/component/uranus/UranusStatusCard.vue'
 
