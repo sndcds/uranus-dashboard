@@ -84,17 +84,10 @@
 
             <template v-else>
               <p class="success-message">
-                {{ t('invite_accept_joined_org_message') }}
-                <strong>{{ mockOrgName }}</strong>
+                {{ uranusStringInterpolate(t('invite_accept_joined_org_message'), {name: mockOrgName}) }}
               </p>
               <p class="info-message">
                 {{ t('invite_accept_permissions_info_message') }}
-              </p>
-              <p class="info-message">
-                {{ t('invite_accept_no_action_required_message') }}
-              </p>
-              <p class="help-message">
-                {{ t('invite_accept_membership_help_message') }}
               </p>
               <UranusButton>
                 {{ t('invite_accept_go_to_orgs_cta') }}
@@ -145,6 +138,7 @@ import { useI18n } from 'vue-i18n'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusStatusCard from '@/component/uranus/UranusStatusCard.vue'
 import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
+import {uranusStringInterpolate} from "@/util/string.ts";
 
 type SimulatorFlow = 'user-activate' | 'org-invite-activate'
 type SimulatorOutcome = 'loading' | 'success' | 'error-generic' | 'error-token' | 'error-server'
