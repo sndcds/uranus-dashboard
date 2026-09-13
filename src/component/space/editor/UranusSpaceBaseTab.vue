@@ -21,7 +21,7 @@
       <UranusLabel id="space-type" :label="t('space_type')">
         <UranusSpaceTypeSelect v-model="space.spaceType" />
       </UranusLabel>
-      <UranusTextfield id="space-web-link" type="url" :label="t('website')" v-model="space.webLink" placeholder="https://"/>
+      <UranusUrlInput ref="webLinkInput" id="space-web-link" :label="t('website')" v-model="space.webLink" />
     </UranusFormRow>
 
     <UranusFormRow :cols="2">
@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useUranusSpaceStore } from '@/store/spaceStore.ts'
@@ -57,6 +57,7 @@ import type { SpaceModel } from '@/domain/space/space.model.ts'
 import UranusSpaceTypeSelect from '@/component/select/UranusSpaceTypeSelect.vue'
 import UranusForm from "@/component/ui/UranusForm.vue";
 import UranusTextfield from "@/component/ui/UranusTextfield.vue";
+import UranusUrlInput from '@/component/ui/UranusUrlInput.vue'
 import UranusFormRow from "@/component/ui/UranusFormRow.vue";
 import UranusTextEditor from "@/component/ui/UranusTextEditor.vue";
 import UranusLabel from "@/component/ui/UranusLabel.vue";
@@ -68,6 +69,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const store = useUranusSpaceStore()
 const space = computed(() => store.draft!)
+const webLinkInput = ref<InstanceType<typeof UranusUrlInput> | null>(null)
 const emit = defineEmits<{
   (event: 'dirty-change', value: boolean): void
 }>()
@@ -142,6 +144,8 @@ async function commitTab() {
   const draft = store.draft
   const original = store.original
   if (!draft || !original) return
+
+  if (!webLinkInput.value?.validate()) return
 
   store.saving = true
   store.error = null

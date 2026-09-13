@@ -8,7 +8,8 @@
       <h2>{{t('event_registration') }}</h2>
       <UranusGridLayout>
         <UranusFormCol :span="6">
-          <UranusTextfield
+          <UranusUrlInput
+              ref="registrationLinkInput"
               id="online-registration-link"
               :label="t('event_online_registration_link')"
               v-model="draft.registrationLink"
@@ -69,6 +70,7 @@ import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { useVenueSpaceLabelStore } from '@/store/venueSpaceLabelsStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusUrlInput from '@/component/ui/UranusUrlInput.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 import { Save, Undo } from 'lucide-vue-next'
@@ -83,6 +85,7 @@ const emit = defineEmits<{
   (event: 'dirty-change', value: boolean): void
 }>()
 const draft = computed(() => store.draft!)
+const registrationLinkInput = ref<InstanceType<typeof UranusUrlInput> | null>(null)
 const venueLabelStore = useVenueSpaceLabelStore()
 
 
@@ -114,6 +117,8 @@ watch(isDirty, (value) => {
 
 async function commitTab() {
   if (!draft.value || !store.original) return
+  if (!registrationLinkInput.value?.validate()) return
+
   store.saving = true
   store.error = null
 

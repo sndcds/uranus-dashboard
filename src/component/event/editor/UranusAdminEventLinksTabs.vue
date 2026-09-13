@@ -5,11 +5,11 @@
 <template>
   <section class="links-tab" v-if="store.draft">
     <h2>{{ t('links') }}</h2>
-      <UranusInput
-          id="event-link-title"
+      <UranusUrlInput
+          ref="sourceLinkInput"
+          id="event-source-link"
           v-model="store.draft.sourceUrl"
           :label="t('event_source_link')"
-          placeholder="https://"
       />
 
     <h2>{{ t('event_links') }}</h2>
@@ -33,11 +33,11 @@
         </UranusFormCol>
 
         <UranusFormCol :span="6">
-          <UranusInput
-              id="event-link-url"
+          <UranusUrlInput
+              ref="eventLinkInputs"
+              :id="`event-link-url-${index}`"
               v-model="url.url"
               :label="t('event_link_url')"
-              placeholder="https://"
           />
         </UranusFormCol>
 
@@ -78,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
 import { EventLink } from '@/domain/event/eventProptypes.model.ts'
@@ -90,10 +90,13 @@ import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusGridLayout from '@/component/ui/UranusGridLayout.vue'
 import UranusFormCol from '@/component/ui/UranusFormCol.vue'
 import UranusInput from '@/component/ui/UranusInput.vue'
+import UranusUrlInput from '@/component/ui/UranusUrlInput.vue'
 import UranusFormActions from '@/component/ui/UranusFormActions.vue'
 
 const { t } = useI18n({ useScope: 'global' })
 const store = useAdminEventStore()
+const sourceLinkInput = ref<InstanceType<typeof UranusUrlInput> | null>(null)
+const eventLinkInputs = ref<InstanceType<typeof UranusUrlInput>[]>([])
 const emit = defineEmits<{
   (event: 'dirty-change', value: boolean): void
 }>()
@@ -126,6 +129,9 @@ function removeUrl(index: number) {
 
 async function onCommit() {
   if (!store.draft || !store.original) return
+  if (!sourceLinkInput.value?.validate()) return
+  if (!eventLinkInputs.value.every(input => input.validate())) return
+
   store.saving = true
   store.error = null
 
