@@ -187,7 +187,6 @@ const markMessageAsReadLocally = (id: number | null) => {
   }
 
   const target = messages.value.find((item) => item.id === id)
-  console.log('Marking message as read locally:', id, target)
   if (target) {
     target.isRead = true
   }
@@ -212,7 +211,6 @@ const ensureMessageSelection = () => {
 const selectMessage = (message: InboxMessage) => {
   selectedMessageId.value = message.id
   markMessageAsReadLocally(message.id)
-  console.log('Message selected:', message.id)
 
   // Scroll the detail panel into view on mobile
   if (window.innerWidth <= 960) {
@@ -261,8 +259,6 @@ const normalizeMessages = (payload: unknown): InboxMessage[] => {
       items.push(...obj.data)
     }
   }
-
-  console.log('Normalizing messages from payload:', payload, 'Extracted items:', items)
 
   const parseDateValue = (value: unknown): string | null => {
     if (typeof value === 'string' && value.trim().length > 0) {

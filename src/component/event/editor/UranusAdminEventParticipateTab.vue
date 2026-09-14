@@ -123,7 +123,6 @@ function buildPayload(
   if (draft.maxAge !== original.maxAge) { payload.max_age = draft.maxAge }
   if (draft.participationInfo !== original.participationInfo) { payload.participation_info = draft.participationInfo == '' ? null : draft.participationInfo }
 
-  console.log(JSON.stringify(payload, null, 2))
   return payload
 }
 

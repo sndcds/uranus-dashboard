@@ -457,8 +457,6 @@ async function loadVenue() {
     const apiPath = `/api/venue/slug/${identifier}/uuid`
     const apiResponse = await apiFetch<any>(apiPath)
     venueUuid = apiResponse?.data?.uuid ?? null
-    console.log("slug:", identifier)
-    console.log("resolved uuid:", venueUuid)
   }
 
   if (!venueUuid) {
