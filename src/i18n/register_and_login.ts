@@ -39,6 +39,36 @@ export const uranusI18nRegisterAndLoginTranslations: Record<string, Record<'en' 
         en: 'Log out',
         da: 'Log ud',
     },
+    logout_failed: {
+        de: 'Abmelden fehlgeschlagen. Deine Sitzung ist möglicherweise noch aktiv. Bitte versuche es erneut.',
+        en: 'Logout failed. Your session may still be active. Please try again.',
+        da: 'Log ud mislykkedes. Din session kan stadig være aktiv. Prøv igen.',
+    },
+    auth_session_unavailable: {
+        de: 'Deine Sitzung konnte nicht geprüft werden. Prüfe deine Verbindung und versuche es erneut.',
+        en: 'Your session could not be checked. Check your connection and try again.',
+        da: 'Din session kunne ikke kontrolleres. Tjek din forbindelse, og prøv igen.',
+    },
+    auth_session_unsupported: {
+        de: 'Bitte öffne die Anwendung über HTTPS in einem aktuellen Browser, um dich sicher anzumelden.',
+        en: 'Please open the app over HTTPS in an up-to-date browser to sign in securely.',
+        da: 'Åbn appen via HTTPS i en opdateret browser for at logge sikkert ind.',
+    },
+    auth_session_cookies: {
+        de: 'Die Anmeldung konnte nicht bestätigt werden. Erlaube Cookies für diese Anwendung und versuche es erneut.',
+        en: 'Sign-in could not be confirmed. Allow cookies for this app and try again.',
+        da: 'Login kunne ikke bekræftes. Tillad cookies for denne app, og prøv igen.',
+    },
+    auth_session_recovery: {
+        de: 'Die Sitzung konnte nicht sicher erneuert werden. Bitte melde dich erneut an.',
+        en: 'The session could not be renewed safely. Please sign in again.',
+        da: 'Sessionen kunne ikke fornyes sikkert. Log ind igen.',
+    },
+    auth_session_changed: {
+        de: 'Deine Sitzung wurde in einem anderen Tab geändert. Bitte versuche es erneut.',
+        en: 'Your session changed in another tab. Please try again.',
+        da: 'Din session blev ændret i en anden fane. Prøv igen.',
+    },
     login_title: {
         de: 'Anmelden',
         en: 'Log in',

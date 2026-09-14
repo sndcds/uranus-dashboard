@@ -36,3 +36,11 @@ pnpm build
 The deployment SSH user needs the pinned pnpm version installed, with `PNPM_HOME`
 on its PATH (defaults to `~/.local/share/pnpm`). Deployment uses pnpm to install
 the latest Node.js runtime before installing dependencies and building the app.
+
+## Authentication
+
+Sessions use HttpOnly cookies and require the backend changes and migration in
+[sndcds/uranus#216](https://github.com/sndcds/uranus/pull/216). Deploy the backend
+first. During development, `VITE_API_URL` is the upstream for Vite's `/api` proxy;
+use `http://localhost:5173` to match the backend's development-origin allowlist.
+See [cookie session behavior, migration and validation](docs/authentication.md).

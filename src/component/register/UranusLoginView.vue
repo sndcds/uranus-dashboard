@@ -29,8 +29,15 @@
           {{ displayErrorFeedback }}
         </UranusFeedback>
 
+        <UranusFeedback v-if="tokenStore.sessionError" type="error">
+          {{ t(`auth_session_${tokenStore.sessionError}`) }}
+          <UranusButton type="button" variant="tertiary" :disabled="tokenStore.isRestoring" @click="retrySession">
+            {{ t('retry') }}
+          </UranusButton>
+        </UranusFeedback>
+
         <UranusFormActions>
-          <UranusButton type="submit" :disabled="isSubmitting">{{ t('login') }}</UranusButton>
+          <UranusButton type="submit" :disabled="isSubmitting || tokenStore.isLoggingOut">{{ t('login') }}</UranusButton>
         </UranusFormActions>
 
       </UranusForm>
@@ -54,9 +61,9 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { apiFetch, type LoginResponse } from '@/api.ts'
+import { ApiError } from '@/api/apiError.ts'
+import { SessionError } from '@/api/authSession.ts'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import { useUserStore } from '@/store/userStore.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 import UranusPasswordInput from '@/component/ui/UranusPasswordInput.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
@@ -72,7 +79,6 @@ const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const tokenStore = useTokenStore()
-const userStore = useUserStore()
 const themeStore = useThemeStore()
 const { locale } = useI18n({ useScope: 'global' })
 const selectedLocale = computed({
@@ -118,7 +124,20 @@ watch(password, () => {
   }
 })
 
+const goAfterLogin = () => {
+  const redirect = route.query.redirect
+  return router.replace(typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//')
+    ? redirect : '/page/about')
+}
+
+const retrySession = async () => {
+  try {
+    if (await tokenStore.restoreSession()) await goAfterLogin()
+  } catch { /* The store exposes a localized retry message. */ }
+}
+
 const login = async () => {
+  if (isSubmitting.value || tokenStore.isLoggingOut) return
   error.value = null
   fieldErrors.email = undefined
   fieldErrors.password = undefined
@@ -145,33 +164,15 @@ const login = async () => {
   isSubmitting.value = true
 
   try {
-    const apiResponse = await apiFetch<any>('/api/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        email: normalizedEmail,
-        password: password.value,
-      }),
-    })
-
-    const responseData: LoginResponse = apiResponse.data
-    if (apiResponse.status === 200 && responseData.access_token && responseData.refresh_token) {
-      tokenStore.setTokens(responseData.access_token, responseData.refresh_token)
-      userStore.setUserUuid(responseData.user_uuid)
-      userStore.setDisplayName(responseData.display_name ?? '')
-      userStore.setUserAvatarUrl(responseData.avatar_url ?? null)
-      if (responseData.locale) selectedLocale.value = responseData.locale
-      if (responseData.theme) themeStore.setTheme(responseData.theme)
-      router.replace(typeof route.query.redirect === 'string' ? route.query.redirect : '/page/about')
-    } else {
-      error.value = t('invalid_credentials')
-    }
+    const profile = await tokenStore.login(normalizedEmail, password.value)
+    password.value = ''
+    if (profile.locale) selectedLocale.value = profile.locale
+    if (profile.theme) themeStore.setTheme(profile.theme)
+    await goAfterLogin()
   } catch (err: unknown) {
-    if (typeof err === 'object' && err && 'data' in err) {
-      const e = err as { data?: { error?: string } }
-      error.value = e.data?.error ?? t('login_failed')
-    } else {
-      error.value = t('login_failed')
-    }
+    error.value = err instanceof SessionError
+      ? t(`auth_session_${err.reason}`)
+      : t(err instanceof ApiError && err.status === 401 ? 'invalid_credentials' : 'login_failed')
   } finally {
     isSubmitting.value = false
   }
