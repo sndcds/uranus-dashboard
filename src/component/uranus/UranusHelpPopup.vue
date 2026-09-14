@@ -38,13 +38,10 @@ async function loadContent() {
   try {
     // Construct locale-specific path
     const url = `${props.baseUrl}/${locale.value}.html`
-    console.log("url", url)
     const res = await fetch(url)
     const html = await res.text()
     content.value = res.ok ? html : '<p>Failed to load help content.</p>'
-    console.log(html)
   } catch (err) {
-    console.error('Error loading help content.')
     content.value = `<p>Error: ${(err as Error).message}</p>`
   } finally {
     loading.value = false

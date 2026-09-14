@@ -75,8 +75,6 @@ async function onSubmit() {
   }
 
   try {
-    console.log(JSON.stringify(payload))
-
     const apiPath = `/api/admin/org/${orgUuid.value}/team/invite?lang=${locale.value}`
     const apiResponse = await apiFetch<any>(apiPath, {
       method: 'POST',

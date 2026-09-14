@@ -1,5 +1,6 @@
-import { createApp } from 'vue'
+import { createApp, watch } from 'vue'
 import App from './App.vue'
+import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { createPinia } from 'pinia'
 import { uranusI18n } from './i18n/uranus-i18n-index.ts'
 import router from './router/index.ts'
@@ -27,6 +28,12 @@ pinia.use(piniaPluginPersistedstate)
 
 app.use(pinia)
 app.use(uranusI18n)
+const tokenStore = useTokenStore()
+watch(() => tokenStore.status, (status) => {
+    if (status === 'anonymous' && router.currentRoute.value.matched.some(record => record.meta.requiresAuth)) {
+        void router.replace({ name: 'app-login', query: { redirect: router.currentRoute.value.fullPath } })
+    }
+})
 app.use(router)
 
 const themeStore = useThemeStore()

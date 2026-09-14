@@ -165,7 +165,7 @@
 
           <div class="generic-header__user-dropdown-divider"></div>
 
-          <button @click="handleLogout"
+          <button @click="handleLogout" :disabled="tokenStore.isLoggingOut"
             class="generic-header__user-dropdown-item generic-header__user-dropdown-item--logout">
             <LogOut />
             {{ t('logout') }}
@@ -174,14 +174,18 @@
         </div>
       </div>
     </div>
+    <UranusFeedback v-if="tokenStore.logoutFailed" type="error" class="generic-header__auth-feedback">
+      {{ t('logout_failed') }}
+      <UranusButton type="button" variant="tertiary" :disabled="tokenStore.isLoggingOut" @click="handleLogout">{{ t('retry') }}</UranusButton>
+    </UranusFeedback>
   </header>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { isNavigationFailure, useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { apiFetch, type LoginResponse } from '@/api.ts'
+import { apiFetch } from '@/api.ts'
 import { applyTheme } from '@/composable/useTheme.ts'
 import { Inbox, Send, UserRoundCog, LogOut, Settings, Menu, Sun, Moon } from 'lucide-vue-next'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
@@ -189,6 +193,8 @@ import { useUserStore } from '@/store/userStore.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 import { useLanguage } from '@/composable/useLanguage.ts'
 import UranusLogo from '@/component/ui/UranusLogo.vue'
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusButton from '@/component/ui/UranusButton.vue'
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -264,23 +270,6 @@ const setTheme = async (theme: 'light' | 'dark') => {
   }
 }
 
-// Fetch user profile data
-const fetchUserProfile = async () => {
-  if (!tokenStore.isAuthenticated) return
-
-  try {
-    const apiResponse = await apiFetch<any>('/api/admin/user/profile')
-    if (apiResponse) {
-      const payload: LoginResponse = apiResponse.data
-      userStore.setUserUuid(payload.user_uuid)
-      userStore.setDisplayName(payload.display_name ?? '')
-      userStore.setUserAvatarUrl(payload.avatar_url ?? null)
-    }
-  } catch (err) {
-    console.error('Failed to fetch user profile:', err)
-  }
-}
-
 // Initialize theme and locale from storage
 const initializePreferences = () => {
   const storedTheme = themeStore.theme
@@ -307,6 +296,7 @@ const handleClickOutside = (event: MouseEvent) => {
 }
 
 const handleLogout = async () => {
+  if (tokenStore.isLoggingOut) return
   const navigationResult = await router.push({
     name: 'app-login',
     query: { logout: '1' }
@@ -316,9 +306,10 @@ const handleLogout = async () => {
     return
   }
 
-  tokenStore.clearTokens()
-  userStore.resetUserState()
-  await router.replace({ name: 'app-login' })
+  try {
+    await tokenStore.logout()
+    await router.replace({ name: 'app-login' })
+  } catch { /* The shared store keeps the failure visible after navigation. */ }
 }
 
 const eventsUrl = computed(() => {
@@ -343,25 +334,8 @@ const venuesMapUrl = computed(() => {
   }
 })
 
-// Watch for authentication state changes
-watch(() => tokenStore.isAuthenticated, (isAuthenticated) => {
-  if (isAuthenticated) {
-    fetchUserProfile()
-  }
-})
-
-// Watch the Pinia store value
-watch(
-  () => userStore.userAvatarUrl,
-  (newAvatar) => {
-    userAvatarUrl.value = newAvatar
-  },
-  { immediate: true } // update immediately on component mount
-)
-
 onMounted(() => {
   initializePreferences()
-  fetchUserProfile()
   document.addEventListener('click', handleClickOutside)
 })
 
@@ -378,12 +352,20 @@ onUnmounted(() => {
 .generic-header {
   position: sticky;
   top: 0;
-  height: 76px;
+  min-height: 76px;
   z-index: 1000;
   background: var(--surface-primary);
   border-bottom: var(--uranus-dashboard-border-width) solid var(--uranus-dashboard-border-color);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   margin-bottom: 0;
+}
+
+.generic-header__auth-feedback {
+  margin: 0.5rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .generic-header__content {

@@ -326,7 +326,6 @@ onMounted(async () => {
     localImageMeta.focusX = meta.focus_x ?? null
     localImageMeta.focusY = meta.focus_y ?? null
   } catch (err) {
-    console.log("onMounted error")
     if (err instanceof ApiError && err.status === 404) {
       clearLocalImageMeta()
       return

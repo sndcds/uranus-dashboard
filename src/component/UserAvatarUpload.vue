@@ -62,7 +62,6 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { apiFetch } from '@/api.ts'
 import { apiBaseUrl } from '@/util/util.ts'
 import { useUserStore } from '@/store/userStore.ts'
-import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 
 
@@ -87,7 +86,6 @@ const emit = defineEmits<{
 }>()
 
 const userStore = useUserStore()
-const tokenStore = useTokenStore()
 
 const currentAvatarUrl = ref<string | null>(null)
 const avatarPreviewUrl = ref<string | null>(null)
@@ -164,17 +162,12 @@ const loadAvatar = async () => {
     return
   }
 
-  const headers: Record<string, string> = {}
-  if (tokenStore.accessToken) {
-    headers.Authorization = `Bearer ${tokenStore.accessToken}`
-  }
-
   isLoadingAvatar.value = true
   try {
     const apiBase = apiBaseUrl()
     const res = await fetch(`${apiBase}/api/user/${userUuid}/avatar/256`, {
       method: 'GET',
-      headers,
+      credentials: 'omit',
       cache: 'no-store',
     })
 
