@@ -1,21 +1,10 @@
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
-import router from '@/router/index.ts'
-import type { ThemeMode } from '@/composable/useTheme.ts'
+import { apiUrl } from '@/api/baseUrl.ts'
+import { authSession, SessionError, type SessionProfile } from '@/api/authSession.ts'
+import { ApiError } from '@/api/apiError.ts'
 
-let refreshPromise: Promise<boolean> | null = null
-
-// Use snake case here!
-export interface LoginResponse {
-    user_uuid: string
-    locale?: string
-    theme?: ThemeMode
-    display_name?: string | null
-    first_name?: string | null
-    last_name?: string | null
-    avatar_url?: string | null
-    access_token: string
-    refresh_token: string
-}
+export { ApiError } from '@/api/apiError.ts'
+export type LoginResponse = SessionProfile
 
 export interface ApiResponse<T> {
     service: string
@@ -31,20 +20,6 @@ export interface ApiResponse<T> {
 export interface NominatimResult {
     lat: string
     lon: string
-}
-
-/**
- * Custom Error type that includes HTTP status and response data
- */
-export class ApiError extends Error {
-    status: number
-    error: string
-
-    constructor(message: string, status: number) {
-        super(message)
-        this.status = status
-        this.error = message
-    }
 }
 
 const NOMINATIM_BASE_URL = 'https://nominatim.oklabflensburg.de'
@@ -73,8 +48,13 @@ export async function apiFetch<T = unknown>(
     path: string,
     options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
-    const url = `${import.meta.env.VITE_API_URL}${path}`
+    if (['/api/login', '/api/admin/refresh', '/api/admin/logout'].includes(path)) {
+        throw new Error('Use the session store for authentication requests')
+    }
+    const authenticatedRequest = path.startsWith('/api/admin/')
+    const url = apiUrl(path)
     const tokenStore = useTokenStore()
+    const requestSessionVersion = authSession.version
 
     const doFetch = async (): Promise<ApiResponse<T>> => {
         const headers = new Headers(options.headers ?? undefined)
@@ -83,11 +63,12 @@ export async function apiFetch<T = unknown>(
             headers.set('Content-Type', 'application/json')
         }
 
-        if (tokenStore.accessToken) {
-            headers.set('Authorization', `Bearer ${tokenStore.accessToken}`)
-        }
-
-        const raw = await fetch(url, { ...options, headers })
+        // Protected requests use HttpOnly cookies. Public endpoints retain their
+        // wildcard CORS policy and must not receive credentialed requests.
+        headers.delete('Authorization')
+        const version = authSession.version
+        const raw = await fetch(url, { ...options, headers, credentials: authenticatedRequest ? 'include' : 'omit' })
+        if (authenticatedRequest && version !== authSession.version) throw new SessionError('changed')
 
         const contentType = raw.headers.get('content-type') ?? ''
         let apiResonse: ApiResponse<T> | null = null
@@ -111,6 +92,8 @@ export async function apiFetch<T = unknown>(
             }
         }
 
+        if (authenticatedRequest && version !== authSession.version) throw new SessionError('changed')
+
         if (!raw.ok) {
             throw new ApiError(apiResonse?.message || raw.statusText, raw.status)
         }
@@ -124,55 +107,13 @@ export async function apiFetch<T = unknown>(
         if (
             err instanceof ApiError &&
             err.status === 401 &&
-            !url.includes('/refresh') &&
-            !url.includes('/login')
+            authenticatedRequest
         ) {
-            if (!refreshPromise) {
-                refreshPromise = (async () => {
-                    if (!tokenStore.refreshToken) {
-                        tokenStore.clearTokens()
-                        router.push('/app/login')
-                        throw new Error('Missing refresh token')
-                    }
+            const authenticated = await tokenStore.restoreSession()
+            if (!authenticated) throw err
 
-                    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/refresh`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${tokenStore.refreshToken}`,
-                        },
-                    })
-
-                    if (!res.ok) {
-                        tokenStore.clearTokens()
-                        router.push('/app/login')
-                        throw new Error('Refresh failed')
-                    }
-
-                    const data = (await res.json()) as LoginResponse
-
-                    if (!data.access_token) {
-                        tokenStore.clearTokens()
-                        router.push('/app/login')
-                        throw new Error('Refresh response missing access token')
-                    }
-
-                    tokenStore.setAccessToken(data.access_token)
-
-                    if (data.refresh_token) {
-                        tokenStore.setRefreshToken(data.refresh_token)
-                    }
-
-                    return true
-                })()
-            }
-
-            try {
-                await refreshPromise
-            } finally {
-                refreshPromise = null
-            }
-
-            // Retry the original request with the new access token
+            if (requestSessionVersion && requestSessionVersion !== authSession.version) throw new SessionError('changed')
+            // Retry once with the renewed cookies; a second 401 is not retried.
             return await doFetch()
         }
 

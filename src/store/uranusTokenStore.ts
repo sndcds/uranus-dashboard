@@ -1,137 +1,134 @@
-/*
-  src/store/uranusTokenStore.ts
- */
-
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
-
+import { computed, onScopeDispose, ref } from 'vue'
 import { useUserStore } from '@/store/userStore.ts'
 import { useAppStore } from '@/store/appStore.ts'
+import {
+  authSession, SESSION_STATE_KEY, SessionError,
+  type SessionErrorReason, type SessionSnapshot,
+} from '@/api/authSession.ts'
 
-const LOGOUT_CHANNEL_NAME = 'uranus-auth-channel'
-const LOGOUT_STORAGE_KEY = 'uranus-auth-logout'
-const isBrowser = typeof window !== 'undefined'
-
-let logoutChannel: BroadcastChannel | null = null
-let listenersRegistered = false
-
-const ensureBroadcastChannel = () => {
-  if (!isBrowser || logoutChannel || typeof BroadcastChannel === 'undefined') {
-    return
-  }
-  logoutChannel = new BroadcastChannel(LOGOUT_CHANNEL_NAME)
-}
-
-const emitCrossTabLogout = () => {
-  if (!isBrowser) return
-  if (logoutChannel) {
-    logoutChannel.postMessage({ type: 'logout' })
-  } else {
-    localStorage.setItem(LOGOUT_STORAGE_KEY, Date.now().toString())
+// Scrub legacy persisted JWTs before the persistence plugin hydrates this store.
+function migrateTokenStorage() {
+  try {
+    const legacy: unknown = JSON.parse(localStorage.getItem('token') ?? '{}')
+    const known = legacy !== null && typeof legacy === 'object' && (
+      ('hasKnownAccount' in legacy && legacy.hasKnownAccount === true)
+      || ('accessToken' in legacy && typeof legacy.accessToken === 'string' && !!legacy.accessToken)
+    )
+    localStorage.setItem('token', JSON.stringify({ hasKnownAccount: known }))
+  } catch {
+    try { localStorage.removeItem('token') } catch { /* Storage may be disabled. */ }
   }
 }
 
-const redirectToLoginIfNeeded = () => {
-  if (!isBrowser) return
-  const path = window.location.pathname
-  if (path.startsWith('/admin') || path.startsWith('/app')) {
-    window.location.href = '/app/login'
-  }
-}
-
-type TokenValue = string | null
-
-const registerCrossTabListeners = (onLogout: () => void) => {
-  if (!isBrowser || listenersRegistered) return
-
-  ensureBroadcastChannel()
-
-  if (logoutChannel) {
-    logoutChannel.addEventListener('message', (event) => {
-      if (event?.data?.type === 'logout') {
-        onLogout()
-      }
-    })
-  }
-
-  window.addEventListener('storage', (event) => {
-    if (event.key === LOGOUT_STORAGE_KEY) {
-      onLogout()
-    }
-  })
-
-  listenersRegistered = true
-}
-
+// Keep the existing store ID and consumers; authentication is now verified from
+// HttpOnly cookies. Only the non-sensitive account hint is persisted.
 export const useTokenStore = defineStore('token', () => {
-  // State as refs
-  const accessToken = ref<TokenValue>(null)
-  const refreshToken = ref<TokenValue>(null)
+  const status = ref<'unknown' | 'authenticated' | 'anonymous'>('unknown')
   const hasKnownAccount = ref(false)
+  const isInitialized = ref(false)
+  const isRestoring = ref(false)
+  const isLoggingOut = ref(false)
+  const sessionError = ref<SessionErrorReason | null>(null)
+  const logoutFailed = ref(false)
+  const isAuthenticated = computed(() => status.value === 'authenticated')
+  let restorePromise: Promise<boolean> | null = null
 
-  // Getters as computed
-  const isAuthenticated = computed(() => Boolean(accessToken.value))
+  function markKnownAccount() { hasKnownAccount.value = true }
 
-  // Actions as functions
-  function setTokens(access: string, refresh?: string | null) {
-    markKnownAccount()
-    setAccessToken(access)
-    if (refresh !== undefined) {
-      setRefreshToken(refresh)
+  function clearSession() {
+    status.value = 'anonymous'
+    useUserStore().resetUserState()
+    useAppStore().clearOrg()
+  }
+
+  function applySnapshot(snapshot: SessionSnapshot): boolean {
+    if (snapshot.version !== authSession.version) throw new SessionError('changed')
+    if (snapshot.profile) {
+      const user = useUserStore()
+      if (user.userUuid !== snapshot.profile.user_uuid) {
+        user.resetUserState()
+        useAppStore().clearOrg()
+      }
+      user.setUserUuid(snapshot.profile.user_uuid)
+      user.setDisplayName(snapshot.profile.display_name ?? '')
+      user.setUserAvatarUrl(snapshot.profile.avatar_url ?? null)
+      status.value = 'authenticated'
+      markKnownAccount()
+    } else { clearSession() }
+    isInitialized.value = true
+    sessionError.value = null
+    return isAuthenticated.value
+  }
+
+  async function restoreSession(): Promise<boolean> {
+    if (!restorePromise) {
+      isRestoring.value = true
+      const operation = authSession.restore().then(applySnapshot).catch((error: unknown) => {
+        sessionError.value = error instanceof SessionError ? error.reason : 'unavailable'
+        throw error
+      }).finally(() => {
+        isRestoring.value = false
+        restorePromise = null
+      })
+      restorePromise = operation
+    }
+    return restorePromise
+  }
+
+  async function initializeSession(): Promise<void> {
+    if (isInitialized.value) return
+    try { await restoreSession() } catch {
+      // Let public pages and the login/retry screen render during an outage.
+      isInitialized.value = true
     }
   }
 
-  function markKnownAccount() {
-    hasKnownAccount.value = true
+  async function login(email: string, password: string) {
+    const snapshot = await authSession.login(email, password)
+    applySnapshot(snapshot)
+    logoutFailed.value = false
+    return snapshot.profile!
   }
 
-  function setAccessToken(token: string) {
-    accessToken.value = token
+  async function logout(): Promise<void> {
+    if (isLoggingOut.value) return
+    isLoggingOut.value = true
+    logoutFailed.value = false
+    try { applySnapshot(await authSession.logout()) } catch (error) {
+      // Cookies cannot be cleared by JavaScript. Do not report success when the
+      // server could not revoke them; keep the session and offer a retry.
+      logoutFailed.value = true
+      throw error
+    } finally { isLoggingOut.value = false }
   }
 
-  function setRefreshToken(token: string | null) {
-    refreshToken.value = token
-  }
-
-  const applyTokenClear = () => {
-    accessToken.value = null
-    refreshToken.value = null
-
-    // Clear user store
-    const userStore = useUserStore()
-    userStore.clearUserUuid()
-    userStore.clearDisplayName()
-
-    // Clear app store
-    const appStore = useAppStore()
-    appStore.clearOrg()
-  }
-
-  function clearTokens(options?: { broadcast?: boolean }) {
-    applyTokenClear()
-    if (options?.broadcast !== false) {
-      emitCrossTabLogout()
+  function onSessionChange(event: StorageEvent) {
+    if (event.key !== SESSION_STATE_KEY) return
+    if (authSession.isSignedOut) {
+      clearSession()
+      isInitialized.value = true
+      sessionError.value = null
+    } else {
+      // Invalidate views before checking the new account's shared cookies.
+      status.value = 'unknown'
+      isInitialized.value = false
+      useUserStore().resetUserState()
+      useAppStore().clearOrg()
+      void restoreSession().catch(() => { /* Exposed through sessionError. */ })
     }
   }
 
-  const handleRemoteLogout = () => {
-    clearTokens({ broadcast: false })
-    redirectToLoginIfNeeded()
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', onSessionChange)
+    onScopeDispose(() => window.removeEventListener('storage', onSessionChange))
   }
-
-  registerCrossTabListeners(handleRemoteLogout)
 
   return {
-    accessToken,
-    refreshToken,
-    hasKnownAccount,
-    isAuthenticated,
-    setTokens,
-    markKnownAccount,
-    setAccessToken,
-    setRefreshToken,
-    clearTokens
+    status, hasKnownAccount, isAuthenticated, isInitialized, isRestoring,
+    isLoggingOut, sessionError, logoutFailed, markKnownAccount,
+    initializeSession, restoreSession, login, logout,
   }
 }, {
-  persist: true
+  persist: { pick: ['hasKnownAccount'], beforeHydrate: migrateTokenStorage },
 })

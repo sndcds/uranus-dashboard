@@ -208,7 +208,6 @@ const loadEvent = async () => {
   } catch (error: unknown) {
     if (error instanceof ApiError) {
       loadError.value = error.status === 404 ? t('error_fetch_data_failed') : error.message
-      console.log('ApiError', JSON.stringify(error, null, 2))
     } else {
       loadError.value = t('error_fetch_data_failed')
     }

@@ -16,8 +16,6 @@ const { locale } = useI18n({ useScope: 'global' })
 
 const pages = import.meta.glob('/src/page/**/*.html', { as: 'raw' })
 
-console.log(Object.keys(pages))
-
 watchEffect(async () => {
   // Build key using folder + locale
   const key = `/src/page/${pageName.value}/${locale.value}.html`

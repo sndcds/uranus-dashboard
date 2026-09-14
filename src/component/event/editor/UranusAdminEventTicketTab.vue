@@ -84,10 +84,10 @@
           id="event-reduced-price-available"
           :label="t('event_reduced_price_available')"
       />
-      <UranusInput
+      <UranusUrlInput
+          ref="ticketLinkInput"
           id="event-ticket-link"
           :label="t('event_ticket_link')"
-          placeholder="https://"
           v-model="draftEvent.ticketLink"
       />
     </UranusCard>
@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAdminEventStore } from '@/store/adminEventStore.ts'
@@ -127,7 +127,7 @@ import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import UranusInput from '@/component/ui/UranusInput.vue'
+import UranusUrlInput from '@/component/ui/UranusUrlInput.vue'
 import { Save, Undo } from 'lucide-vue-next'
 import UranusRadioButton from "@/component/ui/UranusRadioButton.vue";
 
@@ -161,6 +161,7 @@ const emit = defineEmits<{
   (event: 'dirty-change', value: boolean): void
 }>()
 const draftEvent = computed(() => store.draft!)
+const ticketLinkInput = ref<InstanceType<typeof UranusUrlInput> | null>(null)
 
 const draftTicketFlags = computed({
   get: () => draftEvent.value.ticketFlags ?? [],
@@ -208,6 +209,8 @@ async function commitTab() {
   const draft = store.draft
   const original = store.original
   if (!draft || !original) return
+  if (!ticketLinkInput.value?.validate()) return
+
   store.saving = true
   store.error = null
 

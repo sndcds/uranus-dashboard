@@ -29,10 +29,10 @@
       <UranusCard>
         <h2>{{t('event_online_event') }}</h2>
 
-        <UranusTextfield
+        <UranusUrlInput
+            ref="onlineLinkInput"
             id="online-url"
             :label="t('event_online_link')"
-            placeholder="https://..."
             v-model="draft.onlineLink"
         />
       </UranusCard>
@@ -76,6 +76,7 @@ import { useVenueSpaceLabelStore } from '@/store/venueSpaceLabelsStore.ts'
 import UranusAdminVenueSelectModal from '@/component/venue/UranusAdminVenueSelectModal.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusTextfield from '@/component/ui/UranusTextfield.vue'
+import UranusUrlInput from '@/component/ui/UranusUrlInput.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusInfoHeading from '@/component/ui/UranusInfoHeading.vue'
 import UranusForm from '@/component/ui/UranusForm.vue'
@@ -89,6 +90,7 @@ const emit = defineEmits<{
   (event: 'dirty-change', value: boolean): void
 }>()
 const draft = computed(() => store.draft!)
+const onlineLinkInput = ref<InstanceType<typeof UranusUrlInput> | null>(null)
 const choosableVenuesStore = useChoosableVenuesStore()
 const appStore = useAppStore()
 const venueLabelStore = useVenueSpaceLabelStore()
@@ -154,6 +156,8 @@ watch(isDirty, (value) => {
 
 async function commitTab() {
   if (!draft.value || !store.original) return
+  if (!onlineLinkInput.value?.validate()) return
+
   store.saving = true
   store.error = null
 

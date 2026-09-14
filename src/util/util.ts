@@ -1,3 +1,5 @@
+import { apiBaseUrl } from '@/api/baseUrl.ts'
+export { apiBaseUrl } from '@/api/baseUrl.ts'
 import { type PublicEventDate } from "@/domain/event/publicEventDate.model.ts"
 
 
@@ -41,9 +43,6 @@ export const toBoolean = (value: unknown): boolean => {
     return false
 }
 
-export const apiBaseUrl = () => {
-    return import.meta.env.VITE_API_URL
-}
 
 export const buildPlutoPreviewImageUrl = (imageId: number) => {
     const params = new URLSearchParams({
@@ -54,7 +53,7 @@ export const buildPlutoPreviewImageUrl = (imageId: number) => {
         quality: '80',
     })
 
-    const apiBase = import.meta.env.VITE_API_URL
+    const apiBase = apiBaseUrl()
     return `${apiBase}/api/image/${imageId}?${params.toString()}`
 }
 
@@ -77,7 +76,7 @@ export const buildPlutoSlotImageUrl = (
         params.set('ratio', ratio) // optional
     }
 
-    const apiBase = import.meta.env.VITE_API_URL
+    const apiBase = apiBaseUrl()
     return `${apiBase}/api/image/${imageUuid}?${params.toString()}`
 }
 
@@ -100,7 +99,7 @@ export const buildPlutoImageUrl = (
         ? searchParams.toString() + '&lossless'
         : searchParams.toString()
 
-    const apiBase = import.meta.env.VITE_API_URL
+    const apiBase = apiBaseUrl()
     return `${apiBase}/api/image/${imageUuid}?${queryString}`
 }
 
@@ -118,7 +117,7 @@ export const buildPlutoEditImageUrl = (
         quality: String(quality),
     })
 
-    const apiBase = import.meta.env.VITE_API_URL
+    const apiBase = apiBaseUrl()
     return `${apiBase}/api/image/${imageUuid}?${params.toString()}`
 }
 

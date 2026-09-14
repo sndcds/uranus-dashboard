@@ -26,7 +26,7 @@
       <UranusLabel id="venue-type" :label="t('venue_type')">
         <UranusVenueTypeSelect v-model="venue.type" />
       </UranusLabel>
-      <UranusTextfield id="venue-web-link" type="url" :label="t('website')" v-model="venue.webLink" placeholder="https://"/>
+      <UranusUrlInput ref="webLinkInput" id="venue-web-link" :label="t('website')" v-model="venue.webLink" />
     </UranusFormRow>
 
     <UranusFormRow :cols="2">
@@ -63,7 +63,7 @@
 
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api'
 import { useUranusVenueStore } from '@/store/venueStore.ts'
@@ -74,6 +74,7 @@ import UranusVenueTypeSelect from "@/component/select/UranusVenueTypeSelect.vue"
 import UranusForm from "@/component/ui/UranusForm.vue";
 import UranusFormRow from "@/component/ui/UranusFormRow.vue";
 import UranusTextfield from "@/component/ui/UranusTextfield.vue";
+import UranusUrlInput from '@/component/ui/UranusUrlInput.vue'
 import UranusLabel from "@/component/ui/UranusLabel.vue";
 import UranusTextEditor from "@/component/ui/UranusTextEditor.vue";
 import UranusDateInput from "@/component/ui/UranusDateInput.vue";
@@ -84,6 +85,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const store = useUranusVenueStore()
 const venue = computed(() => store.draft!)
+const webLinkInput = ref<InstanceType<typeof UranusUrlInput> | null>(null)
 const emit = defineEmits<{
   (event: 'dirty-change', value: boolean): void
 }>()
@@ -164,6 +166,8 @@ async function commitTab() {
   const draft = store.draft
   const original = store.original
   if (!draft || !original) return
+
+  if (!webLinkInput.value?.validate()) return
 
   store.saving = true
   store.error = null

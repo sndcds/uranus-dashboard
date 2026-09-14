@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteLocationNormalized, NavigationGuard } from 'vue-router'
 import { useTokenStore } from '@/store/uranusTokenStore.ts'
+import { sessionGuard } from '@/router/sessionGuard.ts'
 
 import UranusDashboardView from '@/component/dashboard/view/UranusDashboardView.vue'
 import UranusAdminTodoListView from '@/component/todo/view/UranusAdminTodoListView.vue'
@@ -435,29 +436,10 @@ const router = createRouter({
 
 let previousRoute: RouteLocationNormalized | null = null
 
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
     previousRoute = from
 
-    const tokenStore = useTokenStore()
-    const isAuthenticated = tokenStore.isAuthenticated
-    const requiresAuth = to.matched.some((record) => record.meta?.requiresAuth)
-    const guestOnly = to.matched.some((record) => record.meta?.guestOnly)
-
-    if (requiresAuth && !isAuthenticated) {
-        return {
-            name: tokenStore.hasKnownAccount ? 'app-login' : 'app-signup',
-            query: { redirect: to.fullPath },
-        }
-    }
-
-    if (guestOnly && isAuthenticated && to.query.logout !== '1') {
-        if (to.name !== 'events') {
-            return { name: 'events' }
-        }
-        return true
-    }
-
-    return true
+    return await sessionGuard(to)
 })
 
 export function getPreviousRoute() {

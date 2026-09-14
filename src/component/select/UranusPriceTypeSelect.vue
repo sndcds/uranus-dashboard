@@ -78,7 +78,6 @@ async function fetchOptions() {
     // Set selectedCode to modelValue after options are loaded
     // Use 0 if null
     selectedCode.value = props.modelValue ?? 0;
-    console.log("selectedCode: ",  selectedCode.value);
   } catch (err) {
     console.error("Failed to fetch price type:", err);
     options.value = [];
