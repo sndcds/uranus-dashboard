@@ -169,7 +169,7 @@ async function commitTab() {
       online_link: draft.value.onlineLink,
     }
 
-    await apiFetch(`/api/admin/event/${draft.value.uuid}/venue`, {
+    await apiFetch(`/api/admin/event/${draft.value.uuid}/fields`, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })
