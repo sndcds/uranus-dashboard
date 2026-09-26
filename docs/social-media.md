@@ -87,7 +87,7 @@ Statuses belong to each **target**, not to the parent post:
 | `failed` | Publication failed on that target |
 | `cancelled` | Cancelled; terminal in this API version |
 
-The dialog polls every three seconds while a target is queued/publishing. Polling stops after completion, errors or unmount; a manual status refresh remains available. The dialog only reports complete publication when every target is published. All-failed posts can be explicitly previewed and retried. Mixed terminal outcomes remain visible per target; selective retry and publication-history reconciliation are not added in this UI.
+The dialog checks status after 3, 6 and 12 seconds, then at most every 15 seconds while a target is queued/publishing. Automatic checks stop after a three-minute observation window, completion, errors, an uncertain worker result, or unmount. A manual status refresh remains available and does not restart an exhausted observation window. Status reads are serialized, cancelled on navigation/unmount and aborted after 15 seconds; stale responses cannot overwrite the current post. The dialog only reports complete publication when every target is published. All-failed posts can be explicitly previewed and retried. Mixed terminal outcomes remain visible per target; selective retry and publication-history reconciliation are not added in this UI.
 
 ## Backend dependencies and deliberate limits
 
@@ -105,7 +105,7 @@ Scheduling already exists as `POST …/:uuid/schedule` with `{"scheduled_at":"<f
 
 Used isolated Node 26.10.0 (Current) and the pinned pnpm 12.3.4. No dependency or lockfile changes.
 
-- `pnpm test --run`: **130 tests passed in 15 files**, including **32 new tests** for API contracts, account editing, posting workflows and permissions.
+- `pnpm test --run`: **138 tests passed in 15 files**, including **40 social workflow tests** for API contracts, account editing, posting workflows and permissions.
 - `pnpm build`: **passed**, production bundle built successfully (existing Vite deprecation warnings remain).
 - Extra `pnpm typecheck`: baseline comparison found 97 existing errors before this change and 95 after; no new errors. Removed two unused bindings in touched event files. The repository-wide pre-existing type errors are outside this feature.
 
@@ -123,3 +123,45 @@ Tests use mocked API responses; no live provider publication was performed. A de
 | Translations | `src/i18n/social.ts`, `src/i18n/json/{de,en,da}.json`, `tools/i18n/generate-i18n-to-json.ts` |
 | New tests and fixtures | `tests/socialApi.test.ts`, `tests/socialComponents.test.ts`, `tests/fixtures/social.ts` |
 | Documentation | `docs/social-media.md` |
+
+
+## Investigation: repeated requests after publishing
+
+Compared the dashboard with the supplied Python Part-7 demo on 2026-09-26. Both create a source-linked post with account targets, call preview, submit a bodyless `POST /api/admin/social/posts/:uuid/publish?lang=…`, and read `GET /api/admin/social/posts/:uuid`. There is no separate HTTP call to start the worker. The publish handler commits `status=scheduled`, `scheduled_at=CURRENT_TIMESTAMP`, `publication_source=manual`; the worker claims due rows from that same database and records the result.
+
+The original dashboard repeated GETs every three seconds for as long as any target remained `scheduled` or `publishing`, with no deadline. That explains a continually increasing Network request count; it does not represent repeated publish POSTs. Concurrent manual reads could also overlap with the automatic timer. Regression tests reproduced both issues before the fix. The dashboard now limits and serializes reads, reports that publication remains unconfirmed after the observation window, and preserves the queue acknowledgment if the first status GET fails.
+
+The Python demo differs in three diagnostic respects:
+
+- It limits waiting to 180 seconds; it does not start the worker itself.
+- It reads publication history while a target is `publishing`. Its check treats both history states `publishing` and `uncertain` as requiring reconciliation. An ordinary `publishing` history row can be a healthy in-flight request; only `uncertain` confirms the ambiguous outcome. The dashboard stops immediately when the target itself carries a publishing error, and otherwise waits within its deadline.
+- It creates a short, image-free test event. A real event may take a different media-upload path or fail platform content validation even when that demo succeeds.
+
+### Verified locally
+
+Ran API dev `106ab24` against a fresh PostgreSQL 18/PostGIS cluster under `/tmp`, with local mock HTTPS platform servers:
+
+```sh
+go test -count=1 -json ./api ./service -run 'Test(Social|Mastodon)'
+```
+
+All **199 tests and subtests passed**, with **zero skipped tests**. This includes manual queue handoff, worker claims, current content, multiple targets, concurrent workers, provider success/failure/uncertain outcomes, database failures and idempotency. The disposable PostgreSQL process was stopped afterwards. No production database, real account or backend source file was changed.
+
+This verifies the checked-out implementation, not the process state on Roald's computer. To distinguish the remaining runtime causes there:
+
+1. In the browser's publish response, verify HTTP 202 and `data.results[].status=scheduled`. Subsequent recurring requests should be GETs, not publish POSTs.
+2. Inspect `data.targets[].status`, `publication_source` and `scheduled_at` from the post GET. `scheduled` with a past time means the worker has not completed a claim; check worker startup, queue backlog, database/schema configuration and worker logs. Another unresolved publishing target on the same post also blocks claims.
+3. Verify that a separate process was started with `--social-worker` and the same configuration/database as the API (the demo defaults to port 9090; verify the dashboard's `VITE_API_URL` points at that same API). Starting only the HTTP API is insufficient. The API repository's deployment workflow restarts only `uranus.service`.
+4. For persistent `publishing`, read `GET /api/admin/social/publications?social_post_uuid=<uuid>` and check the worker logs. `uncertain` or a failed database finalization requires verification/reconciliation, not blindly creating another post. A normal brief `publishing` state is expected.
+
+**Confirmed runtime cause:** Roald reported `scheduled` and confirmed that only the HTTP API server was running, with no separate social worker. The API therefore queued the post correctly, but no process consumed it. The dashboard's unbounded polling made this missing worker appear as an endless workflow.
+
+In the Uranus API repository, start the worker in a second terminal with the **same configuration file as the HTTP API**:
+
+```sh
+go run . --config config.json --social-worker
+```
+
+Alternatively, use the built binary with the same flags. Keep the HTTP API running. The worker immediately checks for due targets and then polls at its configured interval (default 30 seconds). It processes already queued posts; there is no need to submit them again. For persistent operation, install the separate systemd worker unit described in the API documentation. The dashboard patch limits the UI symptom and improves diagnostics; it cannot replace starting the worker.
+
+The missing process was confirmed by the user; this session did not remotely start a process on Roald's computer or observe the subsequent live publication.

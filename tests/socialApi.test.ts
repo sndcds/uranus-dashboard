@@ -52,6 +52,12 @@ describe('social API contracts', () => {
     })
     expect(post.targets.map(t => t.socialAccountUuid)).toEqual(['account-1', 'account-2'])
   })
+  it('passes status-read cancellation to the existing API client', async () => {
+    respond(postDto())
+    const controller = new AbortController()
+    await socialApi.getPost('post-1', controller.signal)
+    expect(apiFetch).toHaveBeenCalledWith('/api/admin/social/posts/post-1', { method: 'GET', signal: controller.signal })
+  })
   it('filters post lists by event AND organization', async () => {
     respond({ posts: [postDto(), { ...postDto(), source_uuid: 'other' }, { ...postDto(), org_uuid: 'other' }, { ...postDto(), source_type: 'venue' }] })
     expect(await socialApi.listEventPosts('org-1', 'event-1')).toHaveLength(1)

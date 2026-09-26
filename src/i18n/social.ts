@@ -295,5 +295,15 @@ export const uranusI18nSocialTranslations: Record<string, Record<UranusLocaleKey
     "de": "Die API unterstützt die Veröffentlichung derzeit nur auf Mastodon. Für Facebook, Instagram und Bluesky ist eine Vorschau möglich. Wähle zum Posten ausschließlich Mastodon-Ziele.",
     "en": "The API currently supports publishing only to Mastodon. Facebook, Instagram and Bluesky support previews. Select only Mastodon targets to publish.",
     "da": "API’et understøtter i øjeblikket kun offentliggørelse på Mastodon. Facebook, Instagram og Bluesky understøtter forhåndsvisning. Vælg kun Mastodon-mål for at offentliggøre."
+  },
+  "social_polling_paused": {
+    "de": "Die automatische Statusabfrage wurde beendet. Die Veröffentlichung ist noch nicht bestätigt. Du kannst den Status manuell aktualisieren. Bleibt der Auftrag vorgemerkt, prüfe, ob der Social-Worker für dieselbe API-Datenbank läuft.",
+    "en": "Automatic status checks have stopped. Publication is not yet confirmed. You can refresh the status manually. If the post remains queued, check that the social worker is running against the same API database.",
+    "da": "Automatiske statuskontroller er stoppet. Offentliggørelsen er endnu ikke bekræftet. Du kan opdatere status manuelt. Hvis opslaget bliver i køen, kontrollér at social-worker kører mod samme API-database."
+  },
+  "social_reconciliation_required": {
+    "de": "Der Ausgang der Veröffentlichung ist unklar. Prüfe den Post auf der Plattform und lasse den Veröffentlichungsverlauf abgleichen, bevor du erneut postest. Die automatische Statusabfrage wurde angehalten.",
+    "en": "The publication outcome is uncertain. Check the post on the platform and have the publication history reconciled before posting again. Automatic status checks have stopped.",
+    "da": "Resultatet af offentliggørelsen er uklart. Kontrollér opslaget på platformen, og få offentliggørelseshistorikken afstemt, før du deler igen. Automatiske statuskontroller er stoppet."
   }
 }

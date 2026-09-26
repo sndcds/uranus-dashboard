@@ -800,5 +800,7 @@
   "social_error_input": "Indtastningerne eller arrangementsindholdet kunne ikke behandles. Kontrollér obligatoriske felter, serveradresse, tokenets tidsstempel og valgte mål.",
   "social_error_request": "Forespørgslen kunne ikke gennemføres. Kontrollér forbindelsen og genindlæs den aktuelle status.",
   "social_preview_only": "Kun forhåndsvisning",
-  "social_preview_only_hint": "API’et understøtter i øjeblikket kun offentliggørelse på Mastodon. Facebook, Instagram og Bluesky understøtter forhåndsvisning. Vælg kun Mastodon-mål for at offentliggøre."
+  "social_preview_only_hint": "API’et understøtter i øjeblikket kun offentliggørelse på Mastodon. Facebook, Instagram og Bluesky understøtter forhåndsvisning. Vælg kun Mastodon-mål for at offentliggøre.",
+  "social_polling_paused": "Automatiske statuskontroller er stoppet. Offentliggørelsen er endnu ikke bekræftet. Du kan opdatere status manuelt. Hvis opslaget bliver i køen, kontrollér at social-worker kører mod samme API-database.",
+  "social_reconciliation_required": "Resultatet af offentliggørelsen er uklart. Kontrollér opslaget på platformen, og få offentliggørelseshistorikken afstemt, før du deler igen. Automatiske statuskontroller er stoppet."
 }
