@@ -13,6 +13,7 @@
     <UranusFeedback v-if="deleteError" type="error" :delaySeconds="1">
       {{ deleteError }}
     </UranusFeedback>
+    <UranusFeedback v-if="socialPermissionError" type="error">{{ t(socialPermissionError) }}</UranusFeedback>
 
     <UranusOrgRequiredNotification v-if="!appStore.orgUuid" :org-uuid="appStore.orgUuid" />
 
@@ -35,6 +36,7 @@
             :key="`${event.uuid}-${event.dateUuid ?? 'series'}`"
             :event="event"
             :grouped="displayMode === 'grouped'"
+            :can-post-social="socialEditableOrgs.includes(event.orgUuid)"
             @deleted="onEventDeleted"
         />
       </div>
@@ -44,6 +46,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
+import { listSocialEditableOrgUuids, socialErrorKey } from '@/api/social'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/appStore.ts'
 import UranusAdminEventCard from '@/component/event/card/UranusAdminEventCard.vue'
@@ -62,6 +65,8 @@ const appStore = useAppStore()
 const { adminListEvents, metadata, loading: isLoading, fetchAdminListEvents } = useUranusAdminListEvents();
 
 const deleteError = ref('')
+const socialEditableOrgs = ref<string[]>([])
+const socialPermissionError = ref('')
 const orgUuid = computed(() => appStore.orgUuid)
 
 const canAddEvent = computed(() => !!metadata.value.can_add_event);
@@ -85,7 +90,7 @@ const displayedEvents = computed(() => {
   return Array.from(grouped.values())
 })
 
-const onEventDeleted = async ({eventUuid}: {
+const onEventDeleted = async (_event: {
   eventUuid: string
   dateUuid: string | null
   deleteSeries: boolean
@@ -106,6 +111,11 @@ onMounted(async () => {
     await fetchAdminListEvents(orgUuid.value ?? '');
   }
 });
+
+onMounted(async () => {
+  try { socialEditableOrgs.value = await listSocialEditableOrgUuids() }
+  catch (error) { socialPermissionError.value = socialErrorKey(error) }
+})
 </script>
 
 <style scoped>

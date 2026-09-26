@@ -72,6 +72,10 @@
       </div>
 
       <div class="uranus-event-card-actions">
+        <UranusButton v-if="canPostSocial" variant="secondary" size="small" @click="showSocialPost = true">
+          <template #icon><Share2 /></template>
+          {{ t('social_post_event') }}
+        </UranusButton>
         <UranusButton
             v-if="canPreviewEvent"
             variant="secondary"
@@ -112,6 +116,9 @@
     </div>
   </UranusCard>
 
+  <UranusEventSocialPostModal v-if="showSocialPost && canPostSocial" :key="`${event.orgUuid}-${event.uuid}`"
+    :org-uuid="event.orgUuid" :event-uuid="event.uuid" :event-title="event.title" @close="showSocialPost = false" />
+
   <UranusPasswordConfirmModal
       :show="showDeleteModal"
       :title="t('delete_event')"
@@ -140,7 +147,8 @@ import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore.ts'
 import type { AdminEventListItem } from '@/domain/event/adminEventListItem.ts'
 import type { EventTypePairModel } from '@/domain/event/eventTypePair.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { Eye, Pencil, Trash, Calendar, MapPin, Building, Video } from 'lucide-vue-next'
+import { Eye, Pencil, Trash, Calendar, MapPin, Building, Video, Share2 } from 'lucide-vue-next'
+import UranusEventSocialPostModal from '@/component/social/UranusEventSocialPostModal.vue'
 import UranusEventCategoryDisplay from '@/component/event/ui/UranusEventCategoryDisplay.vue'
 import { uranusPluralizedText, uranusStringInterpolate } from '@/util/string.ts'
 import { apiErrorI18nKey } from '@/util/apiError.ts'
@@ -170,9 +178,12 @@ const emit = defineEmits<{
 const props = withDefaults(defineProps<{
   event: AdminEventListItem
   grouped?: boolean
+  canPostSocial?: boolean
 }>(), {
   grouped: false,
+  canPostSocial: false,
 })
+const showSocialPost = ref(false)
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const typeLookupStore = useEventTypeLookupStore()
@@ -281,7 +292,7 @@ const confirmDelete = async ({password, selectedOption}: {
       apiPath = `/api/admin/event/${pendingDeleteUuid.value}/date/${pendingEventDateUuid.value}`
     }
 
-    const apiResponse = await apiFetch(apiPath, {
+    await apiFetch(apiPath, {
       method: 'DELETE',
       body: JSON.stringify(body),
     })
@@ -317,7 +328,6 @@ const confirmDelete = async ({password, selectedOption}: {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  padding-bottom: 40px;
   gap: 6px;
   span {
     font-size: 1em;
@@ -334,12 +344,10 @@ const confirmDelete = async ({password, selectedOption}: {
 
 .uranus-event-card-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   margin-top: 20px;
   gap: 4px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
   padding: 8px;
 }

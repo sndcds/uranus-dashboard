@@ -55,6 +55,11 @@
         {{ t('delete') }}
       </UranusButton>
 
+      <UranusButton v-if="org.canEditOrg" variant="secondary" size="small" @click="showSocialMedia = true">
+        <template #icon><Share2 /></template>
+        {{ t('social_media') }}
+      </UranusButton>
+
       <UranusButton
           v-if="org.canManageTeam"
           variant="secondary" size="small"
@@ -64,6 +69,8 @@
       </UranusButton>
 
     </div>
+
+    <UranusSocialAccountsModal v-if="showSocialMedia && org.canEditOrg" :key="org.uuid" :org-uuid="org.uuid" @close="showSocialMedia = false" />
 
     <UranusPasswordConfirmModal
         :show="showDeleteModal"
@@ -84,6 +91,8 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { Share2 } from 'lucide-vue-next'
+import UranusSocialAccountsModal from '@/component/social/UranusSocialAccountsModal.vue'
 import { useI18n } from 'vue-i18n'
 import { ApiError, apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
@@ -102,6 +111,7 @@ const themeStore = useThemeStore()
 
 
 const showDeleteModal = ref(false)
+const showSocialMedia = ref(false)
 const deleteError = ref('')
 const isDeleting = ref(false)
 const pendingDeleteUuid = ref<string | null>(null)
