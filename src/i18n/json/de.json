@@ -800,5 +800,7 @@
   "social_error_input": "Die Eingaben oder der Event-Inhalt konnten nicht verarbeitet werden. Prüfe Pflichtfelder, Serveradresse, Token-Zeitstempel und die ausgewählten Ziele.",
   "social_error_request": "Die Anfrage konnte nicht abgeschlossen werden. Prüfe die Verbindung und lade den aktuellen Stand erneut.",
   "social_preview_only": "Nur Vorschau",
-  "social_preview_only_hint": "Die API unterstützt die Veröffentlichung derzeit nur auf Mastodon. Für Facebook, Instagram und Bluesky ist eine Vorschau möglich. Wähle zum Posten ausschließlich Mastodon-Ziele."
+  "social_preview_only_hint": "Die API unterstützt die Veröffentlichung derzeit nur auf Mastodon. Für Facebook, Instagram und Bluesky ist eine Vorschau möglich. Wähle zum Posten ausschließlich Mastodon-Ziele.",
+  "social_polling_paused": "Die automatische Statusabfrage wurde beendet. Die Veröffentlichung ist noch nicht bestätigt. Du kannst den Status manuell aktualisieren. Bleibt der Auftrag vorgemerkt, prüfe, ob der Social-Worker für dieselbe API-Datenbank läuft.",
+  "social_reconciliation_required": "Der Ausgang der Veröffentlichung ist unklar. Prüfe den Post auf der Plattform und lasse den Veröffentlichungsverlauf abgleichen, bevor du erneut postest. Die automatische Statusabfrage wurde angehalten."
 }

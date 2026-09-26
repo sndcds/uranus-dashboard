@@ -800,5 +800,7 @@
   "social_error_input": "The input or event content could not be processed. Check required fields, server address, token timestamp and selected targets.",
   "social_error_request": "The request could not be completed. Check your connection and reload the current state.",
   "social_preview_only": "Preview only",
-  "social_preview_only_hint": "The API currently supports publishing only to Mastodon. Facebook, Instagram and Bluesky support previews. Select only Mastodon targets to publish."
+  "social_preview_only_hint": "The API currently supports publishing only to Mastodon. Facebook, Instagram and Bluesky support previews. Select only Mastodon targets to publish.",
+  "social_polling_paused": "Automatic status checks have stopped. Publication is not yet confirmed. You can refresh the status manually. If the post remains queued, check that the social worker is running against the same API database.",
+  "social_reconciliation_required": "The publication outcome is uncertain. Check the post on the platform and have the publication history reconciled before posting again. Automatic status checks have stopped."
 }

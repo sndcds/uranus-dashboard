@@ -29,6 +29,8 @@
           <UranusFeedback v-if="allPublished" type="success">{{ t('social_published') }}</UranusFeedback>
           <UranusFeedback v-else-if="accepted && pending" type="success">{{ t('social_accepted') }}</UranusFeedback>
           <UranusFeedback v-else-if="editable" type="notice">{{ t('social_draft_created') }}</UranusFeedback>
+          <UranusFeedback v-if="reconciliationRequired" type="warning">{{ t('social_reconciliation_required') }}</UranusFeedback>
+          <UranusFeedback v-else-if="pollingPaused && pending" type="warning">{{ t('social_polling_paused') }}</UranusFeedback>
           <p v-if="pending">{{ t('social_worker_hint') }}</p>
           <ul class="social-status" aria-live="polite">
             <li v-for="target in post.targets" :key="target.uuid">
@@ -37,10 +39,10 @@
               <p v-if="target.status === 'failed'">{{ t('social_target_failed') }}</p>
             </li>
           </ul>
-          <UranusButton variant="secondary" :disabled="busy" @click="refresh">{{ t('social_refresh_status') }}</UranusButton>
+          <UranusButton variant="secondary" :disabled="busy || refreshing" @click="refresh">{{ t('social_refresh_status') }}</UranusButton>
         </template>
         <template v-if="!post || editable || post.targets.every(target => target.status === 'failed' || target.status === 'draft')">
-          <UranusButton :disabled="!selected.length || busy || creationUncertain" :loading="busy" :loading-text="t('loading')" @click="prepare">{{ t('social_prepare_preview') }}</UranusButton>
+          <UranusButton :disabled="!selected.length || busy || refreshing || creationUncertain" :loading="busy" :loading-text="t('loading')" @click="prepare">{{ t('social_prepare_preview') }}</UranusButton>
         </template>
         <article v-for="preview in previews" :key="preview.targetUuid" class="social-preview">
           <h3>{{ preview.platform }}</h3>
@@ -78,6 +80,7 @@ const emit = defineEmits<{ close: [] }>()
 const { t, locale } = useI18n()
 const configure = ref(false)
 const { accounts, activeAccounts, posts, selected, post, previews, loading, busy, error,
+  refreshing, pollingPaused, reconciliationRequired,
   loadFailed, creationUncertain, accepted, pending, allPublished, editable, canPublish, publishingSupported,
   load, refresh, newPost, openPost, invalidatePreview, prepare, publish } = useSocialEventPost(props.orgUuid, props.eventUuid, () => locale.value)
 function accountName(uuid: string) { return accounts.value.find(a => a.uuid === uuid)?.name ?? t('social_target') }

@@ -81,8 +81,8 @@ function accountBody(input: SocialAccountInput) {
 }
 const root = '/api/admin/social'
 const id = encodeURIComponent
-async function request(path: string, method = 'GET', body?: unknown): Promise<unknown> {
-  const response = await apiFetch<unknown>(path, { method, ...(body !== undefined ? { body: JSON.stringify(body) } : {}) })
+async function request(path: string, method = 'GET', body?: unknown, signal?: AbortSignal): Promise<unknown> {
+  const response = await apiFetch<unknown>(path, { method, ...(body !== undefined ? { body: JSON.stringify(body) } : {}), ...(signal ? { signal } : {}) })
   return response.data
 }
 
@@ -110,8 +110,8 @@ export const socialApi = {
       targets: accountUuids.map(uuid => ({ social_account_uuid: uuid })),
     }))
   },
-  async getPost(uuid: string): Promise<SocialPost> {
-    return post(await request(`${root}/posts/${id(uuid)}`))
+  async getPost(uuid: string, signal?: AbortSignal): Promise<SocialPost> {
+    return post(await request(`${root}/posts/${id(uuid)}`, 'GET', undefined, signal))
   },
   async updateTargets(uuid: string, accountUuids: string[]): Promise<SocialPost> {
     return post(await request(`${root}/posts/${id(uuid)}`, 'PUT', {
