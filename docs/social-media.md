@@ -154,4 +154,14 @@ This verifies the checked-out implementation, not the process state on Roald's c
 3. Verify that a separate process was started with `--social-worker` and the same configuration/database as the API (the demo defaults to port 9090; verify the dashboard's `VITE_API_URL` points at that same API). Starting only the HTTP API is insufficient. The API repository's deployment workflow restarts only `uranus.service`.
 4. For persistent `publishing`, read `GET /api/admin/social/publications?social_post_uuid=<uuid>` and check the worker logs. `uncertain` or a failed database finalization requires verification/reconciliation, not blindly creating another post. A normal brief `publishing` state is expected.
 
-Roald's target was reported as `scheduled`. This confirms it remains queued rather than in a recorded publishing claim; it does not by itself distinguish an absent worker, a different database/schema, backlog, a blocking sibling target or a claim transaction failure. Worker process/configuration details and logs were not available, so that runtime cause remains unconfirmed.
+**Confirmed runtime cause:** Roald reported `scheduled` and confirmed that only the HTTP API server was running, with no separate social worker. The API therefore queued the post correctly, but no process consumed it. The dashboard's unbounded polling made this missing worker appear as an endless workflow.
+
+In the Uranus API repository, start the worker in a second terminal with the **same configuration file as the HTTP API**:
+
+```sh
+go run . --config config.json --social-worker
+```
+
+Alternatively, use the built binary with the same flags. Keep the HTTP API running. The worker immediately checks for due targets and then polls at its configured interval (default 30 seconds). It processes already queued posts; there is no need to submit them again. For persistent operation, install the separate systemd worker unit described in the API documentation. The dashboard patch limits the UI symptom and improves diagnostics; it cannot replace starting the worker.
+
+The missing process was confirmed by the user; this session did not remotely start a process on Roald's computer or observe the subsequent live publication.
