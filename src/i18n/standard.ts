@@ -772,7 +772,7 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
     },
     signup_failed: {
         de: 'Registrierung fehlgeschlagen',
-        en: 'Signup failed',
+        en: 'Sign up failed',
         da: 'Registrering mislykkedes',
     },
     result_count_singular: {

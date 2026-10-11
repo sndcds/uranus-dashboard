@@ -20,6 +20,8 @@ const CATEGORY_COLORS: Record<number, string> = {
   4: 'var(--uranus-event-category-leisure-color)',
   5: 'var(--uranus-event-category-family-color)',
   6: 'var(--uranus-event-category-society-color)',
+  7: 'var(--uranus-event-category-creative-color)',
+  8: 'var(--uranus-event-category-food-and-drink-color)',
 }
 
 const circles = computed(() => {

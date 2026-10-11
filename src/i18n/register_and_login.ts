@@ -56,7 +56,7 @@ export const uranusI18nRegisterAndLoginTranslations: Record<string, Record<'en' 
     },
     auth_session_cookies: {
         de: 'Die Anmeldung konnte nicht bestätigt werden. Erlaube Cookies für diese Anwendung und versuche es erneut.',
-        en: 'Sign-in could not be confirmed. Allow cookies for this app and try again.',
+        en: 'Sign in could not be confirmed. Allow cookies for this app and try again.',
         da: 'Login kunne ikke bekræftes. Tillad cookies for denne app, og prøv igen.',
     },
     auth_session_recovery: {
@@ -81,12 +81,12 @@ export const uranusI18nRegisterAndLoginTranslations: Record<string, Record<'en' 
     },
     login_failed: {
         de: 'Anmeldung fehlgeschlagen',
-        en: 'Login failed',
+        en: 'Log in failed',
         da: 'Login mislykkedes',
     },
     go_to_login: {
         de: 'Zur Anmeldung',
-        en: 'Go to Login',
+        en: 'Go to log in',
         da: 'Gå til login',
     },
     need_account: {

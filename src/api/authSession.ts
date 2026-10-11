@@ -156,7 +156,7 @@ export function createAuthSession() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
         })
-        if (!response.ok) throw new ApiError('Login failed', response.status)
+        if (!response.ok) throw new ApiError('Log in failed', response.status)
         const loginProfile = profileFromJSON(await response.json())
         const profile = await getProfile()
         if (!profile || profile.user_uuid !== loginProfile.user_uuid) throw new SessionError('cookies')

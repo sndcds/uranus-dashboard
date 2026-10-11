@@ -231,8 +231,8 @@ export const uranusI18nVisitorInfoTranslations: Record<string, Record<'en' | 'de
         da: 'Vejralternativ',
     },
     wifi_with_login: {
-        en: 'Wifi with Login',
-        de: 'WLAN mit Login',
+        en: 'Wifi with log in',
+        de: 'WLAN mit Anmeldung',
         da: 'Wi-Fi med login',
     },
     youth_adult_suitable: {
