@@ -416,8 +416,8 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         da: "Til organisationssiden",
     },
     invite_activate_back_to_login: {
-        de: "Zum Login",
-        en: "Go to login",
+        de: "Zur Anmeldung",
+        en: "Log in",
         da: "Gå til login",
     },
     invite_activate_error_fallback: {

@@ -18,6 +18,7 @@
       <ChevronDown :size="18" class="expand-icon" :class="{ 'is-open': open }" />
       <span class="sr-only">{{ t('event_edit_date') }}</span>
     </button>
+
     <div v-if="open" :id="detailId" class="date-editor">
         <div class="date-pair">
           <UranusDateInput :id="`start-date-${index}`" v-model="date.startDate" :label="t('event_start_date')" required />
@@ -43,27 +44,27 @@
           />
         </div>
 
-        <div class="date-pair">
-          <UranusInput
-              :id="`date-ticket-link-${index}`"
-              v-model="date.ticketLink"
-              type="url"
-              :label="t('event_date_ticket_link')"
-              placeholder="https://"
-          />
-          <UranusInput
-              :id="`date-venue-name-${index}`"
-              v-model="date.dateVenueName"
-              :label="t('event_date_venue_name')"
+        <UranusInput
+            :id="`date-ticket-link-${index}`"
+            v-model="date.ticketLink"
+            type="url"
+            :label="t('event_date_ticket_link')"
+            placeholder="https://"
+        />
+        <UranusInput
+            :id="`date-venue-name-${index}`"
+            v-model="date.dateVenueName"
+            :label="t('event_date_venue_name')"
+        />
+
+        <div class="date-full-row">
+          <UranusTextEditor
+              :id="`date-description-${index}`"
+            v-model="dateDescription"
+              :label="t('event_date_description')"
+              resize="vertical"
           />
         </div>
-
-        <UranusTextarea
-            :id="`date-description-${index}`"
-          v-model="dateDescription"
-            :label="t('event_date_description')"
-            resize="vertical"
-        />
 
         <div class="date-actions">
           <UranusButton size="small" variant="tertiary" @click="emit('select-venue')">
@@ -95,8 +96,8 @@ import UranusDateInput from '@/component/ui/UranusDateInput.vue'
 import UranusNumberInput from '@/component/ui/UranusNumberInput.vue'
 import UranusTimeInput from '@/component/ui/UranusTimeInput.vue'
 import UranusInput from '@/component/ui/UranusInput.vue'
-import UranusTextarea from '@/component/ui/UranusTextarea.vue'
 import UranusEventReleaseStatusSelect from '@/component/event/ui/UranusEventReleaseStatusSelect.vue'
+import UranusTextEditor from '@/component/ui/UranusTextEditor.vue'
 
 const props = defineProps<{
   date: AdminEventDate
@@ -193,8 +194,8 @@ const detailId = `event-date-detail-${Math.random().toString(36).slice(2)}`
 }
 
 .date-editor {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, calc(400px + 0.75rem)));
   gap: 0.75rem;
   padding: 1rem;
   background: var(--uranus-input-bg);
@@ -204,6 +205,10 @@ const detailId = `event-date-detail-${Math.random().toString(36).slice(2)}`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 200px));
   gap: 0.75rem;
+}
+
+.date-full-row {
+  grid-column: 1 / -1;
 }
 
 .date-options {
@@ -232,11 +237,15 @@ const detailId = `event-date-detail-${Math.random().toString(36).slice(2)}`
 
 @media (max-width: 700px) {
   .date-editor {
+    display: flex;
+    flex-direction: column;
     padding-left: 1rem;
   }
 
   .date-pair {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 600px));
+    gap: 0.75rem;
   }
 }
 </style>

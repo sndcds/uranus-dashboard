@@ -339,6 +339,14 @@ function categoryClass(categoryId: number) {
   background: var(--uranus-event-category-society-color);
 }
 
+.calendar-week-event__category--creative {
+  background: var(--uranus-event-category-creative-color);
+}
+
+.calendar-week-event__category--food-and-drink {
+  background: var(--uranus-event-category-food-and-drink-color);
+}
+
 .calendar-week-event__category--unknown {
   background: var(--uranus-color-6);
 }

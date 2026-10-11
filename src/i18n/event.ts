@@ -565,6 +565,16 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Society',
         da: 'Samfund',
     },
+    event_filter_category_creative: {
+        de: 'Kreativ',
+        en: 'Creative',
+        da: 'Kreativt',
+    },
+    event_filter_category_food_and_drink: {
+        de: 'Essen & Trinken',
+        en: 'Food & drink',
+        da: 'Mad & drikke',
+    },
     event_filter_from: {
         de: 'Von',
         en: 'From',

@@ -72,10 +72,10 @@
       </div>
 
       <div class="uranus-event-card-actions">
-        <UranusButton v-if="canPostSocial" variant="secondary" size="small" @click="showSocialPost = true">
+        <!--UranusButton v-if="canPostSocial" variant="secondary" size="small" @click="showSocialPost = true">
           <template #icon><Share2 /></template>
           {{ t('social_post_event') }}
-        </UranusButton>
+        </UranusButton-->
         <UranusButton
             v-if="canPreviewEvent"
             variant="secondary"

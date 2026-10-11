@@ -47,7 +47,9 @@ const categories: Category[] = [
   { id: 3, label: 'event_filter_category_sports', color: 'var(--uranus-event-category-sports-color)' },
   { id: 4, label: 'event_filter_category_leisure', color: 'var(--uranus-event-category-leisure-color)' },
   { id: 5, label: 'event_filter_category_family', color: 'var(--uranus-event-category-family-color)' },
-  { id: 6, label: 'event_filter_category_society', color: 'var(--uranus-event-category-society-color)' }
+  { id: 6, label: 'event_filter_category_society', color: 'var(--uranus-event-category-society-color)' },
+  { id: 7, label: 'event_filter_category_creative', color: 'var(--uranus-event-category-creative-color)' },
+  { id: 8, label: 'event_filter_category_food_and_drink', color: 'var(--uranus-event-category-food-and-drink-color)' }
 ]
 
 // Reactive state

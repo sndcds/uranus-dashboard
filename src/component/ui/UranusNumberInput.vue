@@ -40,20 +40,20 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps({
-  id: { type: String, required: true },
-  label: { type: String, required: true },
-  modelValue: { type: Number, default: null }, // Number only, default can be null
-  required: { type: Boolean, default: false },
-  size: { type: String, default: 'normal' },
-  flex: { type: [Number, String], default: 1 },
-  error: { type: String, default: '' },
-  placeholder: { type: String, default: '' },
-  autocomplete: { type: String, default: 'off' },
-  disabled: { type: Boolean, default: false },
-  readonly: { type: Boolean, default: false },
-  name: { type: String, default: '' },
-})
+const props = defineProps<{
+  id: string
+  label: string
+  modelValue: number | null
+  required?: boolean
+  size?: string
+  flex?: number | string
+  error?: string
+  placeholder?: string
+  autocomplete?: string
+  disabled?: boolean
+  readonly?: boolean
+  name?: string
+}>()
 
 const emit = defineEmits(['update:modelValue'])
 
