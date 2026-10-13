@@ -20,52 +20,55 @@
     </button>
 
     <div v-if="open" :id="detailId" class="date-editor">
-        <div class="date-pair">
-          <UranusDateInput :id="`start-date-${index}`" v-model="date.startDate" :label="t('event_start_date')" required />
-          <UranusTimeInput :id="`start-time-${index}`" v-model="date.startTime" :label="t('event_start_time')" required />
-        </div>
+      <div class="date-pair">
+        <UranusDateInput :id="`start-date-${index}`" v-model="date.startDate" :label="t('event_start_date')" required />
+        <UranusTimeInput :id="`start-time-${index}`" v-model="date.startTime" :label="t('event_start_time')" required />
+      </div>
 
-        <div class="date-pair">
-          <UranusDateInput :id="`end-date-${index}`" v-model="date.endDate" :label="t('event_end_date')" />
-          <UranusTimeInput :id="`end-time-${index}`" v-model="date.endTime" :label="t('event_end_time')" />
-        </div>
+      <div class="date-pair">
+        <UranusDateInput :id="`end-date-${index}`" v-model="date.endDate" :label="t('event_end_date')" />
+        <UranusTimeInput :id="`end-time-${index}`" v-model="date.endTime" :label="t('event_end_time')" />
+      </div>
 
-        <div class="date-pair">
-          <UranusTimeInput :id="`entry-time-${index}`" v-model="date.entryTime" :label="t('event_entry_time')" />
-          <UranusNumberInput :id="`duration-${index}`" v-model="duration" min="1" :label="t('event_duration_minutes')" />
-        </div>
+      <div class="date-pair">
+        <UranusTimeInput :id="`entry-time-${index}`" v-model="date.entryTime" :label="t('event_entry_time')" />
+        <UranusNumberInput :id="`duration-${index}`" v-model="duration" min="1" :label="t('event_duration_minutes')" />
+      </div>
 
-        <div class="date-pair date-options">
-          <UranusCheckbox :id="`all-day-${index}`" v-model="date.allDay" :label="t('event_all_day')" />
-          <UranusEventReleaseStatusSelect
-              v-model="date.releaseStatus"
-              renderAs="select"
-              mode="event_date_override"
-          />
-        </div>
-
-        <UranusInput
-            :id="`date-ticket-link-${index}`"
-            v-model="date.ticketLink"
-            type="url"
-            :label="t('event_date_ticket_link')"
-            placeholder="https://"
+      <div class="date-pair date-options">
+        <UranusCheckbox :id="`all-day-${index}`" v-model="date.allDay" :label="t('event_all_day')" />
+        <UranusEventReleaseStatusSelect
+            v-model="date.releaseStatus"
+            renderAs="select"
+            mode="event_date_override"
         />
-        <UranusInput
-            :id="`date-venue-name-${index}`"
-            v-model="date.dateVenueName"
-            :label="t('event_date_venue_name')"
+      </div>
+
+      <!-- TODO: Implement
+      <UranusInput
+          :id="`date-ticket-link-${index}`"
+          v-model="date.ticketLink"
+          type="url"
+          :label="t('event_date_ticket_link')"
+          placeholder="https://"
+      />
+      <UranusInput
+          :id="`date-venue-name-${index}`"
+          v-model="date.dateVenueName"
+          :label="t('event_date_venue_name')"
+      />
+
+      <div class="date-full-row">
+        <UranusTextEditor
+            :id="`date-description-${index}`"
+          v-model="dateDescription"
+            :label="t('event_date_description')"
+            resize="vertical"
         />
+      </div>
+      -->
 
-        <div class="date-full-row">
-          <UranusTextEditor
-              :id="`date-description-${index}`"
-            v-model="dateDescription"
-              :label="t('event_date_description')"
-              resize="vertical"
-          />
-        </div>
-
+      <div class="date-full-row">
         <div class="date-actions">
           <UranusButton size="small" variant="tertiary" @click="emit('select-venue')">
             {{ t('event_select_venue') }}
@@ -73,13 +76,15 @@
           <UranusButton size="small" variant="tertiary" @click="emit('clear-venue')">
             {{ t('event_remove_venue') }}
           </UranusButton>
-          <UranusButton size="small" variant="tertiary" @click="emit('select-location')">
+          <!--UranusButton size="small" variant="tertiary" @click="emit('select-location')">
             {{ t('event_date_select_location') }}
-          </UranusButton>
+            TODO: implement!
+          </UranusButton-->
           <UranusButton v-if="canRemove" size="small" variant="tertiary" @click="emit('remove')">
             {{ t('event_remove_date') }}
           </UranusButton>
         </div>
+      </div>
     </div>
   </article>
 </template>
@@ -195,7 +200,7 @@ const detailId = `event-date-detail-${Math.random().toString(36).slice(2)}`
 
 .date-editor {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, calc(400px + 0.75rem)));
+  grid-template-columns: repeat(2, minmax(0, calc(500px + 0.75rem)));
   gap: 0.75rem;
   padding: 1rem;
   background: var(--uranus-input-bg);
@@ -217,6 +222,7 @@ const detailId = `event-date-detail-${Math.random().toString(36).slice(2)}`
 
 .date-actions {
   display: flex;
+  width: 100%;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 0.5rem;
