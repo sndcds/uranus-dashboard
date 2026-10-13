@@ -55,10 +55,10 @@
         {{ t('delete') }}
       </UranusButton>
 
-      <UranusButton v-if="org.canEditOrg" variant="secondary" size="small" @click="showSocialMedia = true">
+      <!--UranusButton v-if="org.canEditOrg" variant="secondary" size="small" @click="showSocialMedia = true">
         <template #icon><Share2 /></template>
         {{ t('social_media') }}
-      </UranusButton>
+      </UranusButton-->
 
       <UranusButton
           v-if="org.canManageTeam"
