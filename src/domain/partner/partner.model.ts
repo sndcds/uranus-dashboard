@@ -11,14 +11,17 @@ export type PartnerStatus = 'pending' | 'accepted' | 'rejected'
  * Frontend-friendly model for organization list items
  * 1:1 mapping from DTO
  */
-export interface PartnerListItem {
-    direction: PartnerDirection
-    orgUuid: string
-    orgName: string
+export interface PartnerPermissions {
     canChooseVenue: boolean
     canChoosePartner: boolean
     canChoosePromoter: boolean
     canSeeInsights: boolean
+}
+
+export interface PartnerListItem extends PartnerPermissions {
+    direction: PartnerDirection
+    orgUuid: string
+    orgName: string
     logoUrl?: string | null
     lightThemeLogoUrl?: string | null
     darkThemeLogoUrl?: string | null

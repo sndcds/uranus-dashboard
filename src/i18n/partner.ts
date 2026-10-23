@@ -145,6 +145,81 @@ export const uranusI18nPartnerTranslations: Record<string, Record<UranusLocaleKe
         en: 'Requests to partners',
         da: 'Anmodninger til partnere',
     },
+    partner_pending_outgoing_requests_title: {
+        de: 'Ausstehende Anfragen an Partner',
+        en: 'Pending requests to partners',
+        da: 'Afventende anmodninger til partnere',
+    },
+    partner_requests_to_org: {
+        de: 'Partneranfragen an {org}',
+        en: 'Partner requests to {org}',
+        da: 'Partneranmodninger til {org}',
+    },
+    partner_request_sent_on: {
+        de: 'Anfrage vom',
+        en: 'Request dated',
+        da: 'Anmodning fra den',
+    },
+    partner_request_received_on: {
+        de: 'Anfrage gestellt am',
+        en: 'Request submitted on',
+        da: 'Anmodning indsendt den',
+    },
+    partner_request_to: {
+        de: 'an',
+        en: 'to',
+        da: 'til',
+    },
+    partner_request_from: {
+        de: 'von',
+        en: 'from',
+        da: 'fra',
+    },
+    partner_request_days_pending: {
+        de: '0 Tage ausstehend | {count} Tag ausstehend | {count} Tage ausstehend',
+        en: 'Pending for 0 days | Pending for {count} day | Pending for {count} days',
+        da: 'Afventer i 0 dage | Afventer i {count} dag | Afventer i {count} dage',
+    },
+    partner_reject_request: {
+        de: 'Anfrage abweisen',
+        en: 'Reject request',
+        da: 'Afvis anmodning',
+    },
+    partner_accept_request: {
+        de: 'Partneranfrage annehmen',
+        en: 'Accept partner request',
+        da: 'Accepter partneranmodning',
+    },
+    partner_accept_and_grant: {
+        de: 'Annehmen und Rechte vergeben',
+        en: 'Accept and grant permissions',
+        da: 'Accepter og tildel rettigheder',
+    },
+    partner_requests_load_error: {
+        de: 'Die Partneranfragen konnten nicht geladen werden.',
+        en: 'The partner requests could not be loaded.',
+        da: 'Partneranmodningerne kunne ikke indlæses.',
+    },
+    partner_request_accept_error: {
+        de: 'Die Partneranfrage konnte nicht angenommen werden.',
+        en: 'The partner request could not be accepted.',
+        da: 'Partneranmodningen kunne ikke accepteres.',
+    },
+    partner_request_reject_error: {
+        de: 'Die Partneranfrage konnte nicht abgewiesen werden.',
+        en: 'The partner request could not be rejected.',
+        da: 'Partneranmodningen kunne ikke afvises.',
+    },
+    partner_grants_save_error: {
+        de: 'Die Partnerrechte konnten nicht gespeichert werden. Bitte versuche es erneut.',
+        en: 'The partner permissions could not be saved. Please try again.',
+        da: 'Partnerrettighederne kunne ikke gemmes. Prøv igen.',
+    },
+    partner_request_grants_save_error: {
+        de: 'Die Anfrage wurde angenommen, aber die Rechte konnten nicht gespeichert werden. Bitte versuche es erneut oder bearbeite die Rechte im Bereich Partner.',
+        en: 'The request was accepted, but the permissions could not be saved. Please try again or edit the permissions in the Partners section.',
+        da: 'Anmodningen blev accepteret, men rettighederne kunne ikke gemmes. Prøv igen, eller rediger rettighederne under Partnere.',
+    },
     partnership_connections: {
         de: 'Partnerschaftsverbindungen',
         en: 'Partnership connections',
