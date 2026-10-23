@@ -5,12 +5,38 @@
 <template>
   <UranusCard v-if="filteredItems.length > 0">
     <h3>
-      {{ direction === 'incoming'
+      {{ title ?? (direction === 'incoming'
         ? t('partner_incoming_requests_title')
-        : t('partner_outgoing_requests_title') }}
+        : t('partner_outgoing_requests_title')) }}
     </h3>
 
-    <div v-for="item in filteredItems" :key="item.orgUuid">
+    <UranusFeedback v-if="errorKey" type="error">{{ t(errorKey) }}</UranusFeedback>
+
+    <ul v-if="compact" class="partner-request-list">
+      <li v-for="item in filteredItems" :key="item.orgUuid" class="partner-request-list__item">
+        <div class="partner-request-list__details">
+          <span>
+            {{ t(direction === 'incoming' ? 'partner_request_received_on' : 'partner_request_sent_on') }}
+            <time :datetime="item.createdAt">{{ formatDate(item.createdAt, true) }}</time>
+          </span>
+          <span>
+            {{ t(direction === 'incoming' ? 'partner_request_from' : 'partner_request_to') }}
+            <strong>{{ item.orgName }}</strong>
+          </span>
+          <span>{{ formatPendingDays(item.createdAt) }}</span>
+        </div>
+        <div v-if="canAnswerPartnerRequests && direction === 'incoming'" class="partner-actions">
+          <UranusButton variant="secondary" :disabled="isBusy" @click="onReject(item)">
+            {{ t('partner_reject_request') }}
+          </UranusButton>
+          <UranusButton :disabled="isBusy" @click="onAccept(item)">
+            {{ t(canEditPartnerRights ? 'partner_accept_and_grant' : 'accept') }}
+          </UranusButton>
+        </div>
+      </li>
+    </ul>
+
+    <div v-for="item in compact ? [] : filteredItems" :key="item.orgUuid">
       <div class="partner-grid partner-card">
         <div class="partner-name">
           {{ item.orgName }}
@@ -31,38 +57,62 @@
         </div>
 
         <div v-if="canAnswerPartnerRequests && direction === 'incoming'" class="partner-actions">
-          <UranusButton size="medium" @click="onReject(item)">{{ t('reject') }}</UranusButton>
-          <UranusButton size="medium" @click="onAccept(item)">{{ t('accept') }}</UranusButton>
+          <UranusButton size="medium" :disabled="isBusy" @click="onReject(item)">{{ t('reject') }}</UranusButton>
+          <UranusButton size="medium" :disabled="isBusy" @click="onAccept(item)">
+            {{ t(canEditPartnerRights ? 'partner_accept_and_grant' : 'accept') }}
+          </UranusButton>
         </div>
 
       </div>
     </div>
   </UranusCard>
+
+  <UranusPartnerGrantsModal
+      v-if="selectedItem && appStore.orgUuid"
+      :org-uuid="appStore.orgUuid"
+      :partner="selectedItem"
+      :accept-request="true"
+      :can-edit-grants="canEditPartnerRights"
+      @close="onModalClose"
+      @saved="onAccepted"
+  />
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 import type { PartnerRequestItem } from '@/domain/partner/partner.model.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
+import UranusPartnerGrantsModal from '@/component/partner/UranusPartnerGrantsModal.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const appStore = useAppStore()
 
 const props = withDefaults(defineProps<{
   items: PartnerRequestItem[]
   direction: 'incoming' | 'outgoing'
   canAnswerPartnerRequests?: boolean
+  canEditPartnerRights?: boolean
+  compact?: boolean
+  title?: string
 }>(), {
-  canAnswerPartnerRequests: false
+  canAnswerPartnerRequests: false,
+  canEditPartnerRights: false,
+  compact: false,
 })
 
 const emit = defineEmits<{
   'request-updated': []
 }>()
+
+const selectedItem = ref<PartnerRequestItem | null>(null)
+const isRejecting = ref(false)
+const errorKey = ref<string | null>(null)
+const isBusy = computed(() => isRejecting.value || selectedItem.value !== null)
 
 const filteredItems = computed(() => {
   return props.items.filter(
@@ -72,25 +122,48 @@ const filteredItems = computed(() => {
   )
 })
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleString()
+function formatDate(dateStr: string, dateOnly = false): string {
+  const date = new Date(dateStr)
+  if (Number.isNaN(date.getTime())) return dateStr
+  return dateOnly
+      ? date.toLocaleDateString(locale.value)
+      : date.toLocaleString(locale.value)
 }
 
-async function onAccept(item: PartnerRequestItem) {
-  try {
-    const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/request/${item.orgUuid}/accept`
-    await apiFetch(apiPath, {
-      method: 'POST',
-    })
+function formatPendingDays(dateStr: string): string {
+  const date = new Date(dateStr)
+  if (Number.isNaN(date.getTime())) return ''
+  const today = new Date()
+  const days = Math.max(0, Math.round((
+      Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) -
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  ) / 86_400_000))
+  return t('partner_request_days_pending', days)
+}
 
-    item.status = 'accepted'
+function onAccept(item: PartnerRequestItem) {
+  if (!props.canAnswerPartnerRequests || item.direction !== 'incoming' || isBusy.value) return
+  errorKey.value = null
+  selectedItem.value = item
+}
+
+function onAccepted() {
+  if (selectedItem.value) {
+    selectedItem.value.status = 'accepted'
+    selectedItem.value = null
     emit('request-updated')
-  } catch (e) {
-    console.error('Failed to accept request', e)
   }
 }
 
+function onModalClose(requestAccepted: boolean) {
+  if (requestAccepted) onAccepted()
+  else selectedItem.value = null
+}
+
 async function onReject(item: PartnerRequestItem) {
+  if (!appStore.orgUuid || !props.canAnswerPartnerRequests || item.direction !== 'incoming' || isBusy.value) return
+  isRejecting.value = true
+  errorKey.value = null
   try {
     const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/request/${item.orgUuid}/reject`
     await apiFetch(apiPath, {
@@ -99,8 +172,10 @@ async function onReject(item: PartnerRequestItem) {
 
     item.status = 'rejected'
     emit('request-updated')
-  } catch (e) {
-    console.error('Failed to reject request', e)
+  } catch {
+    errorKey.value = 'partner_request_reject_error'
+  } finally {
+    isRejecting.value = false
   }
 }
 </script>
@@ -148,5 +223,31 @@ async function onReject(item: PartnerRequestItem) {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.partner-request-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.partner-request-list__item {
+  border-top: 1px solid var(--uranus-dashboard-border-color);
+  padding: 1rem 0;
+}
+
+.partner-request-list__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .partner-request-list__details {
+    flex-direction: column;
+  }
 }
 </style>

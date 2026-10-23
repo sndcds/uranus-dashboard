@@ -46,6 +46,7 @@
           :items="partnerRequests"
           direction="incoming"
           :canAnswerPartnerRequests="canAnswerPartnerRequests"
+          :canEditPartnerRights="canEditPartnerRights"
           @request-updated="reloadPartnerData"
       />
       <UranusPartnerRequestCard
