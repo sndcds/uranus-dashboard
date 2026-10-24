@@ -41,7 +41,7 @@ import UranusAdminEventTableRow from './UranusAdminEventTableRow.vue'
 import UranusEventColumnLegend from './UranusEventColumnLegend.vue'
 import UranusEventInfoDialog from './UranusEventInfoDialog.vue'
 import UranusAdminEventDateFilter from './UranusAdminEventDateFilter.vue'
-import type { AdminEventDateRange } from '@/domain/event/adminEventDateRange'
+import { formatLocalDate, type AdminEventDateRange } from '@/domain/event/adminEventDateRange'
 const props = withDefaults(defineProps<{ events: AdminEventListItem[]; grouped: boolean; loading?: boolean; canPostSocialOrgs?: string[]; pageSize?: number }>(), { loading: false, canPostSocialOrgs: () => [], pageSize: 50 })
 const emit = defineEmits<{ deleted: [payload: { eventUuid: string; dateUuid: string | null; deleteSeries: boolean }] }>()
 const { t } = useI18n({ useScope: 'global' })
@@ -49,7 +49,7 @@ const search = ref('')
 const status = ref('')
 const sort = ref('ascending')
 const missing = ref<MissingEventField[]>([])
-const dateRange = ref<AdminEventDateRange>({ startDate: '', endDate: '' })
+const dateRange = ref<AdminEventDateRange>({ startDate: formatLocalDate(new Date()), endDate: '' })
 const page = ref(1)
 const selected = ref<AdminEventListItem | null>(null)
 const statusOptions = computed(() => [...new Set([...eventReleaseStatuses, ...props.events.map(event => event.releaseStatus).filter((value): value is string => !!value)])])

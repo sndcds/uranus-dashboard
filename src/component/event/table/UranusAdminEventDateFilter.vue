@@ -4,6 +4,7 @@
     <label>
       <span>{{ t('event_table_period') }}</span>
       <select v-model="mode" :aria-label="t('event_table_period')">
+        <option value="current">{{ t('event_table_current_dates') }}</option>
         <option value="all">{{ t('event_table_all_dates') }}</option>
         <option value="month">{{ t('event_table_month') }}</option>
         <option value="quarter">{{ t('event_table_quarter') }}</option>
@@ -48,7 +49,7 @@ import { formatLocalDate, isValidAdminEventDateRange, monthDateRange, type Admin
 const model = defineModel<AdminEventDateRange>({ required: true })
 const { t } = useI18n({ useScope: 'global' })
 const now = new Date()
-const mode = ref<'all' | 'month' | 'quarter' | 'custom'>('all')
+const mode = ref<'current' | 'all' | 'month' | 'quarter' | 'custom'>('current')
 const month = ref(formatLocalDate(now).slice(0, 7))
 const year = ref(now.getFullYear())
 const quarter = ref(Math.floor(now.getMonth() / 3) + 1)
@@ -56,6 +57,7 @@ const startDate = ref('')
 const endDate = ref('')
 const errorId = useId()
 const range = computed<AdminEventDateRange>(() => {
+  if (mode.value === 'current') return { startDate: formatLocalDate(new Date()), endDate: '' }
   if (mode.value === 'month') {
     if (!/^[1-9]\d{3}-(0[1-9]|1[0-2])$/.test(month.value)) return { startDate: 'invalid', endDate: '' }
     return monthDateRange(Number(month.value.slice(0, 4)), Number(month.value.slice(5, 7)))

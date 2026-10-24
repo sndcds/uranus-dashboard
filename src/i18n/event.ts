@@ -7,6 +7,7 @@ import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey, string>> = {
     event_table_date_range: { de: 'Datumsbereich', en: 'Date range', da: 'Datointerval' },
     event_table_period: { de: 'Zeitraum', en: 'Period', da: 'Periode' },
+    event_table_current_dates: { de: 'Aktuelle Termine', en: 'Current dates', da: 'Aktuelle datoer' },
     event_table_all_dates: { de: 'Alle Termine', en: 'All dates', da: 'Alle datoer' },
     event_table_month: { de: 'Monat', en: 'Month', da: 'Måned' },
     event_table_quarter: { de: 'Quartal', en: 'Quarter', da: 'Kvartal' },

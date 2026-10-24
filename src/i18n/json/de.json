@@ -524,6 +524,7 @@
   "space_tab_accessibility": "Barrierefreiheit",
   "event_table_date_range": "Datumsbereich",
   "event_table_period": "Zeitraum",
+  "event_table_current_dates": "Aktuelle Termine",
   "event_table_all_dates": "Alle Termine",
   "event_table_month": "Monat",
   "event_table_quarter": "Quartal",

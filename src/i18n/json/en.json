@@ -524,6 +524,7 @@
   "space_tab_accessibility": "Accessibility",
   "event_table_date_range": "Date range",
   "event_table_period": "Period",
+  "event_table_current_dates": "Current dates",
   "event_table_all_dates": "All dates",
   "event_table_month": "Month",
   "event_table_quarter": "Quarter",
