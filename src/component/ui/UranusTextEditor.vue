@@ -183,6 +183,10 @@ watch(
 onBeforeUnmount(() => {
   editor.value?.destroy()
 })
+
+// TipTap attaches its editable DOM asynchronously. Its focus command schedules
+// selection after that attachment, which also supports editor deep links.
+defineExpose({ focus: () => editor.value?.commands.focus() })
 </script>
 
 <style lang="scss">

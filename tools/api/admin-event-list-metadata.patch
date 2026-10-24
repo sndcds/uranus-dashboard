@@ -1,0 +1,193 @@
+--- a/model/event.go
++++ b/model/event.go
+@@ -235,8 +235,8 @@
+ 	DateUuid             *string     `json:"date_uuid"`
+ 	ReleaseStatus        *string     `json:"release_status"`
+ 	ReleaseDate          *string     `json:"release_date,omitempty"`
+-	Categories           *[]int      `json:"categories,omitempty"`
+-	EventTypes           []EventType `json:"event_types,omitempty"`
++	Categories           *[]int      `json:"categories"`
++	EventTypes           []EventType `json:"event_types"`
+ 	CanEditEvent         bool        `json:"can_edit_event"`
+ 	CanDeleteEvent       bool        `json:"can_delete_event"`
+ 	CanReleaseEvent      bool        `json:"can_release_event"`
+@@ -253,15 +253,31 @@
+ 	ImageUuid            *string     `json:"image_uuid,omitempty"`
+ 	ImageUrl             *string     `json:"image_url,omitempty"`
+ 	SeriesIndex          int         `json:"series_index,omitempty"`
+-	SeriesTotal          int         `json:"series_total,omitempty"`
++	SeriesTotal          int         `json:"series_total"`
+ 	StartDate            *string     `json:"start_date"`
+ 	StartTime            *string     `json:"start_time"`
+ 	EndDate              *string     `json:"end_date,omitempty"`
+ 	EndTime              *string     `json:"end_time,omitempty"`
+ 	Title                string      `json:"title"`
+-	Subtitle             *string     `json:"subtitle,omitempty"`
++	Subtitle             *string     `json:"subtitle"`
+ 	UpcomingDatesCount   int         `json:"upcoming_dates_count,omitempty"`
+ 	NextDate             *string     `json:"next_date,omitempty"`
++	// Compact metadata for the admin list; no per-event detail requests required.
++	ContentLanguage   *string  `json:"content_language"`
++	Languages         []string `json:"languages"`
++	DescriptionLength int      `json:"description_length"`
++	SummaryLength     int      `json:"summary_length"`
++	ImageCount        int      `json:"image_count"`
++	TagCount          int      `json:"tag_count"`
++	LinkCount         int      `json:"link_count"`
++	HasRegistration   bool     `json:"has_registration"`
++	HasTicket         bool     `json:"has_ticket"`
++	TicketFlags       []string `json:"ticket_flags"`
++	PriceType         *string  `json:"price_type"`
++	MinPrice          *float64 `json:"min_price"`
++	MaxPrice          *float64 `json:"max_price"`
++	Currency          *string  `json:"currency"`
++	AllDay            bool     `json:"all_day"`
+ }
+ 
+ // UserEventNotification contains a single event notification
+--- a/api/admin_get_org_events.go
++++ b/api/admin_get_org_events.go
+@@ -98,6 +98,21 @@
+ 				&e.SeriesIndex,
+ 				&e.UpcomingDatesCount,
+ 				&e.NextDate,
++				&e.ContentLanguage,
++				&e.Languages,
++				&e.DescriptionLength,
++				&e.SummaryLength,
++				&e.ImageCount,
++				&e.TagCount,
++				&e.LinkCount,
++				&e.HasRegistration,
++				&e.HasTicket,
++				&e.TicketFlags,
++				&e.PriceType,
++				&e.MinPrice,
++				&e.MaxPrice,
++				&e.Currency,
++				&e.AllDay,
+ 			)
+ 			if err != nil {
+ 				return &ApiTxError{
+@@ -109,6 +124,10 @@
+ 				_ = json.Unmarshal(eventTypesData, &e.EventTypes)
+ 			}
+ 			events = append(events, e)
++		}
++
++		if err := rows.Err(); err != nil {
++			return &ApiTxError{Code: http.StatusInternalServerError, Err: fmt.Errorf("read admin event list: %w", err)}
+ 		}
+ 
+ 		orgPermissions, err = h.GetUserOrgPermissionsTx(gc, tx, userUuid, orgUuid)
+--- a/sql/admin-get-org-events.sql
++++ b/sql/admin-get-org-events.sql
+@@ -54,7 +54,26 @@
+             WHERE ed.start_date >= NOW()
+         ) OVER (PARTITION BY e.uuid),
+         'YYYY-MM-DD'
+-    ) AS next_date
++    ) AS next_date,
++
++    e.content_iso_639_1 AS content_language,
++    COALESCE(e.languages, '{}') AS languages,
++    CHAR_LENGTH(BTRIM(COALESCE(e.description, ''), E' \t\n\r\f')) AS description_length,
++    CHAR_LENGTH(BTRIM(COALESCE(e.summary, ''), E' \t\n\r\f')) AS summary_length,
++    (SELECT COUNT(DISTINCT pi.uuid)
++     FROM {{schema}}.pluto_image_link pil
++     JOIN {{schema}}.pluto_image pi ON pi.uuid = pil.pluto_image_uuid
++     WHERE pil.context = 'event' AND pil.context_uuid = e.uuid) AS image_count,
++    COALESCE(CARDINALITY(e.tags), 0) AS tag_count,
++    (SELECT COUNT(*) FROM {{schema}}.event_link el
++     WHERE el.event_uuid = e.uuid AND NULLIF(BTRIM(el.url), '') IS NOT NULL) AS link_count,
++    COALESCE(NULLIF(BTRIM(e.registration_link), ''), NULLIF(BTRIM(e.registration_email), ''),
++             NULLIF(BTRIM(e.registration_phone), '')) IS NOT NULL
++        OR e.registration_deadline IS NOT NULL AS has_registration,
++    COALESCE(NULLIF(BTRIM(ed.ticket_link), ''), NULLIF(BTRIM(e.ticket_link), '')) IS NOT NULL AS has_ticket,
++    COALESCE(e.ticket_flags::text[], '{}') AS ticket_flags,
++    e.price_type, e.min_price, e.max_price, e.currency,
++    COALESCE(ed.all_day, FALSE) AS all_day
+ 
+ FROM {{schema}}.event e
+ 
+--- /dev/null
++++ b/api/admin_get_org_events_test.go
+@@ -0,0 +1,78 @@
++package api
++
++import (
++	"encoding/json"
++	"os"
++	"strings"
++	"testing"
++
++	"github.com/sndcds/uranus/app"
++	"github.com/sndcds/uranus/model"
++)
++
++func TestAdminEventListMetadataPostgres(t *testing.T) {
++	h, router, token := contentDatabase(t)
++	for _, table := range []string{"event_type_link", "event_link"} {
++		ddl, err := os.ReadFile("../ddl/" + table + ".ddl")
++		if err != nil {
++			t.Fatal(err)
++		}
++		dbExec(t, h, strings.Split(string(ddl), "-- Indices")[0])
++	}
++	query, err := os.ReadFile("../sql/admin-get-org-events.sql")
++	if err != nil {
++		t.Fatal(err)
++	}
++	app.UranusInstance.SqlAdminGetOrgEvents = strings.NewReplacer("{{schema}}", h.DbSchema, "{{base_api_url}}", "https://api.example.test").Replace(string(query))
++	router.GET("/api/admin/org/:orgUuid/events", app.JWTMiddleware, h.AdminGetOrgEvents)
++
++	dbExec(t, h, `UPDATE uranus.event SET languages=ARRAY['de','da'], tags=ARRAY['Gospel','Live'],
++        registration_deadline=CURRENT_DATE+7, min_price=0, max_price=20, currency='EUR',
++        price_type='regular_price' WHERE uuid=$1`, contentEvent)
++	dbExec(t, h, `UPDATE uranus.event_date SET start_date=CURRENT_DATE+1,end_date=CURRENT_DATE+1 WHERE uuid=$1`, contentDate)
++	dbExec(t, h, `UPDATE uranus.event_date SET start_date=CURRENT_DATE+2,end_date=NULL,release_status='cancelled' WHERE uuid=$1`, contentOtherDate)
++	dbExec(t, h, `INSERT INTO uranus.event_type_link(event_uuid,type_id,genre_id) VALUES ($1,1,1),($1,1,2)`, contentEvent)
++	dbExec(t, h, `INSERT INTO uranus.event_link(event_uuid,url) VALUES ($1,'https://example.test/a'),($1,'https://example.test/b')`, contentEvent)
++	const blank = "01994126-6680-7000-8000-000000000099"
++	dbExec(t, h, `INSERT INTO uranus.event(uuid,org_uuid,title,description,summary) VALUES ($1,$2,'',E' \n\t',E' \n\t')`, blank, socialOrg)
++	response := socialRequest(router, "GET", "/api/admin/org/"+socialOrg+"/events", token, "")
++	assertSocialStatus(t, response, 200)
++	var payload struct {
++		Data []model.AdminListEvent `json:"data"`
++	}
++	if err := json.Unmarshal(response.Body.Bytes(), &payload); err != nil {
++		t.Fatal(err)
++	}
++	if len(payload.Data) != 3 {
++		t.Fatalf("expected undated draft and two occurrences, got %d: %s", len(payload.Data), response.Body.String())
++	}
++	draft := payload.Data[0]
++	if draft.Uuid != blank || draft.DateUuid != nil || draft.SeriesTotal != 0 || draft.ImageCount != 0 || draft.DescriptionLength != 0 || draft.HasRegistration || draft.HasTicket {
++		t.Fatalf("absent metadata or undated ordering lost: %+v", draft)
++	}
++	first, second := payload.Data[1], payload.Data[2]
++	if first.SeriesIndex != 1 || first.SeriesTotal != 2 || second.SeriesIndex != 2 || second.SeriesTotal != 2 {
++		t.Fatalf("occurrence counts changed: %+v / %+v", first, second)
++	}
++	if first.ImageCount != 1 || first.LinkCount != 2 || first.TagCount != 2 || first.DescriptionLength != len("**Original event**") || first.SummaryLength != len("Event summary") {
++		t.Fatalf("metadata counts multiplied by date/type joins: %+v", first)
++	}
++	if len(first.EventTypes) != 2 || len(first.Languages) != 2 || !first.HasRegistration || !first.HasTicket || first.MinPrice == nil || *first.MinPrice != 0 {
++		t.Fatalf("event metadata missing: %+v", first)
++	}
++	if second.ReleaseStatus == nil || *second.ReleaseStatus != "cancelled" || !second.AllDay || second.ImageCount != first.ImageCount {
++		t.Fatalf("date overrides must not change metadata: %+v", second)
++	}
++	// New zero/false fields must be serialized, unlike fields not supported by an old server.
++	var raw struct {
++		Data []map[string]any `json:"data"`
++	}
++	if err := json.Unmarshal(response.Body.Bytes(), &raw); err != nil {
++		t.Fatal(err)
++	}
++	for _, key := range []string{"image_count", "description_length", "summary_length", "has_registration", "has_ticket", "series_total", "categories", "subtitle", "event_types"} {
++		if _, ok := raw.Data[0][key]; !ok {
++			t.Fatalf("zero/false field %s omitted", key)
++		}
++	}
++}

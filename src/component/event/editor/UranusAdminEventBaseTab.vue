@@ -15,12 +15,14 @@
         </UranusLabel>
       </UranusFormRow>
 
-      <UranusLabel id="event-description" :label="t('event_category')">
-        <UranusEventCategorySelector
-            v-model="store.draft!.categories"
-            :multiple="true"
-        />
-      </UranusLabel>
+      <div id="event-categories" tabindex="-1" role="group" :aria-label="t('event_category')">
+        <UranusLabel id="event-categories" :label="t('event_category')">
+          <UranusEventCategorySelector
+              v-model="store.draft!.categories"
+              :multiple="true"
+          />
+        </UranusLabel>
+      </div>
 
       <UranusImageSlot
           context="event"
@@ -38,7 +40,7 @@
         <UranusTextfield id="event-subtitle" size="medium" :label="t('subtitle')" v-model="event.subtitle" />
       </UranusFormRow>
 
-      <UranusCard>
+      <UranusCard id="event-description" tabindex="-1">
         <h2>{{ t('description') }}</h2>
         <UranusTextEditor
             v-model="descriptionProxy"
@@ -46,11 +48,12 @@
         />
       </UranusCard>
 
-      <UranusCard>
+      <UranusCard id="event-summary" tabindex="-1">
         <h2>{{ t('summary') }}</h2>
         <span>Die Kurzbeschreibung wird nur in kompakten Ansichten angezeigt.</span>
         <UranusTextEditor
             v-model="summaryProxy"
+            ref="summaryEditor"
           :max-length="2000"
         />
       </UranusCard>
@@ -118,6 +121,7 @@ const event = computed(() => store.draft!)
 
 // Description editor
 const descriptionEditor = ref<InstanceType<typeof UranusTextEditor> | null>(null)
+const summaryEditor = ref<InstanceType<typeof UranusTextEditor> | null>(null)
 const descriptionProxy = computed({
   get: () => store.draft?.description ?? '',
   set: (val: string) => { if (store.draft) store.draft.description = val }
@@ -253,6 +257,10 @@ function resetBaseTab() {
 
 defineExpose({
   commitTab: commitBaseTab,
+  focusField(id: string) {
+    if (id === 'event-summary') summaryEditor.value?.focus()
+    if (id === 'event-description') descriptionEditor.value?.focus()
+  },
 })
 </script>
 

@@ -14,33 +14,40 @@ export function useUranusAdminListEvents() {
     const metadata = ref<Record<string, any>>({});
     const loading = ref(false);
     const error = ref<string | null>(null);
+    let requestId = 0
 
     /**
      * Fetch the admin list of events for a given organization
      */
-    async function fetchAdminListEvents(orgUuid: string | null, startDate?: string) {
+    async function fetchAdminListEvents(orgUuid: string | null, options: { startDate?: string; includePast?: boolean } = {}) {
+        const currentRequest = ++requestId
         loading.value = true;
         error.value = null;
+        adminListEvents.value = []
+        metadata.value = {}
 
         try {
             if (!orgUuid) {
-                throw new Error("orgUuid required");
+                return
             }
 
             const params = new URLSearchParams()
-            if (startDate) params.set("start", startDate)
+            if (options.startDate) params.set("start", options.startDate)
+            if (options.includePast) params.set('include_past', 'true')
 
             const queryString = params.toString()
             const apiPath = `/api/admin/org/${orgUuid}/events${queryString ? `?${queryString}` : ''}`
             const apiResonse = await apiFetch<any[]>(apiPath);
+            if (currentRequest !== requestId) return
             adminListEvents.value = camelCaseKeys<AdminEventListItem[]>(apiResonse.data ?? []);
             metadata.value = apiResonse.metadata ?? {};
         } catch (e: any) {
+            if (currentRequest !== requestId) return
             error.value = e.message ?? "Unknown error";
             adminListEvents.value = [];
             metadata.value = {};
         } finally {
-            loading.value = false;
+            if (currentRequest === requestId) loading.value = false;
         }
     }
 

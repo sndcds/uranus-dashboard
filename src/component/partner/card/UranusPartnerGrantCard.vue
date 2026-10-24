@@ -50,72 +50,29 @@
     </div>
   </UranusCard>
 
-  <UranusModal
-      :show="showModal"
-      :title="t('partner_edit_grants')"
-      @close="showModal = false"
-  >
-    <UranusForm>
-      <h2 v-if="selectedItem">
-        {{ selectedItem.orgName }}
-      </h2>
-
-      <UranusCheckbox
-          id="can_choose_venue"
-          v-model="modalCanChooseVenue"
-          :label="t('partner_can_choose_venue')"
-      />
-      <UranusCheckbox
-          id="can_choose_partner"
-          v-model="modalCanChoosePartner"
-          :label="t('partner_can_choose_partner')"
-      />
-      <UranusCheckbox
-          id="can_choose_promoter"
-          v-model="modalCanChoosePromoter"
-          :label="t('partner_can_choose_promoter')"
-      />
-      <UranusCheckbox
-          id="can_see_insights"
-          v-model="modalCanSeeInsights"
-          :label="t('partner_can_see_insights')"
-      />
-
-    </UranusForm>
-
-    <UranusFormActions>
-      <UranusButton @click="onCancel">{{ t('cancel') }}</UranusButton>
-      <UranusButton @click="onSave">{{ t('save') }}</UranusButton>
-    </UranusFormActions>
-
-  </UranusModal>
+  <UranusPartnerGrantsModal
+      v-if="selectedItem && appStore.orgUuid"
+      :org-uuid="appStore.orgUuid"
+      :partner="selectedItem"
+      @close="selectedItem = null"
+      @saved="onSaved"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api.ts'
 import { Check, Edit } from 'lucide-vue-next'
 import { useAppStore } from '@/store/appStore.ts'
-import type { PartnerListItem } from '@/domain/partner/partner.model.ts'
+import type { PartnerListItem, PartnerPermissions } from '@/domain/partner/partner.model.ts'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
-import UranusModal from '@/component/uranus/UranusModal.vue'
-import UranusButton from '@/component/ui/UranusButton.vue'
-import UranusForm from '@/component/ui/UranusForm.vue'
-import UranusFormActions from '@/component/ui/UranusFormActions.vue'
-import UranusCheckbox from '@/component/ui/UranusCheckbox.vue'
+import UranusPartnerGrantsModal from '@/component/partner/UranusPartnerGrantsModal.vue'
 
 const { t } = useI18n()
 
-const showModal = ref(false)
 const selectedItem = ref<PartnerListItem | null>(null)
 const appStore = useAppStore()
-
-const modalCanChooseVenue = ref<boolean>(false)
-const modalCanChoosePartner = ref<boolean>(false)
-const modalCanChoosePromoter = ref<boolean>(false)
-const modalCanSeeInsights = ref<boolean>(false)
 
 const props = withDefaults(defineProps<{
   items: PartnerListItem[]
@@ -132,45 +89,11 @@ const filteredItems = computed(() => {
 
 function onEditOutgoingGrants(item: PartnerListItem) {
   selectedItem.value = item
-  modalCanChooseVenue.value = !!item.canChooseVenue
-  modalCanChoosePartner.value = !!item.canChoosePartner
-  modalCanChoosePromoter.value = !!item.canChoosePromoter
-  modalCanSeeInsights.value = !!item.canSeeInsights
-  showModal.value = true
 }
 
-function onCancel() {
-  showModal.value = false
-}
-
-async function onSave() {
-  if (!selectedItem.value) return
-
-  const payload = {
-    can_choose_venue: modalCanChooseVenue.value,
-    can_choose_partner: modalCanChoosePartner.value,
-    can_choose_promoter: modalCanChoosePromoter.value,
-    can_see_insights: modalCanSeeInsights.value,
-  }
-
-  try {
-    const apiPath = `/api/admin/org/${appStore.orgUuid}/partner/${selectedItem.value.orgUuid}/grants`
-    await apiFetch(apiPath, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    })
-
-    selectedItem.value.canChooseVenue = modalCanChooseVenue.value
-    selectedItem.value.canChoosePartner = modalCanChoosePartner.value
-    selectedItem.value.canChoosePromoter = modalCanChoosePromoter.value
-    selectedItem.value.canSeeInsights = modalCanSeeInsights.value
-
-    showModal.value = false
-  } catch (e) {
-    console.error(e)
-    // optional: rollback UI if needed
-    // (only needed if consistency is critical)
-  }
+function onSaved(permissions: PartnerPermissions) {
+  if (selectedItem.value) Object.assign(selectedItem.value, permissions)
+  selectedItem.value = null
 }
 </script>
 

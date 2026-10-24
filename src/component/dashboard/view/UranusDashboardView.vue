@@ -10,6 +10,7 @@
         :subtitle="t('dashboard_hero_description')"
     />
 
+    <UranusDashboardPartnerRequests />
     <UranusDashboardEventNotifications />
 
   </div>
@@ -19,6 +20,7 @@
 import { useI18n } from 'vue-i18n'
 import UranusDashboardHero from '@/component/dashboard/UranusDashboardHero.vue'
 import UranusDashboardEventNotifications from '@/component/dashboard/UranusDashboardEventNotifications.vue'
+import UranusDashboardPartnerRequests from '@/component/dashboard/UranusDashboardPartnerRequests.vue'
 import UranusOrgTitle from '@/component/layout/UranusOrgTitle.vue'
 
 const { t } = useI18n()

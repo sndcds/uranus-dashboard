@@ -92,6 +92,7 @@
             variant="secondary"
             size="small"
             :to="`/admin/event/${event.uuid}`"
+            @click.capture="confirmPastEventEdit(event, $event)"
         >
           <template #icon><Pencil /></template>
           {{ t('edit') }}
@@ -153,6 +154,7 @@ import UranusEventCategoryDisplay from '@/component/event/ui/UranusEventCategory
 import { uranusPluralizedText, uranusStringInterpolate } from '@/util/string.ts'
 import { apiErrorI18nKey } from '@/util/apiError.ts'
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
+import { useConfirmPastEventEdit } from '@/composable/useConfirmPastEventEdit'
 
 const placeholderImage = '/assets/event-dummy.png'
 const imageLoadFailed = ref(false)
@@ -186,6 +188,7 @@ const props = withDefaults(defineProps<{
 const showSocialPost = ref(false)
 
 const { t, locale } = useI18n({ useScope: 'global' })
+const confirmPastEventEdit = useConfirmPastEventEdit()
 const typeLookupStore = useEventTypeLookupStore()
 
 const eventTypeGenreString = (type: EventTypePairModel) => {
