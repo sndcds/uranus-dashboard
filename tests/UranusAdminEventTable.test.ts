@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { DOMWrapper, flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createI18n } from 'vue-i18n'
 import { createMemoryHistory, createRouter } from 'vue-router'
@@ -9,8 +9,15 @@ import { makeAdminListEvent } from './fixtures/adminEventList'
 
 describe('admin event table', () => {
     let wrapper: VueWrapper | undefined
-    beforeEach(() => { setActivePinia(createPinia()) })
-    afterEach(() => { wrapper?.unmount(); document.body.innerHTML = '' })
+    let originalConfirm: typeof window.confirm
+    beforeEach(() => {
+        setActivePinia(createPinia())
+        vi.useFakeTimers({ toFake: ['Date'] })
+        vi.setSystemTime(new Date(2026, 9, 24, 12))
+        originalConfirm = window.confirm
+        window.confirm = vi.fn(() => true)
+    })
+    afterEach(() => { wrapper?.unmount(); document.body.innerHTML = ''; vi.useRealTimers(); vi.restoreAllMocks(); window.confirm = originalConfirm })
     async function render(events = [makeAdminListEvent()], pageSize = 50) {
         const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/:pathMatch(.*)*', component: { template: '<div />' } }] })
         await router.push('/')
@@ -125,5 +132,78 @@ describe('admin event table', () => {
     it('identifies online events using the existing API online_link', async () => {
         const { wrapper } = await render([makeAdminListEvent({ venueName: null, venueCity: null, isOnlineEvent: false, onlineLink: 'https://example.test/stream' })])
         expect(wrapper.get('.admin-event-venue').text()).toBe(uranusI18nMessages.de.online_event)
+    })
+    it('selects months, quarters and custom ranges and resets pagination', async () => {
+        const events = ['2026-09-30', '2026-10-01', '2026-10-31', '2026-11-01'].map((startDate, index) => makeAdminListEvent({ uuid: `${index}`, startDate }))
+        const { wrapper } = await render(events, 2)
+        await wrapper.get('[aria-label="Nächste Seite"]').trigger('click')
+        const mode = wrapper.get('.admin-event-date-filter select')
+        await mode.setValue('month')
+        await wrapper.get('input[type=month]').setValue('2026-10')
+        expect(wrapper.text()).toContain('Seite 1 von 1')
+        expect(wrapper.findAll('.admin-event-row')).toHaveLength(2)
+        expect(wrapper.get('.event-metadata--date').text()).toContain('01.10.26')
+        await mode.setValue('quarter')
+        expect(wrapper.text()).toContain('3 Einträge')
+        await wrapper.get('.admin-event-date-filter input[type=number]').setValue(2025)
+        expect(wrapper.findAll('.admin-event-row')).toHaveLength(0)
+        await wrapper.get('.admin-event-date-filter input[type=number]').setValue(2026)
+        await wrapper.get('.admin-event-date-filter label:last-of-type select').setValue('3')
+        expect(wrapper.findAll('.admin-event-row')).toHaveLength(1)
+        await mode.setValue('custom')
+        const [from, to] = wrapper.findAll('input[type=date]')
+        await from!.setValue('2026-10-31')
+        await to!.setValue('2026-10-31')
+        expect(wrapper.findAll('.admin-event-row')).toHaveLength(1)
+        await from!.setValue('2026-11-01')
+        expect(wrapper.get('[role=alert]').text()).toContain('gültigen Zeitraum')
+        expect(wrapper.findAll('.admin-event-row')).toHaveLength(0)
+        await from!.setValue('')
+        expect(wrapper.text()).toContain('3 Einträge')
+        await mode.setValue('all')
+        expect(wrapper.text()).toContain('4 Einträge')
+    })
+    it.each(['.admin-event-thumbnail', 'h2 a', '.event-metadata--summary a', '.event-metadata--date a'])(
+        'asks before editing past events through %s and keeps the chosen field', async selector => {
+            const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false)
+            const { wrapper, router } = await render([makeAdminListEvent({ startDate: '2026-10-23' })])
+            expect(wrapper.get('.admin-event-row').classes()).toContain('admin-event-row--past')
+            expect(wrapper.get('.admin-event-past-label').text()).toBe('Vergangen')
+            const link = wrapper.get(selector)
+            const href = link.attributes('href')
+            await link.trigger('click')
+            await flushPromises()
+            expect(confirm).toHaveBeenCalledWith('Möchtest du eine vergangene Veranstaltung wirklich bearbeiten?')
+            expect(router.currentRoute.value.path).toBe('/')
+            confirm.mockReturnValue(true)
+            await link.trigger('click')
+            await flushPromises()
+            expect(router.currentRoute.value.fullPath).toBe(href)
+        },
+    )
+    it('also guards editing from the information dialog, leaving previews available', async () => {
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false)
+        const { wrapper, router } = await render([makeAdminListEvent({ startDate: '2026-10-23' })])
+        await wrapper.get('.event-metadata--info button').trigger('click')
+        const edit = document.querySelector<HTMLAnchorElement>('.event-info-dialog a[href="/admin/event/event-1"]')!
+        expect(edit).not.toBeNull()
+        await new DOMWrapper(edit).trigger('click')
+        await flushPromises()
+        expect(confirm).toHaveBeenCalledOnce()
+        expect(router.currentRoute.value.path).toBe('/')
+        expect(document.querySelector('.event-info-dialog a[target="_blank"]')).not.toBeNull()
+        confirm.mockReturnValue(true)
+        await new DOMWrapper(edit).trigger('click')
+        await flushPromises()
+        expect(router.currentRoute.value.path).toBe('/admin/event/event-1')
+    })
+    it('opens upcoming events without a confirmation', async () => {
+        const confirm = vi.spyOn(window, 'confirm')
+        const { wrapper, router } = await render()
+        expect(wrapper.find('.admin-event-past-label').exists()).toBe(false)
+        await wrapper.get('h2 a').trigger('click')
+        await flushPromises()
+        expect(confirm).not.toHaveBeenCalled()
+        expect(router.currentRoute.value.path).toBe('/admin/event/event-1')
     })
 })

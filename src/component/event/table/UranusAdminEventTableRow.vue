@@ -1,13 +1,14 @@
 <template>
-  <li class="admin-event-row">
-    <component :is="event.canEditEvent ? RouterLink : 'span'" :to="event.canEditEvent ? eventEditLocation(event) : undefined" class="admin-event-thumbnail" :aria-label="title">
+  <li class="admin-event-row" :class="{ 'admin-event-row--past': past }">
+    <component :is="event.canEditEvent ? RouterLink : 'span'" :to="event.canEditEvent ? eventEditLocation(event) : undefined" class="admin-event-thumbnail" :aria-label="title" @click.capture="event.canEditEvent && confirmPastEventEdit(event, $event)">
       <img v-if="thumbnail && !imageFailed" :src="thumbnail" alt="" width="112" height="72" loading="lazy" decoding="async" @error="imageFailed = true" />
       <span v-else class="admin-event-image-placeholder" role="img" :aria-label="t('event_table_no_image')"><ImageOff :size="22" aria-hidden="true" /></span>
     </component>
     <div class="admin-event-identification">
       <UranusEventReleaseStatus :status="event.releaseStatus" />
+      <span v-if="past" class="admin-event-past-label">{{ t('event_table_past') }}</span>
       <h2 :class="{ 'admin-event-title-missing': !event.title?.trim() }">
-        <component :is="event.canEditEvent ? RouterLink : 'span'" :to="event.canEditEvent ? eventEditLocation(event, 'base', 'event-title') : undefined">{{ title }}</component>
+        <component :is="event.canEditEvent ? RouterLink : 'span'" :to="event.canEditEvent ? eventEditLocation(event, 'base', 'event-title') : undefined" @click.capture="event.canEditEvent && confirmPastEventEdit(event, $event)">{{ title }}</component>
       </h2>
       <UranusEventTableHint :text="venue" class="admin-event-venue"><span tabindex="0" :aria-label="venue">{{ venue }}</span></UranusEventTableHint>
     </div>
@@ -27,6 +28,8 @@ import { useI18n } from 'vue-i18n'
 import { ImageOff, ChevronDown, ChevronUp } from 'lucide-vue-next'
 import type { AdminEventListItem } from '@/domain/event/adminEventListItem'
 import { eventEditLocation, mapAdminEventTableFields } from '@/domain/event/adminEventTable'
+import { isPastAdminEvent } from '@/domain/event/adminEventDateRange'
+import { useConfirmPastEventEdit } from '@/composable/useConfirmPastEventEdit'
 import { useLanguageLookupStore } from '@/store/languageLookupStore'
 import { useEventTypeLookupStore } from '@/store/eventTypeGenreLookupStore'
 import UranusEventReleaseStatus from './UranusEventReleaseStatus.vue'
@@ -35,6 +38,8 @@ import UranusEventTableHint from './UranusEventTableHint.vue'
 const props = defineProps<{ event: AdminEventListItem }>()
 const emit = defineEmits<{ info: [event: AdminEventListItem] }>()
 const { t, locale } = useI18n({ useScope: 'global' })
+const confirmPastEventEdit = useConfirmPastEventEdit()
+const past = computed(() => isPastAdminEvent(props.event))
 const languageLookup = useLanguageLookupStore()
 const typeLookup = useEventTypeLookupStore()
 const expanded = ref(false)
@@ -67,6 +72,9 @@ const fields = computed(() => {
 <style scoped lang="scss">
 .admin-event-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); grid-template-rows: minmax(34px, auto) minmax(38px, auto); column-gap: 12px; padding: 10px; border-bottom: 1px solid var(--uranus-color-7); background: var(--uranus-bg); }
 .admin-event-row:last-child { border-bottom: 0; }
+.admin-event-row--past { background: var(--uranus-color-8); }
+.admin-event-row--past .admin-event-thumbnail img { filter: grayscale(1); }
+.admin-event-past-label { flex: none; padding: 2px 6px; border: 1px solid var(--uranus-color-5); border-radius: 4px; color: var(--uranus-color-2); font-size: .65rem; }
 .admin-event-thumbnail { grid-row: 1 / 3; align-self: center; border-radius: 6px; overflow: hidden; width: 112px; height: 72px; background: var(--uranus-color-8); }
 .admin-event-thumbnail img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .admin-event-image-placeholder { display: grid; place-items: center; width: 100%; height: 100%; color: var(--uranus-color-3); }
@@ -92,5 +100,8 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: 2px s
   .admin-event-metadata:not(.admin-event-metadata--expanded) :deep(.event-metadata:not(.event-metadata--date):not(.event-metadata--language):not(.event-metadata--images):not(.event-metadata--categories):not(.event-metadata--tags)) { display: none; }
   .admin-event-metadata:not(.admin-event-metadata--expanded) :deep(.event-metadata-mobile-label) { display: none; }
   .admin-event-mobile-toggle { display: flex; grid-column: 1 / -1; align-items: center; justify-content: center; gap: 8px; padding: 8px; border: 0; border-top: 1px solid var(--uranus-color-8); background: transparent; color: var(--uranus-color-2); font: inherit; font-size: 0.75rem; cursor: pointer; }
+}
+@media (max-width: 360px) {
+  .admin-event-row--past h2 { flex-basis: 100%; }
 }
 </style>

@@ -6,7 +6,7 @@
       :type="field.key === 'info' ? 'button' : undefined"
       :role="!editable && field.key !== 'info' ? 'group' : undefined"
       :tabindex="!editable && field.key !== 'info' ? 0 : undefined"
-      :aria-label="label" @click="field.key === 'info' && emit('info')">
+      :aria-label="label" @click.capture="editable && confirmPastEventEdit(event, $event)" @click="field.key === 'info' && emit('info')">
       <component :is="eventTableIcons[field.key]" v-if="field.key !== 'date' && field.key !== 'categories'" :size="15" aria-hidden="true" />
       <UranusEventCategoryIndicators v-if="field.key === 'categories'" :categories="event.categories" />
       <span v-else-if="field.value" class="event-metadata-value">{{ field.value }}</span>
@@ -27,9 +27,11 @@ import { eventCategoryLabelKey } from '@/domain/event/eventCategory'
 import UranusEventTableHint from './UranusEventTableHint.vue'
 import UranusEventCategoryIndicators from './UranusEventCategoryIndicators.vue'
 import { eventTableIcons } from './UranusEventTableIcons'
+import { useConfirmPastEventEdit } from '@/composable/useConfirmPastEventEdit'
 const props = defineProps<{ field: EventTableField; event: AdminEventListItem }>()
 const emit = defineEmits<{ info: [] }>()
 const { t } = useI18n({ useScope: 'global' })
+const confirmPastEventEdit = useConfirmPastEventEdit()
 const editable = computed(() => props.event.canEditEvent && props.field.tab !== null)
 const label = computed(() => [t(`event_table_${props.field.key}`), props.field.value,
   props.field.key === 'categories' ? props.event.categories?.map(id => { const key = eventCategoryLabelKey(id); return key ? t(key) : t('event_table_category_unknown', { id }) }).join(', ') : null,

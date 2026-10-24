@@ -5,6 +5,17 @@
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey, string>> = {
+    event_table_date_range: { de: 'Datumsbereich', en: 'Date range', da: 'Datointerval' },
+    event_table_period: { de: 'Zeitraum', en: 'Period', da: 'Periode' },
+    event_table_all_dates: { de: 'Alle Termine', en: 'All dates', da: 'Alle datoer' },
+    event_table_month: { de: 'Monat', en: 'Month', da: 'Måned' },
+    event_table_quarter: { de: 'Quartal', en: 'Quarter', da: 'Kvartal' },
+    event_table_quarter_number: { de: '{number}. Quartal', en: 'Quarter {number}', da: '{number}. kvartal' },
+    event_table_year: { de: 'Jahr', en: 'Year', da: 'År' },
+    event_table_custom_range: { de: 'Von / bis', en: 'From / to', da: 'Fra / til' },
+    event_table_invalid_range: { de: 'Bitte wähle einen gültigen Zeitraum. „Von“ muss vor oder auf „Bis“ liegen.', en: 'Please choose a valid date range. “From” must be on or before “To”.', da: 'Vælg et gyldigt datointerval. “Fra” skal være før eller samme dag som “Til”.' },
+    event_table_past: { de: 'Vergangen', en: 'Past', da: 'Afholdt' },
+    event_table_confirm_past_edit: { de: 'Möchtest du eine vergangene Veranstaltung wirklich bearbeiten?', en: 'Do you really want to edit a past event?', da: 'Vil du virkelig redigere en tidligere begivenhed?' },
     "event_table_date": { de: "Datum / Zeit", en: "Date / time", da: "Dato / tid" },
     "event_table_language": { de: "Veranstaltungssprache", en: "Event language", da: "Begivenhedens sprog" },
     "event_table_dates": { de: "Termine", en: "Dates", da: "Datoer" },
@@ -41,8 +52,8 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
     "event_table_no_title": { de: "Kein Titel", en: "No title", da: "Ingen titel" },
     "event_table_no_image": { de: "Kein Vorschaubild", en: "No preview image", da: "Intet eksempelbillede" },
     "event_table_civil_date": { de: "Lokales Veranstaltungsdatum und lokale Uhrzeit, ohne UTC-Umrechnung", en: "Local event date and time, without UTC conversion", da: "Lokal begivenhedsdato og tid uden UTC-konvertering" },
-    "event_table_date_index": { de: "Termin {index} von {total} im anstehenden / laufenden Listenzeitraum; kein Bearbeitungsstand", en: "Date {index} of {total} in the upcoming / ongoing list period; not an editing status", da: "Dato {index} af {total} i listens kommende / igangværende periode; ikke en redigeringsstatus" },
-    "event_table_date_count": { de: "{count} Termine im Listenzeitraum", en: "{count} dates in the list period", da: "{count} datoer i listens periode" },
+    "event_table_date_index": { de: "Termin {index} von {total} der Veranstaltung; kein Bearbeitungsstand", en: "Date {index} of {total} for this event; not an editing status", da: "Dato {index} af {total} for begivenheden; ikke en redigeringsstatus" },
+    "event_table_date_count": { de: "{count} Termine insgesamt", en: "{count} dates in total", da: "{count} datoer i alt" },
     "event_table_characters": { de: "{count} Zeichen", en: "{count} characters", da: "{count} tegn" },
     "event_table_count": { de: "Anzahl: {count}", en: "Count: {count}", da: "Antal: {count}" },
     "event_table_edit_hint": { de: "Zum Bearbeiten öffnen", en: "Open to edit", da: "Åbn for at redigere" },
@@ -83,9 +94,9 @@ export const uranusI18nEventTranslations: Record<string, Record<UranusLocaleKey,
         da: 'Begivenheder',
     },
     events_hero_subtitle : {
-        de: 'Alle anstehenden Aktivitäten auf einen Blick.',
-        en: 'Track upcoming and ongoing happenings at a glance.',
-        da: 'Få et overblik over kommende og igangværende aktiviteter.'
+        de: 'Vergangene, laufende und kommende Veranstaltungen auf einen Blick.',
+        en: 'Past, ongoing and upcoming events at a glance.',
+        da: 'Få et overblik over tidligere, igangværende og kommende begivenheder.'
     },
     event_title: {
         de: 'Titel',

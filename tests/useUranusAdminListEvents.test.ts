@@ -4,6 +4,12 @@ import { useUranusAdminListEvents } from '@/composable/useUranusAdminListEvents'
 vi.mock('@/api', () => ({ apiFetch: vi.fn() }))
 
 describe('admin list API', () => {
+    it('opts in to historical occurrences for the date range filters', async () => {
+        vi.mocked(apiFetch).mockResolvedValueOnce({ data: [] } as any)
+        const list = useUranusAdminListEvents()
+        await list.fetchAdminListEvents('org-1', { includePast: true })
+        expect(apiFetch).toHaveBeenCalledExactlyOnceWith('/api/admin/org/org-1/events?include_past=true')
+    })
     it('loads all metadata in one existing list request and preserves zero, false and null', async () => {
         vi.mocked(apiFetch).mockResolvedValueOnce({ data: [{ uuid: 'event-1', date_uuid: null, start_date: null, image_count: 0, description_length: 0, has_registration: false, event_types: [{ type_id: 1, genre_id: null }] }], metadata: { can_add_event: true } } as any)
         const list = useUranusAdminListEvents()

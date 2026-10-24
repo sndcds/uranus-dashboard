@@ -9,6 +9,7 @@
       </select>
       <select v-model="sort" :aria-label="t('event_table_sort')"><option value="ascending">{{ t('event_table_ascending') }}</option><option value="descending">{{ t('event_table_descending') }}</option></select>
     </div>
+    <UranusAdminEventDateFilter v-model="dateRange" />
     <div class="admin-event-table-controls">
     <details class="admin-event-missing-filter"><summary><Filter :size="15" aria-hidden="true" />{{ t('event_table_missing_filter') }}<span v-if="missing.length"> ({{ missing.length }})</span></summary>
       <fieldset><legend>{{ t('event_table_missing_filter') }}</legend><label v-for="field in missingEventFields" :key="field"><input v-model="missing" type="checkbox" :value="field" />{{ t(`event_table_${field}`) }}</label></fieldset>
@@ -39,6 +40,8 @@ import { eventReleaseStatuses, isEventReleaseStatus } from '@/domain/event/event
 import UranusAdminEventTableRow from './UranusAdminEventTableRow.vue'
 import UranusEventColumnLegend from './UranusEventColumnLegend.vue'
 import UranusEventInfoDialog from './UranusEventInfoDialog.vue'
+import UranusAdminEventDateFilter from './UranusAdminEventDateFilter.vue'
+import type { AdminEventDateRange } from '@/domain/event/adminEventDateRange'
 const props = withDefaults(defineProps<{ events: AdminEventListItem[]; grouped: boolean; loading?: boolean; canPostSocialOrgs?: string[]; pageSize?: number }>(), { loading: false, canPostSocialOrgs: () => [], pageSize: 50 })
 const emit = defineEmits<{ deleted: [payload: { eventUuid: string; dateUuid: string | null; deleteSeries: boolean }] }>()
 const { t } = useI18n({ useScope: 'global' })
@@ -46,13 +49,14 @@ const search = ref('')
 const status = ref('')
 const sort = ref('ascending')
 const missing = ref<MissingEventField[]>([])
+const dateRange = ref<AdminEventDateRange>({ startDate: '', endDate: '' })
 const page = ref(1)
 const selected = ref<AdminEventListItem | null>(null)
 const statusOptions = computed(() => [...new Set([...eventReleaseStatuses, ...props.events.map(event => event.releaseStatus).filter((value): value is string => !!value)])])
-const filtered = computed(() => filterAdminEvents(props.events, { search: search.value, status: status.value, missing: missing.value, grouped: props.grouped, descending: sort.value === 'descending' }))
+const filtered = computed(() => filterAdminEvents(props.events, { search: search.value, status: status.value, missing: missing.value, grouped: props.grouped, descending: sort.value === 'descending', dateRange: dateRange.value }))
 const pageCount = computed(() => Math.max(1, Math.ceil(filtered.value.length / props.pageSize)))
 const pageEvents = computed(() => filtered.value.slice((page.value - 1) * props.pageSize, page.value * props.pageSize))
-watch([search, status, sort, missing, () => props.grouped], () => { page.value = 1 }, { deep: true })
+watch([search, status, sort, missing, dateRange, () => props.grouped], () => { page.value = 1 }, { deep: true })
 watch(pageCount, count => { page.value = Math.min(page.value, count) })
 function onDeleted(payload: { eventUuid: string; dateUuid: string | null; deleteSeries: boolean }) {
   selected.value = null
