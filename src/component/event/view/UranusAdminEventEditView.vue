@@ -51,7 +51,7 @@
     </div>
 
     <template v-if="adminEventStore.isLoaded && adminEventStore.draft">
-      <section class="uranus-tab-content">
+      <section ref="tabContent" class="uranus-tab-content" tabindex="-1">
         <component
             ref="activeTabComponentRef"
             :is="currentTabComponent"
@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiFetch } from '@/api.ts'
@@ -103,6 +103,7 @@ import UranusAdminEventImageTab from "@/component/event/editor/UranusAdminEventI
 
 type EventEditorTabExpose = {
   commitTab?: () => Promise<void> | void
+  focusField?: (id: string) => void
 }
 
 const showReleaseModal = ref(false)
@@ -161,6 +162,25 @@ type TabKey =
     'images'
 
 const activeTab = ref<TabKey>('base')
+const tabContent = ref<HTMLElement | null>(null)
+
+// Existing editor route, with optional links to its actual tabs and controls.
+async function applyEditorLocation() {
+  const requestedTab = route.query.tab
+  if (typeof requestedTab === 'string' && tabs.some(tab => tab.key === requestedTab)) {
+    activeTab.value = requestedTab as TabKey
+  }
+  if (!adminEventStore.isLoaded || !route.query.tab) return
+  await nextTick()
+  const allowedFields = ['event-title', 'event-subtitle', 'event-description', 'event-summary', 'event-categories']
+  const field = typeof route.query.field === 'string' && allowedFields.includes(route.query.field) ? route.query.field : null
+  const target = field ? tabContent.value?.querySelector<HTMLElement>(`#${field}`) : tabContent.value
+  const control = target?.matches('input, select, textarea, [contenteditable=true]') ? target : target?.querySelector<HTMLElement>('input, select, textarea, [contenteditable=true]')
+  ;(control ?? target ?? tabContent.value)?.focus({ preventScroll: true })
+  if (field) activeTabComponentRef.value?.focusField?.(field)
+  ;(target ?? tabContent.value)?.scrollIntoView({ block: 'center' })
+}
+watch(() => [route.query.tab, route.query.field, adminEventStore.isLoaded, adminEventStore.loading], () => { void applyEditorLocation() })
 
 const tabs = [
   { key: 'base', labelKey: 'event_tab_base' },
@@ -256,6 +276,7 @@ onMounted(async () => {
     adminEventStore.error = 'Failed to load event'
   } finally {
     adminEventStore.loading = false
+    await applyEditorLocation()
   }
 })
 

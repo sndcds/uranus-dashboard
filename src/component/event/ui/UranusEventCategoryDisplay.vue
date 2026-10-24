@@ -3,7 +3,7 @@
 -->
 
 <script setup lang="ts">
-import { computed, defineProps } from 'vue'
+import { computed } from 'vue'
 
 interface Props {
   categories: number[] | null
@@ -11,24 +11,13 @@ interface Props {
 
 const props = defineProps<Props>()
 
-// Map category IDs to CSS variable names
-// TODO: Build composable for event category functions, constants and interfaces
-const CATEGORY_COLORS: Record<number, string> = {
-  1: 'var(--uranus-event-category-culture-color)',
-  2: 'var(--uranus-event-category-education-color)',
-  3: 'var(--uranus-event-category-sports-color)',
-  4: 'var(--uranus-event-category-leisure-color)',
-  5: 'var(--uranus-event-category-family-color)',
-  6: 'var(--uranus-event-category-society-color)',
-  7: 'var(--uranus-event-category-creative-color)',
-  8: 'var(--uranus-event-category-food-and-drink-color)',
-}
+import { eventCategoryColor } from '@/domain/event/eventCategory'
 
 const circles = computed(() => {
   const categories = props.categories ?? []
   return categories.map(category => ({
     id: category,
-    color: CATEGORY_COLORS[category] ?? '#999',
+    color: eventCategoryColor(category),
   }))
 })
 </script>
