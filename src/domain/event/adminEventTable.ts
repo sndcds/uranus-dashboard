@@ -1,4 +1,5 @@
 import type { AdminEventListItem } from '@/domain/event/adminEventListItem'
+import { eventMatchesDateRange, type AdminEventDateRange } from '@/domain/event/adminEventDateRange'
 
 export type FieldState = 'present' | 'missing' | 'incomplete' | 'not_applicable' | 'unknown'
 export const eventTableColumns = [
@@ -58,14 +59,16 @@ export function hasMissingEventField(event: AdminEventListItem, field: MissingEv
 }
 
 // Group only after filtering, and retain the first occurrence in API order.
-// The list endpoint already orders relevant (upcoming/ongoing) dates chronologically.
+// The list endpoint already orders occurrences chronologically.
 export function filterAdminEvents(events: AdminEventListItem[], options: {
     search: string; status: string; missing: MissingEventField[]; grouped: boolean; descending: boolean
+    dateRange?: AdminEventDateRange
 }): AdminEventListItem[] {
     const search = options.search.trim().toLocaleLowerCase()
     const filtered = events.filter(event => {
         const canPreview = event.canViewEventInsights || event.canEditEvent || event.canDeleteEvent || !['draft', 'review'].includes(event.releaseStatus ?? '')
         return canPreview && (!options.status || event.releaseStatus === options.status)
+            && (!options.dateRange || eventMatchesDateRange(event, options.dateRange))
             && (!search || [event.title, event.subtitle, event.venueName, event.venueCity, event.spaceName].some(value => value?.toLocaleLowerCase().includes(search)))
             && (!options.missing.length || options.missing.some(field => hasMissingEventField(event, field)))
     })

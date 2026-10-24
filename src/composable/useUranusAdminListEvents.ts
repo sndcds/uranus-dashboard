@@ -19,7 +19,7 @@ export function useUranusAdminListEvents() {
     /**
      * Fetch the admin list of events for a given organization
      */
-    async function fetchAdminListEvents(orgUuid: string | null, startDate?: string) {
+    async function fetchAdminListEvents(orgUuid: string | null, options: { startDate?: string; includePast?: boolean } = {}) {
         const currentRequest = ++requestId
         loading.value = true;
         error.value = null;
@@ -32,7 +32,8 @@ export function useUranusAdminListEvents() {
             }
 
             const params = new URLSearchParams()
-            if (startDate) params.set("start", startDate)
+            if (options.startDate) params.set("start", options.startDate)
+            if (options.includePast) params.set('include_past', 'true')
 
             const queryString = params.toString()
             const apiPath = `/api/admin/org/${orgUuid}/events${queryString ? `?${queryString}` : ''}`

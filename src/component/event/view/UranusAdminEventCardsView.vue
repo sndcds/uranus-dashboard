@@ -83,7 +83,7 @@ const onEventDeleted = async (_event: {
   deleteSeries: boolean
 }) => {
   try {
-    await fetchAdminListEvents(orgUuid.value)
+    await fetchAdminListEvents(orgUuid.value, { includePast: true })
   } catch (err) {
     console.error("Failed to refetch events after delete:", err)
     deleteError.value = t('failed_to_refresh_events')
@@ -94,7 +94,7 @@ const onEventDeleted = async (_event: {
 }
 
 watch(orgUuid, async value => {
-  await fetchAdminListEvents(value)
+  await fetchAdminListEvents(value, { includePast: true })
 }, { immediate: true })
 
 onMounted(async () => {
