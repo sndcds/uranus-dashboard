@@ -40,6 +40,7 @@ describe('admin event table', () => {
     })
     it('shows missing title/date and handles failed images with stable dimensions', async () => {
         const { wrapper } = await render([makeAdminListEvent({ title: '', startDate: null })])
+        await wrapper.get('.admin-event-date-filter select').setValue('all')
         expect(wrapper.get('.admin-event-title-missing').text()).toBe('Kein Titel')
         expect(wrapper.get('.event-metadata--date').text()).toContain('Kein Datum')
         expect(wrapper.get('.event-metadata--date').classes()).toContain('event-metadata--missing')
@@ -133,9 +134,29 @@ describe('admin event table', () => {
         const { wrapper } = await render([makeAdminListEvent({ venueName: null, venueCity: null, isOnlineEvent: false, onlineLink: 'https://example.test/stream' })])
         expect(wrapper.get('.admin-event-venue').text()).toBe(uranusI18nMessages.de.online_event)
     })
+    it('defaults to all dates from today and can switch between current and all dates', async () => {
+        const events = [
+            makeAdminListEvent({ uuid: 'past', title: 'Yesterday', startDate: '2026-10-23' }),
+            makeAdminListEvent({ uuid: 'today', title: 'Today', startDate: '2026-10-24', startTime: '00:00', endTime: '01:00' }),
+            makeAdminListEvent({ uuid: 'future', title: 'Future', startDate: '2030-01-01' }),
+            makeAdminListEvent({ uuid: 'ongoing', title: 'Ongoing', startDate: '2026-10-23', endDate: '2026-10-25' }),
+            makeAdminListEvent({ uuid: 'undated', title: 'Undated', startDate: null }),
+        ]
+        const { wrapper } = await render(events)
+        const mode = wrapper.get<HTMLSelectElement>('.admin-event-date-filter select')
+        const titles = () => wrapper.findAll('.admin-event-row h2').map(row => row.text())
+        expect(mode.element.value).toBe('current')
+        expect(mode.get('option[value=current]').text()).toBe('Aktuelle Termine')
+        expect(titles()).toEqual(['Today', 'Future', 'Ongoing'])
+        await mode.setValue('all')
+        expect(titles()).toEqual(['Yesterday', 'Today', 'Future', 'Ongoing', 'Undated'])
+        await mode.setValue('current')
+        expect(titles()).toEqual(['Today', 'Future', 'Ongoing'])
+    })
     it('selects months, quarters and custom ranges and resets pagination', async () => {
         const events = ['2026-09-30', '2026-10-01', '2026-10-31', '2026-11-01'].map((startDate, index) => makeAdminListEvent({ uuid: `${index}`, startDate }))
         const { wrapper } = await render(events, 2)
+        await wrapper.get('.admin-event-date-filter select').setValue('all')
         await wrapper.get('[aria-label="Nächste Seite"]').trigger('click')
         const mode = wrapper.get('.admin-event-date-filter select')
         await mode.setValue('month')
@@ -167,6 +188,7 @@ describe('admin event table', () => {
         'asks before editing past events through %s and keeps the chosen field', async selector => {
             const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false)
             const { wrapper, router } = await render([makeAdminListEvent({ startDate: '2026-10-23' })])
+            await wrapper.get('.admin-event-date-filter select').setValue('all')
             expect(wrapper.get('.admin-event-row').classes()).toContain('admin-event-row--past')
             expect(wrapper.get('.admin-event-past-label').text()).toBe('Vergangen')
             const link = wrapper.get(selector)
@@ -184,6 +206,7 @@ describe('admin event table', () => {
     it('also guards editing from the information dialog, leaving previews available', async () => {
         const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false)
         const { wrapper, router } = await render([makeAdminListEvent({ startDate: '2026-10-23' })])
+        await wrapper.get('.admin-event-date-filter select').setValue('all')
         await wrapper.get('.event-metadata--info button').trigger('click')
         const edit = document.querySelector<HTMLAnchorElement>('.event-info-dialog a[href="/admin/event/event-1"]')!
         expect(edit).not.toBeNull()

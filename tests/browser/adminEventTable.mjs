@@ -51,6 +51,7 @@ try {
     })
     await page.goto(`${origin}/__event-table-preview`)
     await page.locator('.admin-event-row').first().waitFor()
+    await page.getByLabel('Zeitraum', { exact: true }).selectOption('all')
     await page.evaluate(() => document.fonts.ready)
     await page.screenshot({ path: `${output}/events-${width}.png`, fullPage: false })
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Page overflow at ${width}`)
