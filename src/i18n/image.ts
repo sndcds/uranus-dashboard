@@ -5,6 +5,36 @@
 import type { UranusLocaleKey } from './uranus-i18n-index.ts'
 
 export const uranusI18nImageTranslations: Record<string, Record<UranusLocaleKey, string>> = {
+    image_uploading: {
+        de: 'Bild wird hochgeladen …',
+        en: 'Uploading image …',
+        da: 'Uploader billede …',
+    },
+    image_upload_progress: {
+        de: 'Bild wird hochgeladen: {progress} %',
+        en: 'Uploading image: {progress} %',
+        da: 'Uploader billede: {progress} %',
+    },
+    image_processing: {
+        de: 'Bild wird gespeichert …',
+        en: 'Saving image …',
+        da: 'Gemmer billede …',
+    },
+    image_file_too_large: {
+        de: 'Die Bilddatei ist zu groß.',
+        en: 'The image file is too large.',
+        da: 'Billedfilen er for stor.',
+    },
+    image_not_authorized: {
+        de: 'Keine Berechtigung zum Speichern des Bildes.',
+        en: 'Not authorized to save the image.',
+        da: 'Ingen tilladelse til at gemme billedet.',
+    },
+    image_save_failed: {
+        de: 'Das Bild konnte nicht gespeichert werden. Bitte versuche es erneut.',
+        en: 'The image could not be saved. Please try again.',
+        da: 'Billedet kunne ikke gemmes. Prøv igen.',
+    },
     image_alt_text: {
         de: 'Alternativtext',
         en: 'Alt Text',

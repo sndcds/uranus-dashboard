@@ -2,9 +2,15 @@ import { useTokenStore } from '@/store/uranusTokenStore.ts'
 import { apiUrl } from '@/api/baseUrl.ts'
 import { authSession, SessionError, type SessionProfile } from '@/api/authSession.ts'
 import { ApiError } from '@/api/apiError.ts'
+import { uploadForm, type UploadProgressHandler } from '@/api/upload.ts'
 
 export { ApiError } from '@/api/apiError.ts'
 export type LoginResponse = SessionProfile
+
+export interface ApiFetchOptions extends RequestInit {
+    /** Protected FormData uploads only; null means the total size is unknown. */
+    onUploadProgress?: UploadProgressHandler
+}
 
 export interface ApiResponse<T> {
     service: string
@@ -46,12 +52,16 @@ export const fetchCoordinatesForAddress = async (query: string, limit = 1): Prom
  */
 export async function apiFetch<T = unknown>(
     path: string,
-    options: RequestInit = {}
+    options: ApiFetchOptions = {}
 ): Promise<ApiResponse<T>> {
     if (['/api/login', '/api/admin/refresh', '/api/admin/logout'].includes(path)) {
         throw new Error('Use the session store for authentication requests')
     }
     const authenticatedRequest = path.startsWith('/api/admin/')
+    const { onUploadProgress, ...requestOptions } = options
+    if (onUploadProgress && (!authenticatedRequest || !(options.body instanceof FormData))) {
+        throw new Error('Upload progress requires a protected multipart request')
+    }
     const url = apiUrl(path)
     const tokenStore = useTokenStore()
     const requestSessionVersion = authSession.version
@@ -67,7 +77,14 @@ export async function apiFetch<T = unknown>(
         // wildcard CORS policy and must not receive credentialed requests.
         headers.delete('Authorization')
         const version = authSession.version
-        const raw = await fetch(url, { ...options, headers, credentials: authenticatedRequest ? 'include' : 'omit' })
+        const raw = onUploadProgress && options.body instanceof FormData
+            ? await uploadForm(url, {
+                method: options.method ?? 'POST',
+                body: options.body,
+                headers,
+                signal: options.signal,
+            }, onUploadProgress)
+            : await fetch(url, { ...requestOptions, headers, credentials: authenticatedRequest ? 'include' : 'omit' })
         if (authenticatedRequest && version !== authSession.version) throw new SessionError('changed')
 
         const contentType = raw.headers.get('content-type') ?? ''

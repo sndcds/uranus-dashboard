@@ -7,9 +7,11 @@
       :show="true"
       :title="title"
       max-width="600px"
+      :close-on-escape="!isSaving"
       @close="onCancel"
   >
-    <UranusForm class="uranus-form-wide">
+    <UranusForm class="uranus-form-wide" :aria-busy="isSaving">
+      <fieldset class="uranus-image-fields" :disabled="isSaving">
 
       <UranusFormRow>
         <div class="uranus-image-actions">
@@ -120,20 +122,30 @@
           height="100px"
           resize="none"
       />
-
+      </fieldset>
     </UranusForm>
 
     <template #actions>
+      <div v-if="isSaving" class="uranus-image-save-status">
+        <span role="status">{{ saveStatus }}</span>
+        <progress
+            v-if="isUploading"
+            :value="uploadProgress ?? undefined"
+            max="100"
+            :aria-label="t('image_uploading')"
+        />
+      </div>
+
       <UranusFeedback v-if="!!errorMessage" type="error">
         {{ errorMessage }}
       </UranusFeedback>
 
       <UranusFormActions>
-        <UranusButton :onClick="onCancel">
+        <UranusButton :disabled="isSaving" :onClick="onCancel">
           {{ t('cancel') }}
         </UranusButton>
 
-        <UranusButton :onClick="onSave">
+        <UranusButton :loading="isSaving" :loading-text="t('saving')" :onClick="onSave">
           {{ t('save') }}
         </UranusButton>
       </UranusFormActions>
@@ -167,8 +179,16 @@ const props = defineProps<{
   identifier: string
   fitMode?: 'cover' | 'contain'
   errorMessage?: string | null
+  isSaving?: boolean
+  isUploading?: boolean
+  uploadProgress?: number | null
 }>()
 
+const saveStatus = computed(() => {
+  if (!props.isUploading) return t('image_processing')
+  if (props.uploadProgress == null) return t('image_uploading')
+  return t('image_upload_progress', { progress: props.uploadProgress })
+})
 
 const title = computed(() => {
   const used_title = localImageMeta.url ? props.editModeTitle : props.addModeTitle
@@ -202,7 +222,7 @@ const cacheBustedUrl = computed(() => {
 
 const emit = defineEmits<{
   (e: 'close'): void
-  (e: 'save', imageMeta: any, file: File | null, ctx: {
+  (e: 'save', imageMeta: PlutoImageDTO, file: File | null, ctx: {
     context: string
     contextUuid: string
     identifier: string
@@ -247,6 +267,7 @@ function removeFocusPoint() {
 }
 
 function onImageClick(e: MouseEvent) {
+  if (props.isSaving) return
   if (focusPointModeActive.value) {
     const img = e.currentTarget as HTMLDivElement
     const rect = img.getBoundingClientRect()
@@ -283,10 +304,12 @@ function onFileSelected(e: Event) {
 }
 
 function onCancel() {
+  if (props.isSaving) return
   emit('close')
 }
 
 function onSave() {
+  if (props.isSaving) return
   const payload = {
     uuid: localImageMeta.uuid,
     alt_text: localImageMeta.altText,
@@ -334,7 +357,33 @@ onMounted(async () => {
 })
 </script>
 
-<style>
+<style lang="scss">
+.uranus-image-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  &:disabled .uranus-image-preview {
+    cursor: wait;
+  }
+}
+
+.uranus-image-save-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  progress {
+    width: 100%;
+    accent-color: var(--uranus-color);
+  }
+}
+
 .uranus-image-actions {
   display: flex;
   flex-direction: column;
