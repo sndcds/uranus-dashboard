@@ -1,9 +1,11 @@
-import { mount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
 import { createI18n } from 'vue-i18n'
 
 import UranusImageEditDialog from './UranusImageEditDialog.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
+import UranusModal from '@/component/uranus/UranusModal.vue'
+import de from '@/i18n/json/de.json'
 
 vi.mock('@/api.ts', () => ({
   apiFetch: vi.fn(async () => ({ data: null })),
@@ -17,6 +19,50 @@ vi.mock('@/api.ts', () => ({
 }))
 
 describe('UranusImageEditDialog', () => {
+  it('shows upload progress and keeps editing and closing blocked until saving finishes', async () => {
+    const wrapper = shallowMount(UranusImageEditDialog, {
+      props: {
+        context: 'event', contextUuid: 'event-1', identifier: 'banner',
+        isSaving: true, isUploading: true, uploadProgress: null,
+      },
+      global: {
+        renderStubDefaultSlot: true,
+        stubs: {
+          UranusModal: { template: '<div><slot /><slot name="actions" /></div>' },
+          UranusButton: false,
+        },
+        plugins: [createI18n({ legacy: false, locale: 'de', messages: { de } })],
+      },
+    })
+
+    expect(wrapper.get('progress').attributes('value')).toBeUndefined()
+    expect(wrapper.get('[role="status"]').text()).toBe(de.image_uploading)
+    expect(wrapper.get('fieldset').attributes('disabled')).toBeDefined()
+    expect(wrapper.find('.spinner').exists()).toBe(true)
+    expect(wrapper.findAll('button').every((button) =>
+      button.element.disabled || button.element.closest('fieldset[disabled]') !== null
+    )).toBe(true)
+    wrapper.getComponent(UranusModal).vm.$emit('close')
+    expect(wrapper.emitted('close')).toBeUndefined()
+    const fileClick = vi.spyOn(wrapper.get('input[type="file"]').element as HTMLInputElement, 'click')
+    await wrapper.get('.uranus-image-preview').trigger('click')
+    expect(fileClick).not.toHaveBeenCalled()
+
+    await wrapper.setProps({ uploadProgress: 51 })
+    expect(wrapper.get('progress').attributes('value')).toBe('51')
+    expect(wrapper.get('[role="status"]').text()).toContain('51 %')
+    await wrapper.setProps({ isUploading: false, uploadProgress: 100 })
+    expect(wrapper.find('progress').exists()).toBe(false)
+    expect(wrapper.get('[role="status"]').text()).toBe(de.image_processing)
+    expect(wrapper.find('.spinner').exists()).toBe(true)
+
+    await wrapper.setProps({ isSaving: false })
+    expect(wrapper.find('.uranus-image-save-status').exists()).toBe(false)
+    expect(wrapper.find('.spinner').exists()).toBe(false)
+    expect(wrapper.get('fieldset').attributes('disabled')).toBeUndefined()
+    wrapper.unmount()
+  })
+
   it('sets and removes a focus point from the image preview', async () => {
     const wrapper = mount(UranusImageEditDialog, {
       props: {

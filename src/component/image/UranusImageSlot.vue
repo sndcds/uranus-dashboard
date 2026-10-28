@@ -39,7 +39,10 @@
         :identifier="identifier"
         :fitMode="fitMode"
         :errorMessage="errorMessage"
-        @close="dialogOpen = false"
+        :isSaving="isSaving"
+        :isUploading="isUploading"
+        :uploadProgress="uploadProgress"
+        @close="closeDialog"
         @save="onSave"
     />
 
@@ -50,7 +53,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UranusImageEditDialog from './UranusImageEditDialog.vue'
-import { apiFetch } from '@/api'
+import { apiFetch, ApiError } from '@/api'
+import type { PlutoImageDTO } from '@/api/dto/plutoImage.dto.ts'
 import { buildPlutoSlotImageUrl } from '@/util/util.ts'
 import { type PlutoImage, loadPlutoImage } from '@/domain/image/plutoImage.model.ts'
 
@@ -71,6 +75,8 @@ const props = defineProps<{
 const dialogOpen = ref(false)
 const reloadCounter = ref(0)
 const isSaving = ref(false)
+const isUploading = ref(false)
+const uploadProgress = ref<number | null>(null)
 const errorMessage = ref<string | null>(null)
 
 const image = ref<PlutoImage | null>(null)
@@ -118,48 +124,68 @@ async function loadImage() {
 }
 
 function openDialog() {
+  if (isSaving.value) return
   errorMessage.value = null
   dialogOpen.value = true
 }
 
+function closeDialog() {
+  if (!isSaving.value) dialogOpen.value = false
+}
 
-import { ApiError } from '@/api.ts'
-
-async function onSave(payload: any, file: File | null) {
-  const form = new FormData()
-
-  if (file) form.append('file', file)
-  form.append('payload', JSON.stringify(payload))
-
-  const apiPath = `/api/admin/image/${props.context}/${props.contextUuid}/${props.identifier}`
+async function onSave(payload: PlutoImageDTO, file: File | null) {
+  if (isSaving.value) return
+  isSaving.value = true
+  isUploading.value = !!file
+  uploadProgress.value = null
+  errorMessage.value = null
 
   try {
+    const form = new FormData()
+
+    if (file) form.append('file', file)
+    form.append('payload', JSON.stringify(payload))
+
+    const apiPath = `/api/admin/image/${props.context}/${props.contextUuid}/${props.identifier}`
+
     await apiFetch(apiPath, {
       method: 'PUT',
-      body: form
+      body: form,
+      ...(file ? {
+        onUploadProgress: (percentage: number | null) => {
+          uploadProgress.value = percentage
+          isUploading.value = percentage !== 100
+        }
+      } : {})
     })
 
-    dialogOpen.value = false
+    isUploading.value = false
     await loadImage()
     incReloadCounter()
+    dialogOpen.value = false
 
   } catch (err) {
     if (err instanceof ApiError) {
       if (err.status === 413) {
-        errorMessage.value = 'File too large'
+        errorMessage.value = t('image_file_too_large')
       } else if (err.status === 401) {
-        errorMessage.value = 'Not authorized'
+        errorMessage.value = t('image_not_authorized')
       } else {
         errorMessage.value = err.message
       }
-      return
+    } else {
+      errorMessage.value = t('image_save_failed')
     }
+  } finally {
+    isSaving.value = false
+    isUploading.value = false
+    uploadProgress.value = null
   }
 }
 
 
 async function removeImage() {
-  if (!imageUuid.value) return
+  if (isSaving.value || !imageUuid.value) return
 
   // Ask the user for confirmation
   const ok = confirm(t('delete_image_alert'))
