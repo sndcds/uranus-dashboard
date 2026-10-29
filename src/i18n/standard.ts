@@ -431,9 +431,9 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         da: 'URL’en mangler en protokol. Vælg, hvilken der skal sættes foran.',
     },
     input_url_add_protocol: {
-        de: '~~protocol~~ voranstellen',
-        en: 'Prepend ~~protocol~~',
-        da: 'Sæt ~~protocol~~ foran',
+        de: '{protocol} voranstellen',
+        en: 'Prepend {protocol}',
+        da: 'Sæt {protocol} foran',
     },
     license: {
         de: 'Lizenz',
@@ -616,19 +616,19 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         da: 'dage forsinket',
     },
     n_days_ago: {
-        de: '~~n~~ Tage her',
-        en: '~~n~~ days ago',
-        da: '~~n~~ dage siden',
+        de: '{n} Tage her',
+        en: '{n} days ago',
+        da: '{n} dage siden',
     },
     in_n_days: {
-        de: 'in ~~n~~ Tagen',
-        en: 'in ~~n~~ days',
-        da: 'om ~~n~~ dage',
+        de: 'in {n} Tagen',
+        en: 'in {n} days',
+        da: 'om {n} dage',
     },
     one_of_n: {
-        de: '~~n~~ von ~~m~~',
-        en: '~~n~~ of ~~m~~',
-        da: '~~n~~ af ~~m~~',
+        de: '{n} von {m}',
+        en: '{n} of {m}',
+        da: '{n} af {m}',
     },
     form_validation_failed: {
         de: 'Mindestens ein Feld ist unvollständig oder enthält ungültige Daten. Bitte korrigiere dies.',
@@ -781,9 +781,9 @@ export const uranusI18nStandardTranslations: Record<string, Record<UranusLocaleK
         da: '1 resultat',
     },
     result_count_plural: {
-        de: '~~count~~ Ergebnisse',
-        en: '~~count~~ results',
-        da: '~~count~~ resultater'
+        de: '{count} Ergebnisse',
+        en: '{count} results',
+        da: '{count} resultater'
     },
     request_to: {
         de: 'Anfrage an',

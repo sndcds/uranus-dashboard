@@ -8,32 +8,16 @@ export function uranusCapitalizeFirst(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-/**
- * Replace placeholders in a string with values.
- * Example: "Hello ~~name~~" with { name: "Alice" } => "Hello Alice"
- */
-export function uranusStringInterpolate(
-    template: string,
-    values: Record<string, string | number | undefined | null>
-): string {
-    return template.replace(/~~(\w+)~~/g, (_, key) => {
-        const val = values[key];
-        // Convert undefined/null to empty string, otherwise use value
-        return val != null ? String(val) : '';
-    });
-}
+type TranslateFn = (key: string, values?: Record<string, string | number>) => string
 
 export function uranusPluralizedText(
-    t: (key: string) => string,
+    t: TranslateFn,
     singularKey: string,
     pluralKey: string,
     count: number,
 ): string {
-    const template = count === 1 ? t(singularKey) : t(pluralKey)
-    return uranusStringInterpolate(template, { count })
+    return t(count === 1 ? singularKey : pluralKey, { count })
 }
-
-type TranslateFn = (key: string) => string
 
 export function uranusAgeRangeInfo(
     t: TranslateFn,
@@ -45,24 +29,15 @@ export function uranusAgeRangeInfo(
     if (!hasMin && !hasMax) return null
 
     if (hasMin && hasMax) {
-        return uranusStringInterpolate(
-            t('event_age_between'),
-            { min: min, max: max }
-        )
+        return t('event_age_between', { min, max })
     }
 
     if (hasMin) {
-        return uranusStringInterpolate(
-            t('event_age_from'),
-            { min: min }
-        )
+        return t('event_age_from', { min })
     }
 
     if (hasMax) {
-        return uranusStringInterpolate(
-            t('event_age_until'),
-            { max: max }
-        )
+        return t('event_age_until', { max })
     }
 
     return null
@@ -252,25 +227,20 @@ export function uranusReplaceInTemplate<T extends Record<string, unknown>>(
 
 // TODO: Check
 export function uranusAgeText(
-    t: (key: string) => string,
+    t: TranslateFn,
     minAge: number | null | undefined,
     maxAge: number | null | undefined
 ): string {
     if (minAge != null && maxAge == null) {
-        const template = t('from_age_sentence'); // e.g. "From {age}"
-        return template.replace('{age}', minAge.toString());
+        return t('from_age_sentence', { age: minAge })
     }
 
     if (minAge == null && maxAge != null) {
-        const template = t('to_age_sentence'); // e.g. "Up to {age}"
-        return template.replace('{age}', maxAge.toString());
+        return t('to_age_sentence', { age: maxAge })
     }
 
     if (minAge != null && maxAge != null) {
-        const template = t('age_range_sentence'); // e.g. "{from} – {to}"
-        return template
-            .replace('{from}', minAge.toString())
-            .replace('{to}', maxAge.toString());
+        return t('age_range_sentence', { from: minAge, to: maxAge })
     }
 
     return '';
@@ -278,7 +248,7 @@ export function uranusAgeText(
 
 
 export function uranusPriceText(
-    t: (key: string) => string,
+    t: TranslateFn,
     min: number | null | undefined,
     max: number | null | undefined,
     currency?: string | null
@@ -296,30 +266,30 @@ export function uranusPriceText(
     if (hasMin && hasMax) {
         // treat identical prices as single value
         if (min === max) {
-            return uranusStringInterpolate(t('event_price_sentence'), {
+            return t('event_price_sentence', {
                 value: formatNumber(min),
-                currency,
+                currency: currency ?? '',
             })
         }
 
-        return uranusStringInterpolate(t('event_price_between_sentence'), {
+        return t('event_price_between_sentence', {
             min: formatNumber(min),
             max: formatNumber(max),
-            currency,
+            currency: currency ?? '',
         })
     }
 
     if (hasMin) {
-        return uranusStringInterpolate(t('event_price_sentence'), {
+        return t('event_price_sentence', {
             value: formatNumber(min),
-            currency,
+            currency: currency ?? '',
         })
     }
 
     if (hasMax) {
-        return uranusStringInterpolate(t('event_price_sentence'), {
+        return t('event_price_sentence', {
             value: formatNumber(max),
-            currency,
+            currency: currency ?? '',
         })
     }
 

@@ -401,9 +401,9 @@ export const uranusI18nUserTranslations: Record<string, Record<UranusLocaleKey, 
         da: "Deltagelse i team mislykkedes",
     },
     invite_accept_joined_org_message: {
-        de: "Du bist dem Team bei ~~name~~ erfolgreich beigetreten.",
-        en: "You’ve successfully joined the team of ~~name~~.",
-        da: "Du er nu blevet medlem af teamet af ~~name~~",
+        de: "Du bist dem Team bei {name} erfolgreich beigetreten.",
+        en: "You’ve successfully joined the team of {name}.",
+        da: "Du er nu blevet medlem af teamet af {name}",
     },
     invite_accept_permissions_info_message: {
         de: "Sobald der Administrator deine Rechte eingestellt hat, kannst du für die Organisation Daten bearbeiten.",

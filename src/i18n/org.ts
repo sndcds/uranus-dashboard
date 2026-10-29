@@ -101,9 +101,9 @@ export const uranusI18nOrgTranslations: Record<string, Record<UranusLocaleKey, s
         da: 'Er du sikker på, at du vil slette denne organisation? Denne handling kan ikke fortrydes.',
     },
     confirm_delete_org_description: {
-        de: 'Du bist dabei, "~~name~~" zu löschen. Gib dein Passwort ein, um fortzufahren.',
-        en: 'You are about to delete "~~name~~". Enter your password to continue.',
-        da: 'Du er ved at slette "~~name~~". Indtast din adgangskode for at fortsætte.',
+        de: 'Du bist dabei, "{name}" zu löschen. Gib dein Passwort ein, um fortzufahren.',
+        en: 'You are about to delete "{name}". Enter your password to continue.',
+        da: 'Du er ved at slette "{name}". Indtast din adgangskode for at fortsætte.',
     },
     org_team_user_invitations: {
         de: "Eingeladene Team-Mitglieder",

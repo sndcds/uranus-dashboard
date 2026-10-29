@@ -14,15 +14,15 @@
         <tbody>
           <tr>
             <td>one_of_n</td>
-            <td>{{ uranusStringInterpolate(t('one_of_n'), { n: 7, m: 13 }) }}</td>
+            <td>{{ t('one_of_n', { n: 7, m: 13 }) }}</td>
           </tr>
           <tr>
             <td>in_n_days</td>
-            <td>{{ uranusStringInterpolate(t('in_n_days'), { n: 6 }) }}</td>
+            <td>{{ t('in_n_days', { n: 6 }) }}</td>
           </tr>
           <tr>
-            <td>in_n_days</td>
-            <td>{{ uranusStringInterpolate(t('n_days_ago'), { n: 3 }) }}</td>
+            <td>n_days_ago</td>
+            <td>{{ t('n_days_ago', { n: 3 }) }}</td>
           </tr>
         </tbody>
       </table>
@@ -32,7 +32,6 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { uranusStringInterpolate } from '@/util/string.ts'
 
 const { t } = useI18n()
 

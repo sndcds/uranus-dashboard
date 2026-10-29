@@ -124,7 +124,6 @@ import { ChevronLeft, ChevronRight, Rows3, CalendarDays } from 'lucide-vue-next'
 import type { EventListItem } from '@/domain/event/eventListItem.model.ts'
 import type { EventViewMode } from '@/store/appStore.ts'
 import { formatDateKey } from '@/component/calendar/uranusCalendar.ts'
-import { uranusStringInterpolate } from '@/util/string.ts'
 
 const { t } = useI18n()
 
@@ -177,12 +176,7 @@ function onPrevWeek() {
 }
 
 const moreEventsLabel = (moreCount: number) => {
-  return uranusStringInterpolate(
-      t('more_events_label'),
-      {
-        moreCount,
-      }
-  )
+  return t('more_events_label', { moreCount })
 }
 
 function categoryClass(categoryId: number) {
