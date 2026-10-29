@@ -117,7 +117,6 @@ import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusIconAction from '@/component/ui/UranusIconAction.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import PlutoImage from '@/component/pluto/PlutoImage.vue'
-import { uranusStringInterpolate } from '@/util/string.ts'
 import { Edit, Trash2, Plus } from 'lucide-vue-next'
 import { apiErrorI18nKey } from '@/util/apiError.ts'
 
@@ -132,7 +131,7 @@ const props = defineProps<{
 const eventCountText = computed(() => {
   const count = props.venueListItem.eventCount
   if (count === 1) return t('event_count_singular')
-  return uranusStringInterpolate(t('event_count_plural'), { count })
+  return t('event_count_plural', { count })
 })
 
 const showSpaceSection = computed(() => {
@@ -156,13 +155,11 @@ const pendingSpaceUuid = ref<string | null>(null)
 const pendingSpaceName = ref('')
 
 function getConfirmDeleteVenue(name: string): string {
-  const template = t('confirm_delete_venue');
-  return uranusStringInterpolate(template, {name});
+  return t('confirm_delete_venue', { name })
 }
 
 function getConfirmDeleteSpace(name: string): string {
-  const template = t('confirm_delete_space');
-  return uranusStringInterpolate(template, {name});
+  return t('confirm_delete_space', { name })
 }
 
 const onDeleteVenue = (venue: VenueListItem) => {

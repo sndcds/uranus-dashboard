@@ -72,7 +72,6 @@ import { apiFetch } from '@/api.ts'
 import { useAppStore } from '@/store/appStore.ts'
 import UranusEventReleaseChip from '@/component/event/ui/UranusEventReleaseChip.vue'
 import UranusButton from '@/component/ui/UranusButton.vue'
-import { uranusStringInterpolate } from '@/util/string.ts'
 import UranusFeedback from '@/component/uranus/UranusFeedback.vue'
 import UranusOrgRequiredNotification from '@/component/org/UranusOrgRequiredNotification.vue'
 
@@ -135,12 +134,12 @@ const formatEventCountdown = (days: number) => {
     return t('today')
   }
   if (days < 0) {
-    return uranusStringInterpolate(t('n_days_ago'), {
+    return t('n_days_ago', {
       n: Math.abs(days)
     })
   }
 
-  return uranusStringInterpolate(t('in_n_days'), {
+  return t('in_n_days', {
     n: days
   });
 }

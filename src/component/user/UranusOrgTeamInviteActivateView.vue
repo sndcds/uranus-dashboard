@@ -13,7 +13,7 @@
       <!-- SUCCESS -->
       <template #success>
         <p class="success-message">
-          {{ uranusStringInterpolate(t('invite_accept_joined_org_message'), {name: inviteInfo?.org_name}) }}
+          {{ t('invite_accept_joined_org_message', { name: inviteInfo?.org_name ?? '' }) }}
         </p>
 
         <p class="info-message">
@@ -43,7 +43,6 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiFetch } from '@/api.ts'
-import { uranusStringInterpolate } from '@/util/string.ts'
 import UranusBasicCardPage from '@/component/layout/UranusBasicCardPage.vue'
 import UranusStatusCard from '@/component/uranus/UranusStatusCard.vue'
 

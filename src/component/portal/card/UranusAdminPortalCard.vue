@@ -60,7 +60,6 @@ import type { PortalListItem } from '@/domain/portal/portalList.model.ts'
 import UranusButton from '@/component/ui/UranusButton.vue'
 import UranusCard from '@/component/ui/UranusCard.vue'
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
-import { uranusStringInterpolate } from '@/util/string.ts'
 import { Eye } from 'lucide-vue-next'
 import { apiErrorI18nKey } from '@/util/apiError.ts'
 
@@ -80,7 +79,7 @@ const deleteError = ref('')
 const isDeleting = ref(false)
 
 const deleteQuestion = computed(() =>
-    uranusStringInterpolate(t('confirm_delete_portal'), { name: props.portalListItem.portalName })
+    t('confirm_delete_portal', { name: props.portalListItem.portalName })
 )
 
 function requestDeletePortal() {

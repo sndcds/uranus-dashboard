@@ -23,7 +23,6 @@ export const uranusI18n = createI18n({
     fallbackLocale: 'en',
     messages: uranusI18nMessages,
     globalInjection: true,
-    // Ensure the runtime compiler is available
     warnHtmlMessage: true
 })
 

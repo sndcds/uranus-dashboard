@@ -20,7 +20,7 @@
           {{ uranusPluralizedText(t, 'count_event_date', 'count_event_dates', event.seriesTotal ?? 1) }}
         </span>
         <span v-else-if="event.seriesTotal && event.seriesTotal > 1">
-          {{ event.seriesIndex }} {{ eventSeriesLabel(event) }} {{ event.seriesTotal }}
+          {{ eventSeriesLabel(event) }}
         </span>
         <span v-else></span>
       </div>
@@ -151,7 +151,7 @@ import UranusButton from '@/component/ui/UranusButton.vue'
 import { Eye, Pencil, Trash, Calendar, MapPin, Building, Video, Share2 } from 'lucide-vue-next'
 import UranusEventSocialPostModal from '@/component/social/UranusEventSocialPostModal.vue'
 import UranusEventCategoryDisplay from '@/component/event/ui/UranusEventCategoryDisplay.vue'
-import { uranusPluralizedText, uranusStringInterpolate } from '@/util/string.ts'
+import { uranusPluralizedText } from '@/util/string.ts'
 import { apiErrorI18nKey } from '@/util/apiError.ts'
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 import { useConfirmPastEventEdit } from '@/composable/useConfirmPastEventEdit'
@@ -197,9 +197,9 @@ const eventTypeGenreString = (type: EventTypePairModel) => {
 }
 
 const eventSeriesLabel = (event: AdminEventListItem) =>
-    uranusStringInterpolate(t('one_of_n'), {
-      seriesIndex: event.seriesIndex,
-      seriesTotal: event.seriesTotal
+    t('one_of_n', {
+      n: event.seriesIndex ?? '',
+      m: event.seriesTotal ?? ''
     })
 
 // Computed for presence checks
@@ -240,10 +240,7 @@ const seriesOptions = computed(() => {
         value: 'single'
       },
       {
-        label: uranusStringInterpolate(
-            t('delete_event_series'),
-            { count: props.event.seriesTotal }
-        ),
+        label: t('delete_event_series', { count: props.event.seriesTotal ?? '' }),
         value: 'series'
       }
     ]

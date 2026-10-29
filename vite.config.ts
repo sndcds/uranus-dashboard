@@ -15,6 +15,17 @@ export default defineConfig(({ mode }) => {
         plugins: [
             vue(),
             svgLoader(),
+            {
+                name: 'preserve-vue-i18n-initialization',
+                transform(code, id) {
+                    // vue-i18n@12.0.0-alpha.3 marks its entry as side-effect-free, but it
+                    // registers the message compiler, resolver, and locale fallbacker.
+                    if (id.endsWith('/vue-i18n/dist/vue-i18n.js')) {
+                        return { code, map: null, moduleSideEffects: true }
+                    }
+                    return null
+                },
+            },
         ],
         define: {
             __VUE_I18N_FULL_INSTALL__: true,
