@@ -305,7 +305,7 @@ import { useLanguageLookupStore } from '@/store/languageLookupStore.ts'
 import { type PublicEvent, mapPublicEventFromDTO } from '@/domain/event/publicEvent.model.ts'
 import { type PublicEventDate } from '@/domain/event/publicEventDate.model.ts'
 import { uranusI18nAccessibilityFlags } from '@/i18n/accessibility.ts'
-import { uranusAgeRangeInfo, uranusPriceText, uranusStringInterpolate } from '@/util/string.ts'
+import { uranusAgeRangeInfo, uranusPriceText } from '@/util/string.ts'
 import { type PublicEventDTO } from '@/api/dto/publicEvent.dto.ts'
 import { uranusEnsureHttpOrHttps } from '@/util/url.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
@@ -454,7 +454,7 @@ const ageLabel = computed(() => {
 })
 
 const maxAttendeesLabel = computed(() => {
-    return uranusStringInterpolate(t('event_max_count_attendees'), { count: event.value?.maxAttendees })
+    return t('event_max_count_attendees', { count: event.value?.maxAttendees ?? '' })
 })
 
 

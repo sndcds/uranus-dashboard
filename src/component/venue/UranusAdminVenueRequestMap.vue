@@ -27,7 +27,6 @@ import { useAppStore } from '@/store/appStore.ts'
 import { useThemeStore } from '@/store/themeStore.ts'
 import { extractGeoJsonCoordinates } from '@/util/geojson.ts'
 import venueMarkerIcon from '@/assets/map/marker.png'
-import {uranusStringInterpolate} from "@/util/string.ts";
 
 type BBox4326 = [number, number, number, number]
 
@@ -400,7 +399,7 @@ async function resolveVenueOrgUuid(properties: Record<string, any>) {
 }
 
 function createRequestMessage(venueName: string) {
-  return uranusStringInterpolate(t('venue_request_partner_message'), { venueName: venueName })
+  return t('venue_request_partner_message', { venueName })
 }
 
 function mapPartnerRequestError(error: unknown) {
