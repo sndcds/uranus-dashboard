@@ -102,7 +102,7 @@
             v-if="event.canDeleteEvent"
             variant="secondary"
             size="small"
-            @click.prevent.stop="requestDelete(event)"
+            @click.prevent.stop="requestDelete"
         >
           <template #icon><Trash /></template>
           {{ t('delete') }}
@@ -126,6 +126,7 @@
       :error="deleteError"
       :question="deleteQuestion"
       :options="seriesOptions"
+      :is-submitting="isDeleting"
       confirm-text="Delete"
       loading-text="Deleting"
       @confirm="confirmDelete"
@@ -137,8 +138,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiFetch } from '@/api.ts'
-import { ApiError } from '@/api.ts'
 import {uranusFormatEventDateTime } from '@/util/util.ts'
 
 import UranusPasswordConfirmModal from '@/component/uranus/UranusPasswordConfirmModal.vue'
@@ -152,9 +151,9 @@ import { Eye, Pencil, Trash, Calendar, MapPin, Building, Video, Share2 } from 'l
 import UranusEventSocialPostModal from '@/component/social/UranusEventSocialPostModal.vue'
 import UranusEventCategoryDisplay from '@/component/event/ui/UranusEventCategoryDisplay.vue'
 import { uranusPluralizedText } from '@/util/string.ts'
-import { apiErrorI18nKey } from '@/util/apiError.ts'
 import UranusFeedback from "@/component/uranus/UranusFeedback.vue";
 import { useConfirmPastEventEdit } from '@/composable/useConfirmPastEventEdit'
+import { useAdminEventActions } from '@/composable/useAdminEventActions'
 
 const placeholderImage = '/assets/event-dummy.png'
 const imageLoadFailed = ref(false)
@@ -189,6 +188,7 @@ const showSocialPost = ref(false)
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const confirmPastEventEdit = useConfirmPastEventEdit()
+const { canPreviewEvent, showDeleteModal, deleteError, isDeleting, deleteQuestion, seriesOptions, requestDelete, cancelDelete, confirmDelete } = useAdminEventActions(() => props.event, payload => emit('deleted', payload))
 const typeLookupStore = useEventTypeLookupStore()
 
 const eventTypeGenreString = (type: EventTypePairModel) => {
@@ -205,116 +205,6 @@ const eventSeriesLabel = (event: AdminEventListItem) =>
 // Computed for presence checks
 const hasVenue = computed(() => !!props.event.venueUuid)
 const hasSpace = computed(() => !!props.event.spaceUuid)
-
-
-const canPreviewEvent = computed(() => {
-  const event = props.event
-  if (event.canViewEventInsights || event.canEditEvent || event.canDeleteEvent) return true
-  else if (event.releaseStatus == 'draft' || event.releaseStatus == 'review') return false
-  return true
-})
-
-
-// Delete modal state
-const showDeleteModal = ref(false)
-const deleteError = ref('')
-const isDeleting = ref(false)
-const pendingDeleteUuid = ref<string | null>(null)
-const pendingDeleteTitle = ref('')
-const pendingTimeSeriesTotal = ref(1)
-const pendingEventDateUuid = ref<string | null>(null)
-
-
-const deleteQuestion = computed(() => {
-  if ((props.event.seriesTotal ?? 1) > 1) {
-    return t('delete_event_single_or_serie')
-  }
-  return t('confirm_delete_event')
-})
-
-const seriesOptions = computed(() => {
-  if ((props.event.seriesTotal ?? 1) > 1) {
-    return [
-      {
-        label: t('delete_event_occurrence'),
-        value: 'single'
-      },
-      {
-        label: t('delete_event_series', { count: props.event.seriesTotal ?? '' }),
-        value: 'series'
-      }
-    ]
-  }
-  return null
-})
-
-// Request deletion
-const requestDelete = (event: AdminEventListItem) => {
-  if (!event.canDeleteEvent) return
-  pendingDeleteUuid.value = event.uuid
-  pendingDeleteTitle.value = event.title
-  pendingTimeSeriesTotal.value = event.seriesTotal ?? 1
-  pendingEventDateUuid.value = event.dateUuid
-  deleteError.value = ''
-  showDeleteModal.value = true
-}
-
-// Cancel deletion
-const cancelDelete = () => {
-  showDeleteModal.value = false
-  deleteError.value = ''
-  pendingDeleteUuid.value = null
-  pendingDeleteTitle.value = ''
-  pendingTimeSeriesTotal.value = 1
-  pendingEventDateUuid.value = null
-}
-
-const confirmDelete = async ({password, selectedOption}: {
-  password: string
-  selectedOption?: string | number
-}) => {
-  if (!password || !pendingDeleteUuid.value) return
-
-  isDeleting.value = true
-  deleteError.value = ''
-
-  try {
-    const deleteEntireSeries = selectedOption === 'series'
-
-    const body: Record<string, unknown> = { password }
-    if (deleteEntireSeries) body.delete_series = true
-
-    let apiPath = `/api/admin/event/${pendingDeleteUuid.value}`
-    if (props.event.seriesTotal &&
-        props.event.seriesTotal > 1 &&
-        !deleteEntireSeries &&
-        pendingEventDateUuid.value !== null) {
-      apiPath = `/api/admin/event/${pendingDeleteUuid.value}/date/${pendingEventDateUuid.value}`
-    }
-
-    await apiFetch(apiPath, {
-      method: 'DELETE',
-      body: JSON.stringify(body),
-    })
-
-    // Success → emit deleted
-    emit('deleted', {
-      eventUuid: pendingDeleteUuid.value,
-      dateUuid: pendingEventDateUuid.value,
-      deleteSeries: deleteEntireSeries,
-    })
-
-    cancelDelete()
-  } catch (err) {
-    if (err instanceof ApiError) {
-      deleteError.value = t(apiErrorI18nKey(err.status, 'failed_to_delete_event'))
-    } else {
-      deleteError.value = t('failed_to_delete_event')
-    }
-  } finally {
-    isDeleting.value = false
-  }
-}
 </script>
 <style>
 .uranus-dashboard-card {
