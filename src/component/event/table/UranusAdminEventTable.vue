@@ -18,7 +18,7 @@
     <UranusEventColumnLegend />
     </div>
     <div v-if="!loading" class="admin-event-table-scroll" tabindex="0" :aria-label="t('event_table_list')">
-      <ul v-if="pageEvents.length" class="admin-event-table-rows"><UranusAdminEventTableRow v-for="event in pageEvents" :key="`${event.uuid}-${event.dateUuid ?? 'undated'}`" :event="event" @info="selected = $event" /></ul>
+      <ul v-if="pageEvents.length" class="admin-event-table-rows"><UranusAdminEventTableRow v-for="event in pageEvents" :key="`${event.uuid}-${event.dateUuid ?? 'undated'}`" :event="event" @info="selected = $event" @deleted="onDeleted" /></ul>
       <p v-else class="admin-event-table-empty" role="status">{{ t('event_table_empty') }}</p>
     </div>
     <nav v-if="!loading && filtered.length" class="admin-event-pagination" :aria-label="t('event_table_pagination')">

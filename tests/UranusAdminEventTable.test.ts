@@ -6,6 +6,12 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 import { uranusI18nMessages } from '@/i18n/uranus-i18n-index'
 import UranusAdminEventTable from '@/component/event/table/UranusAdminEventTable.vue'
 import { makeAdminListEvent } from './fixtures/adminEventList'
+import { ApiError, apiFetch } from '@/api'
+
+vi.mock('@/api', async importOriginal => ({
+    ...await importOriginal<typeof import('@/api')>(),
+    apiFetch: vi.fn(),
+}))
 
 describe('admin event table', () => {
     let wrapper: VueWrapper | undefined
@@ -16,6 +22,7 @@ describe('admin event table', () => {
         vi.setSystemTime(new Date(2026, 9, 24, 12))
         originalConfirm = window.confirm
         window.confirm = vi.fn(() => true)
+        vi.mocked(apiFetch).mockReset().mockResolvedValue({ service: 'uranus', api_version: '1', response_type: 'success', status: 200, timestamp: '', data: null })
     })
     afterEach(() => { wrapper?.unmount(); document.body.innerHTML = ''; vi.useRealTimers(); vi.restoreAllMocks(); window.confirm = originalConfirm })
     async function render(events = [makeAdminListEvent()], pageSize = 50) {
@@ -107,8 +114,70 @@ describe('admin event table', () => {
     })
     it('does not offer edit links without edit permission', async () => {
         const { wrapper } = await render([makeAdminListEvent({ canEditEvent: false })])
-        expect(wrapper.findAll('a')).toHaveLength(0)
+        expect(wrapper.findAll('a[href^="/admin/event/"]')).toHaveLength(0)
+        expect(wrapper.get('.admin-event-preview').attributes()).toMatchObject({ href: '/event/event-1/date/date-1/preview', target: '_blank', rel: 'noopener noreferrer' })
         expect(wrapper.get('.event-metadata--summary span.event-metadata-control').attributes('tabindex')).toBe('0')
+    })
+    it.each(['draft', 'review', 'released'])('keeps preview and delete permissions for %s events', async releaseStatus => {
+        const event = makeAdminListEvent({ releaseStatus, canEditEvent: false, canDeleteEvent: false, canViewEventInsights: false })
+        const { wrapper } = await render([event])
+        expect(wrapper.find('.admin-event-preview').exists()).toBe(releaseStatus === 'released')
+        expect(wrapper.find('.admin-event-delete').exists()).toBe(false)
+        await wrapper.setProps({ events: [{ ...event, canViewEventInsights: true }] })
+        expect(wrapper.find('.admin-event-preview').exists()).toBe(true)
+        expect(wrapper.find('.admin-event-delete').exists()).toBe(false)
+        await wrapper.setProps({ events: [{ ...event, canDeleteEvent: true }] })
+        expect(wrapper.find('.admin-event-preview').exists()).toBe(true)
+        expect(wrapper.get('.admin-event-delete').text()).toBe('Löschen')
+    })
+    it.each([
+        { seriesTotal: 1, dateUuid: 'date-1', selectedOption: 'single', path: '/api/admin/event/event-1', deleteSeries: false },
+        { seriesTotal: 3, dateUuid: 'date-1', selectedOption: 'single', path: '/api/admin/event/event-1/date/date-1', deleteSeries: false },
+        { seriesTotal: 3, dateUuid: 'date-1', selectedOption: 'series', path: '/api/admin/event/event-1', deleteSeries: true },
+        { seriesTotal: 0, dateUuid: null, selectedOption: 'single', path: '/api/admin/event/event-1', deleteSeries: false },
+    ])('deletes from the row using $path (series: $deleteSeries, dates: $seriesTotal)', async ({ seriesTotal, dateUuid, selectedOption, path, deleteSeries }) => {
+        const { wrapper } = await render([makeAdminListEvent({ seriesTotal, dateUuid })])
+        await wrapper.get('.admin-event-delete').trigger('click')
+        const modal = new DOMWrapper(document.querySelector('.uranus-modal__overlay')!)
+        expect(modal.text()).toContain(uranusI18nMessages.de.delete_event)
+        expect(apiFetch).not.toHaveBeenCalled()
+        if (seriesTotal > 1) await modal.get(`input[type=radio][value=${selectedOption}]`).setValue(true)
+        else expect(modal.find('input[type=radio]').exists()).toBe(false)
+        await modal.get('input[type=password]').setValue('confirmation-password')
+        await modal.get('form').trigger('submit')
+        await flushPromises()
+        expect(apiFetch).toHaveBeenCalledExactlyOnceWith(path, {
+            method: 'DELETE', body: JSON.stringify({ password: 'confirmation-password', ...(deleteSeries ? { delete_series: true } : {}) }),
+        })
+        expect(wrapper.emitted('deleted')).toEqual([[{ eventUuid: 'event-1', dateUuid, deleteSeries }]])
+        expect(document.querySelector('.uranus-modal__overlay')).toBeNull()
+    })
+    it('requires a password and allows cancelling deletion without an API request', async () => {
+        const { wrapper } = await render()
+        await wrapper.get('.admin-event-delete').trigger('click')
+        const modal = new DOMWrapper(document.querySelector('.uranus-modal__overlay')!)
+        await modal.get('form').trigger('submit')
+        expect(apiFetch).not.toHaveBeenCalled()
+        await modal.get('.uranus-modal__close').trigger('click')
+        expect(document.querySelector('.uranus-modal__overlay')).toBeNull()
+        expect(wrapper.emitted('deleted')).toBeUndefined()
+    })
+    it('shows deletion errors and allows retrying without emitting a success', async () => {
+        vi.mocked(apiFetch).mockRejectedValueOnce(new ApiError('incorrect password', 401))
+        const { wrapper } = await render()
+        await wrapper.get('.admin-event-delete').trigger('click')
+        const modal = new DOMWrapper(document.querySelector('.uranus-modal__overlay')!)
+        await modal.get('input[type=password]').setValue('wrong-password')
+        await modal.get('form').trigger('submit')
+        await flushPromises()
+        await vi.waitFor(() => expect(modal.text()).toContain(uranusI18nMessages.de.error_message_incorrect_password))
+        expect(wrapper.emitted('deleted')).toBeUndefined()
+        await modal.get('input[type=password]').setValue('correct-password')
+        await modal.get('form').trigger('submit')
+        await flushPromises()
+        expect(apiFetch).toHaveBeenCalledTimes(2)
+        expect(wrapper.emitted('deleted')).toHaveLength(1)
+        expect(document.querySelector('.uranus-modal__overlay')).toBeNull()
     })
     it('does not count the backend zero sentinel as a genre', async () => {
         const { wrapper } = await render([makeAdminListEvent({ eventTypes: [{ typeId: 1, genreId: 0 }] })])
