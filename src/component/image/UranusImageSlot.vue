@@ -123,6 +123,14 @@ async function loadImage() {
   image.value = await loadPlutoImage(apiPath)
 }
 
+function refreshImageAfterSave() {
+  void loadImage()
+    .then(incReloadCounter)
+    .catch((err: unknown) => {
+      console.error('Failed to refresh image after saving', err)
+    })
+}
+
 function openDialog() {
   if (isSaving.value) return
   errorMessage.value = null
@@ -154,15 +162,12 @@ async function onSave(payload: PlutoImageDTO, file: File | null) {
       ...(file ? {
         onUploadProgress: (percentage: number | null) => {
           uploadProgress.value = percentage
-          isUploading.value = percentage !== 100
         }
       } : {})
     })
 
-    isUploading.value = false
-    await loadImage()
-    incReloadCounter()
     dialogOpen.value = false
+    refreshImageAfterSave()
 
   } catch (err) {
     if (err instanceof ApiError) {

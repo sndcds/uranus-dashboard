@@ -185,7 +185,7 @@ const props = defineProps<{
 }>()
 
 const saveStatus = computed(() => {
-  if (!props.isUploading) return t('image_processing')
+  if (!props.isUploading || props.uploadProgress === 100) return t('image_processing')
   if (props.uploadProgress == null) return t('image_uploading')
   return t('image_upload_progress', { progress: props.uploadProgress })
 })
@@ -379,7 +379,9 @@ onMounted(async () => {
   margin-bottom: 1rem;
 
   progress {
+    display: block;
     width: 100%;
+    height: 0.75rem;
     accent-color: var(--uranus-color);
   }
 }
