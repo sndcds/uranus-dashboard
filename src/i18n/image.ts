@@ -20,6 +20,11 @@ export const uranusI18nImageTranslations: Record<string, Record<UranusLocaleKey,
         en: 'Saving image …',
         da: 'Gemmer billede …',
     },
+    image_crop_preview_aspect_ratio: {
+        de: 'Seitenverhältnis der Vorschau',
+        en: 'Crop preview aspect ratio',
+        da: 'Billedformat for beskæringsvisning',
+    },
     image_file_too_large: {
         de: 'Die Bilddatei ist zu groß.',
         en: 'The image file is too large.',

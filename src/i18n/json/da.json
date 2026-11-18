@@ -292,6 +292,7 @@
   "image_uploading": "Uploader billede …",
   "image_upload_progress": "Uploader billede: {progress} %",
   "image_processing": "Gemmer billede …",
+  "image_crop_preview_aspect_ratio": "Billedformat for beskæringsvisning",
   "image_file_too_large": "Billedfilen er for stor.",
   "image_not_authorized": "Ingen tilladelse til at gemme billedet.",
   "image_save_failed": "Billedet kunne ikke gemmes. Prøv igen.",
