@@ -41,7 +41,7 @@ beforeEach(() => {
 })
 
 describe('image slot saving state', () => {
-  it('keeps the dialog busy through upload and preview refresh and prevents duplicate saves and closing', async () => {
+  it('keeps the dialog busy through upload and closes without waiting for preview refresh', async () => {
     const upload = deferred<ApiResponse<never>>()
     const reload = deferred()
     vi.mocked(apiFetch).mockReturnValue(upload.promise)
@@ -65,11 +65,11 @@ describe('image slot saving state', () => {
 
     options.onUploadProgress!(100)
     await wrapper.vm.$nextTick()
-    expect(dialog.props('isUploading')).toBe(false)
+    expect(dialog.props('isUploading')).toBe(true)
     expect(dialog.props('isSaving')).toBe(true)
     upload.resolve(savedResponse)
     await flushPromises()
-    expect(dialog.props('isSaving')).toBe(true)
+    expect(wrapper.findComponent(UranusImageEditDialog).exists()).toBe(false)
     reload.resolve()
     await flushPromises()
     expect(wrapper.findComponent(UranusImageEditDialog).exists()).toBe(false)

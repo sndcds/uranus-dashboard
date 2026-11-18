@@ -292,6 +292,7 @@
   "image_uploading": "Uploading image …",
   "image_upload_progress": "Uploading image: {progress} %",
   "image_processing": "Saving image …",
+  "image_crop_preview_aspect_ratio": "Crop preview aspect ratio",
   "image_file_too_large": "The image file is too large.",
   "image_not_authorized": "Not authorized to save the image.",
   "image_save_failed": "The image could not be saved. Please try again.",

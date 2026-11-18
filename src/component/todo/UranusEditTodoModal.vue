@@ -67,7 +67,6 @@
         <UranusButton
             type="submit"
             class="uranus-button uranus-ok-button"
-            @click="onSubmit"
             :disabled="saving"
         >
           <template v-if="saving">{{ t('saving') }}...</template>
@@ -145,6 +144,8 @@ const onCancel = () => {
 }
 
 const onSubmit = async () => {
+  if (saving.value) return
+
   saving.value = true
   error.value = ''
 
@@ -164,7 +165,7 @@ const onSubmit = async () => {
       body: JSON.stringify(payload),
     })
 
-    if (apiResonse.status !== 200) {
+    if (apiResonse.status !== 200 && apiResonse.status !== 201) {
       throw new ApiError(apiResonse.message ?? '', apiResonse.status)
     }
 

@@ -292,6 +292,7 @@
   "image_uploading": "Bild wird hochgeladen …",
   "image_upload_progress": "Bild wird hochgeladen: {progress} %",
   "image_processing": "Bild wird gespeichert …",
+  "image_crop_preview_aspect_ratio": "Seitenverhältnis der Vorschau",
   "image_file_too_large": "Die Bilddatei ist zu groß.",
   "image_not_authorized": "Keine Berechtigung zum Speichern des Bildes.",
   "image_save_failed": "Das Bild konnte nicht gespeichert werden. Bitte versuche es erneut.",
